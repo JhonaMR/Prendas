@@ -102,6 +102,7 @@ router.post('/orders', verifyToken, movementsController.createOrder);
 
 router.get('/production', verifyToken, movementsController.getProductionTracking);
 router.post('/production', verifyToken, movementsController.updateProductionTracking);
+router.post('/production/batch', verifyToken, movementsController.saveProductionBatch); // ← AGREGAMOS ESTA LÍNEA
 
 // ==================== RUTA DE PRUEBA ====================
 

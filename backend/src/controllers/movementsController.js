@@ -500,6 +500,80 @@ const updateProductionTracking = (req, res) => {
     }
 };
 
+/**
+ * GUARDAR MÚLTIPLES TRACKING EN BATCH
+ * POST /api/production/batch
+ * 
+ * Recibe un array de registros de producción y los guarda/actualiza todos
+ */
+const saveProductionBatch = (req, res) => {
+    try {
+        const { trackingData } = req.body;
+
+        // Validar que venga un array
+        if (!Array.isArray(trackingData) || trackingData.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Se requiere un array de datos de producción'
+            });
+        }
+
+        const db = getDatabase();
+
+        // Iniciar transacción para asegurar atomicidad
+        db.prepare('BEGIN').run();
+
+        try {
+            // Preparar statement para UPSERT
+            const upsertStmt = db.prepare(`
+                INSERT OR REPLACE INTO production_tracking (ref_id, correria_id, programmed, cut)
+                VALUES (?, ?, ?, ?)
+            `);
+
+            let savedCount = 0;
+
+            // Guardar cada registro
+            for (const item of trackingData) {
+                const { refId, correriaId, programmed, cut } = item;
+
+                // Validar cada registro
+                if (!refId || !correriaId || programmed === undefined || cut === undefined) {
+                    throw new Error(`Registro inválido: falta refId, correriaId, programmed o cut`);
+                }
+
+                // Ejecutar UPSERT
+                upsertStmt.run(refId, correriaId, programmed, cut);
+                savedCount++;
+            }
+
+            // Confirmar transacción
+            db.prepare('COMMIT').run();
+
+            db.close();
+
+            return res.json({
+                success: true,
+                message: `${savedCount} registro(s) guardado(s) exitosamente`,
+                savedCount
+            });
+
+        } catch (error) {
+            // Si hay error, revertir todos los cambios
+            db.prepare('ROLLBACK').run();
+            db.close();
+            throw error;
+        }
+
+    } catch (error) {
+        console.error('❌ Error al guardar batch de tracking:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al guardar tracking',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
 module.exports = {
     // Recepciones
     getReceptions,
@@ -515,5 +589,6 @@ module.exports = {
     
     // Producción
     getProductionTracking,
-    updateProductionTracking
+    updateProductionTracking,
+    saveProductionBatch  // ← AGREGAMOS ESTA LÍNEA
 };

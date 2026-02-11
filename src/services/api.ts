@@ -624,6 +624,25 @@ class ApiService {
       };
     }
   }
+
+  /* Guardar múltiples registros de producción en batch */
+ 
+  async saveProductionBatch(trackingData: ProductionTracking[]): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/production/batch`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ trackingData })
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al guardar producción'
+      };
+    }
+  }
 }
 
 // Exportar instancia única
