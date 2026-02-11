@@ -10,9 +10,10 @@ interface DispatchViewProps {
   dispatches: Dispatch[];
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
+  onAddDispatch: (dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
 }
 
-const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster }) => {
+const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, onAddDispatch }) => {
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
@@ -82,7 +83,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!clientId) {
       alert("Debe seleccionar un cliente");
       return;
@@ -103,14 +104,24 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
       editLogs: editingDisp ? [...editingDisp.editLogs, { user: user.name, date: new Date().toLocaleString() }] : []
     };
 
-    updateState(prev => ({
-      ...prev,
-      dispatches: editingDisp 
-        ? prev.dispatches.map(d => d.id === data.id ? data : d)
-        : [data, ...prev.dispatches]
-    }));
-
-    setIsDispatching(false);
+    try {
+      const result = await onAddDispatch(data);
+      if (result.success) {
+        updateState(prev => ({
+          ...prev,
+          dispatches: editingDisp 
+            ? prev.dispatches.map(d => d.id === data.id ? data : d)
+            : [data, ...prev.dispatches]
+        }));
+        setIsDispatching(false);
+        alert("Despacho guardado exitosamente");
+      } else {
+        alert("Error al guardar el despacho");
+      }
+    } catch (error) {
+      console.error('Error al guardar despacho:', error);
+      alert("Error al guardar el despacho");
+    }
   };
 
   const filteredDispatches = dispatches.filter(d => {

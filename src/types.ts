@@ -117,5 +117,5 @@ export interface AppState {
   sellers: Seller[];
   correrias: Correria[];
   orders: Order[];
-  production: ProductionTracking[];
+  productionTracking: ProductionTracking[];
 }

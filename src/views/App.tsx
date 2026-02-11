@@ -149,7 +149,16 @@ const App: React.FC = () => {
           />
         );
       case 'dispatch':
-        return <DispatchView user={user} clients={state.clients} dispatches={state.dispatches} updateState={updateState} referencesMaster={state.references} />;
+        return (
+          <DispatchView 
+            user={user} 
+            clients={state.clients} 
+            dispatches={state.dispatches} 
+            updateState={updateState} 
+            referencesMaster={state.references}
+            onAddDispatch={(dispatch) => api.createDispatch(dispatch).then(res => ({ success: res.success }))}
+          />
+        );
       case 'inventory':
         return <InventoryView receptions={state.receptions} dispatches={state.dispatches} />;
       case 'orders':
@@ -174,6 +183,8 @@ const App: React.FC = () => {
             onUpdateConfeccionista={(id, conf) => api.updateConfeccionista(id, conf).then(res => ({ success: res.success }))}
             onDeleteConfeccionista={(id) => api.deleteConfeccionista(id).then(res => ({ success: res.success }))}
             onAddSeller={(seller) => api.createSeller(seller).then(res => ({ success: res.success }))}
+            onUpdateSeller={(id, seller) => api.updateSeller(id, seller).then(res => ({ success: res.success }))}
+            onDeleteSeller={(id) => api.deleteSeller(id).then(res => ({ success: res.success }))}
             onAddCorreria={(correria) => api.createCorreria(correria).then(res => ({ success: res.success }))}
           />
         );

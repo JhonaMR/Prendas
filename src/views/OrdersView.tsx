@@ -35,7 +35,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
         acc + d.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
       const stock = received - dispatched;
 
-      const prod = state.production.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0 };
+      const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0 };
       const pending = totalSold - prod.cut;
 
       const totalCloth1 = (ref.avgCloth1 || 0) * totalSold;
@@ -62,18 +62,18 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
     if (hideZeros) data = data.filter(r => r.totalSold > 0);
 
     return data;
-  }, [selectedCorreriaId, state.orders, state.references, state.receptions, state.dispatches, state.production, refFilter, clothFilter, hideZeros]);
+  }, [selectedCorreriaId, state.orders, state.references, state.receptions, state.dispatches, state.productionTracking, refFilter, clothFilter, hideZeros]);
 
   const updateProduction = (refId: string, field: 'programmed' | 'cut', value: number) => {
     updateState(prev => {
-      const existingIdx = prev.production.findIndex(p => p.refId === refId && p.correriaId === selectedCorreriaId);
-      const newList = [...prev.production];
+      const existingIdx = prev.productionTracking.findIndex(p => p.refId === refId && p.correriaId === selectedCorreriaId);
+      const newList = [...prev.productionTracking];
       if (existingIdx > -1) {
         newList[existingIdx] = { ...newList[existingIdx], [field]: value };
       } else {
         newList.push({ refId, correriaId: selectedCorreriaId, programmed: 0, cut: 0, [field]: value });
       }
-      return { ...prev, production: newList };
+      return { ...prev, productionTracking: newList };
     });
   };
 

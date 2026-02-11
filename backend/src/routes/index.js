@@ -74,7 +74,9 @@ router.delete('/confeccionistas/:id', verifyToken, crudController.deleteConfecci
 // ==================== VENDEDORES ====================
 
 router.get('/sellers', verifyToken, crudController.getSellers);
-router.post('/sellers', verifyToken, crudController.createSeller);
+router.post('/sellers', verifyToken, verifyAdmin, crudController.createSeller);
+router.put('/sellers/:id', verifyToken, verifyAdmin, crudController.updateSeller);
+router.delete('/sellers/:id', verifyToken, verifyAdmin, crudController.deleteSeller);
 
 // ==================== CORRERIAS ====================
 

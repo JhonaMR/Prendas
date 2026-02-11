@@ -18,6 +18,8 @@ interface MastersViewProps {
   onUpdateConfeccionista: (id: string, conf: any) => Promise<{ success: boolean }>;
   onDeleteConfeccionista: (id: string) => Promise<{ success: boolean }>;
   onAddSeller: (seller: any) => Promise<{ success: boolean }>;
+  onUpdateSeller: (id: string, seller: any) => Promise<{ success: boolean }>;
+  onDeleteSeller: (id: string) => Promise<{ success: boolean }>;
   onAddCorreria: (correria: any) => Promise<{ success: boolean }>;
 }
 
@@ -36,6 +38,8 @@ const MastersView: React.FC<MastersViewProps> = ({
   onUpdateConfeccionista,
   onDeleteConfeccionista,
   onAddSeller,
+  onUpdateSeller,
+  onDeleteSeller,
   onAddCorreria
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'clients' | 'users' | 'references' | 'sellers' | 'correrias' | 'confeccionistas'>('clients');
@@ -249,7 +253,15 @@ const MastersView: React.FC<MastersViewProps> = ({
     
     setIsLoading(true);
     try {
-      const result = await onAddSeller(newItem);
+      let result;
+      
+      if (editingId) {
+        // Actualizar vendedor existente
+        result = await onUpdateSeller(editingId, newItem);
+      } else {
+        // Crear nuevo vendedor
+        result = await onAddSeller(newItem);
+      }
       
       if (result.success) {
         resetForms();
@@ -322,13 +334,8 @@ const MastersView: React.FC<MastersViewProps> = ({
         // Eliminar referencia del backend
         result = await onDeleteReference(targetId);
       } else if (type === 'seller') {
-        // Los vendedores se eliminan localmente (no hay endpoint de delete)
-        updateState(prev => ({
-          ...prev,
-          sellers: prev.sellers.filter(x => x.id !== targetId)
-        }));
-        alert('Vendedor eliminado');
-        return;
+        // Eliminar vendedor del backend
+        result = await onDeleteSeller(targetId);
       } else if (type === 'correria') {
         // Las correrías se eliminan localmente (no hay endpoint de delete)
         updateState(prev => ({
@@ -352,6 +359,28 @@ const MastersView: React.FC<MastersViewProps> = ({
       }
       
       if (result?.success) {
+        // Actualizar el estado local después de eliminar
+        if (type === 'client') {
+          updateState(prev => ({
+            ...prev,
+            clients: prev.clients.filter(x => x.id !== targetId)
+          }));
+        } else if (type === 'confeccionista') {
+          updateState(prev => ({
+            ...prev,
+            confeccionistas: prev.confeccionistas.filter(x => x.id !== targetId)
+          }));
+        } else if (type === 'reference') {
+          updateState(prev => ({
+            ...prev,
+            references: prev.references.filter(x => x.id !== targetId)
+          }));
+        } else if (type === 'seller') {
+          updateState(prev => ({
+            ...prev,
+            sellers: prev.sellers.filter(x => x.id !== targetId)
+          }));
+        }
         alert('Registro eliminado correctamente');
       } else {
         alert('Error al eliminar el registro');
@@ -764,7 +793,7 @@ const TableWrapper = ({ children, title }: any) => (
   </div>
 );
 
-const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength, step }: any) => (
+const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
   <div className={`space-y-1.5 ${className}`}>
     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
     <input 
@@ -773,7 +802,6 @@ const Input = ({ label, value, onChange, type = "text", className = "", disabled
       onChange={e => onChange(e.target.value)} 
       disabled={disabled} 
       maxLength={maxLength}
-      step={step}
       className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50" 
     />
   </div>

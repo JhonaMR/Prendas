@@ -468,6 +468,74 @@ const createSeller = (req, res) => {
     }
 };
 
+const updateSeller = (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({
+                success: false,
+                message: 'El nombre es requerido'
+            });
+        }
+
+        const db = getDatabase();
+
+        const result = db.prepare(`
+            UPDATE sellers
+            SET name = ?
+            WHERE LOWER(id) = LOWER(?)
+        `).run(name, id);
+
+        db.close();
+
+        if (result.changes === 0) {
+            return res.status(404).json({ success: false, message: 'Vendedor no encontrado' });
+        }
+
+        return res.json({
+            success: true,
+            message: 'Vendedor actualizado exitosamente',
+            data: { id, name }
+        });
+
+    } catch (error) {
+        console.error('❌ Error:', error);
+        return res.status(500).json({ success: false, message: 'Error al actualizar vendedor' });
+    }
+};
+
+const deleteSeller = (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log('🗑️ Intentando eliminar vendedor con ID:', id);
+        
+        const db = getDatabase();
+
+        // Verificar que el vendedor existe (case-insensitive)
+        const seller = db.prepare('SELECT * FROM sellers WHERE LOWER(id) = LOWER(?)').get(id);
+        console.log('📊 Vendedor encontrado:', seller);
+
+        const result = db.prepare('UPDATE sellers SET active = 0 WHERE LOWER(id) = LOWER(?)').run(id);
+        console.log('📝 Resultado de UPDATE:', result);
+        
+        db.close();
+
+        if (result.changes === 0) {
+            console.log('❌ No se encontró vendedor con ID:', id);
+            return res.status(404).json({ success: false, message: 'Vendedor no encontrado' });
+        }
+
+        console.log('✅ Vendedor eliminado exitosamente');
+        return res.json({ success: true, message: 'Vendedor eliminado exitosamente' });
+
+    } catch (error) {
+        console.error('❌ Error:', error);
+        return res.status(500).json({ success: false, message: 'Error al eliminar vendedor' });
+    }
+};
+
 // ==================== CORRERIAS ====================
 
 const getCorrerias = (req, res) => {
@@ -534,6 +602,8 @@ module.exports = {
     // Vendedores
     getSellers,
     createSeller,
+    updateSeller,
+    deleteSeller,
     
     // Correrias
     getCorrerias,

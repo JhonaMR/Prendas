@@ -59,13 +59,24 @@ class ApiService {
    * Manejar respuesta HTTP
    */
   private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
-    const data = await response.json();
-    
-    if (!response.ok) {
-      throw data;
+    try {
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw data;
+      }
+      
+      return data;
+    } catch (error: any) {
+      // Si no es JSON válido, retornar error genérico
+      if (error instanceof SyntaxError) {
+        return {
+          success: false,
+          message: `Error del servidor (${response.status})`
+        };
+      }
+      throw error;
     }
-    
-    return data;
   }
 
   // ==================== AUTENTICACIÓN ====================
@@ -412,6 +423,39 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al crear vendedor'
+      };
+    }
+  }
+
+  async updateSeller(id: string, seller: Partial<Seller>): Promise<ApiResponse<Seller>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(seller)
+      });
+
+      return this.handleResponse<Seller>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar vendedor'
+      };
+    }
+  }
+
+  async deleteSeller(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar vendedor'
       };
     }
   }

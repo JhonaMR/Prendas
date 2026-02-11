@@ -358,6 +358,50 @@ const App: React.FC = () => {
     }
   };
 
+  const updateSeller = async (id: string, seller: any) => {
+    try {
+      const response = await api.updateSeller(id, seller);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          sellers: prev.sellers.map(s => s.id === id ? response.data : s)
+        }));
+        console.log('✅ Vendedor actualizado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al actualizar vendedor');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error actualizando vendedor:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const deleteSeller = async (id: string) => {
+    try {
+      const response = await api.deleteSeller(id);
+
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          sellers: prev.sellers.filter(s => s.id !== id)
+        }));
+        console.log('✅ Vendedor eliminado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar vendedor');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando vendedor:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
   /**
    * CORRERIAS
    */
@@ -535,6 +579,8 @@ const App: React.FC = () => {
             onUpdateConfeccionista={updateConfeccionista}
             onDeleteConfeccionista={deleteConfeccionista}
             onAddSeller={addSeller}
+            onUpdateSeller={updateSeller}
+            onDeleteSeller={deleteSeller}
             onAddCorreria={addCorreria}
           />
         );
