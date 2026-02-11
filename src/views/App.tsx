@@ -194,8 +194,8 @@ const App: React.FC = () => {
               Plow
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-extrabold text-lg tracking-tighter leading-none">InventoryPro</h1>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">Logística & Ventas</span>
+              <h1 className="font-extrabold text-lg tracking-tighter leading-none">PLOW</h1>
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">Ventas y Producción</span>
             </div>
           </div>
         </div>

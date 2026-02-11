@@ -101,11 +101,11 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-100/50 rounded-full -ml-16 -mb-16 blur-3xl"></div>
 
           <div className="text-center mb-10 relative z-10">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-pink-500 rounded-[24px] sm:rounded-[32px] mx-auto flex items-center justify-center text-white font-black text-3xl sm:text-4xl shadow-2xl shadow-blue-200 mb-6">
-              IP
+            <div className="w-20 h-20 sm:w-32 sm:h-24 bg-gradient-to-br from-blue-500 to-pink-500 rounded-[24px] sm:rounded-[32px] mx-auto flex items-center justify-center text-white font-black text-3xl sm:text-4xl shadow-2xl shadow-blue-200 mb-6">
+              PLOW
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-800 tracking-tighter">Bienvenido</h1>
-            <p className="text-slate-400 font-medium text-sm sm:text-base">Gestiona tu inventario con precisión</p>
+            <p className="text-slate-400 font-medium text-sm sm:text-base">Gestiona de inventarios</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 relative z-10">

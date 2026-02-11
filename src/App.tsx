@@ -560,12 +560,12 @@ const App: React.FC = () => {
           </button>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md">
-              IP
+            <div className="w-20 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md">
+              Plow
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-extrabold text-lg tracking-tighter leading-none">InventoryPro</h1>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">Logística & Ventas</span>
+              <h1 className="font-extrabold text-lg tracking-tighter leading-none">Gestión de inventarios</h1>
+              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">Ventas y producción</span>
             </div>
           </div>
         </div>
@@ -591,10 +591,10 @@ const App: React.FC = () => {
         >
           <div className="p-8 border-b border-slate-100 flex items-center justify-between">
              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg">
-                  IP
+                <div className="w-40 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg">
+                  Menú
                 </div>
-                <h1 className="font-black text-xl tracking-tighter">Menú</h1>
+                <h1 className="font-black text-xl tracking-tighter"></h1>
              </div>
              <button onClick={() => setIsNavOpen(false)} className="p-2 text-slate-400 hover:text-slate-600">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
