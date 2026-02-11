@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { AppState, User, UserRole } from '../types';
+import { AppState, User, UserRole, BatchReception } from '../types';
 import { Icons } from '../constants';
 import api from '../services/api';
 
@@ -138,7 +138,16 @@ const App: React.FC = () => {
   const renderContent = () => {
     switch (activeTab) {
       case 'reception':
-        return <ReceptionView user={user} receptions={state.receptions} updateState={updateState} referencesMaster={state.references} />;
+        return (
+          <ReceptionView 
+            user={user} 
+            receptions={state.receptions} 
+            updateState={updateState} 
+            referencesMaster={state.references}
+            confeccionistasMaster={state.confeccionistas}
+            onAddReception={(reception) => api.createReception(reception).then(res => ({ success: res.success }))}
+          />
+        );
       case 'dispatch':
         return <DispatchView user={user} clients={state.clients} dispatches={state.dispatches} updateState={updateState} referencesMaster={state.references} />;
       case 'inventory':

@@ -10,9 +10,11 @@ interface ReceptionViewProps {
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
   confeccionistasMaster?: Confeccionista[];
+  onAddReception?: (reception: any) => Promise<any>;  // ← AGREGAMOS ESTO
 }
 
-const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateState, referencesMaster, confeccionistasMaster = [] }) => {
+const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateState, referencesMaster, confeccionistasMaster = [], onAddReception  // ← AGREGAR ESTO
+    }) => {
   const [isCounting, setIsCounting] = useState(false);
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -48,7 +50,9 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
     setEditingLot(lot);
     setIsCounting(true);
     setConfeccionista(lot.confeccionista);
-    setConfSearch(lot.confeccionista);
+    // Buscar el nombre del confeccionista por su ID
+    const confName = confeccionistasMaster.find(c => c.id === lot.confeccionista)?.name || lot.confeccionista;
+    setConfSearch(`${lot.confeccionista} - ${confName}`);
     setBatchCode(lot.batchCode);
     setHasSeconds(lot.hasSeconds);
     setChargeType(lot.chargeType);
@@ -64,9 +68,13 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
   );
 
   const selectConf = (c: Confeccionista) => {
-    setConfeccionista(c.name);
+    setConfeccionista(c.id);
     setConfSearch(`${c.id} - ${c.name}`);
     setShowConfResults(false);
+  };
+
+  const getConfeccionistaName = (confId: string) => {
+    return confeccionistasMaster.find(c => c.id === confId)?.name || confId;
   };
 
   const handleScan = (ref: string, size: string, quantity: number) => {
@@ -86,7 +94,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!confeccionista || !batchCode) {
       alert("Nombre de Confeccionista y Remisión son obligatorios");
       return;
@@ -105,18 +113,47 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
       chargeUnits,
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
-      createdAt: editingLot ? editingLot.createdAt : new Date().toLocaleString(),
-      editLogs: editingLot ? [...editingLot.editLogs, { user: user.name, date: new Date().toLocaleString() }] : []
+      createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
+      editLogs: editingLot ? [...editingLot.editLogs, { user: user.name, date: new Date().toISOString() }] : []
     };
 
-    updateState(prev => ({
-      ...prev,
-      receptions: editingLot 
-        ? prev.receptions.map(r => r.id === data.id ? data : r)
-        : [data, ...prev.receptions]
-    }));
-
-    setIsCounting(false);
+    // ========== GUARDAR EN BACKEND ==========
+    if (onAddReception) {
+      try {
+        const result = await onAddReception(data);
+        
+        if (result.success) {
+          console.log('✅ Recepción guardada en BD');
+          
+          // También actualizar estado local
+          updateState(prev => ({
+            ...prev,
+            receptions: editingLot 
+              ? prev.receptions.map(r => r.id === data.id ? data : r)
+              : [data, ...prev.receptions]
+          }));
+          
+          setIsCounting(false);
+        } else {
+          alert('Error al guardar: ' + (result.message || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('❌ Error guardando recepción:', error);
+        alert('Error de conexión con el servidor');
+      }
+    } else {
+      // Fallback si no hay función del backend
+      console.warn('⚠️ onAddReception no está definido, guardando solo en estado local');
+      
+      updateState(prev => ({
+        ...prev,
+        receptions: editingLot 
+          ? prev.receptions.map(r => r.id === data.id ? data : r)
+          : [data, ...prev.receptions]
+      }));
+      
+      setIsCounting(false);
+    }
   };
 
   const filteredReceptions = receptions.filter(r => {
@@ -331,7 +368,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
                       <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{r.batchCode}</span>
                       <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{r.createdAt}</span>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-black text-slate-800">{r.confeccionista}</h3>
+                    <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
                     <div className="flex flex-wrap gap-4 mt-2">
                       <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Prendas: <span className="text-slate-800 font-black">{totalQty}</span></span>
                       {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Con Segundas</span>}
@@ -362,7 +399,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({ user, receptions, updateS
                        <div>
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Detalles de Recepción</p>
                           <div className="space-y-1">
-                             <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {r.confeccionista}</p>
+                             <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {getConfeccionistaName(r.confeccionista)}</p>
                              <p className="text-xs sm:text-sm font-bold text-slate-500">Remisión: {r.batchCode}</p>
                              {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
                              {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}

@@ -764,7 +764,7 @@ const TableWrapper = ({ children, title }: any) => (
   </div>
 );
 
-const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
+const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength, step }: any) => (
   <div className={`space-y-1.5 ${className}`}>
     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
     <input 
@@ -773,6 +773,7 @@ const Input = ({ label, value, onChange, type = "text", className = "", disabled
       onChange={e => onChange(e.target.value)} 
       disabled={disabled} 
       maxLength={maxLength}
+      step={step}
       className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50" 
     />
   </div>

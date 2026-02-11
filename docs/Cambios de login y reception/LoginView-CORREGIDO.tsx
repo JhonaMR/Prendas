@@ -9,10 +9,10 @@ interface LoginViewProps {
 }
 
 const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => {
-    const [isRegister, setIsRegister] = useState(false);
   const [code, setCode] = useState('');
   const [pin, setPin] = useState('');
   const [name, setName] = useState('');
+  const [isRegister, setIsRegister] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -93,23 +93,20 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 p-4 sm:p-6 overflow-y-auto">
-      <div className="w-full max-w-md animate-in fade-in zoom-in duration-500 py-8">
-        <div className="bg-white p-8 sm:p-4 rounded-[40px] sm:rounded-[48px] shadow-2xl border border-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-pink-100/50 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-100/50 rounded-full -ml-16 -mb-16 blur-3xl"></div>
-
-          <div className="text-center mb-.1 relative z-10">
-            <div className="w-20 h-20 sm:w-32 sm:h-24 bg-gradient-to-br from-blue-500 to-pink-500 rounded-[24px] sm:rounded-[32px] mx-auto flex items-center justify-center text-white font-black text-3xl sm:text-4xl shadow-2xl shadow-blue-200 mb-6">
-              PLOW
-            </div>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50 p-4">
+      <div className="w-full max-w-md">
+        {/* Logo/Header */}
+        <div className="text-center mb-8">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-pink-500 rounded-3xl flex items-center justify-center text-white font-black text-3xl mx-auto mb-4 shadow-2xl shadow-blue-200">
+            IP
+          </div>
           <h1 className="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
             {isRegister ? 'Crear Cuenta' : 'Bienvenido'}
           </h1>
           <p className="text-slate-500 font-medium">
-            {isRegister ? 'Registra tu usuario nuevo' : 'Gestion de inventario'}
+            {isRegister ? 'Registra tu usuario nuevo' : 'Gestiona tu inventario con precisión'}
           </p>
-      </div>
+        </div>
 
         {/* Form Card */}
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-200/50 p-8 border border-white/20">
@@ -124,7 +121,7 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Nombre completo"
+                  placeholder="Ej: Juan Pérez"
                   className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all text-slate-700 font-medium placeholder:text-slate-400"
                   disabled={loading}
                   required={isRegister}
@@ -141,14 +138,14 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
                 type="text"
                 value={code}
                 onChange={(e) => setCode(e.target.value.toUpperCase().slice(0, 3))}
-                placeholder="AAA"
+                placeholder="Ej: ADM"
                 maxLength={3}
                 className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all text-slate-700 font-bold text-center text-2xl tracking-widest placeholder:text-slate-400 uppercase"
                 disabled={loading}
                 required
               />
               <p className="text-xs text-slate-400 mt-1 text-center font-medium">
-                3 letras únicas
+                3 letras únicas (ej: ADM, JAM)
               </p>
             </div>
 
@@ -207,7 +204,21 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
             </div>
           </form>
         </div>
-      </div>
+
+        {/* Credenciales de prueba */}
+        {!isRegister && (
+          <div className="mt-6 text-center">
+            <p className="text-xs text-slate-400 font-medium mb-2">Credenciales de prueba:</p>
+            <div className="flex justify-center gap-4">
+              <div className="bg-white/50 backdrop-blur px-4 py-2 rounded-xl">
+                <p className="text-xs font-bold text-slate-600">Admin: <span className="text-pink-600">ADM / 0000</span></p>
+              </div>
+              <div className="bg-white/50 backdrop-blur px-4 py-2 rounded-xl">
+                <p className="text-xs font-bold text-slate-600">General: <span className="text-blue-600">JAM / 1234</span></p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
