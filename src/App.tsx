@@ -34,6 +34,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('reception');
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
 
   // ========== CARGAR DATOS DEL BACKEND ==========
   
@@ -120,6 +121,21 @@ const App: React.FC = () => {
   };
 
   const handleTabChange = (tab: string) => {
+    // Si estamos en la vista de pedidos y hay cambios sin guardar
+    if (activeTab === 'orders' && hasUnsavedOrderChanges) {
+      const confirmLeave = window.confirm(
+        '⚠️ Tienes cambios sin guardar en Pedidos.\n\n¿Estás seguro de que quieres salir sin guardar?\n\nLos cambios se perderán.'
+      );
+      
+      if (!confirmLeave) {
+        // Si el usuario cancela, no cambiar de vista
+        return;
+      }
+      
+      // Si confirma, resetear el estado de cambios
+      setHasUnsavedOrderChanges(false);
+    }
+    
     setActiveTab(tab);
     setIsNavOpen(false);
   };
@@ -551,14 +567,15 @@ const App: React.FC = () => {
         );
       case 'inventory':
         return <InventoryView receptions={state.receptions} dispatches={state.dispatches} />;
-      case 'orders':
-        return (
-          <OrdersView 
-            state={state} 
-            updateState={updateState}
-            onAddOrder={addOrder}
-          />
-        );
+        case 'orders':
+          return (
+            <OrdersView 
+              state={state} 
+              updateState={updateState}
+              user={user}
+              onUnsavedChanges={setHasUnsavedOrderChanges}
+            />
+          );
       case 'settle':
         return <OrderSettleView state={state} user={user} updateState={updateState} />;
       case 'orderHistory':
@@ -655,7 +672,19 @@ const App: React.FC = () => {
             <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
             <div className="my-4 border-t border-slate-100 pt-4">
               <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-2">Comercial</p>
-              <NavItem active={activeTab === 'orders'} onClick={() => handleTabChange('orders')} icon={<Icons.Orders />} label="Pedidos" />
+              <NavItem 
+                active={activeTab === 'orders'} 
+                onClick={() => handleTabChange('orders')} 
+                icon={<Icons.Orders />} 
+                label={
+                  <span className="flex items-center gap-2">
+                    Pedidos
+                    {hasUnsavedOrderChanges && (
+                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    )}
+                  </span>
+                } 
+              />
               <NavItem active={activeTab === 'settle'} onClick={() => handleTabChange('settle')} icon={<Icons.Settle />} label="Asentar Ventas" />
               <NavItem active={activeTab === 'orderHistory'} onClick={() => handleTabChange('orderHistory')} icon={<Icons.History />} label="Historial Pedidos" />
             </div>

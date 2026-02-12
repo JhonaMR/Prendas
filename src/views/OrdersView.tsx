@@ -1,17 +1,71 @@
-
-import React, { useState, useMemo } from 'react';
-import { AppState, Correria, Reference, ProductionTracking } from '../types';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { AppState, Correria, Reference, ProductionTracking, UserRole } from '../types';
+import api from '../services/api';
 
 interface OrdersViewProps {
   state: AppState;
   updateState: (updater: (prev: AppState) => AppState) => void;
+  user: any; // Usuario actual para validar permisos
+  onUnsavedChanges?: (hasChanges: boolean) => void; // Callback para notificar cambios sin guardar
 }
 
-const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
+  const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState, user, onUnsavedChanges }) => {
   const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
   const [refFilter, setRefFilter] = useState('');
   const [clothFilter, setClothFilter] = useState('');
   const [hideZeros, setHideZeros] = useState(false);
+    // Estado para trackear los datos iniciales (los que vienen del backend)
+  const [initialProductionData, setInitialProductionData] = useState<ProductionTracking[]>([]);
+
+  // Estado para el proceso de guardado
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Ref para detectar si hay cambios sin guardar
+  const hasUnsavedChanges = useRef(false);
+
+  // Verificar si el usuario es admin
+  const isAdmin = user?.role === UserRole.admin || user?.role === 'admin';
+// Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
+useEffect(() => {
+  const currentCorreriaData = state.productionTracking.filter(
+    pt => pt.correriaId === selectedCorreriaId
+  );
+  setInitialProductionData(currentCorreriaData);
+  hasUnsavedChanges.current = false;
+  if (onUnsavedChanges) {
+    onUnsavedChanges(false);
+  }
+}, [selectedCorreriaId]); // ← SOLO depende de selectedCorreriaId, NO de state.productionTracking
+
+// Actualizar datos iniciales cuando se cargan del backend (al inicio)
+useEffect(() => {
+  if (state.productionTracking.length > 0) {
+    const currentCorreriaData = state.productionTracking.filter(
+      pt => pt.correriaId === selectedCorreriaId
+    );
+    
+    // Solo actualizar si initialProductionData está vacío (primera carga)
+    if (initialProductionData.length === 0) {
+      setInitialProductionData(currentCorreriaData);
+    }
+  }
+}, []); // Solo se ejecuta una vez al montar el componente
+
+  // Advertir al usuario si intenta recargar la página con cambios sin guardar
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges.current) {
+        e.preventDefault();
+        e.returnValue = ''; // Esto muestra el mensaje del navegador
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const reportData = useMemo(() => {
     if (!selectedCorreriaId) return [];
@@ -73,9 +127,90 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
       } else {
         newList.push({ refId, correriaId: selectedCorreriaId, programmed: 0, cut: 0, [field]: value });
       }
+      
+      // Marcar que hay cambios sin guardar
+      hasUnsavedChanges.current = true;
+      if (onUnsavedChanges) {
+        onUnsavedChanges(true);
+      }
+      
       return { ...prev, productionTracking: newList };
     });
   };
+
+  // Función para guardar los cambios
+const handleSaveProduction = async () => {
+  if (!isAdmin) {
+    alert('No tienes permisos para guardar cambios');
+    return;
+  }
+
+    // ===== LOGS DE DEBUG =====
+  console.log('🔍 DEBUGGING:');
+  console.log('1. initialProductionData:', initialProductionData);
+  
+  const currentCorreriaData = state.productionTracking.filter(
+    pt => pt.correriaId === selectedCorreriaId
+  );
+  console.log('2. currentCorreriaData:', currentCorreriaData);
+  // ===== FIN LOGS =====
+
+  setIsSaving(true);
+
+  try {
+    // Obtener solo los datos de la correría actual
+    const currentCorreriaData = state.productionTracking.filter(
+      pt => pt.correriaId === selectedCorreriaId
+    );
+
+    // Detectar qué cambió comparando con los datos iniciales
+    const changedData = currentCorreriaData.filter(current => {
+      const initial = initialProductionData.find(
+        init => init.refId === current.refId && init.correriaId === current.correriaId
+      );
+      
+      // Si no existía antes, es nuevo
+      if (!initial) return true;
+      
+      // Si cambió algún valor, incluirlo
+      return initial.programmed !== current.programmed || initial.cut !== current.cut;
+    });
+
+    // ===== LOG DE DEBUG =====
+    console.log('3. changedData:', changedData);
+    console.log('4. changedData.length:', changedData.length);
+    // ===== FIN LOG =====
+
+    // Si no hay cambios, no hacer nada
+    if (changedData.length === 0) {
+      alert('No hay cambios para guardar');
+      setIsSaving(false);
+      return;
+    }
+
+    // Guardar en el backend
+    const result = await api.saveProductionBatch(changedData);
+
+    if (result.success) {
+      // Actualizar los datos iniciales con los nuevos valores
+      setInitialProductionData(currentCorreriaData);
+      hasUnsavedChanges.current = false;
+      if (onUnsavedChanges) {
+        onUnsavedChanges(false);
+      }
+      
+      alert(`✅ ${changedData.length} registro(s) guardado(s) exitosamente`);
+    } else {
+      alert(`❌ Error al guardar: ${result.message || 'Error desconocido'}`);
+    }
+
+  } catch (error) {
+    console.error('Error al guardar producción:', error);
+    alert('❌ Error de conexión al guardar');
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <div className="space-y-6 pb-20">
@@ -98,18 +233,45 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
              <input type="checkbox" checked={hideZeros} onChange={e => setHideZeros(e.target.checked)} id="hz" className="rounded text-blue-600 focus:ring-blue-500" />
              <label htmlFor="hz" className="text-[10px] font-black text-slate-600 uppercase cursor-pointer">Ocultar 0</label>
           </div>
-          <div className="flex flex-col border-l border-slate-100 pl-3">
+            <div className="flex flex-col border-l border-slate-100 pl-3">
             <span className="text-[8px] font-black text-slate-600 uppercase mb-1">Campaña</span>
             <select value={selectedCorreriaId} onChange={e => setSelectedCorreriaId(e.target.value)} className="bg-transparent border-none font-black text-xs p-0 focus:ring-0 text-slate-800">
               {state.correrias.map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
             </select>
           </div>
+          
+          {/* BOTÓN GUARDAR - Solo visible para admin */}
+          {isAdmin && (
+            <div className="flex items-center border-l border-slate-100 pl-3">
+              <button 
+                onClick={handleSaveProduction}
+                disabled={isSaving}
+                className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+              >
+                {isSaving ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                    </svg>
+                    Guardar
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
-
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
         <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-[10px] min-w-[1300px] table-fixed">
+          <table className="w-full text-left text-[10px] min-w-[1250px] table-fixed">
             <thead className="bg-slate-50">
               <tr className="border-b border-slate-100">
                 <th className="px-4 py-4 font-black uppercase w-32 text-slate-700">Referencia</th>
@@ -119,8 +281,8 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
                 <th className="px-2 py-4 font-black uppercase text-center w-24 text-pink-700">Cortado</th>
                 <th className="px-2 py-4 font-black uppercase text-center w-14 text-red-700">Pend.</th>
                 <th className="px-2 py-4 font-black uppercase text-center w-10 text-slate-700">Clt</th>
-                <th className="px-4 py-4 font-black uppercase text-center w-48 border-l border-slate-200 text-slate-700">Tela 1 / Prom / Total</th>
-                <th className="px-4 py-4 font-black uppercase text-center w-48 border-l border-slate-200 text-slate-700">Tela 2 / Prom / Total</th>
+                <th className="px-4 py-4 font-black uppercase text-center w-40 border-l border-slate-200 text-slate-700">Tela 1 / Prom / Total</th>
+                <th className="px-4 py-4 font-black uppercase text-center w-40 border-l border-slate-200 text-slate-700">Tela 2 / Prom / Total</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -134,12 +296,24 @@ const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState }) => {
                     <span className={`px-2 py-1 rounded-md font-black ${row.totalSold > 0 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
                   </td>
                   <td className="px-2 py-3 text-center font-bold text-slate-600">{row.stock}</td>
-                  <td className="px-2 py-3 text-center">
-                    <input type="number" value={row.programmed} onChange={e => updateProduction(row.id, 'programmed', Number(e.target.value))} className="w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-indigo-700 focus:ring-2 focus:ring-indigo-100" />
-                  </td>
-                  <td className="px-2 py-3 text-center">
-                    <input type="number" value={row.cut} onChange={e => updateProduction(row.id, 'cut', Number(e.target.value))} className="w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-pink-700 focus:ring-2 focus:ring-pink-100" />
-                  </td>
+                    <td className="px-2 py-3 text-center">
+                      <input 
+                        type="number" 
+                        value={row.programmed} 
+                        onChange={e => updateProduction(row.id, 'programmed', Number(e.target.value))} 
+                        readOnly={!isAdmin}
+                        className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-indigo-700 focus:ring-2 focus:ring-indigo-100 ${!isAdmin ? 'cursor-default' : ''}`}
+                      />
+                    </td>
+                    <td className="px-2 py-3 text-center">
+                      <input 
+                        type="number" 
+                        value={row.cut} 
+                        onChange={e => updateProduction(row.id, 'cut', Number(e.target.value))} 
+                        readOnly={!isAdmin}
+                        className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-pink-700 focus:ring-2 focus:ring-pink-100 ${!isAdmin ? 'cursor-default' : ''}`}
+                      />
+                    </td>
                   <td className="px-2 py-3 text-center font-black text-red-600">{row.pending}</td>
                   <td className="px-2 py-3 text-center font-bold text-slate-600">{row.clientCount}</td>
                   

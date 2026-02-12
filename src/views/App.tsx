@@ -278,13 +278,13 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <main className="flex-1 relative overflow-hidden bg-slate-50">
-        <div className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10">
-          <div className="max-w-7xl mx-auto">
-            {renderContent()}
+        <main className="flex-1 relative overflow-hidden bg-slate-50">
+          <div className={`h-full w-full overflow-y-auto custom-scrollbar ${activeTab === 'orders' ? 'p-4 md:p-6' : 'p-6 md:p-10'}`}>
+            <div className="max-w-7xl mx-auto">
+              {renderContent()}
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
     </div>
   );
 };
