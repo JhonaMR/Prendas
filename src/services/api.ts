@@ -112,12 +112,12 @@ class ApiService {
   /**
    * Registro de nuevo usuario
    */
-  async register(name: string, loginCode: string, pin: string): Promise<ApiResponse<LoginResponse>> {
+  async register(name: string, loginCode: string, pin: string, role?: string): Promise<ApiResponse<LoginResponse>> {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, loginCode, pin })
+        body: JSON.stringify({ name, loginCode, pin, role: role || 'general' })
       });
 
       const data = await this.handleResponse<LoginResponse>(response);
@@ -132,6 +132,23 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al registrar usuario'
+      };
+    }
+  }
+
+  async createUser(name: string, loginCode: string, pin: string, role: string = 'general'): Promise<ApiResponse<User>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ name, loginCode, pin, role })
+      });
+
+      return this.handleResponse<User>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al crear usuario'
       };
     }
   }
@@ -170,6 +187,45 @@ class ApiService {
     } catch (error) {
       console.error('Error listando usuarios:', error);
       return [];
+    }
+  }
+
+  /**
+   * Actualizar usuario (solo admin)
+   */
+  async updateUser(id: string, user: Partial<User>): Promise<ApiResponse<User>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(user)
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar usuario'
+      };
+    }
+  }
+
+  /**
+   * Eliminar usuario (solo admin)
+   */
+  async deleteUser(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar usuario'
+      };
     }
   }
 
@@ -489,6 +545,39 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al crear correria'
+      };
+    }
+  }
+
+  async updateCorreria(id: string, correria: Partial<Correria>): Promise<ApiResponse<Correria>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/correrias/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(correria)
+      });
+
+      return this.handleResponse<Correria>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar correria'
+      };
+    }
+  }
+
+  async deleteCorreria(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/correrias/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar correria'
       };
     }
   }

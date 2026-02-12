@@ -86,7 +86,10 @@ const verifyAdmin = (req, res, next) => {
         });
     }
 
-    if (req.user.role !== 'admin') {
+    const userRole = (req.user.role || '').trim().toLowerCase();
+    console.log('🔍 Verificando admin - Usuario:', req.user.loginCode, 'Rol:', userRole, 'Rol original:', req.user.role);
+
+    if (userRole !== 'admin') {
         return res.status(403).json({
             success: false,
             message: 'No tienes permisos de administrador para realizar esta acción'

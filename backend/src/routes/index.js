@@ -50,6 +50,20 @@ router.post('/auth/change-pin', verifyToken, authController.changePin);
  */
 router.get('/auth/users', verifyToken, verifyAdmin, authController.listUsers);
 
+/**
+ * @route   PUT /api/auth/users/:id
+ * @desc    Actualizar usuario (solo admin)
+ * @access  Private (Admin)
+ */
+router.put('/auth/users/:id', verifyToken, verifyAdmin, authController.updateUser);
+
+/**
+ * @route   DELETE /api/auth/users/:id
+ * @desc    Eliminar usuario (solo admin)
+ * @access  Private (Admin)
+ */
+router.delete('/auth/users/:id', verifyToken, verifyAdmin, authController.deleteUser);
+
 // ==================== REFERENCIAS ====================
 
 router.get('/references', verifyToken, crudController.getReferences);
@@ -82,6 +96,8 @@ router.delete('/sellers/:id', verifyToken, verifyAdmin, crudController.deleteSel
 
 router.get('/correrias', verifyToken, crudController.getCorrerias);
 router.post('/correrias', verifyToken, crudController.createCorreria);
+router.put('/correrias/:id', verifyToken, crudController.updateCorreria);
+router.delete('/correrias/:id', verifyToken, crudController.deleteCorreria);
 
 // ==================== RECEPCIONES ====================
 

@@ -17,10 +17,15 @@ interface MastersViewProps {
   onAddConfeccionista: (conf: any) => Promise<{ success: boolean }>;
   onUpdateConfeccionista: (id: string, conf: any) => Promise<{ success: boolean }>;
   onDeleteConfeccionista: (id: string) => Promise<{ success: boolean }>;
+  onAddUser: (user: any) => Promise<{ success: boolean }>;
+  onUpdateUser: (id: string, user: any) => Promise<{ success: boolean }>;
+  onDeleteUser: (id: string) => Promise<{ success: boolean }>;
   onAddSeller: (seller: any) => Promise<{ success: boolean }>;
   onUpdateSeller: (id: string, seller: any) => Promise<{ success: boolean }>;
   onDeleteSeller: (id: string) => Promise<{ success: boolean }>;
   onAddCorreria: (correria: any) => Promise<{ success: boolean }>;
+  onUpdateCorreria: (id: string, correria: any) => Promise<{ success: boolean }>;
+  onDeleteCorreria: (id: string) => Promise<{ success: boolean }>;
 }
 
 const MastersView: React.FC<MastersViewProps> = ({ 
@@ -37,10 +42,15 @@ const MastersView: React.FC<MastersViewProps> = ({
   onAddConfeccionista,
   onUpdateConfeccionista,
   onDeleteConfeccionista,
+  onAddUser,
+  onUpdateUser,
+  onDeleteUser,
   onAddSeller,
   onUpdateSeller,
   onDeleteSeller,
-  onAddCorreria
+  onAddCorreria,
+  onUpdateCorreria,
+  onDeleteCorreria
 }) => {
   const [activeSubTab, setActiveSubTab] = useState<'clients' | 'users' | 'references' | 'sellers' | 'correrias' | 'confeccionistas'>('clients');
   const clientFileRef = useRef<HTMLInputElement>(null);
@@ -76,9 +86,18 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const resetForms = () => {
-    setId(''); setName(''); setAddress(''); setCity(''); setSeller('');
-    setDesc(''); setPrice(0); setDesigner('');
-    setCloth1(''); setAvgCloth1(0); setCloth2(''); setAvgCloth2(0);
+    setId('');
+    setName('');
+    setAddress('');
+    setCity('');
+    setSeller('');
+    setDesc('');
+    setPrice(0);
+    setDesigner('');
+    setCloth1('');
+    setAvgCloth1(0);
+    setCloth2('');
+    setAvgCloth2(0);
     setYear(new Date().getFullYear().toString());
     setPin('');
     setUserRole(UserRole.GENERAL);
@@ -216,6 +235,37 @@ const MastersView: React.FC<MastersViewProps> = ({
     }
   };
 
+  const handleSaveUser = async () => {
+    if (!isAdmin) return;
+    if (!name) return alert("Nombre obligatorio");
+    const newItem: User = { id: editingId || Math.random().toString(36).substr(2, 9), name, loginCode: id, pin, role: userRole };
+    
+    setIsLoading(true);
+    try {
+      let result;
+      
+      if (editingId) {
+        // Actualizar usuario existente
+        result = await onUpdateUser(editingId, newItem);
+      } else {
+        // Crear nuevo usuario
+        result = await onAddUser(newItem);
+      }
+      
+      if (result.success) {
+        resetForms();
+        alert('Usuario guardado correctamente');
+      } else {
+        alert('Error al guardar usuario');
+      }
+    } catch (error) {
+      console.error('Error guardando usuario:', error);
+      alert('Error de conexión al guardar usuario');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSaveReference = async () => {
     if (!id || !desc) return alert("Referencia y Descripción son obligatorias");
     const newItem: Reference = { id, description: desc, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 };
@@ -283,7 +333,15 @@ const MastersView: React.FC<MastersViewProps> = ({
     
     setIsLoading(true);
     try {
-      const result = await onAddCorreria(newItem);
+      let result;
+      
+      if (editingId) {
+        // Actualizar correría existente
+        result = await onUpdateCorreria(editingId, newItem);
+      } else {
+        // Crear nueva correría
+        result = await onAddCorreria(newItem);
+      }
       
       if (result.success) {
         resetForms();
@@ -297,23 +355,6 @@ const MastersView: React.FC<MastersViewProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSaveUser = () => {
-    if (!isAdmin) return;
-    if (!name || !id || pin.length !== 4) return alert("Nombre, Login (3 car) y PIN (4 num) son obligatorios");
-    const newItem: User = { 
-      id: editingId || Math.random().toString(36).substr(2, 9), 
-      name, 
-      loginCode: id.toUpperCase(), 
-      pin, 
-      role: userRole 
-    };
-    updateState(prev => ({
-      ...prev,
-      users: editingId ? prev.users.map(u => u.id === editingId ? newItem : u) : [...prev.users, newItem]
-    }));
-    resetForms();
   };
 
   const handleDelete = async (type: string, targetId: string) => {
@@ -337,50 +378,19 @@ const MastersView: React.FC<MastersViewProps> = ({
         // Eliminar vendedor del backend
         result = await onDeleteSeller(targetId);
       } else if (type === 'correria') {
-        // Las correrías se eliminan localmente (no hay endpoint de delete)
-        updateState(prev => ({
-          ...prev,
-          correrias: prev.correrias.filter(x => x.id !== targetId)
-        }));
-        alert('Correría eliminada');
-        return;
+        // Eliminar correría del backend
+        result = await onDeleteCorreria(targetId);
       } else if (type === 'user') {
-        // Los usuarios se eliminan localmente (no hay endpoint de delete)
+        // Eliminar usuario del backend
         if (targetId === user.id) {
           alert("No puedes eliminar tu propio usuario");
+          setIsLoading(false);
           return;
         }
-        updateState(prev => ({
-          ...prev,
-          users: prev.users.filter(x => x.id !== targetId)
-        }));
-        alert('Usuario eliminado');
-        return;
+        result = await onDeleteUser(targetId);
       }
       
       if (result?.success) {
-        // Actualizar el estado local después de eliminar
-        if (type === 'client') {
-          updateState(prev => ({
-            ...prev,
-            clients: prev.clients.filter(x => x.id !== targetId)
-          }));
-        } else if (type === 'confeccionista') {
-          updateState(prev => ({
-            ...prev,
-            confeccionistas: prev.confeccionistas.filter(x => x.id !== targetId)
-          }));
-        } else if (type === 'reference') {
-          updateState(prev => ({
-            ...prev,
-            references: prev.references.filter(x => x.id !== targetId)
-          }));
-        } else if (type === 'seller') {
-          updateState(prev => ({
-            ...prev,
-            sellers: prev.sellers.filter(x => x.id !== targetId)
-          }));
-        }
         alert('Registro eliminado correctamente');
       } else {
         alert('Error al eliminar el registro');
@@ -798,7 +808,7 @@ const Input = ({ label, value, onChange, type = "text", className = "", disabled
     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
     <input 
       type={type} 
-      value={value} 
+      value={value || ''} 
       onChange={e => onChange(e.target.value)} 
       disabled={disabled} 
       maxLength={maxLength}

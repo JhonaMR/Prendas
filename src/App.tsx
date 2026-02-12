@@ -47,6 +47,7 @@ const App: React.FC = () => {
       
       try {
         const [
+          usersData,
           referencesData,
           clientsData,
           confeccionistasData,
@@ -57,6 +58,7 @@ const App: React.FC = () => {
           ordersData,
           productionData
         ] = await Promise.all([
+          api.listUsers(),
           api.getReferences(),
           api.getClients(),
           api.getConfeccionistas(),
@@ -69,7 +71,7 @@ const App: React.FC = () => {
         ]);
 
         setState({
-          users: [],
+          users: usersData,
           references: referencesData,
           clients: clientsData,
           confeccionistas: confeccionistasData,
@@ -419,6 +421,75 @@ const App: React.FC = () => {
   };
 
   /**
+   * USUARIOS
+   */
+  const addUser = async (user: any) => {
+    try {
+      const response = await api.createUser(user.name, user.loginCode, user.pin, user.role);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          users: [...prev.users, response.data]
+        }));
+        console.log('✅ Usuario creado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al crear usuario');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error creando usuario:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const updateUser = async (id: string, user: any) => {
+    try {
+      const response = await api.updateUser(id, user);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          users: prev.users.map(u => u.id === id ? response.data : u)
+        }));
+        console.log('✅ Usuario actualizado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al actualizar usuario');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error actualizando usuario:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const deleteUser = async (id: string) => {
+    try {
+      const response = await api.deleteUser(id);
+
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          users: prev.users.filter(u => u.id !== id)
+        }));
+        console.log('✅ Usuario eliminado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar usuario');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando usuario:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  /**
    * CORRERIAS
    */
   const addCorreria = async (correria: any) => {
@@ -438,6 +509,50 @@ const App: React.FC = () => {
       }
     } catch (error) {
       console.error('❌ Error creando correría:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const updateCorreria = async (id: string, correria: any) => {
+    try {
+      const response = await api.updateCorreria(id, correria);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          correrias: prev.correrias.map(c => c.id === id ? response.data : c)
+        }));
+        console.log('✅ Correría actualizada');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al actualizar correría');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error actualizando correría:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const deleteCorreria = async (id: string) => {
+    try {
+      const response = await api.deleteCorreria(id);
+
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          correrias: prev.correrias.filter(c => c.id !== id)
+        }));
+        console.log('✅ Correría eliminada');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar correría');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando correría:', error);
       alert('Error de conexión con el servidor');
       return { success: false };
     }
@@ -595,10 +710,15 @@ const App: React.FC = () => {
             onAddConfeccionista={addConfeccionista}
             onUpdateConfeccionista={updateConfeccionista}
             onDeleteConfeccionista={deleteConfeccionista}
+            onAddUser={addUser}
+            onUpdateUser={updateUser}
+            onDeleteUser={deleteUser}
             onAddSeller={addSeller}
             onUpdateSeller={updateSeller}
             onDeleteSeller={deleteSeller}
             onAddCorreria={addCorreria}
+            onUpdateCorreria={updateCorreria}
+            onDeleteCorreria={deleteCorreria}
           />
         );
       case 'reports':

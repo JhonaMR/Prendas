@@ -41,6 +41,7 @@ const App: React.FC = () => {
       
       try {
         const [
+          usersData,
           referencesData,
           clientsData,
           confeccionistasData,
@@ -51,6 +52,7 @@ const App: React.FC = () => {
           ordersData,
           productionData
         ] = await Promise.all([
+          api.listUsers(),
           api.getReferences(),
           api.getClients(),
           api.getConfeccionistas(),
@@ -63,7 +65,7 @@ const App: React.FC = () => {
         ]);
 
         setState({
-          users: [],
+          users: usersData,
           references: referencesData,
           clients: clientsData,
           confeccionistas: confeccionistasData,
@@ -173,19 +175,114 @@ const App: React.FC = () => {
             user={user} 
             state={state} 
             updateState={updateState}
-            onAddReference={(ref) => api.createReference(ref).then(res => ({ success: res.success }))}
-            onUpdateReference={(id, ref) => api.updateReference(id, ref).then(res => ({ success: res.success }))}
-            onDeleteReference={(id) => api.deleteReference(id).then(res => ({ success: res.success }))}
-            onAddClient={(client) => api.createClient(client).then(res => ({ success: res.success }))}
-            onUpdateClient={(id, client) => api.updateClient(id, client).then(res => ({ success: res.success }))}
-            onDeleteClient={(id) => api.deleteClient(id).then(res => ({ success: res.success }))}
-            onAddConfeccionista={(conf) => api.createConfeccionista(conf).then(res => ({ success: res.success }))}
-            onUpdateConfeccionista={(id, conf) => api.updateConfeccionista(id, conf).then(res => ({ success: res.success }))}
-            onDeleteConfeccionista={(id) => api.deleteConfeccionista(id).then(res => ({ success: res.success }))}
-            onAddSeller={(seller) => api.createSeller(seller).then(res => ({ success: res.success }))}
-            onUpdateSeller={(id, seller) => api.updateSeller(id, seller).then(res => ({ success: res.success }))}
-            onDeleteSeller={(id) => api.deleteSeller(id).then(res => ({ success: res.success }))}
-            onAddCorreria={(correria) => api.createCorreria(correria).then(res => ({ success: res.success }))}
+            onAddReference={(ref) => api.createReference(ref).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, references: [...prev.references, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateReference={(id, ref) => api.updateReference(id, ref).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, references: prev.references.map(r => r.id === id ? res.data : r) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteReference={(id) => api.deleteReference(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, references: prev.references.filter(r => r.id !== id) }));
+              }
+              return { success: res.success };
+            })}
+            onAddClient={(client) => api.createClient(client).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, clients: [...prev.clients, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateClient={(id, client) => api.updateClient(id, client).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, clients: prev.clients.map(c => c.id === id ? res.data : c) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteClient={(id) => api.deleteClient(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, clients: prev.clients.filter(c => c.id !== id) }));
+              }
+              return { success: res.success };
+            })}
+            onAddConfeccionista={(conf) => api.createConfeccionista(conf).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, confeccionistas: [...prev.confeccionistas, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateConfeccionista={(id, conf) => api.updateConfeccionista(id, conf).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, confeccionistas: prev.confeccionistas.map(c => c.id === id ? res.data : c) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteConfeccionista={(id) => api.deleteConfeccionista(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, confeccionistas: prev.confeccionistas.filter(c => c.id !== id) }));
+              }
+              return { success: res.success };
+            })}
+            onAddUser={(newUser) => api.createUser(newUser.name, newUser.loginCode, newUser.pin, newUser.role).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, users: [...prev.users, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateUser={(id, updatedUser) => api.updateUser(id, updatedUser).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, users: prev.users.map(u => u.id === id ? res.data : u) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteUser={(id) => api.deleteUser(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, users: prev.users.filter(u => u.id !== id) }));
+              }
+              return { success: res.success };
+            })}
+            onAddSeller={(seller) => api.createSeller(seller).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, sellers: [...prev.sellers, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateSeller={(id, seller) => api.updateSeller(id, seller).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, sellers: prev.sellers.map(s => s.id === id ? res.data : s) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteSeller={(id) => api.deleteSeller(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, sellers: prev.sellers.filter(s => s.id !== id) }));
+              }
+              return { success: res.success };
+            })}
+            onAddCorreria={(correria) => api.createCorreria(correria).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, correrias: [...prev.correrias, res.data] }));
+              }
+              return { success: res.success };
+            })}
+            onUpdateCorreria={(id, correria) => api.updateCorreria(id, correria).then(res => {
+              if (res.success && res.data) {
+                setState(prev => ({ ...prev, correrias: prev.correrias.map(c => c.id === id ? res.data : c) }));
+              }
+              return { success: res.success };
+            })}
+            onDeleteCorreria={(id) => api.deleteCorreria(id).then(res => {
+              if (res.success) {
+                setState(prev => ({ ...prev, correrias: prev.correrias.filter(c => c.id !== id) }));
+              }
+              return { success: res.success };
+            })}
           />
         );
       case 'reports':
