@@ -150,17 +150,18 @@ const App: React.FC = () => {
             onAddReception={(reception) => api.createReception(reception).then(res => ({ success: res.success }))}
           />
         );
-      case 'dispatch':
-        return (
-          <DispatchView 
-            user={user} 
-            clients={state.clients} 
-            dispatches={state.dispatches} 
-            updateState={updateState} 
-            referencesMaster={state.references}
-            onAddDispatch={(dispatch) => api.createDispatch(dispatch).then(res => ({ success: res.success }))}
-          />
-        );
+        case 'dispatch':
+          return (
+            <DispatchView 
+              user={user} 
+              clients={state.clients} 
+              dispatches={state.dispatches} 
+              updateState={updateState} 
+              referencesMaster={state.references}
+              correrias={state.correrias}
+              onAddDispatch={(dispatch) => api.createDispatch(dispatch).then(res => ({ success: res.success }))}
+            />
+          );
       case 'inventory':
         return <InventoryView receptions={state.receptions} dispatches={state.dispatches} />;
       case 'orders':
@@ -377,7 +378,7 @@ const App: React.FC = () => {
 
         <main className="flex-1 relative overflow-hidden bg-slate-50">
           <div className={`h-full w-full overflow-y-auto custom-scrollbar ${activeTab === 'orders' ? 'p-4 md:p-6' : 'p-6 md:p-10'}`}>
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-full mx-auto">
               {renderContent()}
             </div>
           </div>

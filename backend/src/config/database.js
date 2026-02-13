@@ -87,6 +87,7 @@ function initDatabase() {
         CREATE TABLE IF NOT EXISTS clients (
             id TEXT PRIMARY KEY,
             name TEXT NOT NULL,
+            nit TEXT NOT NULL,
             address TEXT NOT NULL,
             city TEXT NOT NULL,
             seller TEXT NOT NULL,
@@ -319,12 +320,12 @@ function initDatabase() {
         console.log('🏢 Creando clientes de prueba...');
         
         const insertClient = db.prepare(`
-            INSERT INTO clients (id, name, address, city, seller, active)
-            VALUES (?, ?, ?, ?, ?, 1)
+            INSERT INTO clients (id, name, nit, address, city, seller, active)
+            VALUES (?, ?, ?, ?, ?, ?, 1)
         `);
 
-        insertClient.run('211', 'Media naranja', 'cll 77 a 45 a 30', 'Medellín', 'John');
-        insertClient.run('212', 'La pantaleta', 'cll 83 # 57 a 14', 'Montería', 'Lina');
+        insertClient.run('211', 'Media naranja', '123456789', 'cll 77 a 45 a 30', 'Medellín', 'John');
+        insertClient.run('212', 'La pantaleta', '987654321', 'cll 83 # 57 a 14', 'Montería', 'Lina');
 
         console.log('   ✅ Cliente creado: 211 - Media naranja');
         console.log('   ✅ Cliente creado: 212 - La pantaleta');

@@ -185,6 +185,7 @@ const getDispatches = (req, res) => {
             return {
                 id: dispatch.id,
                 clientId: dispatch.client_id,
+                correriaId: dispatch.correria_id, // ← AGREGAR ESTA LÍNEA
                 invoiceNo: dispatch.invoice_no,
                 remissionNo: dispatch.remission_no,
                 items,
@@ -216,12 +217,12 @@ const getDispatches = (req, res) => {
  */
 const createDispatch = (req, res) => {
     try {
-        const { clientId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
+        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
 
-        if (!clientId || !invoiceNo || !remissionNo || !items || !items.length || !dispatchedBy) {
+        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length || !dispatchedBy) {
             return res.status(400).json({
                 success: false,
-                message: 'Cliente, factura, remisión, items y despachado por son requeridos'
+                message: 'Cliente, correría, factura, remisión, items y despachado por son requeridos'
             });
         }
 
@@ -234,9 +235,9 @@ const createDispatch = (req, res) => {
         try {
             // Insertar despacho
             db.prepare(`
-                INSERT INTO dispatches (id, client_id, invoice_no, remission_no, dispatched_by, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-            `).run(id, clientId, invoiceNo, remissionNo, dispatchedBy, createdAt);
+                INSERT INTO dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `).run(id, clientId, correriaId, invoiceNo, remissionNo, dispatchedBy, createdAt);
 
             // Insertar items
             const insertItem = db.prepare(`
@@ -271,6 +272,7 @@ const createDispatch = (req, res) => {
             data: {
                 id,
                 clientId,
+                correriaId,
                 invoiceNo,
                 remissionNo,
                 items,

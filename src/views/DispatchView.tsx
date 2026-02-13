@@ -10,16 +10,18 @@ interface DispatchViewProps {
   dispatches: Dispatch[];
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
+  correrias: any[]; // ← AGREGAMOS ESTA LÍNEA
   onAddDispatch: (dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
 }
 
-const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, onAddDispatch }) => {
+const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, correrias, onAddDispatch }) => {
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
 
-  // Form states
+// Form states
   const [clientId, setClientId] = useState('');
+  const [correriaId, setCorreriaId] = useState(''); 
   const [clientSearch, setClientSearch] = useState('');
   const [showClientResults, setShowClientResults] = useState(false);
   const [invoiceNo, setInvoiceNo] = useState('');
@@ -33,6 +35,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setIsDispatching(true);
     setEditingDisp(null);
     setClientId('');
+    setCorreriaId(''); 
     setClientSearch('');
     setInvoiceNo('');
     setRemissionNo('');
@@ -49,6 +52,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setEditingDisp(disp);
     setIsDispatching(true);
     setClientId(disp.clientId);
+    setCorreriaId(disp.correriaId || ''); 
     setClientSearch(client ? `${client.id} - ${client.name}` : disp.clientId);
     setInvoiceNo(disp.invoiceNo);
     setRemissionNo(disp.remissionNo);
@@ -83,26 +87,31 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     });
   };
 
-  const handleSave = async () => {
-    if (!clientId) {
-      alert("Debe seleccionar un cliente");
-      return;
-    }
-    if (items.length === 0) {
-      alert("Debe escanear al menos una prenda");
-      return;
-    }
+    const handleSave = async () => {
+      if (!clientId) {
+        alert("Debe seleccionar un cliente");
+        return;
+      }
+      if (!correriaId) { // ← AGREGAMOS ESTAS LÍNEAS
+        alert("Debe seleccionar una correría");
+        return;
+      }
+      if (items.length === 0) {
+        alert("Debe agregar al menos una prenda");
+        return;
+      }
 
-    const data: Dispatch = {
-      id: editingDisp ? editingDisp.id : Math.random().toString(36).substr(2, 9),
-      clientId,
-      invoiceNo,
-      remissionNo,
-      items,
-      dispatchedBy: editingDisp ? editingDisp.dispatchedBy : user.name,
-      createdAt: editingDisp ? editingDisp.createdAt : new Date().toLocaleString(),
-      editLogs: editingDisp ? [...editingDisp.editLogs, { user: user.name, date: new Date().toLocaleString() }] : []
-    };
+      const data: Dispatch = {
+        id: editingDisp ? editingDisp.id : Math.random().toString(36).substr(2, 9),
+        clientId,
+        correriaId, 
+        invoiceNo,
+        remissionNo,
+        items,
+        dispatchedBy: editingDisp ? editingDisp.dispatchedBy : user.name,
+        createdAt: editingDisp ? editingDisp.createdAt : new Date().toLocaleString(),
+        editLogs: editingDisp ? [...editingDisp.editLogs, { user: user.name, date: new Date().toLocaleString() }] : []
+      };
 
     try {
       const result = await onAddDispatch(data);
@@ -179,6 +188,22 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                   </div>
                 )}
               </div>
+            </div>
+            {/* SELECTOR DE CORRERÍA */}
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Correría / Campaña</label>
+              <select
+                value={correriaId}
+                onChange={(e) => setCorreriaId(e.target.value)}
+                className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+              >
+                <option value="">-- Seleccione Correría --</option>
+                {correrias.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} {c.year}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">

@@ -246,9 +246,9 @@ const getClients = (req, res) => {
 
 const createClient = (req, res) => {
     try {
-        const { name, address, city, seller } = req.body;
+        const { id, name, nit, address, city, seller } = req.body;
         
-        if (!name || !address || !city || !seller) {
+        if (!id || !name || !nit || !address || !city || !seller) {
             return res.status(400).json({
                 success: false,
                 message: 'Todos los campos son requeridos'
@@ -256,19 +256,18 @@ const createClient = (req, res) => {
         }
 
         const db = getDatabase();
-        const id = generateId();
 
         db.prepare(`
-            INSERT INTO clients (id, name, address, city, seller, active)
-            VALUES (?, ?, ?, ?, ?, 1)
-        `).run(id, name, address, city, seller);
+            INSERT INTO clients (id, name, nit, address, city, seller, active)
+            VALUES (?, ?, ?, ?, ?, ?, 1)
+        `).run(id, name, nit, address, city, seller);
 
         db.close();
 
         return res.status(201).json({
             success: true,
             message: 'Cliente creado exitosamente',
-            data: { id, name, address, city, seller }
+            data: { id, name, nit, address, city, seller }
         });
 
     } catch (error) {
@@ -280,15 +279,15 @@ const createClient = (req, res) => {
 const updateClient = (req, res) => {
     try {
         const { id } = req.params;
-        const { name, address, city, seller } = req.body;
+        const { name, nit, address, city, seller } = req.body;
 
         const db = getDatabase();
 
         const result = db.prepare(`
             UPDATE clients
-            SET name = ?, address = ?, city = ?, seller = ?
+            SET name = ?, nit = ?, address = ?, city = ?, seller = ?
             WHERE id = ?
-        `).run(name, address, city, seller, id);
+        `).run(name, nit, address, city, seller, id);
 
         db.close();
 
@@ -299,7 +298,7 @@ const updateClient = (req, res) => {
         return res.json({
             success: true,
             message: 'Cliente actualizado exitosamente',
-            data: { id, name, address, city, seller }
+            data: { id, name, nit, address, city, seller }
         });
 
     } catch (error) {

@@ -26,6 +26,7 @@ export interface Correria {
 export interface Client {
   id: string;
   name: string;
+  nit: string; 
   address: string;
   city: string;
   seller: string;
@@ -88,6 +89,7 @@ export interface BatchReception {
 export interface Dispatch {
   id: string;
   clientId: string;
+  correriaId: string; // ← AGREGAMOS ESTA LÍNEA
   invoiceNo: string;
   remissionNo: string;
   items: ItemEntry[];

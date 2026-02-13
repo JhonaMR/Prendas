@@ -13,6 +13,7 @@ import ReportsView from './views/ReportsView';
 import OrdersView from './views/OrdersView';
 import OrderSettleView from './views/OrderSettleView';
 import OrderHistoryView from './views/OrderHistoryView';
+import DispatchControlView from './views/DispatchControlView';
 
 const App: React.FC = () => {
   // ========== ESTADOS ==========
@@ -677,6 +678,7 @@ const App: React.FC = () => {
             dispatches={state.dispatches} 
             updateState={updateState} 
             referencesMaster={state.references}
+            correrias={state.correrias}
             onAddDispatch={addDispatch}
           />
         );
@@ -695,6 +697,8 @@ const App: React.FC = () => {
         return <OrderSettleView state={state} user={user} updateState={updateState} />;
       case 'orderHistory':
         return <OrderHistoryView state={state} />;
+      case 'dispatchControl':
+        return <DispatchControlView state={state} user={user} />;
       case 'masters':
         return (
           <MastersView 
@@ -805,6 +809,12 @@ const App: React.FC = () => {
                   </span>
                 } 
               />
+              <NavItem 
+                active={activeTab === 'dispatchControl'} 
+                onClick={() => handleTabChange('dispatchControl')} 
+                icon={<Icons.Inventory />} 
+                label="Control de Despachos" 
+             />
               <NavItem active={activeTab === 'settle'} onClick={() => handleTabChange('settle')} icon={<Icons.Settle />} label="Asentar Ventas" />
               <NavItem active={activeTab === 'orderHistory'} onClick={() => handleTabChange('orderHistory')} icon={<Icons.History />} label="Historial Pedidos" />
             </div>

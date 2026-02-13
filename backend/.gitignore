@@ -9,12 +9,6 @@ yarn-error.log*
 .env.local
 .env.production
 
-# ==================== BASE DE DATOS ====================
-database/
-*.db
-*.sqlite
-*.sqlite3
-
 # ==================== LOGS ====================
 logs/
 *.log

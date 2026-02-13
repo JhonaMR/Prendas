@@ -3,6 +3,39 @@ import React, { useState, useRef } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
 
+// Helper Components
+const TabBtn = ({ active, onClick, label }: any) => (
+  <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:bg-slate-50'}`}>{label}</button>
+);
+
+const FormWrapper = ({ children, title }: any) => (
+  <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
+    <h3 className="text-xl font-black text-slate-800">{title}</h3>
+    {children}
+  </div>
+);
+
+const TableWrapper = ({ children, title }: any) => (
+  <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
+    <div className="p-6 bg-slate-50 border-b border-slate-100 font-black text-slate-700">{title}</div>
+    {children}
+  </div>
+);
+
+const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
+  <div className={`space-y-1.5 ${className}`}>
+    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
+    <input 
+      type={type} 
+      value={value || ''} 
+      onChange={e => onChange(e.target.value)} 
+      disabled={disabled} 
+      maxLength={maxLength}
+      className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50" 
+    />
+  </div>
+);
+
 interface MastersViewProps {
   user: User;
   state: AppState;
@@ -62,6 +95,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   // Forms Shared state
   const [id, setId] = useState('');
   const [name, setName] = useState('');
+  const [nit, setNit] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [seller, setSeller] = useState('');
@@ -88,6 +122,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const resetForms = () => {
     setId('');
     setName('');
+    setNit('');
     setAddress('');
     setCity('');
     setSeller('');
@@ -107,51 +142,72 @@ const MastersView: React.FC<MastersViewProps> = ({
     setEditingId(null);
   };
 
-  const handleImportCSV = (type: 'clients' | 'references' | 'confeccionistas', e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportCSV = async (type: 'clients' | 'references' | 'confeccionistas', e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const content = event.target?.result as string;
       const rows = content.split('\n').filter(row => row.trim() !== '');
       
-      updateState(prev => {
-        const newState = { ...prev };
+      setIsLoading(true);
+      try {
         if (type === 'clients') {
-          const newClients: Client[] = [...prev.clients];
+          const newClients: Client[] = [];
           for (let i = 1; i < rows.length; i++) {
-            const [cId, cName, cAddr, cCity, cSell] = rows[i].split(/[;,]/).map(c => c.trim());
+            const [cId, cNit, cName, cAddr, cCity, cSell] = rows[i].split(/[;,]/).map(c => c.trim());
             if (cId && cName) {
-              const idx = newClients.findIndex(c => c.id === cId);
-              const clientData = { id: cId, name: cName, address: cAddr||'', city: cCity||'', seller: cSell||'' };
-              if (idx > -1) newClients[idx] = clientData;
-              else newClients.push(clientData);
+              const clientData = { id: cId, nit: cNit||'', name: cName, address: cAddr||'', city: cCity||'', seller: cSell||'' };
+              newClients.push(clientData);
+              
+              // Guardar en backend
+              try {
+                await onAddClient(clientData);
+              } catch (error) {
+                console.error(`Error guardando cliente ${cId}:`, error);
+              }
             }
           }
-          newState.clients = newClients;
+          
+          // Actualizar estado local
+          updateState(prev => ({
+            ...prev,
+            clients: [...prev.clients, ...newClients]
+          }));
+          
         } else if (type === 'references') {
-          const newRefs: Reference[] = [...prev.references];
+          const newRefs: Reference[] = [];
           for (let i = 1; i < rows.length; i++) {
             const [rId, rDesc, rPrice, rDes, t1, p1, t2, p2] = rows[i].split(/[;,]/).map(c => c.trim());
             if (rId && rDesc) {
-              const idx = newRefs.findIndex(r => r.id === rId);
               const refData = { 
                 id: rId, description: rDesc, price: Number(rPrice)||0, 
                 designer: rDes||'', cloth1: t1||'', avgCloth1: Number(p1)||0, 
                 cloth2: t2||'', avgCloth2: Number(p2)||0 
               };
-              if (idx > -1) newRefs[idx] = refData;
-              else newRefs.push(refData);
+              newRefs.push(refData);
+              
+              // Guardar en backend
+              try {
+                await onAddReference(refData);
+              } catch (error) {
+                console.error(`Error guardando referencia ${rId}:`, error);
+              }
             }
           }
-          newState.references = newRefs;
+          
+          // Actualizar estado local
+          updateState(prev => ({
+            ...prev,
+            references: [...prev.references, ...newRefs]
+          }));
+          
         } else if (type === 'confeccionistas') {
-          const newConf: Confeccionista[] = [...(prev.confeccionistas || [])];
+          const newConf: Confeccionista[] = [];
           for (let i = 1; i < rows.length; i++) {
             const [cfId, cfName, cfAddr, cfCity, cfPhone, cfScore, cfActive] = rows[i].split(/[;,]/).map(c => c.trim());
             if (cfId && cfName) {
-              const idx = newConf.findIndex(c => c.id === cfId);
               const confData: Confeccionista = { 
                 id: cfId, 
                 name: cfName, 
@@ -161,23 +217,39 @@ const MastersView: React.FC<MastersViewProps> = ({
                 score: cfScore || 'A', 
                 active: cfActive === '1' || cfActive?.toLowerCase() === 'sí' || cfActive?.toLowerCase() === 'true'
               };
-              if (idx > -1) newConf[idx] = confData;
-              else newConf.push(confData);
+              newConf.push(confData);
+              
+              // Guardar en backend
+              try {
+                await onAddConfeccionista(confData);
+              } catch (error) {
+                console.error(`Error guardando confeccionista ${cfId}:`, error);
+              }
             }
           }
-          newState.confeccionistas = newConf;
+          
+          // Actualizar estado local
+          updateState(prev => ({
+            ...prev,
+            confeccionistas: [...(prev.confeccionistas || []), ...newConf]
+          }));
         }
-        return newState;
-      });
-      alert(`Importación finalizada.`);
+        
+        alert(`Importación de ${type} finalizada correctamente.`);
+      } catch (error) {
+        console.error('Error en importación:', error);
+        alert('Error durante la importación. Revisa la consola para más detalles.');
+      } finally {
+        setIsLoading(false);
+        if(e.target) e.target.value = '';
+      }
     };
     reader.readAsText(file);
-    if(e.target) e.target.value = '';
   };
 
   const handleSaveClient = async () => {
     if (!id || !name) return alert("ID y Nombre son obligatorios");
-    const newItem: Client = { id, name, address, city, seller };
+    const newItem: Client = { id, name, nit, address, city, seller };
     
     setIsLoading(true);
     try {
@@ -428,6 +500,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               <FormWrapper title={editingId ? 'Editar Cliente' : 'Nuevo Cliente'}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <Input label="ID Cliente" value={id} onChange={setId} disabled={!!editingId} />
+                  <Input label="NIT" value={nit} onChange={setNit} />
                   <Input label="Nombre del Cliente" value={name} onChange={setName} />
                   <Input label="Dirección" value={address} onChange={setAddress} />
                   <Input label="Ciudad" value={city} onChange={setCity} />
@@ -447,29 +520,32 @@ const MastersView: React.FC<MastersViewProps> = ({
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Clientes</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-blue-500">ID;Nombre;Dirección;Ciudad;Vendedor</span></p>
+                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-blue-500">ID;NIT;Nombre;Dirección;Ciudad;Vendedor</span></p>
                 <input type="file" ref={clientFileRef} onChange={(e) => handleImportCSV('clients', e)} accept=".csv" className="hidden" />
                 <button onClick={() => clientFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors">SUBIR CSV</button>
               </div>
             </div>
           </div>
           <TableWrapper title="Listado de Clientes">
-            <table className="w-full text-left">
-              <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
-              <tbody className="divide-y divide-slate-100">
-                {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).map(c => (
-                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-8 py-4 font-bold text-blue-500">{c.id}</td>
-                    <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
-                    <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{c.seller}</td>
-                    <td className="px-8 py-4 text-right flex justify-end gap-2">
-                      <button onClick={() => { setEditingId(c.id); setId(c.id); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.seller); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><Icons.Edit /></button>
-                      <button onClick={() => handleDelete('client', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
+                <tbody className="divide-y divide-slate-100">
+                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).map(c => (
+                    <tr key={c.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-8 py-4 font-bold text-blue-500">{c.id}</td>
+                      <td className="px-8 py-4 font-bold text-slate-500">{c.nit}</td>
+                      <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
+                      <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{c.seller}</td>
+                      <td className="px-8 py-4 text-right flex justify-end gap-2">
+                        <button onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.seller); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><Icons.Edit /></button>
+                        <button onClick={() => handleDelete('client', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </TableWrapper>
         </div>
       )}
@@ -784,37 +860,5 @@ const MastersView: React.FC<MastersViewProps> = ({
     </div>
   );
 };
-
-const TabBtn = ({ active, onClick, label }: any) => (
-  <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:bg-slate-50'}`}>{label}</button>
-);
-
-const FormWrapper = ({ children, title }: any) => (
-  <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
-    <h3 className="text-xl font-black text-slate-800">{title}</h3>
-    {children}
-  </div>
-);
-
-const TableWrapper = ({ children, title }: any) => (
-  <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
-    <div className="p-6 bg-slate-50 border-b border-slate-100 font-black text-slate-700">{title}</div>
-    {children}
-  </div>
-);
-
-const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
-  <div className={`space-y-1.5 ${className}`}>
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
-    <input 
-      type={type} 
-      value={value || ''} 
-      onChange={e => onChange(e.target.value)} 
-      disabled={disabled} 
-      maxLength={maxLength}
-      className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50" 
-    />
-  </div>
-);
 
 export default MastersView;
