@@ -108,7 +108,7 @@ function initDatabase() {
             address TEXT NOT NULL,
             city TEXT NOT NULL,
             phone TEXT NOT NULL,
-            score TEXT NOT NULL CHECK(score IN ('A', 'AA', 'AAA')),
+            score TEXT NOT NULL CHECK(score IN ('A', 'AA', 'AAA', 'NA')),
             active INTEGER NOT NULL DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )

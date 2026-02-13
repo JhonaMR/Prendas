@@ -113,7 +113,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [pin, setPin] = useState('');
   const [userRole, setUserRole] = useState<UserRole>(UserRole.GENERAL);
 
-  const [score, setScore] = useState('A');
+  const [score, setScore] = useState('NA');
   const [phone, setPhone] = useState('');
   const [isActive, setIsActive] = useState(true);
   
@@ -145,7 +145,7 @@ const MastersView: React.FC<MastersViewProps> = ({
     setYear(new Date().getFullYear().toString());
     setPin('');
     setUserRole(UserRole.GENERAL);
-    setScore('A');
+    setScore('NA');
     setPhone('');
     setIsActive(true);
     setSelectedCorrerias([]);
@@ -256,21 +256,25 @@ const MastersView: React.FC<MastersViewProps> = ({
                 address: cfAddr||'', 
                 city: cfCity||'', 
                 phone: cfPhone||'',
-                score: cfScore || 'A', 
+                score: cfScore || 'NA', 
                 active: cfActive === '1' || cfActive?.toLowerCase() === 'sí' || cfActive?.toLowerCase() === 'true'
               };
-              newConf.push(confData);
               
               // Guardar en backend
               try {
-                await onAddConfeccionista(confData);
+                const result = await onAddConfeccionista(confData);
+                if (result.success) {
+                  newConf.push(confData);
+                } else {
+                  console.error(`Error guardando confeccionista ${cfId}: ${result.message || 'Error desconocido'}`);
+                }
               } catch (error) {
                 console.error(`Error guardando confeccionista ${cfId}:`, error);
               }
             }
           }
           
-          // Actualizar estado local
+          // Actualizar estado local SOLO con los que se guardaron exitosamente
           updateState(prev => ({
             ...prev,
             confeccionistas: [...(prev.confeccionistas || []), ...newConf]
@@ -686,6 +690,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                       onChange={(e) => setScore(e.target.value)}
                       className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
                     >
+                      <option value="NA">NA</option>
                       <option value="A">A</option>
                       <option value="AA">AA</option>
                       <option value="AAA">AAA</option>
@@ -713,7 +718,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Confeccionistas</h3>
                 <p className="text-[10px] font-bold text-slate-400 leading-relaxed italic">
-                  CSV: <span className="text-indigo-500 font-black">Cédula;Nombre;Dirección;Ciudad;Celular;Puntaje;Activo(1/0)</span>
+                  CSV: <span className="text-indigo-500 font-black">Cédula;Nombre;Dirección;Ciudad;Celular;Puntaje(A/AA/AAA/NA);Activo(1/0)</span>
                 </p>
                 <input type="file" ref={confeccionistaFileRef} onChange={(e) => handleImportCSV('confeccionistas', e)} accept=".csv" className="hidden" />
                 <button onClick={() => confeccionistaFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>

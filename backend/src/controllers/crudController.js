@@ -518,38 +518,49 @@ const createConfeccionista = (req, res) => {
     try {
         const { id, name, address, city, phone, score } = req.body;
 
-        if (!id || !name || !address || !city || !phone || !score) {
+        if (!id || !name || !address || !city || !phone) {
             return res.status(400).json({
                 success: false,
-                message: 'Todos los campos son requeridos'
+                message: 'ID, Nombre, Dirección, Ciudad y Celular son requeridos'
             });
         }
 
-        if (!['A', 'AA', 'AAA'].includes(score)) {
+        const finalScore = score || 'NA';
+
+        if (!['A', 'AA', 'AAA', 'NA'].includes(finalScore)) {
             return res.status(400).json({
                 success: false,
-                message: 'Score debe ser A, AA o AAA'
+                message: 'Score debe ser A, AA, AAA o NA'
             });
         }
 
         const db = getDatabase();
 
-        db.prepare(`
-            INSERT INTO confeccionistas (id, name, address, city, phone, score, active)
-            VALUES (?, ?, ?, ?, ?, ?, 1)
-        `).run(id, name, address, city, phone, score);
+        try {
+            db.prepare(`
+                INSERT INTO confeccionistas (id, name, address, city, phone, score, active)
+                VALUES (?, ?, ?, ?, ?, ?, 1)
+            `).run(id, name, address, city, phone, finalScore);
+        } catch (dbError) {
+            console.error('❌ Error de BD al insertar confeccionista:', dbError.message);
+            db.close();
+            return res.status(400).json({
+                success: false,
+                message: `Error de base de datos: ${dbError.message}`
+            });
+        }
 
         db.close();
 
         return res.status(201).json({
             success: true,
             message: 'Confeccionista creado exitosamente',
-            data: { id, name, address, city, phone, score, active: true }
+            data: { id, name, address, city, phone, score: finalScore, active: true }
         });
 
     } catch (error) {
         console.error('❌ Error:', error);
-        return res.status(500).json({ success: false, message: 'Error al crear confeccionista' });
+        return res.status(500).json({ success: false, message: `Error al crear confeccionista: ${error.message}` });
     }
 };
 
@@ -558,36 +569,48 @@ const updateConfeccionista = (req, res) => {
         const { id } = req.params;
         const { name, address, city, phone, score, active } = req.body;
 
-        if (!['A', 'AA', 'AAA'].includes(score)) {
+        const finalScore = score || 'NA';
+
+        if (!['A', 'AA', 'AAA', 'NA'].includes(finalScore)) {
             return res.status(400).json({
                 success: false,
-                message: 'Score debe ser A, AA o AAA'
+                message: 'Score debe ser A, AA, AAA o NA'
             });
         }
 
         const db = getDatabase();
 
-        const result = db.prepare(`
-            UPDATE confeccionistas
-            SET name = ?, address = ?, city = ?, phone = ?, score = ?, active = ?
-            WHERE id = ?
-        `).run(name, address, city, phone, score, active ? 1 : 0, id);
+        try {
+            const result = db.prepare(`
+                UPDATE confeccionistas
+                SET name = ?, address = ?, city = ?, phone = ?, score = ?, active = ?
+                WHERE id = ?
+            `).run(name, address, city, phone, finalScore, active ? 1 : 0, id);
+
+            if (result.changes === 0) {
+                db.close();
+                return res.status(404).json({ success: false, message: 'Confeccionista no encontrado' });
+            }
+        } catch (dbError) {
+            console.error('❌ Error de BD al actualizar confeccionista:', dbError.message);
+            db.close();
+            return res.status(400).json({
+                success: false,
+                message: `Error de base de datos: ${dbError.message}`
+            });
+        }
 
         db.close();
-
-        if (result.changes === 0) {
-            return res.status(404).json({ success: false, message: 'Confeccionista no encontrado' });
-        }
 
         return res.json({
             success: true,
             message: 'Confeccionista actualizado exitosamente',
-            data: { id, name, address, city, phone, score, active }
+            data: { id, name, address, city, phone, score: finalScore, active }
         });
 
     } catch (error) {
         console.error('❌ Error:', error);
-        return res.status(500).json({ success: false, message: 'Error al actualizar confeccionista' });
+        return res.status(500).json({ success: false, message: `Error al actualizar confeccionista: ${error.message}` });
     }
 };
 
