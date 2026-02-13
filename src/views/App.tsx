@@ -377,7 +377,7 @@ const App: React.FC = () => {
       </div>
 
         <main className="flex-1 relative overflow-hidden bg-slate-50">
-          <div className={`h-full w-full overflow-y-auto custom-scrollbar ${activeTab === 'orders' ? 'p-4 md:p-6' : 'p-6 md:p-10'}`}>
+          <div className={`h-full w-full overflow-y-auto custom-scrollbar ${activeTab === 'orders' ? 'p-2 md:p-3' : 'p-6 md:p-10'}`}>
             <div className="max-w-full mx-auto">
               {renderContent()}
             </div>

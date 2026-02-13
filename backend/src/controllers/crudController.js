@@ -18,36 +18,46 @@ const { getDatabase, generateId } = require('../config/database');
 // ==================== REFERENCIAS ====================
 
 /**
- * OBTENER TODAS LAS REFERENCIAS
+ * OBTENER TODAS LAS REFERENCIAS (con sus correrías)
  * GET /api/references
  */
 const getReferences = (req, res) => {
     try {
         const db = getDatabase();
 
+        // Obtener todas las referencias
         const references = db.prepare(`
             SELECT id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2
             FROM product_references
             ORDER BY id
         `).all();
 
-        db.close();
+        // Para cada referencia, obtener sus correrías
+        const referencesWithCorrerias = references.map(ref => {
+            const correrias = db.prepare(`
+                SELECT correria_id
+                FROM correria_catalog
+                WHERE reference_id = ?
+            `).all(ref.id);
 
-        // Convertir a camelCase para el frontend
-        const formattedRefs = references.map(ref => ({
-            id: ref.id,
-            description: ref.description,
-            price: ref.price,
-            designer: ref.designer,
-            cloth1: ref.cloth1,
-            avgCloth1: ref.avg_cloth1,
-            cloth2: ref.cloth2,
-            avgCloth2: ref.avg_cloth2
-        }));
+            return {
+                id: ref.id,
+                description: ref.description,
+                price: ref.price,
+                designer: ref.designer,
+                cloth1: ref.cloth1,
+                avgCloth1: ref.avg_cloth1,
+                cloth2: ref.cloth2,
+                avgCloth2: ref.avg_cloth2,
+                correrias: correrias.map(c => c.correria_id) // Array de IDs de correrías
+            };
+        });
+
+        db.close();
 
         return res.json({
             success: true,
-            data: formattedRefs
+            data: referencesWithCorrerias
         });
 
     } catch (error) {
@@ -61,12 +71,12 @@ const getReferences = (req, res) => {
 };
 
 /**
- * CREAR REFERENCIA
+ * CREAR REFERENCIA (con correrías)
  * POST /api/references
  */
 const createReference = (req, res) => {
     try {
-        const { id, description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 } = req.body;
+        const { id, description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2, correrias } = req.body;
 
         // Validaciones
         if (!id || !description || !price || !designer) {
@@ -83,6 +93,14 @@ const createReference = (req, res) => {
             });
         }
 
+        // Validar que tenga al menos una correría
+        if (!correrias || !Array.isArray(correrias) || correrias.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Debe asignar al menos una correría a la referencia'
+            });
+        }
+
         const db = getDatabase();
 
         // Verificar si ya existe
@@ -95,19 +113,42 @@ const createReference = (req, res) => {
             });
         }
 
-        // Insertar
-        db.prepare(`
-            INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
-        `).run(id, description, price, designer, cloth1 || null, avgCloth1 || null, cloth2 || null, avgCloth2 || null);
+        // Iniciar transacción
+        db.prepare('BEGIN').run();
 
-        db.close();
+        try {
+            // 1. Insertar referencia
+            db.prepare(`
+                INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+            `).run(id, description, price, designer, cloth1 || null, avgCloth1 || null, cloth2 || null, avgCloth2 || null);
 
-        return res.status(201).json({
-            success: true,
-            message: 'Referencia creada exitosamente',
-            data: { id, description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 }
-        });
+            // 2. Insertar correrías en correria_catalog
+            const insertCatalog = db.prepare(`
+                INSERT INTO correria_catalog (id, correria_id, reference_id)
+                VALUES (?, ?, ?)
+            `);
+
+            for (const correriaId of correrias) {
+                const catalogId = generateId();
+                insertCatalog.run(catalogId, correriaId, id);
+            }
+
+            db.prepare('COMMIT').run();
+
+            db.close();
+
+            return res.status(201).json({
+                success: true,
+                message: 'Referencia creada exitosamente',
+                data: { id, description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2, correrias }
+            });
+
+        } catch (error) {
+            db.prepare('ROLLBACK').run();
+            db.close();
+            throw error;
+        }
 
     } catch (error) {
         console.error('❌ Error al crear referencia:', error);
@@ -120,13 +161,13 @@ const createReference = (req, res) => {
 };
 
 /**
- * ACTUALIZAR REFERENCIA
+ * ACTUALIZAR REFERENCIA (modo APPEND para correrías)
  * PUT /api/references/:id
  */
 const updateReference = (req, res) => {
     try {
         const { id } = req.params;
-        const { description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 } = req.body;
+        const { description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2, correrias } = req.body;
 
         if (!description || !price || !designer) {
             return res.status(400).json({
@@ -144,26 +185,70 @@ const updateReference = (req, res) => {
 
         const db = getDatabase();
 
-        const result = db.prepare(`
-            UPDATE product_references
-            SET description = ?, price = ?, designer = ?, cloth1 = ?, avg_cloth1 = ?, cloth2 = ?, avg_cloth2 = ?
-            WHERE id = ?
-        `).run(description, price, designer, cloth1 || null, avgCloth1 || null, cloth2 || null, avgCloth2 || null, id);
+        db.prepare('BEGIN').run();
 
-        db.close();
+        try {
+            // 1. Actualizar datos de la referencia
+            const result = db.prepare(`
+                UPDATE product_references
+                SET description = ?, price = ?, designer = ?, cloth1 = ?, avg_cloth1 = ?, cloth2 = ?, avg_cloth2 = ?
+                WHERE id = ?
+            `).run(description, price, designer, cloth1 || null, avgCloth1 || null, cloth2 || null, avgCloth2 || null, id);
 
-        if (result.changes === 0) {
-            return res.status(404).json({
-                success: false,
-                message: `Referencia ${id} no encontrada`
+            if (result.changes === 0) {
+                db.prepare('ROLLBACK').run();
+                db.close();
+                return res.status(404).json({
+                    success: false,
+                    message: `Referencia ${id} no encontrada`
+                });
+            }
+
+            // 2. Si se enviaron correrías, agregarlas (modo APPEND)
+            if (correrias && Array.isArray(correrias) && correrias.length > 0) {
+                const insertCatalog = db.prepare(`
+                    INSERT OR IGNORE INTO correria_catalog (id, correria_id, reference_id)
+                    VALUES (?, ?, ?)
+                `);
+
+                for (const correriaId of correrias) {
+                    const catalogId = generateId();
+                    insertCatalog.run(catalogId, correriaId, id);
+                }
+            }
+
+            db.prepare('COMMIT').run();
+
+            // Obtener las correrías actualizadas
+            const updatedCorrerias = db.prepare(`
+                SELECT correria_id
+                FROM correria_catalog
+                WHERE reference_id = ?
+            `).all(id);
+
+            db.close();
+
+            return res.json({
+                success: true,
+                message: 'Referencia actualizada exitosamente',
+                data: { 
+                    id, 
+                    description, 
+                    price, 
+                    designer, 
+                    cloth1, 
+                    avgCloth1, 
+                    cloth2, 
+                    avgCloth2,
+                    correrias: updatedCorrerias.map(c => c.correria_id)
+                }
             });
-        }
 
-        return res.json({
-            success: true,
-            message: 'Referencia actualizada exitosamente',
-            data: { id, description, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 }
-        });
+        } catch (error) {
+            db.prepare('ROLLBACK').run();
+            db.close();
+            throw error;
+        }
 
     } catch (error) {
         console.error('❌ Error al actualizar referencia:', error);
@@ -176,7 +261,7 @@ const updateReference = (req, res) => {
 };
 
 /**
- * ELIMINAR REFERENCIA (Soft delete)
+ * ELIMINAR REFERENCIA (también elimina sus correrías)
  * DELETE /api/references/:id
  */
 const deleteReference = (req, res) => {
@@ -199,32 +284,102 @@ const deleteReference = (req, res) => {
             });
         }
 
-        // Hard delete: eliminar completamente
-        console.log('🔥 Ejecutando DELETE FROM product_references WHERE id =', id);
-        const result = db.prepare('DELETE FROM product_references WHERE id = ?').run(id);
-        console.log('📝 Resultado de DELETE:', result);
+        db.prepare('BEGIN').run();
 
-        db.close();
+        try {
+            // 1. Eliminar de correria_catalog primero
+            console.log('🔥 Eliminando de correria_catalog...');
+            db.prepare('DELETE FROM correria_catalog WHERE reference_id = ?').run(id);
 
-        if (result.changes === 0) {
-            console.log('❌ No se eliminó nada');
-            return res.status(404).json({
-                success: false,
-                message: `Referencia ${id} no encontrada`
+            // 2. Eliminar de product_references
+            console.log('🔥 Ejecutando DELETE FROM product_references WHERE id =', id);
+            const result = db.prepare('DELETE FROM product_references WHERE id = ?').run(id);
+            console.log('📝 Resultado de DELETE:', result);
+
+            db.prepare('COMMIT').run();
+
+            db.close();
+
+            if (result.changes === 0) {
+                console.log('❌ No se eliminó nada');
+                return res.status(404).json({
+                    success: false,
+                    message: `Referencia ${id} no encontrada`
+                });
+            }
+
+            console.log('✅ Referencia eliminada exitosamente - cambios:', result.changes);
+            return res.json({
+                success: true,
+                message: 'Referencia eliminada exitosamente'
             });
-        }
 
-        console.log('✅ Referencia eliminada exitosamente - cambios:', result.changes);
-        return res.json({
-            success: true,
-            message: 'Referencia eliminada exitosamente'
-        });
+        } catch (error) {
+            db.prepare('ROLLBACK').run();
+            db.close();
+            throw error;
+        }
 
     } catch (error) {
         console.error('❌ Error al eliminar referencia:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al eliminar referencia',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * OBTENER REFERENCIAS DE UNA CORRERÍA ESPECÍFICA
+ * GET /api/correrias/:id/references
+ */
+const getCorreriaReferences = (req, res) => {
+    try {
+        const { id } = req.params; // correria_id
+
+        const db = getDatabase();
+
+        const references = db.prepare(`
+            SELECT 
+                pr.id, 
+                pr.description, 
+                pr.price, 
+                pr.designer, 
+                pr.cloth1, 
+                pr.avg_cloth1, 
+                pr.cloth2, 
+                pr.avg_cloth2
+            FROM product_references pr
+            INNER JOIN correria_catalog cc ON pr.id = cc.reference_id
+            WHERE cc.correria_id = ?
+            ORDER BY pr.id
+        `).all(id);
+
+        db.close();
+
+        // Convertir a camelCase
+        const formattedRefs = references.map(ref => ({
+            id: ref.id,
+            description: ref.description,
+            price: ref.price,
+            designer: ref.designer,
+            cloth1: ref.cloth1,
+            avgCloth1: ref.avg_cloth1,
+            cloth2: ref.cloth2,
+            avgCloth2: ref.avg_cloth2
+        }));
+
+        return res.json({
+            success: true,
+            data: formattedRefs
+        });
+
+    } catch (error) {
+        console.error('❌ Error al obtener referencias de correría:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al obtener referencias de correría',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
@@ -719,6 +874,7 @@ module.exports = {
     createReference,
     updateReference,
     deleteReference,
+    getCorreriaReferences,
     
     // Clientes
     getClients,

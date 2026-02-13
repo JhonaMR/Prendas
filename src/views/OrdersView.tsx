@@ -70,43 +70,45 @@ useEffect(() => {
   const reportData = useMemo(() => {
     if (!selectedCorreriaId) return [];
 
-    let data = state.references.map(ref => {
-      const refOrders = state.orders.filter(o => o.correriaId === selectedCorreriaId);
-      const totalSold = refOrders.reduce((acc, order) => {
-        const item = order.items.find(i => i.reference === ref.id);
-        return acc + (item?.quantity || 0);
-      }, 0);
+    let data = state.references
+      .filter(ref => ref.correrias.includes(selectedCorreriaId)) // ← FILTRAR POR CORRERÍA
+      .map(ref => {
+        const refOrders = state.orders.filter(o => o.correriaId === selectedCorreriaId);
+        const totalSold = refOrders.reduce((acc, order) => {
+          const item = order.items.find(i => i.reference === ref.id);
+          return acc + (item?.quantity || 0);
+        }, 0);
 
-      const clientsWhoOrdered = new Set(
-        refOrders
-          .filter(o => o.items.some(i => i.reference === ref.id))
-          .map(o => o.clientId)
-      );
+        const clientsWhoOrdered = new Set(
+          refOrders
+            .filter(o => o.items.some(i => i.reference === ref.id))
+            .map(o => o.clientId)
+        );
 
-      const received = state.receptions.reduce((acc, r) => 
-        acc + r.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
-      const dispatched = state.dispatches.reduce((acc, d) => 
-        acc + d.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
-      const stock = received - dispatched;
+        const received = state.receptions.reduce((acc, r) => 
+          acc + r.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
+        const dispatched = state.dispatches.reduce((acc, d) => 
+          acc + d.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
+        const stock = received - dispatched;
 
-      const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0 };
-      const pending = totalSold - prod.cut;
+        const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0 };
+        const pending = totalSold - prod.cut;
 
-      const totalCloth1 = (ref.avgCloth1 || 0) * totalSold;
-      const totalCloth2 = (ref.avgCloth2 || 0) * totalSold;
+        const totalCloth1 = (ref.avgCloth1 || 0) * totalSold;
+        const totalCloth2 = (ref.avgCloth2 || 0) * totalSold;
 
-      return {
-        ...ref,
-        totalSold,
-        stock,
-        programmed: prod.programmed,
-        cut: prod.cut,
-        pending: Math.max(0, pending),
-        clientCount: clientsWhoOrdered.size,
-        totalCloth1,
-        totalCloth2
-      };
-    });
+        return {
+          ...ref,
+          totalSold,
+          stock,
+          programmed: prod.programmed,
+          cut: prod.cut,
+          pending: Math.max(0, pending),
+          clientCount: clientsWhoOrdered.size,
+          totalCloth1,
+          totalCloth2
+        };
+      });
 
     if (refFilter) data = data.filter(r => r.id.includes(refFilter.toUpperCase()));
     if (clothFilter) data = data.filter(r => 

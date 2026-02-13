@@ -107,6 +107,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [avgCloth1, setAvgCloth1] = useState(0);
   const [cloth2, setCloth2] = useState('');
   const [avgCloth2, setAvgCloth2] = useState(0);
+  const [selectedCorrerias, setSelectedCorrerias] = useState<string[]>([]);
 
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [pin, setPin] = useState('');
@@ -118,6 +119,14 @@ const MastersView: React.FC<MastersViewProps> = ({
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Estados para autocompletado de correrías
+  const [correriaSearch, setCorreriaSearch] = useState('');
+  const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
+
+  // Estados para autocompletado de vendedores
+  const [sellerSearch, setSellerSearch] = useState('');
+  const [showSellerDropdown, setShowSellerDropdown] = useState(false);
 
   const resetForms = () => {
     setId('');
@@ -139,8 +148,32 @@ const MastersView: React.FC<MastersViewProps> = ({
     setScore('A');
     setPhone('');
     setIsActive(true);
+    setSelectedCorrerias([]);
     setEditingId(null);
+    setCorreriaSearch('');
+    setShowCorreriaDropdown(false);
+    setSellerSearch('');
+    setShowSellerDropdown(false);
   };
+
+  // Cerrar dropdown al hacer clic fuera
+  React.useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const isClickInsideDropdown = target.closest('[data-correria-dropdown]');
+      const isClickInsideSellerDropdown = target.closest('[data-seller-dropdown]');
+      
+      if (!isClickInsideDropdown) {
+        setShowCorreriaDropdown(false);
+      }
+      if (!isClickInsideSellerDropdown) {
+        setShowSellerDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleImportCSV = async (type: 'clients' | 'references' | 'confeccionistas', e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -179,12 +212,21 @@ const MastersView: React.FC<MastersViewProps> = ({
         } else if (type === 'references') {
           const newRefs: Reference[] = [];
           for (let i = 1; i < rows.length; i++) {
-            const [rId, rDesc, rPrice, rDes, t1, p1, t2, p2] = rows[i].split(/[;,]/).map(c => c.trim());
+            const [rId, rDesc, rPrice, rDes, t1, p1, t2, p2, corr] = rows[i].split(/[;,]/).map(c => c.trim());
             if (rId && rDesc) {
+              // Procesar correrías (separadas por |)
+              const correrias = corr ? corr.split('|').map(c => c.trim()).filter(c => c) : [];
+              
               const refData = { 
-                id: rId, description: rDesc, price: Number(rPrice)||0, 
-                designer: rDes||'', cloth1: t1||'', avgCloth1: Number(p1)||0, 
-                cloth2: t2||'', avgCloth2: Number(p2)||0 
+                id: rId, 
+                description: rDesc, 
+                price: Number(rPrice)||0, 
+                designer: rDes||'', 
+                cloth1: t1||'', 
+                avgCloth1: Number(p1)||0, 
+                cloth2: t2||'', 
+                avgCloth2: Number(p2)||0,
+                correrias: correrias
               };
               newRefs.push(refData);
               
@@ -340,7 +382,23 @@ const MastersView: React.FC<MastersViewProps> = ({
 
   const handleSaveReference = async () => {
     if (!id || !desc) return alert("Referencia y Descripción son obligatorias");
-    const newItem: Reference = { id, description: desc, price, designer, cloth1, avgCloth1, cloth2, avgCloth2 };
+    
+    // Validar que tenga al menos una correría
+    if (selectedCorrerias.length === 0) {
+      return alert("Debe asignar al menos una correría a la referencia");
+    }
+    
+    const newItem: Reference = { 
+      id, 
+      description: desc, 
+      price, 
+      designer, 
+      cloth1, 
+      avgCloth1, 
+      cloth2, 
+      avgCloth2,
+      correrias: selectedCorrerias
+    };
     
     setIsLoading(true);
     try {
@@ -504,7 +562,67 @@ const MastersView: React.FC<MastersViewProps> = ({
                   <Input label="Nombre del Cliente" value={name} onChange={setName} />
                   <Input label="Dirección" value={address} onChange={setAddress} />
                   <Input label="Ciudad" value={city} onChange={setCity} />
-                  <Input label="Vendedor" value={seller} onChange={setSeller} className="md:col-span-2" />
+                  
+                  {/* DROPDOWN DE VENDEDORES */}
+                  <div className="md:col-span-2 space-y-1.5 relative" data-seller-dropdown>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Vendedor</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={sellerSearch}
+                        onChange={(e) => {
+                          setSellerSearch(e.target.value);
+                          setShowSellerDropdown(true);
+                        }}
+                        onFocus={() => setShowSellerDropdown(true)}
+                        placeholder="Buscar o seleccionar vendedor..."
+                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                      />
+                      
+                      {/* Botón para limpiar */}
+                      {sellerSearch && (
+                        <button
+                          onClick={() => {
+                            setSellerSearch('');
+                            setSeller('');
+                          }}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black text-xl transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Dropdown de vendedores */}
+                    {showSellerDropdown && (
+                      <div className="absolute top-full left-0 mt-2 w-full bg-white border-2 border-slate-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                        {state.sellers
+                          .filter(s => 
+                            s.name.toLowerCase().includes(sellerSearch.toLowerCase())
+                          )
+                          .map(s => (
+                            <button
+                              key={s.id}
+                              onClick={() => {
+                                setSeller(s.name);
+                                setSellerSearch(s.name);
+                                setShowSellerDropdown(false);
+                              }}
+                              className="w-full px-6 py-3 text-left hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                            >
+                              <p className="font-black text-slate-800">{s.name}</p>
+                            </button>
+                          ))}
+                        {state.sellers.filter(s => 
+                          s.name.toLowerCase().includes(sellerSearch.toLowerCase())
+                        ).length === 0 && (
+                          <div className="px-6 py-4 text-center text-slate-400 font-bold">
+                            No se encontraron vendedores
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-4 mt-6">
                   <button 
@@ -645,6 +763,100 @@ const MastersView: React.FC<MastersViewProps> = ({
                   <Input label="Prom. Tela 1" type="number" value={avgCloth1} onChange={(v: string) => setAvgCloth1(Number(v))} />
                   <Input label="Tela 2" value={cloth2} onChange={setCloth2} />
                   <Input label="Prom. Tela 2" type="number" value={avgCloth2} onChange={(v: string) => setAvgCloth2(Number(v))} />
+                  
+                  {/* SELECTOR DE CORRERÍAS CON AUTOCOMPLETADO */}
+                  <div className="md:col-span-4 space-y-3">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">
+                      Correrías (Maleta) *
+                    </label>
+                    
+                    {/* Input de búsqueda */}
+                    <div className="relative" data-correria-dropdown>
+                      <input
+                        type="text"
+                        value={correriaSearch}
+                        onChange={(e) => {
+                          setCorreriaSearch(e.target.value);
+                          setShowCorreriaDropdown(true);
+                        }}
+                        onFocus={() => setShowCorreriaDropdown(true)}
+                        placeholder="Buscar correría (ej: Mad, Navidad)..."
+                        className="w-full px-6 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all placeholder:text-slate-300"
+                      />
+                      
+                      {/* Dropdown de correrías */}
+                      {showCorreriaDropdown && (
+                        <div className="absolute top-full left-0 mt-2 w-full bg-white border-2 border-slate-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                          {state.correrias
+                            .filter(c => 
+                              `${c.name} ${c.year}`.toLowerCase().includes(correriaSearch.toLowerCase())
+                            )
+                            .map(correria => (
+                              <button
+                                key={correria.id}
+                                onClick={() => {
+                                  if (!selectedCorrerias.includes(correria.id)) {
+                                    setSelectedCorrerias([...selectedCorrerias, correria.id]);
+                                  }
+                                  setCorreriaSearch('');
+                                  setShowCorreriaDropdown(false);
+                                }}
+                                className="w-full px-6 py-3 text-left hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-center justify-between group"
+                              >
+                                <div>
+                                  <p className="font-black text-slate-800">{correria.name}</p>
+                                  <p className="text-[10px] font-bold text-slate-400">{correria.year}</p>
+                                </div>
+                                {selectedCorrerias.includes(correria.id) && (
+                                  <span className="text-blue-600 font-black">✓</span>
+                                )}
+                              </button>
+                            ))}
+                          {state.correrias.filter(c => 
+                            `${c.name} ${c.year}`.toLowerCase().includes(correriaSearch.toLowerCase())
+                          ).length === 0 && (
+                            <div className="px-6 py-4 text-center text-slate-400 font-bold">
+                              No se encontraron correrías
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Cajoncito con correrías seleccionadas */}
+                    <div className="bg-blue-50 p-4 rounded-2xl border-2 border-blue-200 min-h-[60px]">
+                      {selectedCorrerias.length > 0 ? (
+                        <div className="flex flex-wrap gap-2">
+                          {selectedCorrerias.map(correriaId => {
+                            const correria = state.correrias.find(c => c.id === correriaId);
+                            return correria ? (
+                              <div
+                                key={correriaId}
+                                className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border-2 border-blue-300 shadow-sm"
+                              >
+                                <div>
+                                  <p className="font-black text-xs text-slate-800">{correria.name}</p>
+                                  <p className="text-[9px] font-bold text-slate-400">{correria.year}</p>
+                                </div>
+                                <button
+                                  onClick={() => {
+                                    setSelectedCorrerias(selectedCorrerias.filter(id => id !== correriaId));
+                                  }}
+                                  className="ml-2 text-red-500 hover:text-red-700 font-black text-lg leading-none hover:bg-red-50 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-red-500 font-bold text-center">
+                          ⚠️ Debe seleccionar al menos una correría
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <div className="flex gap-4 mt-6">
                   <button onClick={handleSaveReference}
@@ -659,7 +871,12 @@ const MastersView: React.FC<MastersViewProps> = ({
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Referencias</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-indigo-500">Ref;Desc;Precio;Diseñadora;Tela1;Prom1;Tela2;Prom2</span></p>
+                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">
+                  CSV: <span className="text-indigo-500">Ref;Desc;Precio;Diseñadora;Tela1;Prom1;Tela2;Prom2;Correrias</span>
+                </p>
+                <p className="text-[9px] font-bold text-slate-500 italic mt-1">
+                  Ejemplo correrías: Madres2026|Padres2026|Navidad2026
+                </p>
                 <input type="file" ref={referenceFileRef} onChange={(e) => handleImportCSV('references', e)} accept=".csv" className="hidden" />
                 <button onClick={() => referenceFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
               </div>
@@ -687,9 +904,16 @@ const MastersView: React.FC<MastersViewProps> = ({
                       </td>
                       <td className="px-6 py-4 text-right flex justify-end gap-2">
                         <button onClick={() => { 
-                          setEditingId(r.id); setId(r.id); setDesc(r.description); setPrice(r.price); 
-                          setDesigner(r.designer); setCloth1(r.cloth1||''); setAvgCloth1(r.avgCloth1||0);
-                          setCloth2(r.cloth2||''); setAvgCloth2(r.avgCloth2||0);
+                          setEditingId(r.id); 
+                          setId(r.id); 
+                          setDesc(r.description); 
+                          setPrice(r.price); 
+                          setDesigner(r.designer); 
+                          setCloth1(r.cloth1||''); 
+                          setAvgCloth1(r.avgCloth1||0);
+                          setCloth2(r.cloth2||''); 
+                          setAvgCloth2(r.avgCloth2||0);
+                          setSelectedCorrerias(r.correrias || []);
                         }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl"><Icons.Edit /></button>
                         <button onClick={() => handleDelete('reference', r.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
                       </td>

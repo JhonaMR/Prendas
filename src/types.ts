@@ -51,6 +51,7 @@ export interface Reference {
   avgCloth1?: number;
   cloth2?: string;
   avgCloth2?: number;
+  correrias: string[];
 }
 
 export interface ProductionTracking {

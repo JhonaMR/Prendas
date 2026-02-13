@@ -70,6 +70,7 @@ router.get('/references', verifyToken, crudController.getReferences);
 router.post('/references', verifyToken, crudController.createReference);
 router.put('/references/:id', verifyToken, crudController.updateReference);
 router.delete('/references/:id', verifyToken, crudController.deleteReference);
+router.get('/correrias/:id/references', crudController.getCorreriaReferences);
 
 // ==================== CLIENTES ====================
 
