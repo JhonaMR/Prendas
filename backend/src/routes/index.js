@@ -106,6 +106,11 @@ router.delete('/correrias/:id', verifyToken, crudController.deleteCorreria);
 router.get('/receptions', verifyToken, movementsController.getReceptions);
 router.post('/receptions', verifyToken, movementsController.createReception);
 
+// ==================== DEVOLUCIONES ====================
+
+router.get('/return-receptions', verifyToken, movementsController.getReturnReceptions);
+router.post('/return-receptions', verifyToken, movementsController.createReturnReception);
+
 // ==================== DESPACHOS ====================
 
 router.get('/dispatches', verifyToken, movementsController.getDispatches);

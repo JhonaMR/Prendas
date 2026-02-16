@@ -622,6 +622,22 @@ class ApiService {
     }
   }
 
+  // ==================== DEVOLUCIONES ====================
+
+  async getReturnReceptions(): Promise<any[]> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/return-receptions`, {
+        headers: this.getAuthHeaders()
+      });
+
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo devoluciones:', error);
+      return [];
+    }
+  }
+
   // ==================== DESPACHOS ====================
 
   async getDispatches(): Promise<Dispatch[]> {
@@ -651,6 +667,25 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al crear despacho'
+      };
+    }
+  }
+
+  // ==================== DEVOLUCIONES ====================
+
+  async createReturnReception(returnReception: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/return-receptions`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(returnReception)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al crear devolución'
       };
     }
   }

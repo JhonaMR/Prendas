@@ -30,6 +30,7 @@ const App: React.FC = () => {
     sellers: [],
     correrias: [],
     receptions: [],
+    returnReceptions: [],
     dispatches: [],
     orders: [],
     productionTracking: [],
@@ -60,6 +61,7 @@ const App: React.FC = () => {
           sellersData,
           correriasData,
           receptionsData,
+          returnReceptionsData,
           dispatchesData,
           ordersData,
           productionData,
@@ -72,6 +74,7 @@ const App: React.FC = () => {
           api.getSellers(),
           api.getCorrerias(),
           api.getReceptions(),
+          api.getReturnReceptions(),
           api.getDispatches(),
           api.getOrders(),
           api.getProductionTracking(),
@@ -86,6 +89,7 @@ const App: React.FC = () => {
           sellers: sellersData,
           correrias: correriasData,
           receptions: receptionsData,
+          returnReceptions: returnReceptionsData,
           dispatches: dispatchesData,
           orders: ordersData,
           productionTracking: productionData,
@@ -121,6 +125,7 @@ const App: React.FC = () => {
       sellers: [],
       correrias: [],
       receptions: [],
+      returnReceptions: [],
       dispatches: [],
       orders: [],
       productionTracking: [],
@@ -594,6 +599,31 @@ const App: React.FC = () => {
   };
 
   /**
+   * DEVOLUCIONES
+   */
+  const addReturnReception = async (returnReception: any) => {
+    try {
+      const response = await api.createReturnReception(returnReception);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          returnReceptions: [...(prev.returnReceptions || []), response.data]
+        }));
+        console.log('✅ Devolución creada');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al crear devolución');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error creando devolución:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  /**
    * DESPACHOS
    */
   const addDispatch = async (dispatch: any) => {
@@ -685,11 +715,10 @@ const App: React.FC = () => {
         return (
           <ReturnReceptionView 
             user={user} 
-            receptions={state.receptions} 
-            confeccionistasMaster={state.confeccionistas} 
             updateState={updateState} 
+            clientsMaster={state.clients} 
             referencesMaster={state.references}
-            onAddReception={addReception}
+            onAddReturnReception={addReturnReception}
           />
         );
       case 'dispatch':

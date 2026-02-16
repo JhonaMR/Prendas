@@ -165,56 +165,47 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100">
-          <div className="space-y-2 relative col-span-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Cliente</label>
-            <div className="relative">
-              <input 
-                value={clientSearch} 
-                onChange={e => { setClientSearch(e.target.value); setShowClientResults(true); if(!e.target.value) setSelectedClientId(''); }} 
-                onFocus={() => setShowClientResults(true)}
-                placeholder="Buscar cliente por nombre o ID..." 
-                className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" 
-              />
-              {showClientResults && clientSearch.length > 0 && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-48 overflow-y-auto custom-scrollbar">
-                  {filteredClients.length > 0 ? (
-                    filteredClients.map(c => (
+          <div className="space-y-4 relative col-span-2">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Buscar Cliente</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={clientSearch}
+                  onChange={(e) => { setClientSearch(e.target.value); setShowClientResults(true); if(!e.target.value) setSelectedClientId(''); }}
+                  onFocus={() => setShowClientResults(true)}
+                  placeholder="ID o Nombre de cliente..."
+                  className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900"
+                />
+                {showClientResults && clientSearch.length > 0 && (
+                  <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-60 overflow-y-auto custom-scrollbar">
+                    {filteredClients.map(c => (
                       <button 
                         key={c.id} 
                         onClick={() => selectClient(c)}
-                        className="w-full text-left px-6 py-4 hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0 group"
+                        className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                       >
-                        <p className="font-black text-slate-800 group-hover:text-blue-600">{c.name}</p>
+                        <p className="font-black text-slate-800">{c.name}</p>
                         <p className="text-[10px] text-slate-400 font-bold">ID: {c.id} • {c.city}</p>
                       </button>
-                    ))
-                  ) : (
-                    <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>
-                  )}
-                </div>
-              )}
-              {selectedClientId && (
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500 font-black text-lg">
-                  ✓
-                </div>
-              )}
+                    ))}
+                    {filteredClients.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Número de Nota Crédito</label>
-            <input 
-              value={creditNoteNumber} 
-              onChange={e => setCreditNoteNumber(e.target.value)} 
-              placeholder="Opcional..." 
-              className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" 
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Valor Total</label>
-            <div className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-black text-slate-900 text-lg">
-              ${totalValue.toLocaleString()}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Nota Crédito</label>
+              <input value={creditNoteNumber} onChange={e => setCreditNoteNumber(e.target.value)} placeholder="Ej: NC-1234" className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-pink-100 transition-all font-bold tracking-widest text-slate-900" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Valor Total</label>
+              <div className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-black text-slate-900 text-lg">
+                ${totalValue.toLocaleString()}
+              </div>
             </div>
           </div>
         </div>
