@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AppState, DeliveryDate, UserRole, Confeccionista } from '../types';
 import api from '../services/api';
 import { validateBatch, validateRecord, ValidationError } from '../utils/deliveryDateValidator';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface DeliveryDatesViewProps {
   state: AppState;
@@ -17,6 +19,9 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [confFilterId, setConfFilterId] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [validationErrors, setValidationErrors] = useState<{ [index: number]: ValidationError }>({});
+  const [isLoadingPaginated, setIsLoadingPaginated] = useState(false);
+  const [usePaginatedView, setUsePaginatedView] = useState(false);
+  const { pagination, goToPage } = usePagination(1, 20);
   
   const hasUnsavedChanges = useRef(false);
   const isAdmin = user?.role === UserRole.admin || user?.role === 'admin';

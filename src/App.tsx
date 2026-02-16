@@ -791,6 +791,16 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <button 
+            onClick={() => handleTabChange('home')}
+            className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
+            aria-label="Ir a Inicio"
+            title="Ir a Inicio"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.954c.078-.078.16-.15.243-.22a.75.75 0 0 1 .976.072l8.954 8.954M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+            </svg>
+          </button>
           <div className="hidden sm:flex flex-col items-end">
             <p className="font-bold text-sm leading-none">{user.name}</p>
             <p className="text-[10px] text-slate-400 capitalize font-bold mt-1">{user.role}</p>

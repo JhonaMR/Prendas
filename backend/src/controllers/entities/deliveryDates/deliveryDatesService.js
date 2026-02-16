@@ -6,6 +6,76 @@
 
 const { getDatabase, generateId } = require('../../../config/database');
 const { validateDeliveryDate, validateReferenceExists, validateConfeccionistaExists, detectDuplicates } = require('./deliveryDatesValidator');
+const PaginationService = require('../../../services/PaginationService');
+
+/**
+ * Obtener todas las fechas de entrega con paginación
+ */
+const getAllWithPagination = (page = 1, limit = 20, filters = {}) => {
+    try {
+        const db = getDatabase();
+        const { page: validPage, limit: validLimit } = PaginationService.validateParams(page, limit);
+
+        // Build WHERE clause from filters
+        let whereClause = 'WHERE 1=1';
+        const params = [];
+
+        if (filters.confeccionistaId) {
+            whereClause += ' AND confeccionista_id = ?';
+            params.push(filters.confeccionistaId);
+        }
+
+        if (filters.referenceId) {
+            whereClause += ' AND reference_id = ?';
+            params.push(filters.referenceId);
+        }
+
+        if (filters.startDate) {
+            whereClause += ' AND send_date >= ?';
+            params.push(filters.startDate);
+        }
+
+        if (filters.endDate) {
+            whereClause += ' AND send_date <= ?';
+            params.push(filters.endDate);
+        }
+
+        // Get total count
+        const countStmt = db.prepare(`SELECT COUNT(*) as count FROM delivery_dates ${whereClause}`);
+        const countResult = countStmt.get(...params);
+        const total = countResult.count;
+
+        // Get paginated data
+        const offset = PaginationService.calculateOffset(validPage, validLimit);
+        const dataStmt = db.prepare(`
+            SELECT * FROM delivery_dates 
+            ${whereClause}
+            ORDER BY send_date DESC
+            LIMIT ? OFFSET ?
+        `);
+        
+        const dates = dataStmt.all(...params, validLimit, offset);
+
+        const mappedDates = dates.map(d => ({
+            id: d.id,
+            confeccionistaId: d.confeccionista_id,
+            referenceId: d.reference_id,
+            quantity: d.quantity,
+            sendDate: d.send_date,
+            expectedDate: d.expected_date,
+            deliveryDate: d.delivery_date,
+            process: d.process,
+            observation: d.observation,
+            createdAt: d.created_at,
+            createdBy: d.created_by
+        }));
+
+        return PaginationService.buildPaginatedResponse(mappedDates, validPage, validLimit, total, filters);
+    } catch (error) {
+        console.error('❌ Error getting delivery dates with pagination:', error);
+        throw error;
+    }
+};
 
 /**
  * Obtener todas las fechas de entrega
@@ -231,6 +301,7 @@ const getDeliveryDateById = (id) => {
 
 module.exports = {
     getAllDeliveryDates,
+    getAllWithPagination,
     saveDeliveryDatesBatch,
     deleteDeliveryDate,
     getDeliveryDateById

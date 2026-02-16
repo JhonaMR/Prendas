@@ -798,6 +798,96 @@ class ApiService {
       };
     }
   }
+
+  // ==================== PAGINATION ENDPOINTS ====================
+
+  async getDeliveryDatesWithPagination(page: number = 1, limit: number = 20, filters: any = {}): Promise<ApiResponse> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...filters
+      });
+
+      const response = await fetch(`${API_BASE_URL}/delivery-dates?${params}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener fechas de entrega'
+      };
+    }
+  }
+
+  async getDispatchesWithPagination(page: number = 1, limit: number = 20, filters: any = {}): Promise<ApiResponse> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...filters
+      });
+
+      const response = await fetch(`${API_BASE_URL}/dispatches?${params}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener despachos'
+      };
+    }
+  }
+
+  async getReceptionsWithPagination(page: number = 1, limit: number = 20, filters: any = {}): Promise<ApiResponse> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...filters
+      });
+
+      const response = await fetch(`${API_BASE_URL}/receptions?${params}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener recepciones'
+      };
+    }
+  }
+
+  async getReturnReceptionsWithPagination(page: number = 1, limit: number = 20, filters: any = {}): Promise<ApiResponse> {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...filters
+      });
+
+      const response = await fetch(`${API_BASE_URL}/return-receptions?${params}`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener devoluciones'
+      };
+    }
+  }
 }
 
 // Exportar instancia única

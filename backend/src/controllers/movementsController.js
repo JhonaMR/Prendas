@@ -9,6 +9,9 @@
  */
 
 const { getDatabase, generateId } = require('../config/database');
+const DispatchService = require('../services/DispatchService');
+const ReceptionService = require('../services/ReceptionService');
+const ReturnService = require('../services/ReturnService');
 
 // ==================== DEVOLUCIONES ====================
 
@@ -18,6 +21,23 @@ const { getDatabase, generateId } = require('../config/database');
  */
 const getReturnReceptions = (req, res) => {
     try {
+        const { page, limit, clientId, startDate, endDate } = req.query;
+
+        // If pagination params provided, use paginated endpoint
+        if (page || limit) {
+            const filters = {};
+            if (clientId) filters.clientId = clientId;
+            if (startDate) filters.startDate = startDate;
+            if (endDate) filters.endDate = endDate;
+
+            const result = ReturnService.getAllWithPagination(page, limit, filters);
+            return res.json({
+                success: true,
+                ...result
+            });
+        }
+
+        // Otherwise return all (backward compatibility)
         const db = getDatabase();
 
         const returnReceptions = db.prepare(`
@@ -152,6 +172,24 @@ const createReturnReception = (req, res) => {
  */
 const getReceptions = (req, res) => {
     try {
+        const { page, limit, confeccionistaId, referenceId, startDate, endDate } = req.query;
+
+        // If pagination params provided, use paginated endpoint
+        if (page || limit) {
+            const filters = {};
+            if (confeccionistaId) filters.confeccionistaId = confeccionistaId;
+            if (referenceId) filters.referenceId = referenceId;
+            if (startDate) filters.startDate = startDate;
+            if (endDate) filters.endDate = endDate;
+
+            const result = ReceptionService.getAllWithPagination(page, limit, filters);
+            return res.json({
+                success: true,
+                ...result
+            });
+        }
+
+        // Otherwise return all (backward compatibility)
         const db = getDatabase();
 
         // Obtener todas las recepciones
@@ -300,6 +338,24 @@ const createReception = (req, res) => {
  */
 const getDispatches = (req, res) => {
     try {
+        const { page, limit, clientId, referenceId, startDate, endDate } = req.query;
+
+        // If pagination params provided, use paginated endpoint
+        if (page || limit) {
+            const filters = {};
+            if (clientId) filters.clientId = clientId;
+            if (referenceId) filters.referenceId = referenceId;
+            if (startDate) filters.startDate = startDate;
+            if (endDate) filters.endDate = endDate;
+
+            const result = DispatchService.getAllWithPagination(page, limit, filters);
+            return res.json({
+                success: true,
+                ...result
+            });
+        }
+
+        // Otherwise return all (backward compatibility)
         const db = getDatabase();
 
         const dispatches = db.prepare(`
@@ -317,7 +373,7 @@ const getDispatches = (req, res) => {
             return {
                 id: dispatch.id,
                 clientId: dispatch.client_id,
-                correriaId: dispatch.correria_id, // ← AGREGAR ESTA LÍNEA
+                correriaId: dispatch.correria_id,
                 invoiceNo: dispatch.invoice_no,
                 remissionNo: dispatch.remission_no,
                 items,

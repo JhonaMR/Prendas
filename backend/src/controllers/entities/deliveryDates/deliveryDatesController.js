@@ -6,16 +6,35 @@
 
 const {
     getAllDeliveryDates,
+    getAllWithPagination,
     saveDeliveryDatesBatch,
     deleteDeliveryDate
 } = require('./deliveryDatesService');
 
 /**
  * GET /api/delivery-dates
- * Obtener todas las fechas de entrega
+ * Obtener todas las fechas de entrega (con paginación opcional)
  */
 const getDeliveryDates = (req, res) => {
     try {
+        const { page, limit, confeccionistaId, referenceId, startDate, endDate } = req.query;
+
+        // If pagination params provided, use paginated endpoint
+        if (page || limit) {
+            const filters = {};
+            if (confeccionistaId) filters.confeccionistaId = confeccionistaId;
+            if (referenceId) filters.referenceId = referenceId;
+            if (startDate) filters.startDate = startDate;
+            if (endDate) filters.endDate = endDate;
+
+            const result = getAllWithPagination(page, limit, filters);
+            return res.json({
+                success: true,
+                ...result
+            });
+        }
+
+        // Otherwise return all dates (backward compatibility)
         const dates = getAllDeliveryDates();
 
         return res.json({
