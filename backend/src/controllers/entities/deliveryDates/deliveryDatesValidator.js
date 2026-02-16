@@ -8,41 +8,42 @@ const validateDeliveryDate = (data) => {
     const errors = {};
 
     // Validar confeccionista_id
-    if (!data.confeccionistaId || data.confeccionistaId.trim() === '') {
+    if (!data.confeccionistaId || (typeof data.confeccionistaId === 'string' && data.confeccionistaId.trim() === '')) {
         errors.confeccionistaId = 'Confeccionista es requerido';
     }
 
     // Validar reference_id
-    if (!data.referenceId || data.referenceId.trim() === '') {
+    if (!data.referenceId || (typeof data.referenceId === 'string' && data.referenceId.trim() === '')) {
         errors.referenceId = 'Referencia es requerida';
     }
 
     // Validar quantity
-    if (!data.quantity || data.quantity <= 0) {
+    if (data.quantity === undefined || data.quantity === null || data.quantity === '') {
+        errors.quantity = 'Cantidad es requerida';
+    } else if (data.quantity <= 0) {
         errors.quantity = 'Cantidad debe ser mayor a 0';
-    }
-    if (!Number.isInteger(data.quantity)) {
+    } else if (!Number.isInteger(Number(data.quantity))) {
         errors.quantity = 'Cantidad debe ser un número entero';
     }
 
     // Validar send_date
-    if (!data.sendDate || data.sendDate.trim() === '') {
+    if (!data.sendDate || (typeof data.sendDate === 'string' && data.sendDate.trim() === '')) {
         errors.sendDate = 'Fecha de envío es requerida';
     } else if (!isValidDate(data.sendDate)) {
-        errors.sendDate = 'Fecha de envío debe ser una fecha válida (YYYY-MM-DD)';
+        errors.sendDate = `Fecha de envío inválida: ${data.sendDate} (formato: YYYY-MM-DD)`;
     }
 
     // Validar expected_date
-    if (!data.expectedDate || data.expectedDate.trim() === '') {
+    if (!data.expectedDate || (typeof data.expectedDate === 'string' && data.expectedDate.trim() === '')) {
         errors.expectedDate = 'Fecha presupuestada es requerida';
     } else if (!isValidDate(data.expectedDate)) {
-        errors.expectedDate = 'Fecha presupuestada debe ser una fecha válida (YYYY-MM-DD)';
+        errors.expectedDate = `Fecha presupuestada inválida: ${data.expectedDate} (formato: YYYY-MM-DD)`;
     }
 
     // Validar delivery_date (opcional pero si existe debe ser válida)
-    if (data.deliveryDate && data.deliveryDate.trim() !== '') {
+    if (data.deliveryDate && (typeof data.deliveryDate === 'string' && data.deliveryDate.trim() !== '')) {
         if (!isValidDate(data.deliveryDate)) {
-            errors.deliveryDate = 'Fecha de entrega debe ser una fecha válida (YYYY-MM-DD)';
+            errors.deliveryDate = `Fecha de entrega inválida: ${data.deliveryDate} (formato: YYYY-MM-DD)`;
         }
     }
 
@@ -57,7 +58,7 @@ const validateDeliveryDate = (data) => {
     }
 
     // Validar created_by
-    if (!data.createdBy || data.createdBy.trim() === '') {
+    if (!data.createdBy || (typeof data.createdBy === 'string' && data.createdBy.trim() === '')) {
         errors.createdBy = 'Usuario creador es requerido';
     }
 
@@ -108,9 +109,35 @@ const validateConfeccionistaExists = (db, confeccionistaId) => {
     }
 };
 
+/**
+ * Detectar registros duplicados en un lote
+ * Duplicados = mismo confeccionistaId, referenceId y sendDate
+ */
+const detectDuplicates = (records) => {
+    const seen = new Map();
+    const duplicates = [];
+
+    records.forEach((record, index) => {
+        const key = `${record.confeccionistaId}|${record.referenceId}|${record.sendDate}`;
+        
+        if (seen.has(key)) {
+            duplicates.push({
+                index,
+                firstIndex: seen.get(key),
+                key
+            });
+        } else {
+            seen.set(key, index);
+        }
+    });
+
+    return duplicates;
+};
+
 module.exports = {
     validateDeliveryDate,
     isValidDate,
     validateReferenceExists,
-    validateConfeccionistaExists
+    validateConfeccionistaExists,
+    detectDuplicates
 };

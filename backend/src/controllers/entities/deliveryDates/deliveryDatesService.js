@@ -5,7 +5,7 @@
  */
 
 const { getDatabase, generateId } = require('../../../config/database');
-const { validateDeliveryDate, validateReferenceExists, validateConfeccionistaExists } = require('./deliveryDatesValidator');
+const { validateDeliveryDate, validateReferenceExists, validateConfeccionistaExists, detectDuplicates } = require('./deliveryDatesValidator');
 
 /**
  * Obtener todas las fechas de entrega
@@ -36,23 +36,43 @@ const getAllDeliveryDates = () => {
 
 /**
  * Guardar o actualizar múltiples fechas de entrega (batch)
+ * Implementa persistencia parcial: guarda registros válidos incluso si algunos fallan
  */
 const saveDeliveryDatesBatch = (dates, userId) => {
     const errors = [];
-    const saved = [];
+    const validRecords = [];
+    const savedIds = [];
 
     try {
         const db = getDatabase();
-        db.prepare('BEGIN').run();
 
+        // FASE 0: Detectar duplicados en el lote
+        const duplicates = detectDuplicates(dates);
+        duplicates.forEach(dup => {
+            errors.push({
+                index: dup.index,
+                record: dates[dup.index],
+                errors: { 
+                    duplicate: `Registro duplicado (mismo confeccionista, referencia y fecha que fila ${dup.firstIndex + 1})`
+                }
+            });
+        });
+
+        // FASE 1: Validar todos los registros sin hacer cambios en BD
         for (let i = 0; i < dates.length; i++) {
             const date = dates[i];
 
-            // Validar datos
+            // Saltar si ya está marcado como duplicado
+            if (errors.some(e => e.index === i)) {
+                continue;
+            }
+
+            // Validar datos básicos
             const validation = validateDeliveryDate(date);
             if (!validation.isValid) {
                 errors.push({
                     index: i,
+                    record: date,
                     errors: validation.errors
                 });
                 continue;
@@ -62,7 +82,8 @@ const saveDeliveryDatesBatch = (dates, userId) => {
             if (!validateConfeccionistaExists(db, date.confeccionistaId)) {
                 errors.push({
                     index: i,
-                    errors: { confeccionistaId: 'Confeccionista no existe' }
+                    record: date,
+                    errors: { confeccionistaId: `Confeccionista no existe: ${date.confeccionistaId}` }
                 });
                 continue;
             }
@@ -70,70 +91,86 @@ const saveDeliveryDatesBatch = (dates, userId) => {
             if (!validateReferenceExists(db, date.referenceId)) {
                 errors.push({
                     index: i,
-                    errors: { referenceId: 'Referencia no existe' }
+                    record: date,
+                    errors: { referenceId: `Referencia no existe: ${date.referenceId}` }
                 });
                 continue;
             }
 
-            // Preparar datos para insertar
-            const id = date.id && !date.id.startsWith('temp_') ? date.id : generateId();
-            const createdAt = date.createdAt || new Date().toISOString();
-            const createdBy = date.createdBy || userId;
-
-            // Upsert (INSERT or UPDATE)
-            const upsertStmt = db.prepare(`
-                INSERT INTO delivery_dates (
-                    id, confeccionista_id, reference_id, quantity, 
-                    send_date, expected_date, delivery_date, 
-                    process, observation, created_by, created_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT(id) DO UPDATE SET
-                    confeccionista_id = excluded.confeccionista_id,
-                    reference_id = excluded.reference_id,
-                    quantity = excluded.quantity,
-                    send_date = excluded.send_date,
-                    expected_date = excluded.expected_date,
-                    delivery_date = excluded.delivery_date,
-                    process = excluded.process,
-                    observation = excluded.observation
-            `);
-
-            upsertStmt.run(
-                id,
-                date.confeccionistaId,
-                date.referenceId,
-                date.quantity,
-                date.sendDate,
-                date.expectedDate,
-                date.deliveryDate || null,
-                date.process || '',
-                date.observation || '',
-                createdBy,
-                createdAt
-            );
-
-            saved.push(id);
+            // Si llegó aquí, el registro es válido
+            validRecords.push({
+                index: i,
+                data: date
+            });
         }
 
-        if (errors.length === 0) {
-            db.prepare('COMMIT').run();
-        } else {
-            db.prepare('ROLLBACK').run();
-            throw new Error('Errores de validación encontrados');
+        // FASE 2: Guardar solo los registros válidos en una transacción atómica
+        if (validRecords.length > 0) {
+            db.prepare('BEGIN').run();
+
+            try {
+                for (const record of validRecords) {
+                    const date = record.data;
+                    const id = date.id && !date.id.startsWith('temp_') ? date.id : generateId();
+                    const createdAt = date.createdAt || new Date().toISOString();
+                    const createdBy = date.createdBy || userId;
+
+                    // Upsert (INSERT or UPDATE)
+                    const upsertStmt = db.prepare(`
+                        INSERT INTO delivery_dates (
+                            id, confeccionista_id, reference_id, quantity, 
+                            send_date, expected_date, delivery_date, 
+                            process, observation, created_by, created_at
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ON CONFLICT(id) DO UPDATE SET
+                            confeccionista_id = excluded.confeccionista_id,
+                            reference_id = excluded.reference_id,
+                            quantity = excluded.quantity,
+                            send_date = excluded.send_date,
+                            expected_date = excluded.expected_date,
+                            delivery_date = excluded.delivery_date,
+                            process = excluded.process,
+                            observation = excluded.observation
+                    `);
+
+                    upsertStmt.run(
+                        id,
+                        date.confeccionistaId,
+                        date.referenceId,
+                        date.quantity,
+                        date.sendDate,
+                        date.expectedDate,
+                        date.deliveryDate || null,
+                        date.process || '',
+                        date.observation || '',
+                        createdBy,
+                        createdAt
+                    );
+
+                    savedIds.push(id);
+                }
+
+                db.prepare('COMMIT').run();
+                console.log(`✅ Guardados ${savedIds.length} registros válidos`);
+            } catch (dbError) {
+                db.prepare('ROLLBACK').run();
+                console.error('❌ Error durante transacción:', dbError);
+                throw dbError;
+            }
         }
 
+        // FASE 3: Retornar respuesta con resumen completo
         return {
-            success: true,
-            saved: saved.length,
+            success: errors.length === 0,
+            summary: {
+                total: dates.length,
+                saved: savedIds.length,
+                failed: errors.length
+            },
+            saved: savedIds,
             errors: errors
         };
     } catch (error) {
-        try {
-            const db = getDatabase();
-            db.prepare('ROLLBACK').run();
-        } catch (rollbackError) {
-            console.error('Error during rollback:', rollbackError);
-        }
         console.error('❌ Error saving delivery dates batch:', error);
         throw error;
     }

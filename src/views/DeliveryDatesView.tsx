@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { AppState, DeliveryDate, UserRole, Confeccionista } from '../types';
 import api from '../services/api';
+import { validateBatch, validateRecord, ValidationError } from '../utils/deliveryDateValidator';
 
 interface DeliveryDatesViewProps {
   state: AppState;
@@ -15,6 +16,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [hideDelivered, setHideDelivered] = useState(false);
   const [confFilterId, setConfFilterId] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [validationErrors, setValidationErrors] = useState<{ [index: number]: ValidationError }>({});
   
   const hasUnsavedChanges = useRef(false);
   const isAdmin = user?.role === UserRole.admin || user?.role === 'admin';
@@ -68,6 +70,24 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       )
     }));
 
+    // Validar el campo actualizado
+    const updatedRecord = state.deliveryDates.find(d => d.id === id);
+    if (updatedRecord) {
+      const updated = { ...updatedRecord, [field]: value };
+      const validation = validateRecord(updated);
+      
+      setValidationErrors(prev => {
+        const recordIndex = state.deliveryDates.findIndex(d => d.id === id);
+        if (validation.isValid) {
+          const newErrors = { ...prev };
+          delete newErrors[recordIndex];
+          return newErrors;
+        } else {
+          return { ...prev, [recordIndex]: validation.errors };
+        }
+      });
+    }
+
     hasUnsavedChanges.current = true;
     if (onUnsavedChanges) onUnsavedChanges(true);
   };
@@ -115,14 +135,69 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       return;
     }
 
+    // Validar todos los registros antes de enviar
+    const batchValidation = validateBatch(changedData);
+    if (!batchValidation.isValid) {
+      // Actualizar errores de validación
+      const errorMap: { [index: number]: ValidationError } = {};
+      Object.entries(batchValidation.errors).forEach(([indexStr, errors]) => {
+        const recordIndex = state.deliveryDates.findIndex(d => d.id === changedData[parseInt(indexStr)].id);
+        if (recordIndex >= 0) {
+          errorMap[recordIndex] = errors;
+        }
+      });
+      setValidationErrors(errorMap);
+
+      let errorMessage = '❌ Errores de validación:\n\n';
+      Object.entries(batchValidation.errors).forEach(([indexStr, errors]) => {
+        const index = parseInt(indexStr);
+        errorMessage += `Fila ${index + 1}:\n`;
+        Object.entries(errors).forEach(([field, msg]) => {
+          errorMessage += `  • ${field}: ${msg}\n`;
+        });
+      });
+      alert(errorMessage);
+      return;
+    }
+
     setIsSaving(true);
     try {
       const result = await api.saveDeliveryDatesBatch(changedData);
 
-      if (result.success) {
+      if (result.data?.summary) {
+        const { summary, errors } = result.data;
+        
+        // Mostrar resumen
+        let message = `📊 Resultado: ${summary.saved} guardado(s)`;
+        if (summary.failed > 0) {
+          message += `, ${summary.failed} error(es)`;
+        }
+        alert(message);
+
+        // Si hay registros guardados, actualizar initialData
+        if (summary.saved > 0) {
+          setInitialData(state.deliveryDates);
+          hasUnsavedChanges.current = false;
+          if (onUnsavedChanges) onUnsavedChanges(false);
+          setValidationErrors({});
+        }
+
+        // Si hay errores, mostrarlos
+        if (errors && errors.length > 0) {
+          let errorMessage = '❌ Errores encontrados:\n\n';
+          errors.forEach((err: any) => {
+            errorMessage += `Fila ${err.index + 1}:\n`;
+            Object.entries(err.errors).forEach(([field, msg]: [string, any]) => {
+              errorMessage += `  • ${field}: ${msg}\n`;
+            });
+          });
+          alert(errorMessage);
+        }
+      } else if (result.success) {
         setInitialData(state.deliveryDates);
         hasUnsavedChanges.current = false;
         if (onUnsavedChanges) onUnsavedChanges(false);
+        setValidationErrors({});
         alert(`✅ ${changedData.length} registro(s) guardado(s)`);
       } else {
         alert(`❌ Error: ${result.message}`);
@@ -312,57 +387,84 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredData.map(row => {
+              {filteredData.map((row, displayIndex) => {
+                const recordIndex = state.deliveryDates.findIndex(d => d.id === row.id);
+                const hasErrors = validationErrors[recordIndex];
                 const difFechas = calcDaysDiff(row.expectedDate, row.deliveryDate);
                 const rotInicial = calcDaysDiff(row.sendDate, row.expectedDate);
                 const rotFinal = calcDaysDiff(row.sendDate, row.deliveryDate);
                 const rotDiff = rotInicial !== null && rotFinal !== null ? rotInicial - rotFinal : null;
 
                 return (
-                  <tr key={row.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={row.id} className={`hover:bg-slate-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}>
                     <td className="px-4 py-2">
-                      <ConfeccionistaAutocomplete
-                        value={row.confeccionistaId}
-                        confeccionistas={state.confeccionistas}
-                        onChange={val => updateRow(row.id, 'confeccionistaId', val)}
-                        disabled={!isAdmin}
-                      />
+                      <div>
+                        <ConfeccionistaAutocomplete
+                          value={row.confeccionistaId}
+                          confeccionistas={state.confeccionistas}
+                          onChange={val => updateRow(row.id, 'confeccionistaId', val)}
+                          disabled={!isAdmin}
+                        />
+                        {hasErrors?.confeccionistaId && (
+                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.confeccionistaId}</p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-2 text-center">
-                      <input
-                        type="text"
-                        value={row.referenceId}
-                        onChange={e => updateRow(row.id, 'referenceId', e.target.value)}
-                        readOnly={!isAdmin}
-                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-100"
-                      />
+                      <div>
+                        <input
+                          type="text"
+                          value={row.referenceId}
+                          onChange={e => updateRow(row.id, 'referenceId', e.target.value)}
+                          readOnly={!isAdmin}
+                          className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-100 ${hasErrors?.referenceId ? 'border-red-500' : 'border-slate-200'}`}
+                        />
+                        {hasErrors?.referenceId && (
+                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.referenceId}</p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-2 text-center">
-                      <input
-                        type="number"
-                        value={row.quantity}
-                        onChange={e => updateRow(row.id, 'quantity', Number(e.target.value))}
-                        readOnly={!isAdmin}
-                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100"
-                      />
+                      <div>
+                        <input
+                          type="number"
+                          value={row.quantity}
+                          onChange={e => updateRow(row.id, 'quantity', Number(e.target.value))}
+                          readOnly={!isAdmin}
+                          className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100 ${hasErrors?.quantity ? 'border-red-500' : 'border-slate-200'}`}
+                        />
+                        {hasErrors?.quantity && (
+                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.quantity}</p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-2 text-center bg-yellow-50">
-                      <input
-                        type="date"
-                        value={row.sendDate}
-                        onChange={e => updateRow(row.id, 'sendDate', e.target.value)}
-                        readOnly={!isAdmin}
-                        className="w-full px-2 py-1 bg-white border border-orange-200 rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100"
-                      />
+                      <div>
+                        <input
+                          type="date"
+                          value={row.sendDate}
+                          onChange={e => updateRow(row.id, 'sendDate', e.target.value)}
+                          readOnly={!isAdmin}
+                          className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.sendDate ? 'border-red-500' : 'border-orange-200'}`}
+                        />
+                        {hasErrors?.sendDate && (
+                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.sendDate}</p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-2 text-center bg-yellow-50">
-                      <input
-                        type="date"
-                        value={row.expectedDate}
-                        onChange={e => updateRow(row.id, 'expectedDate', e.target.value)}
-                        readOnly={!isAdmin}
-                        className="w-full px-2 py-1 bg-white border border-orange-200 rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100"
-                      />
+                      <div>
+                        <input
+                          type="date"
+                          value={row.expectedDate}
+                          onChange={e => updateRow(row.id, 'expectedDate', e.target.value)}
+                          readOnly={!isAdmin}
+                          className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.expectedDate ? 'border-red-500' : 'border-orange-200'}`}
+                        />
+                        {hasErrors?.expectedDate && (
+                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.expectedDate}</p>
+                        )}
+                      </div>
                     </td>
                     <td className="px-3 py-2 text-center bg-blue-50">
                       <input

@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { AppState, Order, ItemEntry, User, Client } from '../types';
 import { Icons } from '../constants';
+import api from '../services/api';
 
 interface OrderSettleViewProps {
   state: AppState;
@@ -55,7 +56,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ state, user, updateSt
     reader.readAsText(file);
   };
 
-  const handleSaveOrder = () => {
+  const handleSaveOrder = async () => {
     if (!selectedClientId || !selectedSellerId || !selectedCorreriaId) {
       alert("Faltan campos obligatorios (Cliente, Vendedor o Campaña)");
       return;
@@ -71,7 +72,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ state, user, updateSt
     }, 0);
 
     const newOrder: Order = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).substring(2, 11),
       clientId: selectedClientId,
       sellerId: selectedSellerId,
       correriaId: selectedCorreriaId,
@@ -82,17 +83,30 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ state, user, updateSt
       orderNumber: orderNumber === '' ? undefined : orderNumber
     };
 
-    updateState(prev => ({
-      ...prev,
-      orders: [newOrder, ...prev.orders]
-    }));
+    try {
+      // Guardar en la base de datos
+      const result = await api.createOrder(newOrder);
+      
+      if (result.success) {
+        // Actualizar estado local
+        updateState(prev => ({
+          ...prev,
+          orders: [newOrder, ...prev.orders]
+        }));
 
-    alert("Pedido asentado con éxito");
-    setTempItems([]);
-    setSelectedClientId('');
-    setClientSearch('');
-    setOrderNumber('');
-    if(fileInputRef.current) fileInputRef.current.value = '';
+        alert("✅ Pedido asentado y guardado con éxito");
+        setTempItems([]);
+        setSelectedClientId('');
+        setClientSearch('');
+        setOrderNumber('');
+        if(fileInputRef.current) fileInputRef.current.value = '';
+      } else {
+        alert(`❌ Error al guardar: ${result.message}`);
+      }
+    } catch (error) {
+      console.error('Error guardando pedido:', error);
+      alert('❌ Error de conexión al guardar el pedido');
+    }
   };
 
   const totalUnits = tempItems.reduce((a, b) => a + b.quantity, 0);

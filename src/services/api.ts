@@ -763,7 +763,18 @@ class ApiService {
         body: JSON.stringify({ dates })
       });
 
-      return this.handleResponse(response);
+      const data = await this.handleResponse(response);
+      
+      // La respuesta ahora incluye summary, saved, y errors
+      return {
+        success: data.success,
+        message: data.message,
+        data: {
+          summary: data.summary,
+          saved: data.saved,
+          errors: data.errors
+        }
+      };
     } catch (error: any) {
       return {
         success: false,

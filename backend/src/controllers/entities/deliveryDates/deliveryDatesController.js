@@ -34,6 +34,7 @@ const getDeliveryDates = (req, res) => {
 /**
  * POST /api/delivery-dates/batch
  * Guardar o actualizar múltiples fechas de entrega
+ * Implementa persistencia parcial: guarda válidos, rechaza inválidos
  */
 const saveDeliveryDatesBatchHandler = (req, res) => {
     try {
@@ -56,25 +57,22 @@ const saveDeliveryDatesBatchHandler = (req, res) => {
 
         const result = saveDeliveryDatesBatch(dates, userId);
 
-        if (result.errors.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Errores de validación encontrados',
-                errors: result.errors,
-                saved: result.saved
-            });
-        }
-
+        // Respuesta con persistencia parcial
         return res.json({
-            success: true,
-            message: `${result.saved} registro(s) guardado(s) exitosamente`,
-            saved: result.saved
+            success: result.summary.failed === 0,
+            summary: result.summary,
+            saved: result.saved,
+            errors: result.errors,
+            message: result.summary.failed === 0 
+                ? `✅ ${result.summary.saved} registro(s) guardado(s) exitosamente`
+                : `⚠️ ${result.summary.saved} guardado(s), ${result.summary.failed} error(es)`
         });
     } catch (error) {
         console.error('❌ Error:', error);
         return res.status(500).json({
             success: false,
-            message: 'Error al guardar fechas de entrega'
+            message: 'Error al guardar fechas de entrega',
+            error: error.message
         });
     }
 };

@@ -493,11 +493,27 @@ const createOrder = (req, res) => {
         db.prepare('BEGIN').run();
 
         try {
-            // Insertar pedido
-            db.prepare(`
-                INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(id, clientId, sellerId, correriaId, totalValue, createdAt, settledBy, orderNumber || null);
+            // Insertar pedido - sin order_number si no existe la columna
+            let insertOrderStmt;
+            try {
+                // Intentar insertar con order_number
+                insertOrderStmt = db.prepare(`
+                    INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                `);
+                insertOrderStmt.run(id, clientId, sellerId, correriaId, totalValue, createdAt, settledBy, orderNumber || null);
+            } catch (e) {
+                // Si falla, intentar sin order_number
+                if (e.message.includes('order_number')) {
+                    insertOrderStmt = db.prepare(`
+                        INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    `);
+                    insertOrderStmt.run(id, clientId, sellerId, correriaId, totalValue, createdAt, settledBy);
+                } else {
+                    throw e;
+                }
+            }
 
             // Insertar items
             const insertItem = db.prepare(`

@@ -266,6 +266,13 @@ function initDatabase() {
         )
     `);
 
+    // Agregar columna order_number si no existe (para bases de datos existentes)
+    try {
+        db.prepare('ALTER TABLE orders ADD COLUMN order_number INTEGER').run();
+    } catch (e) {
+        // La columna ya existe, ignorar error
+    }
+
     // ====================
     // TABLA: order_items (Items de cada pedido - Detalle)
     // ====================
