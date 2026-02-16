@@ -124,11 +124,6 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   };
 
   const handleSave = async () => {
-    if (!isAdmin) {
-      alert('No tienes permisos para guardar');
-      return;
-    }
-
     const changedData = state.deliveryDates.filter(current => {
       const initial = initialData.find(init => init.id === current.id);
       if (!initial) return true;
@@ -316,7 +311,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
             </label>
           </div>
 
-          {isAdmin && (
+          {true && (
             <div className="flex items-center gap-2 border-l border-slate-100 pl-3">
               <button
                 onClick={handleSave}
@@ -358,7 +353,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       </div>
 
       {/* BOTÓN AGREGAR */}
-      {isAdmin && (
+      {true && (
         <button
           onClick={addNewRow}
           className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
@@ -408,7 +403,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           value={row.confeccionistaId}
                           confeccionistas={state.confeccionistas}
                           onChange={val => updateRow(row.id, 'confeccionistaId', val)}
-                          disabled={!isAdmin}
+                          disabled={false}
                         />
                         {hasErrors?.confeccionistaId && (
                           <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.confeccionistaId}</p>
@@ -421,7 +416,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           type="text"
                           value={row.referenceId}
                           onChange={e => updateRow(row.id, 'referenceId', e.target.value)}
-                          readOnly={!isAdmin}
+                          readOnly={false}
                           className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-100 ${hasErrors?.referenceId ? 'border-red-500' : 'border-slate-200'}`}
                         />
                         {hasErrors?.referenceId && (
@@ -435,7 +430,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           type="number"
                           value={row.quantity}
                           onChange={e => updateRow(row.id, 'quantity', Number(e.target.value))}
-                          readOnly={!isAdmin}
+                          readOnly={false}
                           className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100 ${hasErrors?.quantity ? 'border-red-500' : 'border-slate-200'}`}
                         />
                         {hasErrors?.quantity && (
@@ -449,7 +444,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           type="date"
                           value={row.sendDate}
                           onChange={e => updateRow(row.id, 'sendDate', e.target.value)}
-                          readOnly={!isAdmin}
+                          readOnly={false}
                           className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.sendDate ? 'border-red-500' : 'border-orange-200'}`}
                         />
                         {hasErrors?.sendDate && (
@@ -463,7 +458,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           type="date"
                           value={row.expectedDate}
                           onChange={e => updateRow(row.id, 'expectedDate', e.target.value)}
-                          readOnly={!isAdmin}
+                          readOnly={false}
                           className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.expectedDate ? 'border-red-500' : 'border-orange-200'}`}
                         />
                         {hasErrors?.expectedDate && (
@@ -476,7 +471,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         type="date"
                         value={row.deliveryDate || ''}
                         onChange={e => updateRow(row.id, 'deliveryDate', e.target.value || null)}
-                        readOnly={!isAdmin}
+                        readOnly={false}
                         className="w-full px-2 py-1 bg-white border border-blue-200 rounded-lg font-bold text-center text-blue-700 focus:ring-2 focus:ring-blue-100"
                       />
                     </td>
@@ -501,7 +496,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         type="text"
                         value={row.process}
                         onChange={e => updateRow(row.id, 'process', e.target.value)}
-                        readOnly={!isAdmin}
+                        readOnly={false}
                         placeholder="Estado..."
                         className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300"
                       />
@@ -511,13 +506,13 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         type="text"
                         value={row.observation}
                         onChange={e => updateRow(row.id, 'observation', e.target.value)}
-                        readOnly={!isAdmin}
+                        readOnly={false}
                         placeholder="Nota..."
                         className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300"
                       />
                     </td>
                     <td className="px-3 py-2 text-center">
-                      {isAdmin && (
+                      {true && (
                         <button
                           onClick={() => deleteRow(row.id)}
                           className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
