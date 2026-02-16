@@ -1,21 +1,20 @@
 
 import React, { useState } from 'react';
-import { SIZES, Icons } from '../constants';
+import { Icons } from '../constants';
 
 interface ScannerSimulatorProps {
-  onScan: (reference: string, size: string, quantity: number) => void;
+  onScan: (reference: string, quantity: number) => void;
   label?: string;
 }
 
 const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Escanear Referencia" }) => {
   const [ref, setRef] = useState('');
-  const [size, setSize] = useState(SIZES[2]); // Default M
   const [qty, setQty] = useState(1);
   const [isCameraActive, setIsCameraActive] = useState(false);
 
   const handleTrigger = () => {
     if (ref.trim() && qty > 0) {
-      onScan(ref.trim().toUpperCase(), size, qty);
+      onScan(ref.trim().toUpperCase(), qty);
       setRef('');
       setQty(1);
     }
@@ -38,7 +37,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-5 sm:gap-6 items-end">
           
           {/* Reference Input */}
-          <div className="lg:col-span-4 space-y-2">
+          <div className="lg:col-span-6 space-y-2">
             <label className="text-[10px] font-black text-blue-500 uppercase tracking-widest px-4">{label}</label>
             <div className="relative">
               <input 
@@ -55,26 +54,14 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
             </div>
           </div>
 
-          {/* Size Selector */}
-          <div className="lg:col-span-2 space-y-2">
-            <label className="text-[10px] font-black text-pink-500 uppercase tracking-widest px-4">Talla</label>
-            <select 
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-              className="w-full px-6 py-3.5 sm:py-4 bg-white border border-slate-200 rounded-2xl sm:rounded-3xl focus:ring-4 focus:ring-pink-100 transition-all font-black appearance-none text-slate-900 text-sm sm:text-base"
-            >
-              {SIZES.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-
           {/* Manual Quantity with +/- buttons */}
           <div className="lg:col-span-3 space-y-2">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 text-center block">Cant. Manual</label>
-            <div className="flex items-center bg-slate-100 p-1 rounded-2xl sm:rounded-[24px] border border-slate-200 w-full max-w-[200px] mx-auto lg:mx-0">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4 text-center block">Cantidad</label>
+            <div className="flex items-center bg-slate-100 p-1 rounded-2xl sm:rounded-[24px] border border-slate-200 w-full">
               <button 
                 type="button"
                 onClick={() => adjustQty(-1)}
-                className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center bg-white rounded-xl text-slate-500 hover:text-pink-500 hover:shadow-sm transition-all font-bold text-xl active:scale-90"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center bg-white rounded-xl text-slate-500 hover:text-pink-500 hover:shadow-sm transition-all font-bold text-lg active:scale-90"
               >
                 -
               </button>
@@ -87,7 +74,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
               <button 
                 type="button"
                 onClick={() => adjustQty(1)}
-                className="w-9 h-9 sm:w-10 sm:h-10 flex-shrink-0 flex items-center justify-center bg-white rounded-xl text-slate-500 hover:text-blue-500 hover:shadow-sm transition-all font-bold text-xl active:scale-90"
+                className="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center bg-white rounded-xl text-slate-500 hover:text-blue-500 hover:shadow-sm transition-all font-bold text-lg active:scale-90"
               >
                 +
               </button>

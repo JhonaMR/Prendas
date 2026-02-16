@@ -70,20 +70,20 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setShowClientResults(false);
   };
 
-  const handleScan = (ref: string, size: string, quantity: number) => {
+  const handleScan = (ref: string, quantity: number) => {
     const refExists = referencesMaster.some(r => r.id === ref);
     if (!refExists) {
       alert(`AVISO: La referencia "${ref}" no existe en el maestro de referencias. Recuerde crearla en el apartado de Maestros.`);
     }
 
     setItems(prev => {
-      const idx = prev.findIndex(i => i.reference === ref && i.size === size);
+      const idx = prev.findIndex(i => i.reference === ref);
       if (idx > -1) {
         const next = [...prev];
         next[idx] = { ...next[idx], quantity: next[idx].quantity + quantity };
         return next;
       }
-      return [...prev, { reference: ref, size, quantity }];
+      return [...prev, { reference: ref, quantity }];
     });
   };
 
@@ -234,32 +234,19 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {Object.entries(
-                items.reduce((acc, curr) => {
-                  if (!acc[curr.reference]) acc[curr.reference] = [];
-                  acc[curr.reference].push(curr);
-                  return acc;
-                }, {} as Record<string, ItemEntry[]>)
-                // FIX: Cast Object.entries result to fix 'unknown' type issues
-              ).map(([ref, sizes]: [string, any]) => (
-                <div key={ref} className="p-6 sm:p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{ref}</span>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">Ref. Total: {sizes.reduce((a: number, b: ItemEntry) => a + b.quantity, 0)}</span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                    {sizes.map((s: ItemEntry) => (
-                      <div key={s.size} className="p-3 sm:p-4 bg-white border border-slate-200 rounded-[16px] sm:rounded-[20px] flex flex-col items-center group relative">
-                        <span className="text-[9px] font-black text-slate-400 uppercase mb-1">{s.size}</span>
-                        <span className="text-lg sm:text-xl font-black text-blue-600">{s.quantity}</span>
-                        <button 
-                          onClick={() => setItems(prev => prev.filter(p => !(p.reference === ref && p.size === s.size)))}
-                          className="absolute -top-1 -right-1 w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+              {items.map((item) => (
+                <div key={item.reference} className="p-6 sm:p-8">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{item.reference}</span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg sm:text-xl font-black text-blue-600">{item.quantity}</span>
+                      <button 
+                        onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -323,11 +310,10 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
             
             // Group items for display
             const itemsByRef = d.items.reduce((acc, curr) => {
-              if(!acc[curr.reference]) acc[curr.reference] = { qty: 0, sizes: {} as Record<string, number> };
-              acc[curr.reference].qty += curr.quantity;
-              acc[curr.reference].sizes[curr.size] = (acc[curr.reference].sizes[curr.size] || 0) + curr.quantity;
+              if(!acc[curr.reference]) acc[curr.reference] = 0;
+              acc[curr.reference] += curr.quantity;
               return acc;
-            }, {} as Record<string, { qty: number, sizes: Record<string, number> }>);
+            }, {} as Record<string, number>);
 
             return (
               <div key={d.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
@@ -389,31 +375,23 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100">
                                   <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia / Descripción</th>
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Cant x Talla</th>
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Total Unid</th>
+                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
                                   <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">Precio Unit</th>
                                   <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {Object.entries(itemsByRef).map(([ref, rData]: [string, any]) => {
+                                {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => {
                                   const masterRef = referencesMaster.find(rm => rm.id === ref);
                                   const price = masterRef?.price || 0;
-                                  const subtotal = price * rData.qty;
+                                  const subtotal = price * qty;
                                   return (
                                     <tr key={ref}>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4">
                                           <p className="font-black text-blue-600 text-xs sm:text-sm">{ref}</p>
                                           <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">{masterRef?.description || 'Sin descripción'}</p>
                                       </td>
-                                      <td className="px-4 py-3 sm:px-6 sm:py-4">
-                                          <div className="flex flex-wrap gap-2">
-                                            {Object.entries(rData.sizes).map(([s, q]: [string, any]) => (
-                                                <span key={s} className="px-2 py-0.5 bg-slate-100 rounded-md text-[9px] font-black text-slate-500">{s}: {q}</span>
-                                            ))}
-                                          </div>
-                                      </td>
-                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{rData.qty}</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-slate-500 text-xs sm:text-sm">${price.toLocaleString()}</td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-slate-800 text-xs sm:text-sm">${subtotal.toLocaleString()}</td>
                                     </tr>
@@ -422,7 +400,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                             </tbody>
                             <tfoot>
                                 <tr className="bg-slate-50/80 border-t border-slate-100">
-                                  <td colSpan={2} className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTALES DESPACHO</td>
+                                  <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTALES DESPACHO</td>
                                   <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-slate-900 text-lg sm:text-xl">{totalQty}</td>
                                   <td></td>
                                   <td className="px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-pink-600 text-xl sm:text-2xl">${d.items.reduce((acc, i) => acc + (referencesMaster.find(rm => rm.id === i.reference)?.price || 0) * i.quantity, 0).toLocaleString()}</td>

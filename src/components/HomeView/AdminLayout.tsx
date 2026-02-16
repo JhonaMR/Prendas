@@ -7,7 +7,7 @@ import ChartsVisualization from './ChartsVisualization.tsx';
 
 interface AdminLayoutProps {
   user: User;
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: string, options?: { directToBatch?: boolean }) => void;
   state: AppState;
   correrias: Correria[];
   correriasLoading: boolean;
@@ -130,7 +130,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, state, corr
         {navigationItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => onNavigate(item.id)}
+            onClick={() => {
+              if (item.id === 'reception') {
+                onNavigate(item.id, { directToBatch: true });
+              } else {
+                onNavigate(item.id);
+              }
+            }}
             className="group relative h-24 md:h-28 rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
           >
             {/* Background gradient on hover */}

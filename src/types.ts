@@ -65,7 +65,6 @@ export type ChargeType = 'Compra' | 'Cobro' | null;
 
 export interface ItemEntry {
   reference: string;
-  size: string;
   quantity: number;
 }
 

@@ -15,6 +15,7 @@ interface ReceptionViewProps {
   onAddReception?: (reception: any) => Promise<any>;
   ReturnReceptionComponent?: React.ComponentType<any>;
   state?: AppState;
+  directToBatch?: boolean;
 }
 
 const ReceptionView: React.FC<ReceptionViewProps> = ({ 
@@ -26,10 +27,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   clientsMaster = [],
   onAddReception,
   ReturnReceptionComponent,
-  state
+  state,
+  directToBatch = false
 }) => {
-  const [isCounting, setIsCounting] = useState(false);
-  const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return'>('selector');
+  const [isCounting, setIsCounting] = useState(directToBatch);
+  const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return'>(directToBatch ? 'batch' : 'selector');
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refSearch, setRefSearch] = useState('');
@@ -94,20 +96,20 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     return confeccionistasMaster.find(c => c.id === confId)?.name || confId;
   };
 
-  const handleScan = (ref: string, size: string, quantity: number) => {
+  const handleScan = (ref: string, quantity: number) => {
     const refExists = referencesMaster.some(r => r.id === ref);
     if (!refExists) {
       alert(`AVISO: La referencia "${ref}" no existe en el maestro de referencias. Recuerde crearla en el apartado de Maestros.`);
     }
 
     setItems(prev => {
-      const idx = prev.findIndex(i => i.reference === ref && i.size === size);
+      const idx = prev.findIndex(i => i.reference === ref);
       if (idx > -1) {
         const next = [...prev];
         next[idx] = { ...next[idx], quantity: next[idx].quantity + quantity };
         return next;
       }
-      return [...prev, { reference: ref, size, quantity }];
+      return [...prev, { reference: ref, quantity }];
     });
   };
 
@@ -335,31 +337,19 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {Object.entries(
-                items.reduce((acc, curr) => {
-                  if (!acc[curr.reference]) acc[curr.reference] = [];
-                  acc[curr.reference].push(curr);
-                  return acc;
-                }, {} as Record<string, ItemEntry[]>)
-              ).map(([ref, sizes]: [string, any]) => (
-                <div key={ref} className="p-6 sm:p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{ref}</span>
-                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase">Subtotal: {sizes.reduce((a: number, b: ItemEntry) => a + b.quantity, 0)}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {sizes.map((s: ItemEntry) => (
-                      <div key={s.size} className="px-4 py-2 sm:px-5 sm:py-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3 group relative">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.size}</span>
-                        <span className="font-black text-slate-800 text-base sm:text-lg">{s.quantity}</span>
-                        <button 
-                          onClick={() => setItems(prev => prev.filter(p => !(p.reference === ref && p.size === s.size)))}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+              {items.map((item) => (
+                <div key={item.reference} className="p-6 sm:p-8">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{item.reference}</span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg sm:text-xl font-black text-slate-800">{item.quantity}</span>
+                      <button 
+                        onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -425,11 +415,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             const isExpanded = expandedId === r.id;
             const totalQty = r.items.reduce((a, b) => a + b.quantity, 0);
             const itemsByRef = r.items.reduce((acc, curr) => {
-              if(!acc[curr.reference]) acc[curr.reference] = { qty: 0, sizes: {} as Record<string, number> };
-              acc[curr.reference].qty += curr.quantity;
-              acc[curr.reference].sizes[curr.size] = (acc[curr.reference].sizes[curr.size] || 0) + curr.quantity;
+              if(!acc[curr.reference]) acc[curr.reference] = 0;
+              acc[curr.reference] += curr.quantity;
               return acc;
-            }, {} as Record<string, { qty: number, sizes: Record<string, number> }>);
+            }, {} as Record<string, number>);
 
             return (
               <div key={r.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
@@ -492,28 +481,20 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                             <thead>
                                 <tr className="bg-slate-50 border-b border-slate-100">
                                   <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia</th>
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Cant x Talla</th>
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Total Ref</th>
+                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-50">
-                                {Object.entries(itemsByRef).map(([ref, rData]: [string, any]) => (
+                                {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
                                   <tr key={ref}>
                                     <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">{ref}</td>
-                                    <td className="px-4 py-3 sm:px-6 sm:py-4">
-                                        <div className="flex flex-wrap gap-2">
-                                          {Object.entries(rData.sizes).map(([s, q]: [string, any]) => (
-                                              <span key={s} className="px-2 py-0.5 bg-slate-100 rounded-md text-[9px] font-black text-slate-500">{s}: {q}</span>
-                                          ))}
-                                        </div>
-                                    </td>
-                                    <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{rData.qty}</td>
+                                    <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
                                   </tr>
                                 ))}
                             </tbody>
                             <tfoot>
                                 <tr className="bg-slate-50/80 border-t border-slate-100">
-                                  <td colSpan={2} className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
+                                  <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
                                   <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-blue-600 text-xl sm:text-2xl">{totalQty}</td>
                                 </tr>
                             </tfoot>

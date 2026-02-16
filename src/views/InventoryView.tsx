@@ -15,21 +15,16 @@ const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches })
       received: number,
       dispatched: number,
       available: number,
-      sizes: Record<string, { r: number, d: number, a: number }>,
       lotsCount: number
     }> = {};
 
     receptions.forEach(r => {
       r.items.forEach(item => {
         if (!stock[item.reference]) {
-          stock[item.reference] = { received: 0, dispatched: 0, available: 0, sizes: {}, lotsCount: 0 };
+          stock[item.reference] = { received: 0, dispatched: 0, available: 0, lotsCount: 0 };
         }
         stock[item.reference].received += item.quantity;
         stock[item.reference].available += item.quantity;
-        
-        if (!stock[item.reference].sizes[item.size]) stock[item.reference].sizes[item.size] = { r: 0, d: 0, a: 0 };
-        stock[item.reference].sizes[item.size].r += item.quantity;
-        stock[item.reference].sizes[item.size].a += item.quantity;
       });
       const uniqueRefsInBatch = new Set(r.items.map(i => i.reference));
       // FIX: Cast ref to string to fix 'unknown' type error
@@ -43,10 +38,6 @@ const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches })
         if (!stock[item.reference]) return;
         stock[item.reference].dispatched += item.quantity;
         stock[item.reference].available -= item.quantity;
-        
-        if (!stock[item.reference].sizes[item.size]) stock[item.reference].sizes[item.size] = { r: 0, d: 0, a: 0 };
-        stock[item.reference].sizes[item.size].d += item.quantity;
-        stock[item.reference].sizes[item.size].a -= item.quantity;
       });
     });
 
@@ -116,13 +107,9 @@ const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches })
               {/* Sizes section - more compact */}
               <div className="px-4 py-2 sm:px-6 sm:py-3 grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
                 <div className="lg:col-span-8 flex flex-wrap gap-1">
-                  {/* FIX: Cast sData as any to fix 'unknown' type errors */}
-                  {Object.entries(data.sizes).map(([size, sData]: [string, any]) => (
-                    <div key={size} className="px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-1.5">
-                      <span className="text-[7px] font-black text-slate-400 uppercase tracking-tighter leading-none">{size}</span>
-                      <span className="text-[11px] sm:text-xs font-black text-slate-700 leading-none">{sData.a}</span>
-                    </div>
-                  ))}
+                  <div className="px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-1.5">
+                    <span className="text-[11px] sm:text-xs font-black text-slate-700 leading-none">Disponible: {data.available}</span>
+                  </div>
                 </div>
                 <div className="lg:col-span-4 flex gap-1.5">
                    <div className="flex-1 p-1.5 bg-blue-50/50 rounded-lg text-center">

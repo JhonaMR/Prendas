@@ -42,6 +42,7 @@ const App: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
+  const [navigationOptions, setNavigationOptions] = useState<{ directToBatch?: boolean }>({});
 
   // ========== CARGAR DATOS DEL BACKEND ==========
   
@@ -137,7 +138,7 @@ const App: React.FC = () => {
     setState(prev => updater(prev));
   };
 
-  const handleTabChange = (tab: string) => {
+  const handleTabChange = (tab: string, options?: { directToBatch?: boolean }) => {
     // Si estamos en la vista de pedidos y hay cambios sin guardar
     if (activeTab === 'orders' && hasUnsavedOrderChanges) {
       const confirmLeave = window.confirm(
@@ -153,6 +154,7 @@ const App: React.FC = () => {
       setHasUnsavedOrderChanges(false);
     }
     
+    setNavigationOptions(options || {});
     setActiveTab(tab);
     setIsNavOpen(false);
   };
@@ -709,6 +711,7 @@ const App: React.FC = () => {
             updateState={updateState} 
             referencesMaster={state.references}
             onAddReception={addReception}
+            directToBatch={navigationOptions.directToBatch}
           />
         );
       case 'returnReception':

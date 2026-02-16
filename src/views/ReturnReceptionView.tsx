@@ -60,20 +60,20 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
     setShowClientResults(false);
   };
 
-  const handleScan = (ref: string, size: string, quantity: number) => {
+  const handleScan = (ref: string, quantity: number) => {
     const refExists = referencesMaster.some(r => r.id === ref);
     if (!refExists) {
       alert(`AVISO: La referencia "${ref}" no existe en el maestro de referencias.`);
     }
 
     setItems(prev => {
-      const idx = prev.findIndex(i => i.reference === ref && i.size === size);
+      const idx = prev.findIndex(i => i.reference === ref);
       if (idx > -1) {
         const next = [...prev];
         next[idx] = { ...next[idx], quantity: next[idx].quantity + quantity };
         return next;
       }
-      return [...prev, { reference: ref, size, quantity }];
+      return [...prev, { reference: ref, quantity }];
     });
   };
 
@@ -221,31 +221,19 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {Object.entries(
-                items.reduce((acc, curr) => {
-                  if (!acc[curr.reference]) acc[curr.reference] = [];
-                  acc[curr.reference].push(curr);
-                  return acc;
-                }, {} as Record<string, ItemEntry[]>)
-              ).map(([ref, sizes]: [string, any]) => (
-                <div key={ref} className="p-6 sm:p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{ref}</span>
-                    <span className="text-[10px] sm:text-sm font-bold text-slate-400 uppercase">Subtotal: {sizes.reduce((a: number, b: ItemEntry) => a + b.quantity, 0)}</span>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {sizes.map((s: ItemEntry) => (
-                      <div key={s.size} className="px-4 py-2 sm:px-5 sm:py-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-3 group relative">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{s.size}</span>
-                        <span className="font-black text-slate-800 text-base sm:text-lg">{s.quantity}</span>
-                        <button 
-                          onClick={() => setItems(prev => prev.filter(p => !(p.reference === ref && p.size === s.size)))}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
+              {items.map((item) => (
+                <div key={item.reference} className="p-6 sm:p-8">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{item.reference}</span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-lg sm:text-xl font-black text-slate-800">{item.quantity}</span>
+                      <button 
+                        onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

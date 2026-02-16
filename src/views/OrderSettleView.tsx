@@ -47,7 +47,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ state, user, updateSt
         if (refId && qty) {
           const exists = state.references.some(r => r.id === refId);
           if (exists) {
-            newItems.push({ reference: refId, size: 'UNICA', quantity: parseInt(qty) || 0 });
+            newItems.push({ reference: refId, quantity: parseInt(qty) || 0 });
           }
         }
       }

@@ -47,7 +47,7 @@ const getReturnReceptions = (req, res) => {
 
         const returnReceptionsWithItems = returnReceptions.map(reception => {
             const items = db.prepare(`
-                SELECT reference, size, quantity, unit_price
+                SELECT reference, quantity, unit_price
                 FROM return_reception_items
                 WHERE return_reception_id = ?
             `).all(reception.id);
@@ -115,20 +115,20 @@ const createReturnReception = (req, res) => {
 
             // Insertar items (detalle)
             const insertItem = db.prepare(`
-                INSERT INTO return_reception_items (return_reception_id, reference, size, quantity, unit_price)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT INTO return_reception_items (return_reception_id, reference, quantity, unit_price)
+                VALUES (?, ?, ?, ?)
             `);
 
             for (const item of items) {
-                if (!item.reference || !item.size || !item.quantity) {
-                    throw new Error('Cada item debe tener reference, size y quantity');
+                if (!item.reference || !item.quantity) {
+                    throw new Error('Cada item debe tener reference y quantity');
                 }
 
                 if (item.quantity <= 0) {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.size, item.quantity, item.unitPrice || 0);
+                insertItem.run(id, item.reference, item.quantity, item.unitPrice || 0);
             }
 
             db.prepare('COMMIT').run();
@@ -201,7 +201,7 @@ const getReceptions = (req, res) => {
         // Para cada recepción, obtener sus items
         const receptionsWithItems = receptions.map(reception => {
             const items = db.prepare(`
-                SELECT reference, size, quantity
+                SELECT reference, quantity
                 FROM reception_items
                 WHERE reception_id = ?
             `).all(reception.id);
@@ -277,20 +277,20 @@ const createReception = (req, res) => {
 
             // Insertar items (detalle)
             const insertItem = db.prepare(`
-                INSERT INTO reception_items (reception_id, reference, size, quantity)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO reception_items (reception_id, reference, quantity)
+                VALUES (?, ?, ?)
             `);
 
             for (const item of items) {
-                if (!item.reference || !item.size || !item.quantity) {
-                    throw new Error('Cada item debe tener reference, size y quantity');
+                if (!item.reference || !item.quantity) {
+                    throw new Error('Cada item debe tener reference y quantity');
                 }
 
                 if (item.quantity <= 0) {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.size, item.quantity);
+                insertItem.run(id, item.reference, item.quantity);
             }
 
             // Confirmar transacción
@@ -365,7 +365,7 @@ const getDispatches = (req, res) => {
 
         const dispatchesWithItems = dispatches.map(dispatch => {
             const items = db.prepare(`
-                SELECT reference, size, quantity
+                SELECT reference, quantity
                 FROM dispatch_items
                 WHERE dispatch_id = ?
             `).all(dispatch.id);
@@ -427,20 +427,20 @@ const createDispatch = (req, res) => {
 
             // Insertar items
             const insertItem = db.prepare(`
-                INSERT INTO dispatch_items (dispatch_id, reference, size, quantity)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO dispatch_items (dispatch_id, reference, quantity)
+                VALUES (?, ?, ?)
             `);
 
             for (const item of items) {
-                if (!item.reference || !item.size || !item.quantity) {
-                    throw new Error('Cada item debe tener reference, size y quantity');
+                if (!item.reference || !item.quantity) {
+                    throw new Error('Cada item debe tener reference y quantity');
                 }
 
                 if (item.quantity <= 0) {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.size, item.quantity);
+                insertItem.run(id, item.reference, item.quantity);
             }
 
             db.prepare('COMMIT').run();
@@ -494,7 +494,7 @@ const getOrders = (req, res) => {
 
         const ordersWithItems = orders.map(order => {
             const items = db.prepare(`
-                SELECT reference, size, quantity
+                SELECT reference, quantity
                 FROM order_items
                 WHERE order_id = ?
             `).all(order.id);
@@ -573,20 +573,20 @@ const createOrder = (req, res) => {
 
             // Insertar items
             const insertItem = db.prepare(`
-                INSERT INTO order_items (order_id, reference, size, quantity)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO order_items (order_id, reference, quantity)
+                VALUES (?, ?, ?)
             `);
 
             for (const item of items) {
-                if (!item.reference || !item.size || !item.quantity) {
-                    throw new Error('Cada item debe tener reference, size y quantity');
+                if (!item.reference || !item.quantity) {
+                    throw new Error('Cada item debe tener reference y quantity');
                 }
 
                 if (item.quantity <= 0) {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.size, item.quantity);
+                insertItem.run(id, item.reference, item.quantity);
             }
 
             db.prepare('COMMIT').run();
