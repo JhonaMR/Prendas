@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
+import { canEdit, canDelete } from '../utils/permissions';
 
 // Helper Components
 const TabBtn = ({ active, onClick, label }: any) => (
@@ -90,7 +91,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const referenceFileRef = useRef<HTMLInputElement>(null);
   const confeccionistaFileRef = useRef<HTMLInputElement>(null);
 
-  const isAdmin = user.role === UserRole.admin;
+  const isAdmin = user.role === UserRole.ADMIN;
 
   // Forms Shared state
   const [id, setId] = useState('');
@@ -182,106 +183,139 @@ const MastersView: React.FC<MastersViewProps> = ({
     const reader = new FileReader();
     reader.onload = async (event) => {
       const content = event.target?.result as string;
-      const rows = content.split('\n').filter(row => row.trim() !== '');
       
       setIsLoading(true);
       try {
         if (type === 'clients') {
-          const newClients: Client[] = [];
-          for (let i = 1; i < rows.length; i++) {
-            const [cId, cNit, cName, cAddr, cCity, cSell] = rows[i].split(/[;,]/).map(c => c.trim());
-            if (cId && cName) {
-              const clientData = { id: cId, nit: cNit||'', name: cName, address: cAddr||'', city: cCity||'', seller: cSell||'' };
-              newClients.push(clientData);
+          // Usar el nuevo endpoint de carga masiva
+          try {
+            const response = await fetch('/api/clients/bulk-import', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ csvContent: content })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Recargar clientes desde el backend
+              const clientsResponse = await fetch('/api/clients', {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+              });
+              const clientsData = await clientsResponse.json();
               
-              // Guardar en backend
-              try {
-                await onAddClient(clientData);
-              } catch (error) {
-                console.error(`Error guardando cliente ${cId}:`, error);
+              if (clientsData.success) {
+                updateState(prev => ({
+                  ...prev,
+                  clients: clientsData.data
+                }));
               }
+              
+              alert(`✅ ${result.message}`);
+            } else {
+              // Mostrar errores detallados
+              const errorMsg = result.errors?.length > 0 
+                ? `Errores encontrados:\n${result.errors.slice(0, 5).join('\n')}${result.errors.length > 5 ? `\n... y ${result.errors.length - 5} errores más` : ''}`
+                : result.message;
+              alert(`❌ Error en importación:\n${errorMsg}`);
             }
+          } catch (error) {
+            console.error('Error en carga masiva:', error);
+            alert('❌ Error de conexión al importar clientes');
           }
-          
-          // Actualizar estado local
-          updateState(prev => ({
-            ...prev,
-            clients: [...prev.clients, ...newClients]
-          }));
           
         } else if (type === 'references') {
-          const newRefs: Reference[] = [];
-          for (let i = 1; i < rows.length; i++) {
-            const [rId, rDesc, rPrice, rDes, t1, p1, t2, p2, corr] = rows[i].split(/[;,]/).map(c => c.trim());
-            if (rId && rDesc) {
-              // Procesar correrías (separadas por |)
-              const correrias = corr ? corr.split('|').map(c => c.trim()).filter(c => c) : [];
+          // Usar el nuevo endpoint de carga masiva
+          try {
+            const response = await fetch('/api/references/bulk-import', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ csvContent: content })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Recargar referencias desde el backend
+              const referencesResponse = await fetch('/api/references', {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+              });
+              const referencesData = await referencesResponse.json();
               
-              const refData = { 
-                id: rId, 
-                description: rDesc, 
-                price: Number(rPrice)||0, 
-                designer: rDes||'', 
-                cloth1: t1||'', 
-                avgCloth1: Number(p1)||0, 
-                cloth2: t2||'', 
-                avgCloth2: Number(p2)||0,
-                correrias: correrias
-              };
-              newRefs.push(refData);
-              
-              // Guardar en backend
-              try {
-                await onAddReference(refData);
-              } catch (error) {
-                console.error(`Error guardando referencia ${rId}:`, error);
+              if (referencesData.success) {
+                updateState(prev => ({
+                  ...prev,
+                  references: referencesData.data
+                }));
               }
+              
+              alert(`✅ ${result.message}`);
+            } else {
+              // Mostrar errores detallados
+              const errorMsg = result.errors?.length > 0 
+                ? `Errores encontrados:\n${result.errors.slice(0, 5).join('\n')}${result.errors.length > 5 ? `\n... y ${result.errors.length - 5} errores más` : ''}`
+                : result.message;
+              alert(`❌ Error en importación:\n${errorMsg}`);
             }
+          } catch (error) {
+            console.error('Error en carga masiva:', error);
+            alert('❌ Error de conexión al importar referencias');
           }
-          
-          // Actualizar estado local
-          updateState(prev => ({
-            ...prev,
-            references: [...prev.references, ...newRefs]
-          }));
           
         } else if (type === 'confeccionistas') {
-          const newConf: Confeccionista[] = [];
-          for (let i = 1; i < rows.length; i++) {
-            const [cfId, cfName, cfAddr, cfCity, cfPhone, cfScore, cfActive] = rows[i].split(/[;,]/).map(c => c.trim());
-            if (cfId && cfName) {
-              const confData: Confeccionista = { 
-                id: cfId, 
-                name: cfName, 
-                address: cfAddr||'', 
-                city: cfCity||'', 
-                phone: cfPhone||'',
-                score: cfScore || 'NA', 
-                active: cfActive === '1' || cfActive?.toLowerCase() === 'sí' || cfActive?.toLowerCase() === 'true'
-              };
-              
-              // Guardar en backend
-              try {
-                const result = await onAddConfeccionista(confData);
-                if (result.success) {
-                  newConf.push(confData);
-                } else {
-                  console.error(`Error guardando confeccionista ${cfId}: ${result.message || 'Error desconocido'}`);
+          // Usar el nuevo endpoint de carga masiva
+          try {
+            const response = await fetch('/api/confeccionistas/bulk-import', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+              },
+              body: JSON.stringify({ csvContent: content })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              // Recargar confeccionistas desde el backend
+              const confeccionistasResponse = await fetch('/api/confeccionistas', {
+                headers: {
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
-              } catch (error) {
-                console.error(`Error guardando confeccionista ${cfId}:`, error);
+              });
+              const confeccionistasData = await confeccionistasResponse.json();
+              
+              if (confeccionistasData.success) {
+                updateState(prev => ({
+                  ...prev,
+                  confeccionistas: confeccionistasData.data
+                }));
               }
+              
+              alert(`✅ ${result.message}`);
+            } else {
+              // Mostrar errores detallados
+              const errorMsg = result.errors?.length > 0 
+                ? `Errores encontrados:\n${result.errors.slice(0, 5).join('\n')}${result.errors.length > 5 ? `\n... y ${result.errors.length - 5} errores más` : ''}`
+                : result.message;
+              alert(`❌ Error en importación:\n${errorMsg}`);
             }
+          } catch (error) {
+            console.error('Error en carga masiva:', error);
+            alert('❌ Error de conexión al importar confeccionistas');
           }
-          
-          // Actualizar estado local SOLO con los que se guardaron exitosamente
-          updateState(prev => ({
-            ...prev,
-            confeccionistas: [...(prev.confeccionistas || []), ...newConf]
-          }));
         }
         
-        alert(`Importación de ${type} finalizada correctamente.`);
       } catch (error) {
         console.error('Error en importación:', error);
         alert('Error durante la importación. Revisa la consola para más detalles.');
@@ -295,7 +329,8 @@ const MastersView: React.FC<MastersViewProps> = ({
 
   const handleSaveClient = async () => {
     if (!id || !name) return alert("ID y Nombre son obligatorios");
-    const newItem: Client = { id, name, nit, address, city, seller };
+    if (!seller) return alert("Debe seleccionar un vendedor");
+    const newItem: Client = { id, name, nit, address, city, sellerId: seller };
     
     setIsLoading(true);
     try {
@@ -356,7 +391,9 @@ const MastersView: React.FC<MastersViewProps> = ({
   const handleSaveUser = async () => {
     if (!isAdmin) return;
     if (!name) return alert("Nombre obligatorio");
-    const newItem: User = { id: editingId || Math.random().toString(36).substr(2, 9), name, loginCode: id, pin, role: userRole };
+    // Normalizar el rol a minúsculas para el backend
+    const normalizedRole = userRole.toLowerCase() as UserRole;
+    const newItem: User = { id: editingId || Math.random().toString(36).substr(2, 9), name, loginCode: id, pin, role: normalizedRole };
     
     setIsLoading(true);
     try {
@@ -472,9 +509,21 @@ const MastersView: React.FC<MastersViewProps> = ({
       if (editingId) {
         // Actualizar correría existente
         result = await onUpdateCorreria(editingId, newItem);
+        if (result.success) {
+          updateState(prev => ({
+            ...prev,
+            correrias: prev.correrias.map(c => c.id === editingId ? newItem : c)
+          }));
+        }
       } else {
         // Crear nueva correría
         result = await onAddCorreria(newItem);
+        if (result.success) {
+          updateState(prev => ({
+            ...prev,
+            correrias: [...prev.correrias, newItem]
+          }));
+        }
       }
       
       if (result.success) {
@@ -492,7 +541,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   };
 
   const handleDelete = async (type: string, targetId: string) => {
-    if (!isAdmin && (type === 'user' || type === 'seller' || type === 'confeccionista')) return;
+    if (!isAdmin && (type === 'user' || type === 'seller' || type === 'confeccionista' || type === 'correria')) return;
     if (!confirm("¿Seguro que desea eliminar este registro?")) return;
     
     setIsLoading(true);
@@ -502,18 +551,48 @@ const MastersView: React.FC<MastersViewProps> = ({
       if (type === 'client') {
         // Eliminar cliente del backend
         result = await onDeleteClient(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            clients: prev.clients.filter(c => c.id !== targetId)
+          }));
+        }
       } else if (type === 'confeccionista') {
         // Eliminar confeccionista del backend
         result = await onDeleteConfeccionista(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            confeccionistas: (prev.confeccionistas || []).filter(c => c.id !== targetId)
+          }));
+        }
       } else if (type === 'reference') {
         // Eliminar referencia del backend
         result = await onDeleteReference(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            references: prev.references.filter(r => r.id !== targetId)
+          }));
+        }
       } else if (type === 'seller') {
         // Eliminar vendedor del backend
         result = await onDeleteSeller(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            sellers: prev.sellers.filter(s => s.id !== targetId)
+          }));
+        }
       } else if (type === 'correria') {
         // Eliminar correría del backend
         result = await onDeleteCorreria(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            correrias: prev.correrias.filter(c => c.id !== targetId)
+          }));
+        }
       } else if (type === 'user') {
         // Eliminar usuario del backend
         if (targetId === user.id) {
@@ -522,6 +601,12 @@ const MastersView: React.FC<MastersViewProps> = ({
           return;
         }
         result = await onDeleteUser(targetId);
+        if (result?.success) {
+          updateState(prev => ({
+            ...prev,
+            users: prev.users.filter(u => u.id !== targetId)
+          }));
+        }
       }
       
       if (result?.success) {
@@ -642,9 +727,17 @@ const MastersView: React.FC<MastersViewProps> = ({
             <div className="lg:col-span-1">
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Clientes</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-blue-500">ID;NIT;Nombre;Dirección;Ciudad;Vendedor</span></p>
-                <input type="file" ref={clientFileRef} onChange={(e) => handleImportCSV('clients', e)} accept=".csv" className="hidden" />
-                <button onClick={() => clientFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors">SUBIR CSV</button>
+                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-blue-500">id,name,nit,address,city,seller</span></p>
+                <p className="text-[9px] font-bold text-slate-500 italic mt-2">
+                  Ejemplo:<br/>
+                  <span className="font-mono text-slate-600">C001,Acme Inc,123456,Cra 5 #10,Bogotá,Juan Pérez</span><br/>
+                  <span className="font-mono text-slate-600">C002,Tech Ltd,789012,Cra 7 #20,Medellín,María García</span>
+                </p>
+                <div className="flex gap-2">
+                  <input type="file" ref={clientFileRef} onChange={(e) => handleImportCSV('clients', e)} accept=".csv" className="hidden" />
+                  <button onClick={() => clientFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors">SUBIR CSV</button>
+                  <a href="/ejemplo_clientes.csv" download className="flex-1 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                </div>
               </div>
             </div>
           </div>
@@ -653,18 +746,21 @@ const MastersView: React.FC<MastersViewProps> = ({
               <table className="w-full text-left">
                 <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
-                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).map(c => (
+                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).map(c => {
+                    const seller = state.sellers.find(s => s.id === c.sellerId);
+                    return (
                     <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-8 py-4 font-bold text-blue-500">{c.id}</td>
                       <td className="px-8 py-4 font-bold text-slate-500">{c.nit}</td>
                       <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
-                      <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{c.seller}</td>
+                      <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{seller?.name || c.sellerId || 'Sin vendedor'}</td>
                       <td className="px-8 py-4 text-right flex justify-end gap-2">
-                        <button onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.seller); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><Icons.Edit /></button>
-                        <button onClick={() => handleDelete('client', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
+                        <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
+                        <button disabled={!canDelete(user)} onClick={() => handleDelete('client', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
                       </td>
                     </tr>
-                  ))}
+                  );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -718,10 +814,16 @@ const MastersView: React.FC<MastersViewProps> = ({
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Confeccionistas</h3>
                 <p className="text-[10px] font-bold text-slate-400 leading-relaxed italic">
-                  CSV: <span className="text-indigo-500 font-black">Cédula;Nombre;Dirección;Ciudad;Celular;Puntaje(A/AA/AAA/NA);Activo(1/0)</span>
+                  CSV: <span className="text-indigo-500 font-black">id,name,address,city,phone,score,active</span>
                 </p>
-                <input type="file" ref={confeccionistaFileRef} onChange={(e) => handleImportCSV('confeccionistas', e)} accept=".csv" className="hidden" />
-                <button onClick={() => confeccionistaFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
+                <p className="text-[9px] font-bold text-slate-500 italic">
+                  Score: A/AA/AAA/NA | Activo: 1/0
+                </p>
+                <div className="flex gap-2">
+                  <input type="file" ref={confeccionistaFileRef} onChange={(e) => handleImportCSV('confeccionistas', e)} accept=".csv" className="hidden" />
+                  <button onClick={() => confeccionistaFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
+                  <a href="/ejemplo_confeccionistas.csv" download className="flex-1 py-4 bg-indigo-50 text-indigo-600 font-black rounded-2xl border-2 border-indigo-200 hover:bg-indigo-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                </div>
               </div>
             </div>
           </div>
@@ -741,10 +843,10 @@ const MastersView: React.FC<MastersViewProps> = ({
                       </span>
                     </td>
                     <td className="px-8 py-4 text-right flex justify-end gap-2">
-                      <button onClick={() => { 
+                      <button disabled={!canEdit(user)} onClick={() => { 
                         setEditingId(c.id); setId(c.id); setName(c.name); setAddress(c.address); setCity(c.city); setPhone(c.phone); setScore(c.score); setIsActive(c.active);
-                      }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl"><Icons.Edit /></button>
-                      <button onClick={() => handleDelete('confeccionista', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
+                      }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('confeccionista', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
                     </td>
                   </tr>
                 ))}
@@ -877,13 +979,16 @@ const MastersView: React.FC<MastersViewProps> = ({
               <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
                 <h3 className="text-xl font-black text-slate-800">Importar Referencias</h3>
                 <p className="text-[10px] font-bold text-slate-400 leading-relaxed">
-                  CSV: <span className="text-indigo-500">Ref;Desc;Precio;Diseñadora;Tela1;Prom1;Tela2;Prom2;Correrias</span>
+                  CSV: <span className="text-indigo-500">id,description,price,designer,cloth1,avgCloth1,cloth2,avgCloth2,correrias</span>
                 </p>
                 <p className="text-[9px] font-bold text-slate-500 italic mt-1">
-                  Ejemplo correrías: Madres2026|Padres2026|Navidad2026
+                  Correrías separadas por | (ej: Madres2026|Padres2026|Navidad2026)
                 </p>
-                <input type="file" ref={referenceFileRef} onChange={(e) => handleImportCSV('references', e)} accept=".csv" className="hidden" />
-                <button onClick={() => referenceFileRef.current?.click()} className="w-full py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
+                <div className="flex gap-2">
+                  <input type="file" ref={referenceFileRef} onChange={(e) => handleImportCSV('references', e)} accept=".csv" className="hidden" />
+                  <button onClick={() => referenceFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
+                  <a href="/ejemplo_referencias.csv" download className="flex-1 py-4 bg-indigo-50 text-indigo-600 font-black rounded-2xl border-2 border-indigo-200 hover:bg-indigo-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                </div>
               </div>
             </div>
           </div>
@@ -908,7 +1013,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                         )}
                       </td>
                       <td className="px-6 py-4 text-right flex justify-end gap-2">
-                        <button onClick={() => { 
+                        <button disabled={!canEdit(user)} onClick={() => { 
                           setEditingId(r.id); 
                           setId(r.id); 
                           setDesc(r.description); 
@@ -919,8 +1024,8 @@ const MastersView: React.FC<MastersViewProps> = ({
                           setCloth2(r.cloth2||''); 
                           setAvgCloth2(r.avgCloth2||0);
                           setSelectedCorrerias(r.correrias || []);
-                        }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl"><Icons.Edit /></button>
-                        <button onClick={() => handleDelete('reference', r.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl"><Icons.Delete /></button>
+                        }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
+                        <button disabled={!canDelete(user)} onClick={() => handleDelete('reference', r.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
                       </td>
                     </tr>
                   ))}
@@ -961,8 +1066,8 @@ const MastersView: React.FC<MastersViewProps> = ({
                    <p className="font-black text-slate-800">{s.name}</p>
                    {isAdmin && (
                     <div className="flex gap-2">
-                      <button onClick={() => { setEditingId(s.id); setName(s.name); }} className="p-2 text-pink-400 hover:bg-pink-50 rounded-lg transition-colors"><Icons.Edit /></button>
-                      <button onClick={() => handleDelete('seller', s.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"><Icons.Delete /></button>
+                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(s.id); setName(s.name); }} className="p-2 text-pink-400 hover:bg-pink-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('seller', s.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
                     </div>
                    )}
                 </div>
@@ -973,20 +1078,29 @@ const MastersView: React.FC<MastersViewProps> = ({
 
       {activeSubTab === 'correrias' && (
         <div className="space-y-6 animate-in fade-in duration-300">
-           <FormWrapper title={editingId ? 'Editar Correría' : 'Nueva Correría'}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl">
-                 <Input label="Nombre de Campaña" value={name} onChange={setName} />
-                 <Input label="Año" value={year} onChange={setYear} type="number" />
-              </div>
-              <div className="flex gap-4 mt-6">
-                 <button onClick={handleSaveCorreria}
-                    disabled={isLoading}
-                      className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
-                      {isLoading ? 'GUARDANDO...' : 'GUARDAR CORRERÍA'}
-                    </button>
-                 {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
-              </div>
-           </FormWrapper>
+           {isAdmin ? (
+             <FormWrapper title={editingId ? 'Editar Correría' : 'Nueva Correría'}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl">
+                   <Input label="Nombre de Campaña" value={name} onChange={setName} />
+                   <Input label="Año" value={year} onChange={setYear} type="number" />
+                </div>
+                <div className="flex gap-4 mt-6">
+                   <button onClick={handleSaveCorreria}
+                      disabled={isLoading}
+                        className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isLoading ? 'GUARDANDO...' : 'GUARDAR CORRERÍA'}
+                      </button>
+                   {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                </div>
+             </FormWrapper>
+           ) : (
+             <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl flex items-center gap-4 text-amber-700 font-bold">
+               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
+               </svg>
+               Se requiere acceso de administrador para crear o editar correrías.
+             </div>
+           )}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {state.correrias.sort((a,b)=>b.year.localeCompare(a.year)).map(c => (
                 <div key={c.id} className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm">
@@ -994,10 +1108,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                       <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{c.year}</p>
                       <p className="font-black text-slate-800">{c.name}</p>
                    </div>
-                   <div className="flex gap-2">
-                    <button onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); }} className="p-2 text-blue-400 hover:bg-blue-50 rounded-lg transition-colors"><Icons.Edit /></button>
-                    <button onClick={() => handleDelete('correria', c.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors"><Icons.Delete /></button>
-                   </div>
+                   {isAdmin && (
+                     <div className="flex gap-2">
+                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); }} className="p-2 text-blue-400 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('correria', c.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                     </div>
+                   )}
                 </div>
               ))}
            </div>
@@ -1020,7 +1136,8 @@ const MastersView: React.FC<MastersViewProps> = ({
                     className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
                   >
                     <option value={UserRole.GENERAL}>Vendedor / Operario</option>
-                    <option value={UserRole.admin}>Administrador</option>
+                    <option value={UserRole.OBSERVER}>Observador</option>
+                    <option value={UserRole.ADMIN}>Administrador</option>
                   </select>
                 </div>
               </div>
@@ -1038,19 +1155,24 @@ const MastersView: React.FC<MastersViewProps> = ({
                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
                </svg>
-               Se requiere acceso de administrador para crear o editar usuarios.
+               Solo los admins pueden crear o editar usuarios
              </div>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              {state.users.map(u => (
                <div key={u.id} className="bg-white p-8 rounded-[40px] border border-slate-100 flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                  {u.role === UserRole.admin && (
+                  {u.role === UserRole.ADMIN && (
                     <div className="absolute top-0 right-0 p-2">
                       <span className="text-[8px] font-black bg-pink-500 text-white px-3 py-1 rounded-bl-2xl uppercase tracking-widest">Admin</span>
                     </div>
                   )}
-                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.admin ? 'bg-gradient-to-br from-pink-500 to-pink-400' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
+                  {u.role === UserRole.OBSERVER && (
+                    <div className="absolute top-0 right-0 p-2">
+                      <span className="text-[8px] font-black bg-purple-500 text-white px-3 py-1 rounded-bl-2xl uppercase tracking-widest">Observador</span>
+                    </div>
+                  )}
+                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}
                   </div>
                   <div>

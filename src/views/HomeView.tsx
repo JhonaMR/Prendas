@@ -6,16 +6,18 @@ import AdminLayout from '../components/HomeView/AdminLayout';
 interface HomeViewProps {
   user: User;
   onNavigate: (tab: string) => void;
+  onDirectNavigate?: (tab: string) => void;
   state?: any;
   correrias?: any[];
   correriasLoading?: boolean;
   correriasError?: any;
 }
 
-const HomeView: React.FC<HomeViewProps> = ({ user, onNavigate, state, correrias, correriasLoading, correriasError }) => {
+const HomeView: React.FC<HomeViewProps> = ({ user, onNavigate, onDirectNavigate, state, correrias, correriasLoading, correriasError }) => {
   // Render appropriate layout based on user role
-  if (user.role === UserRole.admin) {
-    return <AdminLayout user={user} onNavigate={onNavigate} state={state || {}} correrias={correrias || []} correriasLoading={correriasLoading || false} correriasError={correriasError} />;
+  // Admin and Observer can see the admin dashboard
+  if (user.role === UserRole.ADMIN || user.role === UserRole.OBSERVER) {
+    return <AdminLayout user={user} onNavigate={onNavigate} onDirectNavigate={onDirectNavigate} state={state || {}} correrias={correrias || []} correriasLoading={correriasLoading || false} correriasError={correriasError} />;
   }
 
   return <GeneralUserLayout user={user} onNavigate={onNavigate} />;

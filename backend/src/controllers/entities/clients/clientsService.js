@@ -5,6 +5,8 @@
 const { getDatabase } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
+const { validateSellerId } = require('./sellerValidator');
 
 /**
  * Obtiene todos los clientes
@@ -14,7 +16,7 @@ function getAllClients() {
     const db = getDatabase();
 
     const clients = db.prepare(`
-      SELECT id, name, nit, address, city, seller, active
+      SELECT id, name, nit, address, city, sellerId, active
       FROM clients
       ORDER BY id
     `).all();
@@ -35,7 +37,7 @@ function getClientById(id) {
     const db = getDatabase();
 
     const client = db.prepare(`
-      SELECT id, name, nit, address, city, seller, active
+      SELECT id, name, nit, address, city, sellerId, active
       FROM clients
       WHERE id = ?
     `).get(id);
@@ -58,10 +60,16 @@ function getClientById(id) {
  */
 function createClient(data) {
   try {
+    // Validar que el vendedor existe
+    const validation = validateSellerId(data.sellerId);
+    if (!validation.valid) {
+      throw new Error(validation.error);
+    }
+
     const db = getDatabase();
 
     db.prepare(`
-      INSERT INTO clients (id, name, nit, address, city, seller, active)
+      INSERT INTO clients (id, name, nit, address, city, sellerId, active)
       VALUES (?, ?, ?, ?, ?, ?, 1)
     `).run(
       data.id,
@@ -69,8 +77,11 @@ function createClient(data) {
       data.nit,
       data.address,
       data.city,
-      data.seller
+      data.sellerId
     );
+
+    // Invalidate cache after creation
+    invalidateOnCreate('Client');
 
     logger.info('Created client', { id: data.id });
     return getClientById(data.id);
@@ -93,6 +104,14 @@ function updateClient(id, data) {
       throw new NotFoundError('Client', id);
     }
 
+    // Validar que el vendedor existe si se está actualizando
+    if (data.sellerId !== undefined) {
+      const validation = validateSellerId(data.sellerId);
+      if (!validation.valid) {
+        throw new Error(validation.error);
+      }
+    }
+
     const updates = [];
     const values = [];
 
@@ -112,9 +131,9 @@ function updateClient(id, data) {
       updates.push('city = ?');
       values.push(data.city);
     }
-    if (data.seller !== undefined) {
-      updates.push('seller = ?');
-      values.push(data.seller);
+    if (data.sellerId !== undefined) {
+      updates.push('sellerId = ?');
+      values.push(data.sellerId);
     }
 
     if (updates.length > 0) {
@@ -122,6 +141,9 @@ function updateClient(id, data) {
       const query = `UPDATE clients SET ${updates.join(', ')} WHERE id = ?`;
       db.prepare(query).run(...values);
     }
+
+    // Invalidate cache after update
+    invalidateOnUpdate('Client');
 
     logger.info('Updated client', { id });
     return getClientById(id);
@@ -146,6 +168,9 @@ function deleteClient(id) {
     }
 
     db.prepare('DELETE FROM clients WHERE id = ?').run(id);
+
+    // Invalidate cache after deletion
+    invalidateOnDelete('Client');
 
     logger.info('Deleted client', { id });
   } catch (error) {

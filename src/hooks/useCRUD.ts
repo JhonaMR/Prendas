@@ -5,6 +5,7 @@
 
 import { useState, useCallback } from 'react';
 import { useAppDispatch } from '../context/useAppContext';
+import logger from '../services/logger';
 
 export interface UseCRUDOptions {
   onSuccess?: (data: any) => void;
@@ -42,16 +43,19 @@ export function useCRUD<T>(
   const handleError = useCallback((err: Error) => {
     const message = err instanceof Error ? err.message : 'Unknown error';
     setError(message);
+    logger.error(`CRUD operation failed for ${stateKey}`, err, { message });
     options.onError?.(err);
   }, [options]);
 
   const handleSuccess = useCallback((data: any) => {
+    logger.info(`CRUD operation succeeded for ${stateKey}`, { dataLength: Array.isArray(data) ? data.length : 1 });
     options.onSuccess?.(data);
   }, [options]);
 
   const create = useCallback(async (item: T): Promise<T> => {
     setLoading(true);
     setError(null);
+    logger.info(`Creating new ${stateKey}`, { item });
     try {
       const result = await apiService.create(item);
       const newItem = result.data || result;
@@ -76,6 +80,7 @@ export function useCRUD<T>(
   const read = useCallback(async (id: string): Promise<T> => {
     setLoading(true);
     setError(null);
+    logger.info(`Reading ${stateKey}`, { id });
     try {
       const result = await apiService.read(id);
       const item = result.data || result;
@@ -92,6 +97,7 @@ export function useCRUD<T>(
   const update = useCallback(async (id: string, item: Partial<T>): Promise<T> => {
     setLoading(true);
     setError(null);
+    logger.info(`Updating ${stateKey}`, { id, item });
     try {
       const result = await apiService.update(id, item);
       const updatedItem = result.data || result;
@@ -117,6 +123,7 @@ export function useCRUD<T>(
   const delete_ = useCallback(async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
+    logger.info(`Deleting ${stateKey}`, { id });
     try {
       await apiService.delete(id);
       
@@ -140,6 +147,7 @@ export function useCRUD<T>(
   const list = useCallback(async (): Promise<T[]> => {
     setLoading(true);
     setError(null);
+    logger.info(`Listing ${stateKey}`);
     try {
       const result = await apiService.list();
       const data = result.data || result;

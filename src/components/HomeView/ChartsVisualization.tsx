@@ -38,7 +38,7 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
     dispatchesForCorreria.forEach(dispatch => {
       const clientId = dispatch.clientId;
       const client = state.clients?.find(c => c.id === clientId);
-      const sellerId = client?.seller;
+      const sellerId = client?.sellerId;
 
       if (sellerId) {
         const seller = state.sellers?.find(s => s.id === sellerId);
@@ -79,30 +79,33 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
     <div className="space-y-6">
       {/* Fulfillment by Seller */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-        <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-6">Cumplimiento por Vendedor</h3>
+        <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6">Cumplimiento por Vendedor</h3>
 
         {sellerFulfillmentData.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {sellerFulfillmentData.map((seller) => (
-              <div key={seller.sellerId} className="flex items-center gap-4">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 truncate">{seller.sellerName}</p>
-                  <p className="text-xs text-slate-500">
-                    {seller.unitsDispatched} / {seller.unitsSold} unidades
+              <div key={seller.sellerId} className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-200">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-base font-bold text-slate-900 truncate">{seller.sellerName}</p>
+                  <p className="text-base font-black text-blue-600 ml-2 flex-shrink-0">
+                    {seller.fulfillmentPercentage}%
                   </p>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="w-32 flex-shrink-0">
-                  <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                <div className="space-y-2">
+                  <div className="h-3 bg-slate-300 rounded-full overflow-hidden shadow-sm">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
+                      className="h-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 transition-all duration-300 rounded-full"
                       style={{ width: `${Math.min(seller.fulfillmentPercentage, 100)}%` }}
                     />
                   </div>
-                  <p className="text-xs font-bold text-slate-900 mt-1 text-right">
-                    {seller.fulfillmentPercentage}%
-                  </p>
+                  <div className="flex items-center justify-end gap-1">
+                    <span className="text-sm font-bold text-blue-600">{seller.unitsDispatched}</span>
+                    <span className="text-sm text-slate-400">/</span>
+                    <span className="text-sm font-bold text-slate-700">{seller.unitsSold}</span>
+                    <span className="text-xs text-slate-500 ml-1">unidades</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -118,17 +121,17 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Total Units by Seller */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wide mb-4">Unidades por Vendedor</h4>
-          <div className="space-y-3">
+          <h4 className="text-lg md:text-xl font-black text-slate-900 mb-4">Unidades por Vendedor</h4>
+          <div className="space-y-2">
             {sellerFulfillmentData.slice(0, 5).map((seller) => (
-              <div key={seller.sellerId} className="flex items-center justify-between">
-                <span className="text-sm text-slate-600 truncate">{seller.sellerName}</span>
-                <span className="text-sm font-bold text-slate-900">{seller.unitsSold}</span>
+              <div key={seller.sellerId} className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-3 border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all duration-200 flex items-center justify-between">
+                <span className="text-base font-semibold text-slate-900 truncate">{seller.sellerName}</span>
+                <span className="text-xl font-black text-blue-600 ml-2 flex-shrink-0">{seller.unitsSold}</span>
               </div>
             ))}
             {sellerFulfillmentData.length > 5 && (
-              <div className="text-xs text-slate-400 pt-2 border-t border-slate-100">
-                +{sellerFulfillmentData.length - 5} más
+              <div className="text-xs font-semibold text-slate-500 pt-2 border-t border-slate-200 text-center">
+                +{sellerFulfillmentData.length - 5} vendedores más
               </div>
             )}
           </div>

@@ -5,6 +5,7 @@
 const { getDatabase } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtiene todos los confeccionistas
@@ -72,6 +73,9 @@ function createConfeccionista(data) {
       data.score
     );
 
+    // Invalidate cache after creation
+    invalidateOnCreate('Confeccionista');
+
     logger.info('Created confeccionista', { id: data.id });
     return getConfeccionistaById(data.id);
   } catch (error) {
@@ -122,6 +126,9 @@ function updateConfeccionista(id, data) {
       db.prepare(query).run(...values);
     }
 
+    // Invalidate cache after update
+    invalidateOnUpdate('Confeccionista');
+
     logger.info('Updated confeccionista', { id });
     return getConfeccionistaById(id);
   } catch (error) {
@@ -144,6 +151,9 @@ function deleteConfeccionista(id) {
     }
 
     db.prepare('DELETE FROM confeccionistas WHERE id = ?').run(id);
+
+    // Invalidate cache after deletion
+    invalidateOnDelete('Confeccionista');
 
     logger.info('Deleted confeccionista', { id });
   } catch (error) {

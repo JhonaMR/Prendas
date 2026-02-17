@@ -6,6 +6,7 @@
 const { getDatabase } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtiene todas las referencias con sus correrías asociadas
@@ -133,6 +134,9 @@ function createReference(data) {
 
     transaction();
 
+    // Invalidate cache after creation
+    invalidateOnCreate('Reference');
+
     logger.info('Created reference', { id: data.id });
     return getReferenceById(data.id);
   } catch (error) {
@@ -215,6 +219,9 @@ function updateReference(id, data) {
       db.prepare(query).run(...values);
     }
 
+    // Invalidate cache after update
+    invalidateOnUpdate('Reference');
+
     logger.info('Updated reference', { id });
     return getReferenceById(id);
   } catch (error) {
@@ -246,6 +253,9 @@ function deleteReference(id) {
     });
 
     transaction();
+
+    // Invalidate cache after deletion
+    invalidateOnDelete('Reference');
 
     logger.info('Deleted reference', { id });
   } catch (error) {

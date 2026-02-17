@@ -5,6 +5,7 @@
 const { getDatabase } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 function getAllCorrerias() {
   try {
@@ -40,6 +41,10 @@ function createCorreria(data) {
       data.name,
       data.year
     );
+    
+    // Invalidate cache after creation
+    invalidateOnCreate('Correria');
+    
     logger.info('Created correria', { id: data.id });
     return getCorrieriaById(data.id);
   } catch (error) {
@@ -72,6 +77,9 @@ function updateCorreria(id, data) {
       db.prepare(query).run(...values);
     }
 
+    // Invalidate cache after update
+    invalidateOnUpdate('Correria');
+
     logger.info('Updated correria', { id });
     return getCorrieriaById(id);
   } catch (error) {
@@ -87,6 +95,10 @@ function deleteCorreria(id) {
     const existing = db.prepare('SELECT id FROM correrias WHERE id = ?').get(id);
     if (!existing) throw new NotFoundError('Correria', id);
     db.prepare('DELETE FROM correrias WHERE id = ?').run(id);
+    
+    // Invalidate cache after deletion
+    invalidateOnDelete('Correria');
+    
     logger.info('Deleted correria', { id });
   } catch (error) {
     if (error instanceof NotFoundError) throw error;

@@ -8,6 +8,7 @@ import ChartsVisualization from './ChartsVisualization.tsx';
 interface AdminLayoutProps {
   user: User;
   onNavigate: (tab: string, options?: { directToBatch?: boolean }) => void;
+  onDirectNavigate?: (tab: string) => void;
   state: AppState;
   correrias: Correria[];
   correriasLoading: boolean;
@@ -21,7 +22,7 @@ interface NavButton {
   description?: string;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, state, correrias, correriasLoading, correriasError }) => {
+const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNavigate, state, correrias, correriasLoading, correriasError }) => {
   const [selectedCorreria, setSelectedCorreria] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -131,8 +132,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, state, corr
           <button
             key={item.id}
             onClick={() => {
-              if (item.id === 'reception') {
-                onNavigate(item.id, { directToBatch: true });
+              // Para Recepción de Lotes desde HomeView, ir directamente al listado
+              if (item.id === 'reception' && onDirectNavigate) {
+                onDirectNavigate('reception');
               } else {
                 onNavigate(item.id);
               }

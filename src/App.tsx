@@ -43,6 +43,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
   const [navigationOptions, setNavigationOptions] = useState<{ directToBatch?: boolean }>({});
+  const [selectedWorkflow, setSelectedWorkflow] = useState<'recepcion' | 'devolucion' | null>(null);
 
   // ========== CARGAR DATOS DEL BACKEND ==========
   
@@ -100,6 +101,7 @@ const App: React.FC = () => {
         console.log('✅ Datos cargados del backend exitosamente');
         console.log('📊 Referencias:', referencesData.length);
         console.log('👥 Clientes:', clientsData.length);
+        console.log('💼 Vendedores:', sellersData.length, sellersData);
 
       } catch (error) {
         console.error('❌ Error cargando datos del backend:', error);
@@ -154,7 +156,30 @@ const App: React.FC = () => {
       setHasUnsavedOrderChanges(false);
     }
     
+    // Si es recepción, mostrar selector de workflow primero
+    if (tab === 'reception') {
+      setSelectedWorkflow(null);
+      setActiveTab('receptionSelector');
+      setIsNavOpen(false);
+      return;
+    }
+    
     setNavigationOptions(options || {});
+    setActiveTab(tab);
+    setIsNavOpen(false);
+  };
+
+  const handleWorkflowSelect = (workflow: 'recepcion' | 'devolucion') => {
+    setSelectedWorkflow(workflow);
+    if (workflow === 'recepcion') {
+      setActiveTab('reception');
+    } else {
+      setActiveTab('returnReception');
+    }
+  };
+
+  const handleDirectNavigation = (tab: string) => {
+    // Para navegación directa desde HomeView, sin pasar por selector
     setActiveTab(tab);
     setIsNavOpen(false);
   };
@@ -650,6 +675,50 @@ const App: React.FC = () => {
     }
   };
 
+  const updateDispatch = async (id: string, dispatch: any) => {
+    try {
+      const response = await api.updateDispatch(id, dispatch);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          dispatches: prev.dispatches.map(d => d.id === id ? response.data : d)
+        }));
+        console.log('✅ Despacho actualizado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al actualizar despacho');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error actualizando despacho:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const deleteDispatch = async (id: string) => {
+    try {
+      const response = await api.deleteDispatch(id);
+
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          dispatches: prev.dispatches.filter(d => d.id !== id)
+        }));
+        console.log('✅ Despacho eliminado');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar despacho');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando despacho:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
   /**
    * PEDIDOS
    */
@@ -700,8 +769,47 @@ const App: React.FC = () => {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'receptionSelector':
+        return (
+          <div className="space-y-8 pb-20">
+            <div>
+              <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Recepción</h2>
+              <p className="text-slate-400 font-medium">Selecciona el tipo de recepción</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <button
+                onClick={() => handleWorkflowSelect('recepcion')}
+                className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all flex flex-col items-center justify-center gap-6 min-h-[300px]"
+              >
+                <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
+                  <Icons.Reception />
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-black text-slate-800">Recepción de Lotes</h3>
+                  <p className="text-slate-400 font-medium">Ingreso de producción de confeccionistas</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleWorkflowSelect('devolucion')}
+                className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 hover:shadow-md hover:border-pink-200 transition-all flex flex-col items-center justify-center gap-6 min-h-[300px]"
+              >
+                <div className="w-16 h-16 bg-pink-50 rounded-full flex items-center justify-center text-pink-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+                  </svg>
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-2xl font-black text-slate-800">Devolución de Mercancía</h3>
+                  <p className="text-slate-400 font-medium">Registro de devoluciones y ajustes</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        );
       case 'home':
-        return <HomeView user={user} onNavigate={handleTabChange} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
       case 'reception':
         return (
           <ReceptionView 
@@ -734,10 +842,12 @@ const App: React.FC = () => {
             referencesMaster={state.references}
             correrias={state.correrias}
             onAddDispatch={addDispatch}
+            onUpdateDispatch={updateDispatch}
+            onDeleteDispatch={deleteDispatch}
           />
         );
       case 'inventory':
-        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} />;
+        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} />;
         case 'orders':
           return (
             <OrdersView 
@@ -837,7 +947,7 @@ const App: React.FC = () => {
             <p className="font-bold text-sm leading-none">{user.name}</p>
             <p className="text-[10px] text-slate-400 capitalize font-bold mt-1">{user.role}</p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.admin ? 'bg-pink-500' : 'bg-blue-500'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.ADMIN ? 'bg-pink-500' : 'bg-blue-500'}`}>
             {user.loginCode}
           </div>
         </div>

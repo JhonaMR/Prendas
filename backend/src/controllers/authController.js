@@ -208,8 +208,8 @@ const register = (req, res) => {
         // Generar ID único
         const id = generateId();
 
-        // Insertar usuario (usar rol proporcionado o 'general' por defecto)
-        const userRole = role && ['admin', 'general'].includes(role) ? role : 'general';
+        // Insertar usuario (siempre usar rol 'general' por defecto, nunca 'observer')
+        const userRole = 'general';
         
         db.prepare(`
             INSERT INTO users (id, name, login_code, pin_hash, role, active)
@@ -394,7 +394,7 @@ const listUsers = (req, res) => {
 /**
  * ACTUALIZAR USUARIO (Solo admin)
  * PUT /api/auth/users/:id
- * Body: { name: "Nuevo Nombre", role: "admin" }
+ * Body: { name: "Nuevo Nombre", role: "admin" | "observer" | "general" }
  * Headers: Authorization: Bearer <token>
  */
 const updateUser = (req, res) => {
@@ -418,10 +418,13 @@ const updateUser = (req, res) => {
             });
         }
 
-        if (!['admin', 'general'].includes(role)) {
+        // Normalizar rol a minúsculas
+        const normalizedRole = role.toLowerCase();
+
+        if (!['admin', 'observer', 'general'].includes(normalizedRole)) {
             return res.status(400).json({
                 success: false,
-                message: 'El rol debe ser "admin" o "general"'
+                message: 'El rol debe ser "admin", "observer" o "general"'
             });
         }
 
@@ -433,7 +436,7 @@ const updateUser = (req, res) => {
             UPDATE users
             SET name = ?, role = ?, updated_at = CURRENT_TIMESTAMP
             WHERE LOWER(id) = LOWER(?)
-        `).run(name, role, id);
+        `).run(name, normalizedRole, id);
 
         db.close();
 
@@ -447,7 +450,7 @@ const updateUser = (req, res) => {
         return res.json({
             success: true,
             message: 'Usuario actualizado exitosamente',
-            data: { id, name, role }
+            data: { id, name, role: normalizedRole }
         });
 
     } catch (error) {

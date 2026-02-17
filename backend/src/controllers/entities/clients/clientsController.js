@@ -14,6 +14,8 @@ const {
   updateClient,
   deleteClient
 } = require('./clientsService');
+const { bulkImportClients } = require('../../../services/BulkClientImportService');
+const { parseCSV } = require('../../../utils/csvParser');
 const logger = require('../../shared/logger');
 
 /**
@@ -157,10 +159,75 @@ const delete_ = (req, res) => {
   }
 };
 
+/**
+ * POST /api/clients/bulk-import
+ * Importa clientes masivamente desde un array de registros
+ */
+const bulkImport = (req, res) => {
+  try {
+    const { records, csvContent } = req.body;
+
+    let recordsToImport = records;
+
+    // Si se proporciona contenido CSV, parsearlo
+    if (csvContent && !records) {
+      const parseResult = parseCSV(csvContent, ['id', 'name', 'nit', 'address', 'city', 'seller']);
+      
+      if (!parseResult.success) {
+        return res.status(400).json({
+          success: false,
+          message: parseResult.error
+        });
+      }
+
+      recordsToImport = parseResult.data;
+    }
+
+    if (!recordsToImport || !Array.isArray(recordsToImport)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Se requiere un array de registros en el campo "records" o contenido CSV en "csvContent"'
+      });
+    }
+
+    if (recordsToImport.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'El array de registros no puede estar vacío'
+      });
+    }
+
+    const result = bulkImportClients(recordsToImport);
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.message,
+        errors: result.errors,
+        imported: result.imported
+      });
+    }
+
+    logger.info('Bulk import successful', { imported: result.imported });
+    return res.status(201).json({
+      success: true,
+      message: result.message,
+      imported: result.imported
+    });
+  } catch (error) {
+    logger.error('Error in bulk import', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error durante la importación masiva'
+    });
+  }
+};
+
 module.exports = {
   list,
   read,
   create,
   update,
-  delete: delete_
+  delete: delete_,
+  bulkImport
 };

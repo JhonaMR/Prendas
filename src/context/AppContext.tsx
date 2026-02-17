@@ -20,6 +20,7 @@ export type AppAction =
   | { type: 'SET_DISPATCHES'; payload: any[] }
   | { type: 'SET_ORDERS'; payload: any[] }
   | { type: 'SET_PRODUCTION_TRACKING'; payload: any[] }
+  | { type: 'SET_DELIVERY_DATES'; payload: any[] }
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'RESET_STATE' };
@@ -37,6 +38,7 @@ const initialState: AppState & { loading: boolean; error: string | null } = {
   dispatches: [],
   orders: [],
   productionTracking: [],
+  deliveryDates: [],
   loading: false,
   error: null
 };
@@ -48,7 +50,7 @@ function appReducer(
 ): typeof initialState {
   switch (action.type) {
     case 'SET_USER':
-      return { ...state, user: action.payload };
+      return { ...state, users: [action.payload as any] };
     case 'SET_USERS':
       return { ...state, users: action.payload };
     case 'SET_REFERENCES':
@@ -71,6 +73,8 @@ function appReducer(
       return { ...state, orders: action.payload };
     case 'SET_PRODUCTION_TRACKING':
       return { ...state, productionTracking: action.payload };
+    case 'SET_DELIVERY_DATES':
+      return { ...state, deliveryDates: action.payload };
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
     case 'SET_ERROR':

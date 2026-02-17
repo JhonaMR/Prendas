@@ -1,13 +1,14 @@
 
 import React, { useMemo, useState } from 'react';
-import { AppState, BatchReception, Dispatch, Client, UserRole, User, Confeccionista } from '../types';
+import { BatchReception, Dispatch, Client, UserRole, User, Confeccionista, AppState } from '../types';
 
 interface ReportsViewProps {
-  state: AppState;
   user: User;
+  state: AppState;
 }
 
-const ReportsView: React.FC<ReportsViewProps> = ({ state, user }) => {
+const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
+  
   const [reportType, setReportType] = useState<'kardex' | 'ref' | 'client' | 'seller' | 'conf' | 'prod_conf'>('kardex');
   const [refInput, setRefInput] = useState('');
   const [clientInput, setClientInput] = useState('');

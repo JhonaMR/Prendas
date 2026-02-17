@@ -1,12 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { AppState } from '../types';
+import React, { useState, useMemo, useRef } from 'react';
+import { AppState, Correria } from '../types';
 
 interface SalesReportViewProps {
   state: AppState;
 }
 
 const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
+  
   const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
+  const [correriaSearch, setCorreriaSearch] = useState('');
+  const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
 
   // Obtener solo las referencias de la correría seleccionada (maleta)
   const maletaReferences = useMemo(() => {
@@ -235,15 +238,15 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
               Correría Seleccionada
             </span>
-            <select
+            <CorreriaAutocomplete
               value={selectedCorreriaId}
-              onChange={(e) => setSelectedCorreriaId(e.target.value)}
-              className="bg-transparent border-none font-black text-sm text-slate-800 focus:ring-0 pr-8"
-            >
-              {state.correrias.map(c => (
-                <option key={c.id} value={c.id}>{c.name} {c.year}</option>
-              ))}
-            </select>
+              correrias={state.correrias}
+              onChange={setSelectedCorreriaId}
+              search={correriaSearch}
+              setSearch={setCorreriaSearch}
+              showDropdown={showCorreriaDropdown}
+              setShowDropdown={setShowCorreriaDropdown}
+            />
           </div>
         </div>
       </div>
@@ -548,3 +551,70 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
 };
 
 export default SalesReportView;
+
+const CorreriaAutocomplete: React.FC<{
+  value: string;
+  correrias: Correria[];
+  onChange: (id: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  showDropdown: boolean;
+  setShowDropdown: (show: boolean) => void;
+}> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  const correria = correrias.find(c => c.id === value);
+  const displayValue = correria ? `${correria.name} ${correria.year}` : value;
+
+  const filtered = correrias.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.year.toString().includes(search)
+  );
+
+  const handleBlur = () => {
+    timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
+  };
+
+  const handleSelect = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    onChange(id);
+    setShowDropdown(false);
+    setSearch('');
+  };
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <input
+        type="text"
+        value={showDropdown ? search : displayValue}
+        onChange={e => setSearch(e.target.value)}
+        onFocus={() => { setShowDropdown(true); setSearch(''); }}
+        onBlur={handleBlur}
+        placeholder="Buscar..."
+        className="bg-transparent border-none font-black text-sm text-slate-800 focus:ring-0 pr-8 placeholder:text-slate-400"
+      />
+      {showDropdown && (
+        <div 
+          className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
+          style={{ 
+            zIndex: 9999,
+            minWidth: '250px'
+          }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {filtered.map(c => (
+            <button
+              key={c.id}
+              onMouseDown={() => handleSelect(c.id)}
+              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+            >
+              <p className="font-black text-slate-800 text-xs">{c.name}</p>
+              <p className="text-[9px] text-slate-400">{c.year}</p>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

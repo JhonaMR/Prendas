@@ -5,6 +5,7 @@
 const { getDatabase } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 function getAllSellers() {
   try {
@@ -36,6 +37,10 @@ function createSeller(data) {
   try {
     const db = getDatabase();
     db.prepare('INSERT INTO sellers (id, name, active) VALUES (?, ?, 1)').run(data.id, data.name);
+    
+    // Invalidate cache after creation
+    invalidateOnCreate('Seller');
+    
     logger.info('Created seller', { id: data.id });
     return getSellerById(data.id);
   } catch (error) {
@@ -64,6 +69,9 @@ function updateSeller(id, data) {
       db.prepare(query).run(...values);
     }
 
+    // Invalidate cache after update
+    invalidateOnUpdate('Seller');
+
     logger.info('Updated seller', { id });
     return getSellerById(id);
   } catch (error) {
@@ -79,6 +87,10 @@ function deleteSeller(id) {
     const existing = db.prepare('SELECT id FROM sellers WHERE id = ?').get(id);
     if (!existing) throw new NotFoundError('Seller', id);
     db.prepare('DELETE FROM sellers WHERE id = ?').run(id);
+    
+    // Invalidate cache after deletion
+    invalidateOnDelete('Seller');
+    
     logger.info('Deleted seller', { id });
   } catch (error) {
     if (error instanceof NotFoundError) throw error;

@@ -1,14 +1,29 @@
 
 import React, { useMemo, useState } from 'react';
-import { BatchReception, Dispatch, ItemEntry } from '../types';
+import { BatchReception, Dispatch, ItemEntry, Reference } from '../types';
 
 interface InventoryViewProps {
-  receptions: BatchReception[];
-  dispatches: Dispatch[];
+  receptions?: BatchReception[];
+  dispatches?: Dispatch[];
+  references?: Reference[];
 }
 
-const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches }) => {
+const InventoryView: React.FC<InventoryViewProps> = ({ 
+  receptions = [], 
+  dispatches = [],
+  references = []
+}) => {
+  
   const [search, setSearch] = useState('');
+
+  // Create a map of reference ID to description for quick lookup
+  const refDescriptionMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    references.forEach(ref => {
+      map[ref.id] = ref.description;
+    });
+    return map;
+  }, [references]);
 
   const stockByRef = useMemo(() => {
     const stock: Record<string, {
@@ -76,7 +91,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches })
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 gap-2 sm:gap-3">
         {filteredSortedStock.length === 0 ? (
           <div className="bg-white p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-slate-200 text-center text-slate-400 font-bold italic">
             {search ? `No se encontraron resultados para "${search}"` : 'No hay mercancía registrada en bodega'}
@@ -85,40 +100,42 @@ const InventoryView: React.FC<InventoryViewProps> = ({ receptions, dispatches })
           filteredSortedStock.map(([ref, data]) => (
             <div key={ref} className="bg-white rounded-[20px] sm:rounded-[24px] shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all border-l-4 border-l-blue-500">
               {/* Header section - more compact */}
-              <div className="px-4 py-2 sm:px-6 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4 bg-slate-50/40">
-                <div className="flex items-center gap-3">
-                  <h3 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight leading-none">{ref}</h3>
-                  <span className="px-1.5 py-0.5 bg-blue-100 text-blue-600 text-[7px] sm:text-[8px] font-black uppercase tracking-widest rounded leading-none">
+              <div className="px-4 py-1 sm:py-1.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 bg-slate-50/40">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight leading-none">{ref}</h3>
+                  <span className="px-1 py-0 bg-blue-100 text-blue-600 text-[6px] sm:text-[7px] font-black uppercase tracking-widest rounded leading-none">
                     Lotes: {data.lotsCount}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="px-3 py-1.5 bg-white rounded-lg shadow-xs border border-slate-100 text-center min-w-[70px]">
-                    <p className="text-[6px] sm:text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Stock Disp.</p>
-                    <p className="text-base sm:text-lg font-black text-blue-600 leading-none">{data.available}</p>
+                <div className="flex items-center gap-1">
+                  <div className="px-2 py-1 bg-white rounded-lg shadow-xs border border-slate-100 text-center min-w-[60px]">
+                    <p className="text-[5px] sm:text-[6px] font-black text-slate-400 uppercase tracking-widest mb-0 leading-none">Stock</p>
+                    <p className="text-sm sm:text-base font-black text-blue-600 leading-none">{data.available}</p>
                   </div>
-                  <div className="px-3 py-1.5 bg-white rounded-lg shadow-xs border border-slate-100 text-center min-w-[70px]">
-                    <p className="text-[6px] sm:text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5 leading-none">Recibidas</p>
-                    <p className="text-base sm:text-lg font-black text-slate-800 leading-none">{data.received}</p>
+                  <div className="px-2 py-1 bg-white rounded-lg shadow-xs border border-slate-100 text-center min-w-[60px]">
+                    <p className="text-[5px] sm:text-[6px] font-black text-slate-400 uppercase tracking-widest mb-0 leading-none">Recib.</p>
+                    <p className="text-sm sm:text-base font-black text-slate-800 leading-none">{data.received}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Sizes section - more compact */}
-              <div className="px-4 py-2 sm:px-6 sm:py-3 grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
-                <div className="lg:col-span-8 flex flex-wrap gap-1">
-                  <div className="px-2 py-1 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-1.5">
-                    <span className="text-[11px] sm:text-xs font-black text-slate-700 leading-none">Disponible: {data.available}</span>
-                  </div>
+              {/* Description section */}
+              {refDescriptionMap[ref] && (
+                <div className="px-4 py-0.5 bg-white border-b border-slate-50">
+                  <p className="text-[10px] sm:text-xs font-medium text-slate-500 leading-tight">{refDescriptionMap[ref]}</p>
                 </div>
-                <div className="lg:col-span-4 flex gap-1.5">
-                   <div className="flex-1 p-1.5 bg-blue-50/50 rounded-lg text-center">
-                      <p className="text-[6px] font-black text-blue-400 uppercase leading-none mb-0.5">Ingresos</p>
-                      <p className="text-[10px] sm:text-xs font-black text-blue-600 leading-none">+{data.received}</p>
+              )}
+
+              {/* Sizes section - more compact */}
+              <div className="px-4 py-1 sm:py-1.5 grid grid-cols-1 lg:grid-cols-12 gap-1 items-center">
+                <div className="lg:col-span-12 flex gap-1">
+                   <div className="flex-1 p-2 bg-blue-50/50 rounded text-center">
+                      <p className="text-[4px] font-black text-blue-400 uppercase leading-none">Ingresos</p>
+                      <p className="text-[10px] sm:text-sm font-black text-blue-600 leading-none">+{data.received}</p>
                    </div>
-                   <div className="flex-1 p-1.5 bg-pink-50/50 rounded-lg text-center">
-                      <p className="text-[6px] font-black text-pink-400 uppercase leading-none mb-0.5">Despachos</p>
-                      <p className="text-[10px] sm:text-xs font-black text-pink-600 leading-none">-{data.dispatched}</p>
+                   <div className="flex-1 p-2 bg-pink-50/50 rounded text-center">
+                      <p className="text-[4px] font-black text-pink-400 uppercase leading-none">Despachos</p>
+                      <p className="text-[10px] sm:text-sm font-black text-pink-600 leading-none">-{data.dispatched}</p>
                    </div>
                 </div>
               </div>

@@ -47,7 +47,7 @@ function initDatabase() {
             name TEXT NOT NULL,
             login_code TEXT UNIQUE NOT NULL CHECK(length(login_code) = 3),
             pin_hash TEXT NOT NULL,
-            role TEXT NOT NULL CHECK(role IN ('admin', 'general')) DEFAULT 'general',
+            role TEXT NOT NULL CHECK(role IN ('admin', 'observer', 'general')) DEFAULT 'general',
             active INTEGER NOT NULL DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -93,9 +93,11 @@ function initDatabase() {
             nit TEXT NOT NULL,
             address TEXT NOT NULL,
             city TEXT NOT NULL,
-            seller TEXT NOT NULL,
+            seller TEXT,
+            sellerId TEXT,
             active INTEGER NOT NULL DEFAULT 1,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (sellerId) REFERENCES sellers(id)
         )
     `);
 
@@ -222,11 +224,13 @@ function initDatabase() {
         CREATE TABLE IF NOT EXISTS dispatches (
             id TEXT PRIMARY KEY,
             client_id TEXT NOT NULL,
+            correria_id TEXT NOT NULL,
             invoice_no TEXT NOT NULL,
             remission_no TEXT NOT NULL,
             dispatched_by TEXT NOT NULL,
             created_at TEXT NOT NULL,
-            FOREIGN KEY (client_id) REFERENCES clients(id)
+            FOREIGN KEY (client_id) REFERENCES clients(id),
+            FOREIGN KEY (correria_id) REFERENCES correrias(id)
         )
     `);
 
@@ -329,6 +333,55 @@ function initDatabase() {
     `);
 
     console.log('✅ Tabla delivery_dates creada');
+
+    // ====================
+    // TABLA: audit_log (Registro de Auditoría)
+    // ====================
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_type TEXT NOT NULL,
+            entity_id TEXT NOT NULL,
+            user_id TEXT,
+            action TEXT NOT NULL CHECK(action IN ('CREATE', 'UPDATE', 'DELETE')),
+            old_values TEXT,
+            new_values TEXT,
+            changes TEXT,
+            ip_address TEXT,
+            user_agent TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
+
+    console.log('✅ Tabla audit_log creada');
+
+    // Crear índices para audit_log
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_log_entity_type 
+        ON audit_log(entity_type)
+    `);
+
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_log_entity_id 
+        ON audit_log(entity_id)
+    `);
+
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_log_user_id 
+        ON audit_log(user_id)
+    `);
+
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_log_action 
+        ON audit_log(action)
+    `);
+
+    db.exec(`
+        CREATE INDEX IF NOT EXISTS idx_audit_log_created_at 
+        ON audit_log(created_at)
+    `);
+
+    console.log('✅ Índices de audit_log creados');
 
     // ====================
     // INSERTAR DATOS INICIALES

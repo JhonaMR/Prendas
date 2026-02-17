@@ -1,0 +1,11 @@
+id,description,price,designer,cloth1,avgCloth1,cloth2,avgCloth2,correrias
+REF001,Blusa dama manga corta,19900,Estudio A,Lino,0.85,Encaje,0.15,Madres2026|Navidad2026
+REF002,Blusa dama manga larga,21900,Estudio B,Seda,0.90,,0,Madres2026
+REF003,Buso dama cuello alto,25900,Estudio A,Algodón,1.2,,0,Navidad2026|Padres2026
+REF004,Vestido dama casual,35900,Estudio C,Poliéster,0.95,Encaje,0.05,Madres2026
+REF005,Falda dama plisada,18900,Estudio B,Lino,1.0,,0,Navidad2026
+REF006,Pantalón dama clásico,29900,Estudio A,Algodón,1.3,,0,Madres2026|Padres2026
+REF007,Chaqueta dama sport,39900,Estudio C,Poliéster,1.2,Encaje,0.1,Navidad2026
+REF008,Blusa dama estampada,22900,Estudio B,Algodón,0.95,Encaje,0.15,Madres2026
+REF009,Vestido dama elegante,45900,Estudio A,Seda,1.0,Encaje,0.2,Navidad2026
+REF010,Buso dama básico,17900,Estudio C,Algodón,1.1,,0,Madres2026|Padres2026

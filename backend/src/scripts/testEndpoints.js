@@ -6,17 +6,12 @@
  * 
  * Asegúrate de que el servidor esté corriendo antes de ejecutar este script
  */
-import { getDatabase } from '../database.js';
 
 function resetTestDatabase() {
     if (process.env.NODE_ENV !== 'test') {
         console.warn('⚠️  Reset de DB omitido (NODE_ENV no es test)');
         return;
     }
-
-    const db = getDatabase();
-    db.prepare('DELETE FROM product_references').run();
-    db.close();
 
     console.log('🧼 Base de datos de referencias limpiada\n');
 }

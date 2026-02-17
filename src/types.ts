@@ -1,7 +1,8 @@
 
 export enum UserRole {
   GENERAL = 'general',
-  admin = 'admin'
+  OBSERVER = 'observer',
+  ADMIN = 'admin'
 }
 
 export interface User {
@@ -29,7 +30,7 @@ export interface Client {
   nit: string; 
   address: string;
   city: string;
-  seller: string;
+  sellerId: string;
 }
 
 export interface Confeccionista {

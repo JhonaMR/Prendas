@@ -63,7 +63,11 @@ class ApiService {
       const data = await response.json();
       
       if (!response.ok) {
-        throw data;
+        return {
+          success: false,
+          message: data.message || `Error del servidor (${response.status})`,
+          error: data.error
+        };
       }
       
       return data;
@@ -75,7 +79,10 @@ class ApiService {
           message: `Error del servidor (${response.status})`
         };
       }
-      throw error;
+      return {
+        success: false,
+        message: error.message || 'Error desconocido'
+      };
     }
   }
 
@@ -466,7 +473,10 @@ class ApiService {
       });
 
       const data = await this.handleResponse<Seller[]>(response);
-      return data.data || [];
+      console.log('📊 getSellers response:', data);
+      const sellers = data.data || [];
+      console.log('📊 getSellers returning:', sellers.length, 'sellers', sellers);
+      return sellers;
     } catch (error) {
       console.error('Error obteniendo vendedores:', error);
       return [];
@@ -667,6 +677,53 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al crear despacho'
+      };
+    }
+  }
+
+  async updateDispatch(id: string, dispatch: Partial<Dispatch>): Promise<ApiResponse<Dispatch>> {
+    try {
+      console.log('✏️ Actualizando despacho:', id, dispatch);
+      const response = await fetch(`${API_BASE_URL}/dispatches/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(dispatch)
+      });
+
+      console.log('✏️ Response status:', response.status);
+      console.log('✏️ Response ok:', response.ok);
+
+      const result = await this.handleResponse<Dispatch>(response);
+      console.log('✏️ Update result:', result);
+      return result;
+    } catch (error: any) {
+      console.error('✏️ Error en updateDispatch:', error);
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar despacho'
+      };
+    }
+  }
+
+  async deleteDispatch(id: string): Promise<ApiResponse> {
+    try {
+      console.log('🗑️ Eliminando despacho:', id);
+      const response = await fetch(`${API_BASE_URL}/dispatches/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      console.log('🗑️ Response status:', response.status);
+      console.log('🗑️ Response ok:', response.ok);
+
+      const result = await this.handleResponse(response);
+      console.log('🗑️ Delete result:', result);
+      return result;
+    } catch (error: any) {
+      console.error('🗑️ Error en deleteDispatch:', error);
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar despacho'
       };
     }
   }
@@ -925,6 +982,65 @@ class ApiService {
   }
 }
 
+// ==================== ADAPTADORES PARA HOOKS ====================
+// Estos adaptadores permiten que los hooks usen una interfaz consistente
+
+// Crear adaptadores para cada entidad
+const createEntityAdapter = (
+  getMethod: () => Promise<any[]>,
+  createMethod: (data: any) => Promise<any>,
+  updateMethod: (id: string, data: any) => Promise<any>,
+  deleteMethod: (id: string) => Promise<any>
+) => ({
+  list: getMethod,
+  create: createMethod,
+  update: updateMethod,
+  delete: deleteMethod,
+  read: async (id: string) => {
+    const items = await getMethod();
+    return items.find((item: any) => item.id === id);
+  }
+});
+
+// Extender la instancia de API con adaptadores
+const apiInstance = new ApiService();
+
+// Agregar adaptadores para cada entidad
+(apiInstance as any).references = createEntityAdapter(
+  () => apiInstance.getReferences(),
+  (data) => apiInstance.createReference(data),
+  (id, data) => apiInstance.updateReference(id, data),
+  (id) => apiInstance.deleteReference(id)
+);
+
+(apiInstance as any).clients = createEntityAdapter(
+  () => apiInstance.getClients(),
+  (data) => apiInstance.createClient(data),
+  (id, data) => apiInstance.updateClient(id, data),
+  (id) => apiInstance.deleteClient(id)
+);
+
+(apiInstance as any).confeccionistas = createEntityAdapter(
+  () => apiInstance.getConfeccionistas(),
+  (data) => apiInstance.createConfeccionista(data),
+  (id, data) => apiInstance.updateConfeccionista(id, data),
+  (id) => apiInstance.deleteConfeccionista(id)
+);
+
+(apiInstance as any).sellers = createEntityAdapter(
+  () => apiInstance.getSellers(),
+  (data) => apiInstance.createSeller(data),
+  (id, data) => apiInstance.updateSeller(id, data),
+  (id) => apiInstance.deleteSeller(id)
+);
+
+(apiInstance as any).correrias = createEntityAdapter(
+  () => apiInstance.getCorrerias(),
+  (data) => apiInstance.createCorreria(data),
+  (id, data) => apiInstance.updateCorreria(id, data),
+  (id) => apiInstance.deleteCorreria(id)
+);
+
 // Exportar instancia única
-export const api = new ApiService();
+export const api = apiInstance;
 export default api;

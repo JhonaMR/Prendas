@@ -24,7 +24,9 @@ const logger = require('../../shared/logger');
  */
 const list = (req, res) => {
   try {
+    logger.info('Listing all references');
     const references = getAllReferences();
+    logger.info(`Retrieved ${references.length} references`);
     return res.json({
       success: true,
       data: references
@@ -45,15 +47,18 @@ const list = (req, res) => {
 const read = (req, res) => {
   try {
     const { id } = req.params;
+    logger.info(`Reading reference with id: ${id}`);
     validateReferenceId(id);
 
     const reference = getReferenceById(id);
+    logger.info(`Successfully retrieved reference: ${id}`);
     return res.json({
       success: true,
       data: reference
     });
   } catch (error) {
     if (error.statusCode === 404) {
+      logger.warn(`Reference not found: ${req.params.id}`);
       return res.status(404).json({
         success: false,
         message: error.message
@@ -73,9 +78,11 @@ const read = (req, res) => {
  */
 const create = (req, res) => {
   try {
+    logger.info('Creating new reference', { body: req.body });
     validateCreateReference(req.body);
 
     const reference = createReference(req.body);
+    logger.info(`Reference created successfully with id: ${reference.id}`);
     return res.status(201).json({
       success: true,
       data: reference,
@@ -83,6 +90,7 @@ const create = (req, res) => {
     });
   } catch (error) {
     if (error.statusCode === 400) {
+      logger.warn('Validation error creating reference', { errors: error.errors });
       return res.status(400).json({
         success: false,
         message: error.message,
@@ -104,10 +112,12 @@ const create = (req, res) => {
 const update = (req, res) => {
   try {
     const { id } = req.params;
+    logger.info(`Updating reference with id: ${id}`, { body: req.body });
     validateReferenceId(id);
     validateUpdateReference(req.body);
 
     const reference = updateReference(id, req.body);
+    logger.info(`Reference updated successfully: ${id}`);
     return res.json({
       success: true,
       data: reference,
@@ -115,6 +125,7 @@ const update = (req, res) => {
     });
   } catch (error) {
     if (error.statusCode === 400) {
+      logger.warn(`Validation error updating reference: ${req.params.id}`, { errors: error.errors });
       return res.status(400).json({
         success: false,
         message: error.message,
@@ -122,6 +133,7 @@ const update = (req, res) => {
       });
     }
     if (error.statusCode === 404) {
+      logger.warn(`Reference not found for update: ${req.params.id}`);
       return res.status(404).json({
         success: false,
         message: error.message
@@ -142,15 +154,18 @@ const update = (req, res) => {
 const delete_ = (req, res) => {
   try {
     const { id } = req.params;
+    logger.info(`Deleting reference with id: ${id}`);
     validateReferenceId(id);
 
     deleteReference(id);
+    logger.info(`Reference deleted successfully: ${id}`);
     return res.json({
       success: true,
       message: 'Reference deleted successfully'
     });
   } catch (error) {
     if (error.statusCode === 404) {
+      logger.warn(`Reference not found for deletion: ${req.params.id}`);
       return res.status(404).json({
         success: false,
         message: error.message
@@ -171,8 +186,10 @@ const delete_ = (req, res) => {
 const getCorreriaReferences = (req, res) => {
   try {
     const { correria_id } = req.params;
+    logger.info(`Getting references for correria: ${correria_id}`);
 
     const references = getReferencesByCorreria(correria_id);
+    logger.info(`Retrieved ${references.length} references for correria: ${correria_id}`);
     return res.json({
       success: true,
       data: references

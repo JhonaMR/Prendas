@@ -1,18 +1,21 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { AppState, Correria, Reference, ProductionTracking, UserRole } from '../types';
+import { Correria, Reference, ProductionTracking, UserRole, AppState, User } from '../types';
 import api from '../services/api';
 
 interface OrdersViewProps {
+  user: User;
   state: AppState;
-  updateState: (updater: (prev: AppState) => AppState) => void;
-  user: any; // Usuario actual para validar permisos
-  onUnsavedChanges?: (hasChanges: boolean) => void; // Callback para notificar cambios sin guardar
+  updateState: (fn: (prev: AppState) => AppState) => void;
+  onUnsavedChanges?: (hasChanges: boolean) => void;
 }
 
-  const OrdersView: React.FC<OrdersViewProps> = ({ state, updateState, user, onUnsavedChanges }) => {
+const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUnsavedChanges }) => {
+  
   const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
   const [refFilter, setRefFilter] = useState('');
   const [hideZeros, setHideZeros] = useState(false);
+  const [correriaSearch, setCorreriaSearch] = useState('');
+  const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   
   // Estados para filtros de columnas
   const [columnFilters, setColumnFilters] = useState<{
@@ -21,17 +24,12 @@ interface OrdersViewProps {
   const [activeFilterMenu, setActiveFilterMenu] = useState<string | null>(null);
   const [textFilterInputs, setTextFilterInputs] = useState<{ [key: string]: string }>({});
   const [numericFilterInputs, setNumericFilterInputs] = useState<{ [key: string]: string }>({});
-    // Estado para trackear los datos iniciales (los que vienen del backend)
   const [initialProductionData, setInitialProductionData] = useState<ProductionTracking[]>([]);
-
-  // Estado para el proceso de guardado
   const [isSaving, setIsSaving] = useState(false);
-
-  // Ref para detectar si hay cambios sin guardar
   const hasUnsavedChanges = useRef(false);
 
   // Verificar si el usuario es admin
-  const isAdmin = user?.role === UserRole.admin || user?.role === 'admin';
+  const isAdmin = user?.role === UserRole.ADMIN || user?.role === 'admin';
 // Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
 useEffect(() => {
   const currentCorreriaData = state.productionTracking.filter(
@@ -516,9 +514,15 @@ const handleSaveProduction = async () => {
           </div>
             <div className="flex flex-col border-l border-slate-100 pl-3">
             <span className="text-[8px] font-black text-slate-600 uppercase mb-1">Campaña</span>
-            <select value={selectedCorreriaId} onChange={e => setSelectedCorreriaId(e.target.value)} className="bg-transparent border-none font-black text-xs p-0 focus:ring-0 text-slate-800">
-              {state.correrias.map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
-            </select>
+            <CorreriaAutocomplete
+              value={selectedCorreriaId}
+              correrias={state.correrias}
+              onChange={setSelectedCorreriaId}
+              search={correriaSearch}
+              setSearch={setCorreriaSearch}
+              showDropdown={showCorreriaDropdown}
+              setShowDropdown={setShowCorreriaDropdown}
+            />
           </div>
           
           {/* BOTÓN GUARDAR - Solo visible para admin */}
@@ -690,3 +694,70 @@ const handleSaveProduction = async () => {
 };
 
 export default OrdersView;
+
+const CorreriaAutocomplete: React.FC<{
+  value: string;
+  correrias: Correria[];
+  onChange: (id: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  showDropdown: boolean;
+  setShowDropdown: (show: boolean) => void;
+}> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>();
+
+  const correria = correrias.find(c => c.id === value);
+  const displayValue = correria ? `${correria.name} ${correria.year}` : value;
+
+  const filtered = correrias.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.year.toString().includes(search)
+  );
+
+  const handleBlur = () => {
+    timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
+  };
+
+  const handleSelect = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    onChange(id);
+    setShowDropdown(false);
+    setSearch('');
+  };
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <input
+        type="text"
+        value={showDropdown ? search : displayValue}
+        onChange={e => setSearch(e.target.value)}
+        onFocus={() => { setShowDropdown(true); setSearch(''); }}
+        onBlur={handleBlur}
+        placeholder="Buscar..."
+        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 text-xs"
+      />
+      {showDropdown && (
+        <div 
+          className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
+          style={{ 
+            zIndex: 9999,
+            minWidth: '250px'
+          }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {filtered.map(c => (
+            <button
+              key={c.id}
+              onMouseDown={() => handleSelect(c.id)}
+              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+            >
+              <p className="font-black text-slate-800 text-xs">{c.name}</p>
+              <p className="text-[9px] text-slate-400">{c.year}</p>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};

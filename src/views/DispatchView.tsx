@@ -10,11 +10,13 @@ interface DispatchViewProps {
   dispatches: Dispatch[];
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
-  correrias: any[]; // ← AGREGAMOS ESTA LÍNEA
+  correrias: any[];
   onAddDispatch: (dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
+  onUpdateDispatch: (id: string, dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
+  onDeleteDispatch: (id: string) => Promise<{ success: boolean }>;
 }
 
-const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, correrias, onAddDispatch }) => {
+const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, correrias, onAddDispatch, onUpdateDispatch, onDeleteDispatch }) => {
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
@@ -44,7 +46,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
   const handleEdit = (disp: Dispatch) => {
     // FIX: UserRole.admin instead of UserRole.ADMIN
-    if (user.role !== UserRole.admin) {
+    if (user.role !== UserRole.ADMIN) {
       alert("Acceso administrativo requerido.");
       return;
     }
@@ -87,45 +89,84 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     });
   };
 
-    const handleSave = async () => {
-      if (!clientId) {
-        alert("Debe seleccionar un cliente");
-        return;
-      }
-      if (!correriaId) { // ← AGREGAMOS ESTAS LÍNEAS
-        alert("Debe seleccionar una correría");
-        return;
-      }
-      if (items.length === 0) {
-        alert("Debe agregar al menos una prenda");
-        return;
-      }
-
-      const data: Dispatch = {
-        id: editingDisp ? editingDisp.id : Math.random().toString(36).substr(2, 9),
-        clientId,
-        correriaId, 
-        invoiceNo,
-        remissionNo,
-        items,
-        dispatchedBy: editingDisp ? editingDisp.dispatchedBy : user.name,
-        createdAt: editingDisp ? editingDisp.createdAt : new Date().toLocaleString(),
-        editLogs: editingDisp ? [...editingDisp.editLogs, { user: user.name, date: new Date().toLocaleString() }] : []
-      };
+  const handleSave = async () => {
+    if (!clientId) {
+      alert("Debe seleccionar un cliente");
+      return;
+    }
+    if (!correriaId) {
+      alert("Debe seleccionar una correría");
+      return;
+    }
+    if (items.length === 0) {
+      alert("Debe agregar al menos una prenda");
+      return;
+    }
 
     try {
-      const result = await onAddDispatch(data);
-      if (result.success) {
-        updateState(prev => ({
-          ...prev,
-          dispatches: editingDisp 
-            ? prev.dispatches.map(d => d.id === data.id ? data : d)
-            : [data, ...prev.dispatches]
-        }));
-        setIsDispatching(false);
-        alert("Despacho guardado exitosamente");
+      if (editingDisp) {
+        // Actualizar despacho existente
+        const updatedData = {
+          clientId,
+          correriaId,
+          invoiceNo,
+          remissionNo,
+          items,
+          dispatchedBy: editingDisp.dispatchedBy
+        };
+
+        const result = await onUpdateDispatch(editingDisp.id, updatedData);
+        if (result?.success) {
+          // Actualizar estado local con los datos completos
+          const fullUpdatedData: Dispatch = {
+            ...editingDisp,
+            clientId,
+            correriaId,
+            invoiceNo,
+            remissionNo,
+            items,
+            editLogs: [
+              ...(editingDisp.editLogs || []),
+              { user: user.name, date: new Date().toLocaleString() }
+            ]
+          };
+          updateState(prev => ({
+            ...prev,
+            dispatches: prev.dispatches.map(d => d.id === editingDisp.id ? fullUpdatedData : d)
+          }));
+          setIsDispatching(false);
+          setEditingDisp(null);
+          alert("Despacho actualizado exitosamente");
+        } else {
+          const errorMsg = result?.message || 'Error desconocido al actualizar el despacho';
+          alert(`Error al actualizar el despacho: ${errorMsg}`);
+          console.error('Error response:', result);
+        }
       } else {
-        alert("Error al guardar el despacho");
+        // Crear nuevo despacho
+        const newData: Dispatch = {
+          id: Math.random().toString(36).substr(2, 9),
+          clientId,
+          correriaId,
+          invoiceNo,
+          remissionNo,
+          items,
+          dispatchedBy: user.name,
+          createdAt: new Date().toLocaleString(),
+          editLogs: [{ user: user.name, date: new Date().toLocaleString() }]
+        };
+
+        const result = await onAddDispatch(newData);
+        if (result.success) {
+          updateState(prev => ({
+            ...prev,
+            dispatches: [...prev.dispatches, newData]
+          }));
+          setIsDispatching(false);
+          alert("Despacho guardado exitosamente");
+        } else {
+          alert("Error al guardar el despacho");
+        }
       }
     } catch (error) {
       console.error('Error al guardar despacho:', error);
@@ -342,6 +383,31 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                       <button onClick={(e) => { e.stopPropagation(); handleEdit(d); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                         <Icons.Edit />
                       </button>
+                      {user.role === UserRole.ADMIN && (
+                        <button onClick={async (e) => { 
+                          e.stopPropagation(); 
+                          if (confirm("¿Seguro que desea eliminar este despacho?")) {
+                            try {
+                              const result = await onDeleteDispatch(d.id);
+                              if (result?.success) {
+                                updateState(prev => ({
+                                  ...prev,
+                                  dispatches: prev.dispatches.filter(disp => disp.id !== d.id)
+                                }));
+                                alert('Despacho eliminado correctamente');
+                              } else {
+                                const errorMsg = result?.message || 'Error desconocido al eliminar el despacho';
+                                alert(`Error al eliminar el despacho: ${errorMsg}`);
+                              }
+                            } catch (error) {
+                              console.error('Error eliminando despacho:', error);
+                              alert(`Error al eliminar el despacho: ${error}`);
+                            }
+                          }
+                        }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                          <Icons.Delete />
+                        </button>
+                      )}
                       <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />

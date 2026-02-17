@@ -1,16 +1,17 @@
 
 import React, { useState, useRef } from 'react';
-import { AppState, Order, ItemEntry, User, Client } from '../types';
+import { Order, ItemEntry, User, Client, AppState } from '../types';
 import { Icons } from '../constants';
 import api from '../services/api';
 
 interface OrderSettleViewProps {
-  state: AppState;
   user: User;
-  updateState: (updater: (prev: AppState) => AppState) => void;
+  state: AppState;
+  updateState: (fn: (prev: AppState) => AppState) => void;
 }
 
-const OrderSettleView: React.FC<OrderSettleViewProps> = ({ state, user, updateState }) => {
+const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateState }) => {
+  
   const [selectedClientId, setSelectedClientId] = useState('');
   const [clientSearch, setClientSearch] = useState('');
   const [showClientResults, setShowClientResults] = useState(false);

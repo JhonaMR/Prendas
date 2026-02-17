@@ -24,7 +24,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const { pagination, goToPage } = usePagination(1, 20);
   
   const hasUnsavedChanges = useRef(false);
-  const isAdmin = user?.role === UserRole.admin || user?.role === 'admin';
+  const isAdmin = user?.role === UserRole.ADMIN || user?.role === 'admin';
 
   useEffect(() => {
     setInitialData(state.deliveryDates);

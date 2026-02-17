@@ -19,6 +19,8 @@ const logger = require('../../shared/logger');
 const list = (req, res) => {
   try {
     const sellers = getAllSellers();
+    logger.info('Listing sellers', { count: sellers.length, sellers });
+    console.log('📊 Sellers endpoint called, returning:', sellers.length, 'sellers');
     return res.json({ success: true, data: sellers });
   } catch (error) {
     logger.error('Error listing sellers', error);

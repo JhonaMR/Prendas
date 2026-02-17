@@ -1,0 +1,194 @@
+/**
+ * Servicio para importación masiva de clientes desde CSV
+ */
+
+const { getDatabase } = require('../config/database');
+const { DatabaseError, ValidationError } = require('../controllers/shared/errorHandler');
+const logger = require('../controllers/shared/logger');
+
+/**
+ * Mapea nombres de vendedores a sus IDs
+ * @param {Array} sellers - Array de vendedores con id y name
+ * @returns {Map} Mapa de nombre -> id
+ */
+function createSellerMap(sellers) {
+  const map = new Map();
+  sellers.forEach(seller => {
+    map.set(seller.name.toLowerCase().trim(), seller.id);
+  });
+  return map;
+}
+
+/**
+ * Valida y transforma un registro de cliente
+ * @param {Object} record - Registro del CSV
+ * @param {Map} sellerMap - Mapa de nombres de vendedores a IDs
+ * @param {number} rowNumber - Número de fila para reportes de error
+ * @returns {Object} Objeto con { valid: boolean, data: Object, error: string }
+ */
+function validateAndTransformRecord(record, sellerMap, rowNumber) {
+  const errors = [];
+
+  // Validar ID
+  if (!record.id || record.id.toString().trim() === '') {
+    errors.push('ID es requerido');
+  }
+
+  // Validar nombre
+  if (!record.name || record.name.toString().trim() === '') {
+    errors.push('Nombre es requerido');
+  }
+
+  // Validar NIT
+  if (!record.nit || record.nit.toString().trim() === '') {
+    errors.push('NIT es requerido');
+  }
+
+  // Validar dirección
+  if (!record.address || record.address.toString().trim() === '') {
+    errors.push('Dirección es requerida');
+  }
+
+  // Validar ciudad
+  if (!record.city || record.city.toString().trim() === '') {
+    errors.push('Ciudad es requerida');
+  }
+
+  // Validar y mapear vendedor
+  if (!record.seller || record.seller.toString().trim() === '') {
+    errors.push('Vendedor es requerido');
+  } else {
+    const sellerName = record.seller.toString().trim().toLowerCase();
+    const sellerId = sellerMap.get(sellerName);
+    
+    if (!sellerId) {
+      errors.push(`Vendedor "${record.seller}" no existe en el sistema`);
+    }
+  }
+
+  if (errors.length > 0) {
+    return {
+      valid: false,
+      error: `Fila ${rowNumber}: ${errors.join('; ')}`
+    };
+  }
+
+  // Transformar registro
+  const sellerId = sellerMap.get(record.seller.toString().trim().toLowerCase());
+  
+  return {
+    valid: true,
+    data: {
+      id: record.id.toString().trim(),
+      name: record.name.toString().trim(),
+      nit: record.nit.toString().trim(),
+      address: record.address.toString().trim(),
+      city: record.city.toString().trim(),
+      sellerId: sellerId
+    }
+  };
+}
+
+/**
+ * Importa clientes masivamente desde un array de registros
+ * @param {Array} records - Array de registros del CSV
+ * @returns {Object} Resultado de la importación
+ */
+function bulkImportClients(records) {
+  try {
+    const db = getDatabase();
+
+    // Obtener todos los vendedores
+    const sellers = db.prepare('SELECT id, name FROM sellers').all();
+    const sellerMap = createSellerMap(sellers);
+
+    // Validar todos los registros
+    const validRecords = [];
+    const errors = [];
+    const duplicateIds = new Set();
+
+    records.forEach((record, index) => {
+      const rowNumber = index + 2; // +2 porque fila 1 es header, index comienza en 0
+      
+      const validation = validateAndTransformRecord(record, sellerMap, rowNumber);
+      
+      if (!validation.valid) {
+        errors.push(validation.error);
+      } else {
+        // Verificar duplicados dentro del lote
+        if (duplicateIds.has(validation.data.id)) {
+          errors.push(`Fila ${rowNumber}: ID "${validation.data.id}" está duplicado en el lote`);
+        } else {
+          duplicateIds.add(validation.data.id);
+          validRecords.push(validation.data);
+        }
+      }
+    });
+
+    // Si hay errores de validación, retornar sin insertar nada
+    if (errors.length > 0) {
+      return {
+        success: false,
+        imported: 0,
+        errors: errors,
+        message: `Validación fallida. Se encontraron ${errors.length} error(es)`
+      };
+    }
+
+    // Verificar que los IDs no existan en la BD
+    const existingIds = [];
+    validRecords.forEach(record => {
+      const existing = db.prepare('SELECT id FROM clients WHERE id = ?').get(record.id);
+      if (existing) {
+        existingIds.push(record.id);
+      }
+    });
+
+    if (existingIds.length > 0) {
+      return {
+        success: false,
+        imported: 0,
+        errors: [`Los siguientes IDs ya existen en la BD: ${existingIds.join(', ')}`],
+        message: 'No se puede importar. Algunos clientes ya existen'
+      };
+    }
+
+    // Insertar en transacción
+    const insertStmt = db.prepare(`
+      INSERT INTO clients (id, name, nit, address, city, sellerId, active)
+      VALUES (?, ?, ?, ?, ?, ?, 1)
+    `);
+
+    const transaction = db.transaction(() => {
+      validRecords.forEach(record => {
+        insertStmt.run(
+          record.id,
+          record.name,
+          record.nit,
+          record.address,
+          record.city,
+          record.sellerId
+        );
+      });
+    });
+
+    transaction();
+
+    logger.info('Bulk import completed', { imported: validRecords.length });
+
+    return {
+      success: true,
+      imported: validRecords.length,
+      errors: [],
+      message: `Se importaron exitosamente ${validRecords.length} cliente(s)`
+    };
+
+  } catch (error) {
+    logger.error('Error in bulk import', error);
+    throw new DatabaseError('Error durante la importación masiva', error);
+  }
+}
+
+module.exports = {
+  bulkImportClients
+};

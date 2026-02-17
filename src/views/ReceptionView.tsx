@@ -30,8 +30,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   state,
   directToBatch = false
 }) => {
-  const [isCounting, setIsCounting] = useState(directToBatch);
-  const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return'>(directToBatch ? 'batch' : 'selector');
+  const [isCounting, setIsCounting] = useState(false);
+  const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return' | 'listing'>('listing');
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refSearch, setRefSearch] = useState('');
@@ -60,7 +60,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   };
 
   const handleEdit = (lot: BatchReception) => {
-    if (user.role !== UserRole.admin) {
+    if (user.role !== UserRole.ADMIN) {
       alert("Acceso administrativo requerido para editar.");
       return;
     }
@@ -254,7 +254,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">{editingLot ? 'Editar Lote' : 'Conteo de Lote'}</h2>
             <p className="text-slate-400 font-bold text-xs sm:text-base">Registro de ingreso de producción</p>
           </div>
-          <button onClick={() => setReceptionType('selector')} className="px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white text-slate-400 font-bold hover:text-red-500 transition-all border border-slate-100 text-sm">
+          <button onClick={() => setReceptionType('listing')} className="px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white text-slate-400 font-bold hover:text-red-500 transition-all border border-slate-100 text-sm">
             Atrás
           </button>
         </div>
@@ -389,15 +389,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </div>
           </div>
         </div>
-        <div className="flex gap-3">
-          <button onClick={() => setReceptionType('selector')} className="w-full sm:w-auto px-6 py-3 sm:px-8 sm:py-4 bg-white text-slate-400 font-bold rounded-[24px] sm:rounded-[28px] border border-slate-100 hover:text-slate-600 transition-all flex items-center justify-center gap-2 text-sm">
-            Atrás
-          </button>
-          <button onClick={handleStart} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
-            <Icons.Reception />
-            INICIAR CONTEO
-          </button>
-        </div>
+        <button onClick={handleStart} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+          <Icons.Reception />
+          INICIAR CONTEO
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4">

@@ -477,6 +477,163 @@ const createDispatch = (req, res) => {
     }
 };
 
+/**
+ * ACTUALIZAR DESPACHO
+ * PUT /api/dispatches/:id
+ */
+const updateDispatch = (req, res) => {
+    let db;
+    try {
+        const { id } = req.params;
+        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
+
+        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cliente, correría, factura, remisión e items son requeridos'
+            });
+        }
+
+        db = getDatabase();
+
+        db.prepare('BEGIN').run();
+
+        try {
+            // Actualizar despacho
+            db.prepare(`
+                UPDATE dispatches 
+                SET client_id = ?, correria_id = ?, invoice_no = ?, remission_no = ?, dispatched_by = ?
+                WHERE id = ?
+            `).run(clientId, correriaId, invoiceNo, remissionNo, dispatchedBy || null, id);
+
+            // Eliminar items antiguos
+            db.prepare(`DELETE FROM dispatch_items WHERE dispatch_id = ?`).run(id);
+
+            // Insertar nuevos items
+            const insertItem = db.prepare(`
+                INSERT INTO dispatch_items (dispatch_id, reference, quantity)
+                VALUES (?, ?, ?)
+            `);
+
+            for (const item of items) {
+                if (!item.reference || !item.quantity) {
+                    throw new Error('Cada item debe tener reference y quantity');
+                }
+
+                if (item.quantity <= 0) {
+                    throw new Error('La cantidad debe ser mayor a 0');
+                }
+
+                insertItem.run(id, item.reference, item.quantity);
+            }
+
+            db.prepare('COMMIT').run();
+
+        } catch (error) {
+            db.prepare('ROLLBACK').run();
+            throw error;
+        }
+
+        db.close();
+
+        return res.json({
+            success: true,
+            message: 'Despacho actualizado exitosamente',
+            data: {
+                id,
+                clientId,
+                correriaId,
+                invoiceNo,
+                remissionNo,
+                items,
+                dispatchedBy
+            }
+        });
+
+    } catch (error) {
+        if (db) {
+            try {
+                db.close();
+            } catch (closeError) {
+                console.error('❌ Error cerrando BD:', closeError);
+            }
+        }
+        console.error('❌ Error al actualizar despacho:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al actualizar despacho',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * ELIMINAR DESPACHO
+ * DELETE /api/dispatches/:id
+ */
+const deleteDispatch = (req, res) => {
+    let db;
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID del despacho es requerido'
+            });
+        }
+
+        db = getDatabase();
+
+        db.prepare('BEGIN').run();
+
+        try {
+            // Eliminar items del despacho
+            db.prepare(`DELETE FROM dispatch_items WHERE dispatch_id = ?`).run(id);
+
+            // Eliminar despacho
+            const result = db.prepare(`DELETE FROM dispatches WHERE id = ?`).run(id);
+
+            if (result.changes === 0) {
+                db.prepare('ROLLBACK').run();
+                db.close();
+                return res.status(404).json({
+                    success: false,
+                    message: 'Despacho no encontrado'
+                });
+            }
+
+            db.prepare('COMMIT').run();
+
+        } catch (error) {
+            db.prepare('ROLLBACK').run();
+            throw error;
+        }
+
+        db.close();
+
+        return res.json({
+            success: true,
+            message: 'Despacho eliminado exitosamente'
+        });
+
+    } catch (error) {
+        if (db) {
+            try {
+                db.close();
+            } catch (closeError) {
+                console.error('❌ Error cerrando BD:', closeError);
+            }
+        }
+        console.error('❌ Error al eliminar despacho:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al eliminar despacho',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
 // ==================== PEDIDOS ====================
 
 /**
@@ -788,6 +945,8 @@ module.exports = {
     // Despachos
     getDispatches,
     createDispatch,
+    updateDispatch,
+    deleteDispatch,
     
     // Pedidos
     getOrders,

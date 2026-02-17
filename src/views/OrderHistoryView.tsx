@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { AppState, Order } from '../types';
+import { Order, AppState } from '../types';
 import { Icons } from '../constants';
 
 interface OrderHistoryViewProps {
@@ -8,6 +8,7 @@ interface OrderHistoryViewProps {
 }
 
 const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state }) => {
+  
   const [filterSeller, setFilterSeller] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterCorreria, setFilterCorreria] = useState('');

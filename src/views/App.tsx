@@ -81,7 +81,11 @@ const App: React.FC = () => {
             state={state}
           />
         );
-      case 'dispatch':
+      case 'dispatch': {
+        const handleAddDispatch = (dispatch_: any) => api.createDispatch(dispatch_);
+        const handleUpdateDispatch = (id: string, dispatch_: any) => api.updateDispatch(id, dispatch_);
+        const handleDeleteDispatch = (id: string) => api.deleteDispatch(id);
+        
         return (
           <DispatchView 
             user={user} 
@@ -89,9 +93,18 @@ const App: React.FC = () => {
             dispatches={state.dispatches} 
             referencesMaster={state.references}
             correrias={state.correrias}
-            onAddDispatch={(dispatch_) => api.createDispatch(dispatch_).then(res => ({ success: res.success }))}
+            updateState={(updater) => {
+              const newState = updater(state);
+              if (newState.dispatches !== state.dispatches) {
+                dispatch({ type: 'SET_DISPATCHES', payload: newState.dispatches });
+              }
+            }}
+            onAddDispatch={handleAddDispatch}
+            onUpdateDispatch={handleUpdateDispatch}
+            onDeleteDispatch={handleDeleteDispatch}
           />
         );
+      }
       case 'inventory':
         return <InventoryView receptions={state.receptions} dispatches={state.dispatches} />;
       case 'orders':
@@ -101,10 +114,55 @@ const App: React.FC = () => {
       case 'orderHistory':
         return <OrderHistoryView state={state} />;
       case 'masters':
+        // Solo admin puede acceder a Maestros
+        if (user.role !== UserRole.ADMIN) {
+          setActiveTab('home');
+          alert('No tienes permiso para acceder a esta sección');
+          return <HomeView user={user} onNavigate={handleTabChange} />;
+        }
         return (
           <MastersView 
             user={user} 
             state={state}
+            updateState={(updater) => {
+              const newState = updater(state);
+              if (newState.correrias !== state.correrias) {
+                dispatch({ type: 'SET_CORRERIAS', payload: newState.correrias });
+              }
+              if (newState.clients !== state.clients) {
+                dispatch({ type: 'SET_CLIENTS', payload: newState.clients });
+              }
+              if (newState.references !== state.references) {
+                dispatch({ type: 'SET_REFERENCES', payload: newState.references });
+              }
+              if (newState.sellers !== state.sellers) {
+                dispatch({ type: 'SET_SELLERS', payload: newState.sellers });
+              }
+              if (newState.confeccionistas !== state.confeccionistas) {
+                dispatch({ type: 'SET_CONFECCIONISTAS', payload: newState.confeccionistas });
+              }
+              if (newState.users !== state.users) {
+                dispatch({ type: 'SET_USERS', payload: newState.users });
+              }
+            }}
+            onAddReference={(ref) => api.createReference(ref).then(res => ({ success: res.success }))}
+            onUpdateReference={(id, ref) => api.updateReference(id, ref).then(res => ({ success: res.success }))}
+            onDeleteReference={(id) => api.deleteReference(id).then(res => ({ success: res.success }))}
+            onAddClient={(client) => api.createClient(client).then(res => ({ success: res.success }))}
+            onUpdateClient={(id, client) => api.updateClient(id, client).then(res => ({ success: res.success }))}
+            onDeleteClient={(id) => api.deleteClient(id).then(res => ({ success: res.success }))}
+            onAddConfeccionista={(conf) => api.createConfeccionista(conf).then(res => ({ success: res.success }))}
+            onUpdateConfeccionista={(id, conf) => api.updateConfeccionista(id, conf).then(res => ({ success: res.success }))}
+            onDeleteConfeccionista={(id) => api.deleteConfeccionista(id).then(res => ({ success: res.success }))}
+            onAddUser={(user_) => api.createUser(user_.name, user_.loginCode, user_.pin, user_.role).then(res => ({ success: res.success }))}
+            onUpdateUser={(id, user_) => api.updateUser(id, user_).then(res => ({ success: res.success }))}
+            onDeleteUser={(id) => api.deleteUser(id).then(res => ({ success: res.success }))}
+            onAddSeller={(seller) => api.createSeller(seller).then(res => ({ success: res.success }))}
+            onUpdateSeller={(id, seller) => api.updateSeller(id, seller).then(res => ({ success: res.success }))}
+            onDeleteSeller={(id) => api.deleteSeller(id).then(res => ({ success: res.success }))}
+            onAddCorreria={(correria) => api.createCorreria(correria).then(res => ({ success: res.success }))}
+            onUpdateCorreria={(id, correria) => api.updateCorreria(id, correria).then(res => ({ success: res.success }))}
+            onDeleteCorreria={(id) => api.deleteCorreria(id).then(res => ({ success: res.success }))}
           />
         );
       case 'reports':
@@ -146,7 +204,7 @@ const App: React.FC = () => {
             <p className="font-bold text-sm leading-none">{user.name}</p>
             <p className="text-[10px] text-slate-400 capitalize font-bold mt-1">{user.role}</p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.admin ? 'bg-pink-500' : 'bg-blue-500'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.ADMIN ? 'bg-pink-500' : 'bg-blue-500'}`}>
             {user.loginCode}
           </div>
         </div>
@@ -192,9 +250,11 @@ const App: React.FC = () => {
             <div className="my-2 border-t border-slate-100 pt-2">
               <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Reportes</p>
               <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes Generales" />
-              <div className="border-t border-slate-100 mt-2 pt-2">
-                <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
-              </div>
+              {user.role === UserRole.ADMIN && (
+                <div className="border-t border-slate-100 mt-2 pt-2">
+                  <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
+                </div>
+              )}
             </div>
           </div>
 

@@ -99,7 +99,33 @@ const verifyAdmin = (req, res, next) => {
     next();
 };
 
+/**
+ * Verificar que el usuario sea Admin o Observer
+ * Se usa después de verifyToken para permitir acceso a dashboard
+ */
+const verifyAdminOrObserver = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: 'No autenticado'
+        });
+    }
+
+    const userRole = (req.user.role || '').trim().toLowerCase();
+    console.log('🔍 Verificando admin o observer - Usuario:', req.user.loginCode, 'Rol:', userRole);
+
+    if (userRole !== 'admin' && userRole !== 'observer') {
+        return res.status(403).json({
+            success: false,
+            message: 'No tienes permisos para acceder a esta sección'
+        });
+    }
+
+    next();
+};
+
 module.exports = {
     verifyToken,
-    verifyAdmin
+    verifyAdmin,
+    verifyAdminOrObserver
 };

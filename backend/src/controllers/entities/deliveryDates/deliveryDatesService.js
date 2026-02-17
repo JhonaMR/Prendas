@@ -7,6 +7,7 @@
 const { getDatabase, generateId } = require('../../../config/database');
 const { validateDeliveryDate, validateReferenceExists, validateConfeccionistaExists, detectDuplicates } = require('./deliveryDatesValidator');
 const PaginationService = require('../../../services/PaginationService');
+const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtener todas las fechas de entrega con paginación
@@ -229,6 +230,11 @@ const saveDeliveryDatesBatch = (dates, userId) => {
             }
         }
 
+        // Invalidate cache after batch save
+        if (savedIds.length > 0) {
+            invalidateOnCreate('DeliveryDate');
+        }
+
         // FASE 3: Retornar respuesta con resumen completo
         return {
             success: errors.length === 0,
@@ -257,6 +263,9 @@ const deleteDeliveryDate = (id) => {
         if (result.changes === 0) {
             throw new Error('Registro no encontrado');
         }
+
+        // Invalidate cache after deletion
+        invalidateOnDelete('DeliveryDate');
 
         return {
             success: true,

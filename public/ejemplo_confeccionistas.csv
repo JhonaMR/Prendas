@@ -1,0 +1,11 @@
+id,name,address,city,phone,score,active
+CONF001,Taller Alfa,Calle 10 #20-30,Medellín,3001234567,AAA,1
+CONF002,Confecciones Beta,Carrera 5 #15-40,Bogotá,3107654321,AA,1
+CONF003,Taller Gamma,Calle 8 #12-25,Cali,3209876543,A,1
+CONF004,Confecciones Delta,Carrera 7 #18-35,Barranquilla,3158765432,AAA,1
+CONF005,Taller Epsilon,Calle 12 #22-45,Santa Marta,3167654321,AA,1
+CONF006,Confecciones Zeta,Carrera 3 #10-20,Cartagena,3176543210,A,1
+CONF007,Taller Eta,Calle 6 #8-15,Pereira,3185432109,AAA,1
+CONF008,Confecciones Theta,Carrera 9 #25-40,Manizales,3194321098,AA,1
+CONF009,Taller Iota,Calle 14 #30-50,Cúcuta,3203210987,A,1
+CONF010,Confecciones Kappa,Carrera 2 #5-10,Bucaramanga,3212109876,AAA,1
