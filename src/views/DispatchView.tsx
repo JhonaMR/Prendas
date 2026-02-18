@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { User, UserRole, Client, Dispatch, ItemEntry, AppState, Reference } from '../types';
 import ScannerSimulator from '../components/ScannerSimulator';
 import { Icons } from '../constants';
@@ -26,6 +26,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   const [correriaId, setCorreriaId] = useState(''); 
   const [clientSearch, setClientSearch] = useState('');
   const [showClientResults, setShowClientResults] = useState(false);
+  const [correriaSearch, setCorreriaSearch] = useState('');
+  const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [invoiceNo, setInvoiceNo] = useState('');
   const [remissionNo, setRemissionNo] = useState('');
   const [items, setItems] = useState<ItemEntry[]>([]);
@@ -233,18 +235,15 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
             {/* SELECTOR DE CORRERÍA */}
             <div className="space-y-1.5">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Correría / Campaña</label>
-              <select
+              <CorreriaAutocomplete
                 value={correriaId}
-                onChange={(e) => setCorreriaId(e.target.value)}
-                className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
-              >
-                <option value="">-- Seleccione Correría --</option>
-                {correrias.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} {c.year}
-                  </option>
-                ))}
-              </select>
+                correrias={correrias}
+                onChange={setCorreriaId}
+                search={correriaSearch}
+                setSearch={setCorreriaSearch}
+                showDropdown={showCorreriaDropdown}
+                setShowDropdown={setShowCorreriaDropdown}
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -482,6 +481,70 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           })
         )}
       </div>
+    </div>
+  );
+};
+
+const CorreriaAutocomplete: React.FC<{
+  value: string;
+  correrias: any[];
+  onChange: (id: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  showDropdown: boolean;
+  setShowDropdown: (show: boolean) => void;
+}> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
+
+  const correria = correrias.find(c => c.id === value);
+  const displayValue = correria ? `${correria.name} ${correria.year}` : value;
+
+  const filtered = correrias.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.year.toString().includes(search)
+  );
+
+  const handleBlur = () => {
+    timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
+  };
+
+  const handleSelect = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    onChange(id);
+    setShowDropdown(false);
+    setSearch('');
+  };
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <input
+        type="text"
+        value={showDropdown ? search : displayValue}
+        onChange={e => setSearch(e.target.value)}
+        onFocus={() => { setShowDropdown(true); setSearch(''); }}
+        onBlur={handleBlur}
+        placeholder="Buscar..."
+        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+      />
+      {showDropdown && (
+        <div 
+          className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {filtered.map(c => (
+            <button
+              key={c.id}
+              onMouseDown={() => handleSelect(c.id)}
+              className="w-full px-6 py-4 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+            >
+              <p className="font-black text-slate-800">{c.name}</p>
+              <p className="text-[10px] text-slate-400 font-bold">{c.year}</p>
+            </button>
+          ))}
+          {filtered.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron correrias</p>}
+        </div>
+      )}
     </div>
   );
 };

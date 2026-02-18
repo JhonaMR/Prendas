@@ -1,5 +1,5 @@
 /**
- * 📦 CONTROLADOR DE MOVIMIENTOS
+ * 📦 CONTROLADOR DE MOVIMIENTOS - POSTGRESQL
  * 
  * Maneja las operaciones de:
  * - Recepciones (entrada de mercancía)
@@ -8,10 +8,11 @@
  * - Tracking de Producción
  */
 
-const { getDatabase, generateId } = require('../config/database');
+const { query, transaction, generateId } = require('../config/database');
 const DispatchService = require('../services/DispatchService');
 const ReceptionService = require('../services/ReceptionService');
 const ReturnService = require('../services/ReturnService');
+const logger = require('../utils/logger');
 
 // ==================== DEVOLUCIONES ====================
 
@@ -19,7 +20,7 @@ const ReturnService = require('../services/ReturnService');
  * OBTENER TODAS LAS DEVOLUCIONES
  * GET /api/return-receptions
  */
-const getReturnReceptions = (req, res) => {
+const getReturnReceptions = async (req, res) => {
     try {
         const { page, limit, clientId, startDate, endDate } = req.query;
 
@@ -30,7 +31,7 @@ const getReturnReceptions = (req, res) => {
             if (startDate) filters.startDate = startDate;
             if (endDate) filters.endDate = endDate;
 
-            const result = ReturnService.getAllWithPagination(page, limit, filters);
+            const result = await ReturnService.getAllWithPagination(page, limit, filters);
             return res.json({
                 success: true,
                 ...result
@@ -38,30 +39,30 @@ const getReturnReceptions = (req, res) => {
         }
 
         // Otherwise return all (backward compatibility)
-        const db = getDatabase();
-
-        const returnReceptions = db.prepare(`
+        const result = await query(`
             SELECT * FROM return_receptions
             ORDER BY created_at DESC
-        `).all();
+        `);
 
-        const returnReceptionsWithItems = returnReceptions.map(reception => {
-            const items = db.prepare(`
+        const returnReceptions = result.rows;
+
+        const returnReceptionsWithItems = await Promise.all(returnReceptions.map(async (reception) => {
+            const itemsResult = await query(`
                 SELECT reference, quantity, unit_price
                 FROM return_reception_items
-                WHERE return_reception_id = ?
-            `).all(reception.id);
+                WHERE return_reception_id = $1
+            `, [reception.id]);
 
             return {
                 id: reception.id,
                 clientId: reception.client_id,
                 creditNoteNumber: reception.credit_note_number,
-                items,
+                items: itemsResult.rows,
                 totalValue: reception.total_value,
                 receivedBy: reception.received_by,
                 createdAt: reception.created_at
             };
-        });
+        }));
 
         return res.json({
             success: true,
@@ -69,7 +70,7 @@ const getReturnReceptions = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener devoluciones:', error);
+        logger.error('❌ Error al obtener devoluciones:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al obtener devoluciones',
@@ -82,7 +83,7 @@ const getReturnReceptions = (req, res) => {
  * CREAR DEVOLUCIÓN
  * POST /api/return-receptions
  */
-const createReturnReception = (req, res) => {
+const createReturnReception = async (req, res) => {
     try {
         const { clientId, creditNoteNumber, items, totalValue, receivedBy } = req.body;
 
@@ -93,52 +94,19 @@ const createReturnReception = (req, res) => {
             });
         }
 
-        const db = getDatabase();
         const id = generateId();
-        const createdAt = new Date().toISOString();
+        const createdAt = new Date();
 
-        db.prepare('BEGIN').run();
-
-        try {
-            // Insertar devolución (maestro)
-            db.prepare(`
-                INSERT INTO return_receptions (id, client_id, credit_note_number, total_value, received_by, created_at)
-                VALUES (?, ?, ?, ?, ?, ?)
-            `).run(
+        const result = await ReturnService.createReturnReception(
+            {
                 id,
                 clientId,
-                creditNoteNumber || null,
-                totalValue || 0,
-                receivedBy,
-                createdAt
-            );
-
-            // Insertar items (detalle)
-            const insertItem = db.prepare(`
-                INSERT INTO return_reception_items (return_reception_id, reference, quantity, unit_price)
-                VALUES (?, ?, ?, ?)
-            `);
-
-            for (const item of items) {
-                if (!item.reference || !item.quantity) {
-                    throw new Error('Cada item debe tener reference y quantity');
-                }
-
-                if (item.quantity <= 0) {
-                    throw new Error('La cantidad debe ser mayor a 0');
-                }
-
-                insertItem.run(id, item.reference, item.quantity, item.unitPrice || 0);
-            }
-
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            db.prepare('ROLLBACK').run();
-            throw error;
-        }
-
-        db.close();
+                creditNoteNumber: creditNoteNumber || null,
+                totalValue: totalValue || 0,
+                receivedBy
+            },
+            items
+        );
 
         return res.status(201).json({
             success: true,
@@ -155,7 +123,7 @@ const createReturnReception = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al crear devolución:', error);
+        logger.error('❌ Error al crear devolución:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al crear devolución',
@@ -170,7 +138,7 @@ const createReturnReception = (req, res) => {
  * OBTENER TODAS LAS RECEPCIONES
  * GET /api/receptions
  */
-const getReceptions = (req, res) => {
+const getReceptions = async (req, res) => {
     try {
         const { page, limit, confeccionistaId, referenceId, startDate, endDate } = req.query;
 
@@ -182,7 +150,7 @@ const getReceptions = (req, res) => {
             if (startDate) filters.startDate = startDate;
             if (endDate) filters.endDate = endDate;
 
-            const result = ReceptionService.getAllWithPagination(page, limit, filters);
+            const result = await ReceptionService.getAllWithPagination(page, limit, filters);
             return res.json({
                 success: true,
                 ...result
@@ -190,21 +158,20 @@ const getReceptions = (req, res) => {
         }
 
         // Otherwise return all (backward compatibility)
-        const db = getDatabase();
-
-        // Obtener todas las recepciones
-        const receptions = db.prepare(`
+        const result = await query(`
             SELECT * FROM receptions
             ORDER BY created_at DESC
-        `).all();
+        `);
+
+        const receptions = result.rows;
 
         // Para cada recepción, obtener sus items
-        const receptionsWithItems = receptions.map(reception => {
-            const items = db.prepare(`
+        const receptionsWithItems = await Promise.all(receptions.map(async (reception) => {
+            const itemsResult = await query(`
                 SELECT reference, quantity
                 FROM reception_items
-                WHERE reception_id = ?
-            `).all(reception.id);
+                WHERE reception_id = $1
+            `, [reception.id]);
 
             return {
                 id: reception.id,
@@ -213,11 +180,11 @@ const getReceptions = (req, res) => {
                 hasSeconds: reception.has_seconds === 1 ? true : reception.has_seconds === 0 ? false : null,
                 chargeType: reception.charge_type,
                 chargeUnits: reception.charge_units,
-                items,
+                items: itemsResult.rows,
                 receivedBy: reception.received_by,
                 createdAt: reception.created_at
             };
-        });
+        }));
 
         return res.json({
             success: true,
@@ -225,7 +192,7 @@ const getReceptions = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener recepciones:', error);
+        logger.error('❌ Error al obtener recepciones:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al obtener recepciones',
@@ -238,7 +205,7 @@ const getReceptions = (req, res) => {
  * CREAR RECEPCIÓN
  * POST /api/receptions
  */
-const createReception = (req, res) => {
+const createReception = async (req, res) => {
     try {
         const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy } = req.body;
 
@@ -250,59 +217,22 @@ const createReception = (req, res) => {
             });
         }
 
-        const db = getDatabase();
-
-        // Generar ID y timestamp
+        // Generar ID
         const id = generateId();
-        const createdAt = new Date().toISOString();
 
-        // Iniciar transacción
-        db.prepare('BEGIN').run();
-
-        try {
-            // Insertar recepción (maestro)
-            db.prepare(`
-                INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `).run(
+        // Crear recepción con transacción
+        const result = await ReceptionService.createReception(
+            {
                 id,
                 batchCode,
                 confeccionista,
-                hasSeconds === true ? 1 : hasSeconds === false ? 0 : null,
-                chargeType || null,
-                chargeUnits || 0,
-                receivedBy,
-                createdAt
-            );
-
-            // Insertar items (detalle)
-            const insertItem = db.prepare(`
-                INSERT INTO reception_items (reception_id, reference, quantity)
-                VALUES (?, ?, ?)
-            `);
-
-            for (const item of items) {
-                if (!item.reference || !item.quantity) {
-                    throw new Error('Cada item debe tener reference y quantity');
-                }
-
-                if (item.quantity <= 0) {
-                    throw new Error('La cantidad debe ser mayor a 0');
-                }
-
-                insertItem.run(id, item.reference, item.quantity);
-            }
-
-            // Confirmar transacción
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            // Si hay error, revertir cambios
-            db.prepare('ROLLBACK').run();
-            throw error;
-        }
-
-        db.close();
+                hasSeconds,
+                chargeType: chargeType || null,
+                chargeUnits: chargeUnits || 0,
+                receivedBy
+            },
+            items
+        );
 
         return res.status(201).json({
             success: true,
@@ -316,12 +246,12 @@ const createReception = (req, res) => {
                 chargeUnits,
                 items,
                 receivedBy,
-                createdAt
+                createdAt: new Date()
             }
         });
 
     } catch (error) {
-        console.error('❌ Error al crear recepción:', error);
+        logger.error('❌ Error al crear recepción:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al crear recepción',
@@ -336,7 +266,7 @@ const createReception = (req, res) => {
  * OBTENER TODOS LOS DESPACHOS
  * GET /api/dispatches
  */
-const getDispatches = (req, res) => {
+const getDispatches = async (req, res) => {
     try {
         const { page, limit, clientId, referenceId, startDate, endDate } = req.query;
 
@@ -348,7 +278,7 @@ const getDispatches = (req, res) => {
             if (startDate) filters.startDate = startDate;
             if (endDate) filters.endDate = endDate;
 
-            const result = DispatchService.getAllWithPagination(page, limit, filters);
+            const result = await DispatchService.getAllWithPagination(page, limit, filters);
             return res.json({
                 success: true,
                 ...result
@@ -356,19 +286,19 @@ const getDispatches = (req, res) => {
         }
 
         // Otherwise return all (backward compatibility)
-        const db = getDatabase();
-
-        const dispatches = db.prepare(`
+        const result = await query(`
             SELECT * FROM dispatches
             ORDER BY created_at DESC
-        `).all();
+        `);
 
-        const dispatchesWithItems = dispatches.map(dispatch => {
-            const items = db.prepare(`
+        const dispatches = result.rows;
+
+        const dispatchesWithItems = await Promise.all(dispatches.map(async (dispatch) => {
+            const itemsResult = await query(`
                 SELECT reference, quantity
                 FROM dispatch_items
-                WHERE dispatch_id = ?
-            `).all(dispatch.id);
+                WHERE dispatch_id = $1
+            `, [dispatch.id]);
 
             return {
                 id: dispatch.id,
@@ -376,11 +306,11 @@ const getDispatches = (req, res) => {
                 correriaId: dispatch.correria_id,
                 invoiceNo: dispatch.invoice_no,
                 remissionNo: dispatch.remission_no,
-                items,
+                items: itemsResult.rows,
                 dispatchedBy: dispatch.dispatched_by,
                 createdAt: dispatch.created_at
             };
-        });
+        }));
 
         return res.json({
             success: true,
@@ -388,7 +318,7 @@ const getDispatches = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener despachos:', error);
+        logger.error('❌ Error al obtener despachos:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al obtener despachos',
@@ -401,7 +331,7 @@ const getDispatches = (req, res) => {
  * CREAR DESPACHO
  * POST /api/dispatches
  */
-const createDispatch = (req, res) => {
+const createDispatch = async (req, res) => {
     try {
         const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
 
@@ -412,45 +342,19 @@ const createDispatch = (req, res) => {
             });
         }
 
-        const db = getDatabase();
         const id = generateId();
-        const createdAt = new Date().toISOString();
 
-        db.prepare('BEGIN').run();
-
-        try {
-            // Insertar despacho
-            db.prepare(`
-                INSERT INTO dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            `).run(id, clientId, correriaId, invoiceNo, remissionNo, dispatchedBy, createdAt);
-
-            // Insertar items
-            const insertItem = db.prepare(`
-                INSERT INTO dispatch_items (dispatch_id, reference, quantity)
-                VALUES (?, ?, ?)
-            `);
-
-            for (const item of items) {
-                if (!item.reference || !item.quantity) {
-                    throw new Error('Cada item debe tener reference y quantity');
-                }
-
-                if (item.quantity <= 0) {
-                    throw new Error('La cantidad debe ser mayor a 0');
-                }
-
-                insertItem.run(id, item.reference, item.quantity);
-            }
-
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            db.prepare('ROLLBACK').run();
-            throw error;
-        }
-
-        db.close();
+        const result = await DispatchService.createDispatch(
+            {
+                id,
+                clientId,
+                correriaId,
+                invoiceNo,
+                remissionNo,
+                dispatchedBy
+            },
+            items
+        );
 
         return res.status(201).json({
             success: true,
@@ -463,12 +367,12 @@ const createDispatch = (req, res) => {
                 remissionNo,
                 items,
                 dispatchedBy,
-                createdAt
+                createdAt: new Date()
             }
         });
 
     } catch (error) {
-        console.error('❌ Error al crear despacho:', error);
+        logger.error('❌ Error al crear despacho:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al crear despacho',
@@ -481,8 +385,7 @@ const createDispatch = (req, res) => {
  * ACTUALIZAR DESPACHO
  * PUT /api/dispatches/:id
  */
-const updateDispatch = (req, res) => {
-    let db;
+const updateDispatch = async (req, res) => {
     try {
         const { id } = req.params;
         const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
@@ -494,27 +397,19 @@ const updateDispatch = (req, res) => {
             });
         }
 
-        db = getDatabase();
-
-        db.prepare('BEGIN').run();
-
-        try {
+        await transaction(async (client) => {
             // Actualizar despacho
-            db.prepare(`
-                UPDATE dispatches 
-                SET client_id = ?, correria_id = ?, invoice_no = ?, remission_no = ?, dispatched_by = ?
-                WHERE id = ?
-            `).run(clientId, correriaId, invoiceNo, remissionNo, dispatchedBy || null, id);
+            await client.query(
+                `UPDATE dispatches 
+                SET client_id = $1, correria_id = $2, invoice_no = $3, remission_no = $4, dispatched_by = $5
+                WHERE id = $6`,
+                [clientId, correriaId, invoiceNo, remissionNo, dispatchedBy || null, id]
+            );
 
             // Eliminar items antiguos
-            db.prepare(`DELETE FROM dispatch_items WHERE dispatch_id = ?`).run(id);
+            await client.query(`DELETE FROM dispatch_items WHERE dispatch_id = $1`, [id]);
 
             // Insertar nuevos items
-            const insertItem = db.prepare(`
-                INSERT INTO dispatch_items (dispatch_id, reference, quantity)
-                VALUES (?, ?, ?)
-            `);
-
             for (const item of items) {
                 if (!item.reference || !item.quantity) {
                     throw new Error('Cada item debe tener reference y quantity');
@@ -524,17 +419,13 @@ const updateDispatch = (req, res) => {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.quantity);
+                await client.query(
+                    `INSERT INTO dispatch_items (dispatch_id, reference, quantity)
+                    VALUES ($1, $2, $3)`,
+                    [id, item.reference, item.quantity]
+                );
             }
-
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            db.prepare('ROLLBACK').run();
-            throw error;
-        }
-
-        db.close();
+        });
 
         return res.json({
             success: true,
@@ -551,14 +442,7 @@ const updateDispatch = (req, res) => {
         });
 
     } catch (error) {
-        if (db) {
-            try {
-                db.close();
-            } catch (closeError) {
-                console.error('❌ Error cerrando BD:', closeError);
-            }
-        }
-        console.error('❌ Error al actualizar despacho:', error);
+        logger.error('❌ Error al actualizar despacho:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al actualizar despacho',
@@ -571,8 +455,7 @@ const updateDispatch = (req, res) => {
  * ELIMINAR DESPACHO
  * DELETE /api/dispatches/:id
  */
-const deleteDispatch = (req, res) => {
-    let db;
+const deleteDispatch = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -583,34 +466,14 @@ const deleteDispatch = (req, res) => {
             });
         }
 
-        db = getDatabase();
+        const result = await DispatchService.deleteDispatch(id);
 
-        db.prepare('BEGIN').run();
-
-        try {
-            // Eliminar items del despacho
-            db.prepare(`DELETE FROM dispatch_items WHERE dispatch_id = ?`).run(id);
-
-            // Eliminar despacho
-            const result = db.prepare(`DELETE FROM dispatches WHERE id = ?`).run(id);
-
-            if (result.changes === 0) {
-                db.prepare('ROLLBACK').run();
-                db.close();
-                return res.status(404).json({
-                    success: false,
-                    message: 'Despacho no encontrado'
-                });
-            }
-
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            db.prepare('ROLLBACK').run();
-            throw error;
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Despacho no encontrado'
+            });
         }
-
-        db.close();
 
         return res.json({
             success: true,
@@ -618,14 +481,7 @@ const deleteDispatch = (req, res) => {
         });
 
     } catch (error) {
-        if (db) {
-            try {
-                db.close();
-            } catch (closeError) {
-                console.error('❌ Error cerrando BD:', closeError);
-            }
-        }
-        console.error('❌ Error al eliminar despacho:', error);
+        logger.error('❌ Error al eliminar despacho:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al eliminar despacho',
@@ -640,34 +496,34 @@ const deleteDispatch = (req, res) => {
  * OBTENER TODOS LOS PEDIDOS
  * GET /api/orders
  */
-const getOrders = (req, res) => {
+const getOrders = async (req, res) => {
     try {
-        const db = getDatabase();
-
-        const orders = db.prepare(`
+        const result = await query(`
             SELECT * FROM orders
             ORDER BY created_at DESC
-        `).all();
+        `);
 
-        const ordersWithItems = orders.map(order => {
-            const items = db.prepare(`
+        const orders = result.rows;
+
+        const ordersWithItems = await Promise.all(orders.map(async (order) => {
+            const itemsResult = await query(`
                 SELECT reference, quantity
                 FROM order_items
-                WHERE order_id = ?
-            `).all(order.id);
+                WHERE order_id = $1
+            `, [order.id]);
 
             return {
                 id: order.id,
                 clientId: order.client_id,
                 sellerId: order.seller_id,
                 correriaId: order.correria_id,
-                items,
-                totalValue: order.total_value,
+                items: itemsResult.rows,
+                totalValue: parseFloat(order.total_value) || 0,
                 createdAt: order.created_at,
                 settledBy: order.settled_by,
                 orderNumber: order.order_number
             };
-        });
+        }));
 
         return res.json({
             success: true,
@@ -675,7 +531,7 @@ const getOrders = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener pedidos:', error);
+        logger.error('❌ Error al obtener pedidos:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al obtener pedidos',
@@ -688,7 +544,7 @@ const getOrders = (req, res) => {
  * CREAR PEDIDO
  * POST /api/orders
  */
-const createOrder = (req, res) => {
+const createOrder = async (req, res) => {
     try {
         const { clientId, sellerId, correriaId, items, totalValue, settledBy, orderNumber } = req.body;
 
@@ -699,41 +555,18 @@ const createOrder = (req, res) => {
             });
         }
 
-        const db = getDatabase();
         const id = generateId();
         const createdAt = new Date().toISOString();
 
-        db.prepare('BEGIN').run();
-
-        try {
-            // Insertar pedido - sin order_number si no existe la columna
-            let insertOrderStmt;
-            try {
-                // Intentar insertar con order_number
-                insertOrderStmt = db.prepare(`
-                    INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                `);
-                insertOrderStmt.run(id, clientId, sellerId, correriaId, totalValue, createdAt, settledBy, orderNumber || null);
-            } catch (e) {
-                // Si falla, intentar sin order_number
-                if (e.message.includes('order_number')) {
-                    insertOrderStmt = db.prepare(`
-                        INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                    `);
-                    insertOrderStmt.run(id, clientId, sellerId, correriaId, totalValue, createdAt, settledBy);
-                } else {
-                    throw e;
-                }
-            }
+        await transaction(async (client) => {
+            // Insertar pedido
+            await client.query(
+                `INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                [id, clientId, sellerId, correriaId, String(totalValue), createdAt, settledBy, orderNumber || null]
+            );
 
             // Insertar items
-            const insertItem = db.prepare(`
-                INSERT INTO order_items (order_id, reference, quantity)
-                VALUES (?, ?, ?)
-            `);
-
             for (const item of items) {
                 if (!item.reference || !item.quantity) {
                     throw new Error('Cada item debe tener reference y quantity');
@@ -743,17 +576,13 @@ const createOrder = (req, res) => {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
-                insertItem.run(id, item.reference, item.quantity);
+                await client.query(
+                    `INSERT INTO order_items (order_id, reference, quantity)
+                    VALUES ($1, $2, $3)`,
+                    [id, item.reference, item.quantity]
+                );
             }
-
-            db.prepare('COMMIT').run();
-
-        } catch (error) {
-            db.prepare('ROLLBACK').run();
-            throw error;
-        }
-
-        db.close();
+        });
 
         return res.status(201).json({
             success: true,
@@ -772,7 +601,7 @@ const createOrder = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al crear pedido:', error);
+        logger.error('❌ Error al crear pedido:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al crear pedido',
@@ -787,14 +616,14 @@ const createOrder = (req, res) => {
  * OBTENER TODO EL TRACKING
  * GET /api/production
  */
-const getProductionTracking = (req, res) => {
+const getProductionTracking = async (req, res) => {
     try {
-        const db = getDatabase();
-
-        const tracking = db.prepare(`
+        const result = await query(`
             SELECT ref_id, correria_id, programmed, cut
             FROM production_tracking
-        `).all();
+        `);
+
+        const tracking = result.rows;
 
         const formattedTracking = tracking.map(t => ({
             refId: t.ref_id,
@@ -809,7 +638,7 @@ const getProductionTracking = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al obtener tracking:', error);
+        logger.error('❌ Error al obtener tracking:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al obtener tracking',
@@ -822,7 +651,7 @@ const getProductionTracking = (req, res) => {
  * ACTUALIZAR/CREAR TRACKING
  * POST /api/production
  */
-const updateProductionTracking = (req, res) => {
+const updateProductionTracking = async (req, res) => {
     try {
         const { refId, correriaId, programmed, cut } = req.body;
 
@@ -833,15 +662,13 @@ const updateProductionTracking = (req, res) => {
             });
         }
 
-        const db = getDatabase();
-
-        // INSERT OR REPLACE - Si existe actualiza, si no existe crea
-        db.prepare(`
-            INSERT OR REPLACE INTO production_tracking (ref_id, correria_id, programmed, cut)
-            VALUES (?, ?, ?, ?)
-        `).run(refId, correriaId, programmed, cut);
-
-        db.close();
+        // UPSERT - Si existe actualiza, si no existe crea
+        await query(
+            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4`,
+            [refId, correriaId, programmed, cut]
+        );
 
         return res.json({
             success: true,
@@ -850,7 +677,7 @@ const updateProductionTracking = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar tracking:', error);
+        logger.error('❌ Error al actualizar tracking:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al actualizar tracking',
@@ -865,7 +692,7 @@ const updateProductionTracking = (req, res) => {
  * 
  * Recibe un array de registros de producción y los guarda/actualiza todos
  */
-const saveProductionBatch = (req, res) => {
+const saveProductionBatch = async (req, res) => {
     try {
         const { trackingData } = req.body;
 
@@ -877,20 +704,9 @@ const saveProductionBatch = (req, res) => {
             });
         }
 
-        const db = getDatabase();
+        let savedCount = 0;
 
-        // Iniciar transacción para asegurar atomicidad
-        db.prepare('BEGIN').run();
-
-        try {
-            // Preparar statement para UPSERT
-            const upsertStmt = db.prepare(`
-                INSERT OR REPLACE INTO production_tracking (ref_id, correria_id, programmed, cut)
-                VALUES (?, ?, ?, ?)
-            `);
-
-            let savedCount = 0;
-
+        await transaction(async (client) => {
             // Guardar cada registro
             for (const item of trackingData) {
                 const { refId, correriaId, programmed, cut } = item;
@@ -901,30 +717,24 @@ const saveProductionBatch = (req, res) => {
                 }
 
                 // Ejecutar UPSERT
-                upsertStmt.run(refId, correriaId, programmed, cut);
+                await client.query(
+                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut)
+                    VALUES ($1, $2, $3, $4)
+                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4`,
+                    [refId, correriaId, programmed, cut]
+                );
                 savedCount++;
             }
+        });
 
-            // Confirmar transacción
-            db.prepare('COMMIT').run();
-
-            db.close();
-
-            return res.json({
-                success: true,
-                message: `${savedCount} registro(s) guardado(s) exitosamente`,
-                savedCount
-            });
-
-        } catch (error) {
-            // Si hay error, revertir todos los cambios
-            db.prepare('ROLLBACK').run();
-            db.close();
-            throw error;
-        }
+        return res.json({
+            success: true,
+            message: `${savedCount} registro(s) guardado(s) exitosamente`,
+            savedCount
+        });
 
     } catch (error) {
-        console.error('❌ Error al guardar batch de tracking:', error);
+        logger.error('❌ Error al guardar batch de tracking:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al guardar tracking',

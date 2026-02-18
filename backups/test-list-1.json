@@ -1,0 +1,3111 @@
+{
+  "metadata": {
+    "backupId": "test-list-1",
+    "timestamp": "2026-02-18T18:47:40.181Z",
+    "table": "clients",
+    "recordCount": 310,
+    "schemaVersion": "1.0"
+  },
+  "data": [
+    {
+      "id": "1",
+      "name": "INVERSIONES SURTIMODA SAS",
+      "nit": "900582506",
+      "address": "CALLE 14 #17-70 BARRIO CENTRO",
+      "city": "ACACIAS",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:32:24.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "10",
+      "name": "SALAS ASOCIADOS S.A.S",
+      "nit": "900392405",
+      "address": "CL 49 9 44 SEC COMERCIAL",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "100",
+      "name": "TIENDAS MICROEMPRESARIALES LANFER S.A.S.",
+      "nit": "900118155",
+      "address": "CL 9 6 71 BRR CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "101",
+      "name": "RAYOTEX S.A.S",
+      "nit": "1800144409",
+      "address": "CLL 12 5 49",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "102",
+      "name": "INVERSIONES SACHA S.A.S",
+      "nit": "1900186125",
+      "address": "CARRERA 6 N° 8-96",
+      "city": "CUNDINAMARCA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "103",
+      "name": "RAMIREZ BOTERO ADOLFO JESUS",
+      "nit": "1066",
+      "address": "CRA 15 N° 8 -43 CURUMANI",
+      "city": "CURUMANI",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "104",
+      "name": "GALLEGO JOHN JAMIME",
+      "nit": "5225",
+      "address": "AV. SIMON BOLIVAR #38-130  LOCAL 114",
+      "city": "DOSQUEBRADAS",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "105",
+      "name": "NAVANA MEGATODO S.A.S",
+      "nit": "2901169855",
+      "address": "CRA 17 # 15-22",
+      "city": "DUITAMA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "106",
+      "name": "INVERSIONES 8A S.A.S N°4",
+      "nit": "4900137023",
+      "address": "CRA 17 # 16 49/59 DUITAMA",
+      "city": "DUITAMA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "107",
+      "name": "ARISTIZABAL ARISTIBAL DUBIAN DE JESUS",
+      "nit": "70829130",
+      "address": "CL 25 48 71 LC 2 BRR CENTRO",
+      "city": "EL CARMEN DE BOLIVAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "108",
+      "name": "JIMENEZ MAYORGA MARIA ALEJANDRA",
+      "nit": "1129574347",
+      "address": "CR 50 25 55",
+      "city": "EL CARMEN DE BOLIVAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "109",
+      "name": "RESTREPO JARAMILLO JULIAN ANDRES",
+      "nit": "179726416",
+      "address": "CRA 12 N° 7 -11 BRR CENTRO",
+      "city": "EL CERRITO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "11",
+      "name": "SALAS ASOCIADOS S.A.S",
+      "nit": "1900392405",
+      "address": "CL 49 9 44 SEC COMERCIAL PTO BOYACA",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "110",
+      "name": "SANCHEZ TORRES LILIANA",
+      "nit": "1117485254",
+      "address": "CR 4 # 2 - 29",
+      "city": "EL PAUJIL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "111",
+      "name": "REPRESENTACIONES INTERMODA S.A.S",
+      "nit": "901121571",
+      "address": "CLLE 10 # 4-102 ESPINAL TOLIMA",
+      "city": "ESPINAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "112",
+      "name": "INTIMOS ALMA S.A.S N°22",
+      "nit": "2283003804",
+      "address": "CL 7 N° 3 - 65",
+      "city": "FACATATIVA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "113",
+      "name": "ROJAS FARUK",
+      "nit": "981",
+      "address": "C.C. OROCENTOR LOCAL 1-68",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "114",
+      "name": "RAMIREZ CARDENAS FREDY ALBERTO",
+      "nit": "70698350",
+      "address": "CL 16 11 41 BRR CENTRO",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "115",
+      "name": "RAMIREZ CARDENAS EVER GONZALO",
+      "nit": "1045019291",
+      "address": "CL 16 N° 11-58 BRR CENTRO",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "116",
+      "name": "PINILLA LESMES DIANA CAROLina Pulgarin",
+      "nit": "1006512762",
+      "address": "CL 22 2 A BIS 06 BRR ATALAY",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "117",
+      "name": "INVERSIONES INTERMODA S.A.S",
+      "nit": "901068621",
+      "address": "CLLE 16 #11-33 FLORENCIA",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "118",
+      "name": "ORDOÑEZ ALVAREZ ESTEBAN JAVIER",
+      "nit": "9336",
+      "address": "CLLE 17 # 9-14",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "119",
+      "name": "GONZALES MUÑOZ EVANGELina Pulgarin",
+      "nit": "40784925",
+      "address": "CR 11 # 13-60 BRR CENTRO",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "12",
+      "name": "EL GIGANTE DE LA MODA S.A.S",
+      "nit": "900646287",
+      "address": "CL 49 9 62",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "120",
+      "name": "RAMIREZ VALENCIA CESAR",
+      "nit": "17915",
+      "address": "CRA 12 # 15-17",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "121",
+      "name": "VALENCIA RAMIREZ OMAR",
+      "nit": "17137",
+      "address": "CRA 12 # 15-31",
+      "city": "FLORENCIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "122",
+      "name": "RESTREPO JARAMILLO JULIAN ANDRES",
+      "nit": "379726416",
+      "address": "CLLE 9 # 17-24",
+      "city": "FLORIDA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "123",
+      "name": "COMERCIALIZADORA MGV SAS",
+      "nit": "1901413624",
+      "address": "CL 13 18 33",
+      "city": "FONSECA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "124",
+      "name": "PEDROZO LUZ MERY",
+      "nit": "792",
+      "address": "CRA 116 A N° 15 C -70 APTO 307 TORRE 1",
+      "city": "FONTIBON",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "125",
+      "name": "DISTRIBUIDORA MUNDO FASHION",
+      "nit": "900324182",
+      "address": "CALLE 4 # 8A -49",
+      "city": "FUNDACION",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "126",
+      "name": "CARLOS MARIO SALAZAR ECHEVERRI",
+      "nit": "70694755",
+      "address": "CALLE 6 NRO. 8A-18",
+      "city": "FUNDACION",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "127",
+      "name": "COMERCIALIZADORA GIRALDO DEL CARIBE",
+      "nit": "900454797",
+      "address": "CL 4 8A 20",
+      "city": "FUNDACION",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "128",
+      "name": "ZULUAGA SALAZAR LEONEL ALBERTO",
+      "nit": "188210403",
+      "address": "CR 8 N° 5-26",
+      "city": "FUNDACION",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "129",
+      "name": "DUQUE HOYOS JUAN GONZALO",
+      "nit": "2104501630",
+      "address": "CL 8 N 7 76",
+      "city": "FUSAGASUGA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "13",
+      "name": "INVERSIONES SOLOMODA BARRANCA S.A.S",
+      "nit": "900351574",
+      "address": "CL 49 9 78",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "130",
+      "name": "INVERSIONES 8A S.A.S N°20",
+      "nit": "2090013702",
+      "address": "CLL 8 # 8-71 EXT 1120",
+      "city": "FUSAGASUGA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "131",
+      "name": "DUQUE HOYOS JUAN GONZALO",
+      "nit": "1104501630",
+      "address": "CL 7 10 87",
+      "city": "GARZON",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "132",
+      "name": "INVERSIONES ESTRENATODO S.A.S",
+      "nit": "900275560",
+      "address": "CARRERA 10 #14-47",
+      "city": "GIRARDOT",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "133",
+      "name": "PANTYJEANS GIRARDOT CIA LTDA",
+      "nit": "900284812",
+      "address": "CR 10 13 52",
+      "city": "GIRARDOT",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "134",
+      "name": "EL UNIVERSO DE LA MODA ACTUAL S.A.S",
+      "nit": "900468771",
+      "address": "CR 10 14 15",
+      "city": "GIRARDOT",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "135",
+      "name": "ALMACENES GANE LIMITADA",
+      "nit": "1890203597",
+      "address": "CR 26  37 104",
+      "city": "GIRON",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "136",
+      "name": "RUSSI CACERES NESTOR LUIS",
+      "nit": "91296133",
+      "address": "CR 26 # 40 - 20 BRR EL POBLADO",
+      "city": "GIRON",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:58.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "137",
+      "name": "INTIMOS ALMA S.A.S N° 26",
+      "nit": "2683003804",
+      "address": "CL 17 N° 14 - 41 EXT: 1120",
+      "city": "GRANADA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "138",
+      "name": "DISTRIBUIDORA DE MODA GRANADA",
+      "nit": "901619815",
+      "address": "CR 15 17 44 BRR CENTRO",
+      "city": "GRANADA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "139",
+      "name": "GUTIERREZ FANDIÑO FANNY",
+      "nit": "52456059",
+      "address": "CR 7 3 68 BRR CENTRO",
+      "city": "GUACARI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "14",
+      "name": "PALACIO MARIA ALIX",
+      "nit": "7076",
+      "address": "CRA 47 B # 37 A 08",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "140",
+      "name": "GUERRA EDILSON DARIO",
+      "nit": "4536",
+      "address": "CR 7 # 8-07",
+      "city": "HORMIGA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "141",
+      "name": "RAMIREZ BOTERO ADOLFO JESUS",
+      "nit": "70691066",
+      "address": "CL 17 2 92 96 98 P5 BRR CENTRO",
+      "city": "IBAGUE",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "142",
+      "name": "SURTIDORA EL UNIVERSO DE LA MODA",
+      "nit": "900023407",
+      "address": "CR 3 13 A 29",
+      "city": "IBAGUE",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "143",
+      "name": "SURTIDORA PANTY JEAN'S DE COLOMBIA SAS",
+      "nit": "900744578",
+      "address": "CR 3 15 90 94 BRR CENTRO",
+      "city": "IBAGUE",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "144",
+      "name": "INNOVACIONES WIN S.A.S",
+      "nit": "900835285",
+      "address": "CRA 51 # 50- 15 ITAGUI",
+      "city": "ITAGUI",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "145",
+      "name": "BOHORQUEZ GALVIS LUTH DARE",
+      "nit": "49764593",
+      "address": "CLL 11 8 78",
+      "city": "JAMUNDI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "146",
+      "name": "CARO CARO ANGELA MARIA",
+      "nit": "29567740",
+      "address": "CR 10 11 53",
+      "city": "JAMUNDI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "147",
+      "name": "COMPAÑIA REPUBLIC S.A.S EN LIQUIDACION",
+      "nit": "900385825",
+      "address": "CARRERA 4 #14-49 CENTRO",
+      "city": "LA DORADA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "148",
+      "name": "ALTA MODA LA DORADA",
+      "nit": "7507",
+      "address": "CLLE 5 # 5-35",
+      "city": "LA DORADA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "149",
+      "name": "SALAZAR ZULUAGA MAURICIO ANTONIO",
+      "nit": "1027",
+      "address": "CRA 4 #14-49",
+      "city": "LA DORADA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "15",
+      "name": "HERRERA JOHN FREDY",
+      "nit": "4065",
+      "address": "CALLE 30 #42-04 MEGAMODA",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "150",
+      "name": "ZULUAGA EDWIN DAVID",
+      "nit": "6942",
+      "address": "CRA 7 # 12-38 MERCADO VIEJO",
+      "city": "LA GUAJIRA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "151",
+      "name": "DUQUE HOYOS JUAN GONZALO",
+      "nit": "1045016303",
+      "address": "CL 6 N 3 56",
+      "city": "LA PLATA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "152",
+      "name": "GOMEZ HERNANDEZ JUAN DAVID",
+      "nit": "1010153349",
+      "address": "CARRERA 7 # 11-38",
+      "city": "LA TEBAIDA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "153",
+      "name": "ARBOLEDA VASQUEZ JULIAN ANDRES",
+      "nit": "16552144",
+      "address": "CARRERA 15 #15-42",
+      "city": "LA UNION",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "154",
+      "name": "BRABO DUARTE LUZ DARIS",
+      "nit": "63471107",
+      "address": "CL 11 9-15 BRR CENTRO",
+      "city": "LEBRIJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "155",
+      "name": "CARDOZO AMAYA YOLANDA",
+      "nit": "65498039",
+      "address": "CR 6 # 8 26 BRR CENTRO",
+      "city": "LERIDA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "156",
+      "name": "ALIANZA MUÑOZ GOMEZ SAS",
+      "nit": "901079469",
+      "address": "CR 20 2 A 22",
+      "city": "LORICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "157",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "901234880",
+      "address": "CRA 20 # 2 -34",
+      "city": "LORICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "158",
+      "name": "JIMENEZ MAYORGA MARIA ALEJANDRA",
+      "nit": "1112957434",
+      "address": "CL DE LAS FLORES 12 24",
+      "city": "MAGANGUE",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "159",
+      "name": "ALIANZA MABLE SAS",
+      "nit": "900638635",
+      "address": "CRA 3 B # 3-75",
+      "city": "MAGANGUE",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "16",
+      "name": "ALIANZA MAS SAS",
+      "nit": "900596174",
+      "address": "CALLE 34 # 43 147",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "160",
+      "name": "K-LU DE COLOMBIA SAS",
+      "nit": "901663086",
+      "address": "CL 10 A 13 05 BRR CENTRO",
+      "city": "MAICAO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "161",
+      "name": "LOPEZ HERRERA ANDRES FELIPE",
+      "nit": "1035912972",
+      "address": "CL 12 # 11 60 LC 3",
+      "city": "MAICAO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "162",
+      "name": "LOPEZ HERRERA GILDARDO ALONSO",
+      "nit": "15173215",
+      "address": "CR 12 12 27",
+      "city": "MAICAO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "163",
+      "name": "SALAZAR JARAMILLO CESAR AUGUSTO",
+      "nit": "16138274",
+      "address": "CR 23 # 27 - 28",
+      "city": "MANIZALES",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "164",
+      "name": "ARIAS GUAPACHA NATALIA",
+      "nit": "1053799325",
+      "address": "CR 23 # 57 - 37",
+      "city": "MANIZALES",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "165",
+      "name": "CASTRO CARRETERO OSCAR ALFONSO",
+      "nit": "1814",
+      "address": "CRA 23 57 37 BRR LEONORA",
+      "city": "MANIZALES",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "166",
+      "name": "SANCHEZ SANTAMARIA FLOR MARINA",
+      "nit": "41642642",
+      "address": "CL 19 # 20 - 31 ALMACEN FAS # 1",
+      "city": "MANIZALES",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "167",
+      "name": "CASTRO CARRETERO OSCAR ALFONSO",
+      "nit": "55991814",
+      "address": "CR 23 57 37 BRR LEONORA",
+      "city": "MANIZALES",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:59.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "168",
+      "name": "COMERCIALIZADORA CENTER S.A.S.",
+      "nit": "900747073",
+      "address": "CALLE 46 # 53 - 05 - AMAZONA CENTER",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "169",
+      "name": "INNOVACIONES DE MODA SAS",
+      "nit": "2900463523",
+      "address": "CALLE 48 #51-27  PICHINCHA",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "17",
+      "name": "ALIANZA ESTRENO SAS",
+      "nit": "900593525",
+      "address": "CALLE 34 #43-81",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "170",
+      "name": "INNOVACIONES DE MODA S.A.S",
+      "nit": "900463523",
+      "address": "CARRERA 51 #50-27 P.BERRIO",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "171",
+      "name": "INVERSIONES GAFREMOL S.A.S",
+      "nit": "900532343",
+      "address": "CARRERA 52 #48-02 CENTRAL",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "172",
+      "name": "INNOVACIONES DE MODA SAS",
+      "nit": "1900463523",
+      "address": "CARRERA 52 #50-50  CARABOBO",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "173",
+      "name": "INVERSIONES LA MEDIA NARANJA S.A.S",
+      "nit": "2900109044",
+      "address": "CENTRO COMERCIAL CENTRAL BUENOS AIRES",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "174",
+      "name": "INVERSIONES LA MEDIA NARANJA S.A.S",
+      "nit": "3900109044",
+      "address": "CLLE 49 # 49-29 AYACUHO",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "175",
+      "name": "INVERSIONES LA MEDIA NARANJA S.A.S",
+      "nit": "900109044",
+      "address": "CRA 53 #48-29 CUNDINAMARCA",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "176",
+      "name": "TENDENCIAS FUTURISTAS S.A.S #2",
+      "nit": "1900314739",
+      "address": "CALLE 29 #20-337 LOCAL 169 C.C NUESTRO",
+      "city": "MONTERIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "177",
+      "name": "COMERCIALIZADORA EL PALACIO DE LA PANTALETA",
+      "nit": "1901164484",
+      "address": "CALLE 35 #2-22",
+      "city": "MONTERIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "178",
+      "name": "INVERSIONES LA PANTALETA S.A.S",
+      "nit": "900050852",
+      "address": "CARRERA 2 # 32-07",
+      "city": "MONTERIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "179",
+      "name": "COMERCIALIZADORA EL PALACIO DE LA PANTALETA",
+      "nit": "901164484",
+      "address": "CARRERA 2 #34-12 CENTRO",
+      "city": "MONTERIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "18",
+      "name": "TRICIA DUARTE",
+      "nit": "8544",
+      "address": "CARRERA 4 # 45 G - 32",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "180",
+      "name": "TENDENCIAS FUTURISTAS S.A.S #1",
+      "nit": "900314739",
+      "address": "CRA 2 #35-36",
+      "city": "MONTERIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "181",
+      "name": "GRUPO COMERCIAL INTERMODA S.A.S",
+      "nit": "900442422",
+      "address": "CALLE 8 #3-33",
+      "city": "NEIVA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "182",
+      "name": "GRUPO COMERCIAL INTERMODA S.A.S",
+      "nit": "3900442422",
+      "address": "CLLE 8 # 3-81",
+      "city": "NEIVA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "183",
+      "name": "GRUPO COMERCIAL INTERMODA S.A.S",
+      "nit": "2900442422",
+      "address": "CRA 5 # 8-56",
+      "city": "NEIVA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "184",
+      "name": "GRUPO COMERCIAL INTERMODA S.A.S",
+      "nit": "4900442422",
+      "address": "CRA 5 N° 8-25",
+      "city": "NEIVA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "185",
+      "name": "TIENDAS MICROEMPRESARIALES LANFER S.A.S",
+      "nit": "1900118155",
+      "address": "CR 13 9 52 SECTOR DEL DULCE NOMBRE",
+      "city": "OCAÑA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "186",
+      "name": "INVERSIONES 8A S.A.S N°10",
+      "nit": "1090013702",
+      "address": "CL 25 N° 22 - 18 / LC 1",
+      "city": "PAIPA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "187",
+      "name": "GUERRERO MUÑOZ SANDRA PATRICIA",
+      "nit": "66776819",
+      "address": "CL 33 19 85",
+      "city": "PALMIRA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "188",
+      "name": "GUITIERREZ RESTREPO LAURA",
+      "nit": "1730",
+      "address": "CLLE 30 # 27-15 CENTRO",
+      "city": "PALMIRA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "189",
+      "name": "INVERSIONES BANETY SAS",
+      "nit": "901580883",
+      "address": "CALLE 17 #20 64 BRR CENTRO",
+      "city": "PASTO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "19",
+      "name": "JIMENEZ QUINTERO DECIMO ALEXANDER",
+      "nit": "7606",
+      "address": "CARRERA 41 #30-54",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "190",
+      "name": "SOTO GOMEZ ELCY BIBIANA",
+      "nit": "1045017326",
+      "address": "CL 18 # 23 - 85 BRR CENTRO",
+      "city": "PASTO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "191",
+      "name": "SOTO FRANCO JHOVANNY",
+      "nit": "7271",
+      "address": "CR 20 A 16 74",
+      "city": "PASTO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "192",
+      "name": "SOTO FRANCO ALEXANDER",
+      "nit": "70697270",
+      "address": "CR 22 # 16 - 80. EL GRAN SURTIDOR",
+      "city": "PASTO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "193",
+      "name": "GOMEZ GOMEZ MARIA MERCEDES",
+      "nit": "41892604",
+      "address": "CR 8 CL 17 ESQ 16 75 CC LA OCTAVA",
+      "city": "PEREIRA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "194",
+      "name": "INVERSIONES LA MEDIA NARANJA S.A.S",
+      "nit": "1900109044",
+      "address": "CRA 8 #17-34",
+      "city": "PEREIRA",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "195",
+      "name": "ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER",
+      "nit": "14817",
+      "address": "CR 26 40 20",
+      "city": "PIEDECUESTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "196",
+      "name": "ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER",
+      "nit": "1033814817",
+      "address": "CR 6 # 10 - 88",
+      "city": "PIEDECUESTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:00.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "197",
+      "name": "BARRERA MORA BETURIA",
+      "nit": "8911",
+      "address": "CLLE 7 # 2-34",
+      "city": "PITALITO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "198",
+      "name": "SUPERMODA CIA Y LIMITADA",
+      "nit": "809010278",
+      "address": "CRA 4 # 7 -45 PITALITO",
+      "city": "PITALITO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "199",
+      "name": "VARIEDADES SJ DEL CARIBE S.A.S",
+      "nit": "901413205",
+      "address": "CRA 10 9 31",
+      "city": "PIVIJAY",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "2",
+      "name": "INVERSIONES AM ACACIAS S.A.S.",
+      "nit": "901509626",
+      "address": "CL 13 # 19 - 79 BRR CENTRO",
+      "city": "ACACIAS",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.268Z"
+    },
+    {
+      "id": "20",
+      "name": "ZULUAGA GOMEZ RIGOBERTO",
+      "nit": "170827090",
+      "address": "CL 34 43 70 LC M 5",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "200",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "3901234880",
+      "address": "CLLE 20 N° 7-41",
+      "city": "PLANETA RICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "201",
+      "name": "RAMIREZ LLERENA LUZ ADRIANA",
+      "nit": "700082020",
+      "address": "CR 15 11-65",
+      "city": "PLATO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "202",
+      "name": "ALIANZA HERMANOS JGV",
+      "nit": "16326",
+      "address": "CR 15 12 69",
+      "city": "PLATO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "203",
+      "name": "MORCILLO GONZALEZ LEIDY",
+      "nit": "4000",
+      "address": "CALLE 6 #18-48",
+      "city": "POPAYAN",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "204",
+      "name": "ARCILA BEATRIZ HELENA",
+      "nit": "4957",
+      "address": "CARRERA 7 #6-26",
+      "city": "POPAYAN",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "205",
+      "name": "ZULUAGA ORLANDO",
+      "nit": "1694",
+      "address": "CLLE 6 # 6-43",
+      "city": "POPAYAN",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "206",
+      "name": "COMPAÑIA REPUBLIC S.A.S.",
+      "nit": "1900385825",
+      "address": "CL 54 3 00 ESQ",
+      "city": "PUERTO BERRIO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "207",
+      "name": "INVERSIONES SOLOMODA BARRANCA S.A.S",
+      "nit": "2900351574",
+      "address": "CR 3 N° 9-18",
+      "city": "PUERTO BERRIO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "208",
+      "name": "SANCHEZ TORRES NELSY",
+      "nit": "40091533",
+      "address": "CALLE 5 # 7-33",
+      "city": "PUERTO RICO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "209",
+      "name": "GUERRA EDILSON DARIO",
+      "nit": "5369",
+      "address": "CRA 7 # 8-07",
+      "city": "PUTUMAYO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "21",
+      "name": "ZULUAGA GOMEZ RIGOBERTO",
+      "nit": "70827090",
+      "address": "CL 35 44 18",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "210",
+      "name": "ALIANZA MAS S.A.S",
+      "nit": "1900596174",
+      "address": "CALLE 15 #18-274 LOC 138 C.C VIVA GUAJIRA",
+      "city": "RIOHACHA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "211",
+      "name": "PASSARELA RIOHACHA S.A.S.",
+      "nit": "901697930",
+      "address": "CR 7 # 12 - 45",
+      "city": "RIOHACHA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "212",
+      "name": "RAMIREZ GIRALDO ANDRES FELIPE",
+      "nit": "700159350",
+      "address": "CR 7 12 38",
+      "city": "RIOHACHA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "213",
+      "name": "SUPERMODA RIOHACHA S.A.S",
+      "nit": "901697954",
+      "address": "CR 7 12 38",
+      "city": "RIOHACHA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "214",
+      "name": "SALAZAR ECHEVERRI LUIS ALBERTO",
+      "nit": "270693888",
+      "address": "CR 7 N 12 28",
+      "city": "RIOHACHA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "215",
+      "name": "SUPERMODA SABANALARGA S.A.S",
+      "nit": "901698678",
+      "address": "CR 19 # 20-31",
+      "city": "SABANALARGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "216",
+      "name": "MEDINA MERCHAN YESENIA",
+      "nit": "1052989202",
+      "address": "CL 13 CR 10 60 BRR CENTRO LC 2",
+      "city": "SAHAGUN",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "217",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "1901234880",
+      "address": "CRA 11 #13-73",
+      "city": "SAHAGUN",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "218",
+      "name": "INVERSIONES 8A S.A.S N°16",
+      "nit": "1690013702",
+      "address": "CR 9 N° 11 - 36",
+      "city": "SAN GIL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "219",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "2901234880",
+      "address": "CR 24 15 29",
+      "city": "SAN MARCOS",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "22",
+      "name": "GH ENTERPRISE S.A.S.",
+      "nit": "901486883",
+      "address": "CL 53 46 192 LC 240 CC PORTAL DEL PRADO",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "220",
+      "name": "DISTRIBUIDORA MUNDO FASHION",
+      "nit": "2900324182",
+      "address": "CALLE 22 #5-37 EDIFICIO ANDINA APTO 202",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "221",
+      "name": "INVERSIONES TORRES CA S.A.S.",
+      "nit": "901155149",
+      "address": "CL 11 # 8 - 31 BRR MERCADO",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "222",
+      "name": "INVERSIONES RABI SAS",
+      "nit": "901090933",
+      "address": "CLLE 11 # 8 A 23",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "223",
+      "name": "ZULUAGA SALAZAR LEONEL ALBERTO",
+      "nit": "88210403",
+      "address": "CR 5 19 08",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "224",
+      "name": "INVERSIONES RABI SAS",
+      "nit": "1901090933",
+      "address": "CRA 5 # 21 - 30",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "225",
+      "name": "ALIANZA HNOS JGVS SAS",
+      "nit": "900676326",
+      "address": "CRA 5 #18-43",
+      "city": "SANTA MARTA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "226",
+      "name": "GUITIERREZ RESTREPO LAURA",
+      "nit": "2119279173",
+      "address": "CLLE 4 # 10-59 CENTRO",
+      "city": "SANTANDER DE QUILICHAO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "227",
+      "name": "TAMAYO JARAMILLO LUZ MARIA",
+      "nit": "24431638",
+      "address": "CLLE 4 # 11-32 CENTRO",
+      "city": "SANTANDER DE QUILICHAO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "228",
+      "name": "ARCILA CARDENAS SANDRA EMILSEN",
+      "nit": "265",
+      "address": "CL 50 # 46 - 27",
+      "city": "SANTUARIO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:01.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "229",
+      "name": "SERNA RAMIREZ ANGELA MARIA",
+      "nit": "19585",
+      "address": "CL 50 50 71 IN 101",
+      "city": "SANTUARIO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "23",
+      "name": "ALIANZA ESTRENO SAS",
+      "nit": "1900593525",
+      "address": "CLLE 34 # 43-42",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "230",
+      "name": "COMERCIALIZADORA MAGOTEX S.A.S #2",
+      "nit": "1901239802",
+      "address": "CALLE 21 #19-12",
+      "city": "SINCELEJO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "231",
+      "name": "MP RETAIL S.A.S",
+      "nit": "901181807",
+      "address": "CALLE 22 #20-68",
+      "city": "SINCELEJO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "232",
+      "name": "PANAMA PLAZA S.A.S",
+      "nit": "901212878",
+      "address": "CALLE 22 N° 21-22",
+      "city": "SINCELEJO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "233",
+      "name": "COMERCIALIZADORA MAGOTEX 1",
+      "nit": "901239802",
+      "address": "CALLE 23 # 20 - 64",
+      "city": "SINCELEJO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "234",
+      "name": "ALIANZA MABLE SAS",
+      "nit": "1900638635",
+      "address": "CL 28 25 B 97 LC 2 318",
+      "city": "SINCELEJO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "235",
+      "name": "INVERSIONES GAFE S.A.S",
+      "nit": "2900463519",
+      "address": "CALLE 36 SUR # 43-31",
+      "city": "ENVIGADO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "236",
+      "name": "INVERSIONES GOBOTEX S A S",
+      "nit": "1830125982",
+      "address": "CALLE 13 Nº 5-63",
+      "city": "SOACHA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "237",
+      "name": "NAVANA MEGATODO SOACHA S.A.S",
+      "nit": "1901169855",
+      "address": "CRA 7 # 32-35 LOCAL 207",
+      "city": "SOACHA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "238",
+      "name": "ACUÑA MARIA CRISTINA",
+      "nit": "30205366",
+      "address": "CL 10 14 39 BRR CENTRO",
+      "city": "SOCORRO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "239",
+      "name": "VARIMODA SAS",
+      "nit": "901729900",
+      "address": "CR 11 14 91",
+      "city": "SOGAMOSO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "24",
+      "name": "COMERCIALIZADORA MGV SAS",
+      "nit": "901413624",
+      "address": "CR 13 104 45",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "240",
+      "name": "INVERSIONES 8A S.A.S N°7",
+      "nit": "7900137023",
+      "address": "CR 11 N° 13 - 29 SOGAMOSO",
+      "city": "SOGAMOSO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "241",
+      "name": "ALIANZA VC S.A.S",
+      "nit": "900225992",
+      "address": "CALLE 20 N° 19-17",
+      "city": "SOLEDAD",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "242",
+      "name": "INVERSIONES JBARA S.A.S",
+      "nit": "901462378",
+      "address": "CL 63 14 50",
+      "city": "SOLEDAD",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "243",
+      "name": "DUQUE HOYOS JUAN GONZALO",
+      "nit": "3104501630",
+      "address": "CR 19 19 41",
+      "city": "SOLEDAD",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "244",
+      "name": "ZULAGA GIRALDO HECTOR MAURICIO",
+      "nit": "70690823",
+      "address": "CL 27 24 59 BR CENTRO",
+      "city": "TULUA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "245",
+      "name": "DECADA 10 EN TODO S.A.S",
+      "nit": "900519038",
+      "address": "CR 24 27 30 BRR EL CENTRO",
+      "city": "TULUA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "246",
+      "name": "QUINTERO ADRIAN ALBERTO",
+      "nit": "3257",
+      "address": "CLL DEL COMERCIO EL PACIFICO DEL BARATON",
+      "city": "TUMACO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "247",
+      "name": "NOREÑA MAZUERA ALEXANDER",
+      "nit": "100",
+      "address": "CALLE MERCEDES ALM LISTO MEDELLIN",
+      "city": "TUMACO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "248",
+      "name": "INVERSIONES INTERMODA S.A.S",
+      "nit": "1901068621",
+      "address": "CLLE MOSQUERA DIAG A TELECOM",
+      "city": "TUMACO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "249",
+      "name": "VARGAS MONTIEL JACKSON FABIAN",
+      "nit": "9052",
+      "address": "CRA 9 # 8 -99",
+      "city": "TUMACO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "25",
+      "name": "ZULUAGA GOMEZ EDGAR ALONSO",
+      "nit": "8778704",
+      "address": "CR 41 32 81",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "250",
+      "name": "INVERSIONES 8A S.A.S N°19",
+      "nit": "1990013702",
+      "address": "AV UNIVERSITARIA N° 51 21 LC 207 CC VIVA TUNJA",
+      "city": "TUNJA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "251",
+      "name": "INVERSIONES 8A S.A.S N°8",
+      "nit": "8900137023",
+      "address": "CL 19 N° 10 - 46",
+      "city": "TUNJA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "252",
+      "name": "INVERSIONES 8A S.A.S N°15",
+      "nit": "1590013702",
+      "address": "CR 7 N° 9 - 48",
+      "city": "UBATE",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "253",
+      "name": "SAJIN AREVALO SAMIR",
+      "nit": "77038476",
+      "address": "CL 16 B 8 45",
+      "city": "VALLEDUPAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "254",
+      "name": "KHALED BASSAN SAJIN MHANNA",
+      "nit": "1065629467",
+      "address": "CL 16B # 7-39 - Centro",
+      "city": "VALLEDUPAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:02.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "255",
+      "name": "ALIANZA SURTIDORA SAS",
+      "nit": "901084883",
+      "address": "CR 7 16 A 133",
+      "city": "VALLEDUPAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "256",
+      "name": "DISTRIBUIDORA MUNDO FASHION",
+      "nit": "3900324182",
+      "address": "DIG 10 A N° 6 N 15 CC GUATAPURI LC 215",
+      "city": "VALLEDUPAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "257",
+      "name": "CIELO MODA S.A.S - AMV LLANO 2",
+      "nit": "901784502",
+      "address": "CALLE 39 #30-40",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "258",
+      "name": "BARAKI S.A.S",
+      "nit": "901712681",
+      "address": "CALLE 39 N° 30 A 38",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "259",
+      "name": "AMV LLANO S.A.S",
+      "nit": "900469068",
+      "address": "CARRERA 30 #36-40",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "26",
+      "name": "ALIANZA VC S.A.S",
+      "nit": "1900225992",
+      "address": "CR 41 37 23",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "260",
+      "name": "AMV LLANO S.A.S",
+      "nit": "2900469068",
+      "address": "CL 39 30 A 38 BRR CENTRO",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "261",
+      "name": "MONTOYA VARGAS CENERY",
+      "nit": "52654284",
+      "address": "CRA 5 # 5 23",
+      "city": "VILLETA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "262",
+      "name": "MARTINEZ ARANGO DIANA ELISABETH",
+      "nit": "32564630",
+      "address": "CR 19 # 20 - 74",
+      "city": "YARUMAL",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "263",
+      "name": "JIMENEZ GOMEZ CARLOS ALCIDES",
+      "nit": "70694674",
+      "address": "CALLE 9 # 19-14",
+      "city": "YOPAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "264",
+      "name": "COL MODA YOPAL SAS",
+      "nit": "901697458",
+      "address": "CL 10 19 52",
+      "city": "YOPAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "265",
+      "name": "RAMIREZ ZULUAGA BLANCA AMELIA",
+      "nit": "43404158",
+      "address": "CR 20 14 31",
+      "city": "YOPAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "266",
+      "name": "INVERSIONES JIMENEZ GOMEZ S.A.S",
+      "nit": "900960772",
+      "address": "CRA 20 N° 14-39 BELLO HORIZONTE",
+      "city": "YOPAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "267",
+      "name": "EPICA DE MODAD SAS",
+      "nit": "901170874",
+      "address": "CL 34 43 109 OF 312",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "268",
+      "name": "GUTIERREZ FANDIÑO FANNY",
+      "nit": "152456059",
+      "address": "CRA 4 # 6 -03 CENTRA",
+      "city": "YUMBO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "269",
+      "name": "VASQUEZ MARIA ORFANIA",
+      "nit": "29809163",
+      "address": "CL 9 11 08",
+      "city": "ZARZAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "27",
+      "name": "ALMACEN Y DISTRIBUIDORA GONZALEZ S.A.S",
+      "nit": "800160395",
+      "address": "CR 42 32 28",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "270",
+      "name": "AL MUSTAKIM",
+      "nit": "901812038",
+      "address": "CLL 9 # 20 - 59",
+      "city": "SAN JOSE DEL GUAVIARE",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "271",
+      "name": "JHOJAINNE SULVARAN",
+      "nit": "1006745382",
+      "address": "CR 12 # 13 - 22",
+      "city": "MAICAO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "272",
+      "name": "DISTRIBUIDORA VISTEMODA LTDA",
+      "nit": "800222200",
+      "address": "CL 52 N° 15 A 05",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:03.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "273",
+      "name": "CAÑAVERAL NUÑEZ YOLANDA",
+      "nit": "66677499",
+      "address": "CL 9 6 82",
+      "city": "ROLDANILLO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "274",
+      "name": "ARBOLEDA NIETO JOSE ALEJANDRO",
+      "nit": "14978082",
+      "address": "CR 5 9 81 BRR GUADALUPE",
+      "city": "CARTAGO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "275",
+      "name": "GV INFINITE SAS",
+      "nit": "901523339",
+      "address": "CL 12 7 30 LOCAL 1",
+      "city": "RIOHACHA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "276",
+      "name": "VIDAL MARIN INGRIT MALLERLY",
+      "nit": "3207003070",
+      "address": "CRA 25 # 37 - 29",
+      "city": "CALARCA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "277",
+      "name": "SINDY LISADY SAAVEDRA",
+      "nit": "1045016946",
+      "address": "CRA 13 # 8-51",
+      "city": "OCAÑA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "278",
+      "name": "BAYONA BAYONA JORGE LUIS",
+      "nit": "1094574518",
+      "address": "CR 5 # 13 - 87 BRR CENTRO",
+      "city": "ABREGO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "279",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "6901234880",
+      "address": "CRA 15 # 8 - 64 LOC 1",
+      "city": "CIENAGA DE ORO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "28",
+      "name": "ALIANZA MUÑOZ GOMEZ SAS",
+      "nit": "1901079469",
+      "address": "CRA 44 N° 34-31 PISO 6 EDFC COLSEGUROS",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "280",
+      "name": "EPICA DE MODA SAS",
+      "nit": "901170874",
+      "address": "CALLE 30 # 43-50 LOCAL 296A  CENTRO COMERCIAL ALEGRA",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "281",
+      "name": "LA PORFIA AM SAS",
+      "nit": "901891158",
+      "address": "CR 43 # 70-05 SUR PORFIA",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "282",
+      "name": "SALANEDA INVERSIONES S.A.S.",
+      "nit": "901800090",
+      "address": "CL 49 9 44 SEC COMERCIAL PUERT",
+      "city": "BARRANCABERMEJA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "283",
+      "name": "COMERCIAL BP SAS",
+      "nit": "901349219",
+      "address": "CALLE 17 # 6 - 104 PISO 3",
+      "city": "MONTELIBANO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "284",
+      "name": "COMERCIAL BP SAS",
+      "nit": "1901349219",
+      "address": "CALLE 10 A # 12 - 12 GUADALUPE",
+      "city": "PUERTO LIBERTADOR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "285",
+      "name": "COMERCIAL BP SAS",
+      "nit": "2901349219",
+      "address": "CALLE 20 # 9B - 24",
+      "city": "LA PARTADA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "286",
+      "name": "ALIANZA REDUART S.A.S.",
+      "nit": "901049593",
+      "address": "CL 45 H 4 04",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "287",
+      "name": "JARAMILLO JARAMILLO SANTIAGO",
+      "nit": "700159299",
+      "address": "CL 10 4 38",
+      "city": "CARTAGO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "288",
+      "name": "JARAMILLO JARAMILLO SANTIAGO",
+      "nit": "1700159299",
+      "address": "CR 5 7 44",
+      "city": "CARTAGO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "289",
+      "name": "JUAN ALEJANDRO JARAMILLO",
+      "nit": "1002652738",
+      "address": "CL 9 16 35",
+      "city": "FLORIDA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "29",
+      "name": "ARIZUL DEL CARIBE S.A.S",
+      "nit": "900648001",
+      "address": "VIA 40 # 85-410",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "290",
+      "name": "MARTINEZ SAAVEDRA LIGIA MARIA",
+      "nit": "24661204",
+      "address": "CR 23 26 58 BRR CENTRO",
+      "city": "TULUA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "291",
+      "name": "MACHADO ORTEGA JESUS DAVID",
+      "nit": "88309883",
+      "address": "CL 11 19 C 45 BRR GARUPAL  II ETAPA",
+      "city": "VALLEDUPAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "292",
+      "name": "CLASIC AM S.A.S.",
+      "nit": "901864953",
+      "address": "CR 30 # 36 - 40",
+      "city": "VILLAVICENCIO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "293",
+      "name": "GRUPO EMPRESARIAL EL SURTIDOR SAS",
+      "nit": "901595448",
+      "address": "CLL 8 # 5 - 47 BRR CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "294",
+      "name": "INVERSIONES DUQUE QUINTERO S.A.S.",
+      "nit": "901324937",
+      "address": "AV PEDRO DE HEREDIA CR 27 30 01",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "295",
+      "name": "GALVIS RODOLFO",
+      "nit": "4870",
+      "address": "CRA 3A Nº 17-61",
+      "city": "CAUCASIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "296",
+      "name": "PEREZ ACOSTA CANDY SUSANA",
+      "nit": "32930941",
+      "address": "CR 8 10 26",
+      "city": "SANTA ANA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "297",
+      "name": "RUEDA MIRANDA YERSON OSWALDO",
+      "nit": "91078808",
+      "address": "CR 11 # 12 - 75 P 2",
+      "city": "SAN GIL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "298",
+      "name": "INVERSIONES ASH S.A.S.",
+      "nit": "900469154",
+      "address": "CRA 4 # 24 - 70",
+      "city": "QUIBDO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:04.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "299",
+      "name": "LARGACHA CAMPO YUBERNEI",
+      "nit": "9737771",
+      "address": "CR 8 # 4 - 33",
+      "city": "CHAPARRAL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "3",
+      "name": "RAMIREZ BOTERO OSCAR MANUEL",
+      "nit": "70690518",
+      "address": "CL 5  # 13-52",
+      "city": "AGUACHICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "30",
+      "name": "INVERSIONES GAFE S.A.S",
+      "nit": "900463519",
+      "address": "CARRERA 49 #49-38",
+      "city": "BELLO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "300",
+      "name": "MEDIA NARANJA",
+      "nit": "-",
+      "address": "TODOS LOS ALMACENES",
+      "city": "MEDELLIN",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "301",
+      "name": "HERNANDEZ MONTES ANA MILENA",
+      "nit": "50929792",
+      "address": "CL 20 CR 7 ESQU",
+      "city": "PLANETA RICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "302",
+      "name": "RESTREPO LAURA VALENTINA",
+      "nit": "1192791730",
+      "address": "CL 4 # 10 - 59 CRR EL CENTRO",
+      "city": "SANTANDER DE QUILICHAO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "303",
+      "name": "LONDOÑO MARIA DEL CARMEN",
+      "nit": "25109415",
+      "address": "CR 15 # 16 43 BRR CENTRO",
+      "city": "LA UNION",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "304",
+      "name": "YONELBIS ZAMBRANO SUAREZ",
+      "nit": "6057",
+      "address": "CRA 12 # 12 - 27",
+      "city": "MAICAO",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "305",
+      "name": "G&G RETAIL S.A.S",
+      "nit": "7901234880",
+      "address": "CLL 15 A # 14 A 41",
+      "city": "CERETE",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "306",
+      "name": "VICTOR ANDRES AROCA",
+      "nit": "1140896249",
+      "address": "CL 34 43 129 BG 434 CC COLOMBIA",
+      "city": "BARRANQUILLA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "307",
+      "name": "SANTIAGO JARAMILLO JARAMILLO",
+      "nit": "2700159299",
+      "address": "CRA 8 # 9 - 72 LOCAL 5",
+      "city": "CHINCHINA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "308",
+      "name": "EL SURTIDOR BG SAS NUEVO",
+      "nit": "2490",
+      "address": "AV 5 # 5 - 63 PISO 4",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "309",
+      "name": "PANTYJEANS GIRARDOT SAS 2",
+      "nit": "1900284812",
+      "address": "CR 10 # 14 - 47 BRR CENTRO",
+      "city": "GIRARDOT",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:28:05.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "31",
+      "name": "ALMA BELLA S.A.S",
+      "nit": "900352713",
+      "address": "CL 129 N° 47 - 43 PRADO VERANIEGO",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "32",
+      "name": "RESTREPO JARAMILLO JULIAN ANDRES",
+      "nit": "79726416",
+      "address": "CLL 129 B # 91-64 SUBA",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "33",
+      "name": "INTIMOS ALMA S.A.S N°11",
+      "nit": "1183003804",
+      "address": "CR 13 N° 59 - 41",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "34",
+      "name": "INTIMOS ALMA S.A.S N° 14",
+      "nit": "1483003804",
+      "address": "CR 71D N° 8 - 70 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "35",
+      "name": "INTIMOS ALMA S.A.S N°24",
+      "nit": "2483003844",
+      "address": "CR 80 N° 51 - 03 SUR EXT: 1102",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "36",
+      "name": "INTIMOS ALMA S.A.S N° 3",
+      "nit": "3830038044",
+      "address": "CR 88C N° 58D 32 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "37",
+      "name": "GUTIERREZ FANDIÑO FANNY",
+      "nit": "252456059",
+      "address": "CRA 14 # 75 A -51 SUR B/SANTA LIBRADA",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "38",
+      "name": "INVERSIONES 8A S.A.S N°6",
+      "nit": "6900137023",
+      "address": "CRA 6 N° 23-40 SUR 20 DE JULIO",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "39",
+      "name": "INTIMOS ALMA S.A.S N°2",
+      "nit": "5830038444",
+      "address": "CRA 80 # 51-25 SUR CASA BLANCA",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "4",
+      "name": "P & S INVERSIONES ASOCIADOS S.A.S",
+      "nit": "901195775",
+      "address": "CL 5 16 36",
+      "city": "AGUACHICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "40",
+      "name": "INVERSIONES 8A S.A.S N°17",
+      "nit": "1790013702",
+      "address": "DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "41",
+      "name": "INTIMOS ALMA S.A.S N°9",
+      "nit": "9830038044",
+      "address": "TRANS.78L #68B -09/15 SUR BOSA PIAMONTE",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "42",
+      "name": "INTIMOS ALMA S.A.S N°5",
+      "nit": "5830038044",
+      "address": "TV 4 ESTE N° 37A - 28 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "43",
+      "name": "INTIMOS ALMA S.A.S N°1",
+      "nit": "1830038444",
+      "address": "TV 78 L N° 69 - 23 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "44",
+      "name": "HEGA G B S.A.S",
+      "nit": "830091761",
+      "address": "CALLE 37 SUR # 78 H 21",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "45",
+      "name": "INVERSIONES GOBOTEX S A S",
+      "nit": "2830125982",
+      "address": "CALLE 38 SUR Nº 86 A-09",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "46",
+      "name": "HEGA G B S.A.S",
+      "nit": "1830091761",
+      "address": "CALLE 42 A #93 C 17 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "47",
+      "name": "INVERSIONES SACHA S.A.S",
+      "nit": "2900186125",
+      "address": "\"CALLE 57 D SUR Nº 78H - 14",
+      "city": "LOCAL 227\"",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "48",
+      "name": "INVERSIONES GOBOTEX S A S",
+      "nit": "3830125982",
+      "address": "CLL 13 # 5 - 63",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "49",
+      "name": "INVERSIONES GOBOTEX S A S",
+      "nit": "830125982",
+      "address": "CR 100 20 45",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "5",
+      "name": "SALAZAR ECHEVERRI LUIS ALBERTO",
+      "nit": "170693888",
+      "address": "CL 5 N 12 81",
+      "city": "AGUACHICA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "50",
+      "name": "INVERSIONES MASSARA S.A.S",
+      "nit": "901514722",
+      "address": "CRA 4 # 14 - 49 (DESPACHO)",
+      "city": "LA DORADA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "51",
+      "name": "INVERSIONES SACHA S.A.S",
+      "nit": "900186125",
+      "address": "CR 78 B 35 C 14 SUR",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "52",
+      "name": "ZULUAGA ARISTIZABAL SANDRA MILENA",
+      "nit": "52855335",
+      "address": "DG 49 A SUR 53 25",
+      "city": "BOGOTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "53",
+      "name": "NAVANA MEGATODO BOSA S.A.S",
+      "nit": "901169855",
+      "address": "CRA 88 C # 58 D 31 SUR",
+      "city": "BOSA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "54",
+      "name": "ZULUAGA RAMIREZ HECTOR EMILIO",
+      "nit": "70693516",
+      "address": "CALLE 18 19 -36",
+      "city": "BOSCONIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "55",
+      "name": "ZULUAGA GIRALDO MARTA NELLY",
+      "nit": "52024421",
+      "address": "CL 18 18 23 LC3 BRR CENTRO",
+      "city": "BOSCONIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "56",
+      "name": "CRISTANCHO CRISTANCHO ULICES",
+      "nit": "1960",
+      "address": "CALLE 35 # 17-18",
+      "city": "BUCARAMANGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "57",
+      "name": "ALMACENES GRAN SAS",
+      "nit": "890204683",
+      "address": "CALLE 52 # 33-20 BARRIO CABECERA",
+      "city": "BUCARAMANGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "58",
+      "name": "ALMACENES GANE LIMITADA",
+      "nit": "890203597",
+      "address": "CL 35 15 59 BRR CENTRO",
+      "city": "BUCARAMANGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "59",
+      "name": "COMERCIALIZADORA DE CONFECCIONES S.A.S",
+      "nit": "901217960",
+      "address": "CLLE 35 # 16 - 61 BRR CENTRO",
+      "city": "BUCARAMANGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "6",
+      "name": "BOUTIQUE EL IMPERIO DE LA MODA DE AGUAZUL",
+      "nit": "900448728",
+      "address": "CRA 16 # 9-48",
+      "city": "AGUAZUL",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "60",
+      "name": "JAIMES SUAREZ CESAR ELADIO",
+      "nit": "13925155",
+      "address": "CR 17 34 43 49 BRR CENTRO",
+      "city": "BUCARAMANGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:56.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "61",
+      "name": "JARAMILLO LOPEZ VIVIANA PATRICIA",
+      "nit": "29231576",
+      "address": "CALLE 3 # 36 - 39",
+      "city": "BUENAVENTURA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "62",
+      "name": "CARVAJAL FRANCY",
+      "nit": "10897",
+      "address": "CARRERA 9 #2-10",
+      "city": "BUENAVENTURA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "63",
+      "name": "ARBOLEDA MEJIA JANETH",
+      "nit": "31588477",
+      "address": "CL 5 5 14 BRR CENTRO SEC SANANDRESITO",
+      "city": "BUENAVENTURA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "64",
+      "name": "ALMACENES CRAMAR",
+      "nit": "1144",
+      "address": "CLL 3 # 3-60",
+      "city": "BUENAVENTURA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "65",
+      "name": "BARRETO HORTUA JOSE IRLEY",
+      "nit": "16552612",
+      "address": "CR 16 10 35 BRR CENTRO",
+      "city": "CAICEDONIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "66",
+      "name": "INVERSIONES 8A S.A.S N°21",
+      "nit": "2190013702",
+      "address": "CRA 6 # 3 -45",
+      "city": "CAJICA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "67",
+      "name": "ARISTIZABAL ARISTIZABAL SANDRA LILIANA",
+      "nit": "3849",
+      "address": "CL 14 # 8 - 50",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "68",
+      "name": "HOYOS RAMIREZ YULIETH",
+      "nit": "29509965",
+      "address": "CL 47 NORTE # 4 B N - 29",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "69",
+      "name": "PARRA SUAREZ ZORAIDA EMILCEN",
+      "nit": "8528",
+      "address": "CLLE 14 CON CRR 7 ESQUINA CC ELITE LOCAL 515",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "7",
+      "name": "INVERSIONES GAFE SAS",
+      "nit": "1900463519",
+      "address": "C.C. NUESTRO URABA KM 1 APARTADO",
+      "city": "APARTADO",
+      "seller_id": "mlia6gb0u2bhftxam",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "70",
+      "name": "GERMOR CALI SAS",
+      "nit": "890328800",
+      "address": "CRA 8 # 13-24",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "71",
+      "name": "DUQUE RAMIREZ MAURICIO ALBEIRO",
+      "nit": "70694868",
+      "address": "CRA 8 # 13-97",
+      "city": "CALI",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "73",
+      "name": "GIRALDO GLADYS",
+      "nit": "5800",
+      "address": "CALLE DE LA MONEDA - ALMCN CHISPA DE MODA",
+      "city": "CAREPA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "74",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "5901234880",
+      "address": "CRA 25 # 48 - 10",
+      "city": "CARMEN DE BOLIVAR",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "75",
+      "name": "INVERSIONES SOLO MODAS S.A.S",
+      "nit": "900298207",
+      "address": "AV PEDRO DE HEREDIA CL 30 25 04 BRR CHINO",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "76",
+      "name": "KAR-MEL ASOCIADOS S.A.S",
+      "nit": "900441381",
+      "address": "AV PEDRO DE HEREDIA CL 30 25 11 BRR LA QUINTA",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "77",
+      "name": "REVOLLO POLO ESTELA BEATRIZ",
+      "nit": "57415102",
+      "address": "AV. PEDRO DE HEREDIA # 26-75",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "78",
+      "name": "INVERSIONES EL GIGANTE SAS",
+      "nit": "900143784",
+      "address": "CALLE 30 # 24-58",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "79",
+      "name": "ALIANZA M & G S.A",
+      "nit": "900196158",
+      "address": "CALLE DE LA MONEDA # 7-156",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "8",
+      "name": "COMERCIALIZADORA MINIMAX S.A.S.",
+      "nit": "901553853",
+      "address": "CLL 17 # 16 - 17",
+      "city": "ARMENIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "80",
+      "name": "ALMACENES JAMBO LTDA",
+      "nit": "900266030",
+      "address": "CC PASEO DE LA CASTELLANA LC 29 ET SEGUNDA",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "81",
+      "name": "MODATEXTIL DEL CARIBE S.A.S.",
+      "nit": "901783220",
+      "address": "CL 31 6535 LC 1 BRR: CHIPRE",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "82",
+      "name": "ENERGY FASHION S.A.S.",
+      "nit": "900236935",
+      "address": "TV 54 94 - 31",
+      "city": "CARTAGENA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "83",
+      "name": "GUITIERREZ RESTREPO LAURA",
+      "nit": "1192791730",
+      "address": "CL 10 # 4 38",
+      "city": "CARTAGO",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "84",
+      "name": "ALIANZA MUÑOZ GOMEZ SAS",
+      "nit": "2901079469",
+      "address": "CRA 3A Nº 17-61",
+      "city": "CAUCASIA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "85",
+      "name": "ELMELAO S.A.S",
+      "nit": "900663011",
+      "address": "CR 11 N° 8 - 82",
+      "city": "CHIA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "86",
+      "name": "INVERSIONES 8A S.A.S N°13",
+      "nit": "1390013702",
+      "address": "CR 10 N° 17 - 25",
+      "city": "CHINQUINQUIRA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "87",
+      "name": "DISTRIBUIDORA MUNDO FASHION",
+      "nit": "1900324182",
+      "address": "CALLE 17 # 11-57",
+      "city": "CIENAGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "88",
+      "name": "SALAZAR ECHEVERRI LUIS ALBERTO",
+      "nit": "70693888",
+      "address": "CL 17 13 29 BRR CENTRO",
+      "city": "CIENAGA",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "89",
+      "name": "JIMENEZ BERMUDEZ ALBA DE JESUS",
+      "nit": "3095",
+      "address": "CR 57 A 47 56",
+      "city": "CIUDAD BOLIVAR",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "9",
+      "name": "INVERSIONES 8A S.A.S N°27",
+      "nit": "2790013702",
+      "address": "CR 9 # 10-68 LC2",
+      "city": "BARBOSA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:55.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "90",
+      "name": "G & G RETAIL S.A.S",
+      "nit": "4901234880",
+      "address": "CL 31 25 11 LC 2",
+      "city": "COROZAL",
+      "seller_id": "mlia6sxbdfmbvlex0",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "91",
+      "name": "AMPER GROUP S.A.S.",
+      "nit": "901341754",
+      "address": "AV 8 8 55 LC 21 22 CC SAN ANTONIO BRR CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "92",
+      "name": "MATIZ VASQUEZ CARLOS JULIO",
+      "nit": "13505840",
+      "address": "AVENIDA 5 N° 7- 04",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "93",
+      "name": "EL SURTIDOR BG SAS #2",
+      "nit": "1901342490",
+      "address": "CALLE 8 # 4- 35",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "94",
+      "name": "EL SURTIDOR BG SAS",
+      "nit": "901342490",
+      "address": "CALLE 8 # 5- 47",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "95",
+      "name": "RAYOTEX S.A.S",
+      "nit": "2800144409",
+      "address": "CL 10 NRO. 0-09",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "97",
+      "name": "HENRIQUEZ LOPERA MARY LUZ",
+      "nit": "60367610",
+      "address": "CL 8 4 98 BRR CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "98",
+      "name": "TIENDAS BUV SAS",
+      "nit": "901400615",
+      "address": "CL 8 5 87 BRR EL CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "99",
+      "name": "RAYOTEX S.A.S",
+      "nit": "800144409",
+      "address": "CL 9 4 90 BRR CENTRO",
+      "city": "CUCUTA",
+      "seller_id": "mlia7rpjfmtwhg66q",
+      "created_at": "2026-02-14T06:27:57.000Z",
+      "updated_at": "2026-02-19T01:52:18.269Z"
+    },
+    {
+      "id": "test-backup-1",
+      "name": "Cliente Backup 1",
+      "nit": "NIT-001",
+      "address": "Dirección 1",
+      "city": "Ciudad 1",
+      "seller_id": "seller-1",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": "test-backup-2",
+      "name": "Cliente Backup 2",
+      "nit": "NIT-002",
+      "address": "Dirección 2",
+      "city": "Ciudad 2",
+      "seller_id": "seller-2",
+      "created_at": null,
+      "updated_at": null
+    },
+    {
+      "id": "test-restore-1",
+      "name": "Cliente Restore",
+      "nit": "NIT-RESTORE",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "seller_id": "seller",
+      "created_at": null,
+      "updated_at": null
+    }
+  ]
+}

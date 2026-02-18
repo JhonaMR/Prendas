@@ -1,8 +1,11 @@
 /**
+ * 📦 BULK CLIENT IMPORT SERVICE - POSTGRESQL
+ * 
  * Servicio para importación masiva de clientes desde CSV
+ * Implementa transacciones para consistencia de datos
  */
 
-const { getDatabase } = require('../config/database');
+const { query, transaction } = require('../config/database');
 const { DatabaseError, ValidationError } = require('../controllers/shared/errorHandler');
 const logger = require('../controllers/shared/logger');
 
@@ -91,15 +94,15 @@ function validateAndTransformRecord(record, sellerMap, rowNumber) {
 
 /**
  * Importa clientes masivamente desde un array de registros
+ * @async
  * @param {Array} records - Array de registros del CSV
- * @returns {Object} Resultado de la importación
+ * @returns {Promise<Object>} Resultado de la importación
  */
-function bulkImportClients(records) {
+async function bulkImportClients(records) {
   try {
-    const db = getDatabase();
-
     // Obtener todos los vendedores
-    const sellers = db.prepare('SELECT id, name FROM sellers').all();
+    const sellersResult = await query('SELECT id, name FROM sellers');
+    const sellers = sellersResult.rows;
     const sellerMap = createSellerMap(sellers);
 
     // Validar todos los registros
@@ -137,12 +140,12 @@ function bulkImportClients(records) {
 
     // Verificar que los IDs no existan en la BD
     const existingIds = [];
-    validRecords.forEach(record => {
-      const existing = db.prepare('SELECT id FROM clients WHERE id = ?').get(record.id);
-      if (existing) {
+    for (const record of validRecords) {
+      const existingResult = await query('SELECT id FROM clients WHERE id = $1', [record.id]);
+      if (existingResult.rows.length > 0) {
         existingIds.push(record.id);
       }
-    });
+    }
 
     if (existingIds.length > 0) {
       return {
@@ -154,25 +157,23 @@ function bulkImportClients(records) {
     }
 
     // Insertar en transacción
-    const insertStmt = db.prepare(`
-      INSERT INTO clients (id, name, nit, address, city, sellerId, active)
-      VALUES (?, ?, ?, ?, ?, ?, 1)
-    `);
-
-    const transaction = db.transaction(() => {
-      validRecords.forEach(record => {
-        insertStmt.run(
-          record.id,
-          record.name,
-          record.nit,
-          record.address,
-          record.city,
-          record.sellerId
+    await transaction(async (client) => {
+      for (const record of validRecords) {
+        await client.query(
+          `INSERT INTO clients (id, name, nit, address, city, seller_id, active)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          [
+            record.id,
+            record.name,
+            record.nit,
+            record.address,
+            record.city,
+            record.sellerId,
+            true
+          ]
         );
-      });
+      }
     });
-
-    transaction();
 
     logger.info('Bulk import completed', { imported: validRecords.length });
 

@@ -102,9 +102,9 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
         <h4 className="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-wide">{label}</h4>
         <div className="text-slate-400">{icon}</div>
       </div>
-      <div className="flex items-baseline gap-2">
-        <p className="text-2xl md:text-3xl font-black text-slate-900">{value}</p>
-        {unit && <span className="text-sm text-slate-500">{unit}</span>}
+      <div className="flex items-baseline gap-2 min-h-[2.5rem]">
+        <p className="text-xl md:text-2xl font-black text-slate-900 break-words line-clamp-2">{value}</p>
+        {unit && <span className="text-xs md:text-sm text-slate-500 flex-shrink-0">{unit}</span>}
       </div>
     </div>
   );

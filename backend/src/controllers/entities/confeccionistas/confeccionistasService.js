@@ -1,27 +1,26 @@
 /**
- * Servicio de lógica de negocio para Confeccionistas
+ * Servicio de lógica de negocio para Confeccionistas - POSTGRESQL
  */
 
-const { getDatabase } = require('../../../config/database');
+const { query } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
 const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtiene todos los confeccionistas
+ * @async
  */
-function getAllConfeccionistas() {
+async function getAllConfeccionistas() {
   try {
-    const db = getDatabase();
-
-    const confeccionistas = db.prepare(`
+    const result = await query(`
       SELECT id, name, address, city, phone, score, active
       FROM confeccionistas
       ORDER BY id
-    `).all();
+    `);
 
-    logger.info('Retrieved all confeccionistas', { count: confeccionistas.length });
-    return confeccionistas;
+    logger.info('Retrieved all confeccionistas', { count: result.rows.length });
+    return result.rows;
   } catch (error) {
     logger.error('Error retrieving confeccionistas', error);
     throw new DatabaseError('Failed to retrieve confeccionistas', error);
@@ -30,23 +29,22 @@ function getAllConfeccionistas() {
 
 /**
  * Obtiene un confeccionista específico por ID
+ * @async
  */
-function getConfeccionistaById(id) {
+async function getConfeccionistaById(id) {
   try {
-    const db = getDatabase();
-
-    const confeccionista = db.prepare(`
+    const result = await query(`
       SELECT id, name, address, city, phone, score, active
       FROM confeccionistas
-      WHERE id = ?
-    `).get(id);
+      WHERE id = $1
+    `, [id]);
 
-    if (!confeccionista) {
+    if (result.rows.length === 0) {
       throw new NotFoundError('Confeccionista', id);
     }
 
     logger.info('Retrieved confeccionista', { id });
-    return confeccionista;
+    return result.rows[0];
   } catch (error) {
     if (error instanceof NotFoundError) throw error;
     logger.error('Error retrieving confeccionista', error, { id });
@@ -56,22 +54,22 @@ function getConfeccionistaById(id) {
 
 /**
  * Crea un nuevo confeccionista
+ * @async
  */
-function createConfeccionista(data) {
+async function createConfeccionista(data) {
   try {
-    const db = getDatabase();
-
-    db.prepare(`
+    await query(`
       INSERT INTO confeccionistas (id, name, address, city, phone, score, active)
-      VALUES (?, ?, ?, ?, ?, ?, 1)
-    `).run(
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `, [
       data.id,
       data.name,
       data.address,
       data.city,
       data.phone,
-      data.score
-    );
+      data.score,
+      true
+    ]);
 
     // Invalidate cache after creation
     invalidateOnCreate('Confeccionista');
@@ -86,44 +84,44 @@ function createConfeccionista(data) {
 
 /**
  * Actualiza un confeccionista existente
+ * @async
  */
-function updateConfeccionista(id, data) {
+async function updateConfeccionista(id, data) {
   try {
-    const db = getDatabase();
-
-    const existing = db.prepare('SELECT id FROM confeccionistas WHERE id = ?').get(id);
-    if (!existing) {
+    const existingResult = await query('SELECT id FROM confeccionistas WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) {
       throw new NotFoundError('Confeccionista', id);
     }
 
     const updates = [];
     const values = [];
+    let paramIndex = 1;
 
     if (data.name !== undefined) {
-      updates.push('name = ?');
+      updates.push(`name = $${paramIndex++}`);
       values.push(data.name);
     }
     if (data.address !== undefined) {
-      updates.push('address = ?');
+      updates.push(`address = $${paramIndex++}`);
       values.push(data.address);
     }
     if (data.city !== undefined) {
-      updates.push('city = ?');
+      updates.push(`city = $${paramIndex++}`);
       values.push(data.city);
     }
     if (data.phone !== undefined) {
-      updates.push('phone = ?');
+      updates.push(`phone = $${paramIndex++}`);
       values.push(data.phone);
     }
     if (data.score !== undefined) {
-      updates.push('score = ?');
+      updates.push(`score = $${paramIndex++}`);
       values.push(data.score);
     }
 
     if (updates.length > 0) {
       values.push(id);
-      const query = `UPDATE confeccionistas SET ${updates.join(', ')} WHERE id = ?`;
-      db.prepare(query).run(...values);
+      const query_str = `UPDATE confeccionistas SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
+      await query(query_str, values);
     }
 
     // Invalidate cache after update
@@ -140,17 +138,16 @@ function updateConfeccionista(id, data) {
 
 /**
  * Elimina un confeccionista
+ * @async
  */
-function deleteConfeccionista(id) {
+async function deleteConfeccionista(id) {
   try {
-    const db = getDatabase();
-
-    const existing = db.prepare('SELECT id FROM confeccionistas WHERE id = ?').get(id);
-    if (!existing) {
+    const existingResult = await query('SELECT id FROM confeccionistas WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) {
       throw new NotFoundError('Confeccionista', id);
     }
 
-    db.prepare('DELETE FROM confeccionistas WHERE id = ?').run(id);
+    await query('DELETE FROM confeccionistas WHERE id = $1', [id]);
 
     // Invalidate cache after deletion
     invalidateOnDelete('Confeccionista');

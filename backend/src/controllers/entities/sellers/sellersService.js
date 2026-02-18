@@ -1,31 +1,35 @@
 /**
- * Servicio de lógica de negocio para Sellers
+ * Servicio de lógica de negocio para Sellers - POSTGRESQL
  */
 
-const { getDatabase } = require('../../../config/database');
+const { query } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
 const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
-function getAllSellers() {
+/**
+ * @async
+ */
+async function getAllSellers() {
   try {
-    const db = getDatabase();
-    const sellers = db.prepare('SELECT id, name, active FROM sellers ORDER BY id').all();
-    logger.info('Retrieved all sellers', { count: sellers.length });
-    return sellers;
+    const result = await query('SELECT id, name, active FROM sellers ORDER BY id');
+    logger.info('Retrieved all sellers', { count: result.rows.length });
+    return result.rows;
   } catch (error) {
     logger.error('Error retrieving sellers', error);
     throw new DatabaseError('Failed to retrieve sellers', error);
   }
 }
 
-function getSellerById(id) {
+/**
+ * @async
+ */
+async function getSellerById(id) {
   try {
-    const db = getDatabase();
-    const seller = db.prepare('SELECT id, name, active FROM sellers WHERE id = ?').get(id);
-    if (!seller) throw new NotFoundError('Seller', id);
+    const result = await query('SELECT id, name, active FROM sellers WHERE id = $1', [id]);
+    if (result.rows.length === 0) throw new NotFoundError('Seller', id);
     logger.info('Retrieved seller', { id });
-    return seller;
+    return result.rows[0];
   } catch (error) {
     if (error instanceof NotFoundError) throw error;
     logger.error('Error retrieving seller', error, { id });
@@ -33,10 +37,12 @@ function getSellerById(id) {
   }
 }
 
-function createSeller(data) {
+/**
+ * @async
+ */
+async function createSeller(data) {
   try {
-    const db = getDatabase();
-    db.prepare('INSERT INTO sellers (id, name, active) VALUES (?, ?, 1)').run(data.id, data.name);
+    await query('INSERT INTO sellers (id, name, active) VALUES ($1, $2, $3)', [data.id, data.name, true]);
     
     // Invalidate cache after creation
     invalidateOnCreate('Seller');
@@ -49,24 +55,27 @@ function createSeller(data) {
   }
 }
 
-function updateSeller(id, data) {
+/**
+ * @async
+ */
+async function updateSeller(id, data) {
   try {
-    const db = getDatabase();
-    const existing = db.prepare('SELECT id FROM sellers WHERE id = ?').get(id);
-    if (!existing) throw new NotFoundError('Seller', id);
+    const existingResult = await query('SELECT id FROM sellers WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) throw new NotFoundError('Seller', id);
 
     const updates = [];
     const values = [];
+    let paramIndex = 1;
 
     if (data.name !== undefined) {
-      updates.push('name = ?');
+      updates.push(`name = $${paramIndex++}`);
       values.push(data.name);
     }
 
     if (updates.length > 0) {
       values.push(id);
-      const query = `UPDATE sellers SET ${updates.join(', ')} WHERE id = ?`;
-      db.prepare(query).run(...values);
+      const query_str = `UPDATE sellers SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
+      await query(query_str, values);
     }
 
     // Invalidate cache after update
@@ -81,12 +90,14 @@ function updateSeller(id, data) {
   }
 }
 
-function deleteSeller(id) {
+/**
+ * @async
+ */
+async function deleteSeller(id) {
   try {
-    const db = getDatabase();
-    const existing = db.prepare('SELECT id FROM sellers WHERE id = ?').get(id);
-    if (!existing) throw new NotFoundError('Seller', id);
-    db.prepare('DELETE FROM sellers WHERE id = ?').run(id);
+    const existingResult = await query('SELECT id FROM sellers WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) throw new NotFoundError('Seller', id);
+    await query('DELETE FROM sellers WHERE id = $1', [id]);
     
     // Invalidate cache after deletion
     invalidateOnDelete('Seller');

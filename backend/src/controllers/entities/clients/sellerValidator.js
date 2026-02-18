@@ -5,7 +5,7 @@
  * existan en la tabla de vendedores.
  */
 
-const { getDatabase } = require('../../../config/database');
+const { query } = require('../../../config/database');
 const logger = require('../../shared/logger');
 
 /**
@@ -14,7 +14,7 @@ const logger = require('../../shared/logger');
  * @param {string} sellerId - ID del vendedor a validar
  * @returns {object} { valid: boolean, error?: string }
  */
-function validateSellerId(sellerId) {
+async function validateSellerId(sellerId) {
   try {
     if (!sellerId) {
       return {
@@ -23,10 +23,9 @@ function validateSellerId(sellerId) {
       };
     }
 
-    const db = getDatabase();
-    const seller = db.prepare('SELECT id FROM sellers WHERE id = ?').get(sellerId);
+    const result = await query('SELECT id FROM sellers WHERE id = $1', [sellerId]);
 
-    if (!seller) {
+    if (result.rows.length === 0) {
       logger.warn('Seller not found', { sellerId });
       return {
         valid: false,

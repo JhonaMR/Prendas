@@ -1,5 +1,5 @@
 /**
- * 🎮 CONTROLADOR DE FECHAS DE ENTREGA
+ * 🎮 CONTROLADOR DE FECHAS DE ENTREGA - POSTGRESQL
  * 
  * Maneja las peticiones HTTP para operaciones de fechas de entrega
  */
@@ -15,7 +15,7 @@ const {
  * GET /api/delivery-dates
  * Obtener todas las fechas de entrega (con paginación opcional)
  */
-const getDeliveryDates = (req, res) => {
+const getDeliveryDates = async (req, res) => {
     try {
         const { page, limit, confeccionistaId, referenceId, startDate, endDate } = req.query;
 
@@ -27,7 +27,7 @@ const getDeliveryDates = (req, res) => {
             if (startDate) filters.startDate = startDate;
             if (endDate) filters.endDate = endDate;
 
-            const result = getAllWithPagination(page, limit, filters);
+            const result = await getAllWithPagination(page, limit, filters);
             return res.json({
                 success: true,
                 ...result
@@ -35,7 +35,7 @@ const getDeliveryDates = (req, res) => {
         }
 
         // Otherwise return all dates (backward compatibility)
-        const dates = getAllDeliveryDates();
+        const dates = await getAllDeliveryDates();
 
         return res.json({
             success: true,
@@ -55,7 +55,7 @@ const getDeliveryDates = (req, res) => {
  * Guardar o actualizar múltiples fechas de entrega
  * Implementa persistencia parcial: guarda válidos, rechaza inválidos
  */
-const saveDeliveryDatesBatchHandler = (req, res) => {
+const saveDeliveryDatesBatchHandler = async (req, res) => {
     try {
         const { dates } = req.body;
         const userId = req.user?.id || 'system';
@@ -74,7 +74,7 @@ const saveDeliveryDatesBatchHandler = (req, res) => {
             });
         }
 
-        const result = saveDeliveryDatesBatch(dates, userId);
+        const result = await saveDeliveryDatesBatch(dates, userId);
 
         // Respuesta con persistencia parcial
         return res.json({
@@ -100,7 +100,7 @@ const saveDeliveryDatesBatchHandler = (req, res) => {
  * DELETE /api/delivery-dates/:id
  * Eliminar una fecha de entrega
  */
-const deleteDeliveryDateHandler = (req, res) => {
+const deleteDeliveryDateHandler = async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -111,7 +111,7 @@ const deleteDeliveryDateHandler = (req, res) => {
             });
         }
 
-        const result = deleteDeliveryDate(id);
+        const result = await deleteDeliveryDate(id);
 
         return res.json(result);
     } catch (error) {

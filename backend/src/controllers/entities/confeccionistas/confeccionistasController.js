@@ -1,5 +1,5 @@
 /**
- * Controlador para operaciones CRUD de Confeccionistas
+ * Controlador para operaciones CRUD de Confeccionistas - POSTGRESQL
  */
 
 const {
@@ -19,9 +19,9 @@ const logger = require('../../shared/logger');
 /**
  * GET /api/confeccionistas
  */
-const list = (req, res) => {
+const list = async (req, res) => {
   try {
-    const confeccionistas = getAllConfeccionistas();
+    const confeccionistas = await getAllConfeccionistas();
     return res.json({
       success: true,
       data: confeccionistas
@@ -38,12 +38,12 @@ const list = (req, res) => {
 /**
  * GET /api/confeccionistas/:id
  */
-const read = (req, res) => {
+const read = async (req, res) => {
   try {
     const { id } = req.params;
     validateConfeccionistaId(id);
 
-    const confeccionista = getConfeccionistaById(id);
+    const confeccionista = await getConfeccionistaById(id);
     return res.json({
       success: true,
       data: confeccionista
@@ -66,11 +66,11 @@ const read = (req, res) => {
 /**
  * POST /api/confeccionistas
  */
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     validateCreateConfeccionista(req.body);
 
-    const confeccionista = createConfeccionista(req.body);
+    const confeccionista = await createConfeccionista(req.body);
     return res.status(201).json({
       success: true,
       data: confeccionista,
@@ -95,13 +95,13 @@ const create = (req, res) => {
 /**
  * PUT /api/confeccionistas/:id
  */
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     validateConfeccionistaId(id);
     validateUpdateConfeccionista(req.body);
 
-    const confeccionista = updateConfeccionista(id, req.body);
+    const confeccionista = await updateConfeccionista(id, req.body);
     return res.json({
       success: true,
       data: confeccionista,
@@ -132,12 +132,12 @@ const update = (req, res) => {
 /**
  * DELETE /api/confeccionistas/:id
  */
-const delete_ = (req, res) => {
+const delete_ = async (req, res) => {
   try {
     const { id } = req.params;
     validateConfeccionistaId(id);
 
-    deleteConfeccionista(id);
+    await deleteConfeccionista(id);
     return res.json({
       success: true,
       message: 'Confeccionista deleted successfully'

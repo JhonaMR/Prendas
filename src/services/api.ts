@@ -337,11 +337,22 @@ class ApiService {
       console.log('🔍 Response status:', response.status);
       console.log('🔍 Response ok:', response.ok);
 
-      const data = await this.handleResponse<Client[]>(response);
+      const data = await this.handleResponse<any[]>(response);
       console.log('🔍 API Response for getClients:', data);
       console.log('🔍 Clients data:', data.data);
       console.log('🔍 Clients count:', data.data?.length || 0);
-      return data.data || [];
+      
+      // Transformar snake_case a camelCase
+      const transformedClients = (data.data || []).map((client: any) => ({
+        id: client.id,
+        name: client.name,
+        nit: client.nit,
+        address: client.address,
+        city: client.city,
+        sellerId: client.seller_id
+      }));
+      
+      return transformedClients;
     } catch (error) {
       console.error('❌ Error obteniendo clientes:', error);
       return [];

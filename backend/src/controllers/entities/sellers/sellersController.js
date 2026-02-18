@@ -1,5 +1,5 @@
 /**
- * Controlador para operaciones CRUD de Sellers
+ * Controlador para operaciones CRUD de Sellers - POSTGRESQL
  */
 
 const {
@@ -16,11 +16,10 @@ const {
 } = require('./sellersService');
 const logger = require('../../shared/logger');
 
-const list = (req, res) => {
+const list = async (req, res) => {
   try {
-    const sellers = getAllSellers();
-    logger.info('Listing sellers', { count: sellers.length, sellers });
-    console.log('📊 Sellers endpoint called, returning:', sellers.length, 'sellers');
+    const sellers = await getAllSellers();
+    logger.info('Listing sellers', { count: sellers.length });
     return res.json({ success: true, data: sellers });
   } catch (error) {
     logger.error('Error listing sellers', error);
@@ -28,11 +27,11 @@ const list = (req, res) => {
   }
 };
 
-const read = (req, res) => {
+const read = async (req, res) => {
   try {
     const { id } = req.params;
     validateSellerId(id);
-    const seller = getSellerById(id);
+    const seller = await getSellerById(id);
     return res.json({ success: true, data: seller });
   } catch (error) {
     if (error.statusCode === 404) {
@@ -43,10 +42,10 @@ const read = (req, res) => {
   }
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     validateCreateSeller(req.body);
-    const seller = createSeller(req.body);
+    const seller = await createSeller(req.body);
     return res.status(201).json({ success: true, data: seller, message: 'Seller created successfully' });
   } catch (error) {
     if (error.statusCode === 400) {
@@ -57,12 +56,12 @@ const create = (req, res) => {
   }
 };
 
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     validateSellerId(id);
     validateUpdateSeller(req.body);
-    const seller = updateSeller(id, req.body);
+    const seller = await updateSeller(id, req.body);
     return res.json({ success: true, data: seller, message: 'Seller updated successfully' });
   } catch (error) {
     if (error.statusCode === 400) {
@@ -76,11 +75,11 @@ const update = (req, res) => {
   }
 };
 
-const delete_ = (req, res) => {
+const delete_ = async (req, res) => {
   try {
     const { id } = req.params;
     validateSellerId(id);
-    deleteSeller(id);
+    await deleteSeller(id);
     return res.json({ success: true, message: 'Seller deleted successfully' });
   } catch (error) {
     if (error.statusCode === 404) {

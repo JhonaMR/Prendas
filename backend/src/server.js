@@ -1,8 +1,8 @@
 /**
- * 🚀 SERVIDOR PRINCIPAL
+ * 🚀 SERVIDOR PRINCIPAL - POSTGRESQL
  * 
  * Este es el punto de entrada del backend
- * Configura Express, middlewares, rutas y arranca el servidor
+ * Configura Express, middlewares, rutas, inicializa PostgreSQL y arranca el servidor
  */
 
 require('dotenv').config();
@@ -10,8 +10,10 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
-// Importar rutas
+// Importar configuración y rutas
+const { initDatabase, closePool } = require('./config/database');
 const apiRoutes = require('./routes');
+const logger = require('./utils/logger');
 
 // Crear aplicación Express
 const app = express();
@@ -52,7 +54,7 @@ app.use(express.urlencoded({ extended: true }));
  */
 app.use((req, res, next) => {
     const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${req.method} ${req.path}`);
+    logger.info(`${req.method} ${req.path}`);
     next();
 });
 
@@ -96,7 +98,7 @@ app.get('*', (req, res) => {
  * Captura errores no manejados
  */
 app.use((err, req, res, next) => {
-    console.error('❌ Error no manejado:', err);
+    logger.error('Error no manejado:', err);
     
     res.status(err.status || 500).json({
         success: false,
@@ -110,18 +112,32 @@ app.use((err, req, res, next) => {
 /**
  * Iniciar servidor en el puerto configurado
  */
-app.listen(PORT, HOST, () => {
-    console.log('\n' + '='.repeat(60));
-    console.log('🚀 SERVIDOR BACKEND INICIADO');
-    console.log('='.repeat(60));
-    console.log(`📍 URL Local:    http://localhost:${PORT}`);
-    console.log(`📍 URL Red:      http://${getLocalIP()}:${PORT}`);
-    console.log(`📁 Entorno:      ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🔐 CORS habilitado para:`, corsOptions.origin.join(', '));
-    console.log('='.repeat(60));
-    console.log('\n✅ El backend está listo para recibir peticiones');
-    console.log('📝 Los logs de peticiones aparecerán abajo:\n');
-});
+async function startServer() {
+    try {
+        // Inicializar base de datos PostgreSQL
+        logger.info('Inicializando PostgreSQL...');
+        await initDatabase();
+        logger.info('✅ PostgreSQL inicializado correctamente');
+
+        // Iniciar servidor Express
+        app.listen(PORT, HOST, () => {
+            console.log('\n' + '='.repeat(60));
+            console.log('🚀 SERVIDOR BACKEND INICIADO');
+            console.log('='.repeat(60));
+            console.log(`📍 URL Local:    http://localhost:${PORT}`);
+            console.log(`📍 URL Red:      http://${getLocalIP()}:${PORT}`);
+            console.log(`📁 Entorno:      ${process.env.NODE_ENV || 'development'}`);
+            console.log(`🗄️  Base de datos: PostgreSQL (${process.env.DB_HOST}:${process.env.DB_PORT})`);
+            console.log(`🔐 CORS habilitado para:`, corsOptions.origin.join(', '));
+            console.log('='.repeat(60));
+            console.log('\n✅ El backend está listo para recibir peticiones');
+            console.log('📝 Los logs de peticiones aparecerán abajo:\n');
+        });
+    } catch (error) {
+        logger.error('❌ Error al iniciar servidor:', error);
+        process.exit(1);
+    }
+}
 
 /**
  * Obtener IP local de la máquina
@@ -147,14 +163,27 @@ function getLocalIP() {
  * Manejo de señales de terminación
  * Cerrar servidor correctamente al presionar Ctrl+C
  */
-process.on('SIGINT', () => {
-    console.log('\n\n🛑 Servidor detenido por el usuario');
+process.on('SIGINT', async () => {
+    console.log('\n\n🛑 Cerrando servidor...');
+    try {
+        await closePool();
+        logger.info('✅ Pool de conexiones cerrado');
+    } catch (error) {
+        logger.error('Error cerrando pool:', error);
+    }
     process.exit(0);
 });
 
-process.on('SIGTERM', () => {
+process.on('SIGTERM', async () => {
     console.log('\n\n🛑 Servidor detenido');
+    try {
+        await closePool();
+        logger.info('✅ Pool de conexiones cerrado');
+    } catch (error) {
+        logger.error('Error cerrando pool:', error);
+    }
     process.exit(0);
 });
 
-module.exports = app;
+// Iniciar servidor
+startServer();

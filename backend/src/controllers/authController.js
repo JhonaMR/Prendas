@@ -1,5 +1,5 @@
 /**
- * 🔐 CONTROLADOR DE AUTENTICACIÓN
+ * 🔐 CONTROLADOR DE AUTENTICACIÓN - POSTGRESQL
  * 
  * Maneja todo lo relacionado con usuarios y autenticación:
  * - Login (con loginCode + PIN)
@@ -10,14 +10,15 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { getDatabase, generateId } = require('../config/database');
+const { query, generateId } = require('../config/database');
+const logger = require('../utils/logger');
 
 /**
  * LOGIN - Autenticar usuario
  * POST /api/auth/login
  * Body: { loginCode: "JAM", pin: "1234" }
  */
-const login = (req, res) => {
+const login = async (req, res) => {
     try {
         const { loginCode, pin } = req.body;
 
@@ -49,93 +50,82 @@ const login = (req, res) => {
 
         // ===== BUSCAR USUARIO =====
 
-        const db = getDatabase();
+        const result = await query(`
+            SELECT id, name, login_code, pin_hash, role, active
+            FROM users
+            WHERE UPPER(login_code) = UPPER($1)
+        `, [loginCode]);
 
-        try {
-            // Buscar usuario por login_code (case-insensitive)
-            const user = db.prepare(`
-                SELECT id, name, login_code, pin_hash, role, active
-                FROM users
-                WHERE UPPER(login_code) = UPPER(?)
-            `).get(loginCode);
-
-            // Usuario no existe
-            if (!user) {
-                db.close();
-                return res.status(401).json({
-                    success: false,
-                    message: 'Credenciales inválidas'
-                });
-            }
-
-            // Usuario inactivo
-            if (!user.active) {
-                db.close();
-                return res.status(401).json({
-                    success: false,
-                    message: 'Usuario inactivo. Contacta al administrador.'
-                });
-            }
-
-            // ===== VERIFICAR PIN =====
-
-            const validPin = bcrypt.compareSync(pin, user.pin_hash);
-
-            if (!validPin) {
-                db.close();
-                return res.status(401).json({
-                    success: false,
-                    message: 'Credenciales inválidas'
-                });
-            }
-
-            // ===== GENERAR TOKEN JWT =====
-
-            const token = jwt.sign(
-                {
-                    id: user.id,
-                    loginCode: user.login_code,
-                    name: user.name,
-                    role: user.role
-                },
-                process.env.JWT_SECRET || 'secret_default',
-                {
-                    expiresIn: process.env.JWT_EXPIRES_IN || '24h'
-                }
-            );
-
-            // ===== ACTUALIZAR ÚLTIMA CONEXIÓN =====
-
-            db.prepare(`
-                UPDATE users
-                SET updated_at = CURRENT_TIMESTAMP
-                WHERE id = ?
-            `).run(user.id);
-
-            db.close();
-
-            // ===== RESPUESTA EXITOSA =====
-
-            return res.json({
-                success: true,
-                message: 'Login exitoso',
-                data: {
-                    token,
-                    user: {
-                        id: user.id,
-                        name: user.name,
-                        loginCode: user.login_code,
-                        role: user.role
-                    }
-                }
+        // Usuario no existe
+        if (result.rows.length === 0) {
+            return res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
             });
-        } catch (dbError) {
-            db.close();
-            throw dbError;
         }
 
+        const user = result.rows[0];
+
+        // Usuario inactivo
+        if (!user.active) {
+            return res.status(401).json({
+                success: false,
+                message: 'Usuario inactivo. Contacta al administrador.'
+            });
+        }
+
+        // ===== VERIFICAR PIN =====
+
+        const validPin = bcrypt.compareSync(pin, user.pin_hash);
+
+        if (!validPin) {
+            return res.status(401).json({
+                success: false,
+                message: 'Credenciales inválidas'
+            });
+        }
+
+        // ===== GENERAR TOKEN JWT =====
+
+        const token = jwt.sign(
+            {
+                id: user.id,
+                loginCode: user.login_code,
+                name: user.name,
+                role: user.role
+            },
+            process.env.JWT_SECRET || 'secret_default',
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN || '24h'
+            }
+        );
+
+        // ===== ACTUALIZAR ÚLTIMA CONEXIÓN =====
+
+        await query(`
+            UPDATE users
+            SET updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1
+        `, [user.id]);
+
+        // ===== RESPUESTA EXITOSA =====
+
+        return res.json({
+            success: true,
+            message: 'Login exitoso',
+            data: {
+                token,
+                user: {
+                    id: user.id,
+                    name: user.name,
+                    loginCode: user.login_code,
+                    role: user.role
+                }
+            }
+        });
+
     } catch (error) {
-        console.error('❌ Error en login:', error);
+        logger.error('❌ Error en login:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al iniciar sesión',
@@ -149,7 +139,7 @@ const login = (req, res) => {
  * POST /api/auth/register
  * Body: { name: "Nombre", loginCode: "ABC", pin: "1234" }
  */
-const register = (req, res) => {
+const register = async (req, res) => {
     try {
         const { name, loginCode, pin, role } = req.body;
 
@@ -185,15 +175,12 @@ const register = (req, res) => {
 
         // ===== VERIFICAR SI YA EXISTE =====
 
-        const db = getDatabase();
-
-        const existing = db.prepare(`
+        const existingResult = await query(`
             SELECT id FROM users
-            WHERE UPPER(login_code) = UPPER(?)
-        `).get(loginCode);
+            WHERE UPPER(login_code) = UPPER($1)
+        `, [loginCode]);
 
-        if (existing) {
-            db.close();
+        if (existingResult.rows.length > 0) {
             return res.status(409).json({
                 success: false,
                 message: 'Este código de usuario ya está en uso'
@@ -211,12 +198,10 @@ const register = (req, res) => {
         // Insertar usuario (siempre usar rol 'general' por defecto, nunca 'observer')
         const userRole = 'general';
         
-        db.prepare(`
+        await query(`
             INSERT INTO users (id, name, login_code, pin_hash, role, active)
-            VALUES (?, ?, ?, ?, ?, 1)
-        `).run(id, name, loginCode.toUpperCase(), pinHash, userRole);
-
-        db.close();
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `, [id, name, loginCode.toUpperCase(), pinHash, userRole, true]);
 
         // ===== RESPUESTA EXITOSA =====
 
@@ -232,7 +217,7 @@ const register = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error en registro:', error);
+        logger.error('❌ Error en registro:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al registrar usuario',
@@ -247,7 +232,7 @@ const register = (req, res) => {
  * Body: { loginCode: "JAM", currentPin: "1234", newPin: "5678" }
  * Headers: Authorization: Bearer <token>
  */
-const changePin = (req, res) => {
+const changePin = async (req, res) => {
     try {
         const { loginCode, currentPin, newPin } = req.body;
 
@@ -276,24 +261,22 @@ const changePin = (req, res) => {
 
         // ===== BUSCAR USUARIO =====
 
-        const db = getDatabase();
-
-        const user = db.prepare(`
+        const result = await query(`
             SELECT id, pin_hash, active
             FROM users
-            WHERE UPPER(login_code) = UPPER(?)
-        `).get(loginCode);
+            WHERE UPPER(login_code) = UPPER($1)
+        `, [loginCode]);
 
-        if (!user) {
-            db.close();
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'Usuario no encontrado'
             });
         }
 
+        const user = result.rows[0];
+
         if (!user.active) {
-            db.close();
             return res.status(401).json({
                 success: false,
                 message: 'Usuario inactivo'
@@ -305,7 +288,6 @@ const changePin = (req, res) => {
         const validPin = bcrypt.compareSync(currentPin, user.pin_hash);
 
         if (!validPin) {
-            db.close();
             return res.status(401).json({
                 success: false,
                 message: 'PIN actual incorrecto'
@@ -316,13 +298,11 @@ const changePin = (req, res) => {
 
         const newPinHash = bcrypt.hashSync(newPin, 10);
 
-        db.prepare(`
+        await query(`
             UPDATE users
-            SET pin_hash = ?, updated_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-        `).run(newPinHash, user.id);
-
-        db.close();
+            SET pin_hash = $1, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $2
+        `, [newPinHash, user.id]);
 
         // ===== RESPUESTA EXITOSA =====
 
@@ -332,7 +312,7 @@ const changePin = (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Error al cambiar PIN:', error);
+        logger.error('❌ Error al cambiar PIN:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al cambiar PIN',
@@ -346,8 +326,7 @@ const changePin = (req, res) => {
  * GET /api/auth/users
  * Headers: Authorization: Bearer <token>
  */
-const listUsers = (req, res) => {
-    let db;
+const listUsers = async (req, res) => {
     try {
         // Verificar que el usuario sea admin (esto se hace en el middleware auth)
         if (req.user.role !== 'admin') {
@@ -357,32 +336,27 @@ const listUsers = (req, res) => {
             });
         }
 
-        db = getDatabase();
-
-        const users = db.prepare(`
+        const result = await query(`
             SELECT id, name, login_code, role, active, created_at
             FROM users
-            WHERE active = 1
+            WHERE active = true
             ORDER BY created_at DESC
-        `).all();
-
-        db.close();
+        `);
 
         return res.json({
             success: true,
-            data: users.map(u => ({
+            data: result.rows.map(u => ({
                 id: u.id,
                 name: u.name,
                 loginCode: u.login_code,
                 role: u.role,
-                active: u.active === 1,
+                active: u.active,
                 createdAt: u.created_at
             }))
         });
 
     } catch (error) {
-        if (db) db.close();
-        console.error('❌ Error al listar usuarios:', error);
+        logger.error('❌ Error al listar usuarios:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al listar usuarios',
@@ -397,7 +371,7 @@ const listUsers = (req, res) => {
  * Body: { name: "Nuevo Nombre", role: "admin" | "observer" | "general" }
  * Headers: Authorization: Bearer <token>
  */
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { name, role } = req.body;
@@ -430,31 +404,34 @@ const updateUser = (req, res) => {
 
         // ===== ACTUALIZAR USUARIO =====
 
-        const db = getDatabase();
-
-        const result = db.prepare(`
+        const result = await query(`
             UPDATE users
-            SET name = ?, role = ?, updated_at = CURRENT_TIMESTAMP
-            WHERE LOWER(id) = LOWER(?)
-        `).run(name, normalizedRole, id);
+            SET name = $1, role = $2, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $3
+            RETURNING id, name, role
+        `, [name, normalizedRole, id]);
 
-        db.close();
-
-        if (result.changes === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({
                 success: false,
                 message: 'Usuario no encontrado'
             });
         }
 
+        const updatedUser = result.rows[0];
+
         return res.json({
             success: true,
             message: 'Usuario actualizado exitosamente',
-            data: { id, name, role: normalizedRole }
+            data: {
+                id: updatedUser.id,
+                name: updatedUser.name,
+                role: updatedUser.role
+            }
         });
 
     } catch (error) {
-        console.error('❌ Error al actualizar usuario:', error);
+        logger.error('❌ Error al actualizar usuario:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al actualizar usuario',
@@ -464,53 +441,50 @@ const updateUser = (req, res) => {
 };
 
 /**
- * ELIMINAR USUARIO (Solo admin) - Soft delete
+ * ELIMINAR USUARIO (Solo admin) - Hard delete
  * DELETE /api/auth/users/:id
  * Headers: Authorization: Bearer <token>
  */
-const deleteUser = (req, res) => {
+const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log('🗑️ DELETE /api/auth/users/:id - Intentando eliminar usuario con ID:', id);
-
-        const db = getDatabase();
+        logger.info('🗑️ DELETE /api/auth/users/:id - Intentando eliminar usuario con ID:', id);
 
         // Verificar que el usuario existe
-        const user = db.prepare('SELECT * FROM users WHERE LOWER(id) = LOWER(?)').get(id);
-        console.log('📊 Usuario encontrado:', user ? `${user.name} (${user.login_code})` : 'NO ENCONTRADO');
-
-        if (!user) {
-            db.close();
-            console.log('❌ Usuario no encontrado');
+        const userResult = await query('SELECT * FROM users WHERE id = $1', [id]);
+        
+        if (userResult.rows.length === 0) {
+            logger.info('❌ Usuario no encontrado');
             return res.status(404).json({
                 success: false,
                 message: 'Usuario no encontrado'
             });
         }
+
+        const user = userResult.rows[0];
+        logger.info('📊 Usuario encontrado:', `${user.name} (${user.login_code})`);
 
         // Hard delete: eliminar completamente
-        console.log('🔥 Ejecutando DELETE FROM users WHERE id =', id);
-        const result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
-        console.log('📝 Resultado de DELETE:', result);
+        logger.info('🔥 Ejecutando DELETE FROM users WHERE id =', id);
+        const result = await query('DELETE FROM users WHERE id = $1', [id]);
+        logger.info('📝 Resultado de DELETE:', result);
 
-        db.close();
-
-        if (result.changes === 0) {
-            console.log('❌ No se eliminó nada');
+        if (result.rowCount === 0) {
+            logger.info('❌ No se eliminó nada');
             return res.status(404).json({
                 success: false,
                 message: 'Usuario no encontrado'
             });
         }
 
-        console.log('✅ Usuario eliminado exitosamente - cambios:', result.changes);
+        logger.info('✅ Usuario eliminado exitosamente - cambios:', result.rowCount);
         return res.json({
             success: true,
             message: 'Usuario eliminado exitosamente'
         });
 
     } catch (error) {
-        console.error('❌ Error al eliminar usuario:', error);
+        logger.error('❌ Error al eliminar usuario:', error);
         return res.status(500).json({
             success: false,
             message: 'Error al eliminar usuario',

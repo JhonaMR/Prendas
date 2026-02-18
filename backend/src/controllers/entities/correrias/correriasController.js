@@ -1,5 +1,5 @@
 /**
- * Controlador para operaciones CRUD de Correrias
+ * Controlador para operaciones CRUD de Correrias - POSTGRESQL
  */
 
 const {
@@ -16,9 +16,9 @@ const {
 } = require('./correriasService');
 const logger = require('../../shared/logger');
 
-const list = (req, res) => {
+const list = async (req, res) => {
   try {
-    const correrias = getAllCorrerias();
+    const correrias = await getAllCorrerias();
     return res.json({ success: true, data: correrias });
   } catch (error) {
     logger.error('Error listing correrias', error);
@@ -26,11 +26,11 @@ const list = (req, res) => {
   }
 };
 
-const read = (req, res) => {
+const read = async (req, res) => {
   try {
     const { id } = req.params;
     validateCorrieriaId(id);
-    const correria = getCorrieriaById(id);
+    const correria = await getCorrieriaById(id);
     return res.json({ success: true, data: correria });
   } catch (error) {
     if (error.statusCode === 404) {
@@ -41,10 +41,10 @@ const read = (req, res) => {
   }
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     validateCreateCorreria(req.body);
-    const correria = createCorreria(req.body);
+    const correria = await createCorreria(req.body);
     return res.status(201).json({ success: true, data: correria, message: 'Correria created successfully' });
   } catch (error) {
     if (error.statusCode === 400) {
@@ -55,12 +55,12 @@ const create = (req, res) => {
   }
 };
 
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     validateCorrieriaId(id);
     validateUpdateCorreria(req.body);
-    const correria = updateCorreria(id, req.body);
+    const correria = await updateCorreria(id, req.body);
     return res.json({ success: true, data: correria, message: 'Correria updated successfully' });
   } catch (error) {
     if (error.statusCode === 400) {
@@ -74,11 +74,11 @@ const update = (req, res) => {
   }
 };
 
-const delete_ = (req, res) => {
+const delete_ = async (req, res) => {
   try {
     const { id } = req.params;
     validateCorrieriaId(id);
-    deleteCorreria(id);
+    await deleteCorreria(id);
     return res.json({ success: true, message: 'Correria deleted successfully' });
   } catch (error) {
     if (error.statusCode === 404) {

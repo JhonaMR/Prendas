@@ -1,33 +1,34 @@
 /**
- * Servicio de lógica de negocio para References
+ * Servicio de lógica de negocio para References - POSTGRESQL
  * Maneja operaciones CRUD y lógica específica de dominio
  */
 
-const { getDatabase } = require('../../../config/database');
+const { query, transaction } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
 const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtiene todas las referencias con sus correrías asociadas
+ * @async
  */
-function getAllReferences() {
+async function getAllReferences() {
   try {
-    const db = getDatabase();
-
-    const references = db.prepare(`
+    const result = await query(`
       SELECT id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active
       FROM product_references
       ORDER BY id
-    `).all();
+    `);
+
+    const references = result.rows;
 
     // Para cada referencia, obtener sus correrías
-    const referencesWithCorrerias = references.map(ref => {
-      const correrias = db.prepare(`
+    const referencesWithCorrerias = await Promise.all(references.map(async (ref) => {
+      const correriasResult = await query(`
         SELECT correria_id
         FROM correria_catalog
-        WHERE reference_id = ?
-      `).all(ref.id);
+        WHERE reference_id = $1
+      `, [ref.id]);
 
       return {
         id: ref.id,
@@ -39,9 +40,9 @@ function getAllReferences() {
         cloth2: ref.cloth2,
         avgCloth2: ref.avg_cloth2,
         active: ref.active,
-        correrias: correrias.map(c => c.correria_id)
+        correrias: correriasResult.rows.map(c => c.correria_id)
       };
-    });
+    }));
 
     logger.info('Retrieved all references', { count: referencesWithCorrerias.length });
     return referencesWithCorrerias;
@@ -53,27 +54,28 @@ function getAllReferences() {
 
 /**
  * Obtiene una referencia específica por ID
+ * @async
  */
-function getReferenceById(id) {
+async function getReferenceById(id) {
   try {
-    const db = getDatabase();
-
-    const reference = db.prepare(`
+    const result = await query(`
       SELECT id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active
       FROM product_references
-      WHERE id = ?
-    `).get(id);
+      WHERE id = $1
+    `, [id]);
 
-    if (!reference) {
+    if (result.rows.length === 0) {
       throw new NotFoundError('Reference', id);
     }
 
+    const reference = result.rows[0];
+
     // Obtener correrías asociadas
-    const correrias = db.prepare(`
+    const correriasResult = await query(`
       SELECT correria_id
       FROM correria_catalog
-      WHERE reference_id = ?
-    `).all(id);
+      WHERE reference_id = $1
+    `, [id]);
 
     logger.info('Retrieved reference', { id });
     return {
@@ -86,7 +88,7 @@ function getReferenceById(id) {
       cloth2: reference.cloth2,
       avgCloth2: reference.avg_cloth2,
       active: reference.active,
-      correrias: correrias.map(c => c.correria_id)
+      correrias: correriasResult.rows.map(c => c.correria_id)
     };
   } catch (error) {
     if (error instanceof NotFoundError) throw error;
@@ -97,25 +99,16 @@ function getReferenceById(id) {
 
 /**
  * Crea una nueva referencia con sus correrías
+ * @async
  */
-function createReference(data) {
+async function createReference(data) {
   try {
-    const db = getDatabase();
-
-    // Iniciar transacción
-    const insertRef = db.prepare(`
-      INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
-    `);
-
-    const insertCorreria = db.prepare(`
-      INSERT INTO correria_catalog (reference_id, correria_id)
-      VALUES (?, ?)
-    `);
-
-    const transaction = db.transaction(() => {
+    await transaction(async (client) => {
       // Insertar referencia
-      insertRef.run(
+      await client.query(`
+        INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `, [
         data.id,
         data.description,
         data.price,
@@ -123,16 +116,18 @@ function createReference(data) {
         data.cloth1 || null,
         data.avgCloth1 || null,
         data.cloth2 || null,
-        data.avgCloth2 || null
-      );
+        data.avgCloth2 || null,
+        true
+      ]);
 
       // Insertar correrías
       for (const correria of data.correrias) {
-        insertCorreria.run(data.id, correria);
+        await client.query(`
+          INSERT INTO correria_catalog (reference_id, correria_id)
+          VALUES ($1, $2)
+        `, [data.id, correria]);
       }
     });
-
-    transaction();
 
     // Invalidate cache after creation
     invalidateOnCreate('Reference');
@@ -147,76 +142,107 @@ function createReference(data) {
 
 /**
  * Actualiza una referencia existente
+ * @async
  */
-function updateReference(id, data) {
+async function updateReference(id, data) {
   try {
-    const db = getDatabase();
-
     // Verificar que la referencia existe
-    const existing = db.prepare('SELECT id FROM product_references WHERE id = ?').get(id);
-    if (!existing) {
+    const existingResult = await query('SELECT id FROM product_references WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) {
       throw new NotFoundError('Reference', id);
-    }
-
-    // Construir query dinámicamente según qué campos se actualizan
-    const updates = [];
-    const values = [];
-
-    if (data.description !== undefined) {
-      updates.push('description = ?');
-      values.push(data.description);
-    }
-    if (data.price !== undefined) {
-      updates.push('price = ?');
-      values.push(data.price);
-    }
-    if (data.designer !== undefined) {
-      updates.push('designer = ?');
-      values.push(data.designer);
-    }
-    if (data.cloth1 !== undefined) {
-      updates.push('cloth1 = ?');
-      values.push(data.cloth1);
-    }
-    if (data.avgCloth1 !== undefined) {
-      updates.push('avg_cloth1 = ?');
-      values.push(data.avgCloth1);
-    }
-    if (data.cloth2 !== undefined) {
-      updates.push('cloth2 = ?');
-      values.push(data.cloth2);
-    }
-    if (data.avgCloth2 !== undefined) {
-      updates.push('avg_cloth2 = ?');
-      values.push(data.avgCloth2);
     }
 
     // Si hay correrías, actualizar en transacción
     if (data.correrias !== undefined) {
-      const transaction = db.transaction(() => {
-        // Actualizar campos de referencia si hay
+      await transaction(async (client) => {
+        // Actualizar campos de referencia
+        const updates = [];
+        const values = [];
+        let paramIndex = 1;
+
+        if (data.description !== undefined) {
+          updates.push(`description = $${paramIndex++}`);
+          values.push(data.description);
+        }
+        if (data.price !== undefined) {
+          updates.push(`price = $${paramIndex++}`);
+          values.push(data.price);
+        }
+        if (data.designer !== undefined) {
+          updates.push(`designer = $${paramIndex++}`);
+          values.push(data.designer);
+        }
+        if (data.cloth1 !== undefined) {
+          updates.push(`cloth1 = $${paramIndex++}`);
+          values.push(data.cloth1);
+        }
+        if (data.avgCloth1 !== undefined) {
+          updates.push(`avg_cloth1 = $${paramIndex++}`);
+          values.push(data.avgCloth1);
+        }
+        if (data.cloth2 !== undefined) {
+          updates.push(`cloth2 = $${paramIndex++}`);
+          values.push(data.cloth2);
+        }
+        if (data.avgCloth2 !== undefined) {
+          updates.push(`avg_cloth2 = $${paramIndex++}`);
+          values.push(data.avgCloth2);
+        }
+
         if (updates.length > 0) {
           values.push(id);
-          const query = `UPDATE product_references SET ${updates.join(', ')} WHERE id = ?`;
-          db.prepare(query).run(...values);
+          const query_str = `UPDATE product_references SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
+          await client.query(query_str, values);
         }
 
         // Eliminar correrías antiguas
-        db.prepare('DELETE FROM correria_catalog WHERE reference_id = ?').run(id);
+        await client.query('DELETE FROM correria_catalog WHERE reference_id = $1', [id]);
 
         // Insertar nuevas correrías
-        const insertCorreria = db.prepare('INSERT INTO correria_catalog (reference_id, correria_id) VALUES (?, ?)');
         for (const correria of data.correrias) {
-          insertCorreria.run(id, correria);
+          await client.query('INSERT INTO correria_catalog (reference_id, correria_id) VALUES ($1, $2)', [id, correria]);
         }
       });
-
-      transaction();
-    } else if (updates.length > 0) {
+    } else {
       // Solo actualizar campos de referencia
-      values.push(id);
-      const query = `UPDATE product_references SET ${updates.join(', ')} WHERE id = ?`;
-      db.prepare(query).run(...values);
+      const updates = [];
+      const values = [];
+      let paramIndex = 1;
+
+      if (data.description !== undefined) {
+        updates.push(`description = $${paramIndex++}`);
+        values.push(data.description);
+      }
+      if (data.price !== undefined) {
+        updates.push(`price = $${paramIndex++}`);
+        values.push(data.price);
+      }
+      if (data.designer !== undefined) {
+        updates.push(`designer = $${paramIndex++}`);
+        values.push(data.designer);
+      }
+      if (data.cloth1 !== undefined) {
+        updates.push(`cloth1 = $${paramIndex++}`);
+        values.push(data.cloth1);
+      }
+      if (data.avgCloth1 !== undefined) {
+        updates.push(`avg_cloth1 = $${paramIndex++}`);
+        values.push(data.avgCloth1);
+      }
+      if (data.cloth2 !== undefined) {
+        updates.push(`cloth2 = $${paramIndex++}`);
+        values.push(data.cloth2);
+      }
+      if (data.avgCloth2 !== undefined) {
+        updates.push(`avg_cloth2 = $${paramIndex++}`);
+        values.push(data.avgCloth2);
+      }
+
+      if (updates.length > 0) {
+        values.push(id);
+        const query_str = `UPDATE product_references SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
+        await query(query_str, values);
+      }
     }
 
     // Invalidate cache after update
@@ -233,26 +259,23 @@ function updateReference(id, data) {
 
 /**
  * Elimina una referencia y sus correrías asociadas
+ * @async
  */
-function deleteReference(id) {
+async function deleteReference(id) {
   try {
-    const db = getDatabase();
-
     // Verificar que la referencia existe
-    const existing = db.prepare('SELECT id FROM product_references WHERE id = ?').get(id);
-    if (!existing) {
+    const existingResult = await query('SELECT id FROM product_references WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) {
       throw new NotFoundError('Reference', id);
     }
 
     // Eliminar en transacción
-    const transaction = db.transaction(() => {
+    await transaction(async (client) => {
       // Eliminar correrías asociadas
-      db.prepare('DELETE FROM correria_catalog WHERE reference_id = ?').run(id);
+      await client.query('DELETE FROM correria_catalog WHERE reference_id = $1', [id]);
       // Eliminar referencia
-      db.prepare('DELETE FROM product_references WHERE id = ?').run(id);
+      await client.query('DELETE FROM product_references WHERE id = $1', [id]);
     });
-
-    transaction();
 
     // Invalidate cache after deletion
     invalidateOnDelete('Reference');
@@ -267,21 +290,20 @@ function deleteReference(id) {
 
 /**
  * Obtiene todas las referencias de una correría específica
+ * @async
  */
-function getReferencesByCorreria(correria_id) {
+async function getReferencesByCorreria(correria_id) {
   try {
-    const db = getDatabase();
-
-    const references = db.prepare(`
+    const result = await query(`
       SELECT pr.id, pr.description, pr.price, pr.designer, pr.cloth1, pr.avg_cloth1, pr.cloth2, pr.avg_cloth2, pr.active
       FROM product_references pr
       INNER JOIN correria_catalog cc ON pr.id = cc.reference_id
-      WHERE cc.correria_id = ?
+      WHERE cc.correria_id = $1
       ORDER BY pr.id
-    `).all(correria_id);
+    `, [correria_id]);
 
-    logger.info('Retrieved references by correria', { correria_id, count: references.length });
-    return references;
+    logger.info('Retrieved references by correria', { correria_id, count: result.rows.length });
+    return result.rows;
   } catch (error) {
     logger.error('Error retrieving references by correria', error, { correria_id });
     throw new DatabaseError('Failed to retrieve references by correria', error);

@@ -1,31 +1,35 @@
 /**
- * Servicio de lógica de negocio para Correrias
+ * Servicio de lógica de negocio para Correrias - POSTGRESQL
  */
 
-const { getDatabase } = require('../../../config/database');
+const { query } = require('../../../config/database');
 const { NotFoundError, DatabaseError } = require('../../shared/errorHandler');
 const logger = require('../../shared/logger');
 const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
-function getAllCorrerias() {
+/**
+ * @async
+ */
+async function getAllCorrerias() {
   try {
-    const db = getDatabase();
-    const correrias = db.prepare('SELECT id, name, year, active FROM correrias ORDER BY year DESC, id').all();
-    logger.info('Retrieved all correrias', { count: correrias.length });
-    return correrias;
+    const result = await query('SELECT id, name, year, active FROM correrias ORDER BY year DESC, id');
+    logger.info('Retrieved all correrias', { count: result.rows.length });
+    return result.rows;
   } catch (error) {
     logger.error('Error retrieving correrias', error);
     throw new DatabaseError('Failed to retrieve correrias', error);
   }
 }
 
-function getCorrieriaById(id) {
+/**
+ * @async
+ */
+async function getCorrieriaById(id) {
   try {
-    const db = getDatabase();
-    const correria = db.prepare('SELECT id, name, year, active FROM correrias WHERE id = ?').get(id);
-    if (!correria) throw new NotFoundError('Correria', id);
+    const result = await query('SELECT id, name, year, active FROM correrias WHERE id = $1', [id]);
+    if (result.rows.length === 0) throw new NotFoundError('Correria', id);
     logger.info('Retrieved correria', { id });
-    return correria;
+    return result.rows[0];
   } catch (error) {
     if (error instanceof NotFoundError) throw error;
     logger.error('Error retrieving correria', error, { id });
@@ -33,14 +37,17 @@ function getCorrieriaById(id) {
   }
 }
 
-function createCorreria(data) {
+/**
+ * @async
+ */
+async function createCorreria(data) {
   try {
-    const db = getDatabase();
-    db.prepare('INSERT INTO correrias (id, name, year, active) VALUES (?, ?, ?, 1)').run(
+    await query('INSERT INTO correrias (id, name, year, active) VALUES ($1, $2, $3, $4)', [
       data.id,
       data.name,
-      data.year
-    );
+      data.year,
+      true
+    ]);
     
     // Invalidate cache after creation
     invalidateOnCreate('Correria');
@@ -53,28 +60,31 @@ function createCorreria(data) {
   }
 }
 
-function updateCorreria(id, data) {
+/**
+ * @async
+ */
+async function updateCorreria(id, data) {
   try {
-    const db = getDatabase();
-    const existing = db.prepare('SELECT id FROM correrias WHERE id = ?').get(id);
-    if (!existing) throw new NotFoundError('Correria', id);
+    const existingResult = await query('SELECT id FROM correrias WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) throw new NotFoundError('Correria', id);
 
     const updates = [];
     const values = [];
+    let paramIndex = 1;
 
     if (data.name !== undefined) {
-      updates.push('name = ?');
+      updates.push(`name = $${paramIndex++}`);
       values.push(data.name);
     }
     if (data.year !== undefined) {
-      updates.push('year = ?');
+      updates.push(`year = $${paramIndex++}`);
       values.push(data.year);
     }
 
     if (updates.length > 0) {
       values.push(id);
-      const query = `UPDATE correrias SET ${updates.join(', ')} WHERE id = ?`;
-      db.prepare(query).run(...values);
+      const query_str = `UPDATE correrias SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
+      await query(query_str, values);
     }
 
     // Invalidate cache after update
@@ -89,12 +99,14 @@ function updateCorreria(id, data) {
   }
 }
 
-function deleteCorreria(id) {
+/**
+ * @async
+ */
+async function deleteCorreria(id) {
   try {
-    const db = getDatabase();
-    const existing = db.prepare('SELECT id FROM correrias WHERE id = ?').get(id);
-    if (!existing) throw new NotFoundError('Correria', id);
-    db.prepare('DELETE FROM correrias WHERE id = ?').run(id);
+    const existingResult = await query('SELECT id FROM correrias WHERE id = $1', [id]);
+    if (existingResult.rows.length === 0) throw new NotFoundError('Correria', id);
+    await query('DELETE FROM correrias WHERE id = $1', [id]);
     
     // Invalidate cache after deletion
     invalidateOnDelete('Correria');

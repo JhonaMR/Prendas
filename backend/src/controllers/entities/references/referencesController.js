@@ -1,5 +1,5 @@
 /**
- * Controlador para operaciones CRUD de References
+ * Controlador para operaciones CRUD de References - POSTGRESQL
  * Maneja las rutas HTTP y validación de entrada
  */
 
@@ -22,10 +22,10 @@ const logger = require('../../shared/logger');
  * GET /api/references
  * Obtiene todas las referencias
  */
-const list = (req, res) => {
+const list = async (req, res) => {
   try {
     logger.info('Listing all references');
-    const references = getAllReferences();
+    const references = await getAllReferences();
     logger.info(`Retrieved ${references.length} references`);
     return res.json({
       success: true,
@@ -44,13 +44,13 @@ const list = (req, res) => {
  * GET /api/references/:id
  * Obtiene una referencia específica
  */
-const read = (req, res) => {
+const read = async (req, res) => {
   try {
     const { id } = req.params;
     logger.info(`Reading reference with id: ${id}`);
     validateReferenceId(id);
 
-    const reference = getReferenceById(id);
+    const reference = await getReferenceById(id);
     logger.info(`Successfully retrieved reference: ${id}`);
     return res.json({
       success: true,
@@ -76,12 +76,12 @@ const read = (req, res) => {
  * POST /api/references
  * Crea una nueva referencia
  */
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     logger.info('Creating new reference', { body: req.body });
     validateCreateReference(req.body);
 
-    const reference = createReference(req.body);
+    const reference = await createReference(req.body);
     logger.info(`Reference created successfully with id: ${reference.id}`);
     return res.status(201).json({
       success: true,
@@ -109,14 +109,14 @@ const create = (req, res) => {
  * PUT /api/references/:id
  * Actualiza una referencia existente
  */
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     logger.info(`Updating reference with id: ${id}`, { body: req.body });
     validateReferenceId(id);
     validateUpdateReference(req.body);
 
-    const reference = updateReference(id, req.body);
+    const reference = await updateReference(id, req.body);
     logger.info(`Reference updated successfully: ${id}`);
     return res.json({
       success: true,
@@ -151,13 +151,13 @@ const update = (req, res) => {
  * DELETE /api/references/:id
  * Elimina una referencia
  */
-const delete_ = (req, res) => {
+const delete_ = async (req, res) => {
   try {
     const { id } = req.params;
     logger.info(`Deleting reference with id: ${id}`);
     validateReferenceId(id);
 
-    deleteReference(id);
+    await deleteReference(id);
     logger.info(`Reference deleted successfully: ${id}`);
     return res.json({
       success: true,
@@ -183,12 +183,12 @@ const delete_ = (req, res) => {
  * GET /api/references/correria/:correria_id
  * Obtiene todas las referencias de una correría
  */
-const getCorreriaReferences = (req, res) => {
+const getCorreriaReferences = async (req, res) => {
   try {
     const { correria_id } = req.params;
     logger.info(`Getting references for correria: ${correria_id}`);
 
-    const references = getReferencesByCorreria(correria_id);
+    const references = await getReferencesByCorreria(correria_id);
     logger.info(`Retrieved ${references.length} references for correria: ${correria_id}`);
     return res.json({
       success: true,

@@ -44,7 +44,9 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       
       const newItems: ItemEntry[] = [];
       for (let i = 1; i < rows.length; i++) {
-        const [refId, qty] = rows[i].split(/[;,]/).map(c => c.trim());
+        const cols = rows[i].split(',').map(c => c.trim());
+        const [refId, qty] = cols;
+        
         if (refId && qty) {
           const exists = state.references.some(r => r.id === refId);
           if (exists) {
@@ -191,17 +193,21 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
             <h3 className="text-xl font-black text-slate-800">2. Adjuntar Pedido</h3>
             <p className="text-[10px] text-slate-400 font-bold leading-relaxed px-2">
-              Formato CSV: <span className="text-blue-500">Referencia;Cantidad</span><br/>
+              Formato CSV: <span className="text-blue-500">referencia,cantidad</span><br/>
               La primera fila se ignora (Cabecera).
             </p>
             <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".csv,.txt" className="hidden" />
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full py-4 bg-slate-100 text-slate-600 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-3"
-            >
-              <Icons.Settle />
-              CARGAR ARCHIVO
-            </button>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors"
+              >
+                CARGAR ARCHIVO
+              </button>
+              <a href="/ejemplo_pedidos.csv" download className="flex-1 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-center">
+                DESCARGAR EJEMPLO
+              </a>
+            </div>
           </div>
         </div>
 

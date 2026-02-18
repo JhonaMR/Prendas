@@ -1,61 +1,62 @@
 /**
- * 📦 SERVICIO DE FECHAS DE ENTREGA
+ * 📦 SERVICIO DE FECHAS DE ENTREGA - POSTGRESQL
  * 
  * Contiene la lógica de negocio para operaciones de fechas de entrega
  */
 
-const { getDatabase, generateId } = require('../../../config/database');
+const { query, transaction, generateId } = require('../../../config/database');
 const { validateDeliveryDate, validateReferenceExists, validateConfeccionistaExists, detectDuplicates } = require('./deliveryDatesValidator');
 const PaginationService = require('../../../services/PaginationService');
 const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('../../../services/CacheInvalidationService');
 
 /**
  * Obtener todas las fechas de entrega con paginación
+ * @async
  */
-const getAllWithPagination = (page = 1, limit = 20, filters = {}) => {
+const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
     try {
-        const db = getDatabase();
         const { page: validPage, limit: validLimit } = PaginationService.validateParams(page, limit);
 
         // Build WHERE clause from filters
         let whereClause = 'WHERE 1=1';
         const params = [];
+        let paramIndex = 1;
 
         if (filters.confeccionistaId) {
-            whereClause += ' AND confeccionista_id = ?';
+            whereClause += ` AND confeccionista_id = $${paramIndex++}`;
             params.push(filters.confeccionistaId);
         }
 
         if (filters.referenceId) {
-            whereClause += ' AND reference_id = ?';
+            whereClause += ` AND reference_id = $${paramIndex++}`;
             params.push(filters.referenceId);
         }
 
         if (filters.startDate) {
-            whereClause += ' AND send_date >= ?';
+            whereClause += ` AND send_date >= $${paramIndex++}`;
             params.push(filters.startDate);
         }
 
         if (filters.endDate) {
-            whereClause += ' AND send_date <= ?';
+            whereClause += ` AND send_date <= $${paramIndex++}`;
             params.push(filters.endDate);
         }
 
         // Get total count
-        const countStmt = db.prepare(`SELECT COUNT(*) as count FROM delivery_dates ${whereClause}`);
-        const countResult = countStmt.get(...params);
-        const total = countResult.count;
+        const countResult = await query(`SELECT COUNT(*) as count FROM delivery_dates ${whereClause}`, params);
+        const total = parseInt(countResult.rows[0].count);
 
         // Get paginated data
         const offset = PaginationService.calculateOffset(validPage, validLimit);
-        const dataStmt = db.prepare(`
-            SELECT * FROM delivery_dates 
+        const dataResult = await query(
+            `SELECT * FROM delivery_dates 
             ${whereClause}
             ORDER BY send_date DESC
-            LIMIT ? OFFSET ?
-        `);
+            LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+            [...params, validLimit, offset]
+        );
         
-        const dates = dataStmt.all(...params, validLimit, offset);
+        const dates = dataResult.rows;
 
         const mappedDates = dates.map(d => ({
             id: d.id,
@@ -80,11 +81,12 @@ const getAllWithPagination = (page = 1, limit = 20, filters = {}) => {
 
 /**
  * Obtener todas las fechas de entrega
+ * @async
  */
-const getAllDeliveryDates = () => {
+const getAllDeliveryDates = async () => {
     try {
-        const db = getDatabase();
-        const dates = db.prepare('SELECT * FROM delivery_dates ORDER BY send_date DESC').all();
+        const result = await query('SELECT * FROM delivery_dates ORDER BY send_date DESC');
+        const dates = result.rows;
         
         return dates.map(d => ({
             id: d.id,
@@ -108,15 +110,14 @@ const getAllDeliveryDates = () => {
 /**
  * Guardar o actualizar múltiples fechas de entrega (batch)
  * Implementa persistencia parcial: guarda registros válidos incluso si algunos fallan
+ * @async
  */
-const saveDeliveryDatesBatch = (dates, userId) => {
+const saveDeliveryDatesBatch = async (dates, userId) => {
     const errors = [];
     const validRecords = [];
     const savedIds = [];
 
     try {
-        const db = getDatabase();
-
         // FASE 0: Detectar duplicados en el lote
         const duplicates = detectDuplicates(dates);
         duplicates.forEach(dup => {
@@ -150,7 +151,8 @@ const saveDeliveryDatesBatch = (dates, userId) => {
             }
 
             // Validar referencias externas
-            if (!validateConfeccionistaExists(db, date.confeccionistaId)) {
+            const confeccionistaResult = await query('SELECT id FROM confeccionistas WHERE id = $1', [date.confeccionistaId]);
+            if (confeccionistaResult.rows.length === 0) {
                 errors.push({
                     index: i,
                     record: date,
@@ -159,7 +161,8 @@ const saveDeliveryDatesBatch = (dates, userId) => {
                 continue;
             }
 
-            if (!validateReferenceExists(db, date.referenceId)) {
+            const referenceResult = await query('SELECT id FROM product_references WHERE id = $1', [date.referenceId]);
+            if (referenceResult.rows.length === 0) {
                 errors.push({
                     index: i,
                     record: date,
@@ -177,22 +180,20 @@ const saveDeliveryDatesBatch = (dates, userId) => {
 
         // FASE 2: Guardar solo los registros válidos en una transacción atómica
         if (validRecords.length > 0) {
-            db.prepare('BEGIN').run();
-
-            try {
+            await transaction(async (client) => {
                 for (const record of validRecords) {
                     const date = record.data;
                     const id = date.id && !date.id.startsWith('temp_') ? date.id : generateId();
-                    const createdAt = date.createdAt || new Date().toISOString();
+                    const createdAt = date.createdAt || new Date();
                     const createdBy = date.createdBy || userId;
 
                     // Upsert (INSERT or UPDATE)
-                    const upsertStmt = db.prepare(`
+                    await client.query(`
                         INSERT INTO delivery_dates (
                             id, confeccionista_id, reference_id, quantity, 
                             send_date, expected_date, delivery_date, 
                             process, observation, created_by, created_at
-                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
                         ON CONFLICT(id) DO UPDATE SET
                             confeccionista_id = excluded.confeccionista_id,
                             reference_id = excluded.reference_id,
@@ -202,9 +203,7 @@ const saveDeliveryDatesBatch = (dates, userId) => {
                             delivery_date = excluded.delivery_date,
                             process = excluded.process,
                             observation = excluded.observation
-                    `);
-
-                    upsertStmt.run(
+                    `, [
                         id,
                         date.confeccionistaId,
                         date.referenceId,
@@ -216,18 +215,12 @@ const saveDeliveryDatesBatch = (dates, userId) => {
                         date.observation || '',
                         createdBy,
                         createdAt
-                    );
+                    ]);
 
                     savedIds.push(id);
                 }
-
-                db.prepare('COMMIT').run();
-                console.log(`✅ Guardados ${savedIds.length} registros válidos`);
-            } catch (dbError) {
-                db.prepare('ROLLBACK').run();
-                console.error('❌ Error durante transacción:', dbError);
-                throw dbError;
-            }
+            });
+            console.log(`✅ Guardados ${savedIds.length} registros válidos`);
         }
 
         // Invalidate cache after batch save
@@ -254,13 +247,13 @@ const saveDeliveryDatesBatch = (dates, userId) => {
 
 /**
  * Eliminar una fecha de entrega
+ * @async
  */
-const deleteDeliveryDate = (id) => {
+const deleteDeliveryDate = async (id) => {
     try {
-        const db = getDatabase();
-        const result = db.prepare('DELETE FROM delivery_dates WHERE id = ?').run(id);
+        const result = await query('DELETE FROM delivery_dates WHERE id = $1', [id]);
         
-        if (result.changes === 0) {
+        if (result.rowCount === 0) {
             throw new Error('Registro no encontrado');
         }
 
@@ -279,16 +272,17 @@ const deleteDeliveryDate = (id) => {
 
 /**
  * Obtener una fecha de entrega por ID
+ * @async
  */
-const getDeliveryDateById = (id) => {
+const getDeliveryDateById = async (id) => {
     try {
-        const db = getDatabase();
-        const date = db.prepare('SELECT * FROM delivery_dates WHERE id = ?').get(id);
+        const result = await query('SELECT * FROM delivery_dates WHERE id = $1', [id]);
         
-        if (!date) {
+        if (result.rows.length === 0) {
             return null;
         }
 
+        const date = result.rows[0];
         return {
             id: date.id,
             confeccionistaId: date.confeccionista_id,

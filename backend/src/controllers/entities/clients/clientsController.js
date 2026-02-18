@@ -1,5 +1,5 @@
 /**
- * Controlador para operaciones CRUD de Clients
+ * Controlador para operaciones CRUD de Clients - POSTGRESQL
  */
 
 const {
@@ -21,9 +21,9 @@ const logger = require('../../shared/logger');
 /**
  * GET /api/clients
  */
-const list = (req, res) => {
+const list = async (req, res) => {
   try {
-    const clients = getAllClients();
+    const clients = await getAllClients();
     return res.json({
       success: true,
       data: clients
@@ -40,12 +40,12 @@ const list = (req, res) => {
 /**
  * GET /api/clients/:id
  */
-const read = (req, res) => {
+const read = async (req, res) => {
   try {
     const { id } = req.params;
     validateClientId(id);
 
-    const client = getClientById(id);
+    const client = await getClientById(id);
     return res.json({
       success: true,
       data: client
@@ -68,11 +68,11 @@ const read = (req, res) => {
 /**
  * POST /api/clients
  */
-const create = (req, res) => {
+const create = async (req, res) => {
   try {
     validateCreateClient(req.body);
 
-    const client = createClient(req.body);
+    const client = await createClient(req.body);
     return res.status(201).json({
       success: true,
       data: client,
@@ -97,13 +97,13 @@ const create = (req, res) => {
 /**
  * PUT /api/clients/:id
  */
-const update = (req, res) => {
+const update = async (req, res) => {
   try {
     const { id } = req.params;
     validateClientId(id);
     validateUpdateClient(req.body);
 
-    const client = updateClient(id, req.body);
+    const client = await updateClient(id, req.body);
     return res.json({
       success: true,
       data: client,
@@ -134,12 +134,12 @@ const update = (req, res) => {
 /**
  * DELETE /api/clients/:id
  */
-const delete_ = (req, res) => {
+const delete_ = async (req, res) => {
   try {
     const { id } = req.params;
     validateClientId(id);
 
-    deleteClient(id);
+    await deleteClient(id);
     return res.json({
       success: true,
       message: 'Client deleted successfully'
@@ -163,7 +163,7 @@ const delete_ = (req, res) => {
  * POST /api/clients/bulk-import
  * Importa clientes masivamente desde un array de registros
  */
-const bulkImport = (req, res) => {
+const bulkImport = async (req, res) => {
   try {
     const { records, csvContent } = req.body;
 
@@ -197,7 +197,7 @@ const bulkImport = (req, res) => {
       });
     }
 
-    const result = bulkImportClients(recordsToImport);
+    const result = await bulkImportClients(recordsToImport);
 
     if (!result.success) {
       return res.status(400).json({

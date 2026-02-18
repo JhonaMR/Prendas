@@ -330,6 +330,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const handleSaveClient = async () => {
     if (!id || !name) return alert("ID y Nombre son obligatorios");
     if (!seller) return alert("Debe seleccionar un vendedor");
+    
     const newItem: Client = { id, name, nit, address, city, sellerId: seller };
     
     setIsLoading(true);
@@ -693,7 +694,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                             <button
                               key={s.id}
                               onClick={() => {
-                                setSeller(s.name);
+                                setSeller(s.id);
                                 setSellerSearch(s.name);
                                 setShowSellerDropdown(false);
                               }}
