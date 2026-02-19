@@ -20,10 +20,18 @@ import type {
   ProductionTracking,
 } from '../types';
 
-// URL del backend
+// URL del backend - Se evalúa en tiempo de ejecución desde config.js
 // En desarrollo: http://localhost:3000/api
 // En producción: https://IP_DEL_SERVIDOR:3000/api
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+// Declarar que window.API_CONFIG existe
+declare global {
+  interface Window {
+    API_CONFIG?: {
+      getApiUrl: () => string;
+    };
+  }
+}
 
 interface ApiResponse<T = any> {
   success: boolean;
@@ -41,6 +49,16 @@ interface LoginResponse {
  * Clase que maneja todas las peticiones al backend
  */
 class ApiService {
+  private getApiUrl(): string {
+    if (window.API_CONFIG?.getApiUrl) {
+      return window.API_CONFIG.getApiUrl();
+    }
+    // Fallback si config.js no se cargó
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = 3000;
+    return `${protocol}//${hostname}:${port}/api`;
+  }
   
   // ==================== MÉTODOS AUXILIARES ====================
 
@@ -93,7 +111,7 @@ class ApiService {
    */
   async login(loginCode: string, pin: string): Promise<ApiResponse<LoginResponse>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ loginCode, pin })
@@ -121,7 +139,7 @@ class ApiService {
    */
   async register(name: string, loginCode: string, pin: string, role?: string): Promise<ApiResponse<LoginResponse>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, loginCode, pin, role: role || 'general' })
@@ -145,7 +163,7 @@ class ApiService {
 
   async createUser(name: string, loginCode: string, pin: string, role: string = 'general'): Promise<ApiResponse<User>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/register`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ name, loginCode, pin, role })
@@ -165,7 +183,7 @@ class ApiService {
    */
   async changePin(loginCode: string, currentPin: string, newPin: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/change-pin`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/change-pin`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ loginCode, currentPin, newPin })
@@ -185,7 +203,7 @@ class ApiService {
    */
   async listUsers(): Promise<User[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/users`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/users`, {
         headers: this.getAuthHeaders()
       });
 
@@ -211,7 +229,7 @@ class ApiService {
    */
   async updateUser(id: string, user: Partial<User>): Promise<ApiResponse<User>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/users/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(user)
@@ -231,7 +249,7 @@ class ApiService {
    */
   async deleteUser(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/auth/users/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/auth/users/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -272,7 +290,7 @@ class ApiService {
 
   async getReferences(): Promise<Reference[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/references`, {
+      const response = await fetch(`${this.getApiUrl()}/references`, {
         headers: this.getAuthHeaders()
       });
 
@@ -286,7 +304,7 @@ class ApiService {
 
   async createReference(reference: Partial<Reference>): Promise<ApiResponse<Reference>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/references`, {
+      const response = await fetch(`${this.getApiUrl()}/references`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(reference)
@@ -303,7 +321,7 @@ class ApiService {
 
   async updateReference(id: string, reference: Partial<Reference>): Promise<ApiResponse<Reference>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/references/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/references/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(reference)
@@ -320,7 +338,7 @@ class ApiService {
 
   async deleteReference(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/references/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/references/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -338,8 +356,8 @@ class ApiService {
 
   async getClients(): Promise<Client[]> {
     try {
-      console.log('🔍 Fetching clients from:', `${API_BASE_URL}/clients`);
-      const response = await fetch(`${API_BASE_URL}/clients`, {
+      console.log('🔍 Fetching clients from:', `${this.getApiUrl()}/clients`);
+      const response = await fetch(`${this.getApiUrl()}/clients`, {
         headers: this.getAuthHeaders()
       });
 
@@ -370,7 +388,7 @@ class ApiService {
 
   async createClient(client: Partial<Client>): Promise<ApiResponse<Client>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/clients`, {
+      const response = await fetch(`${this.getApiUrl()}/clients`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(client)
@@ -387,7 +405,7 @@ class ApiService {
 
   async updateClient(id: string, client: Partial<Client>): Promise<ApiResponse<Client>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/clients/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/clients/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(client)
@@ -404,7 +422,7 @@ class ApiService {
 
   async deleteClient(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/clients/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/clients/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -422,7 +440,7 @@ class ApiService {
 
   async getConfeccionistas(): Promise<Confeccionista[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/confeccionistas`, {
+      const response = await fetch(`${this.getApiUrl()}/confeccionistas`, {
         headers: this.getAuthHeaders()
       });
 
@@ -436,7 +454,7 @@ class ApiService {
 
   async createConfeccionista(conf: Partial<Confeccionista>): Promise<ApiResponse<Confeccionista>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/confeccionistas`, {
+      const response = await fetch(`${this.getApiUrl()}/confeccionistas`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(conf)
@@ -453,7 +471,7 @@ class ApiService {
 
   async updateConfeccionista(id: string, conf: Partial<Confeccionista>): Promise<ApiResponse<Confeccionista>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/confeccionistas/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/confeccionistas/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(conf)
@@ -470,7 +488,7 @@ class ApiService {
 
   async deleteConfeccionista(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/confeccionistas/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/confeccionistas/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -488,7 +506,7 @@ class ApiService {
 
   async getSellers(): Promise<Seller[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers`, {
+      const response = await fetch(`${this.getApiUrl()}/sellers`, {
         headers: this.getAuthHeaders()
       });
 
@@ -505,7 +523,7 @@ class ApiService {
 
   async createSeller(seller: Partial<Seller>): Promise<ApiResponse<Seller>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers`, {
+      const response = await fetch(`${this.getApiUrl()}/sellers`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(seller)
@@ -522,7 +540,7 @@ class ApiService {
 
   async updateSeller(id: string, seller: Partial<Seller>): Promise<ApiResponse<Seller>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/sellers/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(seller)
@@ -539,7 +557,7 @@ class ApiService {
 
   async deleteSeller(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/sellers/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/sellers/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -557,7 +575,7 @@ class ApiService {
 
   async getCorrerias(): Promise<Correria[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/correrias`, {
+      const response = await fetch(`${this.getApiUrl()}/correrias`, {
         headers: this.getAuthHeaders()
       });
 
@@ -571,7 +589,7 @@ class ApiService {
 
   async createCorreria(correria: Partial<Correria>): Promise<ApiResponse<Correria>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/correrias`, {
+      const response = await fetch(`${this.getApiUrl()}/correrias`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(correria)
@@ -588,7 +606,7 @@ class ApiService {
 
   async updateCorreria(id: string, correria: Partial<Correria>): Promise<ApiResponse<Correria>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/correrias/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/correrias/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(correria)
@@ -605,7 +623,7 @@ class ApiService {
 
   async deleteCorreria(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/correrias/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/correrias/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -623,7 +641,7 @@ class ApiService {
 
   async getReceptions(): Promise<BatchReception[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/receptions`, {
+      const response = await fetch(`${this.getApiUrl()}/receptions`, {
         headers: this.getAuthHeaders()
       });
 
@@ -637,7 +655,7 @@ class ApiService {
 
   async createReception(reception: Partial<BatchReception>): Promise<ApiResponse<BatchReception>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/receptions`, {
+      const response = await fetch(`${this.getApiUrl()}/receptions`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(reception)
@@ -656,7 +674,7 @@ class ApiService {
 
   async getReturnReceptions(): Promise<any[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/return-receptions`, {
+      const response = await fetch(`${this.getApiUrl()}/return-receptions`, {
         headers: this.getAuthHeaders()
       });
 
@@ -672,7 +690,7 @@ class ApiService {
 
   async getDispatches(): Promise<Dispatch[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/dispatches`, {
+      const response = await fetch(`${this.getApiUrl()}/dispatches`, {
         headers: this.getAuthHeaders()
       });
 
@@ -686,7 +704,7 @@ class ApiService {
 
   async createDispatch(dispatch: Partial<Dispatch>): Promise<ApiResponse<Dispatch>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/dispatches`, {
+      const response = await fetch(`${this.getApiUrl()}/dispatches`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(dispatch)
@@ -704,7 +722,7 @@ class ApiService {
   async updateDispatch(id: string, dispatch: Partial<Dispatch>): Promise<ApiResponse<Dispatch>> {
     try {
       console.log('✏️ Actualizando despacho:', id, dispatch);
-      const response = await fetch(`${API_BASE_URL}/dispatches/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/dispatches/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(dispatch)
@@ -728,7 +746,7 @@ class ApiService {
   async deleteDispatch(id: string): Promise<ApiResponse> {
     try {
       console.log('🗑️ Eliminando despacho:', id);
-      const response = await fetch(`${API_BASE_URL}/dispatches/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/dispatches/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -752,7 +770,7 @@ class ApiService {
 
   async createReturnReception(returnReception: any): Promise<ApiResponse<any>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/return-receptions`, {
+      const response = await fetch(`${this.getApiUrl()}/return-receptions`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(returnReception)
@@ -771,7 +789,7 @@ class ApiService {
 
   async getOrders(): Promise<Order[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders`, {
+      const response = await fetch(`${this.getApiUrl()}/orders`, {
         headers: this.getAuthHeaders()
       });
 
@@ -785,7 +803,7 @@ class ApiService {
 
   async createOrder(order: Partial<Order>): Promise<ApiResponse<Order>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/orders`, {
+      const response = await fetch(`${this.getApiUrl()}/orders`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(order)
@@ -804,7 +822,7 @@ class ApiService {
 
   async getProductionTracking(): Promise<ProductionTracking[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/production`, {
+      const response = await fetch(`${this.getApiUrl()}/production`, {
         headers: this.getAuthHeaders()
       });
 
@@ -818,7 +836,7 @@ class ApiService {
 
   async updateProductionTracking(tracking: ProductionTracking): Promise<ApiResponse<ProductionTracking>> {
     try {
-      const response = await fetch(`${API_BASE_URL}/production`, {
+      const response = await fetch(`${this.getApiUrl()}/production`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(tracking)
@@ -837,7 +855,7 @@ class ApiService {
  
   async saveProductionBatch(trackingData: ProductionTracking[]): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/production/batch`, {
+      const response = await fetch(`${this.getApiUrl()}/production/batch`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ trackingData })
@@ -856,7 +874,7 @@ class ApiService {
 
   async getDeliveryDates(): Promise<any[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/delivery-dates`, {
+      const response = await fetch(`${this.getApiUrl()}/delivery-dates`, {
         headers: this.getAuthHeaders()
       });
       const data = await this.handleResponse(response);
@@ -869,7 +887,7 @@ class ApiService {
 
   async saveDeliveryDatesBatch(dates: any[]): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/delivery-dates/batch`, {
+      const response = await fetch(`${this.getApiUrl()}/delivery-dates/batch`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ dates })
@@ -897,7 +915,7 @@ class ApiService {
 
   async deleteDeliveryDate(id: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/delivery-dates/${id}`, {
+      const response = await fetch(`${this.getApiUrl()}/delivery-dates/${id}`, {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
@@ -921,7 +939,7 @@ class ApiService {
         ...filters
       });
 
-      const response = await fetch(`${API_BASE_URL}/delivery-dates?${params}`, {
+      const response = await fetch(`${this.getApiUrl()}/delivery-dates?${params}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -943,7 +961,7 @@ class ApiService {
         ...filters
       });
 
-      const response = await fetch(`${API_BASE_URL}/dispatches?${params}`, {
+      const response = await fetch(`${this.getApiUrl()}/dispatches?${params}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -965,7 +983,7 @@ class ApiService {
         ...filters
       });
 
-      const response = await fetch(`${API_BASE_URL}/receptions?${params}`, {
+      const response = await fetch(`${this.getApiUrl()}/receptions?${params}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -987,7 +1005,7 @@ class ApiService {
         ...filters
       });
 
-      const response = await fetch(`${API_BASE_URL}/return-receptions?${params}`, {
+      const response = await fetch(`${this.getApiUrl()}/return-receptions?${params}`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -1005,7 +1023,7 @@ class ApiService {
 
   async getBackups(): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/backups`, {
+      const response = await fetch(`${this.getApiUrl()}/backups`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -1021,7 +1039,7 @@ class ApiService {
 
   async getBackupStats(): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/backups/stats`, {
+      const response = await fetch(`${this.getApiUrl()}/backups/stats`, {
         method: 'GET',
         headers: this.getAuthHeaders()
       });
@@ -1037,7 +1055,7 @@ class ApiService {
 
   async executeManualBackup(): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/backups/manual`, {
+      const response = await fetch(`${this.getApiUrl()}/backups/manual`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({})
@@ -1054,7 +1072,7 @@ class ApiService {
 
   async restoreBackup(backupFilename: string): Promise<ApiResponse> {
     try {
-      const response = await fetch(`${API_BASE_URL}/backups/restore`, {
+      const response = await fetch(`${this.getApiUrl()}/backups/restore`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ backupFilename })

@@ -1,5 +1,5 @@
 // Service Worker para Plow - PWA
-const CACHE_NAME = 'plow-v1';
+const CACHE_NAME = 'plow-v2';
 const urlsToCache = [
   '/',
   '/index.html',
