@@ -18,6 +18,7 @@ import OrderHistoryView from './views/OrderHistoryView';
 import DispatchControlView from './views/DispatchControlView';
 import SalesReportView from './views/SalesReportView';
 import DeliveryDatesView from './views/DeliveryDatesView';
+import BackupManagementView from './views/BackupManagementView';
 
 const App: React.FC = () => {
   // ========== ESTADOS ==========
@@ -902,6 +903,14 @@ const App: React.FC = () => {
             onUnsavedChanges={setHasUnsavedOrderChanges}
           />
         );
+      case 'backups':
+        // Solo admin puede acceder a Backups
+        if (user.role !== UserRole.ADMIN) {
+          setActiveTab('home');
+          alert('No tienes permiso para acceder a esta sección');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <BackupManagementView />;
       default:
         return null;
     }
@@ -1015,6 +1024,9 @@ const App: React.FC = () => {
             <div className="my-2 border-t border-slate-100 pt-2">
               <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
               <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
+              {user.role === UserRole.ADMIN && (
+                <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
+              )}
             </div>
           </div>
 

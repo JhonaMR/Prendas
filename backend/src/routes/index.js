@@ -142,6 +142,11 @@ router.get('/delivery-dates', verifyToken, getDeliveryDates);
 router.post('/delivery-dates/batch', verifyToken, preventNonAdminEdit, saveDeliveryDatesBatchHandler);
 router.delete('/delivery-dates/:id', verifyToken, preventNonAdminEdit, deleteDeliveryDateHandler);
 
+// ==================== BACKUPS ====================
+
+const backupRoutes = require('./backupRoutes');
+router.use('/backups', backupRoutes);
+
 // ==================== RUTA DE PRUEBA ====================
 
 /**

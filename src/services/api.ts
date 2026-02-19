@@ -1000,6 +1000,74 @@ class ApiService {
       };
     }
   }
+
+  // ==================== BACKUPS ====================
+
+  async getBackups(): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/backups`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener backups'
+      };
+    }
+  }
+
+  async getBackupStats(): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/backups/stats`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener estadísticas de backups'
+      };
+    }
+  }
+
+  async executeManualBackup(): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/backups/manual`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al ejecutar backup manual'
+      };
+    }
+  }
+
+  async restoreBackup(backupFilename: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/backups/restore`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ backupFilename })
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al restaurar backup'
+      };
+    }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================

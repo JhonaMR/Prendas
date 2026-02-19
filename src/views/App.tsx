@@ -18,6 +18,7 @@ import OrdersView from './OrdersView';
 import OrderSettleView from './OrderSettleView';
 import OrderHistoryView from './OrderHistoryView';
 import SalesReportView from './SalesReportView';
+import BackupManagementView from './BackupManagementView';
 
 const App: React.FC = () => {
   const state = useAppState();
@@ -169,6 +170,14 @@ const App: React.FC = () => {
         return <ReportsView state={state} user={user} />;
       case 'salesReport':
         return <SalesReportView state={state} />;
+      case 'backups':
+        // Solo admin puede acceder a Backups
+        if (user.role !== UserRole.ADMIN) {
+          setActiveTab('home');
+          alert('No tienes permiso para acceder a esta sección');
+          return <HomeView user={user} onNavigate={handleTabChange} />;
+        }
+        return <BackupManagementView />;
       default:
         return null;
     }
@@ -253,6 +262,7 @@ const App: React.FC = () => {
               {user.role === UserRole.ADMIN && (
                 <div className="border-t border-slate-100 mt-2 pt-2">
                   <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
+                  <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
                 </div>
               )}
             </div>

@@ -7,11 +7,14 @@ require('dotenv').config();
 const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const BackupRotationService = require('../services/BackupRotationService');
 
 async function backupDatabase() {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+  const backupRotationService = new BackupRotationService();
+  const backupType = backupRotationService.getBackupType();
+  const backupFilename = backupRotationService.generateBackupFilename(backupType);
   const backupDir = path.join(__dirname, '../../backups');
-  const backupFile = path.join(backupDir, `inventory-backup-${timestamp}.sql`);
+  const backupFile = path.join(backupDir, backupFilename);
 
   // Crear directorio de backups si no existe
   if (!fs.existsSync(backupDir)) {
@@ -30,7 +33,8 @@ async function backupDatabase() {
   console.log('\n🔄 Iniciando backup de la base de datos...');
   console.log(`📁 Archivo: ${backupFile}`);
   console.log(`🗄️  Base de datos: ${dbName}`);
-  console.log(`🖥️  Host: ${dbHost}:${dbPort}\n`);
+  console.log(`🖥️  Host: ${dbHost}:${dbPort}`);
+  console.log(`📊 Tipo: ${backupType}\n`);
 
   return new Promise((resolve, reject) => {
     // Establecer variable de entorno para la contraseña
