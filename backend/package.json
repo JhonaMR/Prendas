@@ -6,6 +6,15 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:start:prod": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop inventario-backend",
+    "pm2:restart": "pm2 restart inventario-backend",
+    "pm2:delete": "pm2 delete inventario-backend",
+    "pm2:logs": "pm2 logs inventario-backend",
+    "pm2:monit": "pm2 monit",
+    "pm2:save": "pm2 save",
+    "pm2:resurrect": "pm2 resurrect",
     "init-db": "node src/scripts/initDatabase.js",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -31,6 +40,7 @@
   "devDependencies": {
     "fast-check": "^4.5.3",
     "jest": "^30.2.0",
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "pm2": "^5.4.3"
   }
 }

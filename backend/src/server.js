@@ -68,9 +68,9 @@ app.use('/api', apiRoutes);
 
 /**
  * Servir archivos estáticos del frontend (cuando esté compilado)
- * El frontend compilado estará en ../frontend/dist
+ * El frontend compilado estará en ../dist
  */
-const frontendPath = path.join(__dirname, '../../frontend/dist');
+const frontendPath = path.join(__dirname, '../../dist');
 app.use(express.static(frontendPath));
 
 /**

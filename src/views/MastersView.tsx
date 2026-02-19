@@ -392,9 +392,12 @@ const MastersView: React.FC<MastersViewProps> = ({
   const handleSaveUser = async () => {
     if (!isAdmin) return;
     if (!name) return alert("Nombre obligatorio");
+    if (!id) return alert("Código de usuario obligatorio");
+    if (!pin) return alert("PIN obligatorio");
+    
     // Normalizar el rol a minúsculas para el backend
     const normalizedRole = userRole.toLowerCase() as UserRole;
-    const newItem: User = { id: editingId || Math.random().toString(36).substr(2, 9), name, loginCode: id, pin, role: normalizedRole };
+    const newItem = { name, loginCode: id, pin, role: normalizedRole };
     
     setIsLoading(true);
     try {
@@ -404,7 +407,7 @@ const MastersView: React.FC<MastersViewProps> = ({
         // Actualizar usuario existente
         result = await onUpdateUser(editingId, newItem);
       } else {
-        // Crear nuevo usuario
+        // Crear nuevo usuario - no incluir ID, el backend lo genera
         result = await onAddUser(newItem);
       }
       

@@ -190,7 +190,16 @@ class ApiService {
       });
 
       const data = await this.handleResponse<User[]>(response);
-      return data.data || [];
+      console.log('📋 listUsers response:', data);
+      console.log('📋 listUsers data.data:', data.data);
+      
+      // Si data.data es un array, retornarlo; si data es un array, retornar data
+      if (Array.isArray(data.data)) {
+        return data.data;
+      } else if (Array.isArray(data)) {
+        return data as any;
+      }
+      return [];
     } catch (error) {
       console.error('Error listando usuarios:', error);
       return [];

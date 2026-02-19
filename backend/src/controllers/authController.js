@@ -339,7 +339,7 @@ const listUsers = async (req, res) => {
         const result = await query(`
             SELECT id, name, login_code, role, active, created_at
             FROM users
-            WHERE active = true
+            WHERE CAST(active AS INTEGER) = 1
             ORDER BY created_at DESC
         `);
 

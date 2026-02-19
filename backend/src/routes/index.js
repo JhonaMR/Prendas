@@ -74,6 +74,7 @@ router.delete('/auth/users/:id', verifyToken, verifyAdmin, authController.delete
 
 router.get('/references', verifyToken, referencesController.list);
 router.post('/references', verifyToken, preventNonAdminEdit, referencesController.create);
+router.post('/references/bulk-import', verifyToken, preventNonAdminEdit, referencesController.bulkImport);
 router.put('/references/:id', verifyToken, preventNonAdminEdit, referencesController.update);
 router.delete('/references/:id', verifyToken, preventNonAdminEdit, referencesController.delete);
 router.get('/correrias/:id/references', referencesController.getCorreriaReferences);

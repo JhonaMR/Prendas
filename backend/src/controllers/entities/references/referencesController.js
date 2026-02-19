@@ -16,6 +16,8 @@ const {
   deleteReference,
   getReferencesByCorreria
 } = require('./referencesService');
+const { bulkImportReferences } = require('../../../services/BulkReferenceImportService');
+const { parseCSV } = require('../../../utils/csvParser');
 const logger = require('../../shared/logger');
 
 /**
@@ -203,11 +205,51 @@ const getCorreriaReferences = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/references/bulk-import
+ * Importa referencias masivamente desde CSV
+ */
+const bulkImport = async (req, res) => {
+  try {
+    const { csvContent } = req.body;
+
+    if (!csvContent) {
+      return res.status(400).json({
+        success: false,
+        message: 'CSV content is required'
+      });
+    }
+
+    // Parsear CSV
+    const records = parseCSV(csvContent);
+
+    if (records.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No valid records found in CSV'
+      });
+    }
+
+    // Importar referencias
+    const result = await bulkImportReferences(records);
+
+    return res.json(result);
+  } catch (error) {
+    logger.error('Error in bulk import', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error in bulk import',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
 module.exports = {
   list,
   read,
   create,
   update,
   delete: delete_,
-  getCorreriaReferences
+  getCorreriaReferences,
+  bulkImport
 };

@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Plow - Ventas y producción</title>
     <link rel="icon" type="image/x-icon" href="/icono.ico">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="description" content="Sistema de gestión de inventarios, ventas y producción">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       body {
@@ -67,5 +70,19 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
+    <script>
+      // Registrar Service Worker para PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('✅ Service Worker registrado:', registration);
+            })
+            .catch(error => {
+              console.log('⚠️ Error registrando Service Worker:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

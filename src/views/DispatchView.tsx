@@ -119,23 +119,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
         const result = await onUpdateDispatch(editingDisp.id, updatedData);
         if (result?.success) {
-          // Actualizar estado local con los datos completos
-          const fullUpdatedData: Dispatch = {
-            ...editingDisp,
-            clientId,
-            correriaId,
-            invoiceNo,
-            remissionNo,
-            items,
-            editLogs: [
-              ...(editingDisp.editLogs || []),
-              { user: user.name, date: new Date().toLocaleString() }
-            ]
-          };
-          updateState(prev => ({
-            ...prev,
-            dispatches: prev.dispatches.map(d => d.id === editingDisp.id ? fullUpdatedData : d)
-          }));
+          // No actualizar el estado aquí porque onUpdateDispatch ya lo hace
           setIsDispatching(false);
           setEditingDisp(null);
           alert("Despacho actualizado exitosamente");
@@ -160,10 +144,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
         const result = await onAddDispatch(newData);
         if (result.success) {
-          updateState(prev => ({
-            ...prev,
-            dispatches: [...prev.dispatches, newData]
-          }));
+          // No actualizar el estado aquí porque onAddDispatch ya lo hace
           setIsDispatching(false);
           alert("Despacho guardado exitosamente");
         } else {

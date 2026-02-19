@@ -1,11 +1,3 @@
 id,name,nit,address,city,seller
 C001,Acme Inc,123456789,Cra 5 #10-20,Bogotá,Juan Pérez
-C002,Tech Solutions,987654321,Cra 7 #15-30,Medellín,María García
-C003,Fashion Store,456789123,Cra 3 #8-12,Cali,Carlos López
-C004,Industrial Co,789123456,Cra 9 #20-40,Barranquilla,Ana Martínez
-C005,Retail Plus,321654987,Cra 2 #5-10,Bucaramanga,Pedro Rodríguez
-C006,Logistics Ltd,654321789,Cra 4 #12-25,Santa Marta,Laura Gómez
-C007,Premium Goods,147258369,Cra 6 #18-35,Cartagena,Diego Sánchez
-C008,Express Trade,258369147,Cra 1 #3-8,Cúcuta,Sofía Martínez
-C009,Global Market,369147258,Cra 8 #22-40,Pereira,Roberto Flores
-C010,Elite Boutique,741852963,Cra 10 #25-45,Manizales,Valentina Ruiz
+
