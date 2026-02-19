@@ -117,7 +117,7 @@ async function createReference(data) {
         data.avgCloth1 || null,
         data.cloth2 || null,
         data.avgCloth2 || null,
-        true
+        1
       ]);
 
       // Insertar correrías

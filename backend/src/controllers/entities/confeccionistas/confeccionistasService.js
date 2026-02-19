@@ -68,7 +68,7 @@ async function createConfeccionista(data) {
       data.city,
       data.phone,
       data.score,
-      true
+      1
     ]);
 
     // Invalidate cache after creation

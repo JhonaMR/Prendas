@@ -46,7 +46,7 @@ async function createCorreria(data) {
       data.id,
       data.name,
       data.year,
-      true
+      1
     ]);
     
     // Invalidate cache after creation

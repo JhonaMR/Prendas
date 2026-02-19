@@ -42,7 +42,7 @@ async function getSellerById(id) {
  */
 async function createSeller(data) {
   try {
-    await query('INSERT INTO sellers (id, name, active) VALUES ($1, $2, $3)', [data.id, data.name, true]);
+    await query('INSERT INTO sellers (id, name, active) VALUES ($1, $2, $3)', [data.id, data.name, 1]);
     
     // Invalidate cache after creation
     invalidateOnCreate('Seller');

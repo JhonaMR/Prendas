@@ -201,7 +201,7 @@ const register = async (req, res) => {
         await query(`
             INSERT INTO users (id, name, login_code, pin_hash, role, active)
             VALUES ($1, $2, $3, $4, $5, $6)
-        `, [id, name, loginCode.toUpperCase(), pinHash, userRole, true]);
+        `, [id, name, loginCode.toUpperCase(), pinHash, userRole, 1]);
 
         // ===== RESPUESTA EXITOSA =====
 
