@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict GaungUOdpSdg5chcCZh8GDW79bz80zwhiEfu6Df0DHd79vIh9pg6915ddrOkmEn
+\restrict 6eGxjjkqdPva6NzG3OF6P0tMXNrkFyDfINfKF30A92JKMIwagLzmFBhhZuaS4B4
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -1245,8 +1245,8 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
 mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-17 16:56:32
-mlqz2ojzlx02dlkz1	Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-18 19:39:06.585822
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 23:07:34.650492
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-17 19:10:47
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 16:56:18.534402
 \.
 
 
@@ -1254,7 +1254,7 @@ mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 32, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 30, true);
 
 
 --
@@ -1454,5 +1454,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict GaungUOdpSdg5chcCZh8GDW79bz80zwhiEfu6Df0DHd79vIh9pg6915ddrOkmEn
+\unrestrict 6eGxjjkqdPva6NzG3OF6P0tMXNrkFyDfINfKF30A92JKMIwagLzmFBhhZuaS4B4
 

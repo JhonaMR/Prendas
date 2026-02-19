@@ -9,6 +9,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+const https = require('https');
 
 // Importar configuración y rutas
 const { initDatabase, closePool } = require('./config/database');
@@ -21,6 +23,7 @@ const app = express();
 // Obtener puerto y host de variables de entorno
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
+const USE_HTTPS = process.env.USE_HTTPS !== 'false'; // true por defecto
 
 // ==================== MIDDLEWARES ====================
 
@@ -119,16 +122,44 @@ async function startServer() {
         await initDatabase();
         logger.info('✅ PostgreSQL inicializado correctamente');
 
-        // Iniciar servidor Express
-        app.listen(PORT, HOST, () => {
+        // Crear servidor HTTPS o HTTP según configuración
+        let server;
+        const protocol = USE_HTTPS ? 'https' : 'http';
+        
+        if (USE_HTTPS) {
+            const certDir = path.join(__dirname, '../certs');
+            const keyPath = path.join(certDir, 'server.key');
+            const certPath = path.join(certDir, 'server.crt');
+            
+            // Verificar si existen los certificados
+            if (!fs.existsSync(keyPath) || !fs.existsSync(certPath)) {
+                console.error('\n❌ Certificados SSL no encontrados');
+                console.error(`   Ejecuta: node backend/scripts/generate-ssl-cert.js`);
+                process.exit(1);
+            }
+            
+            const options = {
+                key: fs.readFileSync(keyPath),
+                cert: fs.readFileSync(certPath)
+            };
+            
+            server = https.createServer(options, app);
+        } else {
+            const http = require('http');
+            server = http.createServer(app);
+        }
+
+        // Iniciar servidor
+        server.listen(PORT, HOST, () => {
             console.log('\n' + '='.repeat(60));
             console.log('🚀 SERVIDOR BACKEND INICIADO');
             console.log('='.repeat(60));
-            console.log(`📍 URL Local:    http://localhost:${PORT}`);
-            console.log(`📍 URL Red:      http://${getLocalIP()}:${PORT}`);
+            console.log(`📍 URL Local:    ${protocol}://localhost:${PORT}`);
+            console.log(`📍 URL Red:      ${protocol}://${getLocalIP()}:${PORT}`);
             console.log(`📁 Entorno:      ${process.env.NODE_ENV || 'development'}`);
             console.log(`🗄️  Base de datos: PostgreSQL (${process.env.DB_HOST}:${process.env.DB_PORT})`);
             console.log(`🔐 CORS habilitado para:`, corsOptions.origin.join(', '));
+            console.log(`🔒 Protocolo:    ${protocol.toUpperCase()}`);
             console.log('='.repeat(60));
             console.log('\n✅ El backend está listo para recibir peticiones');
             console.log('📝 Los logs de peticiones aparecerán abajo:\n');
