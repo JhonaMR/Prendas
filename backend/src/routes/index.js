@@ -147,19 +147,14 @@ router.delete('/delivery-dates/:id', verifyToken, preventNonAdminEdit, deleteDel
 const backupRoutes = require('./backupRoutes');
 router.use('/backups', backupRoutes);
 
-// ==================== RUTA DE PRUEBA ====================
+// ==================== HEALTH CHECK ====================
 
-/**
- * @route   GET /api/health
- * @desc    Verificar que el servidor está funcionando
- * @access  Public
- */
-router.get('/health', (req, res) => {
-    res.json({
-        success: true,
-        message: 'Backend funcionando correctamente',
-        timestamp: new Date().toISOString()
-    });
-});
+const healthRoutes = require('./health');
+router.use('/', healthRoutes);
+
+// ==================== CONFIGURATION RELOAD ====================
+
+const configReloadRoutes = require('./configReload');
+router.use('/config', configReloadRoutes);
 
 module.exports = router;

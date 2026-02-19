@@ -16,6 +16,9 @@ const https = require('https');
 const { initDatabase, closePool } = require('./config/database');
 const apiRoutes = require('./routes');
 const logger = require('./utils/logger');
+const configurationManager = require('./config/configurationManager');
+const postgres = require('./config/postgres');
+const { trackRemoteClient, logDatabaseOperation } = require('./middleware/remoteClientTracking');
 
 // Crear aplicación Express
 const app = express();
@@ -58,6 +61,38 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
     const timestamp = new Date().toISOString();
     logger.info(`${req.method} ${req.path}`);
+    next();
+});
+
+/**
+ * Middleware para rastrear conexiones de clientes remotos
+ * Registra qué IP se usa para cada conexión a la base de datos
+ */
+app.use(trackRemoteClient);
+app.use(logDatabaseOperation);
+
+/**
+ * Middleware para verificar que la base de datos esté lista
+ * Retorna 503 Service Unavailable si la BD no está disponible
+ * Excepto para el endpoint /health que siempre debe estar disponible
+ */
+app.use((req, res, next) => {
+    // Permitir acceso al endpoint de health sin verificación
+    if (req.path === '/health') {
+        return next();
+    }
+
+    // Verificar estado de conexión
+    const connectionStatus = postgres.getConnectionStatus();
+    if (!connectionStatus.connected) {
+        logger.warn(`⚠️ Solicitud rechazada: Base de datos no disponible (${req.method} ${req.path})`);
+        return res.status(503).json({
+            success: false,
+            message: 'Base de datos no disponible. Por favor, intente más tarde.',
+            status: 'service_unavailable'
+        });
+    }
+
     next();
 });
 
@@ -117,10 +152,24 @@ app.use((err, req, res, next) => {
  */
 async function startServer() {
     try {
-        // Inicializar base de datos PostgreSQL
-        logger.info('Inicializando PostgreSQL...');
-        await initDatabase();
-        logger.info('✅ PostgreSQL inicializado correctamente');
+        // Inicializar configuración con detección de red
+        logger.info('🔧 Inicializando configuración con detección de red...');
+        await configurationManager.initializeConfiguration();
+        logger.info('✅ Configuración inicializada correctamente');
+
+        // Inicializar pool de conexiones con fallback
+        logger.info('🗄️ Inicializando pool de conexiones con fallback...');
+        await postgres.initPoolWithFallback();
+        logger.info('✅ Pool de conexiones inicializado correctamente');
+
+        // Validar conectividad de base de datos
+        logger.info('🏥 Validando conectividad de base de datos...');
+        const isHealthy = await postgres.healthCheck();
+        if (!isHealthy) {
+            logger.warn('⚠️ Health check falló, pero continuando con la inicialización...');
+        } else {
+            logger.info('✅ Base de datos lista para aceptar solicitudes');
+        }
 
         // Crear servidor HTTPS o HTTP según configuración
         let server;
@@ -151,13 +200,15 @@ async function startServer() {
 
         // Iniciar servidor
         server.listen(PORT, HOST, () => {
+            const config = configurationManager.getConfiguration();
             console.log('\n' + '='.repeat(60));
             console.log('🚀 SERVIDOR BACKEND INICIADO');
             console.log('='.repeat(60));
             console.log(`📍 URL Local:    ${protocol}://localhost:${PORT}`);
             console.log(`📍 URL Red:      ${protocol}://${getLocalIP()}:${PORT}`);
-            console.log(`📁 Entorno:      ${process.env.NODE_ENV || 'development'}`);
-            console.log(`🗄️  Base de datos: PostgreSQL (${process.env.DB_HOST}:${process.env.DB_PORT})`);
+            console.log(`📁 Entorno:      ${config.NODE_ENV}`);
+            console.log(`🌐 IP Detectada: ${config.DETECTED_IP || 'No detectada'}`);
+            console.log(`🗄️  Base de datos: PostgreSQL (${config.DB_HOST}:${config.DB_PORT})`);
             console.log(`🔐 CORS habilitado para:`, corsOptions.origin.join(', '));
             console.log(`🔒 Protocolo:    ${protocol.toUpperCase()}`);
             console.log('='.repeat(60));
@@ -197,7 +248,7 @@ function getLocalIP() {
 process.on('SIGINT', async () => {
     console.log('\n\n🛑 Cerrando servidor...');
     try {
-        await closePool();
+        await postgres.closePool();
         logger.info('✅ Pool de conexiones cerrado');
     } catch (error) {
         logger.error('Error cerrando pool:', error);
@@ -208,7 +259,7 @@ process.on('SIGINT', async () => {
 process.on('SIGTERM', async () => {
     console.log('\n\n🛑 Servidor detenido');
     try {
-        await closePool();
+        await postgres.closePool();
         logger.info('✅ Pool de conexiones cerrado');
     } catch (error) {
         logger.error('Error cerrando pool:', error);
