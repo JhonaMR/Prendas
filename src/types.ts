@@ -2,7 +2,8 @@
 export enum UserRole {
   GENERAL = 'general',
   OBSERVER = 'observer',
-  ADMIN = 'admin'
+  ADMIN = 'admin',
+  DISEÑADORA = 'diseñadora'
 }
 
 export interface User {

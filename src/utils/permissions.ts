@@ -55,6 +55,14 @@ export function isGeneral(user: User | null): boolean {
 }
 
 /**
+ * Verificar si un usuario es diseñadora
+ */
+export function isDiseñadora(user: User | null): boolean {
+  if (!user) return false;
+  return user.role === UserRole.DISEÑADORA;
+}
+
+/**
  * Obtener el nivel de permiso
  */
 export function getPermissionLevel(user: User | null): 'FULL' | 'READ_ONLY' | 'LIMITED' | 'NONE' {
@@ -63,6 +71,7 @@ export function getPermissionLevel(user: User | null): 'FULL' | 'READ_ONLY' | 'L
   if (user.role === UserRole.ADMIN) return 'FULL';
   if (user.role === UserRole.OBSERVER) return 'READ_ONLY';
   if (user.role === UserRole.GENERAL) return 'LIMITED';
+  if (user.role === UserRole.DISEÑADORA) return 'LIMITED';
   
   return 'NONE';
 }

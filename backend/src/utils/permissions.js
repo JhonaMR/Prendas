@@ -2,7 +2,7 @@
  * 🔐 UTILIDADES DE PERMISOS
  * 
  * Funciones para verificar permisos de usuarios basados en su rol
- * Soporta roles: admin, observer, general
+ * Soporta roles: admin, observer, general, diseñadora
  */
 
 /**
@@ -36,6 +36,16 @@ function isGeneral(user) {
 }
 
 /**
+ * Verificar si un usuario es diseñadora
+ * @param {Object} user - Objeto de usuario con propiedad 'role'
+ * @returns {boolean} true si el usuario es diseñadora
+ */
+function isDiseñadora(user) {
+    if (!user || !user.role) return false;
+    return user.role.toLowerCase().trim() === 'diseñadora';
+}
+
+/**
  * Verificar si un usuario puede acceder a una sección
  * @param {Object} user - Objeto de usuario
  * @param {string} section - Nombre de la sección (ej: 'dashboard', 'maestras', 'users')
@@ -53,6 +63,13 @@ function canAccessSection(user, section) {
     // Observer puede acceder a todo excepto user management
     if (role === 'observer') {
         return sectionLower !== 'user-management' && sectionLower !== 'maestras-usuarios';
+    }
+
+    // Diseñadora solo puede acceder a secciones limitadas
+    if (role === 'diseñadora') {
+        return sectionLower === 'inventory' || 
+               sectionLower === 'orders' || 
+               sectionLower === 'delivery-dates';
     }
 
     // General solo puede acceder a secciones limitadas
@@ -151,6 +168,7 @@ function getPermissionLevel(user) {
     if (role === 'admin') return 'FULL';
     if (role === 'observer') return 'READ_ONLY';
     if (role === 'general') return 'LIMITED';
+    if (role === 'diseñadora') return 'LIMITED';
     
     return 'NONE';
 }
@@ -159,6 +177,7 @@ module.exports = {
     isObserver,
     isAdmin,
     isGeneral,
+    isDiseñadora,
     canAccessSection,
     canEdit,
     canCreate,
