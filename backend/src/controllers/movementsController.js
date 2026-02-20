@@ -507,7 +507,7 @@ const getOrders = async (req, res) => {
 
         const ordersWithItems = await Promise.all(orders.map(async (order) => {
             const itemsResult = await query(`
-                SELECT reference, quantity
+                SELECT reference, quantity, sale_price
                 FROM order_items
                 WHERE order_id = $1
             `, [order.id]);
@@ -568,18 +568,24 @@ const createOrder = async (req, res) => {
 
             // Insertar items
             for (const item of items) {
-                if (!item.reference || !item.quantity) {
-                    throw new Error('Cada item debe tener reference y quantity');
+                const salePrice = item.sale_price || item.salePrice;
+                
+                if (!item.reference || !item.quantity || salePrice === undefined) {
+                    throw new Error('Cada item debe tener reference, quantity y sale_price');
                 }
 
                 if (item.quantity <= 0) {
                     throw new Error('La cantidad debe ser mayor a 0');
                 }
 
+                if (salePrice <= 0) {
+                    throw new Error('El precio de venta debe ser mayor a 0');
+                }
+
                 await client.query(
-                    `INSERT INTO order_items (order_id, reference, quantity)
-                    VALUES ($1, $2, $3)`,
-                    [id, item.reference, item.quantity]
+                    `INSERT INTO order_items (order_id, reference, quantity, sale_price)
+                    VALUES ($1, $2, $3, $4)`,
+                    [id, item.reference, item.quantity, salePrice]
                 );
             }
         });

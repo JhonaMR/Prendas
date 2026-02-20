@@ -43,7 +43,9 @@ module.exports = {
     {
       // Frontend - Vite dev server
       name: 'inventario-frontend',
-      script: './start-frontend.cjs',
+      script: 'node',
+      args: 'node_modules/vite/bin/vite.js',
+      cwd: '..',
       instances: 1,
       exec_mode: 'fork',
       env: {

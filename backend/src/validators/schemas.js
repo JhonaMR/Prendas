@@ -103,7 +103,8 @@ const orderSchemas = {
     items: Joi.array().optional().items(
       Joi.object({
         reference_id: Joi.string().required(),
-        quantity: Joi.number().required().positive()
+        quantity: Joi.number().required().positive(),
+        sale_price: Joi.number().required().positive()
       })
     ),
     active: Joi.number().optional().valid(0, 1)
@@ -114,7 +115,8 @@ const orderSchemas = {
     items: Joi.array().optional().items(
       Joi.object({
         reference_id: Joi.string().required(),
-        quantity: Joi.number().required().positive()
+        quantity: Joi.number().required().positive(),
+        sale_price: Joi.number().required().positive()
       })
     ),
     active: Joi.number().optional().valid(0, 1)

@@ -45,12 +45,16 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       const newItems: ItemEntry[] = [];
       for (let i = 1; i < rows.length; i++) {
         const cols = rows[i].split(',').map(c => c.trim());
-        const [refId, qty] = cols;
+        const [refId, qty, salePrice] = cols;
         
-        if (refId && qty) {
+        if (refId && qty && salePrice) {
           const exists = state.references.some(r => r.id === refId);
           if (exists) {
-            newItems.push({ reference: refId, quantity: parseInt(qty) || 0 });
+            newItems.push({ 
+              reference: refId, 
+              quantity: parseInt(qty) || 0,
+              salePrice: parseFloat(salePrice) || 0
+            });
           }
         }
       }
@@ -70,8 +74,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
     }
 
     const totalValue = tempItems.reduce((acc, item) => {
-      const ref = state.references.find(r => r.id === item.reference);
-      return acc + (ref?.price || 0) * item.quantity;
+      return acc + (item.salePrice || 0) * item.quantity;
     }, 0);
 
     const newOrder: Order = {
@@ -193,7 +196,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
             <h3 className="text-xl font-black text-slate-800">2. Adjuntar Pedido</h3>
             <p className="text-[10px] text-slate-400 font-bold leading-relaxed px-2">
-              Formato CSV: <span className="text-blue-500">referencia,cantidad</span><br/>
+              Formato CSV: <span className="text-blue-500">referencia,cantidad,precio_venta</span><br/>
               La primera fila se ignora (Cabecera).
             </p>
             <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".csv,.txt" className="hidden" />
@@ -219,6 +222,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                 <div className="flex gap-4">
                   <span className="text-[10px] font-black text-slate-400 uppercase">Refs: {tempItems.length}</span>
                   <span className="text-[10px] font-black text-blue-500 uppercase">Total Unid: {totalUnits}</span>
+                  <span className="text-[10px] font-black text-green-600 uppercase">Total Valor: ${tempItems.reduce((acc, item) => acc + (item.salePrice || 0) * item.quantity, 0).toLocaleString()}</span>
                 </div>
               )}
             </div>
@@ -237,12 +241,14 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                     <tr className="border-b border-slate-100 bg-slate-50/30">
                       <th className="px-8 py-4 font-black text-slate-400 uppercase">Referencia</th>
                       <th className="px-8 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
-                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Subtotal Estimado</th>
+                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Precio Venta</th>
+                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {tempItems.map((item, idx) => {
                       const ref = state.references.find(r => r.id === item.reference);
+                      const subtotal = (item.salePrice || 0) * item.quantity;
                       return (
                         <tr key={idx} className="hover:bg-slate-50/50">
                           <td className="px-8 py-4">
@@ -250,10 +256,16 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                             <p className="text-[9px] font-bold text-slate-400 uppercase">{ref?.description}</p>
                           </td>
                           <td className="px-8 py-4 text-center font-black text-blue-600">{item.quantity}</td>
-                          <td className="px-8 py-4 text-right font-bold text-slate-400">${((ref?.price || 0) * item.quantity).toLocaleString()}</td>
+                          <td className="px-8 py-4 text-right font-bold text-slate-600">${(item.salePrice || 0).toLocaleString()}</td>
+                          <td className="px-8 py-4 text-right font-bold text-slate-400">${subtotal.toLocaleString()}</td>
                         </tr>
                       );
                     })}
+                    <tr className="bg-slate-50 border-t-2 border-slate-200 font-black">
+                      <td colSpan={2} className="px-8 py-4 text-right text-slate-700">TOTALES:</td>
+                      <td className="px-8 py-4 text-right text-slate-700">{tempItems.length} refs</td>
+                      <td className="px-8 py-4 text-right text-blue-600">${tempItems.reduce((acc, item) => acc + (item.salePrice || 0) * item.quantity, 0).toLocaleString()}</td>
+                    </tr>
                   </tbody>
                 </table>
               )}

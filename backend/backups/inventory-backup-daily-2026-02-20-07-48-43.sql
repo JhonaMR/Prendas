@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict L1fG2PFs6o7nuBEEntMSWgfoNNYI5w9hMgvLW7BlhaGazhZmbsaEzoQ3vlZbQtD
+\restrict L6Q7aKKh0MaP8DAfONIpv4kUDt1I0PDL9MgdfehVauHRi7OrIl02lPwNmN4yLJS
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -273,6 +273,27 @@ CREATE TABLE public.reception_items (
 ALTER TABLE public.reception_items OWNER TO postgres;
 
 --
+-- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.reception_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
+
+--
+-- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
+
+
+--
 -- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -304,6 +325,27 @@ CREATE TABLE public.return_reception_items (
 
 
 ALTER TABLE public.return_reception_items OWNER TO postgres;
+
+--
+-- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.return_reception_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
+
+--
+-- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_reception_items.id;
+
 
 --
 -- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
@@ -352,6 +394,48 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('public.reception_items_id_seq'::regclass);
+
+
+--
+-- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextval('public.return_reception_items_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
 
 --
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -1187,6 +1271,8 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 12	mlr00pbqb05frdbp6	12870	60
 13	mlr017j7mypl7s326	12907	42
 14	mlr01i6d0g5qluf2h	12906	60
+15	mlttcu00vutreommn	12959	114
+16	mlty1yl4a6ry302z0	12960	114
 \.
 
 
@@ -1209,6 +1295,8 @@ mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z
 mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z
 mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z
 mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z
+mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00
+mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00
 \.
 
 
@@ -1244,9 +1332,10 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-17 16:56:32
-mlqz2ojzlx02dlkz1	Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-18 19:39:06.585822
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 23:07:34.650492
+mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	general	1	\N	2026-02-19 16:07:22.727967
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-20 07:48:27.954407
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-19 07:53:24.898775
+mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-19 09:09:32.276684
 \.
 
 
@@ -1254,7 +1343,28 @@ mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 32, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 34, true);
+
+
+--
+-- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.reception_items_id_seq', 16, true);
+
+
+--
+-- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.return_reception_items_id_seq', 1, false);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
@@ -1454,5 +1564,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict L1fG2PFs6o7nuBEEntMSWgfoNNYI5w9hMgvLW7BlhaGazhZmbsaEzoQ3vlZbQtD
+\unrestrict L6Q7aKKh0MaP8DAfONIpv4kUDt1I0PDL9MgdfehVauHRi7OrIl02lPwNmN4yLJS
 

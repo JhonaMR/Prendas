@@ -67,6 +67,7 @@ export type ChargeType = 'Compra' | 'Cobro' | null;
 export interface ItemEntry {
   reference: string;
   quantity: number;
+  salePrice?: number;
 }
 
 export interface AuditLog {

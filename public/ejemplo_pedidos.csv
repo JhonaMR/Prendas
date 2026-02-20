@@ -1,1 +1,4 @@
-referencia,cantidad
+referencia,cantidad,precio_venta
+REF001,10,25000
+REF002,5,35000
+REF003,8,28000
