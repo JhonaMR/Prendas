@@ -1,0 +1,36 @@
+/* Role Badge Styling */
+
+.role-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+}
+
+.role-badge-label {
+  font-size: 0.5rem;
+  font-weight: 900;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-bottom-left-radius: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+/* Role-specific colors */
+.role-badge-admin {
+  background-color: #ec4899; /* pink-500 */
+}
+
+.role-badge-observer {
+  background-color: #a855f7; /* purple-500 */
+}
+
+.role-badge-general {
+  background-color: #3b82f6; /* blue-500 */
+}
+
+.role-badge-diseñadora {
+  background-color: #4ade80; /* green-400 */
+}

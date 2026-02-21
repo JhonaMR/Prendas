@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
 import { canEdit, canDelete } from '../utils/permissions';
+import RoleBadge from '../components/Badge/RoleBadge';
 
 // Helper Components
 const TabBtn = ({ active, onClick, label }: any) => (
@@ -1139,7 +1140,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                     onChange={(e) => setUserRole(e.target.value as UserRole)}
                     className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
                   >
-                    <option value={UserRole.GENERAL}>Vendedor / Operario</option>
+                    <option value={UserRole.GENERAL}>General</option>
                     <option value={UserRole.OBSERVER}>Observador</option>
                     <option value={UserRole.DISEÑADORA}>Diseñadora</option>
                     <option value={UserRole.ADMIN}>Administrador</option>
@@ -1167,17 +1168,8 @@ const MastersView: React.FC<MastersViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
              {state.users.map(u => (
                <div key={u.id} className="bg-white p-8 rounded-[40px] border border-slate-100 flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                  {u.role === UserRole.ADMIN && (
-                    <div className="absolute top-0 right-0 p-2">
-                      <span className="text-[8px] font-black bg-pink-500 text-white px-3 py-1 rounded-bl-2xl uppercase tracking-widest">Admin</span>
-                    </div>
-                  )}
-                  {u.role === UserRole.OBSERVER && (
-                    <div className="absolute top-0 right-0 p-2">
-                      <span className="text-[8px] font-black bg-purple-500 text-white px-3 py-1 rounded-bl-2xl uppercase tracking-widest">Observador</span>
-                    </div>
-                  )}
-                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
+                  <RoleBadge role={u.role} />
+                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}
                   </div>
                   <div>
