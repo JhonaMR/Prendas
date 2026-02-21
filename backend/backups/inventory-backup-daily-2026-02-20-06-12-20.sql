@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict qtfOZbEv9u1Yk4Xy69zyMBzCvgQx7b4hjxNtw197Fc4vQURxLFwKmsHSilOXsaz
+\restrict v3YNTtiPMjuFxSLG9kyD26uIcqmlFTV0jFK1pcXVY9EZwlCIYvtF6cAaPJgm67a
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -1019,6 +1019,24 @@ mlsknr6ze3ghsw5lh	12825	12
 mlsknr6ze3ghsw5lh	12818	12
 mlsknr6ze3ghsw5lh	12821	12
 mlsknr6ze3ghsw5lh	12840	12
+mlsknr6ze3ghsw5lh	12923	18
+mlsknr6ze3ghsw5lh	12882	18
+mlsknr6ze3ghsw5lh	12909	18
+mlsknr6ze3ghsw5lh	12872	18
+mlsknr6ze3ghsw5lh	12911	18
+mlsknr6ze3ghsw5lh	12919	18
+mlsknr6ze3ghsw5lh	12926	18
+mlsknr6ze3ghsw5lh	12835	12
+mlsknr6ze3ghsw5lh	12831	12
+mlsknr6ze3ghsw5lh	12836	12
+mlsknr6ze3ghsw5lh	12855	12
+mlsknr6ze3ghsw5lh	12129	12
+mlsknr6ze3ghsw5lh	12841	12
+mlsknr6ze3ghsw5lh	12834	12
+mlsknr6ze3ghsw5lh	12825	12
+mlsknr6ze3ghsw5lh	12818	12
+mlsknr6ze3ghsw5lh	12821	12
+mlsknr6ze3ghsw5lh	12840	12
 \.
 
 
@@ -1246,7 +1264,7 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
 mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-17 16:56:32
 mlqz2ojzlx02dlkz1	Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-18 19:39:06.585822
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 23:41:42.363541
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 23:52:18.552948
 \.
 
 
@@ -1454,5 +1472,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qtfOZbEv9u1Yk4Xy69zyMBzCvgQx7b4hjxNtw197Fc4vQURxLFwKmsHSilOXsaz
+\unrestrict v3YNTtiPMjuFxSLG9kyD26uIcqmlFTV0jFK1pcXVY9EZwlCIYvtF6cAaPJgm67a
 

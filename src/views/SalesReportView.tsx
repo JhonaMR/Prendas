@@ -150,6 +150,68 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
       };
     }).filter(v => v.pedidos > 0); // Solo vendedores con pedidos
 
+    // Análisis de Valores Vendidos por Vendedor
+    const valoresVendidosData = state.sellers.map(seller => {
+      const sellerOrders = correriaOrders.filter(o => o.sellerId === seller.id);
+      const clientIds = sellerOrders.map(o => o.clientId);
+
+      // Cantidad de pedidos
+      const cantidadPedidos = sellerOrders.length;
+
+      // Valor vendido a precio de lista (referencia price)
+      const valorListaTotal = sellerOrders.reduce((acc, order) => {
+        return acc + order.items
+          .filter(item => maletaRefIds.includes(item.reference))
+          .reduce((sum, item) => {
+            const ref = state.references.find(r => r.id === item.reference);
+            return sum + (item.quantity * (ref?.price || 0));
+          }, 0);
+      }, 0);
+
+      // Valor vendido real (totalValue del pedido - ya incluye descuentos)
+      const valorRealTotal = sellerOrders
+        .filter(order => order.items.some(item => maletaRefIds.includes(item.reference)))
+        .reduce((acc, order) => acc + order.totalValue, 0);
+
+      // Diferencia valor
+      const diferenciaValorVendedor = valorListaTotal - valorRealTotal;
+
+      // Valor despachado a precio de pedidos (salePrice promedio por referencia)
+      const valorDespachadoReal = correriaDispatches
+        .filter(d => clientIds.includes(d.clientId))
+        .reduce((acc, dispatch) => {
+          return acc + dispatch.items
+            .filter(item => maletaRefIds.includes(item.reference))
+            .reduce((sum, dispatchItem) => {
+              // Buscar el salePrice promedio en los pedidos del vendedor para esta referencia
+              let salePriceForItem = 0;
+              let countItems = 0;
+              for (const order of sellerOrders) {
+                const orderItem = order.items.find(oi => oi.reference === dispatchItem.reference);
+                if (orderItem && orderItem.salePrice) {
+                  salePriceForItem += orderItem.salePrice;
+                  countItems++;
+                }
+              }
+              const avgSalePrice = countItems > 0 ? salePriceForItem / countItems : 0;
+              return sum + (dispatchItem.quantity * avgSalePrice);
+            }, 0);
+        }, 0);
+
+      // Cumplimiento real (valor despachado / valor vendido real)
+      const cumplimientoReal = valorRealTotal > 0 ? ((valorDespachadoReal / valorRealTotal) * 100) : 0;
+
+      return {
+        nombre: seller.name,
+        pedidos: cantidadPedidos,
+        valorLista: valorListaTotal,
+        valorReal: valorRealTotal,
+        diferencia: diferenciaValorVendedor,
+        valorDespachado: valorDespachadoReal,
+        cumplimientoReal
+      };
+    }).filter(v => v.pedidos > 0); // Solo vendedores con pedidos
+
     // Análisis por diseñadora
     const disenadoras = [...new Set(maletaReferences.map(r => r.designer))].filter(Boolean);
     
@@ -213,6 +275,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
 
       // Tablas
       vendedoresData,
+      valoresVendidosData,
       disenadorasData
     };
   }, [selectedCorreriaId, state, maletaReferences]);
@@ -468,6 +531,111 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
                     <td className="px-4 py-4 text-center">
                       <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 font-black text-xs rounded-full">
                         {metrics.cumplimientoValor.toFixed(1)}% GLOBAL (VALOR)
+                      </span>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+
+          {/* Tabla: Análisis de Valores Vendidos */}
+          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-8 py-4">
+              <h3 className="text-lg font-black text-white uppercase tracking-wide">
+                Análisis de Valores Vendidos
+              </h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs min-w-[1100px]">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-100">
+                    <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                      Vendedor
+                    </th>
+                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                      Pedidos
+                    </th>
+                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                      Valor Lista
+                    </th>
+                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                      Valor Real
+                    </th>
+                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                      Diferencia
+                    </th>
+                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                      Cumplimiento Real
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {metrics.valoresVendidosData.map((vendedor, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 font-black text-slate-800 text-sm">
+                        {vendedor.nombre}
+                      </td>
+                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                        {vendedor.pedidos}
+                      </td>
+                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                        $ {vendedor.valorLista.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-4 text-center font-black text-emerald-600">
+                        $ {vendedor.valorReal.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <span className="font-black text-red-600">
+                          $ {vendedor.diferencia.toLocaleString()}
+                        </span>
+                        <p className="text-[9px] text-red-500 font-bold">
+                          {vendedor.valorLista > 0 ? ((vendedor.diferencia / vendedor.valorLista) * 100).toFixed(1) : 0}% descuento
+                        </p>
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <span className="font-black text-emerald-600">
+                            $ {vendedor.valorDespachado.toLocaleString()}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-black text-xs">{vendedor.cumplimientoReal.toFixed(1)}%</span>
+                            <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                              <div 
+                                className="bg-emerald-500 h-1.5 rounded-full" 
+                                style={{ width: `${Math.min(vendedor.cumplimientoReal, 100)}%` }}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="bg-slate-100 border-t-2 border-slate-300">
+                    <td className="px-6 py-4 font-black text-slate-700 uppercase text-xs">
+                      Totales Consolidado
+                    </td>
+                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                      {metrics.valoresVendidosData.reduce((acc, v) => acc + v.pedidos, 0)}
+                    </td>
+                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                      $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorLista, 0).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-4 text-center font-black text-emerald-600">
+                      $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorReal, 0).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="font-black text-red-600">
+                        $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.diferencia, 0).toLocaleString()}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 font-black text-xs rounded-full">
+                        {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorDespachado, 0) > 0 
+                          ? ((metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorDespachado, 0) / metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorReal, 0)) * 100).toFixed(1)
+                          : 0}% GLOBAL
                       </span>
                     </td>
                   </tr>

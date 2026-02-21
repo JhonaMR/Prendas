@@ -986,48 +986,70 @@ const App: React.FC = () => {
 
           <div className="p-6 space-y-0.5 overflow-y-auto max-h-[calc(100vh-200px)] custom-scrollbar">
             <NavItem active={activeTab === 'home'} onClick={() => handleTabChange('home')} icon={<Icons.Home />} label="Inicio" />
-            <div className="my-2 border-t border-slate-100 pt-2">
-              <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Manejo de Inventario</p>
-              <NavItem active={activeTab === 'reception'} onClick={() => handleTabChange('reception')} icon={<Icons.Reception />} label="Recepción" />
-              <NavItem active={activeTab === 'dispatch'} onClick={() => handleTabChange('dispatch')} icon={<Icons.Dispatch />} label="Despachos" />
-              <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
-            </div>
-            <div className="my-2 border-t border-slate-100 pt-2">
-              <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Comercial</p>
-              <NavItem 
-                active={activeTab === 'orders'} 
-                onClick={() => handleTabChange('orders')} 
-                icon={<Icons.Orders />} 
-                label={
-                  <span className="flex items-center gap-2">
-                    Pedidos
-                    {hasUnsavedOrderChanges && (
-                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                    )}
-                  </span>
-                } 
-              />
-              <NavItem 
-                active={activeTab === 'dispatchControl'} 
-                onClick={() => handleTabChange('dispatchControl')} 
-                icon={<Icons.Inventory />} 
-                label="Control de Despachos" 
-             />
-              <NavItem active={activeTab === 'settle'} onClick={() => handleTabChange('settle')} icon={<Icons.Settle />} label="Asentar Ventas" />
-              <NavItem active={activeTab === 'salesReport'} onClick={() => handleTabChange('salesReport')} icon={<Icons.Reports />} label="Informe de Ventas" />
-              <NavItem active={activeTab === 'orderHistory'} onClick={() => handleTabChange('orderHistory')} icon={<Icons.History />} label="Historial Pedidos" />
-            </div>
-            <div className="my-2 border-t border-slate-100 pt-2">
-              <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Producción</p>
-              <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas de Entrega" />
-            </div>
-            <div className="my-2 border-t border-slate-100 pt-2">
-              <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
-              <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
-              {user.role === UserRole.ADMIN && (
-                <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
-              )}
-            </div>
+            
+            {/* Mostrar secciones según el rol */}
+            {user.role !== UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Manejo de Inventario</p>
+                <NavItem active={activeTab === 'reception'} onClick={() => handleTabChange('reception')} icon={<Icons.Reception />} label="Recepción" />
+                <NavItem active={activeTab === 'dispatch'} onClick={() => handleTabChange('dispatch')} icon={<Icons.Dispatch />} label="Despachos" />
+                <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
+              </div>
+            )}
+            
+            {user.role === UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Operaciones</p>
+                <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
+                <NavItem active={activeTab === 'orders'} onClick={() => handleTabChange('orders')} icon={<Icons.Orders />} label="Pedidos" />
+                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas Entrega" />
+              </div>
+            )}
+            
+            {user.role !== UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Comercial</p>
+                <NavItem 
+                  active={activeTab === 'orders'} 
+                  onClick={() => handleTabChange('orders')} 
+                  icon={<Icons.Orders />} 
+                  label={
+                    <span className="flex items-center gap-2">
+                      Pedidos
+                      {hasUnsavedOrderChanges && (
+                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                      )}
+                    </span>
+                  } 
+                />
+                <NavItem 
+                  active={activeTab === 'dispatchControl'} 
+                  onClick={() => handleTabChange('dispatchControl')} 
+                  icon={<Icons.Inventory />} 
+                  label="Control de Despachos" 
+               />
+                <NavItem active={activeTab === 'settle'} onClick={() => handleTabChange('settle')} icon={<Icons.Settle />} label="Asentar Ventas" />
+                <NavItem active={activeTab === 'salesReport'} onClick={() => handleTabChange('salesReport')} icon={<Icons.Reports />} label="Informe de Ventas" />
+                <NavItem active={activeTab === 'orderHistory'} onClick={() => handleTabChange('orderHistory')} icon={<Icons.History />} label="Historial Pedidos" />
+              </div>
+            )}
+            
+            {user.role !== UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Producción</p>
+                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas de Entrega" />
+              </div>
+            )}
+            
+            {user.role !== UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
+                <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
+                {user.role === UserRole.ADMIN && (
+                  <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
+                )}
+              </div>
+            )}
           </div>
 
           <div className="absolute bottom-0 left-0 w-full p-8 border-t border-slate-100 bg-slate-50/50">

@@ -1141,6 +1141,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                   >
                     <option value={UserRole.GENERAL}>Vendedor / Operario</option>
                     <option value={UserRole.OBSERVER}>Observador</option>
+                    <option value={UserRole.DISEÑADORA}>Diseñadora</option>
                     <option value={UserRole.ADMIN}>Administrador</option>
                   </select>
                 </div>

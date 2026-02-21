@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict 4zffE3aX3DnX9ul6hxZstc7yQQqOdc7pFLvmvCebqLKHqSBkI6uaaonbj118J1T
+\restrict l6BI9OXkSlbtzwcK7k27ydAjzA0Rdj4wBMKgc6QhzNvKvbva1vYvcch3b3uDo3s
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -200,7 +200,8 @@ ALTER TABLE public.dispatches OWNER TO postgres;
 CREATE TABLE public.order_items (
     order_id character varying(255) NOT NULL,
     reference character varying(255) NOT NULL,
-    quantity integer NOT NULL
+    quantity integer NOT NULL,
+    sale_price numeric(10,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -1000,25 +1001,45 @@ COPY public.dispatches (id, client_id, correria_id, invoice_no, remission_no, di
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.order_items (order_id, reference, quantity) FROM stdin;
-mlsknr6ze3ghsw5lh	12923	18
-mlsknr6ze3ghsw5lh	12882	18
-mlsknr6ze3ghsw5lh	12909	18
-mlsknr6ze3ghsw5lh	12872	18
-mlsknr6ze3ghsw5lh	12911	18
-mlsknr6ze3ghsw5lh	12919	18
-mlsknr6ze3ghsw5lh	12926	18
-mlsknr6ze3ghsw5lh	12835	12
-mlsknr6ze3ghsw5lh	12831	12
-mlsknr6ze3ghsw5lh	12836	12
-mlsknr6ze3ghsw5lh	12855	12
-mlsknr6ze3ghsw5lh	12129	12
-mlsknr6ze3ghsw5lh	12841	12
-mlsknr6ze3ghsw5lh	12834	12
-mlsknr6ze3ghsw5lh	12825	12
-mlsknr6ze3ghsw5lh	12818	12
-mlsknr6ze3ghsw5lh	12821	12
-mlsknr6ze3ghsw5lh	12840	12
+COPY public.order_items (order_id, reference, quantity, sale_price) FROM stdin;
+mlsknr6ze3ghsw5lh	12923	18	0.00
+mlsknr6ze3ghsw5lh	12882	18	0.00
+mlsknr6ze3ghsw5lh	12909	18	0.00
+mlsknr6ze3ghsw5lh	12872	18	0.00
+mlsknr6ze3ghsw5lh	12911	18	0.00
+mlsknr6ze3ghsw5lh	12919	18	0.00
+mlsknr6ze3ghsw5lh	12926	18	0.00
+mlsknr6ze3ghsw5lh	12835	12	0.00
+mlsknr6ze3ghsw5lh	12831	12	0.00
+mlsknr6ze3ghsw5lh	12836	12	0.00
+mlsknr6ze3ghsw5lh	12855	12	0.00
+mlsknr6ze3ghsw5lh	12129	12	0.00
+mlsknr6ze3ghsw5lh	12841	12	0.00
+mlsknr6ze3ghsw5lh	12834	12	0.00
+mlsknr6ze3ghsw5lh	12825	12	0.00
+mlsknr6ze3ghsw5lh	12818	12	0.00
+mlsknr6ze3ghsw5lh	12821	12	0.00
+mlsknr6ze3ghsw5lh	12840	12	0.00
+mlsknr6ze3ghsw5lh	12923	18	0.00
+mlsknr6ze3ghsw5lh	12882	18	0.00
+mlsknr6ze3ghsw5lh	12909	18	0.00
+mlsknr6ze3ghsw5lh	12872	18	0.00
+mlsknr6ze3ghsw5lh	12911	18	0.00
+mlsknr6ze3ghsw5lh	12919	18	0.00
+mlsknr6ze3ghsw5lh	12926	18	0.00
+mlsknr6ze3ghsw5lh	12835	12	0.00
+mlsknr6ze3ghsw5lh	12831	12	0.00
+mlsknr6ze3ghsw5lh	12836	12	0.00
+mlsknr6ze3ghsw5lh	12855	12	0.00
+mlsknr6ze3ghsw5lh	12129	12	0.00
+mlsknr6ze3ghsw5lh	12841	12	0.00
+mlsknr6ze3ghsw5lh	12834	12	0.00
+mlsknr6ze3ghsw5lh	12825	12	0.00
+mlsknr6ze3ghsw5lh	12818	12	0.00
+mlsknr6ze3ghsw5lh	12821	12	0.00
+mlsknr6ze3ghsw5lh	12840	12	0.00
+mlvqvvv4xeps9sa84	12877	45	10900.00
+mlvqvvv4xeps9sa84	12871	100	10000.00
 \.
 
 
@@ -1028,6 +1049,7 @@ mlsknr6ze3ghsw5lh	12840	12
 
 COPY public.orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number) FROM stdin;
 mlsknr6ze3ghsw5lh	179	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6616200.00	2026-02-18T21:56:32.747Z	Admin Principal	1
+mlvqvvv4xeps9sa84	157	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	1490500.00	2026-02-21T03:14:08.272Z	Admin Principal	3
 \.
 
 
@@ -1246,7 +1268,8 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
 mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-17 16:56:32
 mlqz2ojzlx02dlkz1	Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-18 19:39:06.585822
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-18 23:44:35.721784
+mlvq40fm4ulz5ydor	prueba	BBB	$2b$10$5xLpC7NIkhxGrDCO26DKUOdZS1XSCBPls00dJoE7LTpTwOH6LQjPW	diseñadora	1	\N	2026-02-20 22:31:39.944861
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-20 22:33:28.440787
 \.
 
 
@@ -1454,5 +1477,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 4zffE3aX3DnX9ul6hxZstc7yQQqOdc7pFLvmvCebqLKHqSBkI6uaaonbj118J1T
+\unrestrict l6BI9OXkSlbtzwcK7k27ydAjzA0Rdj4wBMKgc6QhzNvKvbva1vYvcch3b3uDo3s
 

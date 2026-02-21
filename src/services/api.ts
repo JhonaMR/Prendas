@@ -77,10 +77,100 @@ class ApiService {
    * Manejar respuesta HTTP
    */
   private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+    const timestamp = new Date().toISOString();
+    
     try {
-      const data = await response.json();
+      // 1.2 Add response logging to handleResponse()
+      // Log complete Response object including status, statusText, ok, headers
+      console.log(`[${timestamp}] 📨 Response received:`, {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        url: response.url,
+        headers: {
+          contentType: response.headers.get('content-type'),
+          contentLength: response.headers.get('content-length'),
+          corsOrigin: response.headers.get('access-control-allow-origin'),
+          corsAllowCredentials: response.headers.get('access-control-allow-credentials'),
+          corsAllowMethods: response.headers.get('access-control-allow-methods')
+        }
+      });
+
+      // Clone response to allow multiple reads
+      const responseClone = response.clone();
       
+      // 3.2 Handle redirect responses (3xx status)
+      if (response.status >= 300 && response.status < 400) {
+        console.warn(`[${timestamp}] ⚠️ Redirect response received:`, {
+          status: response.status,
+          statusText: response.statusText,
+          location: response.headers.get('location')
+        });
+        
+        return {
+          success: false,
+          message: `Redirect response (${response.status}): ${response.statusText}`
+        };
+      }
+      
+      // 3.2 Handle server errors (5xx status)
+      if (response.status >= 500 && response.status < 600) {
+        console.error(`[${timestamp}] ❌ Server error response:`, {
+          status: response.status,
+          statusText: response.statusText
+        });
+        
+        return {
+          success: false,
+          message: `Error del servidor (${response.status})`
+        };
+      }
+      
+      // 3.2 Handle empty response bodies
+      const contentLength = response.headers.get('content-length');
+      const contentType = response.headers.get('content-type');
+      
+      if (contentLength === '0' || !contentType?.includes('application/json')) {
+        // 3.1 Use response.ok as source of truth
+        if (response.ok) {
+          console.log(`[${timestamp}] ✅ Empty response body but response.ok is true, treating as success`);
+          return {
+            success: true,
+            message: 'Success',
+            data: {} as T
+          };
+        }
+      }
+      
+      // 1.3 Add JSON parsing logging
+      let data: any;
+      try {
+        data = await response.json();
+        console.log(`[${timestamp}] ✅ Response successfully parsed as JSON:`, data);
+      } catch (parseError: any) {
+        console.error(`[${timestamp}] ❌ Failed to parse response as JSON:`, parseError);
+        const rawText = await responseClone.text();
+        console.error(`[${timestamp}] 📝 Raw response text:`, rawText);
+        
+        // 3.2 Handle malformed JSON with descriptive error messages
+        return {
+          success: false,
+          message: `Invalid response format (${response.status}): ${rawText.substring(0, 100)}`
+        };
+      }
+      
+      // 3.1 Use response.ok as source of truth
       if (!response.ok) {
+        // 1.4 Add error logging with full context
+        console.warn(`[${timestamp}] ⚠️ Response not OK:`, {
+          status: response.status,
+          statusText: response.statusText,
+          message: data.message || `Error del servidor (${response.status})`,
+          error: data.error,
+          url: response.url,
+          timestamp
+        });
+        
         return {
           success: false,
           message: data.message || `Error del servidor (${response.status})`,
@@ -88,9 +178,18 @@ class ApiService {
         };
       }
       
+      console.log(`[${timestamp}] ✅ Response OK, returning data`);
       return data;
     } catch (error: any) {
-      // Si no es JSON válido, retornar error genérico
+      // 1.4 Add error logging with full context
+      console.error(`[${timestamp}] ❌ Unexpected error in handleResponse:`, {
+        error: error.message,
+        stack: error.stack,
+        responseStatus: response.status,
+        responseUrl: response.url,
+        timestamp
+      });
+      
       if (error instanceof SyntaxError) {
         return {
           success: false,
@@ -110,23 +209,70 @@ class ApiService {
    * Login con loginCode + PIN
    */
   async login(loginCode: string, pin: string): Promise<ApiResponse<LoginResponse>> {
+    const timestamp = new Date().toISOString();
+    
     try {
+      // 1.1 Add request logging to api.login()
+      // Log loginCode (without PIN) when login request is initiated
+      console.log(`[${timestamp}] 🔐 Initiating login request:`, {
+        loginCode,
+        method: 'POST',
+        url: `${this.getApiUrl()}/auth/login`,
+        timestamp
+      });
+      
       const response = await fetch(`${this.getApiUrl()}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ loginCode, pin })
       });
 
+      console.log(`[${timestamp}] 📨 Response received from /auth/login`);
       const data = await this.handleResponse<LoginResponse>(response);
 
-      // Guardar token en localStorage
+      // 3.3 Store JWT token in localStorage after successful login
+      // 3.3 Store current user data in localStorage
       if (data.success && data.data) {
+        console.log(`[${timestamp}] ✅ Login successful, storing token and user data`);
         localStorage.setItem('auth_token', data.data.token);
         localStorage.setItem('current_user', JSON.stringify(data.data.user));
+        
+        // 3.3 Verify token is stored correctly
+        const storedToken = localStorage.getItem('auth_token');
+        const storedUser = localStorage.getItem('current_user');
+        
+        if (storedToken === data.data.token) {
+          console.log(`[${timestamp}] ✅ Token verified in localStorage`);
+        } else {
+          console.error(`[${timestamp}] ❌ Token verification failed: stored token does not match`);
+        }
+        
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.id === data.data.user.id) {
+            console.log(`[${timestamp}] ✅ User data verified in localStorage`);
+          } else {
+            console.error(`[${timestamp}] ❌ User data verification failed: stored user does not match`);
+          }
+        }
+      } else {
+        console.error(`[${timestamp}] ❌ Login failed:`, {
+          message: data.message,
+          error: data.error,
+          timestamp
+        });
       }
 
       return data;
     } catch (error: any) {
+      // 1.4 Add error logging with full context
+      console.error(`[${timestamp}] ❌ Exception in login:`, {
+        error: error.message,
+        stack: error.stack,
+        loginCode,
+        timestamp
+      });
+      
       return {
         success: false,
         message: error.message || 'Error al iniciar sesión'

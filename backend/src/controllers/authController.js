@@ -201,7 +201,7 @@ const register = async (req, res) => {
         await query(`
             INSERT INTO users (id, name, login_code, pin_hash, role, active)
             VALUES ($1, $2, $3, $4, $5, $6)
-        `, [id, name, loginCode.toUpperCase(), pinHash, userRole, true]);
+        `, [id, name, loginCode.toUpperCase(), pinHash, userRole, 1]);
 
         // ===== RESPUESTA EXITOSA =====
 
@@ -395,10 +395,10 @@ const updateUser = async (req, res) => {
         // Normalizar rol a minúsculas
         const normalizedRole = role.toLowerCase();
 
-        if (!['admin', 'observer', 'general'].includes(normalizedRole)) {
+        if (!['admin', 'observer', 'general', 'diseñadora'].includes(normalizedRole)) {
             return res.status(400).json({
                 success: false,
-                message: 'El rol debe ser "admin", "observer" o "general"'
+                message: 'El rol debe ser "admin", "observer", "general" o "diseñadora"'
             });
         }
 
