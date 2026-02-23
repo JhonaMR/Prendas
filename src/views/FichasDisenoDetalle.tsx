@@ -77,10 +77,25 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 { concepto: 'CODIGO BARRAS', um: 'UNIDAD', vlr_unit: 10, cant: 2, total: 20 },
                 { concepto: 'BOLSA', um: 'UNIDAD', vlr_unit: 94, cant: 1, total: 94 }
             ]);
+            
+            // Calcular PROV. DSCTO CCIAL
+            const calcDesctoComercial = () => {
+                const totalMP = 0; // En nueva ficha no hay materia prima aún
+                const totalMO = 200 + 500; // EMPAQUE + CORTE
+                const totalID = 70 + 10 + 90 + 10 * 2 + 94; // Suma de insumos directos
+                const totalII = 0; // En nueva ficha no hay insumos indirectos aún
+                const suma = totalMP + totalMO + totalID + totalII;
+                const conMargen = suma * 1.35;
+                const descto70 = conMargen * 0.70;
+                const desctoFinal = descto70 * 0.19;
+                return Math.round(desctoFinal);
+            };
+            
             setProvisiones([
                 { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
                 { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
-                { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 }
+                { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
+                { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
             ]);
         }
     }, [isNueva]);
@@ -159,7 +174,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                     <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS INDIRECTOS" color="orange" conceptos={insumosIndirectos} onChange={mark(setInsumosIndirectos)} readOnly={!canEdit} />
-                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} />
+                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} totalesOtrosCostos={{ totalMP: totales.totalMP, totalMO: totales.totalMO, totalID: totales.totalID, totalII: totales.totalII }} />
                 </div>
             </div>
 

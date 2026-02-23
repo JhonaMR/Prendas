@@ -1085,7 +1085,6 @@ const App: React.FC = () => {
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
                 <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>} label="Fichas de Diseño" />
                 <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0l.879-.659m-3.172-2.819a3 3 0 112.4 0m-5.007-7.003h0a3 3 0 016 0h0m-6 8.5h0a3 3 0 016 0h0" /></svg>} label="Fichas de Costo" />
-                <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.5v2.25m3-6v6m3-6v2.25m-13.5-3h2.25a2.25 2.25 0 012.25 2.25v.894a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V8.25a2.25 2.25 0 012.25-2.25z" /></svg>} label="Maletas" />
               </div>
             )}
             
@@ -1146,6 +1145,7 @@ const App: React.FC = () => {
             {user.role !== UserRole.DISEÑADORA && (
               <div className="my-2 border-t border-slate-100 pt-2">
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Producción</p>
+                <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.5v2.25m3-6v6m3-6v2.25m-13.5-3h2.25a2.25 2.25 0 012.25 2.25v.894a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V8.25a2.25 2.25 0 012.25-2.25z" /></svg>} label="Maletas" />
                 <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas de Entrega" />
               </div>
             )}

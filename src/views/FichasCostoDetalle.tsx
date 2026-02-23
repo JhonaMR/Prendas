@@ -46,8 +46,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const fichaExistente = (state.fichasCosto || []).find(f => f.referencia === referencia);
 
     const ajustarA900 = (v: number) => { if (v <= 0) return 0; return Math.ceil(v / 1000) * 1000 - 100; };
-    const calcPrecio = (costo: number, rent: number) => ajustarA900(costo * (1 + rent / 100));
-    const calcRent = (precio: number, costo: number) => costo === 0 ? 0 : ((precio / costo) - 1) * 100;
+    const calcPrecio = (costo: number, rent: number) => ajustarA900(costo / (1 - rent / 100));
+    const calcRent = (precio: number, costo: number) => costo === 0 ? 0 : (1 - (costo / precio)) * 100;
 
     useEffect(() => {
         if (fichaExistente) {
@@ -151,35 +151,28 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Total</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.total.toLocaleString()}</p></div></div>
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Contabilizar</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
                         </div>
-                        <div>
-                            <label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label>
-                            <div className="flex items-center">
-                                <span className="px-4 py-4 bg-white border-2 border-yellow-300 rounded-l-xl font-black text-2xl text-yellow-600">$</span>
-                                <input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
-                                    className="flex-1 px-4 py-4 bg-white border-2 border-yellow-300 rounded-r-xl font-black text-2xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400" />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label>
-                            <input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
-                                className="w-full px-4 py-4 bg-white border-2 border-yellow-300 rounded-xl font-black text-2xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400" />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
                         </div>
                         <p className="text-xs text-yellow-700 font-bold italic">Los precios se ajustan automáticamente para terminar en 900</p>
                     </div>
 
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-3xl border-2 border-purple-200">
-                        <h3 className="text-sm font-black text-purple-700 uppercase tracking-widest mb-3">Cantidad Total Cortada</h3>
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-3xl border-2 border-purple-200 flex items-center justify-between">
+                        <div>
+                            <h3 className="text-sm font-black text-purple-700 uppercase tracking-widest">Cantidad Total Cortada</h3>
+                            <p className="text-xs text-purple-600 font-bold mt-2">{numCortes} corte{numCortes !== 1 ? 's' : ''} asentado{numCortes !== 1 ? 's' : ''}</p>
+                        </div>
                         <p className="text-6xl font-black text-purple-600">{fichaExistente?.cantidadTotalCortada || 0}</p>
-                        <p className="text-xs text-purple-600 font-bold mt-2">{numCortes} corte{numCortes !== 1 ? 's' : ''} asentado{numCortes !== 1 ? 's' : ''}</p>
                     </div>
-                </div>
 
-                <div className="space-y-6 lg:col-span-2">
-                    <SeccionConceptos titulo="MATERIA PRIMA" color="pink" conceptos={materiaPrima} onChange={mark(setMateriaPrima)} readOnly={!canEdit} mostrarTipo={true} />
-                    <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
-                    <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />
-                    <SeccionConceptos titulo="INSUMOS INDIRECTOS" color="orange" conceptos={insumosIndirectos} onChange={mark(setInsumosIndirectos)} readOnly={!canEdit} />
-                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} />
+                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-2xl border-2 border-pink-200 flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Ganancia Cliente</h3>
+                            <p className="text-sm font-black text-pink-600">35%</p>
+                        </div>
+                        <p className="text-3xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
+                    </div>
 
                     <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-3xl border-2 border-orange-200">
                         <h3 className="text-sm font-black text-orange-700 uppercase tracking-widest mb-4">Posibles Descuentos</h3>
@@ -192,14 +185,15 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             </tbody>
                         </table>
                     </div>
+                </div>
 
-                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-2xl border-2 border-pink-200 flex items-center justify-between">
-                        <div>
-                            <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Ganancia Cliente</h3>
-                            <p className="text-sm font-black text-pink-600">35%</p>
-                        </div>
-                        <p className="text-3xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
-                    </div>
+                <div className="space-y-6 lg:col-span-2">
+                    <SeccionConceptos titulo="MATERIA PRIMA" color="pink" conceptos={materiaPrima} onChange={mark(setMateriaPrima)} readOnly={!canEdit} mostrarTipo={true} />
+                    <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
+                    <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />
+                    <SeccionConceptos titulo="INSUMOS INDIRECTOS" color="orange" conceptos={insumosIndirectos} onChange={mark(setInsumosIndirectos)} readOnly={!canEdit} />
+                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} totalesOtrosCostos={{ totalMP: totales.totalMP, totalMO: totales.totalMO, totalID: totales.totalID, totalII: totales.totalII }} />
+
                 </div>
             </div>
 

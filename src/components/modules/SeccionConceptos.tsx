@@ -13,10 +13,11 @@ interface SeccionConceptosProps {
     onChange: (conceptos: ConceptoFicha[]) => void;
     readOnly: boolean;
     mostrarTipo?: boolean;
+    totalesOtrosCostos?: { totalMP: number; totalMO: number; totalID: number; totalII: number };
 }
 
 const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
-    titulo, color, conceptos, onChange, readOnly, mostrarTipo = false
+    titulo, color, conceptos, onChange, readOnly, mostrarTipo = false, totalesOtrosCostos
 }) => {
     const colorMap = {
         pink: { bg: 'bg-pink-500', text: 'text-pink-700', border: 'border-pink-200', bgLight: 'bg-pink-50' },
@@ -26,6 +27,35 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
         red: { bg: 'bg-red-600', text: 'text-red-700', border: 'border-red-200', bgLight: 'bg-red-50' },
     };
     const c = colorMap[color];
+
+    // Recalcular PROV. DSCTO CCIAL cuando cambien los totales
+    React.useEffect(() => {
+        if (titulo === 'PROVISIONES' && totalesOtrosCostos && conceptos.length > 0) {
+            const calcDesctoComercial = () => {
+                const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
+                const suma = totalMP + totalMO + totalID + totalII;
+                const conMargen = suma * 1.35;
+                const descto70 = conMargen * 0.70;
+                const desctoFinal = descto70 * 0.19;
+                return Math.round(desctoFinal);
+            };
+
+            // Buscar si existe PROV. DSCTO CCIAL
+            const indexDescto = conceptos.findIndex(c => c.concepto === 'PROV. DSCTO CCIAL');
+            if (indexDescto !== -1) {
+                const nuevoValor = calcDesctoComercial();
+                if (conceptos[indexDescto].vlr_unit !== nuevoValor) {
+                    const nuevosConceptos = [...conceptos];
+                    nuevosConceptos[indexDescto] = {
+                        ...nuevosConceptos[indexDescto],
+                        vlr_unit: nuevoValor,
+                        total: nuevoValor * (nuevosConceptos[indexDescto].cant || 1)
+                    };
+                    onChange(nuevosConceptos);
+                }
+            }
+        }
+    }, [totalesOtrosCostos, titulo, conceptos, onChange]);
 
     const agregar = () => {
         let nuevosConceptos = [...conceptos];
@@ -38,7 +68,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                     { concepto: 'CORTE', um: 'UNIDAD', vlr_unit: 500, cant: 1, total: 500 }
                 ];
             } else {
-                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+                nuevosConceptos.unshift({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
             }
         } else if (titulo === 'INSUMOS DIRECTOS') {
             if (conceptos.length === 0) {
@@ -50,20 +80,31 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                     { concepto: 'BOLSA', um: 'UNIDAD', vlr_unit: 94, cant: 1, total: 94 }
                 ];
             } else {
-                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+                nuevosConceptos.unshift({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
             }
         } else if (titulo === 'PROVISIONES') {
             if (conceptos.length === 0) {
+                const calcDesctoComercial = () => {
+                    if (!totalesOtrosCostos) return 0;
+                    const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
+                    const suma = totalMP + totalMO + totalID + totalII;
+                    const conMargen = suma * 1.35;
+                    const descto70 = conMargen * 0.70;
+                    const desctoFinal = descto70 * 0.19;
+                    return Math.round(desctoFinal);
+                };
+                
                 nuevosConceptos = [
                     { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
                     { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
-                    { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 }
+                    { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
+                    { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
                 ];
             } else {
-                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+                nuevosConceptos.unshift({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
             }
         } else {
-            nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', tipo: mostrarTipo ? 'SESGO' : undefined, um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+            nuevosConceptos.unshift({ concepto: 'NUEVO CONCEPTO', tipo: mostrarTipo ? 'SESGO' : undefined, um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
         }
         
         onChange(nuevosConceptos);
@@ -141,7 +182,13 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-right focus:ring-2 focus:ring-blue-100" />
                                 </td>
                                 <td className="px-3 py-3">
-                                    <input type="number" step="0.01" value={con.cant} onChange={e => actualizar(i, 'cant', Number(e.target.value))} readOnly={readOnly}
+                                    <input type="text" inputMode="decimal" value={con.cant} onChange={e => {
+                                        const val = e.target.value.replace(',', '.');
+                                        const num = parseFloat(val);
+                                        if (!isNaN(num) || val === '' || val === '.') {
+                                            actualizar(i, 'cant', isNaN(num) ? 0 : num);
+                                        }
+                                    }} readOnly={readOnly}
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100" />
                                 </td>
                                 <td className="px-3 py-3 text-right">
