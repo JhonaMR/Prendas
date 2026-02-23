@@ -157,4 +157,46 @@ router.use('/', healthRoutes);
 const configReloadRoutes = require('./configReload');
 router.use('/config', configReloadRoutes);
 
+// ==================== SISTEMA DE FICHAS ====================
+
+const disenadorasController = require('../controllers/disenadorasController');
+const fichasDisenoController = require('../controllers/fichasDisenoController');
+const fichasCostoController1 = require('../controllers/fichasCostoController_parte1');
+const fichasCostoController2 = require('../controllers/fichasCostoController_parte2');
+const maletasController = require('../controllers/maletasController');
+
+// Diseñadoras
+router.get('/disenadoras', verifyToken, disenadorasController.getDisenadoras);
+router.post('/disenadoras', verifyToken, disenadorasController.createDisenadora);
+router.put('/disenadoras/:id', verifyToken, disenadorasController.updateDisenadora);
+router.delete('/disenadoras/:id', verifyToken, disenadorasController.deleteDisenadora);
+
+// Fichas de Diseño - IMPORTANTE: upload-foto ANTES de /:referencia
+router.post('/fichas-diseno/upload-foto', verifyToken, fichasDisenoController.uploadFoto);
+router.get('/fichas-diseno', verifyToken, fichasDisenoController.getFichasDiseno);
+router.get('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.getFichaDiseno);
+router.post('/fichas-diseno', verifyToken, fichasDisenoController.createFichaDiseno);
+router.put('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.updateFichaDiseno);
+router.delete('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.deleteFichaDiseno);
+
+// Fichas de Costo - IMPORTANTE: rutas fijas ANTES de /:referencia
+router.post('/fichas-costo/importar', verifyToken, fichasCostoController2.importarFichaDiseno);
+router.get('/fichas-costo', verifyToken, fichasCostoController1.getFichasCosto);
+router.get('/fichas-costo/:referencia', verifyToken, fichasCostoController1.getFichaCosto);
+router.post('/fichas-costo', verifyToken, fichasCostoController2.createFichaCosto);
+router.put('/fichas-costo/:referencia', verifyToken, fichasCostoController2.updateFichaCosto);
+
+// Cortes
+router.post('/fichas-costo/:referencia/cortes', verifyToken, fichasCostoController2.crearCorte);
+router.put('/fichas-costo/:referencia/cortes/:numeroCorte', verifyToken, fichasCostoController2.updateCorte);
+
+// Maletas - IMPORTANTE: referencias-sin-correria ANTES de /:id
+router.get('/maletas/referencias-sin-correria', verifyToken, maletasController.getReferenciasSinCorreria);
+router.get('/maletas', verifyToken, maletasController.getMaletas);
+router.get('/maletas/:id', verifyToken, maletasController.getMaleta);
+router.post('/maletas', verifyToken, maletasController.createMaleta);
+router.put('/maletas/:id', verifyToken, maletasController.updateMaleta);
+router.delete('/maletas/:id', verifyToken, maletasController.deleteMaleta);
+
 module.exports = router;
+

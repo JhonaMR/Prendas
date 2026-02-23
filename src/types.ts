@@ -6,6 +6,9 @@ export enum UserRole {
   DISEÑADORA = 'diseñadora'
 }
 
+import type { Disenadora, FichaDiseno, FichaCosto, Maleta } from './types/typesFichas';
+export type { Disenadora, FichaDiseno, FichaCosto, Maleta };
+
 export interface User {
   id: string;
   name: string;
@@ -28,7 +31,7 @@ export interface Correria {
 export interface Client {
   id: string;
   name: string;
-  nit: string; 
+  nit: string;
   address: string;
   city: string;
   sellerId: string;
@@ -45,7 +48,7 @@ export interface Confeccionista {
 }
 
 export interface Reference {
-  id: string; 
+  id: string;
   description: string;
   price: number;
   designer: string;
@@ -140,4 +143,9 @@ export interface AppState {
   orders: Order[];
   productionTracking: ProductionTracking[];
   deliveryDates: DeliveryDate[];
+  // Sistema de Fichas
+  disenadoras: Disenadora[];
+  fichasDiseno: FichaDiseno[];
+  fichasCosto: FichaCosto[];
+  maletas: Maleta[];
 }
