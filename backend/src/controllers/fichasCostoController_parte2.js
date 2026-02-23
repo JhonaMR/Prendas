@@ -7,6 +7,92 @@ const { query, transaction } = require('../config/database');
 const { calcularValoresFinancieros, calcularTotales } = require('./fichasCostoController_parte1');
 
 /**
+ * Sincronizar ficha de costo a product_references
+ * Extrae telas de materia prima y las agrupa por nombre
+ */
+const sincronizarProductReference = async (referencia, fichaData) => {
+    try {
+        console.log(`🔄 Sincronizando referencia ${referencia}...`);
+        
+        // Verificar si existe
+        const existe = await query('SELECT id FROM product_references WHERE id = $1', [referencia]);
+
+        // Procesar telas: agrupar por nombre y sumar cantidades
+        const telas = {};
+        let materiaPrima = fichaData.materiaPrima || [];
+
+        // Si materiaPrima es string, parsearlo
+        if (typeof materiaPrima === 'string') {
+            try {
+                materiaPrima = JSON.parse(materiaPrima);
+            } catch (e) {
+                console.warn(`⚠️ No se pudo parsear materiaPrima para ${referencia}`);
+                materiaPrima = [];
+            }
+        }
+
+        console.log(`📦 Materia prima encontrada: ${materiaPrima.length} items`);
+
+        materiaPrima.forEach(item => {
+            if ((item.tipo === 'TELA' || item.tipo === 'SESGO') && item.nombre) {
+                console.log(`  - ${item.tipo}: ${item.nombre} x ${item.cantidad}`);
+                if (!telas[item.nombre]) {
+                    telas[item.nombre] = 0;
+                }
+                telas[item.nombre] += item.cantidad || 0;
+            }
+        });
+
+        // Convertir a array ordenado
+        const telasArray = Object.entries(telas).map(([nombre, cantidad]) => ({ nombre, cantidad }));
+
+        console.log(`🧵 Telas agrupadas: ${JSON.stringify(telasArray)}`);
+
+        // Preparar datos para product_references
+        const updateData = {
+            description: fichaData.descripcion || '',
+            price: fichaData.precioVenta || 0,
+            designer: fichaData.disenadoraNombre || '',
+            cloth1: telasArray[0]?.nombre || null,
+            avg_cloth1: telasArray[0]?.cantidad || null,
+            cloth2: telasArray[1]?.nombre || null,
+            avg_cloth2: telasArray[1]?.cantidad || null
+        };
+
+        console.log(`📝 Datos a sincronizar:`, updateData);
+
+        if (existe.rows.length > 0) {
+            // Actualizar
+            await query(`
+                UPDATE product_references
+                SET description = $1, price = $2, designer = $3,
+                    cloth1 = $4, avg_cloth1 = $5, cloth2 = $6, avg_cloth2 = $7
+                WHERE id = $8
+            `, [
+                updateData.description, updateData.price, updateData.designer,
+                updateData.cloth1, updateData.avg_cloth1, updateData.cloth2, updateData.avg_cloth2,
+                referencia
+            ]);
+            console.log(`✅ Referencia ${referencia} actualizada en product_references`);
+        } else {
+            // Crear - active es INTEGER (1 = true, 0 = false)
+            await query(`
+                INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            `, [
+                referencia, updateData.description, updateData.price, updateData.designer,
+                updateData.cloth1, updateData.avg_cloth1, updateData.cloth2, updateData.avg_cloth2,
+                1  // 1 en lugar de true
+            ]);
+            console.log(`✅ Referencia ${referencia} creada en product_references`);
+        }
+    } catch (error) {
+        console.error('❌ Error sincronizando product_references:', error);
+        // No lanzar error, solo loguear
+    }
+};
+
+/**
  * POST /api/fichas-costo/importar
  */
 const importarFichaDiseno = async (req, res) => {
@@ -22,7 +108,12 @@ const importarFichaDiseno = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Esta ficha ya fue importada a costos' });
         }
 
-        const fichaDiseno = await query('SELECT * FROM fichas_diseno WHERE referencia = $1', [referencia]);
+        const fichaDiseno = await query(`
+            SELECT fd.*, d.nombre as disenadora_nombre
+            FROM fichas_diseno fd
+            LEFT JOIN disenadoras d ON fd.disenadora_id = d.id
+            WHERE fd.referencia = $1
+        `, [referencia]);
         if (fichaDiseno.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'No existe ficha de diseño con esta referencia' });
         }
@@ -53,7 +144,7 @@ const importarFichaDiseno = async (req, res) => {
                 fd.referencia, fd.id,
                 fd.descripcion, fd.marca, fd.novedad, fd.muestra_1, fd.muestra_2, fd.observaciones,
                 fd.foto_1, fd.foto_2,
-                fd.materia_prima, fd.mano_obra, fd.insumos_directos, fd.insumos_indirectos, fd.provisiones,
+                JSON.stringify(fd.materia_prima || []), JSON.stringify(fd.mano_obra || []), JSON.stringify(fd.insumos_directos || []), JSON.stringify(fd.insumos_indirectos || []), JSON.stringify(fd.provisiones || []),
                 fd.total_materia_prima, fd.total_mano_obra, fd.total_insumos_directos,
                 fd.total_insumos_indirectos, fd.total_provisiones, fd.costo_total,
                 valores.precio_venta, valores.rentabilidad, valores.margen_ganancia,
@@ -66,6 +157,28 @@ const importarFichaDiseno = async (req, res) => {
             await client.query('UPDATE fichas_diseno SET importada = true WHERE referencia = $1', [referencia]);
             fichaData = result.rows[0];
         });
+
+        // Sincronizar a product_references (fuera de la transacción)
+        console.log(`🚀 Iniciando sincronización para referencia: ${referencia}`);
+        console.log(`📋 Datos a sincronizar:`, {
+            referencia,
+            descripcion: fd.descripcion,
+            precioVenta: valores.precio_venta,
+            disenadoraNombre: fd.disenadora_nombre,
+            materiaPrima: fd.materia_prima
+        });
+        
+        try {
+            await sincronizarProductReference(referencia, {
+                descripcion: fd.descripcion,
+                precioVenta: valores.precio_venta,
+                disenadoraNombre: fd.disenadora_nombre || '',
+                materiaPrima: fd.materia_prima
+            });
+        } catch (syncError) {
+            console.error('⚠️ Error sincronizando product_references:', syncError);
+            // No bloquear la importación si falla la sincronización
+        }
 
         return res.json({
             success: true,
@@ -147,6 +260,18 @@ const createFichaCosto = async (req, res) => {
             fichaData = result.rows[0];
         });
 
+        // Sincronizar a product_references (fuera de la transacción)
+        try {
+            await sincronizarProductReference(referencia, {
+                descripcion: descripcion,
+                precioVenta: valores.precio_venta,
+                disenadoraNombre: '',
+                materiaPrima: secciones.materia_prima
+            });
+        } catch (syncError) {
+            console.error('⚠️ Error sincronizando product_references:', syncError);
+        }
+
         return res.json({
             success: true,
             data: { id: fichaData.id, referencia: fichaData.referencia, costoTotal: parseFloat(fichaData.costo_total), precioVenta: parseFloat(fichaData.precio_venta) },
@@ -211,6 +336,29 @@ const updateFichaCosto = async (req, res) => {
             ]);
         });
 
+        // Sincronizar a product_references (fuera de la transacción)
+        try {
+            const fichaCompleta = await query(`
+                SELECT fc.*, d.nombre as disenadora_nombre
+                FROM fichas_costo fc
+                LEFT JOIN fichas_diseno fd ON fc.ficha_diseno_id = fd.id
+                LEFT JOIN disenadoras d ON fd.disenadora_id = d.id
+                WHERE fc.referencia = $1
+            `, [referencia]);
+
+            if (fichaCompleta.rows.length > 0) {
+                const f = fichaCompleta.rows[0];
+                await sincronizarProductReference(referencia, {
+                    descripcion: f.descripcion,
+                    precioVenta: parseFloat(f.precio_venta),
+                    disenadoraNombre: f.disenadora_nombre,
+                    materiaPrima: f.materia_prima
+                });
+            }
+        } catch (syncError) {
+            console.error('⚠️ Error sincronizando product_references:', syncError);
+        }
+
         return res.json({ success: true, message: 'Ficha actualizada exitosamente' });
     } catch (error) {
         console.error('❌ Error actualizando ficha costo:', error);
@@ -225,7 +373,7 @@ const crearCorte = async (req, res) => {
     try {
         const { referencia } = req.params;
         const {
-            numeroCorte, fechaCorte, cantidadCortada,
+            numeroCorte, fichaCorte, fechaCorte, cantidadCortada,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones,
             precioVenta, rentabilidad, createdBy
         } = req.body;
@@ -259,17 +407,17 @@ const crearCorte = async (req, res) => {
         await transaction(async (client) => {
             const corteResult = await client.query(`
                 INSERT INTO fichas_cortes (
-                    ficha_costo_id, numero_corte, fecha_corte, cantidad_cortada,
+                    ficha_costo_id, numero_corte, ficha_corte, fecha_corte, cantidad_cortada,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_real,
                     precio_venta, rentabilidad, costo_proyectado, diferencia, margen_utilidad, created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9,
-                    $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                    $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
                 ) RETURNING id, numero_corte, costo_real
             `, [
-                ficha.id, numeroCorte, fechaCorte, cantidadCortada,
+                ficha.id, numeroCorte, fichaCorte, fechaCorte, cantidadCortada,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
                 JSON.stringify(secciones.provisiones),
@@ -301,7 +449,7 @@ const updateCorte = async (req, res) => {
     try {
         const { referencia, numeroCorte } = req.params;
         const {
-            fechaCorte, cantidadCortada, materiaPrima, manoObra,
+            fichaCorte, fechaCorte, cantidadCortada, materiaPrima, manoObra,
             insumosDirectos, insumosIndirectos, provisiones, precioVenta, rentabilidad
         } = req.body;
 
@@ -334,14 +482,14 @@ const updateCorte = async (req, res) => {
         await transaction(async (client) => {
             await client.query(`
                 UPDATE fichas_cortes
-                SET fecha_corte=$1, cantidad_cortada=$2,
-                    materia_prima=$3, mano_obra=$4, insumos_directos=$5, insumos_indirectos=$6, provisiones=$7,
-                    total_materia_prima=$8, total_mano_obra=$9, total_insumos_directos=$10,
-                    total_insumos_indirectos=$11, total_provisiones=$12, costo_real=$13,
-                    precio_venta=$14, rentabilidad=$15, diferencia=$16, margen_utilidad=$17
-                WHERE ficha_costo_id=$18 AND numero_corte=$19
+                SET ficha_corte=$1, fecha_corte=$2, cantidad_cortada=$3,
+                    materia_prima=$4, mano_obra=$5, insumos_directos=$6, insumos_indirectos=$7, provisiones=$8,
+                    total_materia_prima=$9, total_mano_obra=$10, total_insumos_directos=$11,
+                    total_insumos_indirectos=$12, total_provisiones=$13, costo_real=$14,
+                    precio_venta=$15, rentabilidad=$16, diferencia=$17, margen_utilidad=$18
+                WHERE ficha_costo_id=$19 AND numero_corte=$20
             `, [
-                fechaCorte, cantidadCortada,
+                fichaCorte, fechaCorte, cantidadCortada,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
                 JSON.stringify(secciones.provisiones),
@@ -364,10 +512,36 @@ const updateCorte = async (req, res) => {
     }
 };
 
+/**
+ * DELETE /api/fichas-costo/:referencia
+ */
+const deleteFichaCosto = async (req, res) => {
+    try {
+        const { referencia } = req.params;
+        const user = req.user;
+
+        if (user.role !== 'admin') {
+            return res.status(403).json({ success: false, message: 'Solo administradores pueden eliminar fichas' });
+        }
+
+        const result = await query('DELETE FROM fichas_costo WHERE referencia = $1 RETURNING id', [referencia]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
+        }
+
+        return res.json({ success: true, message: 'Ficha eliminada exitosamente' });
+    } catch (error) {
+        console.error('❌ Error eliminando ficha costo:', error);
+        return res.status(500).json({ success: false, message: 'Error al eliminar ficha' });
+    }
+};
+
 module.exports = {
     importarFichaDiseno,
     createFichaCosto,
     updateFichaCosto,
     crearCorte,
-    updateCorte
+    updateCorte,
+    deleteFichaCosto,
+    sincronizarProductReference
 };

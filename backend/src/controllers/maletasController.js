@@ -110,9 +110,6 @@ const createMaleta = async (req, res) => {
         if (!nombre) {
             return res.status(400).json({ success: false, message: 'El nombre es obligatorio' });
         }
-        if (!referencias || referencias.length === 0) {
-            return res.status(400).json({ success: false, message: 'Debe agregar al menos una referencia' });
-        }
 
         let maletaData;
         await transaction(async (client) => {
@@ -122,23 +119,25 @@ const createMaleta = async (req, res) => {
 
             const maletaId = maletaResult.rows[0].id;
 
-            for (let i = 0; i < referencias.length; i++) {
-                await client.query(`
-                    INSERT INTO maletas_referencias (maleta_id, referencia, orden)
-                    VALUES ($1, $2, $3)
-                    ON CONFLICT (maleta_id, referencia) DO NOTHING
-                `, [maletaId, referencias[i], i]);
-            }
+            if (referencias && referencias.length > 0) {
+                for (let i = 0; i < referencias.length; i++) {
+                    await client.query(`
+                        INSERT INTO maletas_referencias (maleta_id, referencia, orden)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (maleta_id, referencia) DO NOTHING
+                    `, [maletaId, referencias[i], i]);
+                }
 
-            if (correriaId) {
-                for (const ref of referencias) {
-                    const existe = await client.query('SELECT id FROM product_references WHERE id = $1', [ref]);
-                    if (existe.rows.length > 0) {
-                        await client.query(`
-                            INSERT INTO correria_catalog (reference_id, correria_id)
-                            VALUES ($1, $2)
-                            ON CONFLICT DO NOTHING
-                        `, [ref, correriaId]);
+                if (correriaId) {
+                    for (const ref of referencias) {
+                        const existe = await client.query('SELECT id FROM product_references WHERE id = $1', [ref]);
+                        if (existe.rows.length > 0) {
+                            await client.query(`
+                                INSERT INTO correria_catalog (reference_id, correria_id)
+                                VALUES ($1, $2)
+                                ON CONFLICT DO NOTHING
+                            `, [ref, correriaId]);
+                        }
                     }
                 }
             }
@@ -148,7 +147,7 @@ const createMaleta = async (req, res) => {
 
         return res.json({
             success: true,
-            data: { id: maletaData.id, nombre: maletaData.nombre, numReferencias: referencias.length },
+            data: { id: maletaData.id, nombre: maletaData.nombre, numReferencias: referencias ? referencias.length : 0 },
             message: 'Maleta creada exitosamente'
         });
     } catch (error) {

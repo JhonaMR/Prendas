@@ -185,6 +185,7 @@ router.get('/fichas-costo', verifyToken, fichasCostoController1.getFichasCosto);
 router.get('/fichas-costo/:referencia', verifyToken, fichasCostoController1.getFichaCosto);
 router.post('/fichas-costo', verifyToken, fichasCostoController2.createFichaCosto);
 router.put('/fichas-costo/:referencia', verifyToken, fichasCostoController2.updateFichaCosto);
+router.delete('/fichas-costo/:referencia', verifyToken, verifyAdmin, fichasCostoController2.deleteFichaCosto);
 
 // Cortes
 router.post('/fichas-costo/:referencia/cortes', verifyToken, fichasCostoController2.crearCorte);

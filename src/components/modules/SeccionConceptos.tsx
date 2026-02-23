@@ -28,7 +28,45 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
     const c = colorMap[color];
 
     const agregar = () => {
-        onChange([...conceptos, { concepto: 'NUEVO CONCEPTO', tipo: mostrarTipo ? 'INSUMO' : undefined, um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 }]);
+        let nuevosConceptos = [...conceptos];
+        
+        // Agregar valores base según la sección
+        if (titulo === 'MANO DE OBRA') {
+            if (conceptos.length === 0) {
+                nuevosConceptos = [
+                    { concepto: 'EMPAQUE', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
+                    { concepto: 'CORTE', um: 'UNIDAD', vlr_unit: 500, cant: 1, total: 500 }
+                ];
+            } else {
+                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+            }
+        } else if (titulo === 'INSUMOS DIRECTOS') {
+            if (conceptos.length === 0) {
+                nuevosConceptos = [
+                    { concepto: 'MARQUILLA', um: 'UNIDAD', vlr_unit: 70, cant: 1, total: 70 },
+                    { concepto: 'MARQUILLA TECNICA', um: 'UNIDAD', vlr_unit: 10, cant: 1, total: 10 },
+                    { concepto: 'ETIQUETA', um: 'UNIDAD', vlr_unit: 90, cant: 1, total: 90 },
+                    { concepto: 'CODIGO BARRAS', um: 'UNIDAD', vlr_unit: 10, cant: 2, total: 20 },
+                    { concepto: 'BOLSA', um: 'UNIDAD', vlr_unit: 94, cant: 1, total: 94 }
+                ];
+            } else {
+                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+            }
+        } else if (titulo === 'PROVISIONES') {
+            if (conceptos.length === 0) {
+                nuevosConceptos = [
+                    { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
+                    { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
+                    { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 }
+                ];
+            } else {
+                nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+            }
+        } else {
+            nuevosConceptos.push({ concepto: 'NUEVO CONCEPTO', tipo: mostrarTipo ? 'SESGO' : undefined, um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 });
+        }
+        
+        onChange(nuevosConceptos);
     };
 
     const eliminar = (i: number) => onChange(conceptos.filter((_, idx) => idx !== i));
@@ -80,11 +118,11 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                 </td>
                                 {mostrarTipo && (
                                     <td className="px-3 py-3">
-                                        <select value={con.tipo || 'INSUMO'} onChange={e => actualizar(i, 'tipo', e.target.value as TipoMaterial)} disabled={readOnly}
+                                        <select value={con.tipo || 'SESGO'} onChange={e => actualizar(i, 'tipo', e.target.value as TipoMaterial)} disabled={readOnly}
                                             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-blue-100">
                                             <option value="TELA">TELA</option>
                                             <option value="RESORTE">RESORTE</option>
-                                            <option value="INSUMO">INSUMO</option>
+                                            <option value="SESGO">SESGO</option>
                                             <option value="OTRO">OTRO</option>
                                         </select>
                                     </td>

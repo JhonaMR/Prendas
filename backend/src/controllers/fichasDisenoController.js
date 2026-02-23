@@ -299,6 +299,7 @@ const uploadFoto = (req, res) => {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No se recibió archivo' });
         }
+        // Ruta relativa al frontend public folder
         const fotoPath = `/images/references/${req.file.filename}`;
         return res.json({ success: true, data: { path: fotoPath }, message: 'Foto subida exitosamente' });
     });

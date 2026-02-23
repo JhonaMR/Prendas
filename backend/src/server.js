@@ -112,6 +112,12 @@ const frontendPath = path.join(__dirname, '../../dist');
 app.use(express.static(frontendPath));
 
 /**
+ * Servir archivos estáticos de la carpeta public (fotos, etc)
+ */
+const publicPath = path.join(__dirname, '../../public');
+app.use(express.static(publicPath));
+
+/**
  * Ruta para el frontend (SPA - Single Page Application)
  * Todas las rutas que no empiecen con /api devuelven index.html
  * Esto permite que React Router funcione correctamente

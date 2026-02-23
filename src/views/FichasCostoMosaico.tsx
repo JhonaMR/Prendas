@@ -62,6 +62,23 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
         finally { setImportando(false); }
     };
 
+    const handleEliminar = async (referencia: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!window.confirm('¿Está seguro de que desea eliminar esta ficha?')) return;
+        try {
+            const response = await fetch(`${getBaseUrl()}/api/fichas-costo/${referencia}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert('✅ Ficha eliminada exitosamente');
+                const fichasCosto = await apiFichas.getFichasCosto();
+                updateState(prev => ({ ...prev, fichasCosto }));
+            } else alert('❌ Error: ' + data.message);
+        } catch { alert('❌ Error de conexión'); }
+    };
+
     return (
         <div className="space-y-6 pb-20">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -91,8 +108,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {fichas.map(ficha => (
-                        <button key={ficha.id} onClick={() => onNavigate('fichas-costo-detalle', { referencia: ficha.referencia })}
-                            className="group bg-white rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all overflow-hidden text-left">
+                        <div key={ficha.id} className="group bg-white rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer" onClick={() => onNavigate('fichas-costo-detalle', { referencia: ficha.referencia })}>
                             <div className="aspect-square bg-slate-100 relative overflow-hidden">
                                 {ficha.foto1 ? (
                                     <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
@@ -102,6 +118,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                     </div>
                                 )}
                                 {(ficha.numCortes || 0) > 0 && <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-500 text-white rounded-lg text-[9px] font-black uppercase">{ficha.numCortes} Corte{ficha.numCortes !== 1 ? 's' : ''}</div>}
+                                {isAdmin && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
                             </div>
                             <div className="p-3">
                                 <p className="font-black text-blue-600 text-sm mb-1">{ficha.referencia}</p>
@@ -112,7 +129,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                     <div className="flex items-center justify-between text-[10px]"><span className="text-slate-400 font-bold">Rent.</span><span className="font-black text-blue-600">{(ficha.rentabilidad || 0).toFixed(1)}%</span></div>
                                 </div>
                             </div>
-                        </button>
+                        </div>
                     ))}
                 </div>
             )}

@@ -82,7 +82,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         return { desc0: { precio: precioVenta, rent: rentabilidad }, desc5: calc(5), desc10: calc(10), desc15: calc(15) };
     }, [precioVenta, rentabilidad, totales.total]);
 
-    const margenGanancia = useMemo(() => ajustarA900(precioVenta * 0.35), [precioVenta]);
+    const margenGanancia = useMemo(() => ajustarA900(precioVenta + (precioVenta * 0.35)), [precioVenta]);
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }
@@ -129,7 +129,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="space-y-6">
                     <SubidaFotos referencia={referencia} foto1={foto1} foto2={foto2} onFoto1Change={mark(setFoto1)} onFoto2Change={mark(setFoto2)} readOnly={!canEdit} />
                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
@@ -142,7 +142,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                                 <div key={label as string}><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">{label}</label><input type="text" value={val} onChange={e => setter(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" /></div>
                             ))}
                         </div>
-                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Observaciones</label><textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={4} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 resize-none" /></div>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Observaciones</label><textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={6} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 resize-none" /></div>
                     </div>
 
                     <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border-2 border-yellow-200 space-y-4">
@@ -153,12 +153,15 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         </div>
                         <div>
                             <label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label>
-                            <input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
-                                className="w-full px-4 py-4 bg-white border-2 border-yellow-300 rounded-xl font-black text-2xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400" />
+                            <div className="flex items-center">
+                                <span className="px-4 py-4 bg-white border-2 border-yellow-300 rounded-l-xl font-black text-2xl text-yellow-600">$</span>
+                                <input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
+                                    className="flex-1 px-4 py-4 bg-white border-2 border-yellow-300 rounded-r-xl font-black text-2xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400" />
+                            </div>
                         </div>
                         <div>
                             <label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label>
-                            <input type="number" step="0.1" value={rentabilidad.toFixed(1)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
+                            <input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit}
                                 className="w-full px-4 py-4 bg-white border-2 border-yellow-300 rounded-xl font-black text-2xl focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400" />
                         </div>
                         <p className="text-xs text-yellow-700 font-bold italic">Los precios se ajustan automáticamente para terminar en 900</p>
@@ -171,7 +174,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                     <SeccionConceptos titulo="MATERIA PRIMA" color="pink" conceptos={materiaPrima} onChange={mark(setMateriaPrima)} readOnly={!canEdit} mostrarTipo={true} />
                     <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />
@@ -190,10 +193,12 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         </table>
                     </div>
 
-                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-3xl border-2 border-pink-200">
-                        <h3 className="text-sm font-black text-pink-700 uppercase tracking-widest mb-3">Margen Ganancia Cliente</h3>
-                        <p className="text-2xl font-black text-pink-600 mb-2">35%</p>
-                        <p className="text-5xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
+                    <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-2xl border-2 border-pink-200 flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Ganancia Cliente</h3>
+                            <p className="text-sm font-black text-pink-600">35%</p>
+                        </div>
+                        <p className="text-3xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
                     </div>
                 </div>
             </div>

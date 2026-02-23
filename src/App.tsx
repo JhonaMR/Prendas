@@ -20,6 +20,15 @@ import SalesReportView from './views/SalesReportView';
 import DeliveryDatesView from './views/DeliveryDatesView';
 import BackupManagementView from './views/BackupManagementView';
 
+// Fichas Views
+import FichasDisenoMosaico from './views/FichasDisenoMosaico';
+import FichasDisenoDetalle from './views/FichasDisenoDetalle';
+import FichasCostoMosaico from './views/FichasCostoMosaico';
+import FichasCostoDetalle from './views/FichasCostoDetalle';
+import FichasCorteDetalle from './views/FichasCorteDetalle';
+import MaletasListado from './views/MaletasListado';
+import MaletasAsignar from './views/MaletasAsignar';
+
 const App: React.FC = () => {
   // ========== ESTADOS ==========
   
@@ -35,7 +44,11 @@ const App: React.FC = () => {
     dispatches: [],
     orders: [],
     productionTracking: [],
-    deliveryDates: []
+    deliveryDates: [],
+    disenadoras: [],
+    fichasDiseno: [],
+    fichasCosto: [],
+    maletas: []
   });
 
   const [user, setUser] = useState<User | null>(null);
@@ -68,7 +81,11 @@ const App: React.FC = () => {
           dispatchesData,
           ordersData,
           productionData,
-          deliveryDatesData
+          deliveryDatesData,
+          disenadoresData,
+          fichasDisenoData,
+          fichasCostoData,
+          maletasData
         ] = await Promise.all([
           api.listUsers(),
           api.getReferences(),
@@ -81,7 +98,56 @@ const App: React.FC = () => {
           api.getDispatches(),
           api.getOrders(),
           api.getProductionTracking(),
-          api.getDeliveryDates()
+          api.getDeliveryDates(),
+          // Fichas
+          (async () => {
+            try {
+              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/disenadoras`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+              });
+              const data = await response.json();
+              return data.data || [];
+            } catch (e) {
+              console.warn('⚠️ Error cargando diseñadoras:', e);
+              return [];
+            }
+          })(),
+          (async () => {
+            try {
+              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-diseno`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+              });
+              const data = await response.json();
+              return data.data || [];
+            } catch (e) {
+              console.warn('⚠️ Error cargando fichas de diseño:', e);
+              return [];
+            }
+          })(),
+          (async () => {
+            try {
+              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-costo`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+              });
+              const data = await response.json();
+              return data.data || [];
+            } catch (e) {
+              console.warn('⚠️ Error cargando fichas de costo:', e);
+              return [];
+            }
+          })(),
+          (async () => {
+            try {
+              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/maletas`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+              });
+              const data = await response.json();
+              return data.data || [];
+            } catch (e) {
+              console.warn('⚠️ Error cargando maletas:', e);
+              return [];
+            }
+          })()
         ]);
 
         setState({
@@ -96,13 +162,21 @@ const App: React.FC = () => {
           dispatches: dispatchesData,
           orders: ordersData,
           productionTracking: productionData,
-          deliveryDates: deliveryDatesData
+          deliveryDates: deliveryDatesData,
+          disenadoras: disenadoresData,
+          fichasDiseno: fichasDisenoData,
+          fichasCosto: fichasCostoData,
+          maletas: maletasData
         });
 
         console.log('✅ Datos cargados del backend exitosamente');
         console.log('📊 Referencias:', referencesData.length);
         console.log('👥 Clientes:', clientsData.length);
         console.log('💼 Vendedores:', sellersData.length, sellersData);
+        console.log('📋 Diseñadoras:', disenadoresData.length);
+        console.log('📄 Fichas de Diseño:', fichasDisenoData.length);
+        console.log('💵 Fichas de Costo:', fichasCostoData.length);
+        console.log('🎒 Maletas:', maletasData.length);
 
       } catch (error) {
         console.error('❌ Error cargando datos del backend:', error);
@@ -133,7 +207,11 @@ const App: React.FC = () => {
       dispatches: [],
       orders: [],
       productionTracking: [],
-      deliveryDates: []
+      deliveryDates: [],
+      disenadoras: [],
+      fichasDiseno: [],
+      fichasCosto: [],
+      maletas: []
     });
   };
 
@@ -911,6 +989,20 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <BackupManagementView />;
+      case 'fichas-diseno':
+        return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+      case 'fichas-diseno-detalle':
+        return <FichasDisenoDetalle state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
+      case 'fichas-costo':
+        return <FichasCostoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+      case 'fichas-costo-detalle':
+        return <FichasCostoDetalle state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
+      case 'fichas-corte-detalle':
+        return <FichasCorteDetalle state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
+      case 'maletas':
+        return <MaletasListado state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+      case 'maletas-asignar':
+        return <MaletasAsignar state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       default:
         return null;
     }
@@ -986,6 +1078,23 @@ const App: React.FC = () => {
 
           <div className="p-6 space-y-0.5 overflow-y-auto max-h-[calc(100vh-200px)] custom-scrollbar">
             <NavItem active={activeTab === 'home'} onClick={() => handleTabChange('home')} icon={<Icons.Home />} label="Inicio" />
+            
+            {/* Mostrar secciones según el rol */}
+            {user.role !== UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
+                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>} label="Fichas de Diseño" />
+                <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0l.879-.659m-3.172-2.819a3 3 0 112.4 0m-5.007-7.003h0a3 3 0 016 0h0m-6 8.5h0a3 3 0 016 0h0" /></svg>} label="Fichas de Costo" />
+                <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.5v2.25m3-6v6m3-6v2.25m-13.5-3h2.25a2.25 2.25 0 012.25 2.25v.894a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V8.25a2.25 2.25 0 012.25-2.25z" /></svg>} label="Maletas" />
+              </div>
+            )}
+            
+            {user.role === UserRole.DISEÑADORA && (
+              <div className="my-2 border-t border-slate-100 pt-2">
+                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
+                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>} label="Fichas de Diseño" />
+              </div>
+            )}
             
             {/* Mostrar secciones según el rol */}
             {user.role !== UserRole.DISEÑADORA && (

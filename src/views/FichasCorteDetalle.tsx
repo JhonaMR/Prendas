@@ -20,6 +20,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsaved, setHasUnsaved] = useState(false);
+    const [fichaCorte, setFichaCorte] = useState('');
     const [fechaCorte, setFechaCorte] = useState(new Date().toISOString().split('T')[0]);
     const [cantidadCortada, setCantidadCortada] = useState(0);
     const [materiaPrima, setMateriaPrima] = useState<ConceptoFicha[]>([]);
@@ -27,18 +28,39 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const [insumosDirectos, setInsumosDirectos] = useState<ConceptoFicha[]>([]);
     const [insumosIndirectos, setInsumosIndirectos] = useState<ConceptoFicha[]>([]);
     const [provisiones, setProvisiones] = useState<ConceptoFicha[]>([]);
+    const [fichaData, setFichaData] = useState<any>(null);
 
     const fichaInicial = (state.fichasCosto || []).find(f => f.referencia === referencia);
-    const corteExistente = fichaInicial?.cortes?.find(c => c.numeroCorte === Number(numeroCorte));
+
+    // Fetch ficha data on mount or when referencia changes
+    useEffect(() => {
+        const fetchFichaData = async () => {
+            try {
+                const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-costo/${referencia}`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    setFichaData(data.data);
+                }
+            } catch (error) {
+                console.error('Error fetching ficha:', error);
+            }
+        };
+        if (referencia) fetchFichaData();
+    }, [referencia]);
+
+    const corteExistente = fichaData?.cortes?.find((c: any) => c.numeroCorte === Number(numeroCorte));
 
     useEffect(() => {
-        if (isNuevo && fichaInicial) {
-            setMateriaPrima(fichaInicial.materiaPrima || []);
-            setManoObra(fichaInicial.manoObra || []);
-            setInsumosDirectos(fichaInicial.insumosDirectos || []);
-            setInsumosIndirectos(fichaInicial.insumosIndirectos || []);
-            setProvisiones(fichaInicial.provisiones || []);
+        if (isNuevo && fichaData) {
+            setMateriaPrima(fichaData.materiaPrima || []);
+            setManoObra(fichaData.manoObra || []);
+            setInsumosDirectos(fichaData.insumosDirectos || []);
+            setInsumosIndirectos(fichaData.insumosIndirectos || []);
+            setProvisiones(fichaData.provisiones || []);
         } else if (corteExistente) {
+            setFichaCorte(corteExistente.fichaCorte || '');
             setFechaCorte(corteExistente.fechaCorte || new Date().toISOString().split('T')[0]);
             setCantidadCortada(corteExistente.cantidadCortada || 0);
             setMateriaPrima(corteExistente.materiaPrima || []);
@@ -47,7 +69,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setInsumosIndirectos(corteExistente.insumosIndirectos || []);
             setProvisiones(corteExistente.provisiones || []);
         }
-    }, [isNuevo, referencia, numeroCorte]);
+    }, [isNuevo, corteExistente]);
 
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
@@ -55,7 +77,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         return { costoReal };
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
-    const costoProyectado = fichaInicial?.costoTotal || 0;
+    const costoProyectado = fichaData?.costoTotal || 0;
     const diferencia = costoProyectado - totales.costoReal;
     const margenUtilidad = totales.costoReal !== 0 ? (diferencia / totales.costoReal) * 100 : 0;
 
@@ -63,7 +85,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         if (!canEdit) { alert('No tienes permisos'); return; }
         if (cantidadCortada <= 0) { alert('La cantidad cortada debe ser mayor a 0'); return; }
         setIsLoading(true);
-        const corteData = { numeroCorte: Number(numeroCorte), fechaCorte, cantidadCortada, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones };
+        const corteData = { numeroCorte: Number(numeroCorte), fichaCorte, fechaCorte, cantidadCortada, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones };
         try {
             const result = isNuevo
                 ? await apiFichas.crearCorte(referencia, corteData, user.name)
@@ -96,10 +118,13 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 {hasUnsaved && <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="space-y-6">
                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
                         <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información del Corte</h3>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Ficha de Corte</label>
+                            <input type="text" value={fichaCorte} onChange={e => { setFichaCorte(e.target.value); setHasUnsaved(true); }} readOnly={!canEdit}
+                                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" placeholder="Ej: 349" /></div>
                         <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Fecha de Corte</label>
                             <input type="date" value={fechaCorte} onChange={e => { setFechaCorte(e.target.value); setHasUnsaved(true); }} readOnly={!canEdit}
                                 className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" /></div>
@@ -132,7 +157,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     </div>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-6 lg:col-span-2">
                     <SeccionConceptos titulo="MATERIA PRIMA" color="pink" conceptos={materiaPrima} onChange={mark(setMateriaPrima)} readOnly={!canEdit} mostrarTipo={true} />
                     <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />

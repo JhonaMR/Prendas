@@ -42,7 +42,7 @@ const calcularDescuentos = (precioVenta, costoTotal) => {
     return descuentos;
 };
 
-const calcularMargenGanancia = (precioVenta) => ajustarA900(precioVenta * 0.35);
+const calcularMargenGanancia = (precioVenta) => ajustarA900(precioVenta + (precioVenta * 0.35));
 
 const calcularValoresFinancieros = (costoTotal, precioVenta = null, rentabilidad = null) => {
     let precio, rent;
@@ -162,6 +162,7 @@ const getFichaCosto = async (req, res) => {
         const cortes = cortesResult.rows.map(c => ({
             id: c.id,
             numeroCorte: c.numero_corte,
+            fichaCorte: c.ficha_corte,
             fechaCorte: c.fecha_corte,
             cantidadCortada: parseInt(c.cantidad_cortada),
             materiaPrima: c.materia_prima,

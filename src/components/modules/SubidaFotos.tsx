@@ -26,6 +26,7 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
     const [uploading2, setUploading2] = useState(false);
     const [preview1, setPreview1] = useState<string | null>(null);
     const [preview2, setPreview2] = useState<string | null>(null);
+    const [fotoAmpliada, setFotoAmpliada] = useState<string | null>(null);
 
     const input1Ref = useRef<HTMLInputElement>(null);
     const input2Ref = useRef<HTMLInputElement>(null);
@@ -83,15 +84,18 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
         const src = preview || (foto ? `${getBaseUrl()}${foto}` : null);
         return (
             <div className="flex-1">
-                <div className="relative aspect-square bg-slate-100 rounded-2xl overflow-hidden border-2 border-slate-200 group">
+                <div className="relative h-80 bg-slate-100 rounded-2xl overflow-hidden border-2 border-slate-200 group cursor-pointer" onClick={() => src && setFotoAmpliada(src)}>
                     {src ? (
                         <>
-                            <img src={src} alt={`Foto ${numero}`} className="w-full h-full object-cover" />
+                            <img src={src} alt={`Foto ${numero}`} className="w-full h-full object-cover group-hover:brightness-75 transition-all" />
                             {!readOnly && (
-                                <button onClick={() => eliminarFoto(numero)} className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                                <button onClick={(e) => { e.stopPropagation(); eliminarFoto(numero); }} className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             )}
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-12 h-12 text-white"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                            </div>
                         </>
                     ) : uploading ? (
                         <div className="flex items-center justify-center h-full">
@@ -134,6 +138,17 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
                 <FotoBox numero={1} foto={foto1} preview={preview1} uploading={uploading1} inputRef={input1Ref} />
                 <FotoBox numero={2} foto={foto2} preview={preview2} uploading={uploading2} inputRef={input2Ref} />
             </div>
+
+            {fotoAmpliada && (
+                <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFotoAmpliada(null)}>
+                    <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                        <img src={fotoAmpliada} alt="Foto ampliada" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl" />
+                        <button onClick={() => setFotoAmpliada(null)} className="absolute top-4 right-4 p-3 bg-white rounded-full shadow-lg hover:bg-slate-100 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-slate-800"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
