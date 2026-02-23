@@ -816,6 +816,23 @@ class ApiService {
     }
   }
 
+  async updateReception(id: string, reception: Partial<BatchReception>): Promise<ApiResponse<BatchReception>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(reception)
+      });
+
+      return this.handleResponse<BatchReception>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar recepción'
+      };
+    }
+  }
+
   // ==================== DEVOLUCIONES ====================
 
   async getReturnReceptions(): Promise<any[]> {

@@ -113,8 +113,10 @@ useEffect(() => {
             .map(o => o.clientId)
         );
 
-        const received = state.receptions.reduce((acc, r) => 
-          acc + r.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
+        const received = state.receptions
+          .filter(r => r.affectsInventory !== false)
+          .reduce((acc, r) => 
+            acc + r.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
         const dispatched = state.dispatches.reduce((acc, d) => 
           acc + d.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
         const stock = received - dispatched;

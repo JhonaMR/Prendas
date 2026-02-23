@@ -684,21 +684,28 @@ const App: React.FC = () => {
    */
   const addReception = async (reception: any) => {
     try {
-      const response = await api.createReception(reception);
+      // Si tiene ID y ya existe en el estado, es una actualización
+      const isUpdate = reception.id && state.receptions.some(r => r.id === reception.id);
+      
+      const response = isUpdate 
+        ? await api.updateReception(reception.id, reception)
+        : await api.createReception(reception);
 
       if (response.success && response.data) {
         setState(prev => ({
           ...prev,
-          receptions: [...prev.receptions, response.data]
+          receptions: isUpdate
+            ? prev.receptions.map(r => r.id === reception.id ? response.data : r)
+            : [...prev.receptions, response.data]
         }));
-        console.log('✅ Recepción creada');
+        console.log(isUpdate ? '✅ Recepción actualizada' : '✅ Recepción creada');
         return { success: true };
       } else {
-        alert(response.message || 'Error al crear recepción');
+        alert(response.message || (isUpdate ? 'Error al actualizar recepción' : 'Error al crear recepción'));
         return { success: false };
       }
     } catch (error) {
-      console.error('❌ Error creando recepción:', error);
+      console.error('❌ Error en recepción:', error);
       alert('Error de conexión con el servidor');
       return { success: false };
     }

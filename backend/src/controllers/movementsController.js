@@ -182,7 +182,8 @@ const getReceptions = async (req, res) => {
                 chargeUnits: reception.charge_units,
                 items: itemsResult.rows,
                 receivedBy: reception.received_by,
-                createdAt: reception.created_at
+                createdAt: reception.created_at,
+                affectsInventory: reception.affects_inventory !== false
             };
         }));
 
@@ -207,7 +208,7 @@ const getReceptions = async (req, res) => {
  */
 const createReception = async (req, res) => {
     try {
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista || !items || !items.length || !receivedBy) {
@@ -229,7 +230,8 @@ const createReception = async (req, res) => {
                 hasSeconds,
                 chargeType: chargeType || null,
                 chargeUnits: chargeUnits || 0,
-                receivedBy
+                receivedBy,
+                affectsInventory: affectsInventory !== false
             },
             items
         );
@@ -246,6 +248,7 @@ const createReception = async (req, res) => {
                 chargeUnits,
                 items,
                 receivedBy,
+                affectsInventory: affectsInventory !== false,
                 createdAt: new Date()
             }
         });
@@ -255,6 +258,66 @@ const createReception = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Error al crear recepción',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * ACTUALIZAR RECEPCIÓN
+ * PUT /api/receptions/:id
+ */
+const updateReception = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory } = req.body;
+
+        // Validaciones
+        if (!batchCode || !confeccionista) {
+            return res.status(400).json({
+                success: false,
+                message: 'Código de lote y confeccionista son requeridos'
+            });
+        }
+
+        // Actualizar recepción
+        const result = await ReceptionService.updateReception(id, {
+            batchCode,
+            confeccionista,
+            hasSeconds,
+            chargeType: chargeType || null,
+            chargeUnits: chargeUnits || 0,
+            affectsInventory: affectsInventory !== false
+        });
+
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Recepción no encontrada'
+            });
+        }
+
+        return res.json({
+            success: true,
+            message: 'Recepción actualizada exitosamente',
+            data: {
+                id: result.id,
+                batchCode: result.batch_code,
+                confeccionista: result.confeccionista,
+                hasSeconds: result.has_seconds === 1 ? true : result.has_seconds === 0 ? false : null,
+                chargeType: result.charge_type,
+                chargeUnits: result.charge_units,
+                affectsInventory: result.affects_inventory !== false,
+                receivedBy: result.received_by,
+                createdAt: result.created_at
+            }
+        });
+
+    } catch (error) {
+        logger.error('❌ Error al actualizar recepción:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al actualizar recepción',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
@@ -757,6 +820,7 @@ module.exports = {
     // Recepciones
     getReceptions,
     createReception,
+    updateReception,
     
     // Despachos
     getDispatches,

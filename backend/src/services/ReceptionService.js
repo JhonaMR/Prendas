@@ -76,7 +76,8 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 chargeUnits: r.charge_units,
                 items: itemsResult.rows,
                 receivedBy: r.received_by,
-                createdAt: r.created_at
+                createdAt: r.created_at,
+                affectsInventory: r.affects_inventory !== false
             };
         }));
 
@@ -99,8 +100,8 @@ const createReception = async (receptionData, items) => {
         return await transaction(async (client) => {
             // Insert reception
             const receptionResult = await client.query(
-                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                 RETURNING *`,
                 [
                     receptionData.id,
@@ -110,7 +111,8 @@ const createReception = async (receptionData, items) => {
                     receptionData.chargeType,
                     receptionData.chargeUnits,
                     receptionData.receivedBy,
-                    new Date()
+                    new Date(),
+                    receptionData.affectsInventory !== false ? true : false
                 ]
             );
 
@@ -175,10 +177,10 @@ const updateReception = async (id, data) => {
     try {
         const result = await query(
             `UPDATE receptions 
-            SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5
-            WHERE id = $6
+            SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5, affects_inventory = $6
+            WHERE id = $7
             RETURNING *`,
-            [data.batchCode, data.confeccionista, data.hasSeconds ? 1 : 0, data.chargeType, data.chargeUnits, id]
+            [data.batchCode, data.confeccionista, data.hasSeconds ? 1 : 0, data.chargeType, data.chargeUnits, data.affectsInventory !== false, id]
         );
 
         return result.rows[0];

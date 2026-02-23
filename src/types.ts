@@ -90,6 +90,7 @@ export interface BatchReception {
   receivedBy: string;
   createdAt: string;
   editLogs: AuditLog[];
+  affectsInventory?: boolean;
 }
 
 export interface Dispatch {

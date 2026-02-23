@@ -26,16 +26,18 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
 
   const kardexData = useMemo(() => {
     const data: Record<string, { in: number, out: number, av: number, lots: number }> = {};
-    state.receptions.forEach(r => {
-      const uniqueRefsInThisBatch = new Set<string>();
-      r.items.forEach(i => {
-        if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
-        data[i.reference].in += i.quantity;
-        data[i.reference].av += i.quantity;
-        uniqueRefsInThisBatch.add(i.reference);
+    state.receptions
+      .filter(r => r.affectsInventory !== false)
+      .forEach(r => {
+        const uniqueRefsInThisBatch = new Set<string>();
+        r.items.forEach(i => {
+          if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
+          data[i.reference].in += i.quantity;
+          data[i.reference].av += i.quantity;
+          uniqueRefsInThisBatch.add(i.reference);
+        });
+        uniqueRefsInThisBatch.forEach(ref => { if (data[ref]) data[ref].lots += 1; });
       });
-      uniqueRefsInThisBatch.forEach(ref => { if (data[ref]) data[ref].lots += 1; });
-    });
     state.dispatches.forEach(d => d.items.forEach(i => {
       if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
       data[i.reference].out += i.quantity;
@@ -153,7 +155,8 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const renderProdConfReport = () => {
     // Totales por confeccionista
     const report = (state.confeccionistas || []).map(c => {
-      const confRecs = state.receptions.filter(r => r.confeccionista === c.name);
+      const confRecs = state.receptions
+        .filter(r => r.confeccionista === c.name && r.affectsInventory !== false);
       const units = confRecs.reduce((acc, r) => acc + r.items.reduce((a,i) => a + i.quantity, 0), 0);
       const batches = confRecs.length;
       return { ...c, units, batches };

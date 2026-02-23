@@ -119,9 +119,11 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
     const totalDespachadas = filteredData.reduce((sum, c) => sum + c.totalDispatched, 0);
 
     // Stock (inventario actual de esta referencia)
-    const received = state.receptions.reduce((acc, r) => 
-      acc + r.items.filter(i => i.reference === selectedReference).reduce((a, b) => a + b.quantity, 0), 0
-    );
+    const received = state.receptions
+      .filter(r => r.affectsInventory !== false)
+      .reduce((acc, r) => 
+        acc + r.items.filter(i => i.reference === selectedReference).reduce((a, b) => a + b.quantity, 0), 0
+      );
     const allDispatched = state.dispatches.reduce((acc, d) => 
       acc + d.items.filter(i => i.reference === selectedReference).reduce((a, b) => a + b.quantity, 0), 0
     );

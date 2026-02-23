@@ -112,6 +112,7 @@ router.delete('/correrias/:id', verifyToken, preventNonAdminEdit, correriasContr
 
 router.get('/receptions', verifyToken, movementsController.getReceptions);
 router.post('/receptions', verifyToken, preventNonAdminEdit, movementsController.createReception);
+router.put('/receptions/:id', verifyToken, preventNonAdminEdit, movementsController.updateReception);
 
 // ==================== DEVOLUCIONES ====================
 

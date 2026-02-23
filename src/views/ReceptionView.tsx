@@ -37,6 +37,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refSearch, setRefSearch] = useState('');
+  const [affectsInventory, setAffectsInventory] = useState(true);
   const receptionsPagination = usePagination(1, 50);
 
   // Form states
@@ -60,6 +61,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setChargeType(null);
     setChargeUnits(0);
     setItems([]);
+    setAffectsInventory(true);
   };
 
   const handleEdit = (lot: BatchReception) => {
@@ -78,6 +80,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setChargeType(lot.chargeType);
     setChargeUnits(lot.chargeUnits);
     setItems(lot.items);
+    setAffectsInventory(lot.affectsInventory !== false);
   };
 
   const filteredConf = confeccionistasMaster.filter(c => {
@@ -136,7 +139,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
       createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
-      editLogs: editingLot ? [...editingLot.editLogs, { user: user.name, date: new Date().toISOString() }] : []
+      editLogs: editingLot ? [...(editingLot.editLogs || []), { user: user.name, date: new Date().toISOString() }] : [],
+      affectsInventory
     };
 
     // ========== GUARDAR EN BACKEND ==========
@@ -332,6 +336,24 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
               </div>
             )}
           </div>
+
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Impacto en Inventario</label>
+            <div className="flex items-center gap-3 px-6 py-3.5 bg-slate-50 border-none rounded-2xl">
+              <button 
+                onClick={() => setAffectsInventory(!affectsInventory)} 
+                className={`flex items-center justify-center w-6 h-6 rounded-lg border-2 transition-all ${affectsInventory ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-300'}`}
+              >
+                {affectsInventory && <span className="text-white font-black text-sm">✓</span>}
+              </button>
+              <span className="text-sm font-black text-slate-700">
+                {affectsInventory ? 'Esta recepción CARGA al inventario' : 'Esta recepción NO carga al inventario'}
+              </span>
+            </div>
+            <p className="text-[9px] text-slate-400 font-bold px-4 italic">
+              Desactiva si esta recepción es parte de un lote que se descarga en múltiples partes
+            </p>
+          </div>
         </div>
 
         <ScannerSimulator onScan={handleScan} />
@@ -430,24 +452,38 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                     className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : r.id)}
                   >
-                    <div className="flex-1 w-full">
+                    {/* Izquierda: Confeccionista */}
+                    <div className="flex-shrink-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{r.batchCode}</span>
                         <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{r.createdAt}</span>
                       </div>
                       <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
-                      <div className="flex flex-wrap gap-4 mt-2">
-                        <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Prendas: <span className="text-slate-800 font-black">{totalQty}</span></span>
-                        {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Con Segundas</span>}
-                        {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType} {r.chargeUnits > 0 ? `(${r.chargeUnits} ud)` : ''}</span>}
-                      </div>
                     </div>
-                    <div className="flex items-center justify-between w-full md:w-auto gap-4">
-                      <div className="text-left md:text-right hidden sm:block">
-                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Recibido por</p>
-                        <p className="text-xs font-black text-slate-500">{r.receivedBy}</p>
+
+                    {/* Derecha: Referencias, Total e Indicadores */}
+                    <div className="flex items-center justify-end w-full md:w-auto gap-6 flex-shrink-0">
+                      {/* Referencias y Cantidades */}
+                      <div className="flex flex-wrap items-center justify-end gap-4">
+                        {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
+                          <div key={ref} className="flex items-center gap-1.5">
+                            <span className="text-sm sm:text-base font-black text-blue-600">{ref}</span>
+                            <span className="text-sm sm:text-base font-black text-slate-700">({qty})</span>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex items-center gap-3 ml-auto md:ml-0">
+
+                      {/* Total e Indicadores */}
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty}</span></span>
+                        {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segundas</span>}
+                        {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
+                        {r.affectsInventory === false && <span className="text-orange-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> No Inv.</span>}
+                        {r.affectsInventory !== false && <span className="text-green-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Inv.</span>}
+                      </div>
+
+                      {/* Botones */}
+                      <div className="flex items-center gap-3">
                         <button onClick={(e) => { e.stopPropagation(); handleEdit(r); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                           <Icons.Edit />
                         </button>
