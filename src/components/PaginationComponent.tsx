@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 export interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  pageSize: number;
+  pageSize?: number;
   onPageChange: (page: number) => void;
-  onPageSizeChange: (size: number) => void;
+  onPageSizeChange?: (size: number) => void;
   isLoading?: boolean;
   pageSizeOptions?: number[];
 }
@@ -18,7 +18,7 @@ export interface PaginationProps {
 export const PaginationComponent: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
-  pageSize,
+  pageSize = 100,
   onPageChange,
   onPageSizeChange,
   isLoading = false,
@@ -63,25 +63,29 @@ export const PaginationComponent: React.FC<PaginationProps> = ({
 
   const handlePageSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSize = parseInt(e.target.value, 10);
-    onPageSizeChange(newSize);
+    if (onPageSizeChange) {
+      onPageSizeChange(newSize);
+    }
   };
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4 px-4 bg-gray-50 rounded-lg border border-gray-200">
       {/* Page Size Selector */}
-      <div className="flex items-center gap-2">
-        <label className="text-sm font-medium text-gray-700">Registros por página:</label>
-        <select
-          value={pageSize}
-          onChange={handlePageSizeChange}
-          disabled={isLoading}
-          className="px-3 py-2 border border-gray-300 rounded text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
-          {pageSizeOptions.map(size => (
-            <option key={size} value={size}>{size}</option>
-          ))}
-        </select>
-      </div>
+      {onPageSizeChange && (
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium text-gray-700">Registros por página:</label>
+          <select
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            disabled={isLoading}
+            className="px-3 py-2 border border-gray-300 rounded text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            {pageSizeOptions.map(size => (
+              <option key={size} value={size}>{size}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Navigation Controls */}
       <div className="flex items-center justify-center gap-4">

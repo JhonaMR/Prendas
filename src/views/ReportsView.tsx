@@ -1,6 +1,8 @@
 
 import React, { useMemo, useState } from 'react';
 import { BatchReception, Dispatch, Client, UserRole, User, Confeccionista, AppState } from '../types';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface ReportsViewProps {
   user: User;
@@ -15,6 +17,12 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const [sellerInput, setSellerInput] = useState('');
   const [confStatusFilter, setConfStatusFilter] = useState<'active' | 'all'>('active');
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('global');
+  const kardexPagination = usePagination(1, 50);
+  const refDetailPagination = usePagination(1, 50);
+  const confReportPagination = usePagination(1, 50);
+  const prodConfReportPagination = usePagination(1, 50);
+  const clientDetailPagination = usePagination(1, 50);
+  const sellerReportPagination = usePagination(1, 50);
 
   const kardexData = useMemo(() => {
     const data: Record<string, { in: number, out: number, av: number, lots: number }> = {};

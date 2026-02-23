@@ -6,6 +6,8 @@
 import React, { useState } from 'react';
 import { AppState } from '../../types';
 import apiFichas from '../services/apiFichas';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 declare global { interface Window { API_CONFIG?: { getApiUrl: () => string } } }
 function getBaseUrl(): string {
@@ -26,6 +28,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [referenciaImportar, setReferenciaImportar] = useState('');
     const [fichaEncontrada, setFichaEncontrada] = useState<any>(null);
     const [importando, setImportando] = useState(false);
+    const fichasPagination = usePagination(1, 50);
 
     const isAdmin = user?.role === 'admin';
     const isGeneral = user?.role === 'general';
@@ -37,6 +40,11 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
         const t = searchTerm.toLowerCase();
         return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
     });
+
+    React.useEffect(() => {
+        fichasPagination.pagination.total = fichas.length;
+        fichasPagination.pagination.totalPages = Math.ceil(fichas.length / fichasPagination.pagination.limit);
+    }, [fichas.length, fichasPagination.pagination.limit]);
 
     const handleBuscar = () => {
         if (!referenciaImportar.trim()) { alert('Ingrese una referencia'); return; }
@@ -106,8 +114,9 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                     {canEdit && !searchTerm && <button onClick={() => setShowModalImportar(true)} className="mt-6 px-6 py-3 bg-green-500 text-white font-black rounded-xl hover:bg-green-600 transition-colors">Importar Primera Ficha</button>}
                 </div>
             ) : (
+                <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {fichas.map(ficha => (
+                    {fichas.slice((fichasPagination.pagination.page - 1) * fichasPagination.pagination.limit, fichasPagination.pagination.page * fichasPagination.pagination.limit).map(ficha => (
                         <div key={ficha.id} className="group bg-white rounded-2xl border border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer" onClick={() => onNavigate('fichas-costo-detalle', { referencia: ficha.referencia })}>
                             <div className="aspect-square bg-slate-100 relative overflow-hidden">
                                 {ficha.foto1 ? (
@@ -132,6 +141,16 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                         </div>
                     ))}
                 </div>
+                <div className="mt-6">
+                  <PaginationComponent 
+                    currentPage={fichasPagination.pagination.page}
+                    totalPages={fichasPagination.pagination.totalPages}
+                    pageSize={fichasPagination.pagination.limit}
+                    onPageChange={fichasPagination.goToPage}
+                    onPageSizeChange={fichasPagination.setLimit}
+                  />
+                </div>
+                </>
             )}
 
             {showModalImportar && (

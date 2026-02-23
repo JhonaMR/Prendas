@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Icons } from '../constants';
 import api from '../services/api';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface Backup {
   filename: string;
@@ -31,6 +33,7 @@ const BackupManagementView: React.FC = () => {
   const [restoring, setRestoring] = useState(false);
   const [selectedBackup, setSelectedBackup] = useState<Backup | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const backupsPagination = usePagination(1, 50);
 
   useEffect(() => {
     loadBackups();
@@ -43,6 +46,11 @@ const BackupManagementView: React.FC = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    backupsPagination.pagination.total = backups.length;
+    backupsPagination.pagination.totalPages = Math.ceil(backups.length / backupsPagination.pagination.limit);
+  }, [backups.length, backupsPagination.pagination.limit]);
 
   const loadBackups = async () => {
     try {
@@ -258,7 +266,7 @@ const BackupManagementView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {backups.map((backup) => (
+                {backups.slice((backupsPagination.pagination.page - 1) * backupsPagination.pagination.limit, backupsPagination.pagination.page * backupsPagination.pagination.limit).map((backup) => (
                   <tr key={backup.filename} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4">
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${getBackupTypeColor(backup.type)}`}>
@@ -280,6 +288,13 @@ const BackupManagementView: React.FC = () => {
                 ))}
               </tbody>
             </table>
+            <PaginationComponent 
+              currentPage={backupsPagination.pagination.page}
+              totalPages={backupsPagination.pagination.totalPages}
+              pageSize={backupsPagination.pagination.limit}
+              onPageChange={backupsPagination.goToPage}
+              onPageSizeChange={backupsPagination.setLimit}
+            />
           </div>
         )}
       </div>

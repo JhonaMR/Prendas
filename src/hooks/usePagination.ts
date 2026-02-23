@@ -18,7 +18,7 @@ export interface UsePaginationReturn {
   reset: () => void;
 }
 
-export const usePagination = (initialPage = 1, initialLimit = 20): UsePaginationReturn => {
+export const usePagination = (initialPage = 1, initialLimit = 50): UsePaginationReturn => {
   const [pagination, setPagination] = useState<PaginationState>({
     page: initialPage,
     limit: initialLimit,

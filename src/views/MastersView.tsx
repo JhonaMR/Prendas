@@ -1,9 +1,11 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
 import { canEdit, canDelete } from '../utils/permissions';
 import RoleBadge from '../components/Badge/RoleBadge';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 // Helper Components
 const TabBtn = ({ active, onClick, label }: any) => (
@@ -91,6 +93,45 @@ const MastersView: React.FC<MastersViewProps> = ({
   const clientFileRef = useRef<HTMLInputElement>(null);
   const referenceFileRef = useRef<HTMLInputElement>(null);
   const confeccionistaFileRef = useRef<HTMLInputElement>(null);
+
+  // Pagination hooks for each table
+  const clientsPagination = usePagination(1, 50);
+  const confeccionistasPagination = usePagination(1, 50);
+  const referencesPagination = usePagination(1, 50);
+  const sellersPagination = usePagination(1, 50);
+  const correriasPagination = usePagination(1, 50);
+  const usersPagination = usePagination(1, 50);
+
+  // Update pagination state when data changes
+  React.useEffect(() => {
+    clientsPagination.pagination.total = state.clients.length;
+    clientsPagination.pagination.totalPages = Math.ceil(state.clients.length / clientsPagination.pagination.limit);
+  }, [state.clients.length, clientsPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    confeccionistasPagination.pagination.total = (state.confeccionistas || []).length;
+    confeccionistasPagination.pagination.totalPages = Math.ceil((state.confeccionistas || []).length / confeccionistasPagination.pagination.limit);
+  }, [state.confeccionistas?.length, confeccionistasPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    referencesPagination.pagination.total = state.references.length;
+    referencesPagination.pagination.totalPages = Math.ceil(state.references.length / referencesPagination.pagination.limit);
+  }, [state.references.length, referencesPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    sellersPagination.pagination.total = state.sellers.length;
+    sellersPagination.pagination.totalPages = Math.ceil(state.sellers.length / sellersPagination.pagination.limit);
+  }, [state.sellers.length, sellersPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    correriasPagination.pagination.total = state.correrias.length;
+    correriasPagination.pagination.totalPages = Math.ceil(state.correrias.length / correriasPagination.pagination.limit);
+  }, [state.correrias.length, correriasPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    usersPagination.pagination.total = state.users.length;
+    usersPagination.pagination.totalPages = Math.ceil(state.users.length / usersPagination.pagination.limit);
+  }, [state.users.length, usersPagination.pagination.limit]);
 
   const isAdmin = user.role === UserRole.ADMIN;
 
@@ -751,7 +792,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               <table className="w-full text-left">
                 <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
-                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).map(c => {
+                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).slice((clientsPagination.pagination.page - 1) * clientsPagination.pagination.limit, clientsPagination.pagination.page * clientsPagination.pagination.limit).map(c => {
                     const seller = state.sellers.find(s => s.id === c.sellerId);
                     return (
                     <tr key={c.id} className="hover:bg-slate-50 transition-colors">
@@ -769,6 +810,13 @@ const MastersView: React.FC<MastersViewProps> = ({
                 </tbody>
               </table>
             </div>
+            <PaginationComponent 
+              currentPage={clientsPagination.pagination.page}
+              totalPages={clientsPagination.pagination.totalPages}
+              pageSize={clientsPagination.pagination.limit}
+              onPageChange={clientsPagination.goToPage}
+              onPageSizeChange={clientsPagination.setLimit}
+            />
           </TableWrapper>
         </div>
       )}
@@ -836,7 +884,7 @@ const MastersView: React.FC<MastersViewProps> = ({
             <table className="w-full text-left">
               <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cédula</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Nombre</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Celular</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Score</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Estado</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
-                {(state.confeccionistas || []).sort((a,b)=>a.name.localeCompare(b.name)).map(c => (
+                {(state.confeccionistas || []).sort((a,b)=>a.name.localeCompare(b.name)).slice((confeccionistasPagination.pagination.page - 1) * confeccionistasPagination.pagination.limit, confeccionistasPagination.pagination.page * confeccionistasPagination.pagination.limit).map(c => (
                   <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-8 py-4 font-bold text-slate-400">{c.id}</td>
                     <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
@@ -857,6 +905,13 @@ const MastersView: React.FC<MastersViewProps> = ({
                 ))}
               </tbody>
             </table>
+            <PaginationComponent 
+              currentPage={confeccionistasPagination.pagination.page}
+              totalPages={confeccionistasPagination.pagination.totalPages}
+              pageSize={confeccionistasPagination.pagination.limit}
+              onPageChange={confeccionistasPagination.goToPage}
+              onPageSizeChange={confeccionistasPagination.setLimit}
+            />
           </TableWrapper>
         </div>
       )}
@@ -1002,7 +1057,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               <table className="w-full text-left min-w-[800px]">
                 <thead><tr className="bg-slate-50/50"><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Ref</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Descripción</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Precio</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Telas / Prom</th><th className="px-6 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
-                  {state.references.sort((a,b)=>a.id.localeCompare(b.id)).map(r => (
+                  {state.references.sort((a,b)=>a.id.localeCompare(b.id)).slice((referencesPagination.pagination.page - 1) * referencesPagination.pagination.limit, referencesPagination.pagination.page * referencesPagination.pagination.limit).map(r => (
                     <tr key={r.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 font-black text-indigo-600">{r.id}</td>
                       <td className="px-6 py-4 font-black text-slate-900">{r.description}</td>
@@ -1037,6 +1092,13 @@ const MastersView: React.FC<MastersViewProps> = ({
                 </tbody>
               </table>
             </div>
+            <PaginationComponent 
+              currentPage={referencesPagination.pagination.page}
+              totalPages={referencesPagination.pagination.totalPages}
+              pageSize={referencesPagination.pagination.limit}
+              onPageChange={referencesPagination.goToPage}
+              onPageSizeChange={referencesPagination.setLimit}
+            />
           </TableWrapper>
         </div>
       )}
@@ -1166,7 +1228,7 @@ const MastersView: React.FC<MastersViewProps> = ({
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {state.users.map(u => (
+             {state.users.slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => (
                <div key={u.id} className="bg-white p-8 rounded-[40px] border border-slate-100 flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
                   <RoleBadge role={u.role} />
                   <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
@@ -1203,6 +1265,13 @@ const MastersView: React.FC<MastersViewProps> = ({
                </div>
              ))}
           </div>
+          <PaginationComponent 
+            currentPage={usersPagination.pagination.page}
+            totalPages={usersPagination.pagination.totalPages}
+            pageSize={usersPagination.pagination.limit}
+            onPageChange={usersPagination.goToPage}
+            onPageSizeChange={usersPagination.setLimit}
+          />
         </div>
       )}
     </div>

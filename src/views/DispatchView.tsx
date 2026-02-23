@@ -3,6 +3,8 @@ import React, { useState, useRef } from 'react';
 import { User, UserRole, Client, Dispatch, ItemEntry, AppState, Reference } from '../types';
 import ScannerSimulator from '../components/ScannerSimulator';
 import { Icons } from '../constants';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface DispatchViewProps {
   user: User;
@@ -20,6 +22,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
+  const dispatchesPagination = usePagination(1, 50);
 
 // Form states
   const [clientId, setClientId] = useState('');
@@ -166,6 +169,11 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
       d.clientId.toLowerCase().includes(search)
     );
   });
+
+  React.useEffect(() => {
+    dispatchesPagination.pagination.total = filteredDispatches.length;
+    dispatchesPagination.pagination.totalPages = Math.ceil(filteredDispatches.length / dispatchesPagination.pagination.limit);
+  }, [filteredDispatches.length, dispatchesPagination.pagination.limit]);
 
   if (isDispatching) {
     const totalCount = items.reduce((a, b) => a + b.quantity, 0);
@@ -324,7 +332,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
             </p>
           </div>
         ) : (
-          filteredDispatches.map(d => {
+          <>
+            {filteredDispatches.slice((dispatchesPagination.pagination.page - 1) * dispatchesPagination.pagination.limit, dispatchesPagination.pagination.page * dispatchesPagination.pagination.limit).map(d => {
             const client = clients.find(c => c.id === d.clientId);
             const isExpanded = expandedId === d.id;
             const totalQty = d.items.reduce((a, b) => a + b.quantity, 0);
@@ -459,7 +468,17 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 )}
               </div>
             );
-          })
+          })}
+            <div className="mt-6">
+              <PaginationComponent 
+                currentPage={dispatchesPagination.pagination.page}
+                totalPages={dispatchesPagination.pagination.totalPages}
+                pageSize={dispatchesPagination.pagination.limit}
+                onPageChange={dispatchesPagination.goToPage}
+                onPageSizeChange={dispatchesPagination.setLimit}
+              />
+            </div>
+          </>
         )}
       </div>
     </div>

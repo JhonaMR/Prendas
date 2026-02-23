@@ -2,6 +2,8 @@
 import React, { useState, useMemo } from 'react';
 import { Order, AppState, Correria } from '../types';
 import { Icons } from '../constants';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface OrderHistoryViewProps {
   state: AppState;
@@ -15,6 +17,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state }) => {
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const ordersPagination = usePagination(1, 50);
 
   const years = useMemo(() => Array.from(new Set(state.correrias.map(c => c.year))).sort(), [state.correrias]);
 
@@ -103,7 +106,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state }) => {
             <p className="text-slate-400 font-bold italic">No hay pedidos con los filtros seleccionados</p>
           </div>
         ) : (
-          filteredOrders.map(o => {
+          <>
+            {filteredOrders.slice((ordersPagination.pagination.page - 1) * ordersPagination.pagination.limit, ordersPagination.pagination.page * ordersPagination.pagination.limit).map(o => {
             const client = state.clients.find(c => c.id === o.clientId);
             const seller = state.sellers.find(s => s.id === o.sellerId);
             const correria = state.correrias.find(c => c.id === o.correriaId);
@@ -182,11 +186,26 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state }) => {
                 )}
               </div>
             );
-          })
+          })}
+            <div className="mt-6">
+              <PaginationComponent 
+                currentPage={ordersPagination.pagination.page}
+                totalPages={ordersPagination.pagination.totalPages}
+                pageSize={ordersPagination.pagination.limit}
+                onPageChange={ordersPagination.goToPage}
+                onPageSizeChange={ordersPagination.setLimit}
+              />
+            </div>
+          </>
         )}
       </div>
     </div>
   );
+
+  React.useEffect(() => {
+    ordersPagination.pagination.total = filteredOrders.length;
+    ordersPagination.pagination.totalPages = Math.ceil(filteredOrders.length / ordersPagination.pagination.limit);
+  }, [filteredOrders.length, ordersPagination.pagination.limit]);
 };
 
 const CorreriaAutocomplete: React.FC<{

@@ -4,6 +4,8 @@ import { User, UserRole, BatchReception, ItemEntry, AppState, ChargeType, Refere
 import ScannerSimulator from '../components/ScannerSimulator';
 import { Icons } from '../constants';
 import ReturnReceptionView from './ReturnReceptionView';
+import PaginationComponent from '../components/PaginationComponent';
+import usePagination from '../hooks/usePagination';
 
 interface ReceptionViewProps {
   user: User;
@@ -35,6 +37,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refSearch, setRefSearch] = useState('');
+  const receptionsPagination = usePagination(1, 50);
 
   // Form states
   const [confeccionista, setConfeccionista] = useState('');
@@ -181,6 +184,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       item.reference.toUpperCase().includes(refSearch.toUpperCase())
     );
   });
+
+  React.useEffect(() => {
+    receptionsPagination.pagination.total = filteredReceptions.length;
+    receptionsPagination.pagination.totalPages = Math.ceil(filteredReceptions.length / receptionsPagination.pagination.limit);
+  }, [filteredReceptions.length, receptionsPagination.pagination.limit]);
 
   if (receptionType === 'selector') {
     return (
@@ -406,103 +414,114 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </p>
           </div>
         ) : (
-          filteredReceptions.map(r => {
-            const isExpanded = expandedId === r.id;
-            const totalQty = r.items.reduce((a, b) => a + b.quantity, 0);
-            const itemsByRef = r.items.reduce((acc, curr) => {
-              if(!acc[curr.reference]) acc[curr.reference] = 0;
-              acc[curr.reference] += curr.quantity;
-              return acc;
-            }, {} as Record<string, number>);
+          <>
+            {filteredReceptions.slice((receptionsPagination.pagination.page - 1) * receptionsPagination.pagination.limit, receptionsPagination.pagination.page * receptionsPagination.pagination.limit).map(r => {
+              const isExpanded = expandedId === r.id;
+              const totalQty = r.items.reduce((a, b) => a + b.quantity, 0);
+              const itemsByRef = r.items.reduce((acc, curr) => {
+                if(!acc[curr.reference]) acc[curr.reference] = 0;
+                acc[curr.reference] += curr.quantity;
+                return acc;
+              }, {} as Record<string, number>);
 
-            return (
-              <div key={r.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
-                <div 
-                  className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer"
-                  onClick={() => setExpandedId(isExpanded ? null : r.id)}
-                >
-                  <div className="flex-1 w-full">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{r.batchCode}</span>
-                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{r.createdAt}</span>
+              return (
+                <div key={r.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
+                  <div 
+                    className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer"
+                    onClick={() => setExpandedId(isExpanded ? null : r.id)}
+                  >
+                    <div className="flex-1 w-full">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{r.batchCode}</span>
+                        <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{r.createdAt}</span>
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
+                      <div className="flex flex-wrap gap-4 mt-2">
+                        <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Prendas: <span className="text-slate-800 font-black">{totalQty}</span></span>
+                        {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Con Segundas</span>}
+                        {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType} {r.chargeUnits > 0 ? `(${r.chargeUnits} ud)` : ''}</span>}
+                      </div>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
-                    <div className="flex flex-wrap gap-4 mt-2">
-                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Prendas: <span className="text-slate-800 font-black">{totalQty}</span></span>
-                      {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Con Segundas</span>}
-                      {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType} {r.chargeUnits > 0 ? `(${r.chargeUnits} ud)` : ''}</span>}
+                    <div className="flex items-center justify-between w-full md:w-auto gap-4">
+                      <div className="text-left md:text-right hidden sm:block">
+                        <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Recibido por</p>
+                        <p className="text-xs font-black text-slate-500">{r.receivedBy}</p>
+                      </div>
+                      <div className="flex items-center gap-3 ml-auto md:ml-0">
+                        <button onClick={(e) => { e.stopPropagation(); handleEdit(r); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                          <Icons.Edit />
+                        </button>
+                        <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                           </svg>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between w-full md:w-auto gap-4">
-                    <div className="text-left md:text-right hidden sm:block">
-                      <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Recibido por</p>
-                      <p className="text-xs font-black text-slate-500">{r.receivedBy}</p>
-                    </div>
-                    <div className="flex items-center gap-3 ml-auto md:ml-0">
-                      <button onClick={(e) => { e.stopPropagation(); handleEdit(r); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
-                        <Icons.Edit />
-                      </button>
-                      <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                         </svg>
-                      </span>
-                    </div>
-                  </div>
-                </div>
 
-                {isExpanded && (
-                  <div className="px-6 pb-6 sm:px-8 sm:pb-8 pt-4 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
-                       <div>
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Detalles de Recepción</p>
-                          <div className="space-y-1">
-                             <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {getConfeccionistaName(r.confeccionista)}</p>
-                             <p className="text-xs sm:text-sm font-bold text-slate-500">Remisión: {r.batchCode}</p>
-                             {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
-                             {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}
-                          </div>
-                       </div>
-                       <div className="md:text-right">
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
-                          <p className="text-xs sm:text-sm font-bold text-slate-600">Asentado por: <span className="text-slate-900 font-black">{r.receivedBy}</span></p>
-                          <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{r.createdAt}</span></p>
-                       </div>
-                    </div>
+                  {isExpanded && (
+                    <div className="px-6 pb-6 sm:px-8 sm:pb-8 pt-4 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
+                         <div>
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Detalles de Recepción</p>
+                            <div className="space-y-1">
+                               <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {getConfeccionistaName(r.confeccionista)}</p>
+                               <p className="text-xs sm:text-sm font-bold text-slate-500">Remisión: {r.batchCode}</p>
+                               {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
+                               {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}
+                            </div>
+                         </div>
+                         <div className="md:text-right">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
+                            <p className="text-xs sm:text-sm font-bold text-slate-600">Asentado por: <span className="text-slate-900 font-black">{r.receivedBy}</span></p>
+                            <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{r.createdAt}</span></p>
+                         </div>
+                      </div>
 
-                    <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-                       <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm min-w-[300px]">
-                            <thead>
-                                <tr className="bg-slate-50 border-b border-slate-100">
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia</th>
-                                  <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50">
-                                {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
-                                  <tr key={ref}>
-                                    <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">{ref}</td>
-                                    <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
+                      <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                         <div className="overflow-x-auto">
+                          <table className="w-full text-left text-sm min-w-[300px]">
+                              <thead>
+                                  <tr className="bg-slate-50 border-b border-slate-100">
+                                    <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia</th>
+                                    <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
                                   </tr>
-                                ))}
-                            </tbody>
-                            <tfoot>
-                                <tr className="bg-slate-50/80 border-t border-slate-100">
-                                  <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
-                                  <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-blue-600 text-xl sm:text-2xl">{totalQty}</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                       </div>
+                              </thead>
+                              <tbody className="divide-y divide-slate-50">
+                                  {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
+                                    <tr key={ref}>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">{ref}</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                              <tfoot>
+                                  <tr className="bg-slate-50/80 border-t border-slate-100">
+                                    <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
+                                    <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-blue-600 text-xl sm:text-2xl">{totalQty}</td>
+                                  </tr>
+                              </tfoot>
+                          </table>
+                         </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+              );
+            })}
+              <div className="mt-6">
+                <PaginationComponent 
+                  currentPage={receptionsPagination.pagination.page}
+                  totalPages={receptionsPagination.pagination.totalPages}
+                  pageSize={receptionsPagination.pagination.limit}
+                  onPageChange={receptionsPagination.goToPage}
+                  onPageSizeChange={receptionsPagination.setLimit}
+                />
               </div>
-            );
-          })
-        )}
-      </div>
+            </>
+          )}
+        </div>
     </div>
   );
 };
