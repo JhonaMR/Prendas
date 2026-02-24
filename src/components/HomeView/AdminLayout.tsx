@@ -148,7 +148,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
   ];
 
   return (
-    <div className="h-full w-full flex flex-col bg-slate-50 p-6 md:p-10">
+    <div className="h-full w-full flex flex-col bg-transparent p-6 md:p-10">
       {/* Navigation Grid */}
       <div className="mb-8 flex items-start justify-between">
         <div>

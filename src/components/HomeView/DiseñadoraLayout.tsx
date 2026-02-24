@@ -69,7 +69,7 @@ const DiseñadoraLayout: React.FC<DiseñadoraLayoutProps> = ({ user, onNavigate 
   ];
 
   return (
-    <div className="h-full w-full flex flex-col bg-slate-50 p-6 md:p-10">
+    <div className="h-full w-full flex flex-col bg-transparent p-6 md:p-10">
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">Bienvenido, {user.name}</h1>

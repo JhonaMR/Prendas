@@ -29,6 +29,7 @@ import FichasCostoDetalle from './views/FichasCostoDetalle';
 import FichasCorteDetalle from './views/FichasCorteDetalle';
 import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
+import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
   // ========== ESTADOS ==========
@@ -1207,7 +1208,8 @@ const App: React.FC = () => {
       </div>
 
       <main className="flex-1 relative overflow-hidden bg-slate-50">
-        <div className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10">
+        <DottedBackground />
+        <div className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative z-10">
           <div className="max-w-full mx-auto">
             {renderContent()}
           </div>
