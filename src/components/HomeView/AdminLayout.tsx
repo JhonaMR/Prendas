@@ -134,6 +134,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Maestros',
       icon: <Icons.Masters />,
       description: 'Gestionar datos'
+    },
+    {
+      id: 'compras',
+      label: 'Compras',
+      icon: <Icons.Orders />,
+      description: 'Registrar compras'
     }
   ];
 

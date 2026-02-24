@@ -19,6 +19,7 @@ import DispatchControlView from './views/DispatchControlView';
 import SalesReportView from './views/SalesReportView';
 import DeliveryDatesView from './views/DeliveryDatesView';
 import BackupManagementView from './views/BackupManagementView';
+import ComprasView from './views/ComprasView';
 
 // Fichas Views
 import FichasDisenoMosaico from './views/FichasDisenoMosaico';
@@ -1015,6 +1016,14 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <BackupManagementView />;
+      case 'compras':
+        // Diseñadora no puede acceder a Compras
+        if (user.role === UserRole.DISEÑADORA) {
+          setActiveTab('home');
+          alert('No tienes permiso para acceder a esta sección');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <ComprasView user={user} onNavigate={handleTabChange} />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':
@@ -1128,6 +1137,7 @@ const App: React.FC = () => {
                 <NavItem active={activeTab === 'reception'} onClick={() => handleTabChange('reception')} icon={<Icons.Reception />} label="Recepción" />
                 <NavItem active={activeTab === 'dispatch'} onClick={() => handleTabChange('dispatch')} icon={<Icons.Dispatch />} label="Despachos" />
                 <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
+                <NavItem active={activeTab === 'compras'} onClick={() => handleTabChange('compras')} icon={<Icons.Orders />} label="Compras" />
               </div>
             )}
             

@@ -108,6 +108,26 @@ router.post('/correrias', verifyToken, preventNonAdminEdit, correriasController.
 router.put('/correrias/:id', verifyToken, preventNonAdminEdit, correriasController.update);
 router.delete('/correrias/:id', verifyToken, preventNonAdminEdit, correriasController.delete);
 
+// ==================== COMPRAS ====================
+
+const comprasController = require('../controllers/entities/compras/comprasController');
+
+router.get('/compras', verifyToken, comprasController.list);
+router.post('/compras', verifyToken, preventNonAdminEdit, comprasController.create);
+router.get('/compras/:id', verifyToken, comprasController.read);
+router.put('/compras/:id', verifyToken, preventNonAdminEdit, comprasController.update);
+router.delete('/compras/:id', verifyToken, preventNonAdminEdit, comprasController.delete);
+
+// ==================== INVENTORY MOVEMENTS ====================
+
+const inventoryMovementsController = require('../controllers/entities/inventoryMovements/inventoryMovementsController');
+
+router.get('/inventory-movements', verifyToken, inventoryMovementsController.getAll);
+router.post('/inventory-movements', verifyToken, preventNonAdminEdit, inventoryMovementsController.create);
+router.get('/inventory-movements/:id', verifyToken, inventoryMovementsController.getById);
+router.put('/inventory-movements/:id', verifyToken, preventNonAdminEdit, inventoryMovementsController.update);
+router.delete('/inventory-movements/:id', verifyToken, preventNonAdminEdit, inventoryMovementsController.delete);
+
 // ==================== RECEPCIONES ====================
 
 router.get('/receptions', verifyToken, movementsController.getReceptions);

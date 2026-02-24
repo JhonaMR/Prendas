@@ -38,6 +38,7 @@ interface ApiResponse<T = any> {
   data?: T;
   message?: string;
   error?: string;
+  errors?: string[];
 }
 
 interface LoginResponse {
@@ -167,6 +168,7 @@ class ApiService {
           statusText: response.statusText,
           message: data.message || `Error del servidor (${response.status})`,
           error: data.error,
+          errors: data.errors,
           url: response.url,
           timestamp
         });
@@ -174,7 +176,8 @@ class ApiService {
         return {
           success: false,
           message: data.message || `Error del servidor (${response.status})`,
-          error: data.error
+          error: data.error,
+          errors: data.errors
         };
       }
       
@@ -779,6 +782,212 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al eliminar correria'
+      };
+    }
+  }
+
+  // ==================== COMPRAS ====================
+
+  async getCompras(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras`, {
+        headers: this.getAuthHeaders()
+      });
+
+      const data = await this.handleResponse<any[]>(response);
+      
+      // Transformar snake_case a camelCase
+      const transformedCompras = (data.data || []).map((compra: any) => ({
+        id: compra.id,
+        fecha: compra.fecha,
+        referencia: compra.referencia,
+        unidades: compra.unidades,
+        insumo: compra.insumo,
+        cantidadInsumo: parseFloat(compra.cantidad_insumo),
+        precioUnidad: parseFloat(compra.precio_unidad),
+        cantidadTotal: parseFloat(compra.cantidad_total),
+        total: parseFloat(compra.total),
+        proveedor: compra.proveedor,
+        fechaPedido: compra.fecha_pedido,
+        observacion: compra.observacion,
+        factura: compra.factura,
+        precioRealInsumoUnd: compra.precio_real_insumo_und,
+        afectaInventario: compra.afecta_inventario
+      }));
+      
+      return transformedCompras;
+    } catch (error) {
+      console.error('Error obteniendo compras:', error);
+      return [];
+    }
+  }
+
+  async getCompraById(id: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras/${id}`, {
+        headers: this.getAuthHeaders()
+      });
+
+      const data = await this.handleResponse<any>(response);
+      
+      if (data.success && data.data) {
+        // Transformar snake_case a camelCase
+        const compra = data.data;
+        data.data = {
+          id: compra.id,
+          fecha: compra.fecha,
+          referencia: compra.referencia,
+          unidades: compra.unidades,
+          insumo: compra.insumo,
+          cantidadInsumo: parseFloat(compra.cantidad_insumo),
+          precioUnidad: parseFloat(compra.precio_unidad),
+          cantidadTotal: parseFloat(compra.cantidad_total),
+          total: parseFloat(compra.total),
+          proveedor: compra.proveedor,
+          fechaPedido: compra.fecha_pedido,
+          observacion: compra.observacion,
+          factura: compra.factura,
+          precioRealInsumoUnd: compra.precio_real_insumo_und,
+          afectaInventario: compra.afecta_inventario
+        };
+      }
+
+      return data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener compra'
+      };
+    }
+  }
+
+  async createCompra(compra: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(compra)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al crear compra'
+      };
+    }
+  }
+
+  async updateCompra(id: string, compra: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(compra)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar compra'
+      };
+    }
+  }
+
+  async deleteCompra(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar compra'
+      };
+    }
+  }
+
+  // ==================== INVENTORY MOVEMENTS ====================
+
+  async getInventoryMovements(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/inventory-movements`, {
+        headers: this.getAuthHeaders()
+      });
+
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo movimientos de inventario:', error);
+      return [];
+    }
+  }
+
+  async getInventoryMovementById(id: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/inventory-movements/${id}`, {
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al obtener movimiento de inventario'
+      };
+    }
+  }
+
+  async createInventoryMovement(movement: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/inventory-movements`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(movement)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al crear movimiento de inventario'
+      };
+    }
+  }
+
+  async updateInventoryMovement(id: string, movement: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/inventory-movements/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(movement)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar movimiento de inventario'
+      };
+    }
+  }
+
+  async deleteInventoryMovement(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/inventory-movements/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar movimiento de inventario'
       };
     }
   }

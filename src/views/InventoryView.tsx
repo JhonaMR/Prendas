@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react';
+﻿import React, { useMemo, useState } from 'react';
 import { BatchReception, Dispatch, ItemEntry, Reference } from '../types';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import InventoryInsumosView from './InventoryInsumosView';
 
 interface InventoryViewProps {
   receptions?: BatchReception[];
@@ -11,14 +12,13 @@ interface InventoryViewProps {
   correrias?: any[];
 }
 
-const InventoryView: React.FC<InventoryViewProps> = ({ 
-  receptions = [], 
+const InventoryView: React.FC<InventoryViewProps> = ({
+  receptions = [],
   dispatches = [],
   references = [],
   orders = [],
   correrias = []
 }) => {
-  
   const [search, setSearch] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportFormat, setReportFormat] = useState<'pdf' | 'excel'>('pdf');
@@ -169,13 +169,13 @@ const InventoryView: React.FC<InventoryViewProps> = ({
         let xPos = margin;
         rowData.forEach((cell, idx) => {
           doc.rect(xPos, yPosition, columnWidths[idx], dataRowHeight);
-          
+
           if (idx === 0) {
             doc.setFont(undefined, 'bold');
           } else {
             doc.setFont(undefined, 'normal');
           }
-          
+
           const text = cell.toString();
           doc.text(text, xPos + columnWidths[idx] / 2, yPosition + 3.5, { align: 'center', maxWidth: columnWidths[idx] - 1 });
           xPos += columnWidths[idx];
@@ -379,23 +379,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
 
   if (inventoryType === 'supplies') {
     return (
-      <div className="space-y-6 pb-20">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter">Inventario de Insumos</h2>
-            <p className="text-slate-400 font-medium text-sm sm:text-base">Próximamente disponible</p>
-          </div>
-          <button
-            onClick={() => setInventoryType('selector')}
-            className="px-6 py-4 rounded-[24px] bg-white text-slate-400 font-bold hover:text-slate-600 transition-all border border-slate-100 text-sm"
-          >
-            Atrás
-          </button>
-        </div>
-        <div className="bg-white p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-slate-200 text-center text-slate-400 font-bold italic">
-          El inventario de insumos estará disponible próximamente
-        </div>
-      </div>
+      <InventoryInsumosView onNavigate={() => setInventoryType('selector')} />
     );
   }
 
@@ -415,8 +399,8 @@ const InventoryView: React.FC<InventoryViewProps> = ({
           </button>
           <div className="w-full sm:max-w-md">
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar referencia..."
@@ -494,7 +478,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
             ))}
             <div className="mt-6">
-              <PaginationComponent 
+              <PaginationComponent
                 currentPage={pagination.pagination.page}
                 totalPages={pagination.pagination.totalPages}
                 pageSize={pagination.pagination.limit}

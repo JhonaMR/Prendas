@@ -87,6 +87,12 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       label: 'Maestros',
       icon: <Icons.Masters />,
       description: 'Gestionar datos maestros'
+    },
+    {
+      id: 'compras',
+      label: 'Compras',
+      icon: <Icons.Orders />,
+      description: 'Registrar compras de insumos'
     }
   ];
 
