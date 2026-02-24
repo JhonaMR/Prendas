@@ -70,6 +70,24 @@ router.put('/auth/users/:id', verifyToken, verifyAdmin, authController.updateUse
  */
 router.delete('/auth/users/:id', verifyToken, verifyAdmin, authController.deleteUser);
 
+// ==================== PREFERENCIAS DE USUARIO ====================
+
+const userPreferencesController = require('../controllers/userPreferencesController');
+
+/**
+ * @route   GET /api/user/preferences
+ * @desc    Obtener preferencias del usuario autenticado
+ * @access  Private
+ */
+router.get('/user/preferences', verifyToken, userPreferencesController.getUserPreferences);
+
+/**
+ * @route   POST /api/user/preferences
+ * @desc    Guardar preferencias del usuario autenticado
+ * @access  Private
+ */
+router.post('/user/preferences', verifyToken, userPreferencesController.saveUserPreferences);
+
 // ==================== REFERENCIAS ====================
 
 router.get('/references', verifyToken, referencesController.list);

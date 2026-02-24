@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict L6Q7aKKh0MaP8DAfONIpv4kUDt1I0PDL9MgdfehVauHRi7OrIl02lPwNmN4yLJS
+\restrict q6PsQiYg8QiXOB1HnihewvdtE4lMxhdITRY0PekVQY7t4wVdd31xTGDRaDjYbuQ
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -81,6 +81,33 @@ CREATE TABLE public.clients (
 ALTER TABLE public.clients OWNER TO postgres;
 
 --
+-- Name: compras; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.compras (
+    id character varying(50) NOT NULL,
+    fecha date NOT NULL,
+    referencia character varying(255),
+    unidades integer,
+    insumo character varying(255) NOT NULL,
+    cantidad_insumo numeric(10,2) NOT NULL,
+    precio_unidad numeric(10,2) NOT NULL,
+    cantidad_total numeric(10,2) NOT NULL,
+    total numeric(10,2) NOT NULL,
+    proveedor character varying(255) NOT NULL,
+    fecha_pedido date,
+    observacion text,
+    factura character varying(255),
+    precio_real_insumo_und character varying(50) DEFAULT 'pendiente'::character varying,
+    afecta_inventario boolean DEFAULT true,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.compras OWNER TO postgres;
+
+--
 -- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -149,6 +176,23 @@ CREATE TABLE public.delivery_dates (
 ALTER TABLE public.delivery_dates OWNER TO postgres;
 
 --
+-- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.disenadoras (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    nombre character varying(255) NOT NULL,
+    cedula character varying(20),
+    telefono character varying(20),
+    activa boolean DEFAULT true,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.disenadoras OWNER TO postgres;
+
+--
 -- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -194,13 +238,187 @@ CREATE TABLE public.dispatches (
 ALTER TABLE public.dispatches OWNER TO postgres;
 
 --
+-- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.fichas_cortes (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    ficha_costo_id uuid NOT NULL,
+    numero_corte integer NOT NULL,
+    fecha_corte date,
+    cantidad_cortada integer DEFAULT 0,
+    materia_prima jsonb DEFAULT '[]'::jsonb,
+    mano_obra jsonb DEFAULT '[]'::jsonb,
+    insumos_directos jsonb DEFAULT '[]'::jsonb,
+    insumos_indirectos jsonb DEFAULT '[]'::jsonb,
+    provisiones jsonb DEFAULT '[]'::jsonb,
+    total_materia_prima numeric(12,2) DEFAULT 0,
+    total_mano_obra numeric(12,2) DEFAULT 0,
+    total_insumos_directos numeric(12,2) DEFAULT 0,
+    total_insumos_indirectos numeric(12,2) DEFAULT 0,
+    total_provisiones numeric(12,2) DEFAULT 0,
+    costo_real numeric(12,2) DEFAULT 0,
+    precio_venta numeric(12,2) DEFAULT 0,
+    rentabilidad numeric(5,2) DEFAULT 0,
+    costo_proyectado numeric(12,2) DEFAULT 0,
+    diferencia numeric(12,2) DEFAULT 0,
+    margen_utilidad numeric(5,2) DEFAULT 0,
+    created_by character varying(255),
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    ficha_corte character varying(255)
+);
+
+
+ALTER TABLE public.fichas_cortes OWNER TO postgres;
+
+--
+-- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.fichas_costo (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    referencia character varying(50) NOT NULL,
+    ficha_diseno_id uuid,
+    descripcion text,
+    marca character varying(255),
+    novedad character varying(255),
+    muestra_1 character varying(255),
+    muestra_2 character varying(255),
+    observaciones text,
+    foto_1 character varying(500),
+    foto_2 character varying(500),
+    materia_prima jsonb DEFAULT '[]'::jsonb,
+    mano_obra jsonb DEFAULT '[]'::jsonb,
+    insumos_directos jsonb DEFAULT '[]'::jsonb,
+    insumos_indirectos jsonb DEFAULT '[]'::jsonb,
+    provisiones jsonb DEFAULT '[]'::jsonb,
+    total_materia_prima numeric(12,2) DEFAULT 0,
+    total_mano_obra numeric(12,2) DEFAULT 0,
+    total_insumos_directos numeric(12,2) DEFAULT 0,
+    total_insumos_indirectos numeric(12,2) DEFAULT 0,
+    total_provisiones numeric(12,2) DEFAULT 0,
+    costo_total numeric(12,2) DEFAULT 0,
+    precio_venta numeric(12,2) DEFAULT 0,
+    rentabilidad numeric(5,2) DEFAULT 49,
+    margen_ganancia numeric(12,2) DEFAULT 0,
+    costo_contabilizar numeric(12,2) DEFAULT 0,
+    desc_0_precio numeric(12,2) DEFAULT 0,
+    desc_0_rent numeric(5,2) DEFAULT 0,
+    desc_5_precio numeric(12,2) DEFAULT 0,
+    desc_5_rent numeric(5,2) DEFAULT 0,
+    desc_10_precio numeric(12,2) DEFAULT 0,
+    desc_10_rent numeric(5,2) DEFAULT 0,
+    desc_15_precio numeric(12,2) DEFAULT 0,
+    desc_15_rent numeric(5,2) DEFAULT 0,
+    cantidad_total_cortada integer DEFAULT 0,
+    created_by character varying(255),
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.fichas_costo OWNER TO postgres;
+
+--
+-- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.fichas_diseno (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    referencia character varying(50) NOT NULL,
+    disenadora_id uuid,
+    descripcion text,
+    marca character varying(255),
+    novedad character varying(255),
+    muestra_1 character varying(255),
+    muestra_2 character varying(255),
+    observaciones text,
+    foto_1 character varying(500),
+    foto_2 character varying(500),
+    materia_prima jsonb DEFAULT '[]'::jsonb,
+    mano_obra jsonb DEFAULT '[]'::jsonb,
+    insumos_directos jsonb DEFAULT '[]'::jsonb,
+    insumos_indirectos jsonb DEFAULT '[]'::jsonb,
+    provisiones jsonb DEFAULT '[]'::jsonb,
+    total_materia_prima numeric(12,2) DEFAULT 0,
+    total_mano_obra numeric(12,2) DEFAULT 0,
+    total_insumos_directos numeric(12,2) DEFAULT 0,
+    total_insumos_indirectos numeric(12,2) DEFAULT 0,
+    total_provisiones numeric(12,2) DEFAULT 0,
+    costo_total numeric(12,2) DEFAULT 0,
+    importada boolean DEFAULT false,
+    created_by character varying(255),
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.fichas_diseno OWNER TO postgres;
+
+--
+-- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.inventory_movements (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    insumo character varying(255) NOT NULL,
+    cantidad numeric(10,2) NOT NULL,
+    valor_unitario numeric(12,2) NOT NULL,
+    valor_total numeric(12,2) NOT NULL,
+    proveedor character varying(255),
+    referencia_destino character varying(255),
+    remision_factura character varying(255),
+    movimiento character varying(50) NOT NULL,
+    compra_id character varying(50),
+    fecha_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT inventory_movements_movimiento_check CHECK (((movimiento)::text = ANY ((ARRAY['Entrada'::character varying, 'Salida'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.inventory_movements OWNER TO postgres;
+
+--
+-- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.maletas (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    nombre character varying(255) NOT NULL,
+    correria_id character varying(255),
+    created_by character varying(255),
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.maletas OWNER TO postgres;
+
+--
+-- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.maletas_referencias (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    maleta_id uuid NOT NULL,
+    referencia character varying(50) NOT NULL,
+    orden integer DEFAULT 0,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.maletas_referencias OWNER TO postgres;
+
+--
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.order_items (
     order_id character varying(255) NOT NULL,
     reference character varying(255) NOT NULL,
-    quantity integer NOT NULL
+    quantity integer NOT NULL,
+    sale_price numeric(10,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -305,11 +523,19 @@ CREATE TABLE public.receptions (
     charge_type character varying(255),
     charge_units integer NOT NULL,
     received_by character varying(255) NOT NULL,
-    created_at character varying(255) NOT NULL
+    created_at character varying(255) NOT NULL,
+    affects_inventory boolean DEFAULT true
 );
 
 
 ALTER TABLE public.receptions OWNER TO postgres;
+
+--
+-- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this reception impacts the inventory. Set to FALSE for partial receptions that are part of a larger batch.';
+
 
 --
 -- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
@@ -762,6 +988,17 @@ test-restore-1	Cliente Restore	NIT-RESTORE	Dirección	Ciudad	\N	\N	seller	\N	t
 
 
 --
+-- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.compras (id, fecha, referencia, unidades, insumo, cantidad_insumo, precio_unidad, cantidad_total, total, proveedor, fecha_pedido, observacion, factura, precio_real_insumo_und, afecta_inventario, created_at, updated_at) FROM stdin;
+mm0w9jdtvo24ni9cg	2026-02-10	12877	150	Boton pata	3.00	150.00	450.00	67500.00	Insutex	2026-02-12	\N	\N	pendiente	f	2026-02-24 12:43:34.246189	2026-02-24 12:43:34.246189
+mm0zq0khnofp6pd4g	2026-02-20	\N	\N	Bolsas	5000.00	94.00	5000.00	470000.00	Plasticos union	2026-02-20	\N	\N	pendiente	t	2026-02-24 14:20:21.858376	2026-02-24 14:43:14.190001
+mm10k9v869lrxfoef	2026-02-24	\N	\N	Etiquetas gomitas	30000.00	110.00	30000.00	3300000.00	Punto marquilla	\N	\N	\N	pendiente	t	2026-02-24 14:43:53.590344	2026-02-24 14:43:53.590344
+\.
+
+
+--
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1065,6 +1302,15 @@ mlpc8c2cnhamwad90	15927569	12877	150	2026-01-15	2026-02-01	\N	\N	\N	2026-02-16 1
 
 
 --
+-- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updated_at) FROM stdin;
+23e36d4f-0002-41d8-b861-99e68b9992e3	prueba	121231	321311	t	2026-02-23 11:02:26.428689	2026-02-23 11:02:26.428689
+\.
+
+
+--
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1081,28 +1327,87 @@ COPY public.dispatches (id, client_id, correria_id, invoice_no, remission_no, di
 
 
 --
+-- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantidad_cortada, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_real, precio_venta, rentabilidad, costo_proyectado, diferencia, margen_utilidad, created_by, created_at, ficha_corte) FROM stdin;
+\.
+
+
+--
+-- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, precio_venta, rentabilidad, margen_ganancia, costo_contabilizar, desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent, cantidad_total_cortada, created_by, created_at, updated_at) FROM stdin;
+7ef92f0b-ce02-4a10-915e-3b561324ffb7	12963	0b99a3d1-8812-48fd-803e-adb9f1f91e03	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 14850, "concepto": "LINO PRAGA", "vlr_unit": 15000}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 165, "concepto": "LINO PRAGA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3921, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3921}]	15015.00	6500.00	324.00	0.00	4321.00	26160.00	40900.00	56.35	55900.00	21839.00	40900.00	56.35	38900.00	48.70	36900.00	41.06	34900.00	33.41	0	Admin Principal	2026-02-24 10:23:00.790495	2026-02-24 10:23:00.790495
+b4c4050d-29e3-4b6f-a0d5-25bc7d5e38da	10210	760c19e6-0089-4b3d-8712-a45900529e38	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "INSUMOS ", "vlr_unit": 2400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	2400.00	400.00	14500.00	20900.00	44.14	28900.00	14100.00	20900.00	44.14	19900.00	37.24	18900.00	30.34	17900.00	23.45	0	Admin Principal	2026-02-24 10:37:43.646101	2026-02-24 10:37:43.646101
+\.
+
+
+--
+-- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
+0b99a3d1-8812-48fd-803e-adb9f1f91e03	12963	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 1225, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1225}]	0.00	6500.00	324.00	0.00	1625.00	8449.00	t	PRUEBA	2026-02-23 15:12:59.222394	2026-02-23 15:12:59.222394
+760c19e6-0089-4b3d-8712-a45900529e38	10210	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 1400, "concepto": "INSUMOS ", "vlr_unit": 1400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	1400.00	400.00	13500.00	t	PRUEBA	2026-02-23 11:09:05.097294	2026-02-23 11:09:05.097294
+\.
+
+
+--
+-- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_total, proveedor, referencia_destino, remision_factura, movimiento, compra_id, fecha_creacion, created_at, updated_at) FROM stdin;
+68ec0466-b585-4b84-844c-5a74bdc822d0	Etiquetas gomitas	30000.00	110.00	3300000.00	Punto marquilla	\N	\N	Entrada	mm10k9v869lrxfoef	2026-02-24 14:43:53.598693	2026-02-24 14:43:53.598693	2026-02-24 14:43:53.598693
+40e80fa8-cb12-411c-9f80-45cff399ef61	Etiquetas gomitas	800.00	110.00	88000.00	Punto marquilla	6040	\N	Salida	\N	2026-02-24 15:14:39.853376	2026-02-24 15:14:39.853376	2026-02-24 15:14:39.853376
+\.
+
+
+--
+-- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at) FROM stdin;
+91d58739-3664-4d50-9920-2f86a5933c01	b	mljjrcujmtckild4r	Admin Principal	2026-02-24 10:39:05.751251	2026-02-24 10:39:05.751251
+6c253170-b1e0-433f-afe0-03e71e60f8a2	aaa	\N	Admin Principal	2026-02-23 13:09:44.962806	2026-02-23 13:09:44.962806
+\.
+
+
+--
+-- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) FROM stdin;
+ad28967a-6ee9-4397-8a95-2e609740b1dc	6c253170-b1e0-433f-afe0-03e71e60f8a2	10210	0	2026-02-24 14:10:10.983232
+f3ade09b-e9f1-46e6-a0d2-2aeb04531f9c	6c253170-b1e0-433f-afe0-03e71e60f8a2	12000	1	2026-02-24 14:10:10.983232
+77e1f420-6d45-4abf-bb6c-34c577a4b357	6c253170-b1e0-433f-afe0-03e71e60f8a2	12963	2	2026-02-24 14:10:10.983232
+\.
+
+
+--
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.order_items (order_id, reference, quantity) FROM stdin;
-mlsknr6ze3ghsw5lh	12923	18
-mlsknr6ze3ghsw5lh	12882	18
-mlsknr6ze3ghsw5lh	12909	18
-mlsknr6ze3ghsw5lh	12872	18
-mlsknr6ze3ghsw5lh	12911	18
-mlsknr6ze3ghsw5lh	12919	18
-mlsknr6ze3ghsw5lh	12926	18
-mlsknr6ze3ghsw5lh	12835	12
-mlsknr6ze3ghsw5lh	12831	12
-mlsknr6ze3ghsw5lh	12836	12
-mlsknr6ze3ghsw5lh	12855	12
-mlsknr6ze3ghsw5lh	12129	12
-mlsknr6ze3ghsw5lh	12841	12
-mlsknr6ze3ghsw5lh	12834	12
-mlsknr6ze3ghsw5lh	12825	12
-mlsknr6ze3ghsw5lh	12818	12
-mlsknr6ze3ghsw5lh	12821	12
-mlsknr6ze3ghsw5lh	12840	12
+COPY public.order_items (order_id, reference, quantity, sale_price) FROM stdin;
+mlsknr6ze3ghsw5lh	12923	18	0.00
+mlsknr6ze3ghsw5lh	12882	18	0.00
+mlsknr6ze3ghsw5lh	12909	18	0.00
+mlsknr6ze3ghsw5lh	12872	18	0.00
+mlsknr6ze3ghsw5lh	12911	18	0.00
+mlsknr6ze3ghsw5lh	12919	18	0.00
+mlsknr6ze3ghsw5lh	12926	18	0.00
+mlsknr6ze3ghsw5lh	12835	12	0.00
+mlsknr6ze3ghsw5lh	12831	12	0.00
+mlsknr6ze3ghsw5lh	12836	12	0.00
+mlsknr6ze3ghsw5lh	12855	12	0.00
+mlsknr6ze3ghsw5lh	12129	12	0.00
+mlsknr6ze3ghsw5lh	12841	12	0.00
+mlsknr6ze3ghsw5lh	12834	12	0.00
+mlsknr6ze3ghsw5lh	12825	12	0.00
+mlsknr6ze3ghsw5lh	12818	12	0.00
+mlsknr6ze3ghsw5lh	12821	12	0.00
+mlsknr6ze3ghsw5lh	12840	12	0.00
 \.
 
 
@@ -1241,6 +1546,8 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12960	CAMISETA ENCAJE FTE	39900.00	MARTHA RAMIREZ	LYCRA FRIA	0.91	\N	\N	1	2026-02-13 15:45:46
 12961	CAMSILLA ENCEGE CORAZON	29900.00	MARTHA RAMIREZ	RIB	0.63	\N	\N	1	2026-02-13 15:45:46
 12000	CONJUN  CHAMPION B	49900.00	JACKELINE PEREA	QUIMBAYA	1.05	\N	\N	1	2026-02-16 18:11:38
+12963	BLUSA BOLER MANG ESTA	40900.00	prueba	LINO PRAGA	1.00	\N	\N	1	\N
+10210	BLUSA BASICA	20900.00	prueba	BURDA 	0.40	\N	\N	1	\N
 \.
 
 
@@ -1280,23 +1587,23 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at) FROM stdin;
-mlppazj3deng1o52k	7695	43189668	\N	\N	0	Admin Principal	2026-02-16T21:43:16.575Z
-mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z
-mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z
-mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z
-mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z
-mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z
-mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z
-mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z
-mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z
-mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z
-mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z
-mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z
-mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z
-mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z
-mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00
-mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00
+COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory) FROM stdin;
+mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z	t
+mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z	t
+mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z	t
+mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z	t
+mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z	t
+mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z	t
+mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z	t
+mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z	t
+mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z	t
+mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z	t
+mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z	t
+mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z	t
+mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z	t
+mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t
+mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t
+mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f
 \.
 
 
@@ -1332,10 +1639,10 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	general	1	\N	2026-02-19 16:07:22.727967
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-20 07:48:27.954407
-mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-19 07:53:24.898775
 mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-19 09:09:32.276684
+mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-24 11:50:29.043628
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-24 11:51:24.534407
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-24 12:27:43.282098
 \.
 
 
@@ -1384,6 +1691,14 @@ ALTER TABLE ONLY public.clients
 
 
 --
+-- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.compras
+    ADD CONSTRAINT compras_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1416,6 +1731,14 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
+-- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.disenadoras
+    ADD CONSTRAINT disenadoras_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1429,6 +1752,86 @@ ALTER TABLE ONLY public.dispatch_items
 
 ALTER TABLE ONLY public.dispatches
     ADD CONSTRAINT dispatches_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_cortes
+    ADD CONSTRAINT fichas_cortes_ficha_costo_id_numero_corte_key UNIQUE (ficha_costo_id, numero_corte);
+
+
+--
+-- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_cortes
+    ADD CONSTRAINT fichas_cortes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_costo
+    ADD CONSTRAINT fichas_costo_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_costo
+    ADD CONSTRAINT fichas_costo_referencia_key UNIQUE (referencia);
+
+
+--
+-- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_diseno
+    ADD CONSTRAINT fichas_diseno_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_diseno
+    ADD CONSTRAINT fichas_diseno_referencia_key UNIQUE (referencia);
+
+
+--
+-- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory_movements
+    ADD CONSTRAINT inventory_movements_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maletas
+    ADD CONSTRAINT maletas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maletas_referencias
+    ADD CONSTRAINT maletas_referencias_maleta_id_referencia_key UNIQUE (maleta_id, referencia);
+
+
+--
+-- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maletas_referencias
+    ADD CONSTRAINT maletas_referencias_pkey PRIMARY KEY (id);
 
 
 --
@@ -1532,6 +1935,34 @@ CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
+-- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta_inventario);
+
+
+--
+-- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
+
+
+--
+-- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
+
+
+--
+-- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
+
+
+--
 -- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -1546,11 +1977,115 @@ CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (
 
 
 --
+-- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (ficha_costo_id);
+
+
+--
+-- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (referencia);
+
+
+--
+-- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (referencia);
+
+
+--
+-- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USING btree (compra_id);
+
+
+--
+-- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING btree (lower((insumo)::text));
+
+
+--
+-- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements USING btree (movimiento);
+
+
+--
+-- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements USING btree (lower((referencia_destino)::text));
+
+
+--
+-- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING btree (maleta_id);
+
+
+--
+-- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_cortes
+    ADD CONSTRAINT fichas_cortes_ficha_costo_id_fkey FOREIGN KEY (ficha_costo_id) REFERENCES public.fichas_costo(id) ON DELETE CASCADE;
+
+
+--
+-- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_costo
+    ADD CONSTRAINT fichas_costo_ficha_diseno_id_fkey FOREIGN KEY (ficha_diseno_id) REFERENCES public.fichas_diseno(id);
+
+
+--
+-- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.fichas_diseno
+    ADD CONSTRAINT fichas_diseno_disenadora_id_fkey FOREIGN KEY (disenadora_id) REFERENCES public.disenadoras(id);
+
+
+--
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.dispatch_items
     ADD CONSTRAINT fk_dispatch_items_dispatch FOREIGN KEY (dispatch_id) REFERENCES public.dispatches(id);
+
+
+--
+-- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.inventory_movements
+    ADD CONSTRAINT inventory_movements_compra_id_fkey FOREIGN KEY (compra_id) REFERENCES public.compras(id) ON DELETE SET NULL;
+
+
+--
+-- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maletas
+    ADD CONSTRAINT maletas_correria_id_fkey FOREIGN KEY (correria_id) REFERENCES public.correrias(id);
+
+
+--
+-- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maletas_referencias
+    ADD CONSTRAINT maletas_referencias_maleta_id_fkey FOREIGN KEY (maleta_id) REFERENCES public.maletas(id) ON DELETE CASCADE;
 
 
 --
@@ -1564,5 +2099,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict L6Q7aKKh0MaP8DAfONIpv4kUDt1I0PDL9MgdfehVauHRi7OrIl02lPwNmN4yLJS
+\unrestrict q6PsQiYg8QiXOB1HnihewvdtE4lMxhdITRY0PekVQY7t4wVdd31xTGDRaDjYbuQ
 
