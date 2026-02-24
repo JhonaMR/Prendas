@@ -26,6 +26,9 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportFormat, setReportFormat] = useState<'pdf' | 'excel'>('pdf');
+  const [includeZeroStock, setIncludeZeroStock] = useState(false);
   
   // Filter states
   const [insumoFilter, setInsumoFilter] = useState('');
@@ -229,6 +232,247 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
     }).format(value);
   };
 
+  // Calcular existencias por insumo
+  const calculateStockByInsumo = () => {
+    const stock: Record<string, number> = {};
+    
+    movements.forEach(m => {
+      if (!stock[m.insumo]) {
+        stock[m.insumo] = 0;
+      }
+      const cantidad = parseFloat(m.cantidad.toString());
+      if (m.movimiento === 'Entrada') {
+        stock[m.insumo] += cantidad;
+      } else {
+        stock[m.insumo] -= cantidad;
+      }
+    });
+
+    return stock;
+  };
+
+  // Generar informe PDF
+  const generateInsumosPDF = async () => {
+    try {
+      const { jsPDF } = await import('jspdf');
+      const stock = calculateStockByInsumo();
+
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'letter'
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 10;
+      const contentWidth = pageWidth - (margin * 2);
+
+      let yPosition = margin;
+      const headerRowHeight = 7;
+      const dataRowHeight = 5;
+
+      const columns = ['Insumo', 'Existencias'];
+      const columnWidths = [
+        contentWidth * 0.6,
+        contentWidth * 0.4
+      ];
+
+      const drawTableHeader = () => {
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.3);
+
+        let xPos = margin;
+        columns.forEach((col, idx) => {
+          doc.rect(xPos, yPosition, columnWidths[idx], headerRowHeight);
+          doc.text(col, xPos + columnWidths[idx] / 2, yPosition + 4.5, { align: 'center' });
+          xPos += columnWidths[idx];
+        });
+
+        yPosition += headerRowHeight;
+      };
+
+      const drawDataRow = (rowData: (string | number)[]) => {
+        doc.setFontSize(8);
+        doc.setTextColor(0, 0, 0);
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.3);
+
+        let xPos = margin;
+        rowData.forEach((cell, idx) => {
+          doc.rect(xPos, yPosition, columnWidths[idx], dataRowHeight);
+
+          if (idx === 0) {
+            doc.setFont(undefined, 'bold');
+          } else {
+            doc.setFont(undefined, 'normal');
+          }
+
+          const text = cell.toString();
+          doc.text(text, xPos + columnWidths[idx] / 2, yPosition + 3.5, { align: 'center', maxWidth: columnWidths[idx] - 1 });
+          xPos += columnWidths[idx];
+        });
+
+        yPosition += dataRowHeight;
+      };
+
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text('Informe de Existencias de Insumos', pageWidth / 2, margin + 3, { align: 'center' });
+
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Generado: ${new Date().toLocaleDateString()}`, pageWidth / 2, margin + 8, { align: 'center' });
+
+      yPosition = margin + 14;
+
+      drawTableHeader();
+
+      const reportData = Object.entries(stock)
+        .filter(([_, cantidad]) => includeZeroStock || cantidad !== 0)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([insumo, cantidad]) => ({
+          insumo,
+          existencias: Math.round(cantidad)
+        }));
+
+      for (let i = 0; i < reportData.length; i++) {
+        const row = reportData[i];
+        const rowData = [row.insumo, row.existencias];
+
+        if (yPosition + dataRowHeight > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          drawTableHeader();
+        }
+
+        drawDataRow(rowData);
+      }
+
+      doc.save(`Informe_Existencias_Insumos_${new Date().getTime()}.pdf`);
+      setShowReportModal(false);
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Error al generar el PDF. Asegúrate de tener las librerías instaladas.');
+    }
+  };
+
+  // Generar informe Excel
+  const generateInsumosExcel = async () => {
+    try {
+      const ExcelJS = await import('exceljs');
+      const Workbook = ExcelJS.Workbook;
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Existencias');
+
+      worksheet.pageSetup = {
+        paperSize: 1 as any,
+        orientation: 'portrait' as any,
+        margins: {
+          left: 0.5,
+          right: 0.5,
+          top: 0.5,
+          bottom: 0.5,
+          header: 0.5,
+          footer: 0.5
+        }
+      };
+
+      const border = {
+        top: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        bottom: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        left: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        right: { style: 'thin' as any, color: { argb: 'FF000000' } }
+      };
+
+      const titleStyle = {
+        font: { bold: true, size: 14 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const infoStyle = {
+        font: { size: 10 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const headerStyle = {
+        font: { bold: true, size: 11 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any, wrapText: true },
+        border: border,
+        fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFDCDCDC' } }
+      };
+
+      const dataStyle = {
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const insumoStyle = {
+        font: { bold: true },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const titleRow = worksheet.addRow(['Informe de Existencias de Insumos']);
+      titleRow.eachCell(cell => { cell.style = titleStyle; });
+      titleRow.height = 20;
+      worksheet.mergeCells(titleRow.number, 1, titleRow.number, 2);
+
+      const infoRow = worksheet.addRow([`Generado: ${new Date().toLocaleDateString()}`]);
+      infoRow.eachCell(cell => { cell.style = infoStyle; });
+      worksheet.mergeCells(infoRow.number, 1, infoRow.number, 2);
+
+      worksheet.addRow([]);
+
+      const columns = ['Insumo', 'Existencias'];
+      const headerRow = worksheet.addRow(columns);
+      headerRow.eachCell(cell => { cell.style = headerStyle; });
+      headerRow.height = 18;
+
+      worksheet.getColumn(1).width = 40;
+      worksheet.getColumn(2).width = 20;
+
+      const stock = calculateStockByInsumo();
+      const reportData = Object.entries(stock)
+        .filter(([_, cantidad]) => includeZeroStock || cantidad !== 0)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([insumo, cantidad]) => ({
+          insumo,
+          existencias: Math.round(cantidad)
+        }));
+
+      reportData.forEach(row => {
+        const dataRow = worksheet.addRow([row.insumo, row.existencias]);
+        dataRow.eachCell((cell, colNumber) => {
+          cell.style = colNumber === 1 ? insumoStyle : dataStyle;
+        });
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Informe_Existencias_Insumos_${new Date().getTime()}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setShowReportModal(false);
+    } catch (error) {
+      console.error('Error generando Excel:', error);
+      alert('Error al generar el Excel. Asegúrate de tener las librerías instaladas.');
+    }
+  };
+
   // Filtered and paginated data
   const filteredMovements = useMemo(() => {
     let data = [...movements];
@@ -316,6 +560,12 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               Limpiar
             </button>
           )}
+          <button
+            onClick={() => setShowReportModal(true)}
+            className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-2 rounded-lg font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
+          >
+            Generar Informe
+          </button>
           <button
             onClick={() => {
               resetForm();
@@ -562,6 +812,83 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
           </div>
         )}
       </div>
+
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div className="bg-gradient-to-r from-green-100 to-green-50 px-8 py-6 border-b border-green-200">
+              <h3 className="text-2xl font-black text-green-800 text-center">Generar Informe</h3>
+              <p className="text-sm text-green-600 text-center mt-1">Selecciona el formato</p>
+            </div>
+
+            <div className="border-2 border-slate-200 m-6 rounded-2xl p-6 space-y-6 bg-slate-50">
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Incluir insumos en 0
+                </label>
+                <div className="flex items-center justify-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={includeZeroStock}
+                    onChange={(e) => setIncludeZeroStock(e.target.checked)}
+                    className="w-5 h-5 border border-slate-300 rounded cursor-pointer"
+                  />
+                  <span className="text-sm text-slate-600">Incluir insumos con existencia 0</span>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Formato
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setReportFormat('pdf')}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportFormat === 'pdf'
+                        ? 'bg-red-300 text-red-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => setReportFormat('excel')}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportFormat === 'excel'
+                        ? 'bg-emerald-300 text-emerald-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Excel
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 px-8 py-6 bg-slate-50 border-t border-slate-200">
+              <button
+                onClick={() => {
+                  if (reportFormat === 'pdf') {
+                    generateInsumosPDF();
+                  } else if (reportFormat === 'excel') {
+                    generateInsumosExcel();
+                  }
+                }}
+                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-gradient-to-r from-green-300 to-green-200 text-green-900 hover:from-green-400 hover:to-green-300 transition-all shadow-sm"
+              >
+                Generar
+              </button>
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-slate-300 text-slate-700 hover:bg-slate-400 transition-all shadow-sm"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
