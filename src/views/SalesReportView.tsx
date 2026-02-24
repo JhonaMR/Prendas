@@ -1102,136 +1102,134 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
       {/* Modal: Generar Informe */}
       {showReportModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 space-y-6">
-            <div>
-              <h3 className="text-2xl font-black text-slate-800 mb-2">Generar Informe</h3>
-              <p className="text-sm text-slate-500">Configura los parámetros del informe</p>
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+            {/* Encabezado del modal */}
+            <div className="bg-gradient-to-r from-purple-100 to-purple-50 px-8 py-6 border-b border-purple-200">
+              <h3 className="text-2xl font-black text-purple-800 text-center">Generar Informe</h3>
+              <p className="text-sm text-purple-600 text-center mt-1">Configura los parámetros</p>
             </div>
 
-            {/* Selector: Incluir Despachadas */}
-            <div className="space-y-3">
-              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
-                Incluir Despachadas
-              </label>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.includeDespachadas
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  Sí
-                </button>
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    !reportConfig.includeDespachadas
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  No
-                </button>
+            {/* Contenedor de selectores con borde */}
+            <div className="border-2 border-slate-200 m-6 rounded-2xl p-6 space-y-6 bg-slate-50">
+              {/* Selector: Incluir Despachadas */}
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Incluir Despachadas
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.includeDespachadas
+                        ? 'bg-blue-300 text-blue-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Sí
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      !reportConfig.includeDespachadas
+                        ? 'bg-blue-300 text-blue-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    No
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Selector: Agregar Vendidas en 0 */}
-            <div className="space-y-3">
-              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
-                Agregar Vendidas en 0
-              </label>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: true })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.includeZeroSales
-                      ? 'bg-orange-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  Sí
-                </button>
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: false })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    !reportConfig.includeZeroSales
-                      ? 'bg-orange-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  No
-                </button>
+              {/* Selector: Agregar Vendidas en 0 */}
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Agregar Vendidas en 0
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: true })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.includeZeroSales
+                        ? 'bg-orange-300 text-orange-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Sí
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: false })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      !reportConfig.includeZeroSales
+                        ? 'bg-orange-300 text-orange-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    No
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Selector: Ordenar Por */}
-            <div className="space-y-3">
-              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
-                Ordenar Por
-              </label>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, sortBy: 'reference' })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.sortBy === 'reference'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  Ref. Menor a Mayor
-                </button>
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, sortBy: 'vendidas' })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.sortBy === 'vendidas'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  Vendidas Mayor a Menor
-                </button>
+              {/* Selector: Ordenar Por */}
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Ordenar Por
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, sortBy: 'reference' })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.sortBy === 'reference'
+                        ? 'bg-green-300 text-green-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Ref. Menor a Mayor
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, sortBy: 'vendidas' })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.sortBy === 'vendidas'
+                        ? 'bg-green-300 text-green-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Vendidas Mayor a Menor
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Selector: Formato */}
-            <div className="space-y-3">
-              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
-                Formato
-              </label>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, format: 'pdf' })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.format === 'pdf'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  PDF
-                </button>
-                <button
-                  onClick={() => setReportConfig({ ...reportConfig, format: 'excel' })}
-                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                    reportConfig.format === 'excel'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                  }`}
-                >
-                  Excel
-                </button>
+              {/* Selector: Formato */}
+              <div className="space-y-3">
+                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                  Formato
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, format: 'pdf' })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.format === 'pdf'
+                        ? 'bg-red-300 text-red-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, format: 'excel' })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.format === 'excel'
+                        ? 'bg-emerald-300 text-emerald-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Excel
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* Botones de acción */}
-            <div className="flex gap-3 pt-4 border-t border-slate-200">
-              <button
-                onClick={() => setShowReportModal(false)}
-                className="flex-1 py-2 px-4 rounded-lg font-black text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
-              >
-                Cancelar
-              </button>
+            <div className="flex gap-3 px-8 py-6 bg-slate-50 border-t border-slate-200">
               <button
                 onClick={() => {
                   if (reportConfig.format === 'pdf') {
@@ -1240,9 +1238,15 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
                     generateExcelReport();
                   }
                 }}
-                className="flex-1 py-2 px-4 rounded-lg font-black text-sm bg-purple-600 text-white hover:bg-purple-700 transition-all"
+                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-gradient-to-r from-purple-300 to-purple-200 text-purple-900 hover:from-purple-400 hover:to-purple-300 transition-all shadow-sm"
               >
                 Generar
+              </button>
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-slate-300 text-slate-700 hover:bg-slate-400 transition-all shadow-sm"
+              >
+                Cancelar
               </button>
             </div>
           </div>
