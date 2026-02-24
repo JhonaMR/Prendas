@@ -151,25 +151,40 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 <div className="space-y-6">
                     <SubidaFotos referencia={referencia} foto1={foto1} foto2={foto2} onFoto1Change={mark(setFoto1)} onFoto2Change={mark(setFoto2)} readOnly={!canEdit} />
                     <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-                        <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información Básica</h3>
-                        {[['Descripción de Prenda', descripcion, mark(setDescripcion)], ['Marca', marca, mark(setMarca)], ['Novedad o Correría', novedad, mark(setNovedad)]].map(([label, val, setter]: any) => (
-                            <div key={label as string}>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">{label}</label>
-                                <input type="text" value={val} onChange={e => setter(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
-                            </div>
-                        ))}
-                        <div className="grid grid-cols-2 gap-4">
-                            {[['Muestra #1', muestra1, mark(setMuestra1)], ['Muestra #2', muestra2, mark(setMuestra2)]].map(([label, val, setter]: any) => (
-                                <div key={label as string}><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">{label}</label><input type="text" value={val} onChange={e => setter(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" /></div>
-                            ))}
-                        </div>
                         <div>
                             <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Observaciones</label>
-                            <textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={6} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500 resize-none" />
+                            <textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={10} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500 resize-none" />
                         </div>
                     </div>
                 </div>
                 <div className="space-y-6 lg:col-span-2">
+                    <div className="bg-slate-100 p-6 rounded-3xl space-y-4">
+                        <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información Básica</h3>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Descripción</label>
+                                <input type="text" value={descripcion} onChange={e => mark(setDescripcion)(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Novedad o Correría</label>
+                                <input type="text" value={novedad} onChange={e => mark(setNovedad)(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Marca</label>
+                                <input type="text" value={marca} onChange={e => mark(setMarca)(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Muestra #1</label>
+                                <input type="text" value={muestra1} onChange={e => mark(setMuestra1)(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Muestra #2</label>
+                                <input type="text" value={muestra2} onChange={e => mark(setMuestra2)(e.target.value)} readOnly={!canEdit} className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                            </div>
+                        </div>
+                    </div>
                     <SeccionConceptos titulo="MATERIA PRIMA" color="pink" conceptos={materiaPrima} onChange={mark(setMateriaPrima)} readOnly={!canEdit} mostrarTipo={true} />
                     <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />

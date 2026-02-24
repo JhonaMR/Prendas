@@ -12,10 +12,14 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "selfsigned": "^5.5.0"
+    "selfsigned": "^5.5.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",

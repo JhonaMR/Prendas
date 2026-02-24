@@ -282,7 +282,7 @@ const FichasCostoDetalle: React.FC<FichasCostoDetalleProps> = ({ state, user, up
             readOnly={!canEdit}
           />
 
-          {/* Info Básica */}
+          {/* Info Básica - Solo Descripción */}
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
             <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información Básica</h3>
             
@@ -297,59 +297,6 @@ const FichasCostoDetalle: React.FC<FichasCostoDetalleProps> = ({ state, user, up
                 readOnly={!canEdit}
                 className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
               />
-            </div>
-
-            <div>
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
-                Marca
-              </label>
-              <input
-                type="text"
-                value={marca}
-                onChange={(e) => { setMarca(e.target.value); setHasUnsavedChanges(true); }}
-                readOnly={!canEdit}
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
-                Novedad
-              </label>
-              <input
-                type="text"
-                value={novedad}
-                onChange={(e) => { setNovedad(e.target.value); setHasUnsavedChanges(true); }}
-                readOnly={!canEdit}
-                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
-                  Muestra #1
-                </label>
-                <input
-                  type="text"
-                  value={muestra1}
-                  onChange={(e) => { setMuestra1(e.target.value); setHasUnsavedChanges(true); }}
-                  readOnly={!canEdit}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">
-                  Muestra #2
-                </label>
-                <input
-                  type="text"
-                  value={muestra2}
-                  onChange={(e) => { setMuestra2(e.target.value); setHasUnsavedChanges(true); }}
-                  readOnly={!canEdit}
-                  className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
-                />
-              </div>
             </div>
 
             <div>
@@ -451,6 +398,79 @@ const FichasCostoDetalle: React.FC<FichasCostoDetalleProps> = ({ state, user, up
 
         {/* COLUMNA DERECHA */}
         <div className="space-y-6">
+          {/* Detalles Adicionales */}
+          <div className="bg-slate-100 p-6 rounded-3xl space-y-4">
+            <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Detalles Adicionales</h3>
+            
+            {/* Renglón 1: Descripción y Novedad */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                  Descripción
+                </label>
+                <input
+                  type="text"
+                  value={descripcion}
+                  onChange={(e) => { setDescripcion(e.target.value); setHasUnsavedChanges(true); }}
+                  readOnly={!canEdit}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                  Novedad
+                </label>
+                <input
+                  type="text"
+                  value={novedad}
+                  onChange={(e) => { setNovedad(e.target.value); setHasUnsavedChanges(true); }}
+                  readOnly={!canEdit}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            {/* Renglón 2: Marca, Muestra 1 y Muestra 2 */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                  Marca
+                </label>
+                <input
+                  type="text"
+                  value={marca}
+                  onChange={(e) => { setMarca(e.target.value); setHasUnsavedChanges(true); }}
+                  readOnly={!canEdit}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                  Muestra #1
+                </label>
+                <input
+                  type="text"
+                  value={muestra1}
+                  onChange={(e) => { setMuestra1(e.target.value); setHasUnsavedChanges(true); }}
+                  readOnly={!canEdit}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">
+                  Muestra #2
+                </label>
+                <input
+                  type="text"
+                  value={muestra2}
+                  onChange={(e) => { setMuestra2(e.target.value); setHasUnsavedChanges(true); }}
+                  readOnly={!canEdit}
+                  className="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Secciones */}
           <SeccionConceptos
             titulo="MATERIA PRIMA"

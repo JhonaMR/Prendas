@@ -10,6 +10,13 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
   const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportConfig, setReportConfig] = useState({
+    includeDespachadas: true,
+    sortBy: 'reference', // 'reference' o 'vendidas'
+    format: 'pdf', // 'pdf' o 'excel'
+    includeZeroSales: true // incluir referencias con 0 vendidas
+  });
 
   // Obtener solo las referencias de la correría seleccionada (maleta)
   const maletaReferences = useMemo(() => {
@@ -282,6 +289,373 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
 
   const selectedCorreria = state.correrias.find(c => c.id === selectedCorreriaId);
 
+  // Función para generar el informe PDF
+  const generatePDFReport = async () => {
+    try {
+      // Importar dinámicamente las librerías
+      const { jsPDF } = await import('jspdf');
+      const html2canvas = (await import('html2canvas')).default;
+
+      if (!selectedCorreriaId || !metrics) return;
+
+      // Preparar datos del informe
+      const maletaRefIds = maletaReferences.map(r => r.id);
+      const correriaOrders = state.orders.filter(o => 
+        o.correriaId === selectedCorreriaId &&
+        o.items.some(item => maletaRefIds.includes(item.reference))
+      );
+
+      const correriaDispatches = state.dispatches.filter(d => 
+        d.correriaId === selectedCorreriaId &&
+        d.items.some(item => maletaRefIds.includes(item.reference))
+      );
+
+      // Construir datos de referencias
+      let reportData = maletaReferences.map(ref => {
+        // Unidades vendidas
+        const vendidas = correriaOrders.reduce((acc, order) => {
+          return acc + order.items
+            .filter(item => item.reference === ref.id)
+            .reduce((sum, item) => sum + item.quantity, 0);
+        }, 0);
+
+        // Unidades despachadas
+        const despachadas = correriaDispatches.reduce((acc, dispatch) => {
+          return acc + dispatch.items
+            .filter(item => item.reference === ref.id)
+            .reduce((sum, item) => sum + item.quantity, 0);
+        }, 0);
+
+        return {
+          referencia: ref.id,
+          vendidas,
+          inventario: ref.inventory || 0,
+          programadas: ref.programmed || 0,
+          cortadas: ref.cut || 0,
+          pendientes: ref.pending || 0,
+          despachadas
+        };
+      });
+
+      // Filtrar referencias con 0 vendidas si no está seleccionado
+      if (!reportConfig.includeZeroSales) {
+        reportData = reportData.filter(r => r.vendidas > 0);
+      }
+
+      // Ordenar datos
+      if (reportConfig.sortBy === 'reference') {
+        reportData.sort((a, b) => a.referencia.localeCompare(b.referencia));
+      } else {
+        reportData.sort((a, b) => b.vendidas - a.vendidas);
+      }
+
+      // Crear documento PDF
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'letter'
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 10;
+      const contentWidth = pageWidth - (margin * 2);
+
+      let yPosition = margin;
+      const headerRowHeight = 7;
+      const dataRowHeight = 5;
+
+      // Definir columnas
+      const columns = reportConfig.includeDespachadas
+        ? ['Referencia', 'Und. Vendidas', 'Inventario', 'Programadas', 'Cortadas', 'Pendientes', 'Despachadas']
+        : ['Referencia', 'Und. Vendidas', 'Inventario', 'Programadas', 'Cortadas', 'Pendientes'];
+
+      const columnWidths = reportConfig.includeDespachadas
+        ? [contentWidth * 0.143, contentWidth * 0.143, contentWidth * 0.143, contentWidth * 0.143, contentWidth * 0.143, contentWidth * 0.143, contentWidth * 0.142]
+        : [contentWidth * 0.167, contentWidth * 0.167, contentWidth * 0.167, contentWidth * 0.167, contentWidth * 0.166, contentWidth * 0.166];
+
+      // Función para dibujar encabezado de tabla
+      const drawTableHeader = () => {
+        doc.setFontSize(10);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.3);
+
+        let xPos = margin;
+        columns.forEach((col, idx) => {
+          // Dibujar solo el borde, sin relleno
+          doc.rect(xPos, yPosition, columnWidths[idx], headerRowHeight);
+          doc.text(col, xPos + columnWidths[idx] / 2, yPosition + 4.5, { align: 'center' });
+          xPos += columnWidths[idx];
+        });
+
+        yPosition += headerRowHeight;
+      };
+
+      // Función para dibujar fila de datos
+      const drawDataRow = (rowData: (string | number)[]) => {
+        doc.setFontSize(8);
+        doc.setTextColor(0, 0, 0);
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(0.3);
+
+        let xPos = margin;
+        rowData.forEach((cell, idx) => {
+          // Dibujar solo el borde, sin relleno
+          doc.rect(xPos, yPosition, columnWidths[idx], dataRowHeight);
+          
+          // Primera columna (Referencia) en negrita
+          if (idx === 0) {
+            doc.setFont(undefined, 'bold');
+          } else {
+            doc.setFont(undefined, 'normal');
+          }
+          
+          const text = cell.toString();
+          doc.text(text, xPos + columnWidths[idx] / 2, yPosition + 3.5, { align: 'center', maxWidth: columnWidths[idx] - 1 });
+          xPos += columnWidths[idx];
+        });
+
+        yPosition += dataRowHeight;
+      };
+
+      // Función para agregar encabezado del documento
+      const addDocumentHeader = () => {
+        const sortLabel = reportConfig.sortBy === 'reference' ? 'Por Referencia' : 'Por Unidades Vendidas';
+        
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Informe de Ventas - ${sortLabel}`, pageWidth / 2, margin + 3, { align: 'center' });
+
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        doc.text(`Correría: ${selectedCorreria?.name} ${selectedCorreria?.year}`, pageWidth / 2, margin + 8, { align: 'center' });
+        doc.text(`Generado: ${new Date().toLocaleDateString()}`, pageWidth / 2, margin + 12, { align: 'center' });
+
+        yPosition = margin + 16;
+      };
+
+      // Agregar encabezado inicial
+      addDocumentHeader();
+
+      // Dibujar encabezado de tabla
+      drawTableHeader();
+
+      // Dibujar filas de datos
+      for (let i = 0; i < reportData.length; i++) {
+        const row = reportData[i];
+        const rowData = reportConfig.includeDespachadas
+          ? [row.referencia, row.vendidas, row.inventario, row.programadas, row.cortadas, row.pendientes, row.despachadas]
+          : [row.referencia, row.vendidas, row.inventario, row.programadas, row.cortadas, row.pendientes];
+
+        // Verificar si necesita nueva página
+        if (yPosition + dataRowHeight > pageHeight - margin) {
+          doc.addPage();
+          yPosition = margin;
+          drawTableHeader();
+        }
+
+        drawDataRow(rowData);
+      }
+
+      // Descargar PDF
+      doc.save(`Informe_Ventas_${selectedCorreria?.name}_${new Date().getTime()}.pdf`);
+      setShowReportModal(false);
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Error al generar el PDF. Asegúrate de tener las librerías instaladas.');
+    }
+  };
+
+  // Función para generar el informe Excel
+  const generateExcelReport = async () => {
+    try {
+      const ExcelJS = await import('exceljs');
+      const Workbook = ExcelJS.Workbook;
+
+      if (!selectedCorreriaId || !metrics) return;
+
+      // Preparar datos del informe
+      const maletaRefIds = maletaReferences.map(r => r.id);
+      const correriaOrders = state.orders.filter(o => 
+        o.correriaId === selectedCorreriaId &&
+        o.items.some(item => maletaRefIds.includes(item.reference))
+      );
+
+      const correriaDispatches = state.dispatches.filter(d => 
+        d.correriaId === selectedCorreriaId &&
+        d.items.some(item => maletaRefIds.includes(item.reference))
+      );
+
+      // Construir datos de referencias
+      let reportData = maletaReferences.map(ref => {
+        // Unidades vendidas
+        const vendidas = correriaOrders.reduce((acc, order) => {
+          return acc + order.items
+            .filter(item => item.reference === ref.id)
+            .reduce((sum, item) => sum + item.quantity, 0);
+        }, 0);
+
+        // Unidades despachadas
+        const despachadas = correriaDispatches.reduce((acc, dispatch) => {
+          return acc + dispatch.items
+            .filter(item => item.reference === ref.id)
+            .reduce((sum, item) => sum + item.quantity, 0);
+        }, 0);
+
+        return {
+          referencia: ref.id,
+          vendidas,
+          inventario: ref.inventory || 0,
+          programadas: ref.programmed || 0,
+          cortadas: ref.cut || 0,
+          pendientes: ref.pending || 0,
+          despachadas
+        };
+      });
+
+      // Filtrar referencias con 0 vendidas si no está seleccionado
+      if (!reportConfig.includeZeroSales) {
+        reportData = reportData.filter(r => r.vendidas > 0);
+      }
+
+      // Ordenar datos
+      if (reportConfig.sortBy === 'reference') {
+        reportData.sort((a, b) => a.referencia.localeCompare(b.referencia));
+      } else {
+        reportData.sort((a, b) => b.vendidas - a.vendidas);
+      }
+
+      // Crear workbook
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('Informe de Ventas');
+
+      // Configurar página: Carta, márgenes estrechos
+      worksheet.pageSetup = {
+        paperSize: 1 as any, // Letter
+        orientation: 'portrait' as any,
+        margins: {
+          left: 0.5,
+          right: 0.5,
+          top: 0.5,
+          bottom: 0.5,
+          header: 0.5,
+          footer: 0.5
+        }
+      };
+
+      // Definir bordes
+      const border = {
+        top: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        bottom: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        left: { style: 'thin' as any, color: { argb: 'FF000000' } },
+        right: { style: 'thin' as any, color: { argb: 'FF000000' } }
+      };
+
+      // Estilos
+      const titleStyle = {
+        font: { bold: true, size: 14 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const infoStyle = {
+        font: { size: 10 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const headerStyle = {
+        font: { bold: true, size: 11 },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any, wrapText: true },
+        border: border,
+        fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFDCDCDC' } }
+      };
+
+      const dataStyle = {
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      const refStyle = {
+        font: { bold: true },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: border
+      };
+
+      // Agregar títulos
+      const sortLabel = reportConfig.sortBy === 'reference' ? 'Por Referencia' : 'Por Unidades Vendidas';
+      const titleRow = worksheet.addRow([`Informe de Ventas - ${sortLabel}`]);
+      titleRow.eachCell(cell => { cell.style = titleStyle; });
+      titleRow.height = 20;
+      // Fusionar celdas del título
+      const numColumns = reportConfig.includeDespachadas ? 7 : 6;
+      worksheet.mergeCells(titleRow.number, 1, titleRow.number, numColumns);
+
+      const infoRow1 = worksheet.addRow([`Correría: ${selectedCorreria?.name} ${selectedCorreria?.year}`]);
+      infoRow1.eachCell(cell => { cell.style = infoStyle; });
+      // Fusionar celdas de correría
+      worksheet.mergeCells(infoRow1.number, 1, infoRow1.number, numColumns);
+
+      const infoRow2 = worksheet.addRow([`Generado: ${new Date().toLocaleDateString()}`]);
+      infoRow2.eachCell(cell => { cell.style = infoStyle; });
+      // Fusionar celdas de fecha
+      worksheet.mergeCells(infoRow2.number, 1, infoRow2.number, numColumns);
+
+      // Fila vacía
+      worksheet.addRow([]);
+
+      // Encabezados de tabla
+      const columns = reportConfig.includeDespachadas
+        ? ['Referencia', 'Und. Vendidas', 'Inventario', 'Programadas', 'Cortadas', 'Pendientes', 'Despachadas']
+        : ['Referencia', 'Und. Vendidas', 'Inventario', 'Programadas', 'Cortadas', 'Pendientes'];
+
+      const headerRow = worksheet.addRow(columns);
+      headerRow.eachCell(cell => { cell.style = headerStyle; });
+      headerRow.height = 18;
+
+      // Ajustar ancho de columnas
+      const columnWidths = reportConfig.includeDespachadas
+        ? [15, 15, 15, 15, 15, 15, 15]
+        : [18, 18, 18, 18, 18, 18];
+      
+      columns.forEach((col, idx) => {
+        worksheet.getColumn(idx + 1).width = columnWidths[idx];
+      });
+
+      // Agregar datos
+      reportData.forEach(row => {
+        const rowData = reportConfig.includeDespachadas
+          ? [row.referencia, row.vendidas, row.inventario, row.programadas, row.cortadas, row.pendientes, row.despachadas]
+          : [row.referencia, row.vendidas, row.inventario, row.programadas, row.cortadas, row.pendientes];
+
+        const dataRow = worksheet.addRow(rowData);
+        dataRow.eachCell((cell, colNumber) => {
+          cell.style = colNumber === 1 ? refStyle : dataStyle;
+        });
+      });
+
+      // Descargar Excel
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Informe_Ventas_${selectedCorreria?.name}_${new Date().getTime()}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      setShowReportModal(false);
+    } catch (error) {
+      console.error('Error generando Excel:', error);
+      alert('Error al generar el Excel. Asegúrate de tener las librerías instaladas.');
+    }
+  };
+
   return (
     <div className="space-y-6 pb-20">
       {/* Header */}
@@ -295,21 +669,31 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
           </p>
         </div>
 
-        {/* Selector de correría */}
-        <div className="bg-white p-3 rounded-3xl border border-slate-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              Correría Seleccionada
-            </span>
-            <CorreriaAutocomplete
-              value={selectedCorreriaId}
-              correrias={state.correrias}
-              onChange={setSelectedCorreriaId}
-              search={correriaSearch}
-              setSearch={setCorreriaSearch}
-              showDropdown={showCorreriaDropdown}
-              setShowDropdown={setShowCorreriaDropdown}
-            />
+        {/* Botón Generar Informe y Selector de correría */}
+        <div className="flex items-end gap-3">
+          <button
+            onClick={() => setShowReportModal(true)}
+            className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-6 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
+          >
+            Generar Informe
+          </button>
+
+          {/* Selector de correría */}
+          <div className="bg-white p-3 rounded-3xl border border-slate-100 shadow-sm">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Correría Seleccionada
+              </span>
+              <CorreriaAutocomplete
+                value={selectedCorreriaId}
+                correrias={state.correrias}
+                onChange={setSelectedCorreriaId}
+                search={correriaSearch}
+                setSearch={setCorreriaSearch}
+                showDropdown={showCorreriaDropdown}
+                setShowDropdown={setShowCorreriaDropdown}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -713,6 +1097,156 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
             </div>
           </div>
         </>
+      )}
+
+      {/* Modal: Generar Informe */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 space-y-6">
+            <div>
+              <h3 className="text-2xl font-black text-slate-800 mb-2">Generar Informe</h3>
+              <p className="text-sm text-slate-500">Configura los parámetros del informe</p>
+            </div>
+
+            {/* Selector: Incluir Despachadas */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                Incluir Despachadas
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.includeDespachadas
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Sí
+                </button>
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    !reportConfig.includeDespachadas
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+
+            {/* Selector: Agregar Vendidas en 0 */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                Agregar Vendidas en 0
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: true })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.includeZeroSales
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Sí
+                </button>
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: false })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    !reportConfig.includeZeroSales
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+
+            {/* Selector: Ordenar Por */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                Ordenar Por
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, sortBy: 'reference' })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.sortBy === 'reference'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Ref. Menor a Mayor
+                </button>
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, sortBy: 'vendidas' })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.sortBy === 'vendidas'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Vendidas Mayor a Menor
+                </button>
+              </div>
+            </div>
+
+            {/* Selector: Formato */}
+            <div className="space-y-3">
+              <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                Formato
+              </label>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, format: 'pdf' })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.format === 'pdf'
+                      ? 'bg-red-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  PDF
+                </button>
+                <button
+                  onClick={() => setReportConfig({ ...reportConfig, format: 'excel' })}
+                  className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                    reportConfig.format === 'excel'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  Excel
+                </button>
+              </div>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="flex gap-3 pt-4 border-t border-slate-200">
+              <button
+                onClick={() => setShowReportModal(false)}
+                className="flex-1 py-2 px-4 rounded-lg font-black text-sm bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  if (reportConfig.format === 'pdf') {
+                    generatePDFReport();
+                  } else if (reportConfig.format === 'excel') {
+                    generateExcelReport();
+                  }
+                }}
+                className="flex-1 py-2 px-4 rounded-lg font-black text-sm bg-purple-600 text-white hover:bg-purple-700 transition-all"
+              >
+                Generar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
