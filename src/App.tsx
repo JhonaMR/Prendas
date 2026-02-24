@@ -59,6 +59,25 @@ const App: React.FC = () => {
   const [navigationOptions, setNavigationOptions] = useState<{ directToBatch?: boolean }>({});
   const [selectedWorkflow, setSelectedWorkflow] = useState<'recepcion' | 'devolucion' | null>(null);
 
+  // ========== RECUPERAR USUARIO DEL LOCALSTORAGE AL CARGAR ==========
+  
+  useEffect(() => {
+    const storedUser = localStorage.getItem('current_user');
+    const token = localStorage.getItem('auth_token');
+    
+    if (storedUser && token) {
+      try {
+        const user = JSON.parse(storedUser);
+        setUser(user);
+        console.log('✅ Usuario recuperado del localStorage:', user.name);
+      } catch (error) {
+        console.error('❌ Error al recuperar usuario del localStorage:', error);
+        localStorage.removeItem('current_user');
+        localStorage.removeItem('auth_token');
+      }
+    }
+  }, []);
+
   // ========== CARGAR DATOS DEL BACKEND ==========
   
   useEffect(() => {

@@ -4,6 +4,7 @@
 // ============================================
 
 const { query, transaction } = require('../config/database');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * GET /api/maletas
@@ -133,10 +134,10 @@ const createMaleta = async (req, res) => {
                         const existe = await client.query('SELECT id FROM product_references WHERE id = $1', [ref]);
                         if (existe.rows.length > 0) {
                             await client.query(`
-                                INSERT INTO correria_catalog (reference_id, correria_id)
-                                VALUES ($1, $2)
+                                INSERT INTO correria_catalog (id, reference_id, correria_id, added_at)
+                                VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
                                 ON CONFLICT DO NOTHING
-                            `, [ref, correriaId]);
+                            `, [uuidv4(), ref, correriaId]);
                         }
                     }
                 }
@@ -170,31 +171,52 @@ const updateMaleta = async (req, res) => {
         }
         const correriaAnterior = existe.rows[0].correria_id;
 
+        // Obtener referencias anteriores de la maleta
+        const referenciasAnterioresResult = await query(`
+            SELECT referencia FROM maletas_referencias WHERE maleta_id = $1
+        `, [id]);
+        const referenciasAnteriores = referenciasAnterioresResult.rows.map(r => r.referencia);
+
+        // Eliminar referencias anteriores ANTES de la transacción
+        await query('DELETE FROM maletas_referencias WHERE maleta_id = $1', [id]);
+
         await transaction(async (client) => {
             await client.query(`
                 UPDATE maletas SET nombre = COALESCE($1, nombre), correria_id = $2 WHERE id = $3
             `, [nombre, correriaId, id]);
 
             if (referencias && referencias.length > 0) {
-                await client.query('DELETE FROM maletas_referencias WHERE maleta_id = $1', [id]);
-
+                // Insertar nuevas referencias
                 for (let i = 0; i < referencias.length; i++) {
                     await client.query(`
                         INSERT INTO maletas_referencias (maleta_id, referencia, orden) VALUES ($1, $2, $3)
                     `, [id, referencias[i], i]);
                 }
 
-                if (correriaId && correriaId !== correriaAnterior) {
-                    for (const ref of referencias) {
-                        const existeRef = await client.query('SELECT id FROM product_references WHERE id = $1', [ref]);
-                        if (existeRef.rows.length > 0) {
-                            if (correriaAnterior) {
-                                await client.query('DELETE FROM correria_catalog WHERE reference_id = $1 AND correria_id = $2', [ref, correriaAnterior]);
-                            }
+                // Asignar/actualizar correrías a las referencias nuevas
+                for (const ref of referencias) {
+                    const existeRef = await client.query('SELECT id FROM product_references WHERE id = $1', [ref]);
+                    if (existeRef.rows.length > 0) {
+                        // Si hay correría nueva, asignarla
+                        if (correriaId) {
                             await client.query(`
-                                INSERT INTO correria_catalog (reference_id, correria_id) VALUES ($1, $2) ON CONFLICT DO NOTHING
-                            `, [ref, correriaId]);
+                                INSERT INTO correria_catalog (id, reference_id, correria_id, added_at) 
+                                VALUES ($1, $2, $3, CURRENT_TIMESTAMP) 
+                                ON CONFLICT DO NOTHING
+                            `, [uuidv4(), ref, correriaId]);
                         }
+                    }
+                }
+            }
+
+            // Eliminar correrías de referencias que fueron removidas
+            for (const refAnterior of referenciasAnteriores) {
+                if (!referencias || !referencias.includes(refAnterior)) {
+                    // Esta referencia fue removida, eliminar su correría
+                    if (correriaAnterior) {
+                        await client.query(`
+                            DELETE FROM correria_catalog WHERE reference_id = $1 AND correria_id = $2
+                        `, [refAnterior, correriaAnterior]);
                     }
                 }
             }

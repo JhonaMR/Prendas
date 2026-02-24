@@ -1063,13 +1063,19 @@ const MastersView: React.FC<MastersViewProps> = ({
                       <td className="px-6 py-4 font-black text-slate-900">{r.description}</td>
                       <td className="px-6 py-4 font-bold text-slate-400">${r.price.toLocaleString()}</td>
                       <td className="px-6 py-4 text-[10px] space-y-1">
-                        <div className="flex gap-2">
-                          <span className="font-black text-slate-700">{r.cloth1}:</span> <span>{r.avgCloth1}</span>
-                        </div>
-                        {r.cloth2 && (
-                          <div className="flex gap-2">
-                            <span className="font-black text-slate-700">{r.cloth2}:</span> <span>{r.avgCloth2}</span>
-                          </div>
+                        {r.cloth1 ? (
+                          <>
+                            <div className="flex gap-2">
+                              <span className="font-black text-slate-700">{r.cloth1}:</span> <span>{r.avgCloth1}</span>
+                            </div>
+                            {r.cloth2 && (
+                              <div className="flex gap-2">
+                                <span className="font-black text-slate-700">{r.cloth2}:</span> <span>{r.avgCloth2}</span>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-slate-400 italic">Sin telas</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-right flex justify-end gap-2">

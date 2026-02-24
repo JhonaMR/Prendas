@@ -54,6 +54,22 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
         finally { setIsLoading(false); }
     };
 
+    const handleLimpiar = async () => {
+        if (!window.confirm('¿Estás seguro de que deseas limpiar todas las referencias?')) return;
+        setIsLoading(true);
+        try {
+            const result = await apiFichas.updateMaleta(id, maleta?.nombre, maleta?.correriaId, []);
+            if (result.success) {
+                alert('✅ Maleta limpiada');
+                setSeleccionadas([]);
+                const maletas = await apiFichas.getMaletas();
+                updateState(prev => ({ ...prev, maletas }));
+                onNavigate('maletas');
+            } else alert('❌ ' + result.message);
+        } catch { alert('❌ Error de conexión'); }
+        finally { setIsLoading(false); }
+    };
+
     if (!maleta) return (
         <div className="flex items-center justify-center h-96">
             <div className="text-center">
@@ -148,7 +164,9 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                         <p className="text-3xl font-black text-purple-800">{seleccionadas.length}</p>
                         <p className="text-xs text-purple-600 font-bold mt-1">referencia{seleccionadas.length !== 1 ? 's' : ''} seleccionada{seleccionadas.length !== 1 ? 's' : ''}</p>
                     </div>
-                    {seleccionadas.length > 0 && <button onClick={() => setSeleccionadas([])} className="px-4 py-2 bg-white text-purple-600 rounded-xl font-bold text-sm hover:bg-purple-50 transition-colors">Limpiar</button>}
+                    {seleccionadas.length > 0 && <button onClick={handleLimpiar} disabled={isLoading} className="px-4 py-2 bg-white text-purple-600 rounded-xl font-bold text-sm hover:bg-purple-50 transition-colors disabled:opacity-50">
+                        {isLoading ? 'LIMPIANDO...' : 'Limpiar'}
+                    </button>}
                 </div>
                 {seleccionadas.length > 0 && (
                     <div className="mt-4 pt-4 border-t-2 border-purple-300">

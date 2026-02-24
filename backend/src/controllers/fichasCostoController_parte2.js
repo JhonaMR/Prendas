@@ -31,22 +31,19 @@ const sincronizarProductReference = async (referencia, fichaData) => {
             }
         }
 
-        console.log(`📦 Materia prima encontrada: ${materiaPrima.length} items`);
-
         materiaPrima.forEach(item => {
-            if ((item.tipo === 'TELA' || item.tipo === 'SESGO') && item.nombre) {
-                console.log(`  - ${item.tipo}: ${item.nombre} x ${item.cantidad}`);
-                if (!telas[item.nombre]) {
-                    telas[item.nombre] = 0;
+            if ((item.tipo === 'TELA' || item.tipo === 'SESGO') && item.concepto) {
+                if (!telas[item.concepto]) {
+                    telas[item.concepto] = 0;
                 }
-                telas[item.nombre] += item.cantidad || 0;
+                telas[item.concepto] += item.cant || 0;
             }
         });
 
         // Convertir a array ordenado
         const telasArray = Object.entries(telas).map(([nombre, cantidad]) => ({ nombre, cantidad }));
 
-        console.log(`🧵 Telas agrupadas: ${JSON.stringify(telasArray)}`);
+        console.log(`✅ Telas sincronizadas para ${referencia}`);
 
         // Preparar datos para product_references
         const updateData = {
