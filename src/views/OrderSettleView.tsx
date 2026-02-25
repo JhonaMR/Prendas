@@ -3,11 +3,17 @@ import React, { useState, useRef } from 'react';
 import { Order, ItemEntry, User, Client, AppState } from '../types';
 import { Icons } from '../constants';
 import api from '../services/api';
+import * as XLSX from 'xlsx';
 
 interface OrderSettleViewProps {
   user: User;
   state: AppState;
   updateState: (fn: (prev: AppState) => AppState) => void;
+}
+
+interface InvalidReference {
+  reference: string;
+  reason: string;
 }
 
 const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateState }) => {
@@ -20,6 +26,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [orderNumber, setOrderNumber] = useState<number | ''>('');
   const [tempItems, setTempItems] = useState<ItemEntry[]>([]);
+  const [invalidReferences, setInvalidReferences] = useState<InvalidReference[]>([]);
+  const [excelLoaded, setExcelLoaded] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const filteredClients = state.clients.filter(c => 
@@ -39,28 +47,76 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      const content = event.target?.result as string;
-      const rows = content.split('\n').filter(row => row.trim() !== '');
-      
-      const newItems: ItemEntry[] = [];
-      for (let i = 1; i < rows.length; i++) {
-        const cols = rows[i].split(',').map(c => c.trim());
-        const [refId, qty, salePrice] = cols;
+      try {
+        const data = event.target?.result as ArrayBuffer;
+        const workbook = XLSX.read(data, { type: 'array' });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
         
-        if (refId && qty && salePrice) {
-          const exists = state.references.some(r => r.id === refId);
-          if (exists) {
-            newItems.push({ 
-              reference: refId, 
-              quantity: parseInt(qty) || 0,
-              salePrice: parseFloat(salePrice) || 0
+        // Leer celdas específicas
+        const clientCode = String(worksheet['N9']?.v || '').trim();
+        const orderNum = worksheet['M4']?.v || '';
+        
+        // Validar que el cliente existe
+        const clientExists = state.clients.find(c => c.id === clientCode);
+        if (!clientExists) {
+          alert(`❌ Cliente ${clientCode} no existe en la base de datos.\nVerifique el código o ingrese el nuevo cliente.`);
+          return;
+        }
+
+        // Establecer cliente y número de pedido
+        setSelectedClientId(clientCode);
+        setClientSearch(`${clientCode} - ${clientExists.name}`);
+        setOrderNumber(orderNum ? parseInt(orderNum) : '');
+
+        // Leer items desde fila 20
+        const newItems: ItemEntry[] = [];
+        const invalidRefs: InvalidReference[] = [];
+        let row = 20;
+        let emptyRowCount = 0;
+
+        while (emptyRowCount < 2) {
+          const cellRef = `B${row}`;
+          const cellQty = `L${row}`;
+          const cellPrice = `M${row}`;
+
+          const reference = String(worksheet[cellRef]?.v || '').trim();
+          const quantity = worksheet[cellQty]?.v;
+          const price = worksheet[cellPrice]?.v;
+
+          if (!reference || !quantity || !price) {
+            emptyRowCount++;
+            row++;
+            continue;
+          }
+
+          emptyRowCount = 0;
+
+          const refExists = state.references.find(r => r.id === reference);
+          if (refExists) {
+            newItems.push({
+              reference: reference,
+              quantity: parseInt(quantity) || 0,
+              salePrice: parseFloat(price) || 0
+            });
+          } else {
+            invalidRefs.push({
+              reference: reference,
+              reason: 'No existe en la base de datos'
             });
           }
+
+          row++;
         }
+
+        setTempItems(newItems);
+        setInvalidReferences(invalidRefs);
+        setExcelLoaded(true);
+      } catch (error) {
+        console.error('Error leyendo Excel:', error);
+        alert('❌ Error al leer el archivo Excel. Verifique que sea un archivo válido.');
       }
-      setTempItems(newItems);
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(file);
   };
 
   const handleSaveOrder = async () => {
@@ -105,6 +161,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
         setSelectedClientId('');
         setClientSearch('');
         setOrderNumber('');
+        setInvalidReferences([]);
+        setExcelLoaded(false);
         if(fileInputRef.current) fileInputRef.current.value = '';
       } else {
         alert(`❌ Error al guardar: ${result.message}`);
@@ -196,18 +254,18 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
             <h3 className="text-xl font-black text-slate-800">2. Adjuntar Pedido</h3>
             <p className="text-[10px] text-slate-400 font-bold leading-relaxed px-2">
-              Formato CSV: <span className="text-blue-500">referencia,cantidad,precio_venta</span><br/>
-              La primera fila se ignora (Cabecera).
+              Carga un archivo Excel con formato estándar.<br/>
+              Se extrae automáticamente: Cliente (N9), Número de pedido (M4) e Items desde fila 20.
             </p>
-            <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".csv,.txt" className="hidden" />
+            <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".xlsx,.xls" className="hidden" />
             <div className="flex gap-2">
               <button 
                 onClick={() => fileInputRef.current?.click()}
                 className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors"
               >
-                CARGAR ARCHIVO
+                CARGAR EXCEL
               </button>
-              <a href="/ejemplo_pedidos.csv" download className="flex-1 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-center">
+              <a href="/ejemplo_pedidos.xlsx" download className="flex-1 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-center">
                 DESCARGAR EJEMPLO
               </a>
             </div>
@@ -233,41 +291,55 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                   <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-200">
                     <Icons.Settle />
                   </div>
-                  <p className="text-slate-300 font-bold italic">Sube un archivo para ver los detalles aquí</p>
+                  <p className="text-slate-300 font-bold italic">Carga un archivo Excel para ver los detalles aquí</p>
                 </div>
               ) : (
-                <table className="w-full text-left text-xs">
-                  <thead className="sticky top-0 bg-white">
-                    <tr className="border-b border-slate-100 bg-slate-50/30">
-                      <th className="px-8 py-4 font-black text-slate-400 uppercase">Referencia</th>
-                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
-                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Precio Venta</th>
-                      <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {tempItems.map((item, idx) => {
-                      const ref = state.references.find(r => r.id === item.reference);
-                      const subtotal = (item.salePrice || 0) * item.quantity;
-                      return (
-                        <tr key={idx} className="hover:bg-slate-50/50">
-                          <td className="px-8 py-4">
-                            <p className="font-black text-slate-800">{item.reference}</p>
-                            <p className="text-[9px] font-bold text-slate-400 uppercase">{ref?.description}</p>
-                          </td>
-                          <td className="px-8 py-4 text-center font-black text-blue-600">{item.quantity}</td>
-                          <td className="px-8 py-4 text-right font-bold text-slate-600">${(item.salePrice || 0).toLocaleString()}</td>
-                          <td className="px-8 py-4 text-right font-bold text-slate-400">${subtotal.toLocaleString()}</td>
-                        </tr>
-                      );
-                    })}
-                    <tr className="bg-slate-50 border-t-2 border-slate-200 font-black">
-                      <td colSpan={2} className="px-8 py-4 text-right text-slate-700">TOTALES:</td>
-                      <td className="px-8 py-4 text-right text-slate-700">{tempItems.length} refs</td>
-                      <td className="px-8 py-4 text-right text-blue-600">${tempItems.reduce((acc, item) => acc + (item.salePrice || 0) * item.quantity, 0).toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <>
+                  {invalidReferences.length > 0 && (
+                    <div className="p-6 bg-yellow-50 border-b border-yellow-200">
+                      <h4 className="font-black text-yellow-800 text-sm mb-3">⚠️ Referencias No Encontradas</h4>
+                      <div className="space-y-2">
+                        {invalidReferences.map((ref, idx) => (
+                          <p key={idx} className="text-[10px] font-bold text-yellow-700">
+                            • {ref.reference} ({ref.reason})
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <table className="w-full text-left text-xs">
+                    <thead className="sticky top-0 bg-white">
+                      <tr className="border-b border-slate-100 bg-slate-50/30">
+                        <th className="px-8 py-4 font-black text-slate-400 uppercase">Referencia</th>
+                        <th className="px-8 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
+                        <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Precio Venta</th>
+                        <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {tempItems.map((item, idx) => {
+                        const ref = state.references.find(r => r.id === item.reference);
+                        const subtotal = (item.salePrice || 0) * item.quantity;
+                        return (
+                          <tr key={idx} className="hover:bg-slate-50/50">
+                            <td className="px-8 py-4">
+                              <p className="font-black text-slate-800">{item.reference}</p>
+                              <p className="text-[9px] font-bold text-slate-400 uppercase">{ref?.description}</p>
+                            </td>
+                            <td className="px-8 py-4 text-center font-black text-blue-600">{item.quantity}</td>
+                            <td className="px-8 py-4 text-right font-bold text-slate-600">${(item.salePrice || 0).toLocaleString()}</td>
+                            <td className="px-8 py-4 text-right font-bold text-slate-400">${subtotal.toLocaleString()}</td>
+                          </tr>
+                        );
+                      })}
+                      <tr className="bg-slate-50 border-t-2 border-slate-200 font-black">
+                        <td colSpan={2} className="px-8 py-4 text-right text-slate-700">TOTALES:</td>
+                        <td className="px-8 py-4 text-right text-slate-700">{tempItems.length} refs</td>
+                        <td className="px-8 py-4 text-right text-blue-600">${tempItems.reduce((acc, item) => acc + (item.salePrice || 0) * item.quantity, 0).toLocaleString()}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </>
               )}
             </div>
 

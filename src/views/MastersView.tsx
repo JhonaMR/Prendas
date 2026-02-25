@@ -478,12 +478,12 @@ const MastersView: React.FC<MastersViewProps> = ({
     const newItem: Reference = { 
       id, 
       description: desc, 
-      price, 
+      price: Number(price) || 0, 
       designer, 
       cloth1, 
-      avgCloth1, 
+      avgCloth1: Number(avgCloth1) || 0, 
       cloth2, 
-      avgCloth2,
+      avgCloth2: Number(avgCloth2) || 0,
       correrias: selectedCorrerias
     };
     
@@ -1083,12 +1083,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                           setEditingId(r.id); 
                           setId(r.id); 
                           setDesc(r.description); 
-                          setPrice(r.price); 
+                          setPrice(Number(r.price) || 0); 
                           setDesigner(r.designer); 
                           setCloth1(r.cloth1||''); 
-                          setAvgCloth1(r.avgCloth1||0);
+                          setAvgCloth1(Number(r.avgCloth1) || 0);
                           setCloth2(r.cloth2||''); 
-                          setAvgCloth2(r.avgCloth2||0);
+                          setAvgCloth2(Number(r.avgCloth2) || 0);
                           setSelectedCorrerias(r.correrias || []);
                         }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
                         <button disabled={!canDelete(user)} onClick={() => handleDelete('reference', r.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>

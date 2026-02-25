@@ -61,7 +61,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
         // Get items for each dispatch
         const mappedDispatches = await Promise.all(dispatches.map(async (d) => {
             const itemsResult = await query(
-                `SELECT reference, quantity
+                `SELECT reference, quantity, sale_price
                 FROM dispatch_items
                 WHERE dispatch_id = $1`,
                 [d.id]
@@ -73,7 +73,11 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 correriaId: d.correria_id,
                 invoiceNo: d.invoice_no,
                 remissionNo: d.remission_no,
-                items: itemsResult.rows,
+                items: itemsResult.rows.map(item => ({
+                  reference: item.reference,
+                  quantity: item.quantity,
+                  salePrice: item.sale_price
+                })),
                 dispatchedBy: d.dispatched_by,
                 createdAt: d.created_at
             };
@@ -115,9 +119,9 @@ const createDispatch = async (dispatchData, items) => {
             // Insert items
             for (const item of items) {
                 await client.query(
-                    `INSERT INTO dispatch_items (dispatch_id, reference, quantity)
-                    VALUES ($1, $2, $3)`,
-                    [dispatchData.id, item.reference, item.quantity]
+                    `INSERT INTO dispatch_items (dispatch_id, reference, quantity, sale_price)
+                    VALUES ($1, $2, $3, $4)`,
+                    [dispatchData.id, item.reference, item.quantity, item.salePrice || 0]
                 );
             }
 
@@ -148,7 +152,7 @@ const getDispatchById = async (id) => {
 
         const dispatch = result.rows[0];
         const itemsResult = await query(
-            `SELECT reference, quantity FROM dispatch_items WHERE dispatch_id = $1`,
+            `SELECT reference, quantity, sale_price FROM dispatch_items WHERE dispatch_id = $1`,
             [id]
         );
 
@@ -156,7 +160,11 @@ const getDispatchById = async (id) => {
             ...dispatch,
             clientId: dispatch.client_id,
             correriaId: dispatch.correria_id,
-            items: itemsResult.rows
+            items: itemsResult.rows.map(item => ({
+              reference: item.reference,
+              quantity: item.quantity,
+              salePrice: item.sale_price
+            }))
         };
     } catch (error) {
         logger.error('❌ Error getting dispatch:', error);

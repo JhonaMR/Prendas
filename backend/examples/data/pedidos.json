@@ -1,0 +1,97 @@
+[
+  {
+    "numeroOrden": "PED-2026-001",
+    "clienteId": 1,
+    "fechaPedido": "2026-01-15",
+    "fechaEntrega": "2026-02-01",
+    "estado": "completado",
+    "items": [
+      {
+        "referencia": "10210",
+        "cantidad": 50,
+        "precioUnitario": 25000
+      },
+      {
+        "referencia": "10211",
+        "cantidad": 30,
+        "precioUnitario": 35000
+      }
+    ]
+  },
+  {
+    "numeroOrden": "PED-2026-002",
+    "clienteId": 2,
+    "fechaPedido": "2026-01-20",
+    "fechaEntrega": "2026-02-05",
+    "estado": "completado",
+    "items": [
+      {
+        "referencia": "10212",
+        "cantidad": 40,
+        "precioUnitario": 28000
+      },
+      {
+        "referencia": "10213",
+        "cantidad": 25,
+        "precioUnitario": 32000
+      }
+    ]
+  },
+  {
+    "numeroOrden": "PED-2026-003",
+    "clienteId": 3,
+    "fechaPedido": "2026-01-25",
+    "fechaEntrega": "2026-02-10",
+    "estado": "completado",
+    "items": [
+      {
+        "referencia": "10214",
+        "cantidad": 20,
+        "precioUnitario": 45000
+      },
+      {
+        "referencia": "10215",
+        "cantidad": 35,
+        "precioUnitario": 38000
+      }
+    ]
+  },
+  {
+    "numeroOrden": "PED-2026-004",
+    "clienteId": 1,
+    "fechaPedido": "2026-02-01",
+    "fechaEntrega": "2026-02-15",
+    "estado": "completado",
+    "items": [
+      {
+        "referencia": "10216",
+        "cantidad": 60,
+        "precioUnitario": 18000
+      },
+      {
+        "referencia": "10217",
+        "cantidad": 45,
+        "precioUnitario": 22000
+      }
+    ]
+  },
+  {
+    "numeroOrden": "PED-2026-005",
+    "clienteId": 2,
+    "fechaPedido": "2026-02-05",
+    "fechaEntrega": "2026-02-20",
+    "estado": "completado",
+    "items": [
+      {
+        "referencia": "10218",
+        "cantidad": 30,
+        "precioUnitario": 26000
+      },
+      {
+        "referencia": "10219",
+        "cantidad": 25,
+        "precioUnitario": 38000
+      }
+    ]
+  }
+]

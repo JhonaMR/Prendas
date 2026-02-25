@@ -1190,6 +1190,39 @@ class ApiService {
     }
   }
 
+  async updateOrder(orderId: string, order: Partial<Order>): Promise<ApiResponse<Order>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/orders/${orderId}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(order)
+      });
+
+      return this.handleResponse<Order>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar pedido'
+      };
+    }
+  }
+
+  async deleteOrder(orderId: string): Promise<ApiResponse<void>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/orders/${orderId}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse<void>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar pedido'
+      };
+    }
+  }
+
   // ==================== PRODUCCIÓN ====================
 
   async getProductionTracking(): Promise<ProductionTracking[]> {

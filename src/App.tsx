@@ -944,7 +944,8 @@ const App: React.FC = () => {
           <DispatchView 
             user={user} 
             clients={state.clients} 
-            dispatches={state.dispatches} 
+            dispatches={state.dispatches}
+            orders={state.orders}
             updateState={updateState} 
             referencesMaster={state.references}
             correrias={state.correrias}
@@ -969,7 +970,24 @@ const App: React.FC = () => {
       case 'salesReport':
         return <SalesReportView state={state} />;
       case 'orderHistory':
-        return <OrderHistoryView state={state} />;
+        return (
+          <OrderHistoryView 
+            state={state} 
+            currentUser={user}
+            onOrderUpdate={(order) => {
+              setState(prev => ({
+                ...prev,
+                orders: prev.orders.map(o => o.id === order.id ? order : o)
+              }));
+            }}
+            onOrderDelete={(orderId) => {
+              setState(prev => ({
+                ...prev,
+                orders: prev.orders.filter(o => o.id !== orderId)
+              }));
+            }}
+          />
+        );
       case 'dispatchControl':
         return <DispatchControlView state={state} user={user} />;
       case 'masters':

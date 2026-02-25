@@ -231,6 +231,7 @@ CREATE TABLE IF NOT EXISTS public.production_tracking (
     correria_id character varying(255),
     programmed integer DEFAULT 0,
     cut integer DEFAULT 0,
+    inventory integer DEFAULT 0,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT production_tracking_pkey PRIMARY KEY (id),

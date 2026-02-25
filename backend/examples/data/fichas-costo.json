@@ -1,0 +1,112 @@
+[
+  {
+    "referencia": "10210",
+    "descripcion": "Camiseta Básica Manga Corta",
+    "marca": "Premium",
+    "totalMateriaPrima": 5000,
+    "totalManoObra": 3000,
+    "totalInsumosDirectos": 1000,
+    "totalInsumosIndirectos": 500,
+    "totalProvisiones": 200,
+    "rentabilidad": 49
+  },
+  {
+    "referencia": "10211",
+    "descripcion": "Pantalón Denim Clásico",
+    "marca": "Premium",
+    "totalMateriaPrima": 8000,
+    "totalManoObra": 4000,
+    "totalInsumosDirectos": 1500,
+    "totalInsumosIndirectos": 800,
+    "totalProvisiones": 300,
+    "rentabilidad": 45
+  },
+  {
+    "referencia": "10212",
+    "descripcion": "Blusa Elegante",
+    "marca": "Elegance",
+    "totalMateriaPrima": 6000,
+    "totalManoObra": 3500,
+    "totalInsumosDirectos": 1200,
+    "totalInsumosIndirectos": 600,
+    "totalProvisiones": 250,
+    "rentabilidad": 50
+  },
+  {
+    "referencia": "10213",
+    "descripcion": "Falda Midi",
+    "marca": "Elegance",
+    "totalMateriaPrima": 7000,
+    "totalManoObra": 3800,
+    "totalInsumosDirectos": 1300,
+    "totalInsumosIndirectos": 700,
+    "totalProvisiones": 280,
+    "rentabilidad": 48
+  },
+  {
+    "referencia": "10214",
+    "descripcion": "Chaqueta Casual",
+    "marca": "Urban",
+    "totalMateriaPrima": 10000,
+    "totalManoObra": 5000,
+    "totalInsumosDirectos": 2000,
+    "totalInsumosIndirectos": 1000,
+    "totalProvisiones": 400,
+    "rentabilidad": 46
+  },
+  {
+    "referencia": "10215",
+    "descripcion": "Vestido Casual",
+    "marca": "Urban",
+    "totalMateriaPrima": 7500,
+    "totalManoObra": 4000,
+    "totalInsumosDirectos": 1400,
+    "totalInsumosIndirectos": 750,
+    "totalProvisiones": 300,
+    "rentabilidad": 49
+  },
+  {
+    "referencia": "10216",
+    "descripcion": "Shorts Deportivos",
+    "marca": "Sport",
+    "totalMateriaPrima": 4000,
+    "totalManoObra": 2500,
+    "totalInsumosDirectos": 800,
+    "totalInsumosIndirectos": 400,
+    "totalProvisiones": 150,
+    "rentabilidad": 52
+  },
+  {
+    "referencia": "10217",
+    "descripcion": "Sudadera Básica",
+    "marca": "Sport",
+    "totalMateriaPrima": 6000,
+    "totalManoObra": 3000,
+    "totalInsumosDirectos": 1000,
+    "totalInsumosIndirectos": 500,
+    "totalProvisiones": 200,
+    "rentabilidad": 50
+  },
+  {
+    "referencia": "10218",
+    "descripcion": "Polo Ejecutivo",
+    "marca": "Executive",
+    "totalMateriaPrima": 5500,
+    "totalManoObra": 3200,
+    "totalInsumosDirectos": 1100,
+    "totalInsumosIndirectos": 550,
+    "totalProvisiones": 220,
+    "rentabilidad": 48
+  },
+  {
+    "referencia": "10219",
+    "descripcion": "Pantalón Ejecutivo",
+    "marca": "Executive",
+    "totalMateriaPrima": 8500,
+    "totalManoObra": 4200,
+    "totalInsumosDirectos": 1600,
+    "totalInsumosIndirectos": 850,
+    "totalProvisiones": 320,
+    "rentabilidad": 46
+  }
+]

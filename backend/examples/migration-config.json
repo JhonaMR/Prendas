@@ -1,0 +1,7 @@
+{
+  "references": "examples/data/referencias.json",
+  "costSheets": "examples/data/fichas-costo.json",
+  "orders": "examples/data/pedidos.json",
+  "dispatches": "examples/data/despachos.json",
+  "receptions": "examples/data/recepciones.json"
+}

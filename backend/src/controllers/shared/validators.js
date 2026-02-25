@@ -69,7 +69,9 @@ function validateEmail(value, fieldName = 'Email') {
  * Valida que un valor sea un número
  */
 function validateNumber(value, fieldName) {
-  if (typeof value !== 'number' || isNaN(value)) {
+  // Convertir a número si es string
+  const numValue = typeof value === 'string' ? Number(value) : value;
+  if (typeof numValue !== 'number' || isNaN(numValue)) {
     return { valid: false, error: `${fieldName} must be a valid number` };
   }
   return { valid: true };

@@ -122,10 +122,11 @@ async function createReference(data) {
 
       // Insertar correrías
       for (const correria of data.correrias) {
+        const catalogId = `${data.id}_${correria}_${Date.now()}`;
         await client.query(`
-          INSERT INTO correria_catalog (reference_id, correria_id)
-          VALUES ($1, $2)
-        `, [data.id, correria]);
+          INSERT INTO correria_catalog (id, reference_id, correria_id)
+          VALUES ($1, $2, $3)
+        `, [catalogId, data.id, correria]);
       }
     });
 
@@ -152,98 +153,42 @@ async function updateReference(id, data) {
       throw new NotFoundError('Reference', id);
     }
 
-    // Si hay correrías, actualizar en transacción
-    if (data.correrias !== undefined) {
-      await transaction(async (client) => {
-        // Actualizar campos de referencia
-        const updates = [];
-        const values = [];
-        let paramIndex = 1;
+    // Actualizar en transacción
+    await transaction(async (client) => {
+      // Actualizar campos de referencia si se proporcionan
+      if (data.description !== undefined || data.price !== undefined || data.designer !== undefined || 
+          data.cloth1 !== undefined || data.avgCloth1 !== undefined || data.cloth2 !== undefined || data.avgCloth2 !== undefined) {
+        
+        const updateData = {};
+        if (data.description !== undefined) updateData.description = data.description;
+        if (data.price !== undefined) updateData.price = Number(data.price) || 0;
+        if (data.designer !== undefined) updateData.designer = data.designer;
+        if (data.cloth1 !== undefined) updateData.cloth1 = data.cloth1 || null;
+        if (data.avgCloth1 !== undefined) updateData.avg_cloth1 = Number(data.avgCloth1) || null;
+        if (data.cloth2 !== undefined) updateData.cloth2 = data.cloth2 || null;
+        if (data.avgCloth2 !== undefined) updateData.avg_cloth2 = Number(data.avgCloth2) || null;
 
-        if (data.description !== undefined) {
-          updates.push(`description = $${paramIndex++}`);
-          values.push(data.description);
+        const fields = Object.keys(updateData);
+        if (fields.length > 0) {
+          const setClause = fields.map((field, idx) => `${field} = $${idx + 1}`).join(', ');
+          const values = [...Object.values(updateData), id];
+          const updateQuery = `UPDATE product_references SET ${setClause} WHERE id = $${fields.length + 1}`;
+          await client.query(updateQuery, values);
         }
-        if (data.price !== undefined) {
-          updates.push(`price = $${paramIndex++}`);
-          values.push(data.price);
-        }
-        if (data.designer !== undefined) {
-          updates.push(`designer = $${paramIndex++}`);
-          values.push(data.designer);
-        }
-        if (data.cloth1 !== undefined) {
-          updates.push(`cloth1 = $${paramIndex++}`);
-          values.push(data.cloth1);
-        }
-        if (data.avgCloth1 !== undefined) {
-          updates.push(`avg_cloth1 = $${paramIndex++}`);
-          values.push(data.avgCloth1);
-        }
-        if (data.cloth2 !== undefined) {
-          updates.push(`cloth2 = $${paramIndex++}`);
-          values.push(data.cloth2);
-        }
-        if (data.avgCloth2 !== undefined) {
-          updates.push(`avg_cloth2 = $${paramIndex++}`);
-          values.push(data.avgCloth2);
-        }
+      }
 
-        if (updates.length > 0) {
-          values.push(id);
-          const query_str = `UPDATE product_references SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
-          await client.query(query_str, values);
-        }
-
+      // Actualizar correrías si se proporcionan
+      if (data.correrias !== undefined) {
         // Eliminar correrías antiguas
         await client.query('DELETE FROM correria_catalog WHERE reference_id = $1', [id]);
 
         // Insertar nuevas correrías
         for (const correria of data.correrias) {
-          await client.query('INSERT INTO correria_catalog (reference_id, correria_id) VALUES ($1, $2)', [id, correria]);
+          const catalogId = `${id}_${correria}_${Date.now()}`;
+          await client.query('INSERT INTO correria_catalog (id, reference_id, correria_id) VALUES ($1, $2, $3)', [catalogId, id, correria]);
         }
-      });
-    } else {
-      // Solo actualizar campos de referencia
-      const updates = [];
-      const values = [];
-      let paramIndex = 1;
-
-      if (data.description !== undefined) {
-        updates.push(`description = $${paramIndex++}`);
-        values.push(data.description);
       }
-      if (data.price !== undefined) {
-        updates.push(`price = $${paramIndex++}`);
-        values.push(data.price);
-      }
-      if (data.designer !== undefined) {
-        updates.push(`designer = $${paramIndex++}`);
-        values.push(data.designer);
-      }
-      if (data.cloth1 !== undefined) {
-        updates.push(`cloth1 = $${paramIndex++}`);
-        values.push(data.cloth1);
-      }
-      if (data.avgCloth1 !== undefined) {
-        updates.push(`avg_cloth1 = $${paramIndex++}`);
-        values.push(data.avgCloth1);
-      }
-      if (data.cloth2 !== undefined) {
-        updates.push(`cloth2 = $${paramIndex++}`);
-        values.push(data.cloth2);
-      }
-      if (data.avgCloth2 !== undefined) {
-        updates.push(`avg_cloth2 = $${paramIndex++}`);
-        values.push(data.avgCloth2);
-      }
-
-      if (updates.length > 0) {
-        values.push(id);
-        const query_str = `UPDATE product_references SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
-        await query(query_str, values);
-      }
-    }
+    });
 
     // Invalidate cache after update
     invalidateOnUpdate('Reference');

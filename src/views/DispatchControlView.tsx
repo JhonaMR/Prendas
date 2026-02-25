@@ -82,6 +82,9 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
       // Cantidad vendida de esta referencia en este pedido
       const orderItems = order.items.filter(item => item.reference === selectedReference);
       const totalSold = orderItems.reduce((sum, item) => sum + item.quantity, 0);
+      
+      // Obtener el salePrice del pedido para esta referencia
+      const salePrice = orderItems[0]?.salePrice || reference?.price || 0;
 
       // Cantidad despachada de esta referencia para este cliente en esta correría
       const clientDispatches = state.dispatches.filter(
@@ -103,7 +106,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
         seller: state.sellers.find(s => s.id === order.sellerId)?.name || client?.seller || '-',
         totalSold,
         totalDispatched,
-        price,
+        price: salePrice,
         invoiceNo: lastDispatch?.invoiceNo || '-',
         remissionNo: lastDispatch?.remissionNo || '-',
       };

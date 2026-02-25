@@ -90,8 +90,12 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
       return acc + dispatch.items
         .filter(item => maletaRefIds.includes(item.reference))
         .reduce((sum, item) => {
-          const ref = state.references.find(r => r.id === item.reference);
-          return sum + (item.quantity * (ref?.price || 0));
+          // Usar el salePrice del despacho si existe, si no buscar en el pedido
+          const salePrice = item.salePrice || correriaOrders.find(o => o.clientId === dispatch.clientId)?.items.find(oi => oi.reference === item.reference)?.salePrice || 0;
+          
+          console.log(`📦 Despacho item ${item.reference}: item.salePrice=${item.salePrice}, final salePrice=${salePrice}, cantidad=${item.quantity}, subtotal=${item.quantity * salePrice}`);
+          
+          return sum + (item.quantity * salePrice);
         }, 0);
     }, 0);
 
@@ -183,25 +187,17 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
       // Diferencia valor
       const diferenciaValorVendedor = valorListaTotal - valorRealTotal;
 
-      // Valor despachado a precio de pedidos (salePrice promedio por referencia)
+      // Valor despachado a precio de pedidos (busca el pedido específico por correría y cliente)
       const valorDespachadoReal = correriaDispatches
         .filter(d => clientIds.includes(d.clientId))
         .reduce((acc, dispatch) => {
           return acc + dispatch.items
             .filter(item => maletaRefIds.includes(item.reference))
             .reduce((sum, dispatchItem) => {
-              // Buscar el salePrice promedio en los pedidos del vendedor para esta referencia
-              let salePriceForItem = 0;
-              let countItems = 0;
-              for (const order of sellerOrders) {
-                const orderItem = order.items.find(oi => oi.reference === dispatchItem.reference);
-                if (orderItem && orderItem.salePrice) {
-                  salePriceForItem += orderItem.salePrice;
-                  countItems++;
-                }
-              }
-              const avgSalePrice = countItems > 0 ? salePriceForItem / countItems : 0;
-              return sum + (dispatchItem.quantity * avgSalePrice);
+              // Usar el salePrice del despacho si existe, si no buscar en el pedido
+              const salePrice = dispatchItem.salePrice || correriaOrders.find(o => o.clientId === dispatch.clientId)?.items.find(oi => oi.reference === dispatchItem.reference)?.salePrice || 0;
+              
+              return sum + (dispatchItem.quantity * salePrice);
             }, 0);
         }, 0);
 

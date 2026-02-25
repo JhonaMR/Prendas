@@ -64,6 +64,7 @@ export interface ProductionTracking {
   correriaId: string;
   programmed: number;
   cut: number;
+  inventory?: number;
 }
 
 export type ChargeType = 'Compra' | 'Cobro' | null;

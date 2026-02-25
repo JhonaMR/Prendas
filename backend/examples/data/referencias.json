@@ -1,0 +1,72 @@
+[
+  {
+    "codigo": "10210",
+    "descripcion": "Camiseta Básica Manga Corta",
+    "marca": "Premium",
+    "novedad": true,
+    "observaciones": "Modelo clásico, disponible en varios colores"
+  },
+  {
+    "codigo": "10211",
+    "descripcion": "Pantalón Denim Clásico",
+    "marca": "Premium",
+    "novedad": false,
+    "observaciones": "Azul oscuro, corte recto"
+  },
+  {
+    "codigo": "10212",
+    "descripcion": "Blusa Elegante",
+    "marca": "Elegance",
+    "novedad": true,
+    "observaciones": "Diseño moderno con detalles"
+  },
+  {
+    "codigo": "10213",
+    "descripcion": "Falda Midi",
+    "marca": "Elegance",
+    "novedad": false,
+    "observaciones": "Largo midi, cintura alta"
+  },
+  {
+    "codigo": "10214",
+    "descripcion": "Chaqueta Casual",
+    "marca": "Urban",
+    "novedad": true,
+    "observaciones": "Perfecta para cualquier ocasión"
+  },
+  {
+    "codigo": "10215",
+    "descripcion": "Vestido Casual",
+    "marca": "Urban",
+    "novedad": false,
+    "observaciones": "Cómodo y versátil"
+  },
+  {
+    "codigo": "10216",
+    "descripcion": "Shorts Deportivos",
+    "marca": "Sport",
+    "novedad": true,
+    "observaciones": "Material transpirable"
+  },
+  {
+    "codigo": "10217",
+    "descripcion": "Sudadera Básica",
+    "marca": "Sport",
+    "novedad": false,
+    "observaciones": "Ideal para clima frío"
+  },
+  {
+    "codigo": "10218",
+    "descripcion": "Polo Ejecutivo",
+    "marca": "Executive",
+    "novedad": true,
+    "observaciones": "Profesional y elegante"
+  },
+  {
+    "codigo": "10219",
+    "descripcion": "Pantalón Ejecutivo",
+    "marca": "Executive",
+    "novedad": false,
+    "observaciones": "Corte formal"
+  }
+]

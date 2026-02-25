@@ -58,14 +58,20 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
     // Calculate value sold
     const valueSold = ordersForCorreria.reduce((sum, order) => sum + (order.totalValue || 0), 0);
 
-    // Calculate value dispatched (estimate based on dispatch items)
+    // Calculate value dispatched (using salePrice from dispatch items)
     const valueDispatched = dispatchesForCorreria.reduce((sum, dispatch) => {
-      return sum + (dispatch.items?.reduce((itemSum, item) => {
-        // Find reference price if available
-        const ref = state.references?.find(r => r.id === item.reference);
-        return itemSum + ((ref?.price || 0) * item.quantity);
-      }, 0) || 0);
+      const dispatchValue = dispatch.items?.reduce((itemSum, item) => {
+        // Usar el salePrice del despacho si existe, si no usar el precio de referencia
+        const price = item.salePrice || state.references?.find(r => r.id === item.reference)?.price || 0;
+        return itemSum + (price * item.quantity);
+      }, 0) || 0;
+      
+      console.log(`📦 Despacho ${dispatch.id}: valor=${dispatchValue}, items=${dispatch.items?.length}`);
+      
+      return sum + dispatchValue;
     }, 0);
+    
+    console.log(`💰 Total valor despachado: ${valueDispatched}`);
 
     // Calculate batches in process
     const batchesInProcess = deliveryDatesForCorreria.length;
@@ -96,18 +102,45 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
     value,
     unit,
     icon
-  }) => (
-    <div className="bg-white rounded-2xl border border-slate-200 p-4 md:p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between mb-3">
-        <h4 className="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-wide">{label}</h4>
-        <div className="text-slate-400">{icon}</div>
+  }) => {
+    // Asignar colores pastel según el label
+    const getBackgroundColor = () => {
+      if (label.includes('Vendidas')) return 'bg-orange-50';
+      if (label.includes('Despachadas')) return 'bg-orange-50';
+      if (label.includes('Cumplimiento')) return 'bg-blue-50';
+      if (label.includes('Tomados')) return 'bg-purple-50';
+      if (label.includes('Vendido')) return 'bg-green-50';
+      if (label.includes('Despachado')) return 'bg-emerald-50';
+      if (label.includes('Proceso')) return 'bg-pink-50';
+      if (label.includes('Entrega')) return 'bg-cyan-50';
+      return 'bg-slate-50';
+    };
+
+    const getBorderColor = () => {
+      if (label.includes('Vendidas')) return 'border-orange-200';
+      if (label.includes('Despachadas')) return 'border-orange-200';
+      if (label.includes('Cumplimiento')) return 'border-blue-200';
+      if (label.includes('Tomados')) return 'border-purple-200';
+      if (label.includes('Vendido')) return 'border-green-200';
+      if (label.includes('Despachado')) return 'border-emerald-200';
+      if (label.includes('Proceso')) return 'border-pink-200';
+      if (label.includes('Entrega')) return 'border-cyan-200';
+      return 'border-slate-200';
+    };
+
+    return (
+      <div className={`${getBackgroundColor()} rounded-2xl border ${getBorderColor()} p-4 md:p-6 hover:shadow-md transition-shadow`}>
+        <div className="flex items-start justify-between mb-3">
+          <h4 className="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-wide">{label}</h4>
+          <div className="text-slate-400">{icon}</div>
+        </div>
+        <div className="flex items-baseline gap-2 min-h-[2.5rem]">
+          <p className="text-xl md:text-2xl font-black text-slate-900 break-words line-clamp-2">{value}</p>
+          {unit && <span className="text-xs md:text-sm text-slate-500 flex-shrink-0">{unit}</span>}
+        </div>
       </div>
-      <div className="flex items-baseline gap-2 min-h-[2.5rem]">
-        <p className="text-xl md:text-2xl font-black text-slate-900 break-words line-clamp-2">{value}</p>
-        {unit && <span className="text-xs md:text-sm text-slate-500 flex-shrink-0">{unit}</span>}
-      </div>
-    </div>
-  );
+    );
+  };
 
   if (loading) {
     return (
@@ -124,7 +157,7 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
     <div className="space-y-6">
       {/* Sales Metrics */}
       <div>
-        <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3">Métricas de Ventas</h3>
+        <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3 text-center">Métricas de Ventas</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <MetricCard
             label="Unidades Vendidas"
@@ -145,39 +178,20 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
           />
           <MetricCard
-            label="Pedidos Tomados"
-            value={metrics.ordersTaken}
-            unit="pedidos"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .984.578 1.83 1.414 2.209m-5.314 0a48.882 48.882 0 013.814.051m6.314 0a48.882 48.882 0 013.814-.051m0 0A3.75 3.75 0 0021 12a3.75 3.75 0 01-3.75 3.75m0 0A3.75 3.75 0 0113.5 15.75m0 0A3.75 3.75 0 0110.125 12" /></svg>}
-          />
-          <MetricCard
             label="Valor Vendido"
-            value={`$${metrics.valueSold.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
+            value={`${metrics.valueSold.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3.75-6.75h7.5M12 3c-4.97 0-9 2.686-9 6v6c0 3.314 4.03 6 9 6s9-2.686 9-6V9c0-3.314-4.03-6-9-6z" /></svg>}
           />
           <MetricCard
             label="Valor Despachado"
-            value={`$${metrics.valueDispatched.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
+            value={`${metrics.valueDispatched.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
             icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H4.5A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5z" /></svg>}
           />
-        </div>
-      </div>
-
-      {/* Efficiency Metrics */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3">Métricas de Eficiencia</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <MetricCard
-            label="Lotes en Proceso"
-            value={metrics.batchesInProcess}
-            unit="lotes"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m0 0C5.25 5.547 8.167 5.25 12 5.25s6.75.297 9 1.125" /></svg>}
-          />
-          <MetricCard
-            label="Eficiencia de Entrega"
-            value={metrics.deliveryEfficiency}
-            unit="%"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
+            label="Pedidos Tomados"
+            value={metrics.ordersTaken}
+            unit="pedidos"
+            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .984.578 1.83 1.414 2.209m-5.314 0a48.882 48.882 0 013.814.051m6.314 0a48.882 48.882 0 013.814-.051m0 0A3.75 3.75 0 0121 12a3.75 3.75 0 01-3.75 3.75m0 0A3.75 3.75 0 0113.5 15.75m0 0A3.75 3.75 0 0110.125 12" /></svg>}
           />
         </div>
       </div>

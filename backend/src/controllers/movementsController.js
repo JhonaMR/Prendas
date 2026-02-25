@@ -358,7 +358,7 @@ const getDispatches = async (req, res) => {
 
         const dispatchesWithItems = await Promise.all(dispatches.map(async (dispatch) => {
             const itemsResult = await query(`
-                SELECT reference, quantity
+                SELECT reference, quantity, sale_price
                 FROM dispatch_items
                 WHERE dispatch_id = $1
             `, [dispatch.id]);
@@ -369,7 +369,11 @@ const getDispatches = async (req, res) => {
                 correriaId: dispatch.correria_id,
                 invoiceNo: dispatch.invoice_no,
                 remissionNo: dispatch.remission_no,
-                items: itemsResult.rows,
+                items: itemsResult.rows.map(item => ({
+                  reference: item.reference,
+                  quantity: item.quantity,
+                  salePrice: item.sale_price
+                })),
                 dispatchedBy: dispatch.dispatched_by,
                 createdAt: dispatch.created_at
             };
@@ -483,9 +487,9 @@ const updateDispatch = async (req, res) => {
                 }
 
                 await client.query(
-                    `INSERT INTO dispatch_items (dispatch_id, reference, quantity)
-                    VALUES ($1, $2, $3)`,
-                    [id, item.reference, item.quantity]
+                    `INSERT INTO dispatch_items (dispatch_id, reference, quantity, sale_price)
+                    VALUES ($1, $2, $3, $4)`,
+                    [id, item.reference, item.quantity, item.salePrice || 0]
                 );
             }
         });
@@ -580,7 +584,11 @@ const getOrders = async (req, res) => {
                 clientId: order.client_id,
                 sellerId: order.seller_id,
                 correriaId: order.correria_id,
-                items: itemsResult.rows,
+                items: itemsResult.rows.map(item => ({
+                  reference: item.reference,
+                  quantity: item.quantity,
+                  salePrice: item.sale_price
+                })),
                 totalValue: parseFloat(order.total_value) || 0,
                 createdAt: order.created_at,
                 settledBy: order.settled_by,
@@ -688,7 +696,7 @@ const createOrder = async (req, res) => {
 const getProductionTracking = async (req, res) => {
     try {
         const result = await query(`
-            SELECT ref_id, correria_id, programmed, cut
+            SELECT ref_id, correria_id, programmed, cut, inventory
             FROM production_tracking
         `);
 
@@ -698,7 +706,8 @@ const getProductionTracking = async (req, res) => {
             refId: t.ref_id,
             correriaId: t.correria_id,
             programmed: t.programmed,
-            cut: t.cut
+            cut: t.cut,
+            inventory: t.inventory || 0
         }));
 
         return res.json({
@@ -722,7 +731,7 @@ const getProductionTracking = async (req, res) => {
  */
 const updateProductionTracking = async (req, res) => {
     try {
-        const { refId, correriaId, programmed, cut } = req.body;
+        const { refId, correriaId, programmed, cut, inventory } = req.body;
 
         if (!refId || !correriaId || programmed === undefined || cut === undefined) {
             return res.status(400).json({
@@ -733,16 +742,16 @@ const updateProductionTracking = async (req, res) => {
 
         // UPSERT - Si existe actualiza, si no existe crea
         await query(
-            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut)
-            VALUES ($1, $2, $3, $4)
-            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4`,
-            [refId, correriaId, programmed, cut]
+            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+            VALUES ($1, $2, $3, $4, $5)
+            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+            [refId, correriaId, programmed, cut, inventory || 0]
         );
 
         return res.json({
             success: true,
             message: 'Tracking actualizado exitosamente',
-            data: { refId, correriaId, programmed, cut }
+            data: { refId, correriaId, programmed, cut, inventory: inventory || 0 }
         });
 
     } catch (error) {
@@ -778,7 +787,7 @@ const saveProductionBatch = async (req, res) => {
         await transaction(async (client) => {
             // Guardar cada registro
             for (const item of trackingData) {
-                const { refId, correriaId, programmed, cut } = item;
+                const { refId, correriaId, programmed, cut, inventory } = item;
 
                 // Validar cada registro
                 if (!refId || !correriaId || programmed === undefined || cut === undefined) {
@@ -787,10 +796,10 @@ const saveProductionBatch = async (req, res) => {
 
                 // Ejecutar UPSERT
                 await client.query(
-                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut)
-                    VALUES ($1, $2, $3, $4)
-                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4`,
-                    [refId, correriaId, programmed, cut]
+                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+                    VALUES ($1, $2, $3, $4, $5)
+                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+                    [refId, correriaId, programmed, cut, inventory || 0]
                 );
                 savedCount++;
             }
@@ -807,6 +816,138 @@ const saveProductionBatch = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Error al guardar tracking',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * PUT /api/orders/:id
+ * Actualizar un pedido
+ */
+const updateOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { clientId, sellerId, correriaId, items, totalValue, settledBy } = req.body;
+
+        logger.info(`📝 Actualizando pedido ${id}:`, { clientId, sellerId, correriaId, itemsCount: items?.length, totalValue });
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID del pedido es requerido'
+            });
+        }
+
+        if (!clientId || !sellerId || !correriaId || !items || !items.length || !totalValue) {
+            return res.status(400).json({
+                success: false,
+                message: 'Todos los campos son requeridos',
+                received: { clientId, sellerId, correriaId, itemsCount: items?.length, totalValue }
+            });
+        }
+
+        await transaction(async (client) => {
+            // Actualizar pedido
+            const updateResult = await client.query(
+                `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5
+                WHERE id = $6`,
+                [clientId, sellerId, correriaId, String(totalValue), settledBy || null, id]
+            );
+
+            logger.info(`✏️ Pedido actualizado: ${updateResult.rowCount} filas afectadas`);
+
+            // Eliminar items anteriores
+            const deleteResult = await client.query(`DELETE FROM order_items WHERE order_id = $1`, [id]);
+            logger.info(`🗑️ Items eliminados: ${deleteResult.rowCount} filas`);
+
+            // Insertar nuevos items
+            for (const item of items) {
+                const salePrice = item.sale_price !== undefined ? item.sale_price : item.salePrice;
+                
+                logger.info(`📦 Procesando item:`, { reference: item.reference, quantity: item.quantity, salePrice });
+
+                if (!item.reference || !item.quantity || salePrice === undefined) {
+                    throw new Error(`Item inválido: reference=${item.reference}, quantity=${item.quantity}, salePrice=${salePrice}`);
+                }
+
+                if (item.quantity <= 0) {
+                    throw new Error('La cantidad debe ser mayor a 0');
+                }
+
+                if (salePrice <= 0) {
+                    throw new Error('El precio de venta debe ser mayor a 0');
+                }
+
+                await client.query(
+                    `INSERT INTO order_items (order_id, reference, quantity, sale_price)
+                    VALUES ($1, $2, $3, $4)`,
+                    [id, item.reference, item.quantity, salePrice]
+                );
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Pedido actualizado exitosamente',
+            data: {
+                id,
+                clientId,
+                sellerId,
+                correriaId,
+                items,
+                totalValue,
+                settledBy
+            }
+        });
+
+    } catch (error) {
+        logger.error('❌ Error al actualizar pedido:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al actualizar pedido',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * DELETE /api/orders/:id
+ * Eliminar un pedido
+ */
+const deleteOrder = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id) {
+            return res.status(400).json({
+                success: false,
+                message: 'ID del pedido es requerido'
+            });
+        }
+
+        await transaction(async (client) => {
+            // Eliminar items del pedido
+            await client.query(`DELETE FROM order_items WHERE order_id = $1`, [id]);
+
+            // Eliminar pedido
+            const result = await client.query(`DELETE FROM orders WHERE id = $1`, [id]);
+
+            if (result.rowCount === 0) {
+                throw new Error('Pedido no encontrado');
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Pedido eliminado exitosamente'
+        });
+
+    } catch (error) {
+        logger.error('❌ Error al eliminar pedido:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al eliminar pedido',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
@@ -831,6 +972,8 @@ module.exports = {
     // Pedidos
     getOrders,
     createOrder,
+    updateOrder,
+    deleteOrder,
     
     // Producción
     getProductionTracking,

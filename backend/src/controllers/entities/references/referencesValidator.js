@@ -65,11 +65,12 @@ function validateUpdateReference(data) {
   }
 
   // Precio es opcional pero si se proporciona debe ser válido
-  if (data.price !== undefined) {
-    const priceValidation = validateNumber(data.price, 'Price');
+  if (data.price !== undefined && data.price !== null && data.price !== '') {
+    const priceNum = Number(data.price);
+    const priceValidation = validateNumber(priceNum, 'Price');
     if (!priceValidation.valid) {
       errors.price = priceValidation.error;
-    } else if (data.price <= 0) {
+    } else if (priceNum <= 0) {
       errors.price = 'Price must be greater than 0';
     }
   }

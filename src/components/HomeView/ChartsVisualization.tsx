@@ -47,6 +47,10 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
         const sellerName = seller?.name || sellerId;
 
         const units = dispatch.items?.reduce((sum, item) => sum + (item.quantity || 0), 0) || 0;
+        const value = dispatch.items?.reduce((sum, item) => {
+          const price = item.salePrice || state.references?.find(r => r.id === item.reference)?.price || 0;
+          return sum + (price * item.quantity);
+        }, 0) || 0;
 
         if (!sellerMap.has(sellerId)) {
           sellerMap.set(sellerId, { unitsSold: 0, unitsDispatched: 0, valueSold: 0, valueDispatched: 0, sellerName });
@@ -54,6 +58,7 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
 
         const data = sellerMap.get(sellerId)!;
         data.unitsDispatched += units;
+        data.valueDispatched += value;
       }
     });
 
@@ -85,30 +90,30 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
       {/* Fulfillment by Seller - Split into two halves */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Fulfillment by Units */}
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-          <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6">Cumplimiento por Unidades</h3>
+        <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
+          <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center">Cumplimiento por Unidades</h3>
 
           {sellerFulfillmentData.length > 0 ? (
             <div className="space-y-3">
               {sellerFulfillmentData.map((seller) => (
-                <div key={seller.sellerId} className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-4 border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all duration-200">
+                <div key={seller.sellerId} className="bg-gradient-to-r from-indigo-100 to-indigo-150 rounded-2xl p-4 border border-indigo-300 hover:border-indigo-400 hover:shadow-md transition-all duration-200">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-base font-bold text-slate-900 truncate">{seller.sellerName}</p>
-                    <p className="text-base font-black text-blue-600 ml-2 flex-shrink-0">
+                    <p className="text-base font-black text-indigo-600 ml-2 flex-shrink-0">
                       {seller.fulfillmentPercentage}%
                     </p>
                   </div>
 
                   {/* Progress Bar */}
                   <div className="space-y-2">
-                    <div className="h-3 bg-slate-300 rounded-full overflow-hidden shadow-sm">
+                    <div className="h-3 bg-indigo-300 rounded-full overflow-hidden shadow-sm">
                       <div
-                        className="h-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 transition-all duration-300 rounded-full"
+                        className="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 transition-all duration-300 rounded-full"
                         style={{ width: `${Math.min(seller.fulfillmentPercentage, 100)}%` }}
                       />
                     </div>
                     <div className="flex items-center justify-end gap-1">
-                      <span className="text-sm font-bold text-blue-600">{seller.unitsDispatched}</span>
+                      <span className="text-sm font-bold text-indigo-600">{seller.unitsDispatched}</span>
                       <span className="text-sm text-slate-400">/</span>
                       <span className="text-sm font-bold text-slate-700">{seller.unitsSold}</span>
                       <span className="text-xs text-slate-500 ml-1">unidades</span>
@@ -125,30 +130,30 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
         </div>
 
         {/* Right: Fulfillment by Value */}
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-          <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6">Cumplimiento por Valor</h3>
+        <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
+          <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center">Cumplimiento por Valor</h3>
 
           {sellerFulfillmentData.length > 0 ? (
             <div className="space-y-3">
               {sellerFulfillmentData.map((seller) => (
-                <div key={`value-${seller.sellerId}`} className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-4 border border-green-200 hover:border-green-400 hover:shadow-md transition-all duration-200">
+                <div key={`value-${seller.sellerId}`} className="bg-gradient-to-r from-indigo-100 to-indigo-150 rounded-2xl p-4 border border-indigo-300 hover:border-indigo-400 hover:shadow-md transition-all duration-200">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-base font-bold text-slate-900 truncate">{seller.sellerName}</p>
-                    <p className="text-base font-black text-green-600 ml-2 flex-shrink-0">
+                    <p className="text-base font-black text-indigo-600 ml-2 flex-shrink-0">
                       {seller.valuePercentage}%
                     </p>
                   </div>
 
                   {/* Progress Bar */}
                   <div className="space-y-2">
-                    <div className="h-3 bg-green-300 rounded-full overflow-hidden shadow-sm">
+                    <div className="h-3 bg-indigo-300 rounded-full overflow-hidden shadow-sm">
                       <div
-                        className="h-full bg-gradient-to-r from-green-500 via-green-600 to-emerald-700 transition-all duration-300 rounded-full"
+                        className="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 transition-all duration-300 rounded-full"
                         style={{ width: `${Math.min(seller.valuePercentage, 100)}%` }}
                       />
                     </div>
                     <div className="flex items-center justify-end gap-1">
-                      <span className="text-sm font-bold text-green-600">${seller.valueDispatched.toLocaleString()}</span>
+                      <span className="text-sm font-bold text-indigo-600">${seller.valueDispatched.toLocaleString()}</span>
                       <span className="text-sm text-slate-400">/</span>
                       <span className="text-sm font-bold text-slate-700">${seller.valueSold.toLocaleString()}</span>
                       <span className="text-xs text-slate-500 ml-1">pesos</span>
@@ -162,73 +167,6 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
               <p className="text-sm">No hay datos de vendedores para esta correría</p>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Summary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Total Units by Seller */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h4 className="text-lg md:text-xl font-black text-slate-900 mb-4">Unidades por Vendedor</h4>
-          <div className="space-y-2">
-            {sellerFulfillmentData.slice(0, 5).map((seller) => (
-              <div key={seller.sellerId} className="bg-gradient-to-r from-slate-50 to-slate-100 rounded-xl p-3 border border-slate-200 hover:border-blue-300 hover:shadow-sm transition-all duration-200 flex items-center justify-between">
-                <span className="text-base font-semibold text-slate-900 truncate">{seller.sellerName}</span>
-                <span className="text-xl font-black text-blue-600 ml-2 flex-shrink-0">{seller.unitsSold}</span>
-              </div>
-            ))}
-            {sellerFulfillmentData.length > 5 && (
-              <div className="text-xs font-semibold text-slate-500 pt-2 border-t border-slate-200 text-center">
-                +{sellerFulfillmentData.length - 5} vendedores más
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Fulfillment Distribution */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wide mb-4">Distribución de Cumplimiento</h4>
-          <div className="space-y-3">
-            {(() => {
-              const excellent = sellerFulfillmentData.filter(s => s.fulfillmentPercentage >= 90).length;
-              const good = sellerFulfillmentData.filter(s => s.fulfillmentPercentage >= 70 && s.fulfillmentPercentage < 90).length;
-              const fair = sellerFulfillmentData.filter(s => s.fulfillmentPercentage >= 50 && s.fulfillmentPercentage < 70).length;
-              const poor = sellerFulfillmentData.filter(s => s.fulfillmentPercentage < 50).length;
-
-              return (
-                <>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-green-500" />
-                      <span className="text-sm text-slate-600">Excelente (≥90%)</span>
-                    </div>
-                    <span className="text-sm font-bold text-slate-900">{excellent}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-blue-500" />
-                      <span className="text-sm text-slate-600">Bueno (70-89%)</span>
-                    </div>
-                    <span className="text-sm font-bold text-slate-900">{good}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                      <span className="text-sm text-slate-600">Regular (50-69%)</span>
-                    </div>
-                    <span className="text-sm font-bold text-slate-900">{fair}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500" />
-                      <span className="text-sm text-slate-600">Bajo (&lt;50%)</span>
-                    </div>
-                    <span className="text-sm font-bold text-slate-900">{poor}</span>
-                  </div>
-                </>
-              );
-            })()}
-          </div>
         </div>
       </div>
     </div>

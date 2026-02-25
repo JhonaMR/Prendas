@@ -1,0 +1,87 @@
+[
+  {
+    "numeroRecepcion": "REC-2026-001",
+    "numeroOrdenCompra": "OC-2026-001",
+    "fechaRecepcion": "2026-01-10",
+    "items": [
+      {
+        "referencia": "10210",
+        "cantidad": 500,
+        "lote": "LOTE-001-2026"
+      },
+      {
+        "referencia": "10211",
+        "cantidad": 300,
+        "lote": "LOTE-002-2026"
+      }
+    ]
+  },
+  {
+    "numeroRecepcion": "REC-2026-002",
+    "numeroOrdenCompra": "OC-2026-002",
+    "fechaRecepcion": "2026-01-15",
+    "items": [
+      {
+        "referencia": "10212",
+        "cantidad": 400,
+        "lote": "LOTE-003-2026"
+      },
+      {
+        "referencia": "10213",
+        "cantidad": 250,
+        "lote": "LOTE-004-2026"
+      }
+    ]
+  },
+  {
+    "numeroRecepcion": "REC-2026-003",
+    "numeroOrdenCompra": "OC-2026-003",
+    "fechaRecepcion": "2026-01-20",
+    "items": [
+      {
+        "referencia": "10214",
+        "cantidad": 200,
+        "lote": "LOTE-005-2026"
+      },
+      {
+        "referencia": "10215",
+        "cantidad": 350,
+        "lote": "LOTE-006-2026"
+      }
+    ]
+  },
+  {
+    "numeroRecepcion": "REC-2026-004",
+    "numeroOrdenCompra": "OC-2026-004",
+    "fechaRecepcion": "2026-01-25",
+    "items": [
+      {
+        "referencia": "10216",
+        "cantidad": 600,
+        "lote": "LOTE-007-2026"
+      },
+      {
+        "referencia": "10217",
+        "cantidad": 450,
+        "lote": "LOTE-008-2026"
+      }
+    ]
+  },
+  {
+    "numeroRecepcion": "REC-2026-005",
+    "numeroOrdenCompra": "OC-2026-005",
+    "fechaRecepcion": "2026-02-01",
+    "items": [
+      {
+        "referencia": "10218",
+        "cantidad": 300,
+        "lote": "LOTE-009-2026"
+      },
+      {
+        "referencia": "10219",
+        "cantidad": 250,
+        "lote": "LOTE-010-2026"
+      }
+    ]
+  }
+]

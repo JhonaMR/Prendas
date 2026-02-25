@@ -168,6 +168,8 @@ router.delete('/dispatches/:id', verifyToken, preventNonAdminEdit, movementsCont
 
 router.get('/orders', verifyToken, movementsController.getOrders);
 router.post('/orders', verifyToken, preventNonAdminEdit, movementsController.createOrder);
+router.put('/orders/:id', verifyToken, preventNonAdminEdit, movementsController.updateOrder);
+router.delete('/orders/:id', verifyToken, preventNonAdminEdit, movementsController.deleteOrder);
 
 // ==================== TRACKING DE PRODUCCIÓN ====================
 
@@ -180,6 +182,16 @@ router.post('/production/batch', verifyToken, preventNonAdminEdit, movementsCont
 router.get('/delivery-dates', verifyToken, getDeliveryDates);
 router.post('/delivery-dates/batch', verifyToken, preventNonAdminEdit, saveDeliveryDatesBatchHandler);
 router.delete('/delivery-dates/:id', verifyToken, preventNonAdminEdit, deleteDeliveryDateHandler);
+
+// ==================== IMPORTACIÓN MASIVA ====================
+
+const bulkImportController = require('../controllers/bulkImportController');
+
+router.post('/bulk-import/references', verifyToken, verifyAdmin, bulkImportController.importReferences);
+router.post('/bulk-import/cost-sheets', verifyToken, verifyAdmin, bulkImportController.importCostSheets);
+router.post('/bulk-import/orders', verifyToken, verifyAdmin, bulkImportController.importOrders);
+router.post('/bulk-import/dispatches', verifyToken, verifyAdmin, bulkImportController.importDispatches);
+router.post('/bulk-import/receptions', verifyToken, verifyAdmin, bulkImportController.importReceptions);
 
 // ==================== BACKUPS ====================
 

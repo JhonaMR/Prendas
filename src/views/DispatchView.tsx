@@ -10,6 +10,7 @@ interface DispatchViewProps {
   user: User;
   clients: Client[];
   dispatches: Dispatch[];
+  orders: any[];
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
   correrias: any[];
@@ -18,7 +19,7 @@ interface DispatchViewProps {
   onDeleteDispatch: (id: string) => Promise<{ success: boolean }>;
 }
 
-const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, updateState, referencesMaster, correrias, onAddDispatch, onUpdateDispatch, onDeleteDispatch }) => {
+const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, orders, updateState, referencesMaster, correrias, onAddDispatch, onUpdateDispatch, onDeleteDispatch }) => {
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
@@ -109,6 +110,25 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     }
 
     try {
+      // Enriquecer items con salePrice del pedido
+      const pedidoEspecifico = orders.find(o => 
+        o.clientId === clientId && 
+        o.correriaId === correriaId
+      );
+
+      console.log('🔍 Buscando pedido:', { clientId, correriaId });
+      console.log('📋 Pedido encontrado:', pedidoEspecifico);
+      console.log('📦 Orders disponibles:', orders);
+
+      const itemsConPrecio = items.map(item => {
+        const salePrice = pedidoEspecifico?.items.find(oi => oi.reference === item.reference)?.salePrice || 0;
+        console.log(`💰 Item ${item.reference}: salePrice=${salePrice}`);
+        return {
+          ...item,
+          salePrice
+        };
+      });
+
       if (editingDisp) {
         // Actualizar despacho existente
         const updatedData = {
@@ -116,7 +136,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           correriaId,
           invoiceNo,
           remissionNo,
-          items,
+          items: itemsConPrecio,
           dispatchedBy: editingDisp.dispatchedBy
         };
 
@@ -139,7 +159,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           correriaId,
           invoiceNo,
           remissionNo,
-          items,
+          items: itemsConPrecio,
           dispatchedBy: user.name,
           createdAt: new Date().toLocaleString(),
           editLogs: [{ user: user.name, date: new Date().toLocaleString() }]
@@ -437,8 +457,12 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => {
+                                  const dispatchItem = d.items.find(item => item.reference === ref);
                                   const masterRef = referencesMaster.find(rm => rm.id === ref);
-                                  const price = masterRef?.price || 0;
+                                  const price = dispatchItem?.salePrice || masterRef?.price || 0;
+                                  
+                                  console.log(`📦 Despacho item ${ref}:`, { dispatchItem, salePrice: dispatchItem?.salePrice, masterRefPrice: masterRef?.price, finalPrice: price });
+                                  
                                   const subtotal = price * qty;
                                   return (
                                     <tr key={ref}>
