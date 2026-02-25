@@ -7,8 +7,25 @@ Sistema de backups automáticos con rotación inteligente que mantiene un mes de
 - **Backups Diarios**: Últimos 7 días (se eliminan automáticamente)
 - **Backups Semanales**: Cada domingo, máximo 4 (un mes)
 - **Backups Mensuales**: Primer día del mes, máximo 3
+- **Limpieza de Logs**: Automática cada backup, mantiene solo logs del último mes
 
 **Ejecución**: Automáticamente cada día a las **22:00 (10pm)** mediante PM2
+
+## 📦 Qué se Respalda
+
+Cada backup incluye **TODAS las tablas** del sistema:
+
+- **Clientes**: Información de clientes y vendedores
+- **Referencias**: Catálogo de prendas y referencias
+- **Pedidos**: Órdenes de compra y detalles
+- **Despachos**: Envíos y entregas
+- **Recepciones**: Recepción de mercancía
+- **Compras**: Órdenes de compra a proveedores
+- **Fichas de Costo**: Información de costos y precios
+- **Movimientos de Inventario**: Historial de cambios
+- **Auditoría**: Registro de cambios y acciones de usuarios
+- **Preferencias de Vista**: Configuraciones de usuarios
+- **Esquemas y Índices**: Estructura completa de la BD
 
 ## 🚀 Instalación y Configuración
 
@@ -72,13 +89,22 @@ npm run pm2:resurrect
 ### Backup Automático (22:00 cada día)
 
 1. PM2 ejecuta el script `scheduledBackup.js` a las 22:00
-2. El script determina el tipo de backup:
+2. Se limpian automáticamente los logs más antiguos de 30 días
+3. El script determina el tipo de backup:
    - **Diario**: Lunes a sábado
    - **Semanal**: Domingos
    - **Mensual**: Primer día del mes
-3. Se ejecuta `pg_dump` para crear el backup
-4. Se aplica la política de retención (elimina backups antiguos)
-5. Se registran estadísticas en los logs
+4. Se ejecuta `pg_dump` para crear el backup (incluye todas las tablas)
+5. Se aplica la política de retención (elimina backups antiguos)
+6. Se registran estadísticas en los logs
+
+### Limpieza Automática de Logs
+
+Cada backup ejecuta automáticamente la limpieza de logs:
+- Elimina logs de backup más antiguos de 30 días
+- Elimina logs de aplicación más antiguos de 30 días
+- Mantiene solo los logs del último mes
+- Se ejecuta sin interrumpir el proceso de backup
 
 ### Restauración desde la Aplicación
 
@@ -120,14 +146,14 @@ backend/
 │   ├── inventory-backup-daily-*.sql
 │   ├── inventory-backup-weekly-*.sql
 │   └── inventory-backup-monthly-*.sql
-├── logs/                            # Logs de PM2
-│   ├── out.log                      # Salida estándar
-│   ├── error.log                    # Errores
-│   ├── backup-out.log               # Salida de backups
-│   └── backup-error.log             # Errores de backups
+├── logs/                            # Logs de PM2 (se limpian automáticamente)
+│   ├── out.log                      # Salida estándar (últimos 30 días)
+│   ├── error.log                    # Errores (últimos 30 días)
+│   ├── backup-out.log               # Salida de backups (últimos 30 días)
+│   └── backup-error.log             # Errores de backups (últimos 30 días)
 └── src/
     ├── services/
-    │   ├── BackupExecutionService.js    # Ejecuta backups
+    │   ├── BackupExecutionService.js    # Ejecuta backups + limpia logs
     │   └── BackupRotationService.js     # Gestiona rotación
     ├── controllers/
     │   └── backupController.js          # Endpoints
@@ -191,6 +217,12 @@ backend/
    cron_restart: '0 22 * * *' // Cada día a las 22:00
    ```
 
+### Los logs no se están limpiando
+
+1. Verifica que el backup se ejecutó correctamente
+2. Revisa los logs para ver si hay errores en la limpieza
+3. Puedes limpiar manualmente los logs antiguos de la carpeta `logs/`
+
 ### Error de conexión a PostgreSQL
 
 1. Verifica que PostgreSQL está corriendo
@@ -205,7 +237,8 @@ backend/
    ```
 
 2. Los backups se eliminan automáticamente según la política
-3. Puedes eliminar manualmente backups antiguos de la carpeta `backups/`
+3. Los logs se limpian automáticamente cada 30 días
+4. Puedes eliminar manualmente backups antiguos de la carpeta `backups/`
 
 ## 📝 Logs
 

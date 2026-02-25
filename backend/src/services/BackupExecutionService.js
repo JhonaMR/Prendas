@@ -10,6 +10,36 @@ const BackupRotationService = require('./BackupRotationService');
 
 const execAsync = promisify(exec);
 
+/**
+ * Limpia logs de backup más antiguos de 30 días
+ */
+function cleanOldBackupLogs() {
+  const logsDir = path.join(__dirname, '../../logs');
+  const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+  
+  const logFiles = [
+    'backup-out.log',
+    'backup-error.log',
+    'out.log',
+    'error.log'
+  ];
+
+  logFiles.forEach(logFile => {
+    const logPath = path.join(logsDir, logFile);
+    if (fs.existsSync(logPath)) {
+      const stats = fs.statSync(logPath);
+      if (stats.mtimeMs < thirtyDaysAgo) {
+        try {
+          fs.unlinkSync(logPath);
+          console.log(`🗑️  Log antiguo eliminado: ${logFile}`);
+        } catch (error) {
+          console.warn(`⚠️  No se pudo eliminar log: ${logFile} - ${error.message}`);
+        }
+      }
+    }
+  });
+}
+
 class BackupExecutionService {
   constructor(backupDir = path.join(__dirname, '../../backups')) {
     this.backupDir = backupDir;
@@ -21,6 +51,9 @@ class BackupExecutionService {
    */
   async executeBackup() {
     try {
+      // Limpiar logs antiguos (más de 30 días)
+      cleanOldBackupLogs();
+
       // Determinar tipo de backup
       const backupType = this.rotationService.getBackupType();
       const filename = this.rotationService.generateBackupFilename(backupType);
@@ -37,13 +70,14 @@ class BackupExecutionService {
         throw new Error('DB_PASSWORD no está configurada en variables de entorno');
       }
 
-      // Comando pg_dump
+      // Comando pg_dump - respalda toda la BD con todas las tablas
       const command = `pg_dump -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -F p > "${backupPath}"`;
 
       console.log(`\n🔄 [${new Date().toISOString()}] Iniciando backup ${backupType}...`);
       console.log(`📁 Archivo: ${filename}`);
       console.log(`🗄️  Base de datos: ${dbName}`);
       console.log(`🖥️  Host: ${dbHost}:${dbPort}`);
+      console.log(`📊 Incluye: Todas las tablas (clientes, referencias, pedidos, despachos, recepciones, compras, fichas, movimientos, auditoría, etc.)`);
 
       // Ejecutar backup
       const env = { ...process.env, PGPASSWORD: dbPassword };

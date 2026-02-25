@@ -5,6 +5,7 @@
 
 const { query, transaction } = require('../config/database');
 const multer = require('multer');
+const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
@@ -35,6 +36,36 @@ const upload = multer({
 });
 
 // ============ FUNCIONES AUXILIARES ============
+
+/**
+ * Comprime imagen con calidad leve (mantiene buena calidad)
+ * - JPG/JPEG: 85% de calidad
+ * - PNG: compresión nivel 8
+ */
+const compressImage = async (filePath) => {
+    try {
+        const ext = path.extname(filePath).toLowerCase();
+        
+        if (ext === '.png') {
+            // PNG: compresión leve (nivel 8 de 9)
+            await sharp(filePath)
+                .png({ compressionLevel: 8 })
+                .toFile(filePath + '.tmp');
+        } else if (ext === '.jpg' || ext === '.jpeg') {
+            // JPG: 85% de calidad (leve compresión, mantiene buena calidad)
+            await sharp(filePath)
+                .jpeg({ quality: 85, progressive: true })
+                .toFile(filePath + '.tmp');
+        }
+        
+        // Reemplazar archivo original con versión comprimida
+        fs.renameSync(filePath + '.tmp', filePath);
+        console.log(`✅ Imagen comprimida: ${path.basename(filePath)}`);
+    } catch (error) {
+        console.warn(`⚠️  No se pudo comprimir imagen: ${error.message}`);
+        // No fallar si hay error en compresión, continuar con imagen original
+    }
+};
 
 const calcularTotales = (secciones) => {
     const totales = {};
@@ -291,7 +322,7 @@ const deleteFichaDiseno = async (req, res) => {
  * POST /api/fichas-diseno/upload-foto
  */
 const uploadFoto = (req, res) => {
-    upload.single('foto')(req, res, (err) => {
+    upload.single('foto')(req, res, async (err) => {
         if (err) {
             console.error('❌ Error subiendo foto:', err);
             return res.status(400).json({ success: false, message: err.message });
@@ -299,9 +330,26 @@ const uploadFoto = (req, res) => {
         if (!req.file) {
             return res.status(400).json({ success: false, message: 'No se recibió archivo' });
         }
-        // Ruta relativa al frontend public folder
-        const fotoPath = `/images/references/${req.file.filename}`;
-        return res.json({ success: true, data: { path: fotoPath }, message: 'Foto subida exitosamente' });
+        
+        try {
+            // Comprimir imagen
+            const filePath = req.file.path;
+            await compressImage(filePath);
+            
+            // Ruta relativa al frontend public folder
+            const fotoPath = `/images/references/${req.file.filename}`;
+            return res.json({ 
+                success: true, 
+                data: { path: fotoPath }, 
+                message: 'Foto subida y comprimida exitosamente' 
+            });
+        } catch (error) {
+            console.error('❌ Error procesando foto:', error);
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Error al procesar la imagen: ' + error.message 
+            });
+        }
     });
 };
 
