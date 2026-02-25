@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     id character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
     login_code character varying(3) NOT NULL,
-    pin character varying(255) NOT NULL,
+    pin_hash character varying(255) NOT NULL,
     role character varying(50) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS public.correria_catalog (
     id character varying(255) NOT NULL,
     correria_id character varying(255) NOT NULL,
     reference_id character varying(255) NOT NULL,
+    added_at timestamp without time zone,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT correria_catalog_pkey PRIMARY KEY (id),
     CONSTRAINT correria_catalog_correria_id_fkey FOREIGN KEY (correria_id) REFERENCES public.correrias(id) ON DELETE CASCADE
@@ -100,6 +101,7 @@ CREATE TABLE IF NOT EXISTS public.product_references (
     avg_cloth1 numeric(10,2),
     cloth2 character varying(255),
     avg_cloth2 numeric(10,2),
+    active boolean DEFAULT true,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT product_references_pkey PRIMARY KEY (id)
 );
@@ -139,12 +141,13 @@ CREATE TABLE IF NOT EXISTS public.reception_items (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.return_receptions (
     id character varying(255) NOT NULL,
-    batch_code character varying(255) NOT NULL,
-    confeccionista_id character varying(255),
+    client_id character varying(255),
+    credit_note_number character varying(255),
+    total_value numeric(10,2),
     received_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT return_receptions_pkey PRIMARY KEY (id),
-    CONSTRAINT return_receptions_confeccionista_id_fkey FOREIGN KEY (confeccionista_id) REFERENCES public.confeccionistas(id) ON DELETE SET NULL
+    CONSTRAINT return_receptions_client_id_fkey FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE SET NULL
 );
 
 -- ============================================================================
@@ -153,8 +156,9 @@ CREATE TABLE IF NOT EXISTS public.return_receptions (
 CREATE TABLE IF NOT EXISTS public.return_reception_items (
     id character varying(255) NOT NULL,
     return_reception_id character varying(255) NOT NULL,
-    reference_id character varying(255) NOT NULL,
+    reference character varying(255) NOT NULL,
     quantity integer NOT NULL,
+    unit_price numeric(10,2),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT return_reception_items_pkey PRIMARY KEY (id),
     CONSTRAINT return_reception_items_return_reception_id_fkey FOREIGN KEY (return_reception_id) REFERENCES public.return_receptions(id) ON DELETE CASCADE
@@ -227,7 +231,7 @@ CREATE TABLE IF NOT EXISTS public.order_items (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.production_tracking (
     id character varying(255) NOT NULL,
-    reference_id character varying(255) NOT NULL,
+    ref_id character varying(255) NOT NULL,
     correria_id character varying(255),
     programmed integer DEFAULT 0,
     cut integer DEFAULT 0,
@@ -277,11 +281,12 @@ CREATE TABLE IF NOT EXISTS public.delivery_dates (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.disenadoras (
     id character varying(255) NOT NULL,
-    name character varying(255) NOT NULL,
-    email character varying(255),
-    phone character varying(255),
-    active boolean DEFAULT true,
+    nombre character varying(255) NOT NULL,
+    cedula character varying(255),
+    telefono character varying(255),
+    activa boolean DEFAULT true,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT disenadoras_pkey PRIMARY KEY (id)
 );
 
@@ -290,14 +295,32 @@ CREATE TABLE IF NOT EXISTS public.disenadoras (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.fichas_diseno (
     referencia character varying(255) NOT NULL,
-    nombre character varying(255),
+    disenadora_id character varying(255),
     descripcion text,
-    foto_url character varying(500),
-    disenadoras_id character varying(255),
+    marca character varying(255),
+    novedad character varying(255),
+    muestra_1 character varying(500),
+    muestra_2 character varying(500),
+    observaciones text,
+    foto_1 character varying(500),
+    foto_2 character varying(500),
+    materia_prima text,
+    mano_obra text,
+    insumos_directos text,
+    insumos_indirectos text,
+    provisiones text,
+    total_materia_prima numeric(10,2),
+    total_mano_obra numeric(10,2),
+    total_insumos_directos numeric(10,2),
+    total_insumos_indirectos numeric(10,2),
+    total_provisiones numeric(10,2),
+    costo_total numeric(10,2),
+    importada boolean DEFAULT false,
+    created_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fichas_diseno_pkey PRIMARY KEY (referencia),
-    CONSTRAINT fichas_diseno_disenadoras_id_fkey FOREIGN KEY (disenadoras_id) REFERENCES public.disenadoras(id) ON DELETE SET NULL
+    CONSTRAINT fichas_diseno_disenadora_id_fkey FOREIGN KEY (disenadora_id) REFERENCES public.disenadoras(id) ON DELETE SET NULL
 );
 
 -- ============================================================================
@@ -305,14 +328,44 @@ CREATE TABLE IF NOT EXISTS public.fichas_diseno (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.fichas_costo (
     referencia character varying(255) NOT NULL,
-    nombre character varying(255),
+    ficha_diseno_id character varying(255),
     descripcion text,
-    costo_unitario numeric(10,2),
-    margen_ganancia numeric(5,2),
+    marca character varying(255),
+    novedad character varying(255),
+    muestra_1 character varying(500),
+    muestra_2 character varying(500),
+    observaciones text,
+    foto_1 character varying(500),
+    foto_2 character varying(500),
+    materia_prima text,
+    mano_obra text,
+    insumos_directos text,
+    insumos_indirectos text,
+    provisiones text,
+    total_materia_prima numeric(10,2),
+    total_mano_obra numeric(10,2),
+    total_insumos_directos numeric(10,2),
+    total_insumos_indirectos numeric(10,2),
+    total_provisiones numeric(10,2),
+    costo_total numeric(10,2),
     precio_venta numeric(10,2),
+    rentabilidad numeric(10,2),
+    margen_ganancia numeric(5,2),
+    costo_contabilizar numeric(10,2),
+    desc_0_precio numeric(10,2),
+    desc_0_rent numeric(10,2),
+    desc_5_precio numeric(10,2),
+    desc_5_rent numeric(10,2),
+    desc_10_precio numeric(10,2),
+    desc_10_rent numeric(10,2),
+    desc_15_precio numeric(10,2),
+    desc_15_rent numeric(10,2),
+    cantidad_total_cortada integer,
+    created_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fichas_costo_pkey PRIMARY KEY (referencia)
+    CONSTRAINT fichas_costo_pkey PRIMARY KEY (referencia),
+    CONSTRAINT fichas_costo_ficha_diseno_id_fkey FOREIGN KEY (ficha_diseno_id) REFERENCES public.fichas_diseno(referencia) ON DELETE SET NULL
 );
 
 -- ============================================================================
@@ -320,13 +373,31 @@ CREATE TABLE IF NOT EXISTS public.fichas_costo (
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.fichas_cortes (
     id character varying(255) NOT NULL,
-    referencia character varying(255),
+    ficha_costo_id character varying(255),
     numero_corte integer,
-    cantidad integer,
-    observacion text,
+    ficha_corte character varying(255),
+    fecha_corte date,
+    cantidad_cortada integer,
+    materia_prima text,
+    mano_obra text,
+    insumos_directos text,
+    insumos_indirectos text,
+    provisiones text,
+    total_materia_prima numeric(10,2),
+    total_mano_obra numeric(10,2),
+    total_insumos_directos numeric(10,2),
+    total_insumos_indirectos numeric(10,2),
+    total_provisiones numeric(10,2),
+    costo_real numeric(10,2),
+    precio_venta numeric(10,2),
+    rentabilidad numeric(10,2),
+    costo_proyectado numeric(10,2),
+    diferencia numeric(10,2),
+    margen_utilidad numeric(5,2),
+    created_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fichas_cortes_pkey PRIMARY KEY (id),
-    CONSTRAINT fichas_cortes_referencia_fkey FOREIGN KEY (referencia) REFERENCES public.fichas_costo(referencia) ON DELETE CASCADE
+    CONSTRAINT fichas_cortes_ficha_costo_id_fkey FOREIGN KEY (ficha_costo_id) REFERENCES public.fichas_costo(referencia) ON DELETE CASCADE
 );
 
 -- ============================================================================
@@ -335,9 +406,12 @@ CREATE TABLE IF NOT EXISTS public.fichas_cortes (
 CREATE TABLE IF NOT EXISTS public.maletas (
     id character varying(255) NOT NULL,
     nombre character varying(255) NOT NULL,
-    descripcion text,
+    correria_id character varying(255),
+    created_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT maletas_pkey PRIMARY KEY (id)
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT maletas_pkey PRIMARY KEY (id),
+    CONSTRAINT maletas_correria_id_fkey FOREIGN KEY (correria_id) REFERENCES public.correrias(id) ON DELETE SET NULL
 );
 
 -- ============================================================================
@@ -348,6 +422,7 @@ CREATE TABLE IF NOT EXISTS public.maletas_referencias (
     maleta_id character varying(255) NOT NULL,
     referencia character varying(255) NOT NULL,
     cantidad integer DEFAULT 1,
+    orden integer,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT maletas_referencias_pkey PRIMARY KEY (id),
     CONSTRAINT maletas_referencias_maleta_id_fkey FOREIGN KEY (maleta_id) REFERENCES public.maletas(id) ON DELETE CASCADE
@@ -442,6 +517,7 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_
 
 -- Índices para production_tracking
 CREATE INDEX IF NOT EXISTS idx_production_tracking_correria_id ON public.production_tracking(correria_id);
+CREATE INDEX IF NOT EXISTS idx_production_tracking_ref_id ON public.production_tracking(ref_id);
 
 -- Índices para inventory_movements
 CREATE INDEX IF NOT EXISTS idx_inventory_movements_created_at ON public.inventory_movements(created_at);
@@ -450,13 +526,14 @@ CREATE INDEX IF NOT EXISTS idx_inventory_movements_created_at ON public.inventor
 CREATE INDEX IF NOT EXISTS idx_delivery_dates_confeccionista_id ON public.delivery_dates(confeccionista_id);
 
 -- Índices para fichas_diseno
-CREATE INDEX IF NOT EXISTS idx_fichas_diseno_disenadoras_id ON public.fichas_diseno(disenadoras_id);
+CREATE INDEX IF NOT EXISTS idx_fichas_diseno_disenadora_id ON public.fichas_diseno(disenadora_id);
 
 -- Índices para fichas_cortes
-CREATE INDEX IF NOT EXISTS idx_fichas_cortes_referencia ON public.fichas_cortes(referencia);
+CREATE INDEX IF NOT EXISTS idx_fichas_cortes_ficha_costo_id ON public.fichas_cortes(ficha_costo_id);
 
 -- Índices para maletas_referencias
 CREATE INDEX IF NOT EXISTS idx_maletas_referencias_maleta_id ON public.maletas_referencias(maleta_id);
+CREATE INDEX IF NOT EXISTS idx_maletas_correria_id ON public.maletas(correria_id);
 
 -- Índices para user_view_preferences
 CREATE INDEX IF NOT EXISTS idx_user_view_preferences_user_id ON public.user_view_preferences(user_id);
