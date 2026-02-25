@@ -297,11 +297,11 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
           {/* Tabla de clientes */}
           <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
             <div className="overflow-x-auto custom-scrollbar">
-              <table className="w-full text-left text-[10px] min-w-[1000px]">
+              <table className="w-full text-left text-xs min-w-[1000px]">
                 <thead className="bg-slate-50">
                   <tr className="border-b border-slate-100">
                     <th className="px-4 py-4 font-black uppercase text-slate-700">Cliente / Dirección</th>
-                    <th className="px-2 py-4 font-black uppercase text-center text-blue-800">Referencia</th>
+                    <th className="px-2 py-4 font-black uppercase text-center text-blue-800">Cant. Vendida</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-slate-700">Precio</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-green-700">Und Despachadas</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-indigo-700">FV / Oficial</th>
@@ -319,26 +319,26 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                   ) : (
                     reportData.clients.map((client, idx) => (
                       <tr key={`${client.clientId}-${idx}`} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-4 py-3">
-                          <p className="font-black text-slate-800 text-[11px] leading-tight">{client.clientName}</p>
-                          <p className="text-[8px] font-bold text-slate-500 truncate">{client.clientAddress}</p>
+                        <td className="px-4 py-4">
+                          <p className="font-black text-slate-800 text-xs leading-tight">{client.clientName}</p>
+                          <p className="text-[10px] font-bold text-slate-500 truncate">{client.clientAddress}</p>
                         </td>
-                        <td className="px-2 py-3 text-center">
+                        <td className="px-2 py-4 text-center">
                           <span className={`px-2 py-1 rounded-md font-black ${client.totalSold > 0 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400'}`}>
                             {client.totalSold}
                           </span>
                         </td>
-                        <td className="px-2 py-3 text-center font-bold text-slate-600">
-                          ${client.price.toLocaleString()}
+                        <td className="px-2 py-4 text-center font-bold text-slate-600">
+                          ${Math.round(client.price).toLocaleString()}
                         </td>
-                        <td className="px-2 py-3 text-center">
+                        <td className="px-2 py-4 text-center">
                           <span className={`px-2 py-1 rounded-md font-black ${client.totalDispatched > 0 ? 'bg-green-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400'}`}>
                             {client.totalDispatched}
                           </span>
                         </td>
-                        <td className="px-2 py-3 text-center font-bold text-slate-600">{client.invoiceNo}</td>
-                        <td className="px-2 py-3 text-center font-bold text-slate-600">{client.remissionNo}</td>
-                        <td className="px-2 py-3 text-center font-bold text-pink-600 uppercase text-[9px]">
+                        <td className="px-2 py-4 text-center font-bold text-slate-600">{client.invoiceNo}</td>
+                        <td className="px-2 py-4 text-center font-bold text-slate-600">{client.remissionNo}</td>
+                        <td className="px-2 py-4 text-center font-bold text-pink-600 uppercase text-[10px]">
                           {client.seller}
                         </td>
                       </tr>

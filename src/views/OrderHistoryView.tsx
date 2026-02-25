@@ -324,13 +324,13 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
                             return (
                               <tr key={idx}>
-                                <td className="px-6 py-4">
-                                  <p className="font-black text-slate-800">{item.reference}</p>
-                                  <p className="text-[9px] font-bold text-slate-400 uppercase">{ref?.description}</p>
+                                <td className="px-6 py-2">
+                                  <p className="font-black text-slate-800 text-sm">{item.reference}</p>
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase">{ref?.description}</p>
                                 </td>
-                                <td className="px-6 py-4 text-center font-black text-slate-700">{item.quantity}</td>
-                                <td className="px-6 py-4 text-right font-bold text-slate-500">${displayPrice.toLocaleString()}</td>
-                                <td className="px-6 py-4 text-right font-black text-blue-600">${(displayPrice * item.quantity).toLocaleString()}</td>
+                                <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
+                                <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${displayPrice.toLocaleString()}</td>
+                                <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${(displayPrice * item.quantity).toLocaleString()}</td>
                               </tr>
                             );
                           })}

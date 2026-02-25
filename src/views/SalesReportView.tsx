@@ -7,7 +7,7 @@ interface SalesReportViewProps {
 
 const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
   
-  const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
+  const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
@@ -322,13 +322,16 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
             .reduce((sum, item) => sum + item.quantity, 0);
         }, 0);
 
+        const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
+        const pending = vendidas - (prod.inventory + prod.programmed + prod.cut);
+
         return {
           referencia: ref.id,
           vendidas,
-          inventario: ref.inventory || 0,
-          programadas: ref.programmed || 0,
-          cortadas: ref.cut || 0,
-          pendientes: ref.pending || 0,
+          inventario: prod.inventory || 0,
+          programadas: prod.programmed || 0,
+          cortadas: prod.cut || 0,
+          pendientes: pending,
           despachadas
         };
       });
@@ -501,13 +504,16 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
             .reduce((sum, item) => sum + item.quantity, 0);
         }, 0);
 
+        const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
+        const pending = vendidas - (prod.inventory + prod.programmed + prod.cut);
+
         return {
           referencia: ref.id,
           vendidas,
-          inventario: ref.inventory || 0,
-          programadas: ref.programmed || 0,
-          cortadas: ref.cut || 0,
-          pendientes: ref.pending || 0,
+          inventario: prod.inventory || 0,
+          programadas: prod.programmed || 0,
+          cortadas: prod.cut || 0,
+          pendientes: pending,
           despachadas
         };
       });
@@ -819,7 +825,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
               </h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs min-w-[900px]">
+              <table className="w-full text-left text-base min-w-[900px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100">
                     <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
@@ -927,7 +933,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
               </h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs min-w-[1100px]">
+              <table className="w-full text-left text-base min-w-[1100px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100">
                     <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
@@ -1032,7 +1038,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
               </h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs min-w-[800px]">
+              <table className="w-full text-left text-base min-w-[800px]">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100">
                     <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">

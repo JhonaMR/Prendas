@@ -377,13 +377,16 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                       {d.invoiceNo && <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">F: {d.invoiceNo}</span>}
                       {d.remissionNo && <span className="text-[9px] sm:text-[10px] font-black bg-pink-50 text-pink-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">R: {d.remissionNo}</span>}
                     </div>
-                    <h3 className="text-lg sm:text-xl font-black text-slate-800">{client?.name || 'Cliente Desconocido'}</h3>
-                    <div className="flex flex-wrap gap-4 mt-2">
-                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Referencias: <span className="text-slate-800 font-black">{Object.keys(itemsByRef).length}</span></span>
-                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total Unid: <span className="text-pink-600 font-black">{totalQty}</span></span>
+                    <div className="flex items-baseline gap-3">
+                      <h3 className="text-lg sm:text-xl font-black text-slate-800">{client?.name || 'Cliente Desconocido'}</h3>
+                      <p className="text-xs sm:text-sm font-bold text-slate-400">{client?.address}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between w-full md:w-auto gap-4">
+                    <div className="flex flex-wrap gap-4 hidden sm:flex">
+                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Referencias: <span className="text-slate-800 font-black">{Object.keys(itemsByRef).length}</span></span>
+                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total Unid: <span className="text-pink-600 font-black">{totalQty}</span></span>
+                    </div>
                     <div className="text-left md:text-right hidden sm:block">
                       <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Leído por</p>
                       <p className="text-xs font-black text-slate-500">{d.dispatchedBy}</p>

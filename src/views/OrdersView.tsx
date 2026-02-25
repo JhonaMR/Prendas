@@ -11,7 +11,7 @@ interface OrdersViewProps {
 
 const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUnsavedChanges }) => {
   
-  const [selectedCorreriaId, setSelectedCorreriaId] = useState(state.correrias[0]?.id || '');
+  const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [refFilter, setRefFilter] = useState('');
   const [hideZeros, setHideZeros] = useState(false);
   const [correriaSearch, setCorreriaSearch] = useState('');

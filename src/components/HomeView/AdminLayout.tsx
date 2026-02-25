@@ -33,7 +33,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
   // Set default correria on load
   useEffect(() => {
     if (correrias && correrias.length > 0 && !selectedCorreria) {
-      setSelectedCorreria((correrias[0] as any).id);
+      setSelectedCorreria(null);
     }
   }, [correrias, selectedCorreria]);
 
