@@ -195,3 +195,92 @@ npm run pm2:start
 - Para sincronizar cambios: `git pull` en la raíz del proyecto
 
 ¡Listo! Tu sistema debería funcionar igual en tu PC personal.
+
+
+
+
+Perfecto, voy a crear el script batch y te guío por los pasos.
+
+Accepted creation of
+
+start-pm2.bat
+
+
+Listo. Ahora sigue estos pasos:
+
+1. Primero, guarda la configuración actual de PM2:
+
+pm2 save
+2. Abre Task Scheduler (Programador de tareas):
+
+Presiona Win + R
+Escribe taskschd.msc y presiona Enter
+3. En la ventana que se abre:
+
+En el panel izquierdo, haz click derecho en "Biblioteca de Programador de tareas"
+Selecciona "Crear tarea básica..."
+4. Completa el formulario:
+
+Pestaña "General":
+
+Nombre: PM2-Prendas
+Descripción: Inicia PM2 con los procesos de Prendas al iniciar Windows
+Marca la opción: "Ejecutar con los privilegios más altos"
+Pestaña "Desencadenadores":
+
+Click en "Nuevo..."
+Selecciona "Al iniciar el sistema"
+Click "Aceptar"
+Pestaña "Acciones":
+
+Click en "Nuevo..."
+Programa: C:\Users\luisf\OneDrive\Desktop\Proyecto\prendas\backend\start-pm2.bat
+Iniciar en: C:\Users\luisf\OneDrive\Desktop\Proyecto\prendas\backend
+Click "Aceptar"
+Pestaña "Condiciones":
+
+Desmarca "Detener si el equipo cambia a funcionar con batería" (opcional)
+5. Click "Aceptar" para guardar la tarea
+
+6. Prueba que funciona:
+
+# Detén los procesos actuales
+pm2 stop all
+
+# Reinicia tu PC o ejecuta manualmente:
+C:\Users\luisf\OneDrive\Desktop\Proyecto\prendas\backend\start-pm2.bat
+
+# Verifica que los procesos se iniciaron
+pm2 list
+
+
+1. Primero, actualiza PM2:
+
+pm2 update
+2. Luego, inicia los procesos:
+
+pm2 start ecosystem.config.js
+3. Verifica que estén corriendo:
+
+pm2 list
+4. Guarda la configuración:
+
+pm2 save
+5. Ahora prueba el script batch manualmente:
+
+C:\Users\luisf\OneDrive\Desktop\Proyecto\prendas\backend\start-pm2.bat
+6. Verifica nuevamente:
+
+pm2 list
+Si todo está corriendo correctamente, la tarea de Windows ejecutará automáticamente el script al reiniciar. 
+
+Excelente, casi todo está corriendo. Veo que el proceso inventario-images-backup-scheduler está detenido. Vamos a iniciarlo:
+
+pm2 start inventario-images-backup-scheduler
+Luego guarda la configuración:
+
+pm2 save
+Verifica que todo esté online:
+
+pm2 list
+Una vez que todos los procesos estén en estado online, tu configuración estará lista. Cuando reinicies el PC, PM2 restaurará automáticamente todos los procesos gracias al script batch y la tarea de Windows que configuramos.
