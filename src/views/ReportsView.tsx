@@ -1,6 +1,5 @@
-
-import React, { useMemo, useState } from 'react';
-import { BatchReception, Dispatch, Client, UserRole, User, Confeccionista, AppState } from '../types';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
+import { User, AppState } from '../types';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 
@@ -10,261 +9,425 @@ interface ReportsViewProps {
 }
 
 const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
-  
   const [reportType, setReportType] = useState<'kardex' | 'ref' | 'client' | 'seller' | 'conf' | 'prod_conf'>('kardex');
   const [refInput, setRefInput] = useState('');
   const [clientInput, setClientInput] = useState('');
-  const [sellerInput, setSellerInput] = useState('');
   const [confStatusFilter, setConfStatusFilter] = useState<'active' | 'all'>('active');
-  const [selectedCorreriaId, setSelectedCorreriaId] = useState('global');
+  const [confSearchFilter, setConfSearchFilter] = useState('');
+  const [confShowDropdown, setConfShowDropdown] = useState(false);
+  const confTimeoutRef = useRef<NodeJS.Timeout>();
+  const [selectedCorreriaForOrders, setSelectedCorreriaForOrders] = useState('');
+  const [correriaSearchOrders, setCorreriaSearchOrders] = useState('');
+  const [correriaShowDropdownOrders, setCorreriaShowDropdownOrders] = useState(false);
+  const ordersReportPagination = usePagination(1, 50);
+  const confReportPagination = usePagination(1, 50);
+  const correriaTimeoutRef = useRef<NodeJS.Timeout>();
+
+  useEffect(() => {
+    let ordersToShow: any[] = [];
+    if (selectedCorreriaForOrders) {
+      ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForOrders);
+    }
+    ordersReportPagination.pagination.total = ordersToShow.length;
+    ordersReportPagination.pagination.totalPages = Math.ceil(ordersToShow.length / ordersReportPagination.pagination.limit);
+  }, [state.orders, selectedCorreriaForOrders, ordersReportPagination.pagination.limit]);
+
+  useEffect(() => {
+    let list = (state.confeccionistas || []).sort((a, b) => a.name.localeCompare(b.name));
+    if (confStatusFilter === 'active') list = list.filter(c => c.active);
+    if (confSearchFilter) list = list.filter(c => c.name.toUpperCase().includes(confSearchFilter.toUpperCase()) || c.id.includes(confSearchFilter));
+    confReportPagination.pagination.total = list.length;
+    confReportPagination.pagination.totalPages = Math.ceil(list.length / confReportPagination.pagination.limit);
+  }, [state.confeccionistas, confStatusFilter, confSearchFilter, confReportPagination.pagination.limit]);
+  const [kardexSearch, setKardexSearch] = useState('');
+  
   const kardexPagination = usePagination(1, 50);
   const refDetailPagination = usePagination(1, 50);
-  const confReportPagination = usePagination(1, 50);
-  const prodConfReportPagination = usePagination(1, 50);
   const clientDetailPagination = usePagination(1, 50);
-  const sellerReportPagination = usePagination(1, 50);
 
   const kardexData = useMemo(() => {
-    const data: Record<string, { in: number, out: number, av: number, lots: number }> = {};
-    state.receptions
+    const data: Record<string, { in: number; out: number; av: number; lots: number }> = {};
+    const receptions = state.receptions || [];
+    const dispatches = state.dispatches || [];
+    
+    receptions
       .filter(r => r.affectsInventory !== false)
       .forEach(r => {
         const uniqueRefsInThisBatch = new Set<string>();
-        r.items.forEach(i => {
+        const items = r.items || [];
+        items.forEach(i => {
           if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
           data[i.reference].in += i.quantity;
           data[i.reference].av += i.quantity;
           uniqueRefsInThisBatch.add(i.reference);
         });
-        uniqueRefsInThisBatch.forEach(ref => { if (data[ref]) data[ref].lots += 1; });
+        uniqueRefsInThisBatch.forEach(ref => {
+          if (data[ref]) data[ref].lots += 1;
+        });
       });
-    state.dispatches.forEach(d => d.items.forEach(i => {
-      if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
-      data[i.reference].out += i.quantity;
-      data[i.reference].av -= i.quantity;
-    }));
+    
+    dispatches.forEach(d => {
+      const items = d.items || [];
+      items.forEach(i => {
+        if (!data[i.reference]) data[i.reference] = { in: 0, out: 0, av: 0, lots: 0 };
+        data[i.reference].out += i.quantity;
+        data[i.reference].av -= i.quantity;
+      });
+    });
+    
     return data;
   }, [state.receptions, state.dispatches]);
 
-  const downloadCSV = (title: string, headers: string[], rows: string[][]) => {
-    const csvContent = [
-      headers.join(';'),
-      ...rows.map(row => row.join(';'))
-    ].join('\n');
-    
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', `${title}_${new Date().toLocaleDateString()}.csv`);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  useEffect(() => {
+    const sortedLength = Object.keys(kardexData).length;
+    kardexPagination.pagination.total = sortedLength;
+    kardexPagination.pagination.totalPages = Math.ceil(sortedLength / kardexPagination.pagination.limit);
+  }, [kardexData, kardexPagination.pagination.limit]);
 
   const renderKardex = () => {
-    const sorted = Object.entries(kardexData).sort((a,b)=>a[0].localeCompare(b[0]));
+    let sorted = Object.entries(kardexData).sort((a, b) => a[0].localeCompare(b[0]));
+    
+    if (kardexSearch) {
+      sorted = sorted.filter(([ref]) => ref.toUpperCase().includes(kardexSearch.toUpperCase()));
+    }
+    
+    const paginatedData = sorted.slice(
+      (kardexPagination.pagination.page - 1) * kardexPagination.pagination.limit,
+      kardexPagination.pagination.page * kardexPagination.pagination.limit
+    );
+
     return (
-      <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
-        <div className="p-10 bg-blue-50 border-b border-slate-100 flex justify-between items-center">
-          <h3 className="text-2xl font-black text-blue-900 tracking-tighter">Kardex Global</h3>
-          {/* Added type cast [string, any] to fix unknown type error when accessing lots, in, out, av on line 60-61 */}
-          <button onClick={() => downloadCSV('Kardex', ['Referencia', 'Lotes', 'Entradas', 'Salidas', 'Stock'], sorted.map(([ref, stats]: [string, any]) => [ref, stats.lots.toString(), stats.in.toString(), stats.out.toString(), stats.av.toString()]))} className="px-4 py-2 bg-white text-blue-600 rounded-xl font-bold text-[10px] uppercase shadow-sm border border-blue-100">Excel (CSV)</button>
+      <div className="space-y-6">
+        <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
+          <div className="p-10 bg-blue-50 border-b border-slate-100">
+            <h3 className="text-2xl font-black text-blue-900 tracking-tighter">Kardex Global</h3>
+          </div>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="px-10 py-3 text-[10px] font-black uppercase text-slate-700">Referencia</th>
+                <th className="px-6 py-3 text-center text-[10px] font-black uppercase text-slate-700">Lots</th>
+                <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Entradas</th>
+                <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Salidas</th>
+                <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedData.map(([ref, stats]: [string, { in: number; out: number; av: number; lots: number }]) => (
+                <tr key={ref} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                  <td className="px-10 py-3 font-black text-slate-800">{ref}</td>
+                  <td className="px-6 py-3 text-center font-bold text-slate-600">{stats.lots}</td>
+                  <td className="px-10 py-3 text-right font-bold text-slate-500">{stats.in}</td>
+                  <td className="px-10 py-3 text-right font-bold text-pink-400">{stats.out}</td>
+                  <td className="px-10 py-3 text-right">
+                    <span className="px-4 py-1.5 bg-blue-100 text-blue-600 font-black rounded-xl">{stats.av}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        <table className="w-full text-left">
-          <thead><tr className="bg-slate-50"><th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Referencia</th><th className="px-6 py-6 text-center text-[10px] font-black uppercase text-slate-700">Lots</th><th className="px-10 py-6 text-right text-[10px] font-black uppercase text-slate-700">Entradas</th><th className="px-10 py-6 text-right text-[10px] font-black uppercase text-slate-700">Salidas</th><th className="px-10 py-6 text-right text-[10px] font-black uppercase text-slate-700">Stock</th></tr></thead>
-          <tbody>
-            {sorted.map(([ref, stats]: [string, any]) => (
-              <tr key={ref} className="hover:bg-slate-50 border-b border-slate-50 last:border-0"><td className="px-10 py-6 font-black text-slate-800">{ref}</td><td className="px-6 py-6 text-center font-bold text-slate-600">{stats.lots}</td><td className="px-10 py-6 text-right font-bold text-slate-500">{stats.in}</td><td className="px-10 py-6 text-right font-bold text-pink-400">{stats.out}</td><td className="px-10 py-6 text-right"><span className="px-4 py-1.5 bg-blue-100 text-blue-600 font-black rounded-xl">{stats.av}</span></td></tr>
-            ))}
-          </tbody>
-        </table>
+
+        <PaginationComponent
+          currentPage={kardexPagination.pagination.page}
+          totalPages={Math.ceil(sorted.length / kardexPagination.pagination.limit)}
+          pageSize={kardexPagination.pagination.limit}
+          onPageChange={kardexPagination.goToPage}
+          onPageSizeChange={kardexPagination.setLimit}
+        />
       </div>
     );
   };
 
-  const renderRefDetail = () => {
-    let refsToShow = state.references.sort((a,b)=>a.id.localeCompare(b.id));
+  useEffect(() => {
+    let refsToShow = (state.references || []).sort((a, b) => a.id.localeCompare(b.id));
     if (refInput) refsToShow = refsToShow.filter(r => r.id.includes(refInput.toUpperCase()));
+    refDetailPagination.pagination.total = refsToShow.length;
+    refDetailPagination.pagination.totalPages = Math.ceil(refsToShow.length / refDetailPagination.pagination.limit);
+  }, [state.references, refInput, refDetailPagination.pagination.limit]);
+
+  useEffect(() => {
+    let clientsToShow = (state.clients || []).sort((a, b) => a.id.localeCompare(b.id));
+    if (clientInput) clientsToShow = clientsToShow.filter(c => c.id.includes(clientInput.toUpperCase()) || c.name.toUpperCase().includes(clientInput.toUpperCase()));
+    clientDetailPagination.pagination.total = clientsToShow.length;
+    clientDetailPagination.pagination.totalPages = Math.ceil(clientsToShow.length / clientDetailPagination.pagination.limit);
+  }, [state.clients, clientInput, clientDetailPagination.pagination.limit]);
+
+  const renderRefDetail = () => {
+    let refsToShow = (state.references || []).sort((a, b) => a.id.localeCompare(b.id));
+    if (refInput) refsToShow = refsToShow.filter(r => r.id.includes(refInput.toUpperCase()));
+
+    const paginatedRefs = refsToShow.slice(
+      (refDetailPagination.pagination.page - 1) * refDetailPagination.pagination.limit,
+      refDetailPagination.pagination.page * refDetailPagination.pagination.limit
+    );
 
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {refsToShow.map(r => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {paginatedRefs.map(r => {
             const stats = kardexData[r.id] || { in: 0, out: 0, av: 0, lots: 0 };
+            
+            // Contar clientes que han pedido esta referencia
+            const clientsOrdered = new Set(
+              (state.orders || [])
+                .filter(o => (o.items || []).some(i => i.reference === r.id))
+                .map(o => o.clientId)
+            ).size;
+            
+            // Contar correrias en las que ha estado
+            const correrias = new Set(
+              (state.orders || [])
+                .filter(o => (o.items || []).some(i => i.reference === r.id))
+                .map(o => o.correriaId)
+            ).size;
+
             return (
-              <div key={r.id} className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
-                <div className="flex justify-between items-start mb-4">
-                   <h4 className="text-2xl font-black text-indigo-600 tracking-tighter">{r.id}</h4>
-                   <span className="text-[9px] font-black bg-slate-50 px-3 py-1 rounded-full uppercase text-slate-400">{r.designer}</span>
+              <div key={r.id} className="bg-white p-4 rounded-[20px] border border-slate-100 shadow-sm">
+                <div className="flex justify-between gap-3 mb-3">
+                  <div className="flex-1">
+                    <h4 className="text-lg font-black text-indigo-600 tracking-tighter">{r.id}</h4>
+                    <p className="text-[11px] font-bold text-slate-600 uppercase line-clamp-2">{r.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[8px] font-black bg-slate-50 px-2 py-0.5 rounded-full uppercase text-slate-400 block mb-1">{r.designer}</span>
+                    <p className="text-[10px] font-black text-orange-600">${r.price || 0}</p>
+                  </div>
                 </div>
-                <p className="text-xs font-bold text-slate-600 mb-6 uppercase">{r.description}</p>
-                <div className="grid grid-cols-2 gap-4">
-                   <div className="p-4 bg-slate-50 rounded-2xl"><p className="text-[8px] font-black text-slate-400 uppercase mb-1">Entradas</p><p className="font-black text-slate-800">{stats.in}</p></div>
-                   <div className="p-4 bg-slate-50 rounded-2xl"><p className="text-[8px] font-black text-slate-400 uppercase mb-1">Salidas</p><p className="font-black text-pink-500">{stats.out}</p></div>
+                <div className="grid grid-cols-3 gap-2 mb-2">
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Entradas</p>
+                    <p className="font-black text-slate-800 text-base">{stats.in}</p>
+                  </div>
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Salidas</p>
+                    <p className="font-black text-pink-500 text-base">{stats.out}</p>
+                  </div>
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Lotes</p>
+                    <p className="font-black text-blue-600 text-base">{stats.lots}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Clientes</p>
+                    <p className="font-black text-green-600 text-base">{clientsOrdered}</p>
+                  </div>
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Correrias</p>
+                    <p className="font-black text-purple-600 text-base">{correrias}</p>
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
+
+        <PaginationComponent
+          currentPage={refDetailPagination.pagination.page}
+          totalPages={refDetailPagination.pagination.totalPages}
+          pageSize={refDetailPagination.pagination.limit}
+          onPageChange={refDetailPagination.goToPage}
+          onPageSizeChange={refDetailPagination.setLimit}
+        />
       </div>
     );
   };
 
   const renderConfReport = () => {
-    let list = (state.confeccionistas || []).sort((a,b) => a.name.localeCompare(b.name));
+    let list = (state.confeccionistas || []).sort((a, b) => a.name.localeCompare(b.name));
     if (confStatusFilter === 'active') list = list.filter(c => c.active);
+    if (confSearchFilter) list = list.filter(c => c.name.toUpperCase().includes(confSearchFilter.toUpperCase()) || c.id.includes(confSearchFilter));
+
+    const paginatedList = list.slice(
+      (confReportPagination.pagination.page - 1) * confReportPagination.pagination.limit,
+      confReportPagination.pagination.page * confReportPagination.pagination.limit
+    );
 
     return (
-      <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
-        <div className="p-10 bg-indigo-50 border-b border-slate-100 flex justify-between items-center">
-          <div>
+      <div className="space-y-6">
+        <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
+          <div className="p-10 bg-indigo-50 border-b border-slate-100">
             <h3 className="text-2xl font-black text-indigo-900 tracking-tighter">Maestro de Confeccionistas</h3>
             <p className="text-indigo-400 text-xs font-bold uppercase mt-1">Total listados: {list.length}</p>
           </div>
-          <button 
-            onClick={() => downloadCSV('Confeccionistas', ['Cédula', 'Nombre', 'Dirección', 'Ciudad', 'Celular', 'Score', 'Activo'], list.map(c => [c.id, c.name, c.address, c.city, c.phone, c.score, c.active ? 'SÍ' : 'NO']))}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-indigo-100 hover:scale-105 transition-transform"
-          >
-            Descargar Excel
-          </button>
-        </div>
-        <table className="w-full text-left">
-          <thead><tr className="bg-slate-50"><th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Cédula</th><th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Nombre</th><th className="px-6 py-6 text-[10px] font-black uppercase text-slate-700">Celular</th><th className="px-6 py-6 text-center text-[10px] font-black uppercase text-slate-700">Puntaje</th><th className="px-10 py-6 text-center text-[10px] font-black uppercase text-slate-700">Estado</th></tr></thead>
-          <tbody>
-            {list.map(c => (
-              <tr key={c.id} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
-                <td className="px-10 py-6 font-bold text-slate-500">{c.id}</td>
-                <td className="px-10 py-6 font-black text-slate-800">{c.name}</td>
-                <td className="px-6 py-6 font-bold text-slate-600">{c.phone || '-'}</td>
-                <td className="px-6 py-6 text-center font-black text-blue-600">{c.score}</td>
-                <td className="px-10 py-6 text-center">
-                  <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${c.active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
-                    {c.active ? 'Activo' : 'Inactivo'}
-                  </span>
-                </td>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-slate-50">
+                <th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Cédula</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Nombre</th>
+                <th className="px-6 py-6 text-[10px] font-black uppercase text-slate-700">Celular</th>
+                <th className="px-6 py-6 text-center text-[10px] font-black uppercase text-slate-700">Puntaje</th>
+                <th className="px-10 py-6 text-center text-[10px] font-black uppercase text-slate-700">Lotes Entregados</th>
+                <th className="px-10 py-6 text-center text-[10px] font-black uppercase text-slate-700">Estado</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
-  const renderProdConfReport = () => {
-    // Totales por confeccionista
-    const report = (state.confeccionistas || []).map(c => {
-      const confRecs = state.receptions
-        .filter(r => r.confeccionista === c.name && r.affectsInventory !== false);
-      const units = confRecs.reduce((acc, r) => acc + r.items.reduce((a,i) => a + i.quantity, 0), 0);
-      const batches = confRecs.length;
-      return { ...c, units, batches };
-    }).filter(c => c.units > 0).sort((a,b) => b.units - a.units);
-
-    return (
-      <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
-        <div className="p-10 bg-pink-50 border-b border-slate-100 flex justify-between items-center">
-          <div>
-            <h3 className="text-2xl font-black text-pink-900 tracking-tighter">Producción por Taller</h3>
-            <p className="text-pink-400 text-xs font-bold uppercase mt-1">Resumen de ingresos históricos</p>
-          </div>
-          <button 
-            onClick={() => downloadCSV('Produccion_Por_Taller', ['Taller', 'Lotes Recibidos', 'Unidades Totales'], report.map(r => [r.name, r.batches.toString(), r.units.toString()]))}
-            className="px-6 py-3 bg-pink-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-pink-100"
-          >
-            Exportar Excel
-          </button>
+            </thead>
+            <tbody>
+              {paginatedList.map(c => {
+                const lotesEntregados = (state.receptions || []).filter(r => r.confeccionista === c.id).length;
+                
+                return (
+                  <tr key={c.id} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                    <td className="px-10 py-6 font-bold text-slate-500">{c.id}</td>
+                    <td className="px-10 py-6 font-black text-slate-800">{c.name}</td>
+                    <td className="px-6 py-6 font-bold text-slate-600">{c.phone || '-'}</td>
+                    <td className="px-6 py-6 text-center font-black text-blue-600">{c.score}</td>
+                    <td className="px-10 py-6 text-center font-black text-pink-600">{lotesEntregados}</td>
+                    <td className="px-10 py-6 text-center">
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${c.active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                        {c.active ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
-        <table className="w-full text-left">
-          <thead><tr className="bg-slate-50"><th className="px-10 py-6 text-[10px] font-black uppercase text-slate-700">Taller / Confeccionista</th><th className="px-10 py-6 text-center text-[10px] font-black uppercase text-slate-700">Lotes</th><th className="px-10 py-6 text-right text-[10px] font-black uppercase text-slate-700">Unidades Recibidas</th></tr></thead>
-          <tbody>
-            {report.map(r => (
-              <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
-                <td className="px-10 py-6 font-black text-slate-800">{r.name}</td>
-                <td className="px-10 py-6 text-center font-bold text-slate-500">{r.batches}</td>
-                <td className="px-10 py-6 text-right">
-                  <span className="px-4 py-1.5 bg-pink-100 text-pink-600 font-black rounded-xl">{r.units.toLocaleString()}</span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        <PaginationComponent
+          currentPage={confReportPagination.pagination.page}
+          totalPages={confReportPagination.pagination.totalPages}
+          pageSize={confReportPagination.pagination.limit}
+          onPageChange={confReportPagination.goToPage}
+          onPageSizeChange={confReportPagination.setLimit}
+        />
       </div>
     );
   };
 
   const renderClientDetail = () => {
-    let clientsToShow = state.clients.sort((a,b)=>a.id.localeCompare(b.id));
+    let clientsToShow = (state.clients || []).sort((a, b) => a.id.localeCompare(b.id));
     if (clientInput) clientsToShow = clientsToShow.filter(c => c.id.includes(clientInput.toUpperCase()) || c.name.toUpperCase().includes(clientInput.toUpperCase()));
+
+    const paginatedClients = clientsToShow.slice(
+      (clientDetailPagination.pagination.page - 1) * clientDetailPagination.pagination.limit,
+      clientDetailPagination.pagination.page * clientDetailPagination.pagination.limit
+    );
 
     return (
       <div className="space-y-6">
-         <div className="flex justify-end bg-white p-4 rounded-3xl border mb-6">
-            <select value={selectedCorreriaId} onChange={e=>setSelectedCorreriaId(e.target.value)} className="bg-transparent border-none text-xs font-black">
-               <option value="global">Histórico Global</option>
-               {state.correrias.map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
-            </select>
-         </div>
-         <div className="grid grid-cols-1 gap-4">
-           {clientsToShow.map(c => {
-             const clientOrders = state.orders.filter(o => o.clientId === c.id && (selectedCorreriaId === 'global' || o.correriaId === selectedCorreriaId));
-             const clientDispatches = state.dispatches.filter(d => d.clientId === c.id && (selectedCorreriaId === 'global'));
-             
-             const totalOrdered = clientOrders.reduce((acc, o) => acc + o.items.reduce((a,i)=>a+i.quantity, 0), 0);
-             const totalDispatched = clientDispatches.reduce((acc, d) => acc + d.items.reduce((a,i)=>a+i.quantity, 0), 0);
+        <div className="grid grid-cols-1 gap-2">
+          {paginatedClients.map(c => {
+            const clientOrders = (state.orders || []).filter(o => o.clientId === c.id);
+            const ordersCount = clientOrders.length;
+            const correrias = new Set(clientOrders.map(o => o.correriaId)).size;
 
-             return (
-               <div key={c.id} className="bg-white p-6 rounded-[24px] border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+            return (
+              <div key={c.id} className="bg-white p-3 rounded-[20px] border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-sm">
+                <div className="flex-1">
+                  <div className="flex items-baseline gap-2">
+                    <h5 className="text-lg font-black text-slate-800">{c.name}</h5>
+                    <p className="text-[9px] font-bold text-slate-500">{c.address || '-'}</p>
+                  </div>
+                  <p className="text-[9px] font-bold text-slate-600 mt-1">ID: {c.id} • VENDEDOR: <span className="text-pink-500 uppercase">{c.seller}</span></p>
+                </div>
+                <div className="flex gap-6 text-center">
                   <div>
-                    <h5 className="text-xl font-black text-slate-800 leading-none">{c.name}</h5>
-                    <p className="text-[10px] font-bold text-slate-600 mt-2">ID: {c.id} • VENDEDOR: <span className="text-pink-500 uppercase">{c.seller}</span></p>
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-0.5">Pedidos</p>
+                    <p className="text-lg font-black text-blue-600">{ordersCount}</p>
                   </div>
-                  <div className="flex gap-8 text-center">
-                     <div><p className="text-[8px] font-black text-slate-400 uppercase mb-1">Pedidas</p><p className="text-xl font-black text-blue-600">{totalOrdered}</p></div>
-                     <div><p className="text-[8px] font-black text-slate-400 uppercase mb-1">Despachadas</p><p className="text-xl font-black text-pink-600">{totalDispatched}</p></div>
-                     <div className="border-l pl-8"><p className="text-[8px] font-black text-slate-400 uppercase mb-1">Pendientes</p><p className="text-xl font-black text-red-500">{Math.max(0, totalOrdered - totalDispatched)}</p></div>
+                  <div>
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-0.5">Correrias</p>
+                    <p className="text-lg font-black text-purple-600">{correrias}</p>
                   </div>
-               </div>
-             );
-           })}
-         </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <PaginationComponent
+          currentPage={clientDetailPagination.pagination.page}
+          totalPages={clientDetailPagination.pagination.totalPages}
+          pageSize={clientDetailPagination.pagination.limit}
+          onPageChange={clientDetailPagination.goToPage}
+          onPageSizeChange={clientDetailPagination.setLimit}
+        />
       </div>
     );
   };
 
-  const renderSellerReport = () => {
-    let sellersToShow = Array.from(new Set(state.clients.map(c => c.seller))).sort() as string[];
-    if (sellerInput) sellersToShow = sellersToShow.filter(s => s.toUpperCase().includes(sellerInput.toUpperCase()));
+  const renderOrdersReport = () => {
+    let ordersToShow: any[] = [];
+    if (selectedCorreriaForOrders) {
+      ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForOrders);
+    }
+
+    const paginatedOrders = ordersToShow.slice(
+      (ordersReportPagination.pagination.page - 1) * ordersReportPagination.pagination.limit,
+      ordersReportPagination.pagination.page * ordersReportPagination.pagination.limit
+    );
+
+    const formatCurrency = (value: number) => {
+      return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+    };
 
     return (
       <div className="space-y-6">
-         <div className="flex justify-end bg-white p-4 rounded-3xl border mb-6">
-            <select value={selectedCorreriaId} onChange={e=>setSelectedCorreriaId(e.target.value)} className="bg-transparent border-none text-xs font-black">
-               <option value="global">Histórico Global</option>
-               {state.correrias.map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
-            </select>
-         </div>
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {sellersToShow.map(s => {
-               const sellerOrders = state.orders.filter(o => o.sellerId === state.sellers.find(sel=>sel.name===s)?.id && (selectedCorreriaId === 'global' || o.correriaId === selectedCorreriaId));
-               const totalUnits = sellerOrders.reduce((acc, o) => acc + o.items.reduce((a,i)=>a+i.quantity, 0), 0);
-               const totalVal = sellerOrders.reduce((acc, o) => acc + o.totalValue, 0);
+        {selectedCorreriaForOrders && (
+          <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
+            <div className="p-10 bg-blue-50 border-b border-slate-100">
+              <h3 className="text-2xl font-black text-blue-900 tracking-tighter">Pedidos por Correría</h3>
+            </div>
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50">
+                  <th className="px-10 py-3 text-[10px] font-black uppercase text-slate-700">Cliente</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">Unidades Pedidas</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">Unidades Despachadas</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">% Cumpl. Unidades</th>
+                  <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Valor Pedido</th>
+                  <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Valor Despachado</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">% Cumpl. Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedOrders.map(order => {
+                  const client = (state.clients || []).find(c => c.id === order.clientId);
+                  const totalUnitsOrdered = (order.items || []).reduce((acc, i) => acc + i.quantity, 0);
+                  
+                  // Obtener despachos para este cliente en esta correría
+                  const dispatchesForOrder = (state.dispatches || []).filter(d => 
+                    d.clientId === order.clientId && d.correriaId === selectedCorreriaForOrders
+                  );
+                  const totalUnitsDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + i.quantity, 0), 0);
+                  
+                  const totalValueOrdered = order.totalValue || 0;
+                  const totalValueDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + (i.salePrice || 0) * i.quantity, 0), 0);
+                  
+                  const percentageUnits = totalUnitsOrdered > 0 ? Math.round((totalUnitsDispatched / totalUnitsOrdered) * 100) : 0;
+                  const percentageValue = totalValueOrdered > 0 ? Math.round((totalValueDispatched / totalValueOrdered) * 100) : 0;
 
-               return (
-                 <div key={s} className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm flex justify-between items-center">
-                    <div>
-                       <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Vendedor</p>
-                       <h5 className="text-2xl font-black text-slate-800">{s}</h5>
-                    </div>
-                    <div className="text-right">
-                       <p className="text-2xl font-black text-indigo-600">${totalVal.toLocaleString()}</p>
-                       <p className="text-[10px] font-black text-slate-600 uppercase">{totalUnits} Unidades</p>
-                    </div>
-                 </div>
-               );
-            })}
-         </div>
+                  return (
+                    <tr key={order.id} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
+                      <td className="px-10 py-3">
+                        <p className="font-black text-slate-800">{client?.name || 'Cliente desconocido'}</p>
+                        <p className="text-[9px] font-bold text-slate-500">{client?.id} - {client?.address || '-'}</p>
+                      </td>
+                      <td className="px-10 py-3 text-center font-bold text-slate-600">{totalUnitsOrdered}</td>
+                      <td className="px-10 py-3 text-center font-bold text-blue-600">{totalUnitsDispatched}</td>
+                      <td className="px-10 py-3 text-center font-black text-green-600">{percentageUnits}%</td>
+                      <td className="px-10 py-3 text-right font-bold text-slate-600">{formatCurrency(totalValueOrdered)}</td>
+                      <td className="px-10 py-3 text-right font-bold text-blue-600">{formatCurrency(totalValueDispatched)}</td>
+                      <td className="px-10 py-3 text-center font-black text-green-600">{percentageValue}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {selectedCorreriaForOrders && (
+          <PaginationComponent
+            currentPage={ordersReportPagination.pagination.page}
+            totalPages={ordersReportPagination.pagination.totalPages}
+            pageSize={ordersReportPagination.pagination.limit}
+            onPageChange={ordersReportPagination.goToPage}
+            onPageSizeChange={ordersReportPagination.setLimit}
+          />
+        )}
       </div>
     );
   };
@@ -273,9 +436,6 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     <div className="space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
         <h2 className="text-4xl font-black text-slate-800 tracking-tighter">Reportes</h2>
-        <div className="flex gap-2">
-          <button onClick={() => window.print()} className="px-6 py-3 bg-blue-600 text-white font-bold rounded-2xl text-[10px] uppercase">Imprimir / PDF</button>
-        </div>
       </div>
 
       <div className="flex flex-wrap gap-4 no-print items-center">
@@ -283,18 +443,91 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
           <TabBtnSmall active={reportType === 'kardex'} onClick={() => setReportType('kardex')} label="Kardex" />
           <TabBtnSmall active={reportType === 'ref'} onClick={() => setReportType('ref')} label="Referencias" />
           <TabBtnSmall active={reportType === 'client'} onClick={() => setReportType('client')} label="Clientes" />
-          <TabBtnSmall active={reportType === 'seller'} onClick={() => setReportType('seller')} label="Vendedores" />
+          <TabBtnSmall active={reportType === 'seller'} onClick={() => setReportType('seller')} label="Pedidos/Correría" />
           <TabBtnSmall active={reportType === 'conf'} onClick={() => setReportType('conf')} label="Confeccionistas" />
-          <TabBtnSmall active={reportType === 'prod_conf'} onClick={() => setReportType('prod_conf')} label="Taller (Prod)" />
         </div>
         
         {reportType === 'ref' && <input value={refInput} onChange={e => setRefInput(e.target.value)} placeholder="Ref..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
         {reportType === 'client' && <input value={clientInput} onChange={e => setClientInput(e.target.value)} placeholder="Cliente ID/Nombre..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
-        {reportType === 'seller' && <input value={sellerInput} onChange={e => setSellerInput(e.target.value)} placeholder="Vendedor..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
+        {reportType === 'kardex' && <input value={kardexSearch} onChange={e => setKardexSearch(e.target.value)} placeholder="Ref..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
+        {reportType === 'seller' && (
+          <div className="relative bg-white p-2 rounded-xl border">
+            <input
+              type="text"
+              value={correriaSearchOrders}
+              onChange={e => setCorreriaSearchOrders(e.target.value)}
+              onFocus={() => setCorreriaShowDropdownOrders(true)}
+              onBlur={() => setTimeout(() => setCorreriaShowDropdownOrders(false), 300)}
+              placeholder="Buscar correría..."
+              className="px-4 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 w-48"
+            />
+            {correriaShowDropdownOrders && (
+              <div 
+                className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {((state.correrias || []).filter(c => !correriaSearchOrders || c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders))).length === 0 ? (
+                  <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
+                ) : (
+                  (state.correrias || []).filter(c => !correriaSearchOrders || c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders)).map(c => (
+                    <button
+                      key={c.id}
+                      onMouseDown={() => {
+                        setSelectedCorreriaForOrders(c.id);
+                        setCorreriaShowDropdownOrders(false);
+                        setCorreriaSearchOrders('');
+                      }}
+                      className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+                    >
+                      <p className="font-black text-slate-800 text-xs">{c.name} {c.year}</p>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        )}
         {reportType === 'conf' && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <button onClick={() => setConfStatusFilter('all')} className={`px-4 py-2 text-[10px] font-black rounded-xl border transition-all ${confStatusFilter === 'all' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-400'}`}>TODOS</button>
             <button onClick={() => setConfStatusFilter('active')} className={`px-4 py-2 text-[10px] font-black rounded-xl border transition-all ${confStatusFilter === 'active' ? 'bg-green-600 text-white' : 'bg-white text-slate-400'}`}>SÓLO ACTIVOS</button>
+            <div className="relative bg-white p-2 rounded-xl border">
+              <input
+                type="text"
+                value={confSearchFilter}
+                onChange={e => setConfSearchFilter(e.target.value)}
+                onFocus={() => setConfShowDropdown(true)}
+                onBlur={() => {
+                  if (confTimeoutRef.current) clearTimeout(confTimeoutRef.current);
+                  confTimeoutRef.current = setTimeout(() => setConfShowDropdown(false), 300);
+                }}
+                placeholder="Buscar confeccionista..."
+                className="px-4 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 w-48"
+              />
+              {confShowDropdown && (
+                <div 
+                  className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
+                  onMouseDown={(e) => e.preventDefault()}
+                >
+                  {((state.confeccionistas || []).filter(c => !confSearchFilter || c.name.toUpperCase().includes(confSearchFilter.toUpperCase()) || c.id.includes(confSearchFilter))).length === 0 ? (
+                    <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
+                  ) : (
+                    (state.confeccionistas || []).filter(c => !confSearchFilter || c.name.toUpperCase().includes(confSearchFilter.toUpperCase()) || c.id.includes(confSearchFilter)).map(c => (
+                      <button
+                        key={c.id}
+                        onMouseDown={() => {
+                          setConfSearchFilter(c.name);
+                          setConfShowDropdown(false);
+                        }}
+                        className="w-full px-3 py-2 text-left hover:bg-indigo-50 transition-colors border-b border-slate-50 last:border-0"
+                      >
+                        <p className="font-black text-slate-800 text-xs">{c.id} - {c.name}</p>
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -303,9 +536,8 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
         {reportType === 'kardex' && renderKardex()}
         {reportType === 'ref' && renderRefDetail()}
         {reportType === 'client' && renderClientDetail()}
-        {reportType === 'seller' && renderSellerReport()}
+        {reportType === 'seller' && renderOrdersReport()}
         {reportType === 'conf' && renderConfReport()}
-        {reportType === 'prod_conf' && renderProdConfReport()}
       </div>
     </div>
   );
