@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict HsQMjf6M2dh3vmTQ5lSfOG5DJu4kRFlinIBqVrMyltzrV3AchQv75JzqSmMvxEf
+\restrict DtljTYbbeKN9flb8NG0wHdJSu3FH3VtIiAksmdFjhEQvOyS1jcuOw9yEInaUirC
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -230,7 +230,8 @@ CREATE TABLE public.dispatch_items (
     id integer DEFAULT nextval('public.dispatch_items_id_seq'::regclass) NOT NULL,
     dispatch_id character varying(255) NOT NULL,
     reference character varying(255) NOT NULL,
-    quantity integer NOT NULL
+    quantity integer NOT NULL,
+    sale_price numeric(10,2) DEFAULT 0
 );
 
 
@@ -427,6 +428,45 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
+-- Name: messages; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.messages (
+    id integer NOT NULL,
+    sender_id character varying(255) NOT NULL,
+    receiver_id character varying(255) NOT NULL,
+    content text NOT NULL,
+    read boolean DEFAULT false,
+    created_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT check_different_users CHECK (((sender_id)::text <> (receiver_id)::text))
+);
+
+
+ALTER TABLE public.messages OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.messages_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
+
+
+--
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -486,7 +526,8 @@ CREATE TABLE public.production_tracking (
     ref_id character varying(255) NOT NULL,
     correria_id character varying(255) NOT NULL,
     programmed integer NOT NULL,
-    cut integer NOT NULL
+    cut integer NOT NULL,
+    inventory integer DEFAULT 0
 );
 
 
@@ -620,6 +661,44 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
+-- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_sessions (
+    id integer NOT NULL,
+    user_id character varying(255) NOT NULL,
+    socket_id character varying(255) NOT NULL,
+    status character varying(20) DEFAULT 'online'::character varying,
+    connected_at timestamp without time zone DEFAULT now(),
+    last_activity timestamp without time zone DEFAULT now()
+);
+
+
+ALTER TABLE public.user_sessions OWNER TO postgres;
+
+--
+-- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_sessions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
+
+--
+-- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
+
+
+--
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -696,6 +775,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
+
+
+--
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -707,6 +793,13 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextval('public.return_reception_items_id_seq'::regclass);
+
+
+--
+-- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('public.user_sessions_id_seq'::regclass);
 
 
 --
@@ -1339,6 +1432,7 @@ mllajbefoq2of56hf	mljjqn48zbxhtg0yw	12958	2026-02-13 19:38:46
 mllajbem5jycd4ubm	mljjqn48zbxhtg0yw	12959	2026-02-13 19:38:46
 mllajbev5r9kahmvf	mljjqn48zbxhtg0yw	12960	2026-02-13 19:38:46
 mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
+12000_mljjqn48zbxhtg0yw_1772036252089	mljjqn48zbxhtg0yw	12000	\N
 \.
 
 
@@ -1374,7 +1468,305 @@ COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updat
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.dispatch_items (id, dispatch_id, reference, quantity) FROM stdin;
+COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FROM stdin;
+60	mm2cqrwaubyqhh3is	12945	168	14000.00
+61	mm2cqrwaubyqhh3is	12860	168	14000.00
+62	mm2cqrwaubyqhh3is	12665	54	14000.00
+63	mm2cqrwaubyqhh3is	12897	138	16000.00
+64	mm2cqrwaubyqhh3is	12876	168	16000.00
+65	mm3i59dj2t7a7x8dy	12877	168	16000.00
+66	mm3i59dj2t7a7x8dy	12864	125	16000.00
+67	mm3i59dj2t7a7x8dy	12888	168	16000.00
+68	mm3i59dj2t7a7x8dy	12871	135	16000.00
+69	mm3i59dj2t7a7x8dy	12911	168	16000.00
+70	mm3i59dj2t7a7x8dy	12861	108	16000.00
+71	mm3i59dj2t7a7x8dy	12924	47	19000.00
+72	mm3i59dj2t7a7x8dy	12955	37	19000.00
+73	mm3i59dj2t7a7x8dy	12919	48	19000.00
+74	mm3i59dj2t7a7x8dy	12960	60	35000.00
+75	mm3i94vqmdl6g4qmc	12882	18	23900.00
+76	mm3i94vqmdl6g4qmc	12872	18	23900.00
+77	mm3i94vqmdl6g4qmc	12835	12	19900.00
+78	mm3i94vqmdl6g4qmc	12831	12	23900.00
+79	mm3i94vqmdl6g4qmc	12836	12	20900.00
+80	mm3i94vqmdl6g4qmc	12855	15	23900.00
+81	mm3i94vqmdl6g4qmc	12129	12	26900.00
+82	mm3i94vqmdl6g4qmc	12841	12	19900.00
+83	mm3i94vqmdl6g4qmc	12834	12	16900.00
+84	mm3i94vqmdl6g4qmc	12825	12	21900.00
+85	mm3i94vqmdl6g4qmc	12818	15	40900.00
+86	mm3i94vqmdl6g4qmc	12821	9	33900.00
+87	mm3i94vqmdl6g4qmc	12840	13	33900.00
+88	mm3ia6pyad0jlmyz1	12909	18	23900.00
+89	mm3ia6pyad0jlmyz1	12911	18	18900.00
+90	mm3ia6pyad0jlmyz1	12919	18	24900.00
+91	mm3idufo09vdzxxlh	12882	18	23900.00
+92	mm3idufo09vdzxxlh	12872	18	23900.00
+93	mm3idufo09vdzxxlh	12835	12	19900.00
+94	mm3idufo09vdzxxlh	12831	12	23900.00
+95	mm3idufo09vdzxxlh	12836	12	20900.00
+96	mm3idufo09vdzxxlh	12855	15	23900.00
+97	mm3idufo09vdzxxlh	12129	12	26900.00
+98	mm3idufo09vdzxxlh	12841	12	19900.00
+99	mm3idufo09vdzxxlh	12834	12	16900.00
+100	mm3idufo09vdzxxlh	12825	12	21900.00
+101	mm3idufo09vdzxxlh	12818	14	40900.00
+102	mm3idufo09vdzxxlh	12821	9	33900.00
+103	mm3idufo09vdzxxlh	12840	14	33900.00
+104	mm3iemt6169b0qj3d	12909	18	23900.00
+105	mm3iemt6169b0qj3d	12911	18	18900.00
+106	mm3iemt6169b0qj3d	12919	18	24900.00
+107	mm3igu5qlp2m14s7a	12708	30	24900.00
+108	mm3igu5qlp2m14s7a	12882	24	23900.00
+109	mm3igu5qlp2m14s7a	12883	24	24900.00
+110	mm3igu5qlp2m14s7a	12704	24	29900.00
+111	mm3igu5qlp2m14s7a	12366	24	19900.00
+112	mm3igu5qlp2m14s7a	12754	24	16900.00
+113	mm3igu5qlp2m14s7a	12000	27	49900.00
+114	mm3igu5qlp2m14s7a	12771	24	16900.00
+115	mm3igu5qlp2m14s7a	12574	24	25900.00
+116	mm3igu5qlp2m14s7a	12680	24	16900.00
+117	mm3iwuz4mqe8jnigt	12889	24	28900.00
+118	mm3iwuz4mqe8jnigt	12862	24	23900.00
+119	mm3iwuz4mqe8jnigt	12880	24	24900.00
+120	mm3iwuz4mqe8jnigt	12885	24	23900.00
+121	mm3iyf5g04b2whmjn	12913	24	29900.00
+122	mm3iyf5g04b2whmjn	12888	24	19900.00
+123	mm3iyf5g04b2whmjn	12876	24	19900.00
+124	mm3iyf5g04b2whmjn	12877	24	19900.00
+125	mm3iyf5g04b2whmjn	12897	24	19900.00
+126	mm3izdvp8plxj7r59	12919	20	25900.00
+127	mm3izdvp8plxj7r59	12911	24	18900.00
+128	mm3izdvp8plxj7r59	12860	24	16900.00
+129	mm3izdvp8plxj7r59	12945	24	19900.00
+130	mm3j02cd9yncqs1er	12906	11	28900.00
+131	mm3j02cd9yncqs1er	12933	9	34900.00
+132	mm3j02cd9yncqs1er	12951	17	27900.00
+133	mm3j0wiiw8hw96kht	12952	26	26900.00
+134	mm3j0wiiw8hw96kht	12893	15	24900.00
+135	mm3j0wiiw8hw96kht	12934	12	24900.00
+136	mm3j0wiiw8hw96kht	12898	16	24900.00
+137	mm3j37hjo83f6f3qp	12129	11	27900.00
+138	mm3j37hjo83f6f3qp	12694	11	24900.00
+139	mm3j37hjo83f6f3qp	12825	7	22900.00
+140	mm3j37hjo83f6f3qp	12828	11	14900.00
+141	mm3j37hjo83f6f3qp	12834	6	17900.00
+142	mm3j37hjo83f6f3qp	12835	11	20900.00
+143	mm3j37hjo83f6f3qp	12836	8	21900.00
+144	mm3j37hjo83f6f3qp	12837	11	27900.00
+145	mm3j37hjo83f6f3qp	12841	13	20900.00
+146	mm3j459dl23fwhf8a	12704	10	29900.00
+147	mm3j459dl23fwhf8a	12782	10	17900.00
+148	mm3j459dl23fwhf8a	12880	10	24900.00
+149	mm3j459dl23fwhf8a	12882	10	23900.00
+150	mm3j4tv3kyetvp56u	12885	10	23900.00
+151	mm3j4tv3kyetvp56u	12889	10	28900.00
+152	mm3j4tv3kyetvp56u	12909	10	23900.00
+153	mm3j5fgz6li57ahwu	12871	10	19900.00
+154	mm3j5fgz6li57ahwu	12876	10	19900.00
+155	mm3j5fgz6li57ahwu	12908	10	28900.00
+156	mm3j5ydlutatddpm6	12870	9	35900.00
+157	mm3j5ydlutatddpm6	12907	9	28900.00
+158	mm3j7hupgo2gu8l94	12129	12	27900.00
+159	mm3j7hupgo2gu8l94	12694	12	24900.00
+160	mm3j7hupgo2gu8l94	12825	7	22900.00
+161	mm3j7hupgo2gu8l94	12828	12	14900.00
+162	mm3j7hupgo2gu8l94	12834	7	17900.00
+163	mm3j7hupgo2gu8l94	12835	12	20900.00
+164	mm3j7hupgo2gu8l94	12836	8	21900.00
+165	mm3j7hupgo2gu8l94	12837	12	27900.00
+166	mm3j7hupgo2gu8l94	12841	14	20900.00
+167	mm3j98byzgb52xmth	12129	11	27900.00
+168	mm3j98byzgb52xmth	12694	11	24900.00
+169	mm3j98byzgb52xmth	12825	6	22900.00
+170	mm3j98byzgb52xmth	12828	11	14900.00
+171	mm3j98byzgb52xmth	12834	7	17900.00
+172	mm3j98byzgb52xmth	12835	11	20900.00
+173	mm3j98byzgb52xmth	12836	8	21900.00
+174	mm3j98byzgb52xmth	12837	11	27900.00
+175	mm3j98byzgb52xmth	12841	13	20900.00
+176	mm3ja6nt56tf7nb5q	12782	12	17900.00
+177	mm3ja6nt56tf7nb5q	12880	12	24900.00
+178	mm3ja6nt56tf7nb5q	12882	12	23900.00
+179	mm3jaxcw505c4h0ex	12885	12	23900.00
+180	mm3jaxcw505c4h0ex	12889	12	28900.00
+181	mm3jaxcw505c4h0ex	12909	12	23900.00
+182	mm3jbrhedvyia6ukq	12871	12	19900.00
+183	mm3jbrhedvyia6ukq	12876	12	19900.00
+184	mm3jbrhedvyia6ukq	12908	12	28900.00
+185	mm3jcfl13krxay0mi	12870	11	35900.00
+186	mm3jcfl13krxay0mi	12907	11	28900.00
+187	mm3jnr1m8ekxcb7co	12906	12	28900.00
+188	mm3jnr1m8ekxcb7co	12881	12	33900.00
+189	mm3joefqjz2omk117	12880	12	24900.00
+190	mm3joefqjz2omk117	12693	12	25900.00
+191	mm3joefqjz2omk117	12698	12	21900.00
+192	mm3jq8fsf12q2vqq1	12698	12	21900.00
+193	mm3jq8fsf12q2vqq1	12771	12	16900.00
+194	mm3jq8fsf12q2vqq1	12877	12	19900.00
+195	mm3jq8fsf12q2vqq1	12704	12	29900.00
+196	mm3jq8fsf12q2vqq1	12754	12	16900.00
+197	mm3jq8fsf12q2vqq1	12865	12	16900.00
+198	mm3jq8fsf12q2vqq1	12805	6	19900.00
+199	mm3jq8fsf12q2vqq1	12644	12	24900.00
+200	mm3jq8fsf12q2vqq1	12883	12	24900.00
+201	mm3jq8fsf12q2vqq1	12909	12	23900.00
+202	mm3jq8fsf12q2vqq1	12744	12	19900.00
+203	mm3jr8ox2i4kj6bgs	12897	12	19900.00
+204	mm3jr8ox2i4kj6bgs	12876	12	19900.00
+205	mm3jr8ox2i4kj6bgs	12884	12	21900.00
+206	mm3jr8ox2i4kj6bgs	12880	12	24900.00
+207	mm3jr8ox2i4kj6bgs	12913	12	29900.00
+208	mm3js04fr6s6gkh2a	12945	12	19900.00
+209	mm3js04fr6s6gkh2a	12924	12	21900.00
+210	mm3js04fr6s6gkh2a	12860	12	16900.00
+211	mm3js04fr6s6gkh2a	12911	12	18900.00
+212	mm3js04fr6s6gkh2a	12908	12	28900.00
+213	mm3jsyw9y49qmhcwt	12698	12	21900.00
+214	mm3jsyw9y49qmhcwt	12737	12	22900.00
+215	mm3jsyw9y49qmhcwt	12754	12	16900.00
+216	mm3jsyw9y49qmhcwt	12876	12	19900.00
+217	mm3jsyw9y49qmhcwt	12805	6	19900.00
+218	mm3jsyw9y49qmhcwt	12744	12	19900.00
+219	mm3juel6d3ouyxaax	12911	12	18900.00
+220	mm3juel6d3ouyxaax	12933	12	34900.00
+221	mm3juel6d3ouyxaax	12907	12	28900.00
+222	mm3jx4y9rjzbowh51	12909	4	23900.00
+223	mm3jx4y9rjzbowh51	12911	4	18900.00
+224	mm3jx4y9rjzbowh51	12882	4	23900.00
+225	mm3jx4y9rjzbowh51	12885	4	23900.00
+226	mm3jx4y9rjzbowh51	12782	4	17900.00
+227	mm3jx4y9rjzbowh51	12871	4	19900.00
+228	mm3jx4y9rjzbowh51	12876	4	19900.00
+229	mm3jx4y9rjzbowh51	12945	4	19900.00
+230	mm3jx4y9rjzbowh51	12919	4	25900.00
+231	mm3jx4y9rjzbowh51	12880	4	24900.00
+232	mm3jx4y9rjzbowh51	12913	4	29900.00
+233	mm3jx4y9rjzbowh51	12699	4	24900.00
+234	mm3jx4y9rjzbowh51	12744	4	19900.00
+235	mm3jx4y9rjzbowh51	12889	4	28900.00
+236	mm3jx4y9rjzbowh51	12897	4	19900.00
+237	mm3jxvg8709ja27ly	12805	6	19900.00
+238	mm3jxvg8709ja27ly	12744	6	19900.00
+239	mm3jxvg8709ja27ly	12913	6	29900.00
+240	mm3jxvg8709ja27ly	12872	6	24900.00
+241	mm3jykw3cwsyjtm43	12945	6	19900.00
+242	mm3jykw3cwsyjtm43	12908	6	28900.00
+243	mm3jykw3cwsyjtm43	12924	6	21900.00
+244	mm3jykw3cwsyjtm43	12911	6	18900.00
+245	mm3jykw3cwsyjtm43	12919	6	25900.00
+246	mm3jzc1nv1zmxutin	12909	9	23900.00
+247	mm3jzc1nv1zmxutin	12873	8	22900.00
+248	mm3jzc1nv1zmxutin	12883	9	24900.00
+249	mm3k04cmn5mhk6of4	12951	9	27900.00
+250	mm3k04cmn5mhk6of4	12919	8	25900.00
+251	mm3k04cmn5mhk6of4	12924	9	21900.00
+252	mm3k04cmn5mhk6of4	12871	8	19900.00
+253	mm3k1kkgx2kxtlfzm	12640	12	24900.00
+254	mm3k1kkgx2kxtlfzm	12884	12	21900.00
+255	mm3k1kkgx2kxtlfzm	12888	12	19900.00
+256	mm3k1kkgx2kxtlfzm	12877	12	19900.00
+257	mm3k1kkgx2kxtlfzm	12771	12	16900.00
+258	mm3k2akfj3mwhs0n7	12933	12	34900.00
+259	mm3k2akfj3mwhs0n7	12870	9	35900.00
+260	mm3k2akfj3mwhs0n7	12881	9	33900.00
+261	mm3k2akfj3mwhs0n7	12871	12	19900.00
+262	mm3k76zavwgz9j0j8	12679	24	23900.00
+263	mm3k76zavwgz9j0j8	12680	18	16900.00
+264	mm3k76zavwgz9j0j8	12877	24	19900.00
+265	mm3k76zavwgz9j0j8	12889	24	28900.00
+266	mm3k76zavwgz9j0j8	12747	24	31900.00
+267	mm3k76zavwgz9j0j8	12872	21	24900.00
+268	mm3k76zavwgz9j0j8	12909	24	23900.00
+269	mm3k76zavwgz9j0j8	12913	19	29900.00
+270	mm3k76zavwgz9j0j8	12862	24	23900.00
+271	mm3k76zavwgz9j0j8	12880	24	24900.00
+272	mm3k76zavwgz9j0j8	12873	22	22900.00
+273	mm3k76zavwgz9j0j8	12882	20	23900.00
+274	mm3k76zavwgz9j0j8	12885	24	23900.00
+275	mm3k76zavwgz9j0j8	12884	24	21900.00
+276	mm3k76zavwgz9j0j8	12782	24	17900.00
+277	mm3k76zavwgz9j0j8	12783	24	17900.00
+278	mm3k76zavwgz9j0j8	12888	24	19900.00
+279	mm3k76zavwgz9j0j8	12876	24	19900.00
+280	mm3k88u9mvxzqlh7r	12908	24	28900.00
+281	mm3k88u9mvxzqlh7r	12919	24	25900.00
+282	mm3k88u9mvxzqlh7r	12860	24	16900.00
+283	mm3k88u9mvxzqlh7r	12924	12	21900.00
+284	mm3k9fjiwkoe2ewy2	12881	18	33900.00
+285	mm3k9fjiwkoe2ewy2	12933	12	34900.00
+286	mm3k9fjiwkoe2ewy2	12906	18	28900.00
+287	mm3k9fjiwkoe2ewy2	12951	24	27900.00
+288	mm3k9fjiwkoe2ewy2	12871	12	19900.00
+289	mm3kagls891rwl801	12934	14	24900.00
+290	mm3kagls891rwl801	12898	18	24900.00
+291	mm3kagls891rwl801	12952	24	26900.00
+292	mm3kagls891rwl801	12893	24	24900.00
+293	mm3kexsia9bys3xsw	12698	12	21900.00
+294	mm3kexsia9bys3xsw	12777	12	14900.00
+295	mm3kexsia9bys3xsw	12679	12	23900.00
+296	mm3kexsia9bys3xsw	12737	12	22900.00
+297	mm3kexsia9bys3xsw	12704	12	29900.00
+298	mm3kexsia9bys3xsw	12694	12	24900.00
+299	mm3kexsia9bys3xsw	12574	12	25900.00
+300	mm3kexsia9bys3xsw	12754	12	16900.00
+301	mm3kexsia9bys3xsw	12805	12	19900.00
+302	mm3kexsia9bys3xsw	12747	12	31900.00
+303	mm3kgq0sujpkt8b1y	12885	12	23900.00
+304	mm3kgq0sujpkt8b1y	12883	12	24900.00
+305	mm3kgq0sujpkt8b1y	12699	12	24900.00
+306	mm3kgq0sujpkt8b1y	12882	12	23900.00
+307	mm3kgq0sujpkt8b1y	12873	12	22900.00
+308	mm3kgq0sujpkt8b1y	12884	12	21900.00
+309	mm3kgq0sujpkt8b1y	12640	12	24900.00
+310	mm3kgq0sujpkt8b1y	12617	18	35900.00
+311	mm3kgq0sujpkt8b1y	12581	18	32900.00
+312	mm3kgq0sujpkt8b1y	12744	18	19900.00
+313	mm3khai0anlcogdc3	12865	12	16900.00
+314	mm3khai0anlcogdc3	12871	12	19900.00
+315	mm3khai0anlcogdc3	12889	18	28900.00
+316	mm3kieed1nuu0hmrq	12955	12	22900.00
+317	mm3kieed1nuu0hmrq	12909	12	23900.00
+318	mm3kieed1nuu0hmrq	12911	12	18900.00
+319	mm3kieed1nuu0hmrq	12860	12	16900.00
+320	mm3kj9q05uf3ux0v7	12922	12	21900.00
+321	mm3kj9q05uf3ux0v7	12926	12	27900.00
+322	mm3kj9q05uf3ux0v7	12881	9	33900.00
+323	mm3kj9q05uf3ux0v7	12933	14	34900.00
+324	mm3kj9q05uf3ux0v7	12870	15	35900.00
+325	mm3kkpucu97l4e3en	12782	24	17900.00
+326	mm3kkpucu97l4e3en	12883	24	24900.00
+327	mm3kkpucu97l4e3en	12873	24	22900.00
+328	mm3klig50tmfwbi42	12860	24	16900.00
+329	mm3klig50tmfwbi42	12888	24	19900.00
+330	mm3klig50tmfwbi42	12913	25	29900.00
+331	mm3kmeo0pz35brof4	12366	27	19900.00
+332	mm3kmeo0pz35brof4	12871	12	19900.00
+333	mm3kmeo0pz35brof4	12951	20	27900.00
+334	mm3kmeo0pz35brof4	12911	24	18900.00
+335	mm3kn639neyfsmx9p	12922	24	21900.00
+336	mm3kn639neyfsmx9p	12893	16	24900.00
+337	mm3kn639neyfsmx9p	12926	23	27900.00
+338	mm3kn639neyfsmx9p	12952	26	26900.00
+339	mm3kx4lr1n8azuu6v	12943	12	19900.00
+340	mm3kx4lr1n8azuu6v	12922	12	21900.00
+341	mm3kx4lr1n8azuu6v	12893	12	24900.00
+342	mm3l0uxit5mxrenqh	12805	4	19900.00
+343	mm3l0uxit5mxrenqh	12943	4	19900.00
+344	mm3l0uxit5mxrenqh	12898	4	24900.00
+345	mm3l0uxit5mxrenqh	12951	4	27900.00
+346	mm3l0uxit5mxrenqh	12952	4	26900.00
+347	mm3l0uxit5mxrenqh	12937	4	14900.00
+348	mm3l0uxit5mxrenqh	12873	4	22900.00
+349	mm3l0uxit5mxrenqh	12906	4	28900.00
+350	mm3l1t5hjgali24ts	12893	12	24900.00
+351	mm3l3zvlu15hgpefm	12898	6	24900.00
+352	mm3l3zvlu15hgpefm	12934	6	24900.00
+353	mm3l3zvlu15hgpefm	12906	6	28900.00
+354	mm3l3zvlu15hgpefm	12881	6	33900.00
+355	mm3l3zvlu15hgpefm	12937	6	14900.00
+356	mm3l3zvlu15hgpefm	12952	6	26900.00
+357	mm3l3zvlu15hgpefm	12926	6	27900.00
 \.
 
 
@@ -1383,6 +1775,60 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity) FROM stdin;
 --
 
 COPY public.dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at) FROM stdin;
+mm2cqrwaubyqhh3is	300	mljjqn48zbxhtg0yw	 -	 -	Admin Principal	2026-02-25 18:12:38.461
+mm3i59dj2t7a7x8dy	300	mljjqn48zbxhtg0yw	 -	 -	Admin Principal	2026-02-26 13:31:38.554
+mm3i94vqmdl6g4qmc	179	mljjqn48zbxhtg0yw	FE-7157	RM-7581	Admin Principal	2026-02-26 13:34:39.351
+mm3ia6pyad0jlmyz1	179	mljjqn48zbxhtg0yw	FE-7205	RM-7643	Admin Principal	2026-02-26 13:35:28.391
+mm3idufo09vdzxxlh	177	mljjqn48zbxhtg0yw	FE-7156	RM-7580	Admin Principal	2026-02-26 13:38:19.092
+mm3iemt6169b0qj3d	177	mljjqn48zbxhtg0yw	FE-7206	RM-7644	Admin Principal	2026-02-26 13:38:55.867
+mm3igu5qlp2m14s7a	232	mljjqn48zbxhtg0yw	FE-7158	RM-7584	Admin Principal	2026-02-26 13:40:38.704
+mm3iwuz4mqe8jnigt	232	mljjqn48zbxhtg0yw	FE-7175	RM-7611	Jhon Montoya	2026-02-26 13:53:06.26
+mm3iyf5g04b2whmjn	232	mljjqn48zbxhtg0yw	FE-7191	RM-7625	Jhon Montoya	2026-02-26 13:54:19.062
+mm3izdvp8plxj7r59	232	mljjqn48zbxhtg0yw	FE-7204	RM-7642	Jhon Montoya	2026-02-26 13:55:04.07
+mm3j02cd9yncqs1er	232	mljjqn48zbxhtg0yw	FE-7219	RM-7669	Jhon Montoya	2026-02-26 13:55:35.775
+mm3j0wiiw8hw96kht	232	mljjqn48zbxhtg0yw	FE-7232	RM-7687	Jhon Montoya	2026-02-26 13:56:14.876
+mm3j37hjo83f6f3qp	74	mljjqn48zbxhtg0yw	FE-7162	 -	Jhon Montoya	2026-02-26 13:58:02.408
+mm3j459dl23fwhf8a	305	mljjqn48zbxhtg0yw	FE-7159	 -	Jhon Montoya	2026-02-26 13:58:46.178
+mm3j4tv3kyetvp56u	305	mljjqn48zbxhtg0yw	FE-7182	 -	Jhon Montoya	2026-02-26 13:59:18.063
+mm3j5fgz6li57ahwu	305	mljjqn48zbxhtg0yw	FE-7214	 -	Jhon Montoya	2026-02-26 13:59:46.068
+mm3j5ydlutatddpm6	305	mljjqn48zbxhtg0yw	FE-7229	 -	Jhon Montoya	2026-02-26 14:00:10.572
+mm3j7hupgo2gu8l94	90	mljjqn48zbxhtg0yw	FE-7163	 -	Jhon Montoya	2026-02-26 14:01:22.466
+mm3j98byzgb52xmth	217	mljjqn48zbxhtg0yw	FE-7161	 -	Jhon Montoya	2026-02-26 14:02:43.439
+mm3ja6nt56tf7nb5q	231	mljjqn48zbxhtg0yw	FE-7160	 -	Jhon Montoya	2026-02-26 14:03:27.93
+mm3jaxcw505c4h0ex	231	mljjqn48zbxhtg0yw	FE-7183	 -	Jhon Montoya	2026-02-26 14:04:02.529
+mm3jbrhedvyia6ukq	231	mljjqn48zbxhtg0yw	FE-7213	 -	Jhon Montoya	2026-02-26 14:04:41.572
+mm3jcfl13krxay0mi	231	mljjqn48zbxhtg0yw	FE-7228	 -	Jhon Montoya	2026-02-26 14:05:12.806
+mm3jnr1m8ekxcb7co	258	mljjqn48zbxhtg0yw	FE-7226	 -	Jhon Montoya	2026-02-26 14:14:00.875
+mm3joefqjz2omk117	258	mljjqn48zbxhtg0yw	FE-7171	 -	Jhon Montoya	2026-02-26 14:14:31.191
+mm3jq8fsf12q2vqq1	138	mljjqn48zbxhtg0yw	FE-7185	RM-7619	Jhon Montoya	2026-02-26 14:15:56.729
+mm3jr8ox2i4kj6bgs	138	mljjqn48zbxhtg0yw	FE-7190	RM-7624	Jhon Montoya	2026-02-26 14:16:43.714
+mm3js04fr6s6gkh2a	138	mljjqn48zbxhtg0yw	FE-7203	RM-7641	Jhon Montoya	2026-02-26 14:17:19.264
+mm3jsyw9y49qmhcwt	264	mljjqn48zbxhtg0yw	FE-7186	RM-7620	Jhon Montoya	2026-02-26 14:18:04.33
+mm3juel6d3ouyxaax	264	mljjqn48zbxhtg0yw	FE-7221	RM-7671	Jhon Montoya	2026-02-26 14:19:11.323
+mm3jx4y9rjzbowh51	216	mljjqn48zbxhtg0yw	 -	RM-7663	Jhon Montoya	2026-02-26 14:21:18.802
+mm3jxvg8709ja27ly	158	mljjqn48zbxhtg0yw	FE-7189	 -	Jhon Montoya	2026-02-26 14:21:53.145
+mm3jykw3cwsyjtm43	158	mljjqn48zbxhtg0yw	FE-7207	 -	Jhon Montoya	2026-02-26 14:22:26.117
+mm3jzc1nv1zmxutin	107	mljjqn48zbxhtg0yw	FE-7188	RM-7623	Jhon Montoya	2026-02-26 14:23:01.309
+mm3k04cmn5mhk6of4	107	mljjqn48zbxhtg0yw	FE-7220	RM-7670	Jhon Montoya	2026-02-26 14:23:37.994
+mm3k1kkgx2kxtlfzm	50	mljjqn48zbxhtg0yw	FE-7202	RM-7640	Jhon Montoya	2026-02-26 14:24:45.665
+mm3k2akfj3mwhs0n7	50	mljjqn48zbxhtg0yw	FE-7215	RM-7665	Jhon Montoya	2026-02-26 14:25:19.36
+mm3k76zavwgz9j0j8	59	mljjqn48zbxhtg0yw	FE-7192	RM-7626	Jhon Montoya	2026-02-26 14:29:07.991
+mm3k88u9mvxzqlh7r	59	mljjqn48zbxhtg0yw	FE-7201	RM-7639	Jhon Montoya	2026-02-26 14:29:57.06
+mm3k9fjiwkoe2ewy2	59	mljjqn48zbxhtg0yw	FE-7216	RM-7666	Jhon Montoya	2026-02-26 14:30:52.4
+mm3kagls891rwl801	59	mljjqn48zbxhtg0yw	FE-7233	RM-7688	Jhon Montoya	2026-02-26 14:31:40.432
+mm3kexsia9bys3xsw	270	mljjqn48zbxhtg0yw	FE-7169	 -	Jhon Montoya	2026-02-26 14:35:09.331
+mm3kgq0sujpkt8b1y	270	mljjqn48zbxhtg0yw	FE-7170	 -	Jhon Montoya	2026-02-26 14:36:32.573
+mm3khai0anlcogdc3	270	mljjqn48zbxhtg0yw	FE-7176	 -	Jhon Montoya	2026-02-26 14:36:59.113
+mm3kieed1nuu0hmrq	270	mljjqn48zbxhtg0yw	FE-7200	 -	Jhon Montoya	2026-02-26 14:37:50.824
+mm3kj9q05uf3ux0v7	270	mljjqn48zbxhtg0yw	FE-7227	 -	Jhon Montoya	2026-02-26 14:38:31.417
+mm3kkpucu97l4e3en	81	mljjqn48zbxhtg0yw	FE-7177	FE-7178	Jhon Montoya	2026-02-26 14:39:38.965
+mm3klig50tmfwbi42	81	mljjqn48zbxhtg0yw	FE-7198	FE-7199	Jhon Montoya	2026-02-26 14:40:16.038
+mm3kmeo0pz35brof4	81	mljjqn48zbxhtg0yw	FE-7217	FE-7218	Jhon Montoya	2026-02-26 14:40:57.793
+mm3kn639neyfsmx9p	81	mljjqn48zbxhtg0yw	FE-7231	FE-7234	Jhon Montoya	2026-02-26 14:41:33.334
+mm3kx4lr1n8azuu6v	50	mljjqn48zbxhtg0yw	FE-7241	RM-7697	Jhon Montoya	2026-02-26 14:49:17.968
+mm3l0uxit5mxrenqh	216	mljjqn48zbxhtg0yw	 -	RM-7695	Jhon Montoya	2026-02-26 14:52:12.055
+mm3l1t5hjgali24ts	264	mljjqn48zbxhtg0yw	FE-7240	RM-7696	Jhon Montoya	2026-02-26 14:52:56.406
+mm3l3zvlu15hgpefm	158	mljjqn48zbxhtg0yw	FE-7239	 -	Jhon Montoya	2026-02-26 14:54:38.434
 \.
 
 
@@ -1411,6 +1857,7 @@ b4c4050d-29e3-4b6f-a0d5-25bc7d5e38da	10210	760c19e6-0089-4b3d-8712-a45900529e38	
 COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
 0b99a3d1-8812-48fd-803e-adb9f1f91e03	12963	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 1225, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1225}]	0.00	6500.00	324.00	0.00	1625.00	8449.00	t	PRUEBA	2026-02-23 15:12:59.222394	2026-02-23 15:12:59.222394
 760c19e6-0089-4b3d-8712-a45900529e38	10210	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 1400, "concepto": "INSUMOS ", "vlr_unit": 1400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	1400.00	400.00	13500.00	t	PRUEBA	2026-02-23 11:09:05.097294	2026-02-23 11:09:05.097294
+1aae080c-0db1-4202-ab8d-559dce0d3bcf	12976	23e36d4f-0002-41d8-b861-99e68b9992e3	BUS SUB EN PUNT	Plow	MADRES 	12003-1		SESGO 4 CM TRACE 145\nTIRA DE SISAS CON GARDERA LIBRE 60 CM  DE UNA TIRA LIBRE ME SALE LA S SISAS COMPLETA Y CUELLO \nSESGO ESCOTE FRENTE 32 CM \nSESGO ESCOTE ESPALDA 32 CM \n\nELASTICO DE 1 CM  PARA LAS MANGA \nTALLA SY M DE 18 CM  Y PARA L DE 19 CM MANGAS EN CENTRO PARA RECOGIDO	/images/references/12976.jpg	\N	[{"um": "UNIDAD", "cant": 0.4, "tipo": "RESORTE", "total": 100, "concepto": "ELASTICO DE 1", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 0.72, "tipo": "TELA", "total": 0, "concepto": "MAYATEX", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.24, "tipo": "TELA", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.046, "tipo": "SESGO", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 0.72, "total": 4608, "concepto": "ESTAMPADO GLOQUI SUBLIMACION", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 780, "concepto": "CORTE", "vlr_unit": 780}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.08, "total": 16, "concepto": "FRAMILÓN", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "COLLAR YAQUELINE MANUALIDAD CON BOLSA Y PICO LORO", "vlr_unit": 2800}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 2339, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2339}]	100.00	9788.00	324.00	2816.00	2739.00	15767.00	f	Admin Principal	2026-02-25 15:08:12.798511	2026-02-25 15:08:12.798511
 \.
 
 
@@ -1429,8 +1876,8 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 --
 
 COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at) FROM stdin;
-91d58739-3664-4d50-9920-2f86a5933c01	b	mljjrcujmtckild4r	Admin Principal	2026-02-24 10:39:05.751251	2026-02-24 10:39:05.751251
 6c253170-b1e0-433f-afe0-03e71e60f8a2	aaa	\N	Admin Principal	2026-02-23 13:09:44.962806	2026-02-23 13:09:44.962806
+91d58739-3664-4d50-9920-2f86a5933c01	b	mljjrcujmtckild4r	Admin Principal	2026-02-24 10:39:05.751251	2026-02-24 10:39:05.751251
 \.
 
 
@@ -1442,6 +1889,32 @@ COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) F
 ad28967a-6ee9-4397-8a95-2e609740b1dc	6c253170-b1e0-433f-afe0-03e71e60f8a2	10210	0	2026-02-24 14:10:10.983232
 f3ade09b-e9f1-46e6-a0d2-2aeb04531f9c	6c253170-b1e0-433f-afe0-03e71e60f8a2	12000	1	2026-02-24 14:10:10.983232
 77e1f420-6d45-4abf-bb6c-34c577a4b357	6c253170-b1e0-433f-afe0-03e71e60f8a2	12963	2	2026-02-24 14:10:10.983232
+\.
+
+
+--
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FROM stdin;
+1	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaa	f	2026-02-26 14:27:48.585249
+2	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaa	f	2026-02-26 14:28:12.964014
+3	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaaaaaaa	f	2026-02-26 14:36:45.690516
+4	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaa	f	2026-02-26 14:40:13.332692
+5	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaaaaaaa	f	2026-02-26 14:43:25.179993
+6	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaa	f	2026-02-26 14:43:53.153267
+7	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaa	f	2026-02-26 14:44:05.037576
+8	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	b	f	2026-02-26 14:44:14.080908
+9	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	abc	f	2026-02-26 14:51:35.569786
+10	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123123	f	2026-02-26 14:53:13.197181
+11	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	456456	f	2026-02-26 14:53:27.68156
+12	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123	f	2026-02-26 14:57:01.006756
+13	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	123	f	2026-02-26 14:57:09.310238
+14	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	12312331	f	2026-02-26 14:57:33.343687
+15	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	13131	f	2026-02-26 14:57:45.581003
+16	mlgqup29zlzugg8qk	mm3wcdhk7ksjtfh97	Holaaaaaaaaaa	f	2026-02-26 15:10:09.139626
+17	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	:(	f	2026-02-26 15:10:32.240156
+18	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	Anderson	f	2026-02-26 15:11:37.666752
 \.
 
 
@@ -1654,40 +2127,6 @@ mm25z6898ea5cmw0f	12952	6	26900.00
 mm25z6898ea5cmw0f	12919	6	25900.00
 mm25z6898ea5cmw0f	12926	6	27900.00
 mm25z6898ea5cmw0f	12872	6	24900.00
-mm25zbho4eabh3lh4	12951	4	27900.00
-mm25zbho4eabh3lh4	12909	4	23900.00
-mm25zbho4eabh3lh4	12747	4	31900.00
-mm25zbho4eabh3lh4	12872	6	24900.00
-mm25zbho4eabh3lh4	12926	4	27900.00
-mm25zbho4eabh3lh4	12919	4	25900.00
-mm25zbho4eabh3lh4	12873	4	22900.00
-mm25zbho4eabh3lh4	12923	4	24900.00
-mm25zbho4eabh3lh4	12882	4	23900.00
-mm25zbho4eabh3lh4	12862	4	23900.00
-mm25zbho4eabh3lh4	12952	4	26900.00
-mm25zbho4eabh3lh4	12911	4	18900.00
-mm25zbho4eabh3lh4	12937	4	14900.00
-mm25zbho4eabh3lh4	12941	4	20900.00
-mm25zbho4eabh3lh4	12885	4	23900.00
-mm25zbho4eabh3lh4	12883	4	24900.00
-mm25zbho4eabh3lh4	12877	4	19900.00
-mm25zbho4eabh3lh4	12898	4	24900.00
-mm25zbho4eabh3lh4	12920	4	21900.00
-mm25zbho4eabh3lh4	12945	4	19900.00
-mm25zbho4eabh3lh4	12934	4	24900.00
-mm25zbho4eabh3lh4	12936	4	14900.00
-mm25zbho4eabh3lh4	12897	4	19900.00
-mm25zbho4eabh3lh4	12870	4	35900.00
-mm25zbho4eabh3lh4	12805	4	19900.00
-mm25zbho4eabh3lh4	12892	4	24900.00
-mm25zbho4eabh3lh4	12931	4	29900.00
-mm25zbho4eabh3lh4	12924	4	21900.00
-mm25zbho4eabh3lh4	12860	4	16900.00
-mm25zbho4eabh3lh4	12884	4	21900.00
-mm25zbho4eabh3lh4	12640	4	24900.00
-mm25zbho4eabh3lh4	12921	4	24900.00
-mm25zbho4eabh3lh4	12692	4	21900.00
-mm25zbho4eabh3lh4	12871	4	19900.00
 mm25zgt5curej417m	12951	9	27900.00
 mm25zgt5curej417m	12909	9	23900.00
 mm25zgt5curej417m	12926	8	27900.00
@@ -1897,25 +2336,60 @@ mm261zsok2g1m5dod	12914	8	33900.00
 mm261zsok2g1m5dod	12911	8	18900.00
 mm261zsok2g1m5dod	12880	8	24900.00
 mm261zsok2g1m5dod	12937	8	14900.00
-mm263gauqq7o17z60	12945	168	14000.00
-mm263gauqq7o17z60	12860	168	14000.00
-mm263gauqq7o17z60	12665	168	14000.00
-mm263gauqq7o17z60	12897	138	16000.00
-mm263gauqq7o17z60	12876	168	16000.00
-mm263gauqq7o17z60	12943	138	16000.00
-mm263gauqq7o17z60	12877	168	16000.00
-mm263gauqq7o17z60	12864	138	16000.00
-mm263gauqq7o17z60	12888	168	16000.00
-mm263gauqq7o17z60	12871	138	16000.00
-mm263gauqq7o17z60	12911	168	16000.00
-mm263gauqq7o17z60	12861	168	16000.00
-mm263gauqq7o17z60	12920	48	19000.00
-mm263gauqq7o17z60	12893	48	19000.00
-mm263gauqq7o17z60	12924	48	19000.00
-mm263gauqq7o17z60	12955	48	19000.00
-mm263gauqq7o17z60	12919	48	19000.00
-mm263gauqq7o17z60	12959	60	35000.00
-mm263gauqq7o17z60	12960	60	35000.00
+mm25zbho4eabh3lh4	12951	4	27900.00
+mm25zbho4eabh3lh4	12909	4	23900.00
+mm25zbho4eabh3lh4	12747	4	31900.00
+mm25zbho4eabh3lh4	12872	6	24900.00
+mm25zbho4eabh3lh4	12926	4	27900.00
+mm25zbho4eabh3lh4	12919	4	25900.00
+mm25zbho4eabh3lh4	12873	4	22900.00
+mm25zbho4eabh3lh4	12923	4	24900.00
+mm25zbho4eabh3lh4	12882	4	23900.00
+mm25zbho4eabh3lh4	12862	4	23900.00
+mm25zbho4eabh3lh4	12952	4	26900.00
+mm25zbho4eabh3lh4	12911	4	18900.00
+mm25zbho4eabh3lh4	12937	4	14900.00
+mm25zbho4eabh3lh4	12941	4	20900.00
+mm25zbho4eabh3lh4	12885	4	23900.00
+mm25zbho4eabh3lh4	12883	4	24900.00
+mm25zbho4eabh3lh4	12877	4	19900.00
+mm25zbho4eabh3lh4	12898	4	24900.00
+mm25zbho4eabh3lh4	12920	4	21900.00
+mm25zbho4eabh3lh4	12945	4	19900.00
+mm25zbho4eabh3lh4	12934	4	24900.00
+mm25zbho4eabh3lh4	12936	4	14900.00
+mm25zbho4eabh3lh4	12897	4	19900.00
+mm25zbho4eabh3lh4	12870	4	35900.00
+mm25zbho4eabh3lh4	12805	4	19900.00
+mm25zbho4eabh3lh4	12892	4	24900.00
+mm25zbho4eabh3lh4	12931	4	29900.00
+mm25zbho4eabh3lh4	12924	4	21900.00
+mm25zbho4eabh3lh4	12860	4	16900.00
+mm25zbho4eabh3lh4	12884	4	21900.00
+mm25zbho4eabh3lh4	12640	4	24900.00
+mm25zbho4eabh3lh4	12921	4	24900.00
+mm25zbho4eabh3lh4	12692	4	21900.00
+mm25zbho4eabh3lh4	12871	4	19900.00
+mm25zbho4eabh3lh4	12783	4	17900.00
+mm2c7uonjxqwkjpf5	12945	168	14000.00
+mm2c7uonjxqwkjpf5	12860	168	14000.00
+mm2c7uonjxqwkjpf5	12665	168	14000.00
+mm2c7uonjxqwkjpf5	12897	138	16000.00
+mm2c7uonjxqwkjpf5	12876	168	16000.00
+mm2c7uonjxqwkjpf5	12943	138	16000.00
+mm2c7uonjxqwkjpf5	12877	168	16000.00
+mm2c7uonjxqwkjpf5	12864	138	16000.00
+mm2c7uonjxqwkjpf5	12888	168	16000.00
+mm2c7uonjxqwkjpf5	12871	138	16000.00
+mm2c7uonjxqwkjpf5	12911	168	16000.00
+mm2c7uonjxqwkjpf5	12861	168	16000.00
+mm2c7uonjxqwkjpf5	12920	48	19000.00
+mm2c7uonjxqwkjpf5	12893	48	19000.00
+mm2c7uonjxqwkjpf5	12924	48	19000.00
+mm2c7uonjxqwkjpf5	12955	48	19000.00
+mm2c7uonjxqwkjpf5	12919	48	19000.00
+mm2c7uonjxqwkjpf5	12959	60	35000.00
+mm2c7uonjxqwkjpf5	12960	60	35000.00
 \.
 
 
@@ -1935,7 +2409,6 @@ mm25x0trsopvohrgo	231	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	4740000.00	2026-02-25T
 mm25yurfvl3ytrp78	81	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	10680000.00	2026-02-25T15:02:58.107Z	Admin Principal	9
 mm25z1dbniegbh1m6	216	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2800000.00	2026-02-25T15:03:06.671Z	Admin Principal	10
 mm25z6898ea5cmw0f	158	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2874600.00	2026-02-25T15:03:12.969Z	Admin Principal	11
-mm25zbho4eabh3lh4	296	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	3240200.00	2026-02-25T15:03:19.788Z	Admin Principal	12
 mm25zgt5curej417m	107	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2522200.00	2026-02-25T15:03:26.681Z	Admin Principal	13
 mm25zlnrm0l8pxyk3	59	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	30523200.00	2026-02-25T15:03:32.967Z	Admin Principal	14
 mm261bh9kjzjbs3n3	258	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	2139600.00	2026-02-25T15:04:53.085Z	Admin Principal	1
@@ -1944,7 +2417,8 @@ mm261ny1d0yfufg6p	138	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	11754000.00	2026-02-25
 mm261sicytqircpx5	264	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3884400.00	2026-02-25T15:05:15.156Z	Admin Principal	4
 mm261wafiiiwwshld	50	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	5258400.00	2026-02-25T15:05:20.055Z	Admin Principal	5
 mm261zsok2g1m5dod	299	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3078400.00	2026-02-25T15:05:24.600Z	Admin Principal	6
-mm263gauqq7o17z60	300	mlia6gb0u2bhftxam	mljjqn48zbxhtg0yw	38088000.00	2026-02-25T15:06:32.646Z	Admin Principal	1
+mm25zbho4eabh3lh4	296	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	3311800.00	2026-02-25T15:03:19.788Z	Admin Principal	12
+mm2c7uonjxqwkjpf5	300	mlia6gb0u2bhftxam	mljjqn48zbxhtg0yw	38088000.00	2026-02-25T17:57:55.607Z	Admin Principal	1
 \.
 
 
@@ -2073,9 +2547,9 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12959	CAMISETA BOLSILLO ENCAGE	37900.00	MARTHA RAMIREZ	LYCRA FRIA	0.92	\N	\N	1	2026-02-13 15:45:46
 12960	CAMISETA ENCAJE FTE	39900.00	MARTHA RAMIREZ	LYCRA FRIA	0.91	\N	\N	1	2026-02-13 15:45:46
 12961	CAMSILLA ENCEGE CORAZON	29900.00	MARTHA RAMIREZ	RIB	0.63	\N	\N	1	2026-02-13 15:45:46
-12000	CONJUN  CHAMPION B	49900.00	JACKELINE PEREA	QUIMBAYA	1.05	\N	\N	1	2026-02-16 18:11:38
 12963	BLUSA BOLER MANG ESTA	40900.00	prueba	LINO PRAGA	1.00	\N	\N	1	\N
 10210	BLUSA BASICA	20900.00	prueba	BURDA 	0.40	\N	\N	1	\N
+12000	CONJUN  CHAMPION B	49900.00	JACKELINE PEREA	QUIMBAYA	1.05	\N	\N	1	2026-02-16 18:11:38
 \.
 
 
@@ -2083,7 +2557,107 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.production_tracking (ref_id, correria_id, programmed, cut) FROM stdin;
+COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory) FROM stdin;
+12907	mljjqn48zbxhtg0yw	60	42	0
+12908	mljjqn48zbxhtg0yw	60	66	0
+12870	mljjqn48zbxhtg0yw	0	60	0
+12960	mljjqn48zbxhtg0yw	0	114	0
+12959	mljjqn48zbxhtg0yw	0	114	0
+12955	mljjqn48zbxhtg0yw	0	48	0
+12952	mljjqn48zbxhtg0yw	0	90	0
+12950	mljjqn48zbxhtg0yw	0	90	0
+12951	mljjqn48zbxhtg0yw	0	90	0
+12943	mljjqn48zbxhtg0yw	0	252	0
+12945	mljjqn48zbxhtg0yw	0	264	0
+12937	mljjqn48zbxhtg0yw	0	180	0
+12933	mljjqn48zbxhtg0yw	0	60	0
+12934	mljjqn48zbxhtg0yw	0	60	0
+12935	mljjqn48zbxhtg0yw	0	60	0
+12936	mljjqn48zbxhtg0yw	0	60	0
+12926	mljjqn48zbxhtg0yw	0	90	0
+12924	mljjqn48zbxhtg0yw	0	90	0
+12917	mljjqn48zbxhtg0yw	0	126	0
+12919	mljjqn48zbxhtg0yw	0	150	0
+12920	mljjqn48zbxhtg0yw	0	225	0
+12918	mljjqn48zbxhtg0yw	0	60	0
+12921	mljjqn48zbxhtg0yw	0	60	0
+12922	mljjqn48zbxhtg0yw	0	60	0
+12923	mljjqn48zbxhtg0yw	0	60	0
+12913	mljjqn48zbxhtg0yw	0	90	0
+12905	mljjqn48zbxhtg0yw	0	60	0
+12906	mljjqn48zbxhtg0yw	0	60	0
+12909	mljjqn48zbxhtg0yw	0	198	0
+12910	mljjqn48zbxhtg0yw	0	60	0
+12911	mljjqn48zbxhtg0yw	0	342	0
+12897	mljjqn48zbxhtg0yw	0	198	0
+12898	mljjqn48zbxhtg0yw	0	60	0
+12892	mljjqn48zbxhtg0yw	0	60	0
+12893	mljjqn48zbxhtg0yw	0	150	0
+12881	mljjqn48zbxhtg0yw	0	66	0
+12875	mljjqn48zbxhtg0yw	0	90	0
+12000	mljjqn48zbxhtg0yw	0	0	29
+12129	mljjqn48zbxhtg0yw	0	0	101
+12366	mljjqn48zbxhtg0yw	0	0	40
+12860	mljjqn48zbxhtg0yw	0	132	156
+12864	mljjqn48zbxhtg0yw	0	99	90
+12888	mljjqn48zbxhtg0yw	0	150	129
+12876	mljjqn48zbxhtg0yw	0	150	120
+12877	mljjqn48zbxhtg0yw	0	150	120
+12871	mljjqn48zbxhtg0yw	0	150	84
+12395	mljjqn48zbxhtg0yw	0	0	185
+12431	mljjqn48zbxhtg0yw	0	0	54
+12442	mljjqn48zbxhtg0yw	0	0	39
+12473	mljjqn48zbxhtg0yw	0	0	77
+12574	mljjqn48zbxhtg0yw	0	0	92
+12581	mljjqn48zbxhtg0yw	0	0	113
+12617	mljjqn48zbxhtg0yw	0	0	122
+12640	mljjqn48zbxhtg0yw	0	0	148
+12644	mljjqn48zbxhtg0yw	0	0	171
+12665	mljjqn48zbxhtg0yw	0	0	54
+12679	mljjqn48zbxhtg0yw	0	0	52
+12680	mljjqn48zbxhtg0yw	0	0	20
+12692	mljjqn48zbxhtg0yw	0	0	97
+12693	mljjqn48zbxhtg0yw	0	0	37
+12694	mljjqn48zbxhtg0yw	0	0	188
+12698	mljjqn48zbxhtg0yw	0	0	66
+12699	mljjqn48zbxhtg0yw	0	0	24
+12704	mljjqn48zbxhtg0yw	0	0	124
+12708	mljjqn48zbxhtg0yw	0	0	24
+12737	mljjqn48zbxhtg0yw	0	0	67
+12744	mljjqn48zbxhtg0yw	0	0	76
+12747	mljjqn48zbxhtg0yw	0	0	142
+12754	mljjqn48zbxhtg0yw	0	0	120
+12771	mljjqn48zbxhtg0yw	0	0	103
+12777	mljjqn48zbxhtg0yw	0	0	210
+12782	mljjqn48zbxhtg0yw	0	0	134
+12783	mljjqn48zbxhtg0yw	0	0	120
+12805	mljjqn48zbxhtg0yw	0	0	33
+12817	mljjqn48zbxhtg0yw	0	0	55
+12818	mljjqn48zbxhtg0yw	0	0	22
+12820	mljjqn48zbxhtg0yw	0	0	84
+12821	mljjqn48zbxhtg0yw	0	0	22
+12823	mljjqn48zbxhtg0yw	0	0	95
+12825	mljjqn48zbxhtg0yw	0	0	41
+12828	mljjqn48zbxhtg0yw	0	0	69
+12831	mljjqn48zbxhtg0yw	0	0	80
+12834	mljjqn48zbxhtg0yw	0	0	37
+12835	mljjqn48zbxhtg0yw	0	0	78
+12836	mljjqn48zbxhtg0yw	0	0	31
+12837	mljjqn48zbxhtg0yw	0	0	84
+12840	mljjqn48zbxhtg0yw	0	0	21
+12841	mljjqn48zbxhtg0yw	0	0	114
+12855	mljjqn48zbxhtg0yw	0	0	24
+12861	mljjqn48zbxhtg0yw	0	0	111
+12862	mljjqn48zbxhtg0yw	0	0	147
+12865	mljjqn48zbxhtg0yw	0	0	90
+12872	mljjqn48zbxhtg0yw	0	0	84
+12873	mljjqn48zbxhtg0yw	0	0	84
+12880	mljjqn48zbxhtg0yw	0	0	120
+12882	mljjqn48zbxhtg0yw	0	0	120
+12883	mljjqn48zbxhtg0yw	0	0	120
+12884	mljjqn48zbxhtg0yw	0	0	120
+12885	mljjqn48zbxhtg0yw	0	0	117
+12889	mljjqn48zbxhtg0yw	0	0	117
 \.
 
 
@@ -2163,11 +2737,119 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
+-- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_activity) FROM stdin;
+1	mlgqup2eyhdq1lkxm	Qp7xMxfP5-xdNrnKAAAB	online	2026-02-26 14:25:23.522958	2026-02-26 14:25:23.522958
+2	mlgqup2eyhdq1lkxm	msxDnFd0DiqEKh9HAAAD	online	2026-02-26 14:25:23.548895	2026-02-26 14:25:23.548895
+3	mlgqup2eyhdq1lkxm	YNwzT3vuy7RHzIjnAAAF	online	2026-02-26 14:25:23.568254	2026-02-26 14:25:23.568254
+4	mlgqup2eyhdq1lkxm	GXkwE6lbiBs9adTmAAAH	online	2026-02-26 14:25:23.586067	2026-02-26 14:25:23.586067
+5	mlgqup2eyhdq1lkxm	GlGRYRYUw2UGnhTUAAAJ	online	2026-02-26 14:25:24.946723	2026-02-26 14:25:24.946723
+6	mlgqup2eyhdq1lkxm	DBoU2EEjC3p5M-wkAAAB	online	2026-02-26 14:25:39.061698	2026-02-26 14:25:39.061698
+7	mlgqup2eyhdq1lkxm	IN8QjacNqwKVqSOOAAAF	online	2026-02-26 14:25:39.100321	2026-02-26 14:25:39.100321
+8	mlgqup2eyhdq1lkxm	gHMSSZD_rNxKIFWVAAAJ	online	2026-02-26 14:25:39.14255	2026-02-26 14:25:39.14255
+9	mlgqup2eyhdq1lkxm	9TLuv2eQts3KleQuAAAD	online	2026-02-26 14:25:39.170119	2026-02-26 14:25:39.170119
+10	mlgqup2eyhdq1lkxm	9FKyKU3ZQqb9f4IKAAAH	online	2026-02-26 14:25:39.184453	2026-02-26 14:25:39.184453
+11	mlgqup2eyhdq1lkxm	S8Q5BUJ2fUxkbjD2AAAB	online	2026-02-26 14:26:07.523678	2026-02-26 14:26:07.523678
+12	mlgqup2eyhdq1lkxm	kIHXDMLAHw2lIdUAAAAF	online	2026-02-26 14:26:07.567817	2026-02-26 14:26:07.567817
+13	mlgqup2eyhdq1lkxm	7Z1se2qLQQwwGwQCAAAH	online	2026-02-26 14:26:07.59418	2026-02-26 14:26:07.59418
+14	mlgqup2eyhdq1lkxm	JN7opTzLaq7rmyE2AAAD	online	2026-02-26 14:26:07.731375	2026-02-26 14:26:07.731375
+15	mlgqup2eyhdq1lkxm	RKSPRl5sBWuqc4WbAAAJ	online	2026-02-26 14:26:08.948664	2026-02-26 14:26:08.948664
+16	mlgqup2eyhdq1lkxm	isBLVeIFHpFxti4EAAAB	online	2026-02-26 14:26:39.511076	2026-02-26 14:26:39.511076
+17	mlgqup2eyhdq1lkxm	SUq9v5BUtmkUEhAAAAAF	online	2026-02-26 14:26:39.552425	2026-02-26 14:26:39.552425
+18	mlgqup2eyhdq1lkxm	ld829PHO1dFttUvDAAAD	online	2026-02-26 14:26:39.615452	2026-02-26 14:26:39.615452
+19	mlgqup2eyhdq1lkxm	MysbY0jnhZUM3OUoAAAH	online	2026-02-26 14:26:39.617551	2026-02-26 14:26:39.617551
+20	mlgqup2eyhdq1lkxm	L7lX7YATQEa3UX-3AAAJ	online	2026-02-26 14:26:40.947192	2026-02-26 14:26:40.947192
+31	mlgqup29zlzugg8qk	xeJaTYlmbVkZVpJhAAAV	online	2026-02-26 14:27:40.878683	2026-02-26 14:27:40.878683
+32	mlgqup29zlzugg8qk	ZUIj24kLMiTWoU6xAAAX	online	2026-02-26 14:27:41.056495	2026-02-26 14:27:41.056495
+33	mlgqup29zlzugg8qk	PT3mC4UrI8LtxBsgAAAZ	online	2026-02-26 14:27:41.526418	2026-02-26 14:27:41.526418
+34	mlgqup29zlzugg8qk	hSeqy9xWwmNNUoaRAAAb	online	2026-02-26 14:27:41.576924	2026-02-26 14:27:41.576924
+35	mlgqup29zlzugg8qk	POinKjN3O1Bxgw6AAAAd	online	2026-02-26 14:27:41.607588	2026-02-26 14:27:41.607588
+36	mlgqup2eyhdq1lkxm	sqG6F9xAwvWy8UyoAAAf	online	2026-02-26 14:27:53.903866	2026-02-26 14:27:53.903866
+37	mlgqup2eyhdq1lkxm	81TzXMokNg4VNANSAAAh	online	2026-02-26 14:27:54.030064	2026-02-26 14:27:54.030064
+38	mlgqup2eyhdq1lkxm	uoT3w8TrmbkOIQLBAAAj	online	2026-02-26 14:27:54.182917	2026-02-26 14:27:54.182917
+39	mlgqup2eyhdq1lkxm	E44DN4hOvS-5LyTwAAAl	online	2026-02-26 14:27:54.218778	2026-02-26 14:27:54.218778
+40	mlgqup2eyhdq1lkxm	458qGwW5PcNYjuxnAAAn	online	2026-02-26 14:27:54.248034	2026-02-26 14:27:54.248034
+51	mlgqup2eyhdq1lkxm	Wc-EUD-miRZNfNhKAAAV	online	2026-02-26 14:30:07.611836	2026-02-26 14:30:07.611836
+52	mlgqup2eyhdq1lkxm	qi5FaO368z4prjwsAAAX	online	2026-02-26 14:30:07.615318	2026-02-26 14:30:07.615318
+53	mlgqup2eyhdq1lkxm	BrxH9w8u9UF4JA1UAAAZ	online	2026-02-26 14:30:07.903636	2026-02-26 14:30:07.903636
+54	mlgqup2eyhdq1lkxm	ZiXbA2pkI-h7oPccAAAb	online	2026-02-26 14:30:08.020859	2026-02-26 14:30:08.020859
+55	mlgqup2eyhdq1lkxm	bBksiBFM_K_iOMwLAAAd	online	2026-02-26 14:30:08.117309	2026-02-26 14:30:08.117309
+56	mlgqup29zlzugg8qk	da-fPm7dNtd1K-5XAAAf	online	2026-02-26 14:30:11.886864	2026-02-26 14:30:11.886864
+57	mlgqup29zlzugg8qk	hRrZvw9H3805-KvkAAAh	online	2026-02-26 14:30:12.063868	2026-02-26 14:30:12.063868
+58	mlgqup29zlzugg8qk	OT6VuMmXhEk1jfSDAAAj	online	2026-02-26 14:30:12.517563	2026-02-26 14:30:12.517563
+59	mlgqup29zlzugg8qk	dotN_4bQjJ5GsDjVAAAl	online	2026-02-26 14:30:12.617878	2026-02-26 14:30:12.617878
+60	mlgqup29zlzugg8qk	Zup1WalG84Aba_rxAAAn	online	2026-02-26 14:30:12.655842	2026-02-26 14:30:12.655842
+61	mlgqup2eyhdq1lkxm	GpljFNCcJLI_zzXNAAAB	online	2026-02-26 14:35:37.597149	2026-02-26 14:35:37.597149
+62	mlgqup29zlzugg8qk	rjdP-yHR6HrAE7iAAAAH	online	2026-02-26 14:35:37.657585	2026-02-26 14:35:37.657585
+63	mlgqup2eyhdq1lkxm	Z4oziJgiMbddBGv_AAAD	online	2026-02-26 14:35:37.667611	2026-02-26 14:35:37.667611
+64	mlgqup2eyhdq1lkxm	FCDNbNBkgCakp0kKAAAF	online	2026-02-26 14:35:37.701083	2026-02-26 14:35:37.701083
+65	mlgqup29zlzugg8qk	qEDrP9ybh4ttQjhsAAAJ	online	2026-02-26 14:35:37.910035	2026-02-26 14:35:37.910035
+66	mlgqup2eyhdq1lkxm	uXYSeP__ZpjvMpZzAAAM	online	2026-02-26 14:35:37.951215	2026-02-26 14:35:37.951215
+67	mlgqup29zlzugg8qk	gyY02q3d4oinF2OdAAAN	online	2026-02-26 14:35:37.971966	2026-02-26 14:35:37.971966
+68	mlgqup29zlzugg8qk	hB5haXQYronIpBaYAAAP	online	2026-02-26 14:35:38.046864	2026-02-26 14:35:38.046864
+69	mlgqup29zlzugg8qk	vmfBf-MHpO2gxijHAAAR	online	2026-02-26 14:35:38.233606	2026-02-26 14:35:38.233606
+70	mlgqup2eyhdq1lkxm	HljRAFEnhc-CHduNAAAT	online	2026-02-26 14:35:39.952018	2026-02-26 14:35:39.952018
+81	mlgqup29zlzugg8qk	7dQgLyBrD9oN-QBPAAAV	online	2026-02-26 14:36:34.003579	2026-02-26 14:36:34.003579
+82	mlgqup29zlzugg8qk	AUzsWgOMF7wiHa7HAAAX	online	2026-02-26 14:36:34.4668	2026-02-26 14:36:34.4668
+83	mlgqup29zlzugg8qk	mvOjQ0V2lr4UjtzMAAAZ	online	2026-02-26 14:36:34.739462	2026-02-26 14:36:34.739462
+84	mlgqup29zlzugg8qk	vyNBFXxLO15hSJzPAAAb	online	2026-02-26 14:36:34.793296	2026-02-26 14:36:34.793296
+85	mlgqup29zlzugg8qk	BTRpu1PVfu6uFGZvAAAd	online	2026-02-26 14:36:34.889209	2026-02-26 14:36:34.889209
+86	mlgqup2eyhdq1lkxm	_O42uA2hSlgjG7QGAAAf	online	2026-02-26 14:36:41.458597	2026-02-26 14:36:41.458597
+87	mlgqup2eyhdq1lkxm	nUboAgapS2HpwOeDAAAh	online	2026-02-26 14:36:41.471304	2026-02-26 14:36:41.471304
+88	mlgqup2eyhdq1lkxm	vu9jTa7Y4HqE7Kg3AAAj	online	2026-02-26 14:36:41.637421	2026-02-26 14:36:41.637421
+89	mlgqup2eyhdq1lkxm	yGkc_gF_WW8XixCYAAAl	online	2026-02-26 14:36:41.727336	2026-02-26 14:36:41.727336
+90	mlgqup2eyhdq1lkxm	s7THPbVO5KqDLRBCAAAn	online	2026-02-26 14:36:41.838088	2026-02-26 14:36:41.838088
+106	mlgqup29zlzugg8qk	0Whe3QvVa117J6NaAAAf	online	2026-02-26 14:40:09.051014	2026-02-26 14:40:09.051014
+107	mlgqup29zlzugg8qk	NHytY9MuVRbSEZ4FAAAh	online	2026-02-26 14:40:09.074583	2026-02-26 14:40:09.074583
+108	mlgqup29zlzugg8qk	74u2VqS4RwFilYYpAAAj	online	2026-02-26 14:40:09.422775	2026-02-26 14:40:09.422775
+109	mlgqup29zlzugg8qk	tRY6Er-FMraNu4-9AAAl	online	2026-02-26 14:40:09.527542	2026-02-26 14:40:09.527542
+110	mlgqup29zlzugg8qk	j-GsUgpYzsOVoIFqAAAn	online	2026-02-26 14:40:09.63017	2026-02-26 14:40:09.63017
+111	mlgqup2eyhdq1lkxm	uYMjwi4jwXwDn8UHAAAp	online	2026-02-26 14:40:18.012914	2026-02-26 14:40:18.012914
+112	mlgqup2eyhdq1lkxm	GBFRm66JF56iGABxAAAr	online	2026-02-26 14:40:18.016199	2026-02-26 14:40:18.016199
+113	mlgqup2eyhdq1lkxm	ZA1de1XuxZ7eqZMqAAAt	online	2026-02-26 14:40:18.186092	2026-02-26 14:40:18.186092
+114	mlgqup2eyhdq1lkxm	zDM_0jajsA2U7il7AAAv	online	2026-02-26 14:40:18.215578	2026-02-26 14:40:18.215578
+115	mlgqup2eyhdq1lkxm	opR5kgYKUyComBuhAAAx	online	2026-02-26 14:40:18.242748	2026-02-26 14:40:18.242748
+127	mlgqup2eyhdq1lkxm	rlCM6M3nNj-6QkLvAAAX	online	2026-02-26 14:43:17.798882	2026-02-26 14:43:17.798882
+126	mlgqup2eyhdq1lkxm	B5y05DocU917iFFkAAAV	online	2026-02-26 14:43:17.794462	2026-02-26 14:43:17.794462
+128	mlgqup2eyhdq1lkxm	C3UFhEUuceXKa-VhAAAZ	online	2026-02-26 14:43:17.982394	2026-02-26 14:43:17.982394
+129	mlgqup2eyhdq1lkxm	QWmjslV4tH37unspAAAb	online	2026-02-26 14:43:18.017242	2026-02-26 14:43:18.017242
+130	mlgqup2eyhdq1lkxm	58eZsCpCbxsYijywAAAd	online	2026-02-26 14:43:18.047661	2026-02-26 14:43:18.047661
+131	mlgqup29zlzugg8qk	hthtLYBLSnkdlRMOAAAf	online	2026-02-26 14:43:20.42766	2026-02-26 14:43:20.42766
+132	mlgqup29zlzugg8qk	rj0muaV8caXjUWpXAAAh	online	2026-02-26 14:43:20.564552	2026-02-26 14:43:20.564552
+133	mlgqup29zlzugg8qk	p4BmLiepwxQU225SAAAj	online	2026-02-26 14:43:20.861726	2026-02-26 14:43:20.861726
+134	mlgqup29zlzugg8qk	mTfrL-a2r6mmCw0dAAAl	online	2026-02-26 14:43:20.899654	2026-02-26 14:43:20.899654
+135	mlgqup29zlzugg8qk	YiQmvL7AAn_jas4XAAAn	online	2026-02-26 14:43:20.934453	2026-02-26 14:43:20.934453
+146	mlgqup29zlzugg8qk	AzdvE6yYXGpSEbRQAAAV	online	2026-02-26 14:51:23.645236	2026-02-26 14:51:23.645236
+147	mlgqup29zlzugg8qk	soVKo3_EDNUtg8oBAAAX	online	2026-02-26 14:51:23.756511	2026-02-26 14:51:23.756511
+148	mlgqup29zlzugg8qk	4_UKVb9X6ukE3UchAAAZ	online	2026-02-26 14:51:24.379021	2026-02-26 14:51:24.379021
+149	mlgqup29zlzugg8qk	HwTHOLEAXe2wFe07AAAb	online	2026-02-26 14:51:24.447144	2026-02-26 14:51:24.447144
+150	mlgqup29zlzugg8qk	z4gaxKhYtsowRP_FAAAd	online	2026-02-26 14:51:24.504013	2026-02-26 14:51:24.504013
+151	mlgqup2eyhdq1lkxm	xV2Q44N-3dtUf5EXAAAf	online	2026-02-26 14:51:28.792835	2026-02-26 14:51:28.792835
+152	mlgqup2eyhdq1lkxm	k3KLY9zmvkGhpR5OAAAh	online	2026-02-26 14:51:29.043466	2026-02-26 14:51:29.043466
+153	mlgqup2eyhdq1lkxm	H9NBTnVNykdEX8LWAAAk	online	2026-02-26 14:51:29.503049	2026-02-26 14:51:29.503049
+154	mlgqup2eyhdq1lkxm	AvxQ0OlHHtriVVSEAAAl	online	2026-02-26 14:51:29.513144	2026-02-26 14:51:29.513144
+155	mlgqup2eyhdq1lkxm	eF2-iqERHJNI6IBaAAAn	online	2026-02-26 14:51:29.655386	2026-02-26 14:51:29.655386
+296	mm3x7j6m4p6s4g2zz	dlpwnCvAU9q_eOlGAAEZ	online	2026-02-26 15:42:18.949249	2026-02-26 15:42:18.949249
+297	mm3x7j6m4p6s4g2zz	nK7i3cFsOC98rEHUAAEb	online	2026-02-26 15:42:18.950177	2026-02-26 15:42:18.950177
+298	mm3x7j6m4p6s4g2zz	VnU5T5z_3lItJoM_AAEd	online	2026-02-26 15:42:19.257875	2026-02-26 15:42:19.257875
+299	mm3x7j6m4p6s4g2zz	C_yIyDhDhv9ME190AAEf	online	2026-02-26 15:42:19.307499	2026-02-26 15:42:19.307499
+306	mm3x7j6m4p6s4g2zz	3OeqDoU1EUJtTt1EAAEt	online	2026-02-26 15:44:29.087106	2026-02-26 15:44:29.087106
+307	mm3x7j6m4p6s4g2zz	-7RLEo17EBiEMHAzAAEv	online	2026-02-26 15:44:29.088933	2026-02-26 15:44:29.088933
+308	mm3x7j6m4p6s4g2zz	mH5dLX8dJ1lxky22AAEx	online	2026-02-26 15:44:29.294783	2026-02-26 15:44:29.294783
+309	mm3x7j6m4p6s4g2zz	Pd4KuSTBeu1tBy9CAAEz	online	2026-02-26 15:44:29.345073	2026-02-26 15:44:29.345073
+310	mm3x7j6m4p6s4g2zz	LrudbliBzjTmocsRAAE1	online	2026-02-26 15:44:29.422268	2026-02-26 15:44:29.422268
+\.
+
+
+--
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
 1	mlgqup29zlzugg8qk	["orders", "settle", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "dispatch", "inventory", "salesReport", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-02-24 15:55:37.7692	2026-02-24 16:20:29.657359
+3	mm3x7j6m4p6s4g2zz	["orders", "fichas-costo", "salesReport", "dispatch", "reports", "dispatchControl", "orderHistory", "reception", "returnReception", "fichas-diseno", "maletas", "inventory", "settle", "deliveryDates", "compras", "masters"]	2026-02-26 15:44:03.70884	2026-02-26 15:44:03.70884
 \.
 
 
@@ -2176,10 +2858,11 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-19 09:09:32.276684
-mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-24 11:51:24.534407
-mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-24 15:55:46.274803
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-24 15:55:54.526517
+mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-02-26 15:12:19.980219
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 15:33:24.215444
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-26 15:38:58.120206
+mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-26 15:41:16.284679
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-02-26 15:44:26.049657
 \.
 
 
@@ -2187,7 +2870,14 @@ mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 34, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 357, true);
+
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.messages_id_seq', 18, true);
 
 
 --
@@ -2205,10 +2895,17 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 1, false);
 
 
 --
+-- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 310, true);
+
+
+--
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 1, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 3, true);
 
 
 --
@@ -2379,6 +3076,14 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2440,6 +3145,22 @@ ALTER TABLE ONLY public.return_receptions
 
 ALTER TABLE ONLY public.sellers
     ADD CONSTRAINT sellers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions
+    ADD CONSTRAINT user_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions
+    ADD CONSTRAINT user_sessions_user_id_socket_id_key UNIQUE (user_id, socket_id);
 
 
 --
@@ -2642,6 +3363,34 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
+-- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at);
+
+
+--
+-- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_read ON public.messages USING btree (read);
+
+
+--
+-- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
+
+
+--
+-- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender_id, receiver_id);
+
+
+--
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2695,6 +3444,27 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 --
 
 CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created_at);
+
+
+--
+-- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree (last_activity);
+
+
+--
+-- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (status);
+
+
+--
+-- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user_id);
 
 
 --
@@ -2800,5 +3570,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict HsQMjf6M2dh3vmTQ5lSfOG5DJu4kRFlinIBqVrMyltzrV3AchQv75JzqSmMvxEf
+\unrestrict DtljTYbbeKN9flb8NG0wHdJSu3FH3VtIiAksmdFjhEQvOyS1jcuOw9yEInaUirC
 
