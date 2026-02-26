@@ -152,7 +152,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       {/* Navigation Grid */}
       <div className="mb-8 flex items-start justify-between">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">Dashboard Administrativo</h1>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">Bienvenido, {user.name}</h1>
           <p className="text-slate-500 text-sm md:text-base">Selecciona una opción para continuar</p>
         </div>
         <button
