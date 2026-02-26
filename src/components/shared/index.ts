@@ -2,3 +2,4 @@ export { TableHeader, type TableColumn, type TableHeaderProps } from './TableHea
 export { FormModal, type FormModalProps } from './FormModal';
 export { FilterBar, type FilterBarProps } from './FilterBar';
 export { default as CorreriaAutocomplete, type CorreriaAutocompleteProps } from './CorreriaAutocomplete';
+export { ClockDisplay } from './ClockDisplay';

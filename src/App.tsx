@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AppState, User, UserRole } from './types';
 import { api } from './services/api';
 import { Icons } from './constants';
+import { ClockDisplay } from './components/shared/ClockDisplay';
 
 // Views
 import LoginView from './views/LoginView';
@@ -1088,6 +1089,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <ClockDisplay />
           <button 
             onClick={() => handleTabChange('home')}
             className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
