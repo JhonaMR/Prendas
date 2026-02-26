@@ -19,6 +19,8 @@ const logger = require('./utils/logger');
 const configurationManager = require('./config/configurationManager');
 const postgres = require('./config/postgres');
 const { trackRemoteClient, logDatabaseOperation } = require('./middleware/remoteClientTracking');
+const { initializeSocket } = require('./config/socketio');
+const { startCleanupJob } = require('./jobs/cleanupMessagesJob');
 
 // Crear aplicación Express
 const app = express();
@@ -204,6 +206,12 @@ async function startServer() {
             server = http.createServer(app);
         }
 
+        // Inicializar Socket.io
+        initializeSocket(server);
+
+        // Iniciar job de limpieza de mensajes
+        startCleanupJob();
+
         // Iniciar servidor
         server.listen(PORT, HOST, () => {
             const config = configurationManager.getConfiguration();
@@ -217,6 +225,7 @@ async function startServer() {
             console.log(`🗄️  Base de datos: PostgreSQL (${config.DB_HOST}:${config.DB_PORT})`);
             console.log(`🔐 CORS habilitado para:`, corsOptions.origin.join(', '));
             console.log(`🔒 Protocolo:    ${protocol.toUpperCase()}`);
+            console.log(`🔌 Socket.io:    Activo`);
             console.log('='.repeat(60));
             console.log('\n✅ El backend está listo para recibir peticiones');
             console.log('📝 Los logs de peticiones aparecerán abajo:\n');

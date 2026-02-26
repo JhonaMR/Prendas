@@ -3,6 +3,8 @@ import { AppState, User, UserRole } from './types';
 import { api } from './services/api';
 import { Icons } from './constants';
 import { ClockDisplay } from './components/shared/ClockDisplay';
+import { ChatProvider } from './context/ChatContext';
+import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContainer } from './components/Chat';
 
 // Views
 import LoginView from './views/LoginView';
@@ -1064,8 +1066,9 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden text-slate-700 bg-slate-50 flex flex-col">
-      <header className="h-20 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-40 shrink-0">
+    <ChatProvider>
+      <div className="relative h-screen w-screen overflow-hidden text-slate-700 bg-slate-50 flex flex-col">
+        <header className="h-20 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-40 shrink-0">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsNavOpen(true)}
@@ -1235,7 +1238,14 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Chat Components */}
+      <ChatFloatingButton />
+      <ChatContactsModal />
+      <ChatWindow />
+      <NotificationContainer />
     </div>
+    </ChatProvider>
   );
 };
 

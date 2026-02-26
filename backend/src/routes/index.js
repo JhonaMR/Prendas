@@ -26,6 +26,19 @@ const { allowDispatchCreate, allowDispatchEditDelete } = require('../middleware/
 // ==================== RUTAS PÚBLICAS (No requieren autenticación) ====================
 
 /**
+ * @route   GET /api/health
+ * @desc    Health check del servidor
+ * @access  Public
+ */
+router.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Servidor activo',
+    timestamp: new Date().toISOString()
+  });
+});
+
+/**
  * @route   POST /api/auth/login
  * @desc    Login de usuario
  * @access  Public
@@ -250,6 +263,52 @@ router.get('/maletas/:id', verifyToken, maletasController.getMaleta);
 router.post('/maletas', verifyToken, maletasController.createMaleta);
 router.put('/maletas/:id', verifyToken, maletasController.updateMaleta);
 router.delete('/maletas/:id', verifyToken, maletasController.deleteMaleta);
+
+// ==================== CHAT ====================
+
+const chatController = require('../controllers/chatController');
+
+/**
+ * @route   GET /api/chat/active-users
+ * @desc    Obtener usuarios activos conectados
+ * @access  Private
+ */
+router.get('/chat/active-users', verifyToken, chatController.getActiveUsers);
+
+/**
+ * @route   GET /api/chat/messages/:userId
+ * @desc    Obtener historial de mensajes con un usuario
+ * @access  Private
+ */
+router.get('/chat/messages/:userId', verifyToken, chatController.getMessages);
+
+/**
+ * @route   POST /api/chat/messages
+ * @desc    Enviar un mensaje
+ * @access  Private
+ */
+router.post('/chat/messages', verifyToken, chatController.sendMessage);
+
+/**
+ * @route   PUT /api/chat/messages/:userId/read
+ * @desc    Marcar mensajes como leídos
+ * @access  Private
+ */
+router.put('/chat/messages/:userId/read', verifyToken, chatController.markAsRead);
+
+/**
+ * @route   GET /api/chat/unread-messages
+ * @desc    Obtener resumen de mensajes no leídos
+ * @access  Private
+ */
+router.get('/chat/unread-messages', verifyToken, chatController.getUnreadMessages);
+
+/**
+ * @route   DELETE /api/chat/messages
+ * @desc    Limpiar mensajes antiguos (solo admin)
+ * @access  Private (Admin)
+ */
+router.delete('/chat/messages', verifyToken, verifyAdmin, chatController.deleteOldMessages);
 
 module.exports = router;
 
