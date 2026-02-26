@@ -21,6 +21,7 @@ const { getDeliveryDates, saveDeliveryDatesBatchHandler, deleteDeliveryDateHandl
 // Importar middleware
 const { verifyToken, verifyAdmin, verifyAdminOrObserver } = require('../middleware/auth');
 const { preventNonAdminEdit } = require('../middleware/editRestriction');
+const { allowDispatchCreate, allowDispatchEditDelete } = require('../middleware/dispatchRestriction');
 
 // ==================== RUTAS PÚBLICAS (No requieren autenticación) ====================
 
@@ -160,9 +161,9 @@ router.post('/return-receptions', verifyToken, preventNonAdminEdit, movementsCon
 // ==================== DESPACHOS ====================
 
 router.get('/dispatches', verifyToken, movementsController.getDispatches);
-router.post('/dispatches', verifyToken, preventNonAdminEdit, movementsController.createDispatch);
-router.put('/dispatches/:id', verifyToken, preventNonAdminEdit, movementsController.updateDispatch);
-router.delete('/dispatches/:id', verifyToken, preventNonAdminEdit, movementsController.deleteDispatch);
+router.post('/dispatches', verifyToken, allowDispatchCreate, movementsController.createDispatch);
+router.put('/dispatches/:id', verifyToken, allowDispatchEditDelete, movementsController.updateDispatch);
+router.delete('/dispatches/:id', verifyToken, allowDispatchEditDelete, movementsController.deleteDispatch);
 
 // ==================== PEDIDOS ====================
 

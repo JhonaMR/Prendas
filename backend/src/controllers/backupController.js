@@ -151,24 +151,96 @@ exports.getBackupInfo = (req, res) => {
 
 /**
  * POST /api/backups/manual
- * Ejecuta un backup manual inmediato
+ * Ejecuta un backup manual inmediato (BD + Imágenes)
  */
 exports.executeManualBackup = async (req, res) => {
   try {
-    const result = await backupExecutionService.executeBackup();
+    const { execSync } = require('child_process');
+    const fs = require('fs');
 
-    if (result.success) {
-      res.json({
-        success: true,
-        message: 'Backup ejecutado exitosamente',
-        data: result
-      });
-    } else {
-      res.status(500).json({
+    // 1. Backup de Base de Datos
+    const dbResult = await backupExecutionService.executeBackup();
+
+    if (!dbResult.success) {
+      return res.status(500).json({
         success: false,
-        error: result.error
+        error: 'Error en backup de BD: ' + dbResult.error
       });
     }
+
+    // 2. Backup de Imágenes
+    let imagesResult = { success: true, message: 'Sin imágenes para respaldar' };
+    
+    try {
+      const imagesDir = path.join(__dirname, '../../../public/images/references');
+      
+      if (fs.existsSync(imagesDir)) {
+        const files = fs.readdirSync(imagesDir);
+        
+        if (files.length > 0) {
+          const backupsDir = path.join(__dirname, '../../backups/images');
+          
+          // Crear directorio si no existe
+          if (!fs.existsSync(backupsDir)) {
+            fs.mkdirSync(backupsDir, { recursive: true });
+          }
+
+          // Crear timestamp
+          const now = new Date();
+          const timestamp = now.toISOString()
+            .replace('T', '-')
+            .replace(/:/g, '-')
+            .split('.')[0];
+          
+          const backupName = `images-backup-${timestamp}.tar.gz`;
+          const backupPath = path.join(backupsDir, backupName);
+
+          // Crear archivo comprimido
+          const command = process.platform === 'win32'
+            ? `cd "${imagesDir}" && tar -czf "${backupPath}" .`
+            : `tar -czf "${backupPath}" -C "${imagesDir}" .`;
+
+          execSync(command, { stdio: 'pipe' });
+
+          const stats = fs.statSync(backupPath);
+          const sizeInMB = (stats.size / 1024 / 1024).toFixed(2);
+
+          imagesResult = {
+            success: true,
+            message: `Backup de imágenes completado: ${backupName} (${sizeInMB} MB)`
+          };
+
+          // Limpiar backups antiguos (mantener últimos 30)
+          const allBackups = fs.readdirSync(backupsDir)
+            .filter(f => f.startsWith('images-backup-') && f.endsWith('.tar.gz'))
+            .sort()
+            .reverse();
+
+          if (allBackups.length > 30) {
+            const filesToDelete = allBackups.slice(30);
+            filesToDelete.forEach(file => {
+              fs.unlinkSync(path.join(backupsDir, file));
+            });
+          }
+        }
+      }
+    } catch (imagesError) {
+      console.error('Error en backup de imágenes:', imagesError);
+      imagesResult = {
+        success: false,
+        message: 'Error en backup de imágenes: ' + imagesError.message
+      };
+    }
+
+    // Retornar resultado combinado
+    res.json({
+      success: true,
+      message: 'Backup manual completado',
+      data: {
+        database: dbResult,
+        images: imagesResult
+      }
+    });
   } catch (error) {
     console.error('Error ejecutando backup manual:', error);
     res.status(500).json({

@@ -87,7 +87,9 @@ const BackupManagementView: React.FC = () => {
       const response = await api.executeManualBackup();
 
       if (response.success) {
-        alert('✅ Backup ejecutado exitosamente');
+        const dbMsg = response.data?.database?.message || 'BD respaldada';
+        const imagesMsg = response.data?.images?.message || 'Imágenes respaldadas';
+        alert(`✅ Backup completado exitosamente\n\n📊 BD: ${dbMsg}\n📸 Imágenes: ${imagesMsg}`);
         loadBackups();
         loadStats();
       }

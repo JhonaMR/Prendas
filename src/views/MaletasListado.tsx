@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { AppState } from '../../types';
 import apiFichas from '../services/apiFichas';
+import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 
 interface Props {
     state: AppState; user: any;
@@ -14,6 +15,8 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
     const [showModalEliminar, setShowModalEliminar] = useState(false);
     const [nombreMaleta, setNombreMaleta] = useState('');
     const [correriaId, setCorreriaId] = useState('');
+    const [correriaSearch, setCorreriaSearch] = useState('');
+    const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
     const [maletaEliminar, setMaletaEliminar] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -131,14 +134,20 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                             </div>
                             <div>
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Correría (Opcional)</label>
-                                <select value={correriaId} onChange={e => setCorreriaId(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-purple-100 focus:border-purple-500">
-                                    <option value="">Sin correría</option>
-                                    {(state.correrias || []).map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
-                                </select>
+                                <CorreriaAutocomplete
+                                  value={correriaId}
+                                  correrias={state.correrias || []}
+                                  onChange={setCorreriaId}
+                                  search={correriaSearch}
+                                  setSearch={setCorreriaSearch}
+                                  showDropdown={showCorreriaDropdown}
+                                  setShowDropdown={setShowCorreriaDropdown}
+                                  placeholder="Buscar correría..."
+                                />
                             </div>
                         </div>
                         <div className="flex gap-3 mt-8">
-                            <button onClick={() => { setShowModalCrear(false); setNombreMaleta(''); setCorreriaId(''); }} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide text-sm">Cancelar</button>
+                            <button onClick={() => { setShowModalCrear(false); setNombreMaleta(''); setCorreriaId(''); setCorreriaSearch(''); setShowCorreriaDropdown(false); }} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide text-sm">Cancelar</button>
                             <button onClick={handleCrear} disabled={isLoading} className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm disabled:opacity-50">{isLoading ? 'CREANDO...' : 'CREAR'}</button>
                         </div>
                     </div>

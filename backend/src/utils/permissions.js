@@ -103,8 +103,8 @@ function canEdit(user) {
 function canCreate(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Solo admin puede crear
-    return role === 'admin';
+    // Admin y general pueden crear
+    return role === 'admin' || role === 'general';
 }
 
 /**

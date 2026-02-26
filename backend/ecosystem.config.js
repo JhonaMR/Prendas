@@ -14,7 +14,8 @@
  * Procesos que se inician:
  * 1. inventario-backend - Servidor Node.js (puerto 3000)
  * 2. inventario-frontend - Vite dev server (puerto 5173)
- * 3. inventario-backup-scheduler - Backups automáticos (22:00 cada día)
+ * 3. inventario-backup-scheduler - Backups BD (22:00 cada día)
+ * 4. inventario-images-backup-scheduler - Backups de imágenes (23:00 cada día)
  */
 
 module.exports = {
@@ -73,6 +74,24 @@ module.exports = {
       },
       error_file: './logs/backup-error.log',
       out_file: './logs/backup-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: false, // No reiniciar automáticamente, solo por cron
+      watch: false,
+      max_memory_restart: '200M'
+    },
+    {
+      // Backup de imágenes programado diariamente a las 23:00 (11pm)
+      name: 'inventario-images-backup-scheduler',
+      script: './src/scripts/backupImages.js',
+      instances: 1,
+      exec_mode: 'fork',
+      cron_restart: '0 23 * * *', // Cada día a las 23:00 (11pm)
+      env: {
+        NODE_ENV: 'production'
+      },
+      error_file: './logs/images-backup-error.log',
+      out_file: './logs/images-backup-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
       autorestart: false, // No reiniciar automáticamente, solo por cron

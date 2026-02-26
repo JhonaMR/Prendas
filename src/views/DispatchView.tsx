@@ -51,9 +51,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   };
 
   const handleEdit = (disp: Dispatch) => {
-    // FIX: UserRole.admin instead of UserRole.ADMIN
     if (user.role !== UserRole.ADMIN) {
-      alert("Acceso administrativo requerido.");
+      alert("Solo administradores pueden editar despachos.");
       return;
     }
     const client = clients.find(c => c.id === disp.clientId);
@@ -188,7 +187,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
       client?.name.toLowerCase().includes(search) ||
       d.clientId.toLowerCase().includes(search)
     );
-  });
+  }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   React.useEffect(() => {
     dispatchesPagination.pagination.total = filteredDispatches.length;
@@ -376,6 +375,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                       <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{d.createdAt}</span>
                       {d.invoiceNo && <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">F: {d.invoiceNo}</span>}
                       {d.remissionNo && <span className="text-[9px] sm:text-[10px] font-black bg-pink-50 text-pink-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">R: {d.remissionNo}</span>}
+                      {correrias.find(c => c.id === d.correriaId) && <span className="text-[9px] sm:text-[10px] font-black bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full uppercase tracking-tighter">{correrias.find(c => c.id === d.correriaId)?.name} {correrias.find(c => c.id === d.correriaId)?.year}</span>}
                     </div>
                     <div className="flex items-baseline gap-3">
                       <h3 className="text-lg sm:text-xl font-black text-slate-800">{client?.name || 'Cliente Desconocido'}</h3>
@@ -485,7 +485,12 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                                   <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTALES DESPACHO</td>
                                   <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-slate-900 text-lg sm:text-xl">{totalQty}</td>
                                   <td></td>
-                                  <td className="px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-pink-600 text-xl sm:text-2xl">${d.items.reduce((acc, i) => acc + (referencesMaster.find(rm => rm.id === i.reference)?.price || 0) * i.quantity, 0).toLocaleString()}</td>
+                                  <td className="px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-pink-600 text-xl sm:text-2xl">${Object.entries(itemsByRef).reduce((acc, [ref, qty]: [string, any]) => {
+                                    const dispatchItem = d.items.find(item => item.reference === ref);
+                                    const masterRef = referencesMaster.find(rm => rm.id === ref);
+                                    const price = dispatchItem?.salePrice || masterRef?.price || 0;
+                                    return acc + (price * qty);
+                                  }, 0).toLocaleString()}</td>
                                 </tr>
                             </tfoot>
                         </table>
