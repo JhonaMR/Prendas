@@ -111,27 +111,12 @@ const validateConfeccionistaExists = (db, confeccionistaId) => {
 
 /**
  * Detectar registros duplicados en un lote
- * Duplicados = mismo confeccionistaId, referenceId y sendDate
+ * DESHABILITADO: Es normal tener múltiples registros del mismo confeccionista con la misma referencia
+ * incluso en la misma fecha (múltiples lotes)
  */
 const detectDuplicates = (records) => {
-    const seen = new Map();
-    const duplicates = [];
-
-    records.forEach((record, index) => {
-        const key = `${record.confeccionistaId}|${record.referenceId}|${record.sendDate}`;
-        
-        if (seen.has(key)) {
-            duplicates.push({
-                index,
-                firstIndex: seen.get(key),
-                key
-            });
-        } else {
-            seen.set(key, index);
-        }
-    });
-
-    return duplicates;
+    // Retornar array vacío - sin validación de duplicados
+    return [];
 };
 
 module.exports = {

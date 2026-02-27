@@ -8,6 +8,7 @@ import { useContext, useEffect, useCallback, useRef } from 'react';
 import { ChatContext } from '../context/ChatContext';
 import { socketService } from '../services/socketService';
 import { chatService } from '../services/chatService';
+import { playMessageNotificationSound } from '../utils/soundNotification';
 
 export const useChat = () => {
   const chatContext = useContext(ChatContext);
@@ -106,6 +107,9 @@ export const useChat = () => {
 
     // Mensaje recibido
     socketService.on('message:received', (data) => {
+      // Reproducir sonido de notificación
+      playMessageNotificationSound();
+
       // Si el chat está abierto con este usuario, agregar el mensaje
       if (currentChat?.userId === data.from.toString()) {
         addMessage({

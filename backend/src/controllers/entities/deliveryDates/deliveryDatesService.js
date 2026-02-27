@@ -150,26 +150,17 @@ const saveDeliveryDatesBatch = async (dates, userId) => {
                 continue;
             }
 
-            // Validar referencias externas
-            const confeccionistaResult = await query('SELECT id FROM confeccionistas WHERE id = $1', [date.confeccionistaId]);
-            if (confeccionistaResult.rows.length === 0) {
-                errors.push({
-                    index: i,
-                    record: date,
-                    errors: { confeccionistaId: `Confeccionista no existe: ${date.confeccionistaId}` }
-                });
-                continue;
-            }
-
-            const referenceResult = await query('SELECT id FROM product_references WHERE id = $1', [date.referenceId]);
-            if (referenceResult.rows.length === 0) {
-                errors.push({
-                    index: i,
-                    record: date,
-                    errors: { referenceId: `Referencia no existe: ${date.referenceId}` }
-                });
-                continue;
-            }
+            // Validar referencias externas - SOLO VALIDAR REFERENCIA SI EXISTE EN LA BD
+            // Si no existe, permitir como texto libre (como confeccionista)
+            // const referenceResult = await query('SELECT id FROM product_references WHERE id = $1', [date.referenceId]);
+            // if (referenceResult.rows.length === 0) {
+            //     errors.push({
+            //         index: i,
+            //         record: date,
+            //         errors: { referenceId: `Referencia no existe: ${date.referenceId}` }
+            //     });
+            //     continue;
+            // }
 
             // Si llegó aquí, el registro es válido
             validRecords.push({

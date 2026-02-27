@@ -266,20 +266,21 @@ CREATE TABLE IF NOT EXISTS public.inventory_movements (
 -- ============================================================================
 -- 18. TABLA: delivery_dates
 -- ============================================================================
+-- NOTA: confeccionista_id y reference_id son texto libre (sin restricción de clave foránea)
+-- Esto permite guardar confeccionistas y referencias como texto sin que existan en las tablas maestras
 CREATE TABLE IF NOT EXISTS public.delivery_dates (
     id character varying(255) NOT NULL,
-    confeccionista_id character varying(255),
-    reference_id character varying(255),
-    quantity integer,
-    send_date date,
-    expected_date date,
-    delivery_date date,
+    confeccionista_id character varying(255) NOT NULL,
+    reference_id character varying(255) NOT NULL,
+    quantity integer NOT NULL,
+    send_date character varying(255) NOT NULL,
+    expected_date character varying(255) NOT NULL,
+    delivery_date character varying(255),
     process character varying(255),
-    observation text,
-    created_by character varying(255),
+    observation character varying(255),
+    created_by character varying(255) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT delivery_dates_pkey PRIMARY KEY (id),
-    CONSTRAINT delivery_dates_confeccionista_id_fkey FOREIGN KEY (confeccionista_id) REFERENCES public.confeccionistas(id) ON DELETE SET NULL
+    CONSTRAINT delivery_dates_pkey PRIMARY KEY (id)
 );
 
 -- ============================================================================
@@ -560,6 +561,9 @@ CREATE INDEX IF NOT EXISTS idx_inventory_movements_created_at ON public.inventor
 
 -- Índices para delivery_dates
 CREATE INDEX IF NOT EXISTS idx_delivery_dates_confeccionista_id ON public.delivery_dates(confeccionista_id);
+CREATE INDEX IF NOT EXISTS idx_delivery_dates_reference_id ON public.delivery_dates(reference_id);
+CREATE INDEX IF NOT EXISTS idx_delivery_dates_send_date ON public.delivery_dates(send_date);
+CREATE INDEX IF NOT EXISTS idx_delivery_dates_expected_date ON public.delivery_dates(expected_date);
 
 -- Índices para fichas_diseno
 CREATE INDEX IF NOT EXISTS idx_fichas_diseno_disenadora_id ON public.fichas_diseno(disenadora_id);

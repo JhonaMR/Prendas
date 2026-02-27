@@ -4,6 +4,8 @@ import api from '../services/api';
 import { validateBatch, validateRecord, ValidationError } from '../utils/deliveryDateValidator';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import DeliveryDatesImportModal from '../components/DeliveryDatesImportModal';
+import TextAutocomplete from '../components/TextAutocomplete';
 
 interface DeliveryDatesViewProps {
   state: AppState;
@@ -17,11 +19,16 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [isSaving, setIsSaving] = useState(false);
   const [hideDelivered, setHideDelivered] = useState(false);
   const [confFilterId, setConfFilterId] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
+  const [refFilterId, setRefFilterId] = useState('');
+  const [yearFilter, setYearFilter] = useState('');
+  const [sendDateMonthFilter, setSendDateMonthFilter] = useState('');
+  const [expectedDateMonthFilter, setExpectedDateMonthFilter] = useState('');
+  const [deliveryDateMonthFilter, setDeliveryDateMonthFilter] = useState('');
   const [validationErrors, setValidationErrors] = useState<{ [index: number]: ValidationError }>({});
   const [isLoadingPaginated, setIsLoadingPaginated] = useState(false);
-  const [usePaginatedView, setUsePaginatedView] = useState(false);
-  const { pagination, goToPage } = usePagination(1, 20);
+  const [usePaginatedView, setUsePaginatedView] = useState(true);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const deliveryDatesPagination = usePagination(1, 50);
   
   const hasUnsavedChanges = useRef(false);
   const isAdmin = user?.role === UserRole.ADMIN || user?.role === 'admin';
@@ -121,6 +128,18 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         alert('Error de conexión');
       }
     }
+  };
+
+  const handleImportData = (importedData: DeliveryDate[]) => {
+    updateState(prev => ({
+      ...prev,
+      deliveryDates: [...importedData, ...prev.deliveryDates]
+    }));
+
+    hasUnsavedChanges.current = true;
+    if (onUnsavedChanges) onUnsavedChanges(true);
+
+    alert(`✅ ${importedData.length} registros importados correctamente. No olvides guardar los cambios.`);
   };
 
   const handleSave = async () => {
@@ -255,19 +274,91 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     }
 
     if (confFilterId) {
-      data = data.filter(d => d.confeccionistaId === confFilterId);
+      data = data.filter(d => d.confeccionistaId.toLowerCase() === confFilterId.toLowerCase());
     }
 
-    if (dateFilter) {
-      data = data.filter(d =>
-        d.sendDate.includes(dateFilter) ||
-        d.expectedDate.includes(dateFilter) ||
-        d.deliveryDate?.includes(dateFilter)
-      );
+    if (refFilterId) {
+      data = data.filter(d => d.referenceId.toLowerCase() === refFilterId.toLowerCase());
+    }
+
+    // Filtro de año - solo en sendDate
+    if (yearFilter) {
+      data = data.filter(d => {
+        const sendYear = new Date(d.sendDate).getFullYear().toString();
+        return sendYear === yearFilter;
+      });
+    }
+
+    // Filtros de mes
+    if (sendDateMonthFilter) {
+      data = data.filter(d => {
+        const sendMonth = (new Date(d.sendDate).getMonth() + 1).toString().padStart(2, '0');
+        return sendMonth === sendDateMonthFilter;
+      });
+    }
+
+    if (expectedDateMonthFilter) {
+      data = data.filter(d => {
+        const expectedMonth = (new Date(d.expectedDate).getMonth() + 1).toString().padStart(2, '0');
+        return expectedMonth === expectedDateMonthFilter;
+      });
+    }
+
+    if (deliveryDateMonthFilter) {
+      data = data.filter(d => {
+        if (!d.deliveryDate) return false;
+        const deliveryMonth = (new Date(d.deliveryDate).getMonth() + 1).toString().padStart(2, '0');
+        return deliveryMonth === deliveryDateMonthFilter;
+      });
     }
 
     return data;
-  }, [state.deliveryDates, hideDelivered, confFilterId, dateFilter]);
+  }, [state.deliveryDates, hideDelivered, confFilterId, refFilterId, yearFilter, sendDateMonthFilter, expectedDateMonthFilter, deliveryDateMonthFilter]);
+
+  // Actualizar paginación cuando cambia filteredData
+  useEffect(() => {
+    deliveryDatesPagination.pagination.total = filteredData.length;
+    deliveryDatesPagination.pagination.totalPages = Math.ceil(filteredData.length / deliveryDatesPagination.pagination.limit);
+  }, [filteredData.length, deliveryDatesPagination.pagination.limit]);
+
+  // Obtener sugerencias únicas de confeccionista (case-insensitive, pero mantener original)
+  const confeccionistasSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    state.deliveryDates.forEach(d => {
+      const key = d.confeccionistaId.toLowerCase();
+      if (!seen.has(key)) {
+        seen.set(key, d.confeccionistaId);
+      }
+    });
+    return Array.from(seen.values()).sort();
+  }, [state.deliveryDates]);
+
+  // Obtener sugerencias únicas de referencia (case-insensitive, pero mantener original)
+  const referenciasSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    state.deliveryDates.forEach(d => {
+      const key = d.referenceId.toLowerCase();
+      if (!seen.has(key)) {
+        seen.set(key, d.referenceId);
+      }
+    });
+    return Array.from(seen.values()).sort();
+  }, [state.deliveryDates]);
+
+  // Calcular última página
+  const totalPages = deliveryDatesPagination.pagination.totalPages;
+  const goToLastPage = () => {
+    if (totalPages > 0) {
+      deliveryDatesPagination.goToPage(totalPages);
+    }
+  };
+
+  // Datos paginados
+  const paginatedData = useMemo(() => {
+    const startIndex = (deliveryDatesPagination.pagination.page - 1) * deliveryDatesPagination.pagination.limit;
+    const endIndex = startIndex + deliveryDatesPagination.pagination.limit;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, deliveryDatesPagination.pagination.page, deliveryDatesPagination.pagination.limit]);
 
   return (
     <div className="space-y-6 pb-20">
@@ -278,23 +369,46 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         </div>
 
         <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
+          <button
+            onClick={goToLastPage}
+            title={`Ir a última página (${totalPages})`}
+            className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit mt-5"
+          >
+            Última ({totalPages})
+          </button>
+
           <div className="flex flex-col w-48">
             <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Confeccionista</span>
-            <ConfeccionistaAutocomplete
+            <TextAutocomplete
               value={confFilterId}
-              confeccionistas={state.confeccionistas}
+              suggestions={confeccionistasSuggestions}
               onChange={setConfFilterId}
+              placeholder="Filtrar..."
+              disabled={false}
+            />
+          </div>
+
+          <div className="flex flex-col w-48">
+            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Referencia</span>
+            <TextAutocomplete
+              value={refFilterId}
+              suggestions={referenciasSuggestions}
+              onChange={setRefFilterId}
+              placeholder="Filtrar..."
               disabled={false}
             />
           </div>
 
           <div className="flex flex-col">
-            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Fecha</span>
+            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Año (Envío)</span>
             <input
-              type="date"
-              value={dateFilter}
-              onChange={e => setDateFilter(e.target.value)}
-              className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-36 border-none focus:ring-2 focus:ring-blue-100"
+              type="number"
+              value={yearFilter}
+              onChange={e => setYearFilter(e.target.value)}
+              placeholder="2026"
+              min="2000"
+              max="2099"
+              className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-24 border-none focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -313,6 +427,14 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 
           {true && (
             <div className="flex items-center gap-2 border-l border-slate-100 pl-3">
+              {isAdmin && (
+                <button
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all"
+                >
+                  Importar Excel
+                </button>
+              )}
               <button
                 onClick={handleSave}
                 disabled={isSaving}
@@ -368,26 +490,80 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       {/* TABLA */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-100" style={{ overflow: 'visible' }}>
         <div style={{ overflow: 'visible' }}>
-          <table className="w-full text-left text-[10px] min-w-[1800px]">
+          <table className="w-full text-left text-sm min-w-[1800px]">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-4 py-4 font-black uppercase text-slate-700 w-48">Confeccionista</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-24">Ref.</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-20">Cant.</th>
-                <th className="px-3 py-4 font-black uppercase text-orange-700 text-center w-32 bg-yellow-50">Fecha envío lote</th>
-                <th className="px-3 py-4 font-black uppercase text-orange-700 text-center w-36 bg-yellow-50">Fecha presup. entrega</th>
-                <th className="px-3 py-4 font-black uppercase text-blue-700 text-center w-32 bg-blue-50">Fecha entrega</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-24">Dif fechas</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-24">Rot. inicial</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-24">Rot. final</th>
-                <th className="px-3 py-4 font-black uppercase text-slate-700 text-center w-28">Rot final vs ini</th>
-                <th className="px-4 py-4 font-black uppercase text-slate-700 w-32">Proceso</th>
-                <th className="px-4 py-4 font-black uppercase text-slate-700 w-40">Observación</th>
-                <th className="px-3 py-4 text-center w-16"></th>
+                <th className="px-4 py-2 font-black uppercase text-slate-700 w-48">Confeccionista</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Ref.</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-20">Cant.</th>
+                <th className="px-3 py-2 font-black uppercase text-orange-700 text-center w-32 bg-yellow-50">Fecha envío lote</th>
+                <th className="px-3 py-2 font-black uppercase text-orange-700 text-center w-36 bg-yellow-50">Fecha presup. entrega</th>
+                <th className="px-3 py-2 font-black uppercase text-blue-700 text-center w-32 bg-blue-50">Fecha entrega</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Dif fechas</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Rot. inicial</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Rot. final</th>
+                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-28">Rot final vs ini</th>
+                <th className="px-4 py-2 font-black uppercase text-slate-700 w-32">Proceso</th>
+                <th className="px-4 py-2 font-black uppercase text-slate-700 w-40">Observación</th>
+                <th className="px-3 py-2 text-center w-16"></th>
+              </tr>
+              <tr className="bg-slate-100">
+                <th className="px-4 py-1"></th>
+                <th className="px-3 py-1"></th>
+                <th className="px-3 py-1"></th>
+                <th className="px-3 py-1 bg-yellow-100">
+                  <select
+                    value={sendDateMonthFilter}
+                    onChange={e => setSendDateMonthFilter(e.target.value)}
+                    className="w-full px-1 py-0.5 text-xs border border-orange-300 rounded bg-white"
+                  >
+                    <option value="">Mes</option>
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={String(i + 1).padStart(2, '0')}>
+                        {new Date(2000, i).toLocaleString('es', { month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+                <th className="px-3 py-1 bg-yellow-100">
+                  <select
+                    value={expectedDateMonthFilter}
+                    onChange={e => setExpectedDateMonthFilter(e.target.value)}
+                    className="w-full px-1 py-0.5 text-xs border border-orange-300 rounded bg-white"
+                  >
+                    <option value="">Mes</option>
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={String(i + 1).padStart(2, '0')}>
+                        {new Date(2000, i).toLocaleString('es', { month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+                <th className="px-3 py-1 bg-blue-100">
+                  <select
+                    value={deliveryDateMonthFilter}
+                    onChange={e => setDeliveryDateMonthFilter(e.target.value)}
+                    className="w-full px-1 py-0.5 text-xs border border-blue-300 rounded bg-white"
+                  >
+                    <option value="">Mes</option>
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={String(i + 1).padStart(2, '0')}>
+                        {new Date(2000, i).toLocaleString('es', { month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+                <th className="px-3 py-1"></th>
+                <th className="px-3 py-1"></th>
+                <th className="px-3 py-1"></th>
+                <th className="px-3 py-1"></th>
+                <th className="px-4 py-1"></th>
+                <th className="px-4 py-1"></th>
+                <th className="px-3 py-1"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredData.map((row, displayIndex) => {
+              {paginatedData.map((row, displayIndex) => {
                 const recordIndex = state.deliveryDates.findIndex(d => d.id === row.id);
                 const hasErrors = validationErrors[recordIndex];
                 const difFechas = calcDaysDiff(row.expectedDate, row.deliveryDate);
@@ -397,12 +573,13 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 
                 return (
                   <tr key={row.id} className={`hover:bg-slate-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-1">
                       <div>
-                        <ConfeccionistaAutocomplete
+                        <TextAutocomplete
                           value={row.confeccionistaId}
-                          confeccionistas={state.confeccionistas}
+                          suggestions={confeccionistasSuggestions}
                           onChange={val => updateRow(row.id, 'confeccionistaId', val)}
+                          placeholder="Confeccionista..."
                           disabled={false}
                         />
                         {hasErrors?.confeccionistaId && (
@@ -410,21 +587,22 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <div>
-                        <input
-                          type="text"
+                        <TextAutocomplete
                           value={row.referenceId}
-                          onChange={e => updateRow(row.id, 'referenceId', e.target.value)}
-                          readOnly={false}
-                          className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center text-blue-700 focus:ring-2 focus:ring-blue-100 ${hasErrors?.referenceId ? 'border-red-500' : 'border-slate-200'}`}
+                          suggestions={referenciasSuggestions}
+                          onChange={val => updateRow(row.id, 'referenceId', val)}
+                          placeholder="Referencia..."
+                          disabled={false}
+                          className="text-center text-blue-700"
                         />
                         {hasErrors?.referenceId && (
                           <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.referenceId}</p>
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <div>
                         <input
                           type="number"
@@ -438,7 +616,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-center bg-yellow-50">
+                    <td className="px-3 py-1 text-center bg-yellow-50">
                       <div>
                         <input
                           type="date"
@@ -452,7 +630,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-center bg-yellow-50">
+                    <td className="px-3 py-1 text-center bg-yellow-50">
                       <div>
                         <input
                           type="date"
@@ -466,7 +644,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-center bg-blue-50">
+                    <td className="px-3 py-1 text-center bg-blue-50">
                       <input
                         type="date"
                         value={row.deliveryDate || ''}
@@ -475,23 +653,23 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         className="w-full px-2 py-1 bg-white border border-blue-200 rounded-lg font-bold text-center text-blue-700 focus:ring-2 focus:ring-blue-100"
                       />
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <span className={`font-black ${difFechas && difFechas > 0 ? 'text-red-600' : difFechas && difFechas < 0 ? 'text-green-600' : 'text-slate-400'}`}>
                         {difFechas !== null ? difFechas : '-'}
                       </span>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <span className="font-bold text-slate-700">{rotInicial !== null ? rotInicial : '-'}</span>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <span className="font-bold text-slate-700">{rotFinal !== null ? rotFinal : '-'}</span>
                     </td>
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-3 py-1 text-center">
                       <span className={`font-black ${rotDiff && rotDiff > 0 ? 'text-red-600' : rotDiff && rotDiff < 0 ? 'text-green-600' : 'text-slate-400'}`}>
                         {rotDiff !== null ? rotDiff : '-'}
                       </span>
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-1">
                       <input
                         type="text"
                         value={row.process}
@@ -501,7 +679,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300"
                       />
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="px-4 py-1">
                       <input
                         type="text"
                         value={row.observation}
@@ -530,75 +708,25 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           </table>
         </div>
       </div>
-    </div>
-  );
-};
 
-const ConfeccionistaAutocomplete: React.FC<{
-  value: string;
-  confeccionistas: Confeccionista[];
-  onChange: (id: string) => void;
-  disabled: boolean;
-}> = ({ value, confeccionistas, onChange, disabled }) => {
-  const [search, setSearch] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+      {/* PAGINACIÓN */}
+      <div className="mt-6">
+        <PaginationComponent
+          currentPage={deliveryDatesPagination.pagination.page}
+          totalPages={deliveryDatesPagination.pagination.totalPages}
+          pageSize={deliveryDatesPagination.pagination.limit}
+          onPageChange={deliveryDatesPagination.goToPage}
+          onPageSizeChange={deliveryDatesPagination.setLimit}
+        />
+      </div>
 
-  const conf = confeccionistas.find(c => c.id === value);
-  const displayValue = conf ? `${conf.id} - ${conf.name}` : value;
-
-  const filtered = confeccionistas.filter(c =>
-    c.active && (
-      c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.id.toLowerCase().includes(search.toLowerCase())
-    )
-  );
-
-  const handleBlur = () => {
-    timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
-  };
-
-  const handleSelect = (id: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    onChange(id);
-    setShowDropdown(false);
-    setSearch('');
-  };
-
-  return (
-    <div className="relative" ref={containerRef}>
-      <input
-        type="text"
-        value={showDropdown ? search : displayValue}
-        onChange={e => setSearch(e.target.value)}
-        onFocus={() => { setShowDropdown(true); setSearch(''); }}
-        onBlur={handleBlur}
-        readOnly={disabled}
-        placeholder="Buscar..."
-        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 text-xs"
+      {/* Import Modal */}
+      <DeliveryDatesImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImport={handleImportData}
+        confeccionistas={state.confeccionistas}
       />
-      {showDropdown && (
-        <div 
-          className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
-          style={{ 
-            zIndex: 9999,
-            minWidth: '250px'
-          }}
-          onMouseDown={(e) => e.preventDefault()}
-        >
-          {filtered.map(c => (
-            <button
-              key={c.id}
-              onMouseDown={() => handleSelect(c.id)}
-              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
-            >
-              <p className="font-black text-slate-800 text-xs">{c.name}</p>
-              <p className="text-[9px] text-slate-400">{c.id}</p>
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
