@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../services/api';
 import usePagination from '../hooks/usePagination';
+import { UserRole } from '../types';
 
 interface InventoryMovement {
   id: string;
@@ -29,6 +30,9 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportFormat, setReportFormat] = useState<'pdf' | 'excel'>('pdf');
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
+  
+  // Verificar si el usuario es Admin u Observer
+  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === 'admin' || user.role === UserRole.OBSERVER || user.role === 'observer');
   
   // Filter states
   const [insumoFilter, setInsumoFilter] = useState('');
@@ -560,12 +564,14 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               Limpiar
             </button>
           )}
-          <button
-            onClick={() => setShowReportModal(true)}
-            className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-2 rounded-lg font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
-          >
-            Generar Informe
-          </button>
+          {canGenerateReports && (
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-2 rounded-lg font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
+            >
+              Generar Informe
+            </button>
+          )}
           <button
             onClick={() => {
               resetForm();

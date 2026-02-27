@@ -28,6 +28,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [isLoadingPaginated, setIsLoadingPaginated] = useState(false);
   const [usePaginatedView, setUsePaginatedView] = useState(true);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [filterHighPriority, setFilterHighPriority] = useState(false);
   const deliveryDatesPagination = usePagination(1, 50);
   
   const hasUnsavedChanges = useRef(false);
@@ -273,6 +274,16 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       data = data.filter(d => !d.deliveryDate);
     }
 
+    if (filterHighPriority) {
+      data = data.filter(d => {
+        if (d.deliveryDate) return false; // Solo pendientes
+        const expected = new Date(d.expectedDate);
+        const today = new Date();
+        const diff = Math.round((today.getTime() - expected.getTime()) / (1000 * 60 * 60 * 24));
+        return diff > 20;
+      });
+    }
+
     if (confFilterId) {
       data = data.filter(d => d.confeccionistaId.toLowerCase() === confFilterId.toLowerCase());
     }
@@ -313,7 +324,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     }
 
     return data;
-  }, [state.deliveryDates, hideDelivered, confFilterId, refFilterId, yearFilter, sendDateMonthFilter, expectedDateMonthFilter, deliveryDateMonthFilter]);
+  }, [state.deliveryDates, hideDelivered, filterHighPriority, confFilterId, refFilterId, yearFilter, sendDateMonthFilter, expectedDateMonthFilter, deliveryDateMonthFilter]);
 
   // Actualizar paginación cuando cambia filteredData
   useEffect(() => {
@@ -345,13 +356,19 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     return Array.from(seen.values()).sort();
   }, [state.deliveryDates]);
 
-  // Calcular última página
-  const totalPages = deliveryDatesPagination.pagination.totalPages;
-  const goToLastPage = () => {
-    if (totalPages > 0) {
-      deliveryDatesPagination.goToPage(totalPages);
-    }
-  };
+  // Obtener sugerencias únicas de proceso (case-insensitive, pero mantener original)
+  const procesosSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    state.deliveryDates.forEach(d => {
+      if (d.process && d.process.trim()) {
+        const key = d.process.toLowerCase();
+        if (!seen.has(key)) {
+          seen.set(key, d.process);
+        }
+      }
+    });
+    return Array.from(seen.values()).sort();
+  }, [state.deliveryDates]);
 
   // Datos paginados
   const paginatedData = useMemo(() => {
@@ -370,11 +387,23 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 
         <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
           <button
-            onClick={goToLastPage}
-            title={`Ir a última página (${totalPages})`}
-            className="px-4 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit mt-5"
+            onClick={() => {
+              setConfFilterId('');
+              setRefFilterId('');
+              setYearFilter('');
+              setSendDateMonthFilter('');
+              setExpectedDateMonthFilter('');
+              setDeliveryDateMonthFilter('');
+              setFilterHighPriority(false);
+              setHideDelivered(false);
+            }}
+            title="Limpiar todos los filtros"
+            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit mt-5 flex items-center gap-2"
           >
-            Última ({totalPages})
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            Limpiar
           </button>
 
           <div className="flex flex-col w-48">
@@ -449,11 +478,14 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 
       {/* CARDS MÉTRICAS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-3xl border border-red-200">
+        <button
+          onClick={() => setFilterHighPriority(!filterHighPriority)}
+          className={`bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-3xl border-2 transition-all cursor-pointer ${filterHighPriority ? 'border-red-500 shadow-lg scale-105' : 'border-red-200 hover:border-red-400'}`}
+        >
           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2">Lotes de atención prioritaria</p>
           <p className="text-5xl font-black text-red-700">{metrics.highPriority}</p>
           <p className="text-[10px] font-bold text-red-500 uppercase mt-1">Lotes con 20 días de retraso</p>
-        </div>
+        </button>
 
         <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border border-yellow-200">
           <p className="text-[10px] font-black text-yellow-600 uppercase tracking-widest mb-2">Lotes en proceso</p>
@@ -670,13 +702,12 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                       </span>
                     </td>
                     <td className="px-4 py-1">
-                      <input
-                        type="text"
+                      <TextAutocomplete
                         value={row.process}
-                        onChange={e => updateRow(row.id, 'process', e.target.value)}
-                        readOnly={false}
+                        suggestions={procesosSuggestions}
+                        onChange={val => updateRow(row.id, 'process', val)}
                         placeholder="Estado..."
-                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-indigo-700 focus:ring-2 focus:ring-indigo-100 placeholder:text-slate-300"
+                        disabled={false}
                       />
                     </td>
                     <td className="px-4 py-1">

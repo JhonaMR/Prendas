@@ -958,7 +958,7 @@ const App: React.FC = () => {
           />
         );
       case 'inventory':
-        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} />;
+        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} user={user} />;
         case 'orders':
           return (
             <OrdersView 

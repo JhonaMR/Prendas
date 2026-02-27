@@ -1,5 +1,5 @@
 ﻿import React, { useMemo, useState } from 'react';
-import { BatchReception, Dispatch, ItemEntry, Reference } from '../types';
+import { BatchReception, Dispatch, ItemEntry, Reference, UserRole } from '../types';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import InventoryInsumosView from './InventoryInsumosView';
@@ -10,6 +10,7 @@ interface InventoryViewProps {
   references?: Reference[];
   orders?: any[];
   correrias?: any[];
+  user?: any;
 }
 
 const InventoryView: React.FC<InventoryViewProps> = ({
@@ -17,13 +18,17 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   dispatches = [],
   references = [],
   orders = [],
-  correrias = []
+  correrias = [],
+  user
 }) => {
   const [search, setSearch] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportFormat, setReportFormat] = useState<'pdf' | 'excel'>('pdf');
   const [inventoryType, setInventoryType] = useState<'selector' | 'supplies' | 'finished'>('selector');
   const pagination = usePagination(1, 20);
+
+  // Verificar si el usuario es Admin u Observer
+  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === 'admin' || user.role === UserRole.OBSERVER || user.role === 'observer');
 
   // Create a map of reference ID to description for quick lookup
   const refDescriptionMap = useMemo(() => {
@@ -379,7 +384,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
 
   if (inventoryType === 'supplies') {
     return (
-      <InventoryInsumosView onNavigate={() => setInventoryType('selector')} />
+      <InventoryInsumosView user={user} onNavigate={() => setInventoryType('selector')} />
     );
   }
 
@@ -413,12 +418,14 @@ const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
             </div>
           </div>
-          <button
-            onClick={() => setShowReportModal(true)}
-            className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-4 rounded-[24px] font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
-          >
-            Generar Informe
-          </button>
+          {canGenerateReports && (
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-4 rounded-[24px] font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
+            >
+              Generar Informe
+            </button>
+          )}
         </div>
       </div>
 
