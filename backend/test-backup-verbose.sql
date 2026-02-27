@@ -1,11 +1,13 @@
-��--
+--
 -- PostgreSQL database dump
 --
 
-\restrict oGii521vqUOZaIK7MhGQ7n67ZRoFUMSqHYsndI4h8SELxwUOy5u2zhDbmEY7cyf
+\restrict 0obEDczcecL5ocnXfHoerR9v4uic8FH5EhuK2yhPGUPMzEbtfhXbJtkto5yUdUK
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
+
+-- Started on 2026-02-27 07:56:26
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -19,7 +21,138 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_user_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_maleta_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.maletas DROP CONSTRAINT IF EXISTS maletas_correria_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.inventory_movements DROP CONSTRAINT IF EXISTS inventory_movements_compra_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.dispatch_items DROP CONSTRAINT IF EXISTS fk_dispatch_items_dispatch;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_disenadora_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_ficha_diseno_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_ficha_costo_id_fkey;
+DROP TRIGGER IF EXISTS trigger_update_user_view_preferences_timestamp ON public.user_view_preferences;
+DROP INDEX IF EXISTS public.idx_users_role;
+DROP INDEX IF EXISTS public.idx_users_login_code;
+DROP INDEX IF EXISTS public.idx_user_view_preferences_user_id;
+DROP INDEX IF EXISTS public.idx_user_sessions_user_id;
+DROP INDEX IF EXISTS public.idx_user_sessions_status;
+DROP INDEX IF EXISTS public.idx_user_sessions_last_activity;
+DROP INDEX IF EXISTS public.idx_receptions_created_at;
+DROP INDEX IF EXISTS public.idx_reception_items_reception_id;
+DROP INDEX IF EXISTS public.idx_production_tracking_correria_id;
+DROP INDEX IF EXISTS public.idx_orders_seller_id;
+DROP INDEX IF EXISTS public.idx_orders_created_at;
+DROP INDEX IF EXISTS public.idx_orders_correria_id;
+DROP INDEX IF EXISTS public.idx_orders_client_id;
+DROP INDEX IF EXISTS public.idx_order_items_order_id;
+DROP INDEX IF EXISTS public.idx_messages_sender_receiver;
+DROP INDEX IF EXISTS public.idx_messages_receiver;
+DROP INDEX IF EXISTS public.idx_messages_read;
+DROP INDEX IF EXISTS public.idx_messages_created_at;
+DROP INDEX IF EXISTS public.idx_maletas_referencias_maleta_id;
+DROP INDEX IF EXISTS public.idx_maletas_referencias_maleta;
+DROP INDEX IF EXISTS public.idx_inventory_movements_referencia;
+DROP INDEX IF EXISTS public.idx_inventory_movements_movimiento;
+DROP INDEX IF EXISTS public.idx_inventory_movements_insumo;
+DROP INDEX IF EXISTS public.idx_inventory_movements_created_at;
+DROP INDEX IF EXISTS public.idx_inventory_movements_compra_id;
+DROP INDEX IF EXISTS public.idx_fichas_diseno_referencia;
+DROP INDEX IF EXISTS public.idx_fichas_costo_referencia;
+DROP INDEX IF EXISTS public.idx_fichas_cortes_ficha_costo;
+DROP INDEX IF EXISTS public.idx_dispatches_created_at;
+DROP INDEX IF EXISTS public.idx_dispatches_correria_id;
+DROP INDEX IF EXISTS public.idx_dispatches_client_id;
+DROP INDEX IF EXISTS public.idx_dispatch_items_reference;
+DROP INDEX IF EXISTS public.idx_dispatch_items_dispatch_id;
+DROP INDEX IF EXISTS public.idx_delivery_dates_reference_id;
+DROP INDEX IF EXISTS public.idx_delivery_dates_confeccionista_id;
+DROP INDEX IF EXISTS public.idx_compras_proveedor;
+DROP INDEX IF EXISTS public.idx_compras_insumo;
+DROP INDEX IF EXISTS public.idx_compras_fecha;
+DROP INDEX IF EXISTS public.idx_compras_afecta_inventario;
+DROP INDEX IF EXISTS public.idx_clients_seller_id;
+DROP INDEX IF EXISTS public.idx_clients_nit;
+DROP INDEX IF EXISTS public.idx_clients_name;
+DROP INDEX IF EXISTS public.idx_clients_active;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_user_id_key;
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_pkey;
+ALTER TABLE IF EXISTS ONLY public.user_sessions DROP CONSTRAINT IF EXISTS user_sessions_user_id_socket_id_key;
+ALTER TABLE IF EXISTS ONLY public.user_sessions DROP CONSTRAINT IF EXISTS user_sessions_pkey;
+ALTER TABLE IF EXISTS ONLY public.sellers DROP CONSTRAINT IF EXISTS sellers_pkey;
+ALTER TABLE IF EXISTS ONLY public.return_receptions DROP CONSTRAINT IF EXISTS return_receptions_pkey;
+ALTER TABLE IF EXISTS ONLY public.return_reception_items DROP CONSTRAINT IF EXISTS return_reception_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.receptions DROP CONSTRAINT IF EXISTS receptions_pkey;
+ALTER TABLE IF EXISTS ONLY public.reception_items DROP CONSTRAINT IF EXISTS reception_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.production_tracking DROP CONSTRAINT IF EXISTS production_tracking_pkey;
+ALTER TABLE IF EXISTS ONLY public.product_references DROP CONSTRAINT IF EXISTS product_references_pkey;
+ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS orders_pkey;
+ALTER TABLE IF EXISTS ONLY public.messages DROP CONSTRAINT IF EXISTS messages_pkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_pkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_maleta_id_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.maletas DROP CONSTRAINT IF EXISTS maletas_pkey;
+ALTER TABLE IF EXISTS ONLY public.inventory_movements DROP CONSTRAINT IF EXISTS inventory_movements_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_ficha_costo_id_numero_corte_key;
+ALTER TABLE IF EXISTS ONLY public.dispatches DROP CONSTRAINT IF EXISTS dispatches_pkey;
+ALTER TABLE IF EXISTS ONLY public.dispatch_items DROP CONSTRAINT IF EXISTS dispatch_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.disenadoras DROP CONSTRAINT IF EXISTS disenadoras_pkey;
+ALTER TABLE IF EXISTS ONLY public.delivery_dates DROP CONSTRAINT IF EXISTS delivery_dates_pkey;
+ALTER TABLE IF EXISTS ONLY public.correrias DROP CONSTRAINT IF EXISTS correrias_pkey;
+ALTER TABLE IF EXISTS ONLY public.correria_catalog DROP CONSTRAINT IF EXISTS correria_catalog_pkey;
+ALTER TABLE IF EXISTS ONLY public.confeccionistas DROP CONSTRAINT IF EXISTS confeccionistas_pkey;
+ALTER TABLE IF EXISTS ONLY public.compras DROP CONSTRAINT IF EXISTS compras_pkey;
+ALTER TABLE IF EXISTS ONLY public.clients DROP CONSTRAINT IF EXISTS clients_pkey;
+ALTER TABLE IF EXISTS ONLY public.audit_log DROP CONSTRAINT IF EXISTS audit_log_pkey;
+ALTER TABLE IF EXISTS public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.user_view_preferences ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.user_sessions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.return_reception_items ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.reception_items ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.messages ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS public.users_id_seq;
+DROP TABLE IF EXISTS public.users;
+DROP SEQUENCE IF EXISTS public.user_view_preferences_id_seq;
+DROP TABLE IF EXISTS public.user_view_preferences;
+DROP SEQUENCE IF EXISTS public.user_sessions_id_seq;
+DROP TABLE IF EXISTS public.user_sessions;
+DROP TABLE IF EXISTS public.sellers;
+DROP TABLE IF EXISTS public.return_receptions;
+DROP SEQUENCE IF EXISTS public.return_reception_items_id_seq;
+DROP TABLE IF EXISTS public.return_reception_items;
+DROP TABLE IF EXISTS public.receptions;
+DROP SEQUENCE IF EXISTS public.reception_items_id_seq;
+DROP TABLE IF EXISTS public.reception_items;
+DROP TABLE IF EXISTS public.production_tracking;
+DROP TABLE IF EXISTS public.product_references;
+DROP TABLE IF EXISTS public.orders;
+DROP TABLE IF EXISTS public.order_items;
+DROP SEQUENCE IF EXISTS public.messages_id_seq;
+DROP TABLE IF EXISTS public.messages;
+DROP TABLE IF EXISTS public.maletas_referencias;
+DROP TABLE IF EXISTS public.maletas;
+DROP TABLE IF EXISTS public.inventory_movements;
+DROP TABLE IF EXISTS public.fichas_diseno;
+DROP TABLE IF EXISTS public.fichas_costo;
+DROP TABLE IF EXISTS public.fichas_cortes;
+DROP TABLE IF EXISTS public.dispatches;
+DROP TABLE IF EXISTS public.dispatch_items;
+DROP SEQUENCE IF EXISTS public.dispatch_items_id_seq;
+DROP TABLE IF EXISTS public.disenadoras;
+DROP TABLE IF EXISTS public.delivery_dates;
+DROP TABLE IF EXISTS public.correrias;
+DROP TABLE IF EXISTS public.correria_catalog;
+DROP TABLE IF EXISTS public.confeccionistas;
+DROP TABLE IF EXISTS public.compras;
+DROP TABLE IF EXISTS public.clients;
+DROP TABLE IF EXISTS public.audit_log;
+DROP FUNCTION IF EXISTS public.update_user_view_preferences_timestamp();
+-- *not* dropping schema, since initdb creates it
 --
+-- TOC entry 5 (class 2615 OID 17156)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -29,6 +162,8 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
+-- TOC entry 5384 (class 0 OID 0)
+-- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
@@ -36,21 +171,17 @@ COMMENT ON SCHEMA public IS '';
 
 
 --
+-- TOC entry 255 (class 1255 OID 17821)
 -- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.update_user_view_preferences_timestamp() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
-
 BEGIN
-
     NEW.updated_at = CURRENT_TIMESTAMP;
-
     RETURN NEW;
-
 END;
-
 $$;
 
 
@@ -61,6 +192,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- TOC entry 234 (class 1259 OID 17336)
 -- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -82,6 +214,7 @@ CREATE TABLE public.audit_log (
 ALTER TABLE public.audit_log OWNER TO postgres;
 
 --
+-- TOC entry 235 (class 1259 OID 17347)
 -- Name: clients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -102,6 +235,7 @@ CREATE TABLE public.clients (
 ALTER TABLE public.clients OWNER TO postgres;
 
 --
+-- TOC entry 247 (class 1259 OID 17736)
 -- Name: compras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -129,6 +263,7 @@ CREATE TABLE public.compras (
 ALTER TABLE public.compras OWNER TO postgres;
 
 --
+-- TOC entry 220 (class 1259 OID 17169)
 -- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -147,6 +282,7 @@ CREATE TABLE public.confeccionistas (
 ALTER TABLE public.confeccionistas OWNER TO postgres;
 
 --
+-- TOC entry 227 (class 1259 OID 17256)
 -- Name: correria_catalog; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -161,6 +297,7 @@ CREATE TABLE public.correria_catalog (
 ALTER TABLE public.correria_catalog OWNER TO postgres;
 
 --
+-- TOC entry 222 (class 1259 OID 17193)
 -- Name: correrias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -176,6 +313,7 @@ CREATE TABLE public.correrias (
 ALTER TABLE public.correrias OWNER TO postgres;
 
 --
+-- TOC entry 229 (class 1259 OID 17278)
 -- Name: delivery_dates; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -197,6 +335,7 @@ CREATE TABLE public.delivery_dates (
 ALTER TABLE public.delivery_dates OWNER TO postgres;
 
 --
+-- TOC entry 241 (class 1259 OID 17574)
 -- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -214,6 +353,7 @@ CREATE TABLE public.disenadoras (
 ALTER TABLE public.disenadoras OWNER TO postgres;
 
 --
+-- TOC entry 237 (class 1259 OID 17401)
 -- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -228,6 +368,7 @@ CREATE SEQUENCE public.dispatch_items_id_seq
 ALTER SEQUENCE public.dispatch_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 230 (class 1259 OID 17292)
 -- Name: dispatch_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -243,6 +384,7 @@ CREATE TABLE public.dispatch_items (
 ALTER TABLE public.dispatch_items OWNER TO postgres;
 
 --
+-- TOC entry 226 (class 1259 OID 17242)
 -- Name: dispatches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -260,6 +402,7 @@ CREATE TABLE public.dispatches (
 ALTER TABLE public.dispatches OWNER TO postgres;
 
 --
+-- TOC entry 244 (class 1259 OID 17659)
 -- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -294,6 +437,7 @@ CREATE TABLE public.fichas_cortes (
 ALTER TABLE public.fichas_cortes OWNER TO postgres;
 
 --
+-- TOC entry 243 (class 1259 OID 17616)
 -- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -342,6 +486,7 @@ CREATE TABLE public.fichas_costo (
 ALTER TABLE public.fichas_costo OWNER TO postgres;
 
 --
+-- TOC entry 242 (class 1259 OID 17585)
 -- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -378,6 +523,7 @@ CREATE TABLE public.fichas_diseno (
 ALTER TABLE public.fichas_diseno OWNER TO postgres;
 
 --
+-- TOC entry 248 (class 1259 OID 17777)
 -- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -402,6 +548,7 @@ CREATE TABLE public.inventory_movements (
 ALTER TABLE public.inventory_movements OWNER TO postgres;
 
 --
+-- TOC entry 245 (class 1259 OID 17695)
 -- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -418,6 +565,7 @@ CREATE TABLE public.maletas (
 ALTER TABLE public.maletas OWNER TO postgres;
 
 --
+-- TOC entry 246 (class 1259 OID 17712)
 -- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -433,6 +581,7 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
+-- TOC entry 254 (class 1259 OID 17960)
 -- Name: messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -450,6 +599,7 @@ CREATE TABLE public.messages (
 ALTER TABLE public.messages OWNER TO postgres;
 
 --
+-- TOC entry 253 (class 1259 OID 17959)
 -- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -465,6 +615,8 @@ CREATE SEQUENCE public.messages_id_seq
 ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5386 (class 0 OID 0)
+-- Dependencies: 253
 -- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -472,6 +624,7 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
+-- TOC entry 233 (class 1259 OID 17325)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -486,6 +639,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
+-- TOC entry 224 (class 1259 OID 17217)
 -- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -504,6 +658,7 @@ CREATE TABLE public.orders (
 ALTER TABLE public.orders OWNER TO postgres;
 
 --
+-- TOC entry 219 (class 1259 OID 17157)
 -- Name: product_references; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -524,6 +679,7 @@ CREATE TABLE public.product_references (
 ALTER TABLE public.product_references OWNER TO postgres;
 
 --
+-- TOC entry 225 (class 1259 OID 17231)
 -- Name: production_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -539,6 +695,7 @@ CREATE TABLE public.production_tracking (
 ALTER TABLE public.production_tracking OWNER TO postgres;
 
 --
+-- TOC entry 231 (class 1259 OID 17303)
 -- Name: reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -553,6 +710,7 @@ CREATE TABLE public.reception_items (
 ALTER TABLE public.reception_items OWNER TO postgres;
 
 --
+-- TOC entry 238 (class 1259 OID 17414)
 -- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -567,6 +725,8 @@ CREATE SEQUENCE public.reception_items_id_seq
 ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5387 (class 0 OID 0)
+-- Dependencies: 238
 -- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -574,6 +734,7 @@ ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
 
 
 --
+-- TOC entry 223 (class 1259 OID 17204)
 -- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -593,6 +754,8 @@ CREATE TABLE public.receptions (
 ALTER TABLE public.receptions OWNER TO postgres;
 
 --
+-- TOC entry 5388 (class 0 OID 0)
+-- Dependencies: 223
 -- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -600,6 +763,7 @@ COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this 
 
 
 --
+-- TOC entry 232 (class 1259 OID 17314)
 -- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -615,6 +779,7 @@ CREATE TABLE public.return_reception_items (
 ALTER TABLE public.return_reception_items OWNER TO postgres;
 
 --
+-- TOC entry 239 (class 1259 OID 17418)
 -- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -629,6 +794,8 @@ CREATE SEQUENCE public.return_reception_items_id_seq
 ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5389 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -636,6 +803,7 @@ ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_recep
 
 
 --
+-- TOC entry 228 (class 1259 OID 17266)
 -- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -652,6 +820,7 @@ CREATE TABLE public.return_receptions (
 ALTER TABLE public.return_receptions OWNER TO postgres;
 
 --
+-- TOC entry 221 (class 1259 OID 17183)
 -- Name: sellers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -666,6 +835,7 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
+-- TOC entry 252 (class 1259 OID 17940)
 -- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -682,6 +852,7 @@ CREATE TABLE public.user_sessions (
 ALTER TABLE public.user_sessions OWNER TO postgres;
 
 --
+-- TOC entry 251 (class 1259 OID 17939)
 -- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -697,6 +868,8 @@ CREATE SEQUENCE public.user_sessions_id_seq
 ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5390 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -704,6 +877,7 @@ ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
 
 
 --
+-- TOC entry 250 (class 1259 OID 17823)
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -719,6 +893,7 @@ CREATE TABLE public.user_view_preferences (
 ALTER TABLE public.user_view_preferences OWNER TO postgres;
 
 --
+-- TOC entry 249 (class 1259 OID 17822)
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -734,6 +909,8 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5391 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -741,6 +918,7 @@ ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_pre
 
 
 --
+-- TOC entry 236 (class 1259 OID 17360)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -759,6 +937,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
+-- TOC entry 240 (class 1259 OID 17420)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -773,6 +952,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5392 (class 0 OID 0)
+-- Dependencies: 240
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -780,6 +961,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- TOC entry 5071 (class 2604 OID 17963)
 -- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -787,6 +969,7 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
+-- TOC entry 4979 (class 2604 OID 17416)
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -794,6 +977,7 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- TOC entry 4980 (class 2604 OID 17419)
 -- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -801,6 +985,7 @@ ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextv
 
 
 --
+-- TOC entry 5067 (class 2604 OID 17943)
 -- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -808,6 +993,7 @@ ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- TOC entry 5063 (class 2604 OID 17826)
 -- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -815,6 +1001,7 @@ ALTER TABLE ONLY public.user_view_preferences ALTER COLUMN id SET DEFAULT nextva
 
 
 --
+-- TOC entry 4983 (class 2604 OID 17422)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -822,6 +1009,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- TOC entry 5358 (class 0 OID 17336)
+-- Dependencies: 234
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -830,6 +1019,8 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
+-- TOC entry 5359 (class 0 OID 17347)
+-- Dependencies: 235
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -838,47 +1029,47 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 10	SALAS ASOCIADOS S.A.S	900392405	CL 49 9 44 SEC COMERCIAL	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 100	TIENDAS MICROEMPRESARIALES LANFER S.A.S.	900118155	CL 9 6 71 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 101	RAYOTEX S.A.S	1800144409	CLL 12 5 49	CUCUTA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N,%�% 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N,%�% 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N° 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N° 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 104	GALLEGO JOHN JAMIME	5225	AV. SIMON BOLIVAR #38-130  LOCAL 114	DOSQUEBRADAS	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 105	NAVANA MEGATODO S.A.S	2901169855	CRA 17 # 15-22	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-106	INVERSIONES 8A S.A.S N,%�%4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+106	INVERSIONES 8A S.A.S N°4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 107	ARISTIZABAL ARISTIBAL DUBIAN DE JESUS	70829130	CL 25 48 71 LC 2 BRR CENTRO	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 108	JIMENEZ MAYORGA MARIA ALEJANDRA	1129574347	CR 50 25 55	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N,%�% 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N° 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 11	SALAS ASOCIADOS S.A.S	1900392405	CL 49 9 44 SEC COMERCIAL PTO BOYACA	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 110	SANCHEZ TORRES LILIANA	1117485254	CR 4 # 2 - 29	EL PAUJIL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 111	REPRESENTACIONES INTERMODA S.A.S	901121571	CLLE 10 # 4-102 ESPINAL TOLIMA	ESPINAL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-112	INTIMOS ALMA S.A.S N,%�%22	2283003804	CL 7 N,%�% 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+112	INTIMOS ALMA S.A.S N°22	2283003804	CL 7 N° 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 113	ROJAS FARUK	981	C.C. OROCENTOR LOCAL 1-68	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 114	RAMIREZ CARDENAS FREDY ALBERTO	70698350	CL 16 11 41 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N,%�% 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N° 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 116	PINILLA LESMES DIANA CAROLina Pulgarin	1006512762	CL 22 2 A BIS 06 BRR ATALAY	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 117	INVERSIONES INTERMODA S.A.S	901068621	CLLE 16 #11-33 FLORENCIA	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-118	ORDO%�EZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-119	GONZALES MU%�OZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+118	ORDOÑEZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+119	GONZALES MUÑOZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 12	EL GIGANTE DE LA MODA S.A.S	900646287	CL 49 9 62	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 120	RAMIREZ VALENCIA CESAR	17915	CRA 12 # 15-17	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 121	VALENCIA RAMIREZ OMAR	17137	CRA 12 # 15-31	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 122	RESTREPO JARAMILLO JULIAN ANDRES	379726416	CLLE 9 # 17-24	FLORIDA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 123	COMERCIALIZADORA MGV SAS	1901413624	CL 13 18 33	FONSECA	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-124	PEDROZO LUZ MERY	792	CRA 116 A N,%�% 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+124	PEDROZO LUZ MERY	792	CRA 116 A N° 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 125	DISTRIBUIDORA MUNDO FASHION	900324182	CALLE 4 # 8A -49	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 126	CARLOS MARIO SALAZAR ECHEVERRI	70694755	CALLE 6 NRO. 8A-18	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 127	COMERCIALIZADORA GIRALDO DEL CARIBE	900454797	CL 4 8A 20	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N,%�% 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N° 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 129	DUQUE HOYOS JUAN GONZALO	2104501630	CL 8 N 7 76	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 13	INVERSIONES SOLOMODA BARRANCA S.A.S	900351574	CL 49 9 78	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-130	INVERSIONES 8A S.A.S N,%�%20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+130	INVERSIONES 8A S.A.S N°20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 131	DUQUE HOYOS JUAN GONZALO	1104501630	CL 7 10 87	GARZON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 132	INVERSIONES ESTRENATODO S.A.S	900275560	CARRERA 10 #14-47	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 133	PANTYJEANS GIRARDOT CIA LTDA	900284812	CR 10 13 52	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 134	EL UNIVERSO DE LA MODA ACTUAL S.A.S	900468771	CR 10 14 15	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 135	ALMACENES GANE LIMITADA	1890203597	CR 26  37 104	GIRON	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 136	RUSSI CACERES NESTOR LUIS	91296133	CR 26 # 40 - 20 BRR EL POBLADO	GIRON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-137	INTIMOS ALMA S.A.S N,%�% 26	2683003804	CL 17 N,%�% 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+137	INTIMOS ALMA S.A.S N° 26	2683003804	CL 17 N° 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 138	DISTRIBUIDORA DE MODA GRANADA	901619815	CR 15 17 44 BRR CENTRO	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-139	GUTIERREZ FANDI%�O FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+139	GUTIERREZ FANDIÑO FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 14	PALACIO MARIA ALIX	7076	CRA 47 B # 37 A 08	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 140	GUERRA EDILSON DARIO	4536	CR 7 # 8-07	HORMIGA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 141	RAMIREZ BOTERO ADOLFO JESUS	70691066	CL 17 2 92 96 98 P5 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -887,7 +1078,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 144	INNOVACIONES WIN S.A.S	900835285	CRA 51 # 50- 15 ITAGUI	ITAGUI	\N	2026-02-14 06:27:59	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
 145	BOHORQUEZ GALVIS LUTH DARE	49764593	CLL 11 8 78	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 146	CARO CARO ANGELA MARIA	29567740	CR 10 11 53	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-147	COMPA%�IA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+147	COMPAÑIA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 148	ALTA MODA LA DORADA	7507	CLLE 5 # 5-35	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 149	SALAZAR ZULUAGA MAURICIO ANTONIO	1027	CRA 4 #14-49	LA DORADA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 15	HERRERA JOHN FREDY	4065	CALLE 30 #42-04 MEGAMODA	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -897,7 +1088,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 153	ARBOLEDA VASQUEZ JULIAN ANDRES	16552144	CARRERA 15 #15-42	LA UNION	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 154	BRABO DUARTE LUZ DARIS	63471107	CL 11 9-15 BRR CENTRO	LEBRIJA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 155	CARDOZO AMAYA YOLANDA	65498039	CR 6 # 8 26 BRR CENTRO	LERIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-156	ALIANZA MU%�OZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+156	ALIANZA MUÑOZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 157	G & G RETAIL S.A.S	901234880	CRA 20 # 2 -34	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 158	JIMENEZ MAYORGA MARIA ALEJANDRA	1112957434	CL DE LAS FLORES 12 24	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 159	ALIANZA MABLE SAS	900638635	CRA 3 B # 3-75	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -928,10 +1119,10 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 181	GRUPO COMERCIAL INTERMODA S.A.S	900442422	CALLE 8 #3-33	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 182	GRUPO COMERCIAL INTERMODA S.A.S	3900442422	CLLE 8 # 3-81	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 183	GRUPO COMERCIAL INTERMODA S.A.S	2900442422	CRA 5 # 8-56	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N,%�% 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCA%�A	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-186	INVERSIONES 8A S.A.S N,%�%10	1090013702	CL 25 N,%�% 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-187	GUERRERO MU%�OZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N° 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCAÑA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+186	INVERSIONES 8A S.A.S N°10	1090013702	CL 25 N° 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+187	GUERRERO MUÑOZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 188	GUITIERREZ RESTREPO LAURA	1730	CLLE 30 # 27-15 CENTRO	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 189	INVERSIONES BANETY SAS	901580883	CALLE 17 #20 64 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 19	JIMENEZ QUINTERO DECIMO ALEXANDER	7606	CARRERA 41 #30-54	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -947,14 +1138,14 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 199	VARIEDADES SJ DEL CARIBE S.A.S	901413205	CRA 10 9 31	PIVIJAY	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 2	INVERSIONES AM ACACIAS S.A.S.	901509626	CL 13 # 19 - 79 BRR CENTRO	ACACIAS	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.268	t
 20	ZULUAGA GOMEZ RIGOBERTO	170827090	CL 34 43 70 LC M 5	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-200	G & G RETAIL S.A.S	3901234880	CLLE 20 N,%�% 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+200	G & G RETAIL S.A.S	3901234880	CLLE 20 N° 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 201	RAMIREZ LLERENA LUZ ADRIANA	700082020	CR 15 11-65	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 202	ALIANZA HERMANOS JGV	16326	CR 15 12 69	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 203	MORCILLO GONZALEZ LEIDY	4000	CALLE 6 #18-48	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 204	ARCILA BEATRIZ HELENA	4957	CARRERA 7 #6-26	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 205	ZULUAGA ORLANDO	1694	CLLE 6 # 6-43	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-206	COMPA%�IA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N,%�% 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+206	COMPAÑIA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N° 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 208	SANCHEZ TORRES NELSY	40091533	CALLE 5 # 7-33	PUERTO RICO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 209	GUERRA EDILSON DARIO	5369	CRA 7 # 8-07	PUTUMAYO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 21	ZULUAGA GOMEZ RIGOBERTO	70827090	CL 35 44 18	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -966,7 +1157,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 215	SUPERMODA SABANALARGA S.A.S	901698678	CR 19 # 20-31	SABANALARGA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 216	MEDINA MERCHAN YESENIA	1052989202	CL 13 CR 10 60 BRR CENTRO LC 2	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 217	G & G RETAIL S.A.S	1901234880	CRA 11 #13-73	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-218	INVERSIONES 8A S.A.S N,%�%16	1690013702	CR 9 N,%�% 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+218	INVERSIONES 8A S.A.S N°16	1690013702	CR 9 N° 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 219	G & G RETAIL S.A.S	2901234880	CR 24 15 29	SAN MARCOS	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 22	GH ENTERPRISE S.A.S.	901486883	CL 53 46 192 LC 240 CC PORTAL DEL PRADO	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 220	DISTRIBUIDORA MUNDO FASHION	2900324182	CALLE 22 #5-37 EDIFICIO ANDINA APTO 202	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -982,35 +1173,35 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 23	ALIANZA ESTRENO SAS	1900593525	CLLE 34 # 43-42	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 230	COMERCIALIZADORA MAGOTEX S.A.S #2	1901239802	CALLE 21 #19-12	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 231	MP RETAIL S.A.S	901181807	CALLE 22 #20-68	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N,%�% 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N° 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 233	COMERCIALIZADORA MAGOTEX 1	901239802	CALLE 23 # 20 - 64	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 234	ALIANZA MABLE SAS	1900638635	CL 28 25 B 97 LC 2 318	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 235	INVERSIONES GAFE S.A.S	2900463519	CALLE 36 SUR # 43-31	ENVIGADO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 N,%Q% 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 Nº 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 237	NAVANA MEGATODO SOACHA S.A.S	1901169855	CRA 7 # 32-35 LOCAL 207	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-238	ACU%�A MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+238	ACUÑA MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 239	VARIMODA SAS	901729900	CR 11 14 91	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 24	COMERCIALIZADORA MGV SAS	901413624	CR 13 104 45	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-240	INVERSIONES 8A S.A.S N,%�%7	7900137023	CR 11 N,%�% 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-241	ALIANZA VC S.A.S	900225992	CALLE 20 N,%�% 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+240	INVERSIONES 8A S.A.S N°7	7900137023	CR 11 N° 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+241	ALIANZA VC S.A.S	900225992	CALLE 20 N° 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 242	INVERSIONES JBARA S.A.S	901462378	CL 63 14 50	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 243	DUQUE HOYOS JUAN GONZALO	3104501630	CR 19 19 41	SOLEDAD	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 244	ZULAGA GIRALDO HECTOR MAURICIO	70690823	CL 27 24 59 BR CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 245	DECADA 10 EN TODO S.A.S	900519038	CR 24 27 30 BRR EL CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 246	QUINTERO ADRIAN ALBERTO	3257	CLL DEL COMERCIO EL PACIFICO DEL BARATON	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-247	NORE%�A MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+247	NOREÑA MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 248	INVERSIONES INTERMODA S.A.S	1901068621	CLLE MOSQUERA DIAG A TELECOM	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 249	VARGAS MONTIEL JACKSON FABIAN	9052	CRA 9 # 8 -99	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 25	ZULUAGA GOMEZ EDGAR ALONSO	8778704	CR 41 32 81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-250	INVERSIONES 8A S.A.S N,%�%19	1990013702	AV UNIVERSITARIA N,%�% 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-251	INVERSIONES 8A S.A.S N,%�%8	8900137023	CL 19 N,%�% 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-252	INVERSIONES 8A S.A.S N,%�%15	1590013702	CR 7 N,%�% 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+250	INVERSIONES 8A S.A.S N°19	1990013702	AV UNIVERSITARIA N° 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+251	INVERSIONES 8A S.A.S N°8	8900137023	CL 19 N° 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+252	INVERSIONES 8A S.A.S N°15	1590013702	CR 7 N° 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 253	SAJIN AREVALO SAMIR	77038476	CL 16 B 8 45	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 254	KHALED BASSAN SAJIN MHANNA	1065629467	CL 16B # 7-39 - Centro	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 255	ALIANZA SURTIDORA SAS	901084883	CR 7 16 A 133	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N,%�% 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N° 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 257	CIELO MODA S.A.S - AMV LLANO 2	901784502	CALLE 39 #30-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-258	BARAKI S.A.S	901712681	CALLE 39 N,%�% 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+258	BARAKI S.A.S	901712681	CALLE 39 N° 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 259	AMV LLANO S.A.S	900469068	CARRERA 30 #36-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 26	ALIANZA VC S.A.S	1900225992	CR 41 37 23	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 260	AMV LLANO S.A.S	2900469068	CL 39 30 A 38 BRR CENTRO	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -1019,22 +1210,22 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 263	JIMENEZ GOMEZ CARLOS ALCIDES	70694674	CALLE 9 # 19-14	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 264	COL MODA YOPAL SAS	901697458	CL 10 19 52	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 265	RAMIREZ ZULUAGA BLANCA AMELIA	43404158	CR 20 14 31	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N,%�% 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N° 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 267	EPICA DE MODAD SAS	901170874	CL 34 43 109 OF 312	BARRANQUILLA	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-268	GUTIERREZ FANDI%�O FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+268	GUTIERREZ FANDIÑO FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 269	VASQUEZ MARIA ORFANIA	29809163	CL 9 11 08	ZARZAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 27	ALMACEN Y DISTRIBUIDORA GONZALEZ S.A.S	800160395	CR 42 32 28	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 270	AL MUSTAKIM	901812038	CLL 9 # 20 - 59	SAN JOSE DEL GUAVIARE	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 271	JHOJAINNE SULVARAN	1006745382	CR 12 # 13 - 22	MAICAO	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N,%�% 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-273	CA%�AVERAL NU%�EZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N° 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+273	CAÑAVERAL NUÑEZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 274	ARBOLEDA NIETO JOSE ALEJANDRO	14978082	CR 5 9 81 BRR GUADALUPE	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 275	GV INFINITE SAS	901523339	CL 12 7 30 LOCAL 1	RIOHACHA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 276	VIDAL MARIN INGRIT MALLERLY	3207003070	CRA 25 # 37 - 29	CALARCA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCA%�A	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCAÑA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 278	BAYONA BAYONA JORGE LUIS	1094574518	CR 5 # 13 - 87 BRR CENTRO	ABREGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 279	G & G RETAIL S.A.S	6901234880	CRA 15 # 8 - 64 LOC 1	CIENAGA DE ORO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-28	ALIANZA MU%�OZ GOMEZ SAS	1901079469	CRA 44 N,%�% 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+28	ALIANZA MUÑOZ GOMEZ SAS	1901079469	CRA 44 N° 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 280	EPICA DE MODA SAS	901170874	CALLE 30 # 43-50 LOCAL 296A  CENTRO COMERCIAL ALEGRA	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 281	LA PORFIA AM SAS	901891158	CR 43 # 70-05 SUR PORFIA	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 282	SALANEDA INVERSIONES S.A.S.	901800090	CL 49 9 44 SEC COMERCIAL PUERT	BARRANCABERMEJA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1051,7 +1242,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 292	CLASIC AM S.A.S.	901864953	CR 30 # 36 - 40	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 293	GRUPO EMPRESARIAL EL SURTIDOR SAS	901595448	CLL 8 # 5 - 47 BRR CENTRO	CUCUTA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 294	INVERSIONES DUQUE QUINTERO S.A.S.	901324937	AV PEDRO DE HEREDIA CR 27 30 01	CARTAGENA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-295	GALVIS RODOLFO	4870	CRA 3A N,%Q% 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+295	GALVIS RODOLFO	4870	CRA 3A Nº 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 296	PEREZ ACOSTA CANDY SUSANA	32930941	CR 8 10 26	SANTA ANA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 297	RUEDA MIRANDA YERSON OSWALDO	91078808	CR 11 # 12 - 75 P 2	SAN GIL	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 298	INVERSIONES ASH S.A.S.	900469154	CRA 4 # 24 - 70	QUIBDO	\N	2026-02-14 06:28:04	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
@@ -1061,31 +1252,31 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 300	MEDIA NARANJA	-	TODOS LOS ALMACENES	MEDELLIN	\N	2026-02-14 06:28:05	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
 301	HERNANDEZ MONTES ANA MILENA	50929792	CL 20 CR 7 ESQU	PLANETA RICA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 302	RESTREPO LAURA VALENTINA	1192791730	CL 4 # 10 - 59 CRR EL CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-303	LONDO%�O MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+303	LONDOÑO MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 304	YONELBIS ZAMBRANO SUAREZ	6057	CRA 12 # 12 - 27	MAICAO	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 305	G&G RETAIL S.A.S	7901234880	CLL 15 A # 14 A 41	CERETE	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 306	VICTOR ANDRES AROCA	1140896249	CL 34 43 129 BG 434 CC COLOMBIA	BARRANQUILLA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 307	SANTIAGO JARAMILLO JARAMILLO	2700159299	CRA 8 # 9 - 72 LOCAL 5	CHINCHINA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 308	EL SURTIDOR BG SAS NUEVO	2490	AV 5 # 5 - 63 PISO 4	CUCUTA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 309	PANTYJEANS GIRARDOT SAS 2	1900284812	CR 10 # 14 - 47 BRR CENTRO	GIRARDOT	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-31	ALMA BELLA S.A.S	900352713	CL 129 N,%�% 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+31	ALMA BELLA S.A.S	900352713	CL 129 N° 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 32	RESTREPO JARAMILLO JULIAN ANDRES	79726416	CLL 129 B # 91-64 SUBA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-33	INTIMOS ALMA S.A.S N,%�%11	1183003804	CR 13 N,%�% 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-34	INTIMOS ALMA S.A.S N,%�% 14	1483003804	CR 71D N,%�% 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-35	INTIMOS ALMA S.A.S N,%�%24	2483003844	CR 80 N,%�% 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-36	INTIMOS ALMA S.A.S N,%�% 3	3830038044	CR 88C N,%�% 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-37	GUTIERREZ FANDI%�O FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-38	INVERSIONES 8A S.A.S N,%�%6	6900137023	CRA 6 N,%�% 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-39	INTIMOS ALMA S.A.S N,%�%2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+33	INTIMOS ALMA S.A.S N°11	1183003804	CR 13 N° 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+34	INTIMOS ALMA S.A.S N° 14	1483003804	CR 71D N° 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+35	INTIMOS ALMA S.A.S N°24	2483003844	CR 80 N° 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+36	INTIMOS ALMA S.A.S N° 3	3830038044	CR 88C N° 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+37	GUTIERREZ FANDIÑO FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+38	INVERSIONES 8A S.A.S N°6	6900137023	CRA 6 N° 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+39	INTIMOS ALMA S.A.S N°2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 4	P & S INVERSIONES ASOCIADOS S.A.S	901195775	CL 5 16 36	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-40	INVERSIONES 8A S.A.S N,%�%17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-41	INTIMOS ALMA S.A.S N,%�%9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-42	INTIMOS ALMA S.A.S N,%�%5	5830038044	TV 4 ESTE N,%�% 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-43	INTIMOS ALMA S.A.S N,%�%1	1830038444	TV 78 L N,%�% 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+40	INVERSIONES 8A S.A.S N°17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+41	INTIMOS ALMA S.A.S N°9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+42	INTIMOS ALMA S.A.S N°5	5830038044	TV 4 ESTE N° 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+43	INTIMOS ALMA S.A.S N°1	1830038444	TV 78 L N° 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 44	HEGA G B S.A.S	830091761	CALLE 37 SUR # 78 H 21	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR N,%Q% 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR Nº 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 46	HEGA G B S.A.S	1830091761	CALLE 42 A #93 C 17 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR N,%Q% 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR Nº 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 48	INVERSIONES GOBOTEX S A S	3830125982	CLL 13 # 5 - 63	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 49	INVERSIONES GOBOTEX S A S	830125982	CR 100 20 45	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 5	SALAZAR ECHEVERRI LUIS ALBERTO	170693888	CL 5 N 12 81	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1106,7 +1297,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 63	ARBOLEDA MEJIA JANETH	31588477	CL 5 5 14 BRR CENTRO SEC SANANDRESITO	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 64	ALMACENES CRAMAR	1144	CLL 3 # 3-60	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 65	BARRETO HORTUA JOSE IRLEY	16552612	CR 16 10 35 BRR CENTRO	CAICEDONIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-66	INVERSIONES 8A S.A.S N,%�%21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+66	INVERSIONES 8A S.A.S N°21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 67	ARISTIZABAL ARISTIZABAL SANDRA LILIANA	3849	CL 14 # 8 - 50	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 68	HOYOS RAMIREZ YULIETH	29509965	CL 47 NORTE # 4 B N - 29	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 69	PARRA SUAREZ ZORAIDA EMILCEN	8528	CLLE 14 CON CRR 7 ESQUINA CC ELITE LOCAL 515	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -1125,27 +1316,29 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 81	MODATEXTIL DEL CARIBE S.A.S.	901783220	CL 31 6535 LC 1 BRR: CHIPRE	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 82	ENERGY FASHION S.A.S.	900236935	TV 54 94 - 31	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 83	GUITIERREZ RESTREPO LAURA	1192791730	CL 10 # 4 38	CARTAGO	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-84	ALIANZA MU%�OZ GOMEZ SAS	2901079469	CRA 3A N,%Q% 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-85	ELMELAO S.A.S	900663011	CR 11 N,%�% 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-86	INVERSIONES 8A S.A.S N,%�%13	1390013702	CR 10 N,%�% 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+84	ALIANZA MUÑOZ GOMEZ SAS	2901079469	CRA 3A Nº 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+85	ELMELAO S.A.S	900663011	CR 11 N° 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+86	INVERSIONES 8A S.A.S N°13	1390013702	CR 10 N° 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 87	DISTRIBUIDORA MUNDO FASHION	1900324182	CALLE 17 # 11-57	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 88	SALAZAR ECHEVERRI LUIS ALBERTO	70693888	CL 17 13 29 BRR CENTRO	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 89	JIMENEZ BERMUDEZ ALBA DE JESUS	3095	CR 57 A 47 56	CIUDAD BOLIVAR	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-9	INVERSIONES 8A S.A.S N,%�%27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+9	INVERSIONES 8A S.A.S N°27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 90	G & G RETAIL S.A.S	4901234880	CL 31 25 11 LC 2	COROZAL	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 91	AMPER GROUP S.A.S.	901341754	AV 8 8 55 LC 21 22 CC SAN ANTONIO BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N,%�% 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N° 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 93	EL SURTIDOR BG SAS #2	1901342490	CALLE 8 # 4- 35	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 94	EL SURTIDOR BG SAS	901342490	CALLE 8 # 5- 47	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 95	RAYOTEX S.A.S	2800144409	CL 10 NRO. 0-09	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 97	HENRIQUEZ LOPERA MARY LUZ	60367610	CL 8 4 98 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 98	TIENDAS BUV SAS	901400615	CL 8 5 87 BRR EL CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 99	RAYOTEX S.A.S	800144409	CL 9 4 90 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-test-restore-1	Cliente Restore	NIT-RESTORE	Direcci%%n	Ciudad	\N	\N	seller	\N	t
+test-restore-1	Cliente Restore	NIT-RESTORE	Dirección	Ciudad	\N	\N	seller	\N	t
 \.
 
 
 --
+-- TOC entry 5371 (class 0 OID 17736)
+-- Dependencies: 247
 -- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1157,6 +1350,8 @@ mm10k9v869lrxfoef	2026-02-24	\N	\N	Etiquetas gomitas	30000.00	110.00	30000.00	33
 
 
 --
+-- TOC entry 5344 (class 0 OID 17169)
+-- Dependencies: 220
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1165,154 +1360,156 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 43923482	Gonzalez Quintero Ruby Liliana	CL 21 # 71 - 50 APT 301	Bello	4648291	A	1	2026-02-14 03:04:08
 43922752	Jaramillo Jaramillo Judy Liliana (Emma Jaramillo)	AV 45 # 68 A 68 CA	Bello	3025644	AA	1	2026-02-14 03:04:08
 8399305	Jaramillo Tabarez Gabriel	AUT 102 # 17 - 82 AP 225	Bello	3144927214	A	1	2026-02-14 03:04:08
-43668259	Londo%�%o Lopez Lida Estella	CR 50 A # 37 - 14	Bello	4514914	AAA	1	2026-02-14 03:04:08
+43668259	Londoño Lopez Lida Estella	CR 50 A # 37 - 14	Bello	4514914	AAA	1	2026-02-14 03:04:08
 700320715	Molero Duran Dorisabet	CL 52 B 62 22	Bello	3042135431	A	1	2026-02-14 03:04:08
 43662225	Perez Vasquez Olga Amparo	CR 62 D 74 - 73	Bello	3116896314	A	1	2026-02-14 03:04:08
-32476344	Ramirez De Pati%�%o Elizabeth	DG 56 44 125 P2	Bello	3207320382	AA	1	2026-02-14 03:04:08
+32476344	Ramirez De Patiño Elizabeth	DG 56 44 125 P2	Bello	3207320382	AA	1	2026-02-14 03:04:08
 1035865876	Rico Perez Astrid Yulieth	CR 62 D 74 - 73	Bello	3137303193	A	1	2026-02-14 03:04:08
 98579701	Rivera Jaramillo Jesus Euclives	AV 47 A 67 135 P2 BRR NIQUIA	Bello	3184587601	A	1	2026-02-14 03:04:08
 39211289	Rojo Gomez Marilu	CL 32 # 57 - 28	Bello	6139046	AA	1	2026-02-14 03:04:08
 43917589	Tamayo Mesa Lina Marcela	CR 53 A CL 48 - 25	Bello	4572783	A	1	2026-02-14 03:04:09
 32310166	Vasquez Sanguino Nubia Estela	CL 43 A 58 13	Bello	2759779	A	1	2026-02-14 03:04:09
 43920964	Zuluaga Arvaez Gloria Patricia	CL 77 CR 66 - 90 AP 101	Bello	322534805	A	1	2026-02-14 03:04:09
-43467697	Alzate Cardona Mery Bernarda	CR 64 CL 25 B 42	Itag%]%%�	3090606	AAA	1	2026-02-14 03:04:09
-28742199	Buitrago Serna Esperanza	CL 47 # 58-36 BRR EL ROSARIO	Itag%]%%�	3144272388	A	1	2026-02-14 03:04:09
-43161076	Estrada Aguirre Angela Yaneth	CR 59 A # 47 A 35	Itag%]%%�	3165098382	A	1	2026-02-14 03:04:09
-71279486	Hoyos Hernandez Juan Camilo	CR 52 D # 73 - 65	Itag%]%%�	2818182	A	1	2026-02-14 03:04:09
-15927569	Llanez Alzate Pedro Proceso	CL 58 CR 65 - 10	Itag%]%%�	3711095	AAA	1	2026-02-14 03:04:09
-1036674143	Lopez Herrera Vanessa	CL 47 # 61 - 81	Itag%]%%�	3147423045	A	1	2026-02-14 03:04:09
-42791387	Mu%�%oz Valle Gloria Nelly	CL 49 # 46 - 09 AP 301- ASTURIAS	Itag%]%%�	3183270148	A	1	2026-02-14 03:04:09
-43189668	Salazar Panesso Aura Milena	CL 67 B # 55 - 12	Itag%]%%�	3017311430	AAA	1	2026-02-14 03:04:09
-17576365	Sierra Salazar Llineska Desiree	CL 13 A SUR # 53 - 112 IN 110	Itag%]%%�	3145128450	A	1	2026-02-14 03:04:09
-1082964637	Vergara Bracamonte Lina Marcela	CR 75 # 94 - 18	Itag%]%%�	3011694242	A	1	2026-02-14 03:04:09
-1036599696	Zapata Rios Claudia Carolina	CL 35 # 39 - 45 INT 302	Itag%]%%�	3104256640	A	1	2026-02-14 03:04:09
+43467697	Alzate Cardona Mery Bernarda	CR 64 CL 25 B 42	Itagüí	3090606	AAA	1	2026-02-14 03:04:09
+28742199	Buitrago Serna Esperanza	CL 47 # 58-36 BRR EL ROSARIO	Itagüí	3144272388	A	1	2026-02-14 03:04:09
+43161076	Estrada Aguirre Angela Yaneth	CR 59 A # 47 A 35	Itagüí	3165098382	A	1	2026-02-14 03:04:09
+71279486	Hoyos Hernandez Juan Camilo	CR 52 D # 73 - 65	Itagüí	2818182	A	1	2026-02-14 03:04:09
+15927569	Llanez Alzate Pedro Proceso	CL 58 CR 65 - 10	Itagüí	3711095	AAA	1	2026-02-14 03:04:09
+1036674143	Lopez Herrera Vanessa	CL 47 # 61 - 81	Itagüí	3147423045	A	1	2026-02-14 03:04:09
+42791387	Muñoz Valle Gloria Nelly	CL 49 # 46 - 09 AP 301- ASTURIAS	Itagüí	3183270148	A	1	2026-02-14 03:04:09
+43189668	Salazar Panesso Aura Milena	CL 67 B # 55 - 12	Itagüí	3017311430	AAA	1	2026-02-14 03:04:09
+17576365	Sierra Salazar Llineska Desiree	CL 13 A SUR # 53 - 112 IN 110	Itagüí	3145128450	A	1	2026-02-14 03:04:09
+1082964637	Vergara Bracamonte Lina Marcela	CR 75 # 94 - 18	Itagüí	3011694242	A	1	2026-02-14 03:04:09
+1036599696	Zapata Rios Claudia Carolina	CL 35 # 39 - 45 INT 302	Itagüí	3104256640	A	1	2026-02-14 03:04:09
 1038405870	Montoya Arcila Laura Yubeidy	AC 35 32 32	Marinilla	3105955757	AA	1	2026-02-14 03:04:09
 43796271	Ramirez Restrepo Alba Marleny	CL 31 # 33 - 136	Marinilla	3194979218	AAA	1	2026-02-14 03:04:09
 32391893	Zuluaga Gomez Cruz Elena	CL 30 CR 44 - 20	Marinilla	3144820043	A	1	2026-02-14 03:04:09
-43188279	Amparo Arias Jaqueline	CALLE 97 # 23-52	Medell%�n	3022204488	A	1	2026-02-14 03:04:09
-43619122	Ardila Cano Yakeline	CR 97 A 48 C 16	Medell%�n	4913266	A	1	2026-02-14 03:04:09
-32439583	Arenas de Baena Rosa Ines	CL 48 DD # 99 D 95	Medell%�n	3005232060	A	1	2026-02-14 03:04:09
-42843342	Arismendy Garcia Claudia Sorany	CL 36 # 92 - 27	Medell%�n	5990211	AAA	1	2026-02-14 03:04:09
-1063366292	Bedoya Paternina Paula Andrea	CR 143 A # 56 - 330	Medell%�n	300296581	A	1	2026-02-14 03:04:10
-1096244432	Ca%�%averal Martinez Dayan Yulithza	CR 80 # 6 sur 30 AP 302	Medell%�n	3102370621	A	1	2026-02-14 03:04:10
-43048297	Casta%�%eda de Ramirez Marleny del Socorro	CR 75 # 94 - 18	Medell%�n	3147438466	A	1	2026-02-14 03:04:10
-8104549	Castrillon Cardenas Edwin Alberto	CL 77 DD # 94 A 17	Medell%�n	3012707945	A	1	2026-02-14 03:04:10
-1017140262	Chaverra Medina Julieth Alejandra	CR 50 # 95 - 101	Medell%�n	6034239	A	1	2026-02-14 03:04:10
-34943965	Cotera Alvarez Aracelis del Carmen	CL 47 A 2 C 65	Medell%�n	3207042688	A	1	2026-02-14 03:04:10
-1128444889	De Ossa Bolivar Maria Esperanza	CR 79 B 46 SUR 101 IN 0221	Medell%�n	3017466926	A	1	2026-02-14 03:04:10
-43916205	Florez Estrada Claudia Patricia	CR 45 # 111 - 30	Medell%�n	3024186626	AAA	1	2026-02-14 03:04:10
-1036600639	Gallego Atehortua Claudia Yaneth	KM 15 CORR SANTA ELEA	Medell%�n	5380752	A	1	2026-02-14 03:04:10
-43016242	Gallego Heranndez Martha Oliva	CL 57 SUR 62 B 31	Medell%�n	2868183	A	1	2026-02-14 03:04:10
-24368442	Gallego Loaiza Maria Melva	CRA 77 CLL 23-35	Medell%�n	3147774833	A	1	2026-02-14 03:04:10
-1128390179	Garcia Castrillon Yuly Paulina	CR 71 # 93 - 57	Medell%�n	3185700973	A	1	2026-02-14 03:04:12
-1001003896	Garcia Posada Maria Isabel	CR 112 # 13 - 155 IN 103	Medell%�n	4953405	A	1	2026-02-14 03:04:12
-1045017301	Garcia Vergara Carlos Andr%�s (Michel Cano y LiliaA Garcia)	CR 44 A 20	Medell%�n	3234721063	AAA	1	2026-02-14 03:04:12
-1036612879	Garnica Linares Andrea Aurora	CL 48 A SUR D 38 AP 20	Medell%�n	5065952	A	1	2026-02-14 03:04:12
-39268713	Giraldo Villa Gloria Elena	CL 82 # 72 C 108	Medell%�n	4874554	A	1	2026-02-14 03:04:12
-21701184	Gonzalez Palacio Doris Amparo	CR 89 B 89 101 IN 246 TO 7	Medell%�n	3225691506	AA	1	2026-02-14 03:04:12
-1035304202	Guisao Miranda Yefferson Andrei	CL 102 B 84 A 109	Medell%�n	3235322458	A	1	2026-02-14 03:04:12
-1035414253	Hernandez Rueda Lisceth Tatiana	CR 94 A CL 70 G C 80	Medell%�n	312520319	A	1	2026-02-14 03:04:12
-1017162806	Hidalgo Cortes Diego Alberto	CL 56 # 32 - 133	Medell%�n	2168719	A	1	2026-02-14 03:04:12
-43561368	Marulanda Guarin Gloria Patricia	CL 82 # 32-44	Medell%�n	3117675970	A	1	2026-02-14 03:04:12
-1128430728	Mazo Restrepo Edith Nataly	AC 100 DD # 28 CB - 8 INT 201	Medell%�n	5166082	A	1	2026-02-14 03:04:12
-43537983	Medina Migdalia del Socorro	CR 39 B 39 C 30	Medell%�n	6034239	A	1	2026-02-14 03:04:12
-1094366162	Meneses FerAndez Tania Paola	CR 70 B 9 A 32 AP 201	Medell%�n	3125379229	A	1	2026-02-14 03:04:12
-21896457	Montoya Lopez Dora Liliana	CL 68 # 58-71	Medell%�n	3113926142	A	1	2026-02-14 03:04:12
-1007538923	Montoya Valderrama Jeniffer Geraldin	CR 118 CL 39 D 123 IN 110	Medell%�n	31961993	A	1	2026-02-14 03:04:12
-32461771	Mu%�%oz Arredondo Maria Elvia Lucia	CR 96 47 A 176	Medell%�n	5855705	AAA	1	2026-02-14 03:04:12
-43916106	Mu%�%oz Vargas July Alejandra	CL 110 C 43 A 07	Medell%�n	5221529	A	1	2026-02-14 03:04:12
-43202750	Ocampo Villada Luz Aida	CR 47 # 92-89	Medell%�n	3022356712	A	1	2026-02-14 03:04:12
-32297720	Olaya Gonzalez Vianeth Mileidy	CL 89 A # 39 - 46	Medell%�n	3142418994	A	1	2026-02-14 03:04:12
-1042767669	Perez Waltero Linda Estefany	CR 82 C 104 D D 29	Medell%�n	3155503959	A	1	2026-02-14 03:04:12
-43589459	Posada Villegas Ruth Yannet	CL 49 C # 5 - 114	Medell%�n	3024484780	A	1	2026-02-14 03:04:12
-42999087	Pulgarin Mejia Josefina del Socorro	CL 80 C 74 - 188	Medell%�n	4418640	AAA	1	2026-02-14 03:04:13
-43084268	Quiceno Aguirre Maria Teresa	CR 98 B # 83 B 25	Medell%�n	3002477189	AAA	1	2026-02-14 03:04:13
-12435671	Quintero Contreras Edward Sadit	CL 34 # 52 - 44	Medell%�n	2316387	A	1	2026-02-14 03:04:13
-43622970	Rico Bermudez Maria Eugenia	CRA 43 # 118B-21	Medell%�n	3246434020	A	1	2026-02-14 03:04:13
-27894856	Rivera Chaparro Claudia Liliana	CL 20 B NORTE BRR Par%�s	Medell%�n	4715428	A	1	2026-02-14 03:04:13
-1053798633	Rodas Vinasco Yesid Alexander	CL 110 # 46 - 28 IN 197	Medell%�n	3017782338	A	1	2026-02-14 03:04:13
-1017157466	Rua Agudelo Cristian Alexis	CR 57 # 42 - 38	Medell%�n	3223965702	A	1	2026-02-14 03:04:13
-43014769	Sepulveda Henao Dora Luz	CL 91 AB #84-106 INT 201	Medell%�n	3023695101	A	1	2026-02-14 03:04:13
-43272097	Taborda Rend%%n Adriana Maria	CL 110 B 43 AA 16	Medell%�n	5226317	AA	1	2026-02-14 03:04:13
-98587077	Toro Cano Hoiber	CL 92 B 56 A 24	Medell%�n	5051560	A	1	2026-02-14 03:04:13
-1039079211	Usuga Carmen Yaneth	CR 16 mz 63 BRR LimoAr	Medell%�n	5705186	AAA	1	2026-02-14 03:04:13
-43638585	Varela Restrepo Alba Mery	CR 118 # 39 A 50	Medell%�n	3215796407	A	1	2026-02-14 03:04:13
-43865445	Vargas Agudelo Sandra Milena	CL 110 C CR 43 A 7	Medell%�n	3117313015	A	1	2026-02-14 03:04:13
-1017177916	Vargas Guerra Diana Maria	CL 57 # 19 - 88 AP 204	Medell%�n	3045951934	A	1	2026-02-14 03:04:13
+43188279	Amparo Arias Jaqueline	CALLE 97 # 23-52	Medellín	3022204488	A	1	2026-02-14 03:04:09
+43619122	Ardila Cano Yakeline	CR 97 A 48 C 16	Medellín	4913266	A	1	2026-02-14 03:04:09
+32439583	Arenas de Baena Rosa Ines	CL 48 DD # 99 D 95	Medellín	3005232060	A	1	2026-02-14 03:04:09
+42843342	Arismendy Garcia Claudia Sorany	CL 36 # 92 - 27	Medellín	5990211	AAA	1	2026-02-14 03:04:09
+1063366292	Bedoya Paternina Paula Andrea	CR 143 A # 56 - 330	Medellín	300296581	A	1	2026-02-14 03:04:10
+1096244432	Cañaveral Martinez Dayan Yulithza	CR 80 # 6 sur 30 AP 302	Medellín	3102370621	A	1	2026-02-14 03:04:10
+43048297	Castañeda de Ramirez Marleny del Socorro	CR 75 # 94 - 18	Medellín	3147438466	A	1	2026-02-14 03:04:10
+8104549	Castrillon Cardenas Edwin Alberto	CL 77 DD # 94 A 17	Medellín	3012707945	A	1	2026-02-14 03:04:10
+1017140262	Chaverra Medina Julieth Alejandra	CR 50 # 95 - 101	Medellín	6034239	A	1	2026-02-14 03:04:10
+34943965	Cotera Alvarez Aracelis del Carmen	CL 47 A 2 C 65	Medellín	3207042688	A	1	2026-02-14 03:04:10
+1128444889	De Ossa Bolivar Maria Esperanza	CR 79 B 46 SUR 101 IN 0221	Medellín	3017466926	A	1	2026-02-14 03:04:10
+43916205	Florez Estrada Claudia Patricia	CR 45 # 111 - 30	Medellín	3024186626	AAA	1	2026-02-14 03:04:10
+1036600639	Gallego Atehortua Claudia Yaneth	KM 15 CORR SANTA ELEA	Medellín	5380752	A	1	2026-02-14 03:04:10
+43016242	Gallego Heranndez Martha Oliva	CL 57 SUR 62 B 31	Medellín	2868183	A	1	2026-02-14 03:04:10
+24368442	Gallego Loaiza Maria Melva	CRA 77 CLL 23-35	Medellín	3147774833	A	1	2026-02-14 03:04:10
+1128390179	Garcia Castrillon Yuly Paulina	CR 71 # 93 - 57	Medellín	3185700973	A	1	2026-02-14 03:04:12
+1001003896	Garcia Posada Maria Isabel	CR 112 # 13 - 155 IN 103	Medellín	4953405	A	1	2026-02-14 03:04:12
+1045017301	Garcia Vergara Carlos Andrés (Michel Cano y LiliaA Garcia)	CR 44 A 20	Medellín	3234721063	AAA	1	2026-02-14 03:04:12
+1036612879	Garnica Linares Andrea Aurora	CL 48 A SUR D 38 AP 20	Medellín	5065952	A	1	2026-02-14 03:04:12
+39268713	Giraldo Villa Gloria Elena	CL 82 # 72 C 108	Medellín	4874554	A	1	2026-02-14 03:04:12
+21701184	Gonzalez Palacio Doris Amparo	CR 89 B 89 101 IN 246 TO 7	Medellín	3225691506	AA	1	2026-02-14 03:04:12
+1035304202	Guisao Miranda Yefferson Andrei	CL 102 B 84 A 109	Medellín	3235322458	A	1	2026-02-14 03:04:12
+1035414253	Hernandez Rueda Lisceth Tatiana	CR 94 A CL 70 G C 80	Medellín	312520319	A	1	2026-02-14 03:04:12
+1017162806	Hidalgo Cortes Diego Alberto	CL 56 # 32 - 133	Medellín	2168719	A	1	2026-02-14 03:04:12
+43561368	Marulanda Guarin Gloria Patricia	CL 82 # 32-44	Medellín	3117675970	A	1	2026-02-14 03:04:12
+1128430728	Mazo Restrepo Edith Nataly	AC 100 DD # 28 CB - 8 INT 201	Medellín	5166082	A	1	2026-02-14 03:04:12
+43537983	Medina Migdalia del Socorro	CR 39 B 39 C 30	Medellín	6034239	A	1	2026-02-14 03:04:12
+1094366162	Meneses FerAndez Tania Paola	CR 70 B 9 A 32 AP 201	Medellín	3125379229	A	1	2026-02-14 03:04:12
+21896457	Montoya Lopez Dora Liliana	CL 68 # 58-71	Medellín	3113926142	A	1	2026-02-14 03:04:12
+1007538923	Montoya Valderrama Jeniffer Geraldin	CR 118 CL 39 D 123 IN 110	Medellín	31961993	A	1	2026-02-14 03:04:12
+32461771	Muñoz Arredondo Maria Elvia Lucia	CR 96 47 A 176	Medellín	5855705	AAA	1	2026-02-14 03:04:12
+43916106	Muñoz Vargas July Alejandra	CL 110 C 43 A 07	Medellín	5221529	A	1	2026-02-14 03:04:12
+43202750	Ocampo Villada Luz Aida	CR 47 # 92-89	Medellín	3022356712	A	1	2026-02-14 03:04:12
+32297720	Olaya Gonzalez Vianeth Mileidy	CL 89 A # 39 - 46	Medellín	3142418994	A	1	2026-02-14 03:04:12
+1042767669	Perez Waltero Linda Estefany	CR 82 C 104 D D 29	Medellín	3155503959	A	1	2026-02-14 03:04:12
+43589459	Posada Villegas Ruth Yannet	CL 49 C # 5 - 114	Medellín	3024484780	A	1	2026-02-14 03:04:12
+42999087	Pulgarin Mejia Josefina del Socorro	CL 80 C 74 - 188	Medellín	4418640	AAA	1	2026-02-14 03:04:13
+43084268	Quiceno Aguirre Maria Teresa	CR 98 B # 83 B 25	Medellín	3002477189	AAA	1	2026-02-14 03:04:13
+12435671	Quintero Contreras Edward Sadit	CL 34 # 52 - 44	Medellín	2316387	A	1	2026-02-14 03:04:13
+43622970	Rico Bermudez Maria Eugenia	CRA 43 # 118B-21	Medellín	3246434020	A	1	2026-02-14 03:04:13
+27894856	Rivera Chaparro Claudia Liliana	CL 20 B NORTE BRR París	Medellín	4715428	A	1	2026-02-14 03:04:13
+1053798633	Rodas Vinasco Yesid Alexander	CL 110 # 46 - 28 IN 197	Medellín	3017782338	A	1	2026-02-14 03:04:13
+1017157466	Rua Agudelo Cristian Alexis	CR 57 # 42 - 38	Medellín	3223965702	A	1	2026-02-14 03:04:13
+43014769	Sepulveda Henao Dora Luz	CL 91 AB #84-106 INT 201	Medellín	3023695101	A	1	2026-02-14 03:04:13
+43272097	Taborda Rendón Adriana Maria	CL 110 B 43 AA 16	Medellín	5226317	AA	1	2026-02-14 03:04:13
+98587077	Toro Cano Hoiber	CL 92 B 56 A 24	Medellín	5051560	A	1	2026-02-14 03:04:13
+1039079211	Usuga Carmen Yaneth	CR 16 mz 63 BRR LimoAr	Medellín	5705186	AAA	1	2026-02-14 03:04:13
+43638585	Varela Restrepo Alba Mery	CR 118 # 39 A 50	Medellín	3215796407	A	1	2026-02-14 03:04:13
+43865445	Vargas Agudelo Sandra Milena	CL 110 C CR 43 A 7	Medellín	3117313015	A	1	2026-02-14 03:04:13
+1017177916	Vargas Guerra Diana Maria	CL 57 # 19 - 88 AP 204	Medellín	3045951934	A	1	2026-02-14 03:04:13
 1041205070	Gallego Valencia Astrid Carolina	CR 48 # 49 - 20 AP 302	Santuario	3117920607	AA	1	2026-02-14 03:04:13
-43788596	Jimenez Ramirez Deisy Yohana	CR 53 49 N,%�% 73 AP 402	Santuario	5672730	A	1	2026-02-14 03:04:13
-1045026047	Lopez Morales Ana Mar%�a	CR 50 CL 45 B 66	Santuario	3172402992	A	1	2026-02-14 03:04:14
+43788596	Jimenez Ramirez Deisy Yohana	CR 53 49 N° 73 AP 402	Santuario	5672730	A	1	2026-02-14 03:04:13
+1045026047	Lopez Morales Ana María	CR 50 CL 45 B 66	Santuario	3172402992	A	1	2026-02-14 03:04:14
 1045019585	Serna Ramirez Angela Maria	CL 82 # 32 - 44	Santuario	3117675970	A	1	2026-02-14 03:04:14
 43118318	Vasquez Margarita Maria	DG 58 # 42 - 116	Bello	6012336	A	1	2026-02-14 03:04:14
-43273110	Correa Zamora Shirley	BRR MANRIQUE CL 83 CR 4331	Medell%�n	3016112549	A	1	2026-02-14 03:04:14
-1128459691	Loaiza Correa Yennifer	CRA 69 # 36 SUR 157	Medell%�n	3147080623	A	1	2026-02-14 03:04:14
-1128386891	Vasquez Barrientos Leonardo Fabio (Margarita Vasquez)	CR 69 # 78 B 12 IN 310	Medell%�n	3128684424	AAA	1	2026-02-14 03:04:14
-43381473	Arcila Valencia Maria Esperanza	CLL 111 F # 64 - 56	Medell%�n	3213763265	A	1	2026-02-14 03:04:14
+43273110	Correa Zamora Shirley	BRR MANRIQUE CL 83 CR 4331	Medellín	3016112549	A	1	2026-02-14 03:04:14
+1128459691	Loaiza Correa Yennifer	CRA 69 # 36 SUR 157	Medellín	3147080623	A	1	2026-02-14 03:04:14
+1128386891	Vasquez Barrientos Leonardo Fabio (Margarita Vasquez)	CR 69 # 78 B 12 IN 310	Medellín	3128684424	AAA	1	2026-02-14 03:04:14
+43381473	Arcila Valencia Maria Esperanza	CLL 111 F # 64 - 56	Medellín	3213763265	A	1	2026-02-14 03:04:14
 43097913	Olaya Marta Bibiana	DG 62 AV # 48 B 30 IN 201	Bello	3218855166	AAA	1	2026-02-14 03:04:14
 8058195	Araujo Rodriguez Hernan Dario (Aura Rodriguez)	CLL 49 A # 56 A 9 IN 104	Bello	3122821121	AA	1	2026-02-14 03:04:14
-43181466	Gil Saldarriaga Erica Astrid	CL 38 SUR 77 10J LOS ANGELES	Itag%]%%�	3046377165	AAA	1	2026-02-14 03:04:14
-1046667079	Cardona Valencia Camila	CLL 37 B # SUR 82 D 20	Medell%�n	3017797376	A	1	2026-02-14 03:04:14
-1152190746	Graciano Sepulveda Yira Marcela	VDA AGUAS FRIAS BRR BELEN	Medell%�n	2385625	AAA	1	2026-02-14 03:04:14
-700469989	Marquez Uribe David Esteban	CRR 58 A 65 # 22 IN 301	Itag%]%%�	3124081795	A	1	2026-02-14 03:04:14
+43181466	Gil Saldarriaga Erica Astrid	CL 38 SUR 77 10J LOS ANGELES	Itagüí	3046377165	AAA	1	2026-02-14 03:04:14
+1046667079	Cardona Valencia Camila	CLL 37 B # SUR 82 D 20	Medellín	3017797376	A	1	2026-02-14 03:04:14
+1152190746	Graciano Sepulveda Yira Marcela	VDA AGUAS FRIAS BRR BELEN	Medellín	2385625	AAA	1	2026-02-14 03:04:14
+700469989	Marquez Uribe David Esteban	CRR 58 A 65 # 22 IN 301	Itagüí	3124081795	A	1	2026-02-14 03:04:14
 43283514	Vargas Araque Maria Dolly	DG 30 # 33 A SUR 34	Envigado	3105924202	A	1	2026-02-14 03:04:14
-1152457615	Lopez Gallego Luz Mary	CALLE 31 # 109-42 BELEN	Medell%�n	3003194787	A	1	2026-02-14 03:04:15
-71223381	Restrepo Olaya Elkin Emilio (Nancy Arboleda)	CALLE 14 SUR # 58 B 05	Itag%]%%�	3116940715	AAA	1	2026-02-14 03:04:15
+1152457615	Lopez Gallego Luz Mary	CALLE 31 # 109-42 BELEN	Medellín	3003194787	A	1	2026-02-14 03:04:15
+71223381	Restrepo Olaya Elkin Emilio (Nancy Arboleda)	CALLE 14 SUR # 58 B 05	Itagüí	3116940715	AAA	1	2026-02-14 03:04:15
 1037886122	Gomez Arcila Leon david	CL 33 # 33 - 19 AP 301	Marinilla	3116642376	A	1	2026-02-14 03:04:15
-98514920	Loaiza Saldarriaga Johan Adiel	VDA EL SALADO SEC LA CANDELA	Medell%�n	3136698557	A	1	2026-02-14 03:04:15
-1013617204	Cardenas Hernandez Nestor Julian	DG 31 D # 32 SUR 15 APTO 302	Medell%�n	3026033654	AAA	1	2026-02-14 03:04:15
+98514920	Loaiza Saldarriaga Johan Adiel	VDA EL SALADO SEC LA CANDELA	Medellín	3136698557	A	1	2026-02-14 03:04:15
+1013617204	Cardenas Hernandez Nestor Julian	DG 31 D # 32 SUR 15 APTO 302	Medellín	3026033654	AAA	1	2026-02-14 03:04:15
 39439040	Arcila Montoya Alba Mirian	CL 33 33 19 AP 301	Marinilla	3104906527	AAA	1	2026-02-14 03:04:15
-1038416826	Mu%�%oz Montoya kevin	CL 24 30 44	Marinilla	3235027832	A	1	2026-02-14 03:04:16
-1018230626	Berrio Jorge Luis	Cr 81 54 51 AP 101	Medell%�n	3054270414	A	1	2026-02-14 03:04:16
-45769944	Bele%�%o Ariza Ebeth Isabel	Cll 45 d 16 30	Medell%�n	3205268697	AA	1	2026-02-14 03:04:16
+1038416826	Muñoz Montoya kevin	CL 24 30 44	Marinilla	3235027832	A	1	2026-02-14 03:04:16
+1018230626	Berrio Jorge Luis	Cr 81 54 51 AP 101	Medellín	3054270414	A	1	2026-02-14 03:04:16
+45769944	Beleño Ariza Ebeth Isabel	Cll 45 d 16 30	Medellín	3205268697	AA	1	2026-02-14 03:04:16
 1020436106	Sanchez Sanchez Evelin Yaheni	DG 55 46 48 BRR Niquia	Bello	3116457499	A	1	2026-02-14 03:04:17
-1017159858	Mazo Guerra Jhon Jader	CL 65 Cr 16 DD	Medell%�n	3015703383	A	1	2026-02-14 03:04:17
+1017159858	Mazo Guerra Jhon Jader	CL 65 Cr 16 DD	Medellín	3015703383	A	1	2026-02-14 03:04:17
 700530400	Cubillan Contreras Mariu Eugenia	Cl 47 29 39 IN 111	Copacabana	3042872273	AAA	1	2026-02-14 03:04:17
 43115930	Amaya Trujillo Adriana Patricia	AV 48 A 65 115	Bello	5979171	AA	1	2026-02-14 03:04:17
-43843857	Mu%�%oz Salazar Luz Yenny	CALL 40A SUR #59-40 INT 201	Medell%�n	3026221102	A	1	2026-02-14 03:04:17
-1037264064	Correa Piedrahita Diana Andrea	CALL 83 #57-22	Medell%�n	3104665496	AAA	1	2026-02-14 03:04:17
-1001686689	Garrido Bartolo Karen  (Maria Isabel Bartolo)	Cr 56 46 37 in 201	Itag%]%%�	3044223445	AA	1	2026-02-14 03:04:17
+43843857	Muñoz Salazar Luz Yenny	CALL 40A SUR #59-40 INT 201	Medellín	3026221102	A	1	2026-02-14 03:04:17
+1037264064	Correa Piedrahita Diana Andrea	CALL 83 #57-22	Medellín	3104665496	AAA	1	2026-02-14 03:04:17
+1001686689	Garrido Bartolo Karen  (Maria Isabel Bartolo)	Cr 56 46 37 in 201	Itagüí	3044223445	AA	1	2026-02-14 03:04:17
 43429023	Lopera Torres Luz Doris	CALL 55 # 46-21	Bello	3017227142	A	1	2026-02-14 03:04:17
 1037325550	Pulgarin Giraldo Didier	Carrera 4 # 2 - 72	Jardin	3217516834	A	1	2026-02-14 03:04:17
-1036608419	Casta%�%o Acevedo Jhon Euliser	CL 35 49 37	Itag%]%%�	3122908488	A	1	2026-02-14 03:04:17
-43989889	Sierra Claudia Marcela	Cr 46 106 A 28 Ap 302	Medell%�n	3146021287	A	1	2026-02-14 03:04:17
+1036608419	Castaño Acevedo Jhon Euliser	CL 35 49 37	Itagüí	3122908488	A	1	2026-02-14 03:04:17
+43989889	Sierra Claudia Marcela	Cr 46 106 A 28 Ap 302	Medellín	3146021287	A	1	2026-02-14 03:04:17
 43517753	Cossio Parra Maria Eugenia	Cr 20 A 58 08 MZ 13	Dosquebradas	3015093148	A	1	2026-02-14 03:04:17
-1040871321	Ospina Casta%�%eda Paulina	Cr 45 A 20 39	Marinilla	3208067864	A	1	2026-02-14 03:04:18
-1234991468	Quiroz Garcia Luisa Fernanda	CARR 59D  #41D SUR 23	Medell%�n	3244399156	A	1	2026-02-14 03:04:18
-21713597	Chavarria Chavarria Maria Bernanda	Cll 76 50 14 Santa Maria	Itag%]%%�	3712520	A	1	2026-02-14 03:04:18
-43400859	Casta%�%eda Alvarez Laura Shirley	Cll 124 a sur cr 50 b 12	Caldas	3006015843	AA	1	2026-02-14 03:04:18
+1040871321	Ospina Castañeda Paulina	Cr 45 A 20 39	Marinilla	3208067864	A	1	2026-02-14 03:04:18
+1234991468	Quiroz Garcia Luisa Fernanda	CARR 59D  #41D SUR 23	Medellín	3244399156	A	1	2026-02-14 03:04:18
+21713597	Chavarria Chavarria Maria Bernanda	Cll 76 50 14 Santa Maria	Itagüí	3712520	A	1	2026-02-14 03:04:18
+43400859	Castañeda Alvarez Laura Shirley	Cll 124 a sur cr 50 b 12	Caldas	3006015843	AA	1	2026-02-14 03:04:18
 42897491	Gomez Berrio Lorena Maria	Cll 96 b 50 aa 26	La Estrella	3128743193	AA	1	2026-02-14 03:04:18
-71366811	Salazar Blanco Edier Ferley	Cll 118 42 B 54	Medell%�n	3207420013	AA	1	2026-02-14 03:04:18
-43115719	Sanchez Espinoza Claudia De Jesus	Cll 94 D 79 A 59 in 201	Medell%�n	3017197220	A	1	2026-02-14 03:04:18
-1152447519	Jaramillo Gallego Angelica Maria	Cr 2102 B 49 b 18	Medell%�n	3015588007	A	1	2026-02-14 03:04:18
-43818822	Zapata Valencia Eliana Maria	Cr 55 95 A 13 AP 306	Medell%�n	3012608251	AA	1	2026-02-14 03:04:18
+71366811	Salazar Blanco Edier Ferley	Cll 118 42 B 54	Medellín	3207420013	AA	1	2026-02-14 03:04:18
+43115719	Sanchez Espinoza Claudia De Jesus	Cll 94 D 79 A 59 in 201	Medellín	3017197220	A	1	2026-02-14 03:04:18
+1152447519	Jaramillo Gallego Angelica Maria	Cr 2102 B 49 b 18	Medellín	3015588007	A	1	2026-02-14 03:04:18
+43818822	Zapata Valencia Eliana Maria	Cr 55 95 A 13 AP 306	Medellín	3012608251	AA	1	2026-02-14 03:04:18
 1027881749	Cano Acevedo Mary Luz	Cr 55 54 44	Bello	3213192748	A	1	2026-02-14 03:04:18
-1037599747	Soto Marulanda Leidy Selene	Cl 55 7 165 In 105	Medell%�n	3108973012	A	1	2026-02-14 03:04:18
-43825606	Alzate Pineda Olga Lucia	Cl 34 A 40 42	Itag%]%%�	3043367407	AA	1	2026-02-14 03:04:19
+1037599747	Soto Marulanda Leidy Selene	Cl 55 7 165 In 105	Medellín	3108973012	A	1	2026-02-14 03:04:18
+43825606	Alzate Pineda Olga Lucia	Cl 34 A 40 42	Itagüí	3043367407	AA	1	2026-02-14 03:04:19
 1035862169	Zuluaga Cardona Elisa Maria	Av 35 42 EE 102 ATR	Bello	3193310554	AA	1	2026-02-14 03:04:19
-100205983	Tobon Alvarez Laura Micheli	Cl 82 71 a 42	Medell%�n	3145453566	A	1	2026-02-14 03:04:19
-1065818962	Carolina Gil Arias Yazmin	Cl 56 58 FF 28 in 201	Itag%]%%�	3122746029	A	1	2026-02-14 03:04:19
-1033649051	Montoya Arboleda Ana Isabel	Cl 103 G 64 D 28 101	Medell%�n	3148470510	AAA	1	2026-02-14 03:04:19
+100205983	Tobon Alvarez Laura Micheli	Cl 82 71 a 42	Medellín	3145453566	A	1	2026-02-14 03:04:19
+1065818962	Carolina Gil Arias Yazmin	Cl 56 58 FF 28 in 201	Itagüí	3122746029	A	1	2026-02-14 03:04:19
+1033649051	Montoya Arboleda Ana Isabel	Cl 103 G 64 D 28 101	Medellín	3148470510	AAA	1	2026-02-14 03:04:19
 43744055	Rivera Higuita Gladys Elena	Cr 47 76 sur 12	Sabaneta	3233305339	AA	1	2026-02-14 03:04:19
-43727411	Torres Alvarez Marta Cecilia	Cl 31 D 100 B 33	Medell%�n	3213539701	AA	1	2026-02-14 03:04:19
-1017148861	Amaya Macias Yecenia	Cl 96 82 18	Medell%�n	3103751591	A	1	2026-02-14 03:04:19
-1128388462	Sierra Garcia Adriana	CR 97 aa 66 55	Medell%�n	3126941601	AA	1	2026-02-14 03:04:19
-287890791	Usuga Rojas Teresa De Jesus	Cr 43 108 118 AP 130	Medell%�n	3217035197	AA	1	2026-02-14 03:04:19
-55238173	Silvera Arenilla Eileen Jattin	CL 82 CR 50 A in 201	Itag%]%%�	3146681728	A	1	2026-02-14 03:04:19
+43727411	Torres Alvarez Marta Cecilia	Cl 31 D 100 B 33	Medellín	3213539701	AA	1	2026-02-14 03:04:19
+1017148861	Amaya Macias Yecenia	Cl 96 82 18	Medellín	3103751591	A	1	2026-02-14 03:04:19
+1128388462	Sierra Garcia Adriana	CR 97 aa 66 55	Medellín	3126941601	AA	1	2026-02-14 03:04:19
+287890791	Usuga Rojas Teresa De Jesus	Cr 43 108 118 AP 130	Medellín	3217035197	AA	1	2026-02-14 03:04:19
+55238173	Silvera Arenilla Eileen Jattin	CL 82 CR 50 A in 201	Itagüí	3146681728	A	1	2026-02-14 03:04:19
 700308111	Medina de Gonzalez Yezenia Lorena	DG 69 B AV B ap 95	Bello	3249653566	A	1	2026-02-14 03:04:19
-1084732805	Fernandez Duran Yalides Maria	CL 62 Cr 109 A 120	Medell%�n	3002550065	AA	1	2026-02-14 03:04:19
-35855609	Mausa Cordero Ana Olfiria	Cl 84 50 E 53 Cmapo Valdes	Medell%�n	3145945954	A	1	2026-02-14 03:04:19
-3800154	Hinestroza Valencia Norelvis	CL 30 B 114 73	Medell%�n	3046111584	A	1	2026-02-14 03:04:19
-1017202088	Mu%�%oz Campi%�%o Natalia Andrea	Cr 38 95 a 33	Medell%�n	3114311083	A	1	2026-02-14 03:04:20
+1084732805	Fernandez Duran Yalides Maria	CL 62 Cr 109 A 120	Medellín	3002550065	AA	1	2026-02-14 03:04:19
+35855609	Mausa Cordero Ana Olfiria	Cl 84 50 E 53 Cmapo Valdes	Medellín	3145945954	A	1	2026-02-14 03:04:19
+3800154	Hinestroza Valencia Norelvis	CL 30 B 114 73	Medellín	3046111584	A	1	2026-02-14 03:04:19
+1017202088	Muñoz Campiño Natalia Andrea	Cr 38 95 a 33	Medellín	3114311083	A	1	2026-02-14 03:04:20
 1010208134	Useche Posada Gennifer Natali	DG 31 D 32 sur 15 in 302	Envigado	3507046736	A	1	2026-02-14 03:04:20
-70417905	Taborda Garcia Silvio De Jesus	CL 37 aa 40 127 San Jose	Itag%]%%�	3233595147	A	1	2026-02-14 03:04:20
-1039464753	Delgado Ramirez Alejandro (Yamile Valencia)	Cr 41 A 86 A 49	Medell%�n	3005534084	AA	1	2026-02-14 03:04:20
+70417905	Taborda Garcia Silvio De Jesus	CL 37 aa 40 127 San Jose	Itagüí	3233595147	A	1	2026-02-14 03:04:20
+1039464753	Delgado Ramirez Alejandro (Yamile Valencia)	Cr 41 A 86 A 49	Medellín	3005534084	AA	1	2026-02-14 03:04:20
 1026279312	Vargas Ruiz Daniela	Cl 93 sur 1 H 22 este	Bogota	3133883095	A	1	2026-02-14 03:04:20
-21450450	Henao Mira Alba Nelly	Cr 51 Cl 95 in 104	Medell%�n	3233478085	A	1	2026-02-14 03:04:20
-1128482429	Zapata Rua Ana Julieta	Cr 53 A 89 53 Aranjuez	Medell%�n	3045832657	AA	1	2026-02-14 03:04:20
+21450450	Henao Mira Alba Nelly	Cr 51 Cl 95 in 104	Medellín	3233478085	A	1	2026-02-14 03:04:20
+1128482429	Zapata Rua Ana Julieta	Cr 53 A 89 53 Aranjuez	Medellín	3045832657	AA	1	2026-02-14 03:04:20
 \.
 
 
 --
+-- TOC entry 5351 (class 0 OID 17256)
+-- Dependencies: 227
 -- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1442,16 +1639,20 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 
 
 --
+-- TOC entry 5346 (class 0 OID 17193)
+-- Dependencies: 222
 -- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correrias (id, name, year, active, created_at) FROM stdin;
-mljjqn48zbxhtg0yw	Inicio de a%�%o	2026	1	2026-02-12 14:20:52
+mljjqn48zbxhtg0yw	Inicio de año	2026	1	2026-02-12 14:20:52
 mljjrcujmtckild4r	Madres	2026	1	2026-02-12 14:21:25
 \.
 
 
 --
+-- TOC entry 5353 (class 0 OID 17278)
+-- Dependencies: 229
 -- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1461,6 +1662,8 @@ mlpc8c2cnhamwad90	15927569	12877	150	2026-01-15	2026-02-01	\N	\N	\N	2026-02-16 1
 
 
 --
+-- TOC entry 5365 (class 0 OID 17574)
+-- Dependencies: 241
 -- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1470,6 +1673,8 @@ COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updat
 
 
 --
+-- TOC entry 5354 (class 0 OID 17292)
+-- Dependencies: 230
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1776,6 +1981,8 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 
 
 --
+-- TOC entry 5350 (class 0 OID 17242)
+-- Dependencies: 226
 -- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1838,6 +2045,8 @@ mm3l3zvlu15hgpefm	158	mljjqn48zbxhtg0yw	FE-7239	 -	Jhon Montoya	2026-02-26 14:54
 
 
 --
+-- TOC entry 5368 (class 0 OID 17659)
+-- Dependencies: 244
 -- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1846,6 +2055,8 @@ COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantid
 
 
 --
+-- TOC entry 5367 (class 0 OID 17616)
+-- Dependencies: 243
 -- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1856,17 +2067,21 @@ b4c4050d-29e3-4b6f-a0d5-25bc7d5e38da	10210	760c19e6-0089-4b3d-8712-a45900529e38	
 
 
 --
+-- TOC entry 5366 (class 0 OID 17585)
+-- Dependencies: 242
 -- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
 0b99a3d1-8812-48fd-803e-adb9f1f91e03	12963	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 1225, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1225}]	0.00	6500.00	324.00	0.00	1625.00	8449.00	t	PRUEBA	2026-02-23 15:12:59.222394	2026-02-23 15:12:59.222394
 760c19e6-0089-4b3d-8712-a45900529e38	10210	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 1400, "concepto": "INSUMOS ", "vlr_unit": 1400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	1400.00	400.00	13500.00	t	PRUEBA	2026-02-23 11:09:05.097294	2026-02-23 11:09:05.097294
-1aae080c-0db1-4202-ab8d-559dce0d3bcf	12976	23e36d4f-0002-41d8-b861-99e68b9992e3	BUS SUB EN PUNT	Plow	MADRES 	12003-1		SESGO 4 CM TRACE 145\nTIRA DE SISAS CON GARDERA LIBRE 60 CM  DE UNA TIRA LIBRE ME SALE LA S SISAS COMPLETA Y CUELLO \nSESGO ESCOTE FRENTE 32 CM \nSESGO ESCOTE ESPALDA 32 CM \n\nELASTICO DE 1 CM  PARA LAS MANGA \nTALLA SY M DE 18 CM  Y PARA L DE 19 CM MANGAS EN CENTRO PARA RECOGIDO	/images/references/12976.jpg	\N	[{"um": "UNIDAD", "cant": 0.4, "tipo": "RESORTE", "total": 100, "concepto": "ELASTICO DE 1", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 0.72, "tipo": "TELA", "total": 0, "concepto": "MAYATEX", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.24, "tipo": "TELA", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.046, "tipo": "SESGO", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 0.72, "total": 4608, "concepto": "ESTAMPADO GLOQUI SUBLIMACION", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCI%�N TOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 780, "concepto": "CORTE", "vlr_unit": 780}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.08, "total": 16, "concepto": "FRAMIL%�N", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "COLLAR YAQUELINE MANUALIDAD CON BOLSA Y PICO LORO", "vlr_unit": 2800}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 2339, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2339}]	100.00	9788.00	324.00	2816.00	2739.00	15767.00	f	Admin Principal	2026-02-25 15:08:12.798511	2026-02-25 15:08:12.798511
+1aae080c-0db1-4202-ab8d-559dce0d3bcf	12976	23e36d4f-0002-41d8-b861-99e68b9992e3	BUS SUB EN PUNT	Plow	MADRES 	12003-1		SESGO 4 CM TRACE 145\nTIRA DE SISAS CON GARDERA LIBRE 60 CM  DE UNA TIRA LIBRE ME SALE LA S SISAS COMPLETA Y CUELLO \nSESGO ESCOTE FRENTE 32 CM \nSESGO ESCOTE ESPALDA 32 CM \n\nELASTICO DE 1 CM  PARA LAS MANGA \nTALLA SY M DE 18 CM  Y PARA L DE 19 CM MANGAS EN CENTRO PARA RECOGIDO	/images/references/12976.jpg	\N	[{"um": "UNIDAD", "cant": 0.4, "tipo": "RESORTE", "total": 100, "concepto": "ELASTICO DE 1", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 0.72, "tipo": "TELA", "total": 0, "concepto": "MAYATEX", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.24, "tipo": "TELA", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.046, "tipo": "SESGO", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 0.72, "total": 4608, "concepto": "ESTAMPADO GLOQUI SUBLIMACION", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 780, "concepto": "CORTE", "vlr_unit": 780}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.08, "total": 16, "concepto": "FRAMILÓN", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "COLLAR YAQUELINE MANUALIDAD CON BOLSA Y PICO LORO", "vlr_unit": 2800}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 2339, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2339}]	100.00	9788.00	324.00	2816.00	2739.00	15767.00	f	Admin Principal	2026-02-25 15:08:12.798511	2026-02-25 15:08:12.798511
 \.
 
 
 --
+-- TOC entry 5372 (class 0 OID 17777)
+-- Dependencies: 248
 -- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1877,6 +2092,8 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
+-- TOC entry 5369 (class 0 OID 17695)
+-- Dependencies: 245
 -- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1887,6 +2104,8 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
+-- TOC entry 5370 (class 0 OID 17712)
+-- Dependencies: 246
 -- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1898,6 +2117,8 @@ f3ade09b-e9f1-46e6-a0d2-2aeb04531f9c	6c253170-b1e0-433f-afe0-03e71e60f8a2	12000	
 
 
 --
+-- TOC entry 5378 (class 0 OID 17960)
+-- Dependencies: 254
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1924,6 +2145,8 @@ COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FRO
 
 
 --
+-- TOC entry 5357 (class 0 OID 17325)
+-- Dependencies: 233
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2399,6 +2622,8 @@ mm2c7uonjxqwkjpf5	12960	60	35000.00
 
 
 --
+-- TOC entry 5348 (class 0 OID 17217)
+-- Dependencies: 224
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2428,6 +2653,8 @@ mm2c7uonjxqwkjpf5	300	mlia6gb0u2bhftxam	mljjqn48zbxhtg0yw	38088000.00	2026-02-25
 
 
 --
+-- TOC entry 5343 (class 0 OID 17157)
+-- Dependencies: 219
 -- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2443,7 +2670,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12581	DUO BODY CON TOP	32900.00	JENNIFER QUINTERO	KENIA	0.72	AMELIA	0.20	1	2026-02-13 15:45:42
 12617	BODY CON CORTES FORRADO	35900.00	JENNIFER QUINTERO	LYCRAMATE	0.94	\N	\N	1	2026-02-13 15:45:42
 12640	CAMISILLA APLIQUE PIEDRAS FTE	24900.00	MARTHA RAMIREZ	RIB	0.48	\N	\N	1	2026-02-13 15:45:42
-12644	CAMISETA CORPI%�O PEIDRAS	37900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.67	\N	\N	1	2026-02-13 15:45:43
+12644	CAMISETA CORPIÑO PEIDRAS	37900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.67	\N	\N	1	2026-02-13 15:45:43
 12665	CAMISETA LARGA BASICA SMILE	19900.00	MARIA MERCEDES	LYCRA PRAGA	0.52	\N	\N	1	2026-02-13 15:45:43
 12679	BUSTIER CON MALLA	23900.00	MARIANA OCAMPO	MALLA	0.27	AMELIA	0.22	1	2026-02-13 15:45:43
 12680	BLUSA TIRAS BRILLANTES	16900.00	MARIANA OCAMPO	RIB	0.30	\N	\N	1	2026-02-13 15:45:43
@@ -2469,7 +2696,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12820	BLUSON RECOGIDO A RAYAS MULTICOLOR	23900.00	MARTHA RAMIREZ	POLYLYCRA S	0.55	\N	\N	1	2026-02-13 15:45:43
 12821	CAMISERA BOLERO FLORES SOMBREROS	34900.00	MARTHA RAMIREZ	NEW COQUET S	0.89	\N	\N	1	2026-02-13 15:45:43
 12823	BLUSA  SOMBREROS Y FLORES CON CARGDERAS RECOGIDAS	22900.00	MARTHA RAMIREZ	MATAYEX S	0.39	MAYATEX	0.23	1	2026-02-13 15:45:43
-12825	DUO CARNAVAL	22900.00	MARIANA OCAMPO	CAPRIATI	0.51	LYCRA ALGOD%�N	0.18	1	2026-02-13 15:45:43
+12825	DUO CARNAVAL	22900.00	MARIANA OCAMPO	CAPRIATI	0.51	LYCRA ALGODÓN	0.18	1	2026-02-13 15:45:43
 12828	ESQUELETO COLORES	14900.00	MARIANA OCAMPO	AMELIA	0.28	\N	\N	1	2026-02-13 15:45:44
 12831	CROP TOP GEOMETRICO RESORTADO	24900.00	MARTHA RAMIREZ	NEW COQUET S	0.43	\N	\N	1	2026-02-13 15:45:44
 12834	CAMISETA CON MARIMONDA	17900.00	MARIANA OCAMPO	AMELIA	0.56	\N	\N	1	2026-02-13 15:45:44
@@ -2478,7 +2705,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12837	CAMISETA RECOGIDA	27900.00	MARIANA OCAMPO	VALIANA	0.77	\N	\N	1	2026-02-13 15:45:44
 12840	BLUSON GANADERIA	36900.00	MARTHA RAMIREZ	LINO LIMPO S	0.75	\N	\N	1	2026-02-13 15:45:44
 12841	TOP AMARRE	20900.00	MARIANA OCAMPO	AMELIA SUBLIMADA	0.30	\N	\N	1	2026-02-13 15:45:44
-12855	CORPI%�O MASCARAS ESTRELLAS	24900.00	MARTHA RAMIREZ	BENGALINA SUBLIMAR	0.26	BENGALINA	0.12	1	2026-02-13 15:45:44
+12855	CORPIÑO MASCARAS ESTRELLAS	24900.00	MARTHA RAMIREZ	BENGALINA SUBLIMAR	0.26	BENGALINA	0.12	1	2026-02-13 15:45:44
 12860	BLUSA MGA SISA CORAZON	16900.00	MARTHA RAMIREZ	MINIWAFER	0.33	\N	\N	1	2026-02-13 15:45:44
 12861	CAMISETA MGA CORTA	19900.00	MARTHA RAMIREZ	MINIWAFER	0.45	\N	\N	1	2026-02-13 15:45:44
 12862	BLUSON FLORES	23900.00	MARTHA RAMIREZ	MINIWAFER	0.50	\N	\N	1	2026-02-13 15:45:44
@@ -2493,7 +2720,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12875	BLUSA CRUZADA CON HERRAJE	19900.00	MARTHA RAMIREZ	PIEL DE DURASNO	0.48	\N	\N	1	2026-02-13 15:45:44
 12876	CROPT STRAP EST	19900.00	JACKELINE PEREA	RIB	0.35	\N	\N	1	2026-02-13 15:45:44
 12877	CAMISILLA PUNTILLA CUELLO	19900.00	MARTHA RAMIREZ	RIB	0.40	\N	\N	1	2026-02-13 15:45:44
-12878	DUO CON TOP	64900.00	JACKELINE PEREA	ARIDA	1.24	LYCRA ALGOD%�N	0.25	1	2026-02-13 15:45:44
+12878	DUO CON TOP	64900.00	JACKELINE PEREA	ARIDA	1.24	LYCRA ALGODÓN	0.25	1	2026-02-13 15:45:44
 12879	BL CUE PERI	38900.00	JACKELINE PEREA	ARUBA	0.69	\N	\N	1	2026-02-13 15:45:44
 12880	BLU CORT LAT Y CUELL	24900.00	JACKELINE PEREA	RIB	0.59	RIB	0.07	1	2026-02-13 15:45:44
 12881	BODY BAS MANG	33900.00	JACKELINE PEREA	ISLANDIA	0.98	\N	\N	1	2026-02-13 15:45:44
@@ -2524,7 +2751,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12919	CAM FOND ALT FLOR	25900.00	JACKELINE PEREA	BURDA	0.56	\N	\N	1	2026-02-13 15:45:45
 12920	LENCERO BOTONES	21900.00	JACKELINE PEREA	LYCRA FRIA	0.23	\N	\N	1	2026-02-13 15:45:45
 12921	CAMSILLA FRANJA LATERAL	24900.00	MARTHA RAMIREZ	RIB	0.39	\N	\N	1	2026-02-13 15:45:45
-12922	BLUSA DAMA FRANJA Y MO%�O	21900.00	MARTHA RAMIREZ	LYCRA FRIA	0.33	\N	\N	1	2026-02-13 15:45:46
+12922	BLUSA DAMA FRANJA Y MOÑO	21900.00	MARTHA RAMIREZ	LYCRA FRIA	0.33	\N	\N	1	2026-02-13 15:45:46
 12923	CAMISETA MGAS BLONDA	24900.00	MARTHA RAMIREZ	LYCRA FRIA	0.45	\N	\N	1	2026-02-13 15:45:46
 12924	CAMISILLA GUIPIUR	21900.00	MARTHA RAMIREZ	RIB	0.38	\N	\N	1	2026-02-13 15:45:46
 12926	CAMISETA DOBLE FLOR ALTA	27900.00	MARTHA RAMIREZ	LYC PRAGA O F	0.61	\N	\N	1	2026-02-13 15:45:46
@@ -2544,7 +2771,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12950	CROPT EST CIER	27900.00	JACKELINE PEREA	LICRA PRAGA	0.42	\N	\N	1	2026-02-13 15:45:46
 12951	CAMISE LATERA EN ENCAJE	27900.00	JACKELINE PEREA	LCRA FRIA	0.56	\N	\N	1	2026-02-13 15:45:46
 12952	CAMISERTA PICO ENCAJE	26900.00	MARTHA RAMIREZ	LYCRA FRIA	0.36	MAYA	0.26	1	2026-02-13 15:45:46
-12953	BLUSA MGA MU%�ECA PUNTOS	24900.00	MARTHA RAMIREZ	FLATY	0.50	\N	\N	1	2026-02-13 15:45:46
+12953	BLUSA MGA MUÑECA PUNTOS	24900.00	MARTHA RAMIREZ	FLATY	0.50	\N	\N	1	2026-02-13 15:45:46
 12955	BUSO ASIMETRICO TRANSPARENCIA	22900.00	MARTHA RAMIREZ	MAYA GRABAD	0.71	PIELDE DURAS	0.12	1	2026-02-13 15:45:46
 12956	CAMISILLA ENCAJE	24900.00	MARTHA RAMIREZ	RIB	0.62	\N	\N	1	2026-02-13 15:45:46
 12957	BLUSA CUELLO BANDEJA ASIMETRICO	35900.00	MARTHA RAMIREZ	LYCRA FRIA	0.82	\N	\N	1	2026-02-13 15:45:46
@@ -2559,6 +2786,8 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 
 
 --
+-- TOC entry 5349 (class 0 OID 17231)
+-- Dependencies: 225
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2667,6 +2896,8 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 
 
 --
+-- TOC entry 5355 (class 0 OID 17303)
+-- Dependencies: 231
 -- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2691,6 +2922,8 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 
 
 --
+-- TOC entry 5347 (class 0 OID 17204)
+-- Dependencies: 223
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2715,6 +2948,8 @@ mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	
 
 
 --
+-- TOC entry 5356 (class 0 OID 17314)
+-- Dependencies: 232
 -- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2723,6 +2958,8 @@ COPY public.return_reception_items (id, return_reception_id, reference, quantity
 
 
 --
+-- TOC entry 5352 (class 0 OID 17266)
+-- Dependencies: 228
 -- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2731,6 +2968,8 @@ COPY public.return_receptions (id, client_id, credit_note_number, total_value, r
 
 
 --
+-- TOC entry 5345 (class 0 OID 17183)
+-- Dependencies: 221
 -- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2742,6 +2981,8 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
+-- TOC entry 5376 (class 0 OID 17940)
+-- Dependencies: 252
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2776,6 +3017,8 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 38	mlgqup2eyhdq1lkxm	uoT3w8TrmbkOIQLBAAAj	online	2026-02-26 14:27:54.182917	2026-02-26 14:27:54.182917
 39	mlgqup2eyhdq1lkxm	E44DN4hOvS-5LyTwAAAl	online	2026-02-26 14:27:54.218778	2026-02-26 14:27:54.218778
 40	mlgqup2eyhdq1lkxm	458qGwW5PcNYjuxnAAAn	online	2026-02-26 14:27:54.248034	2026-02-26 14:27:54.248034
+362	mm3x7j6m4p6s4g2zz	9rDCOfLwL2-Dsg6uAAAB	online	2026-02-27 07:27:06.803787	2026-02-27 07:27:06.803787
+364	mm3x7j6m4p6s4g2zz	0O-kzkjP1Z3lK8fdAAAF	online	2026-02-27 07:27:07.004985	2026-02-27 07:27:07.004985
 51	mlgqup2eyhdq1lkxm	Wc-EUD-miRZNfNhKAAAV	online	2026-02-26 14:30:07.611836	2026-02-26 14:30:07.611836
 52	mlgqup2eyhdq1lkxm	qi5FaO368z4prjwsAAAX	online	2026-02-26 14:30:07.615318	2026-02-26 14:30:07.615318
 53	mlgqup2eyhdq1lkxm	BrxH9w8u9UF4JA1UAAAZ	online	2026-02-26 14:30:07.903636	2026-02-26 14:30:07.903636
@@ -2796,11 +3039,7 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 68	mlgqup29zlzugg8qk	hB5haXQYronIpBaYAAAP	online	2026-02-26 14:35:38.046864	2026-02-26 14:35:38.046864
 69	mlgqup29zlzugg8qk	vmfBf-MHpO2gxijHAAAR	online	2026-02-26 14:35:38.233606	2026-02-26 14:35:38.233606
 70	mlgqup2eyhdq1lkxm	HljRAFEnhc-CHduNAAAT	online	2026-02-26 14:35:39.952018	2026-02-26 14:35:39.952018
-206	mm3wcdhk7ksjtfh97	UVUMz7MySrSYp9OqAABl	online	2026-02-26 15:11:22.144671	2026-02-26 15:11:22.144671
-208	mm3wcdhk7ksjtfh97	AOw7Ddm4TILLZFwBAABp	online	2026-02-26 15:11:22.303521	2026-02-26 15:11:22.303521
-211	mlgqup29zlzugg8qk	c9T9eWZDKPz-1AZnAABv	online	2026-02-26 15:12:02.082072	2026-02-26 15:12:02.082072
-213	mlgqup29zlzugg8qk	yaaDsAgkRNDRj2KAAABz	online	2026-02-26 15:12:02.302179	2026-02-26 15:12:02.302179
-217	mm3wcdhk7ksjtfh97	Gc9Iwd3MX-a-f0CdAAB7	online	2026-02-26 15:12:20.155504	2026-02-26 15:12:20.155504
+366	mm3x7j6m4p6s4g2zz	T4yxeLoNcKzBkL40AAAJ	online	2026-02-27 07:27:07.05519	2026-02-27 07:27:07.05519
 81	mlgqup29zlzugg8qk	7dQgLyBrD9oN-QBPAAAV	online	2026-02-26 14:36:34.003579	2026-02-26 14:36:34.003579
 82	mlgqup29zlzugg8qk	AUzsWgOMF7wiHa7HAAAX	online	2026-02-26 14:36:34.4668	2026-02-26 14:36:34.4668
 83	mlgqup29zlzugg8qk	mvOjQ0V2lr4UjtzMAAAZ	online	2026-02-26 14:36:34.739462	2026-02-26 14:36:34.739462
@@ -2811,11 +3050,6 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 88	mlgqup2eyhdq1lkxm	vu9jTa7Y4HqE7Kg3AAAj	online	2026-02-26 14:36:41.637421	2026-02-26 14:36:41.637421
 89	mlgqup2eyhdq1lkxm	yGkc_gF_WW8XixCYAAAl	online	2026-02-26 14:36:41.727336	2026-02-26 14:36:41.727336
 90	mlgqup2eyhdq1lkxm	s7THPbVO5KqDLRBCAAAn	online	2026-02-26 14:36:41.838088	2026-02-26 14:36:41.838088
-221	mlgqup29zlzugg8qk	04g1PAqugJ4ovckQAACD	online	2026-02-26 15:28:42.13347	2026-02-26 15:28:42.13347
-222	mlgqup29zlzugg8qk	Mn9DciVQGqMIiIREAACF	online	2026-02-26 15:28:42.208368	2026-02-26 15:28:42.208368
-223	mlgqup29zlzugg8qk	cMtgYUezlkwQQnNlAACH	online	2026-02-26 15:28:42.775295	2026-02-26 15:28:42.775295
-227	mlgqup2eyhdq1lkxm	K7eRHz_HxM1VSWpcAACP	online	2026-02-26 15:30:38.216981	2026-02-26 15:30:38.216981
-229	mlgqup2eyhdq1lkxm	eE7QO_jh1MVppWF8AACT	online	2026-02-26 15:30:38.586825	2026-02-26 15:30:38.586825
 106	mlgqup29zlzugg8qk	0Whe3QvVa117J6NaAAAf	online	2026-02-26 14:40:09.051014	2026-02-26 14:40:09.051014
 107	mlgqup29zlzugg8qk	NHytY9MuVRbSEZ4FAAAh	online	2026-02-26 14:40:09.074583	2026-02-26 14:40:09.074583
 108	mlgqup29zlzugg8qk	74u2VqS4RwFilYYpAAAj	online	2026-02-26 14:40:09.422775	2026-02-26 14:40:09.422775
@@ -2846,60 +3080,51 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 153	mlgqup2eyhdq1lkxm	H9NBTnVNykdEX8LWAAAk	online	2026-02-26 14:51:29.503049	2026-02-26 14:51:29.503049
 154	mlgqup2eyhdq1lkxm	AvxQ0OlHHtriVVSEAAAl	online	2026-02-26 14:51:29.513144	2026-02-26 14:51:29.513144
 155	mlgqup2eyhdq1lkxm	eF2-iqERHJNI6IBaAAAn	online	2026-02-26 14:51:29.655386	2026-02-26 14:51:29.655386
-207	mm3wcdhk7ksjtfh97	IbHDIinWG7zpu-wLAABn	online	2026-02-26 15:11:22.148521	2026-02-26 15:11:22.148521
-209	mm3wcdhk7ksjtfh97	Udd0r0wpGM2Ahj1sAABr	online	2026-02-26 15:11:22.340615	2026-02-26 15:11:22.340615
-212	mlgqup29zlzugg8qk	MzDi--X-y2_nLMe1AABx	online	2026-02-26 15:12:02.142148	2026-02-26 15:12:02.142148
-214	mlgqup29zlzugg8qk	Joc6DVaTizeuOzlhAAB1	online	2026-02-26 15:12:02.339168	2026-02-26 15:12:02.339168
-216	mm3wcdhk7ksjtfh97	UUJ_HEflYrgkcin7AAB5	online	2026-02-26 15:12:20.051804	2026-02-26 15:12:20.051804
-218	mm3wcdhk7ksjtfh97	-ZNnyX_IGdSSI2zBAAB9	online	2026-02-26 15:12:20.317132	2026-02-26 15:12:20.317132
-219	mm3wcdhk7ksjtfh97	Yk4hXc_94nsjvvpAAAB_	online	2026-02-26 15:12:20.364076	2026-02-26 15:12:20.364076
-220	mm3wcdhk7ksjtfh97	xQ86Cp1bs5Ij607SAACB	online	2026-02-26 15:12:20.432984	2026-02-26 15:12:20.432984
-224	mlgqup29zlzugg8qk	zboA-JMGQpIQaZEQAACJ	online	2026-02-26 15:28:42.819762	2026-02-26 15:28:42.819762
-226	mlgqup2eyhdq1lkxm	zD5837gTtQKvOMSIAACN	online	2026-02-26 15:30:38.000767	2026-02-26 15:30:38.000767
-228	mlgqup2eyhdq1lkxm	ZfLiTw5JUX7EvO1LAACR	online	2026-02-26 15:30:38.5438	2026-02-26 15:30:38.5438
-231	mlgqup29zlzugg8qk	6env38KNWRRyHwnlAACX	online	2026-02-26 15:32:55.059661	2026-02-26 15:32:55.059661
-232	mlgqup29zlzugg8qk	cMAVdx8l8sskLnz0AACZ	online	2026-02-26 15:32:55.138986	2026-02-26 15:32:55.138986
-233	mlgqup29zlzugg8qk	S5aGfIxVm1WrZ6kUAACb	online	2026-02-26 15:32:55.640884	2026-02-26 15:32:55.640884
-234	mlgqup29zlzugg8qk	av_ME5gEsu6dYcM8AACd	online	2026-02-26 15:32:55.672059	2026-02-26 15:32:55.672059
-236	mm3x7j6m4p6s4g2zz	E3sWA5jG3ZXhx8OsAACh	online	2026-02-26 15:33:18.999227	2026-02-26 15:33:18.999227
-237	mm3x7j6m4p6s4g2zz	2Ksax_W78H6em6VsAACj	online	2026-02-26 15:33:19.196617	2026-02-26 15:33:19.196617
-238	mm3x7j6m4p6s4g2zz	DzuK5UDHTgegiVU1AACl	online	2026-02-26 15:33:19.576134	2026-02-26 15:33:19.576134
-239	mm3x7j6m4p6s4g2zz	mL2OZ_OsxmSzIctWAACn	online	2026-02-26 15:33:19.632822	2026-02-26 15:33:19.632822
-241	mlgqup29zlzugg8qk	ou_6DN03rOVZkoXfAACr	online	2026-02-26 15:33:24.292385	2026-02-26 15:33:24.292385
-242	mlgqup29zlzugg8qk	YeC7sfDOwLwH_zvBAACt	online	2026-02-26 15:33:24.389913	2026-02-26 15:33:24.389913
-243	mlgqup29zlzugg8qk	cgjDLnZ9xvNmX7JqAACv	online	2026-02-26 15:33:24.61109	2026-02-26 15:33:24.61109
-244	mlgqup29zlzugg8qk	XAneF_9oiI4nxI4BAACx	online	2026-02-26 15:33:24.65046	2026-02-26 15:33:24.65046
-246	mm3x7j6m4p6s4g2zz	Qt-n-jhLLm9Q3lKrAAC1	online	2026-02-26 15:33:43.820282	2026-02-26 15:33:43.820282
-247	mm3x7j6m4p6s4g2zz	wVnKjGWM_bZHTR-7AAC3	online	2026-02-26 15:33:43.953173	2026-02-26 15:33:43.953173
-248	mm3x7j6m4p6s4g2zz	d43zHuJDuhHxBeS7AAC5	online	2026-02-26 15:33:44.190841	2026-02-26 15:33:44.190841
-249	mm3x7j6m4p6s4g2zz	cNA3PpYOwbywG9f2AAC7	online	2026-02-26 15:33:44.222272	2026-02-26 15:33:44.222272
-250	mm3x7j6m4p6s4g2zz	l6cmk3cIpRpa-_6yAAC9	online	2026-02-26 15:33:44.287837	2026-02-26 15:33:44.287837
+363	mm3x7j6m4p6s4g2zz	3p7AI5NemdabRhJDAAAD	online	2026-02-27 07:27:06.857225	2026-02-27 07:27:06.857225
+365	mm3x7j6m4p6s4g2zz	fe95vXej4fBU1t24AAAH	online	2026-02-27 07:27:07.028859	2026-02-27 07:27:07.028859
+296	mm3x7j6m4p6s4g2zz	dlpwnCvAU9q_eOlGAAEZ	online	2026-02-26 15:42:18.949249	2026-02-26 15:42:18.949249
+297	mm3x7j6m4p6s4g2zz	nK7i3cFsOC98rEHUAAEb	online	2026-02-26 15:42:18.950177	2026-02-26 15:42:18.950177
+298	mm3x7j6m4p6s4g2zz	VnU5T5z_3lItJoM_AAEd	online	2026-02-26 15:42:19.257875	2026-02-26 15:42:19.257875
+299	mm3x7j6m4p6s4g2zz	C_yIyDhDhv9ME190AAEf	online	2026-02-26 15:42:19.307499	2026-02-26 15:42:19.307499
+311	mm3x7j6m4p6s4g2zz	aWm1tlJtylsrZyH9AAAB	online	2026-02-26 15:57:50.195908	2026-02-26 15:57:50.195908
+312	mm3x7j6m4p6s4g2zz	2iZPL8fluTGIUEIdAAAD	online	2026-02-26 15:57:50.941672	2026-02-26 15:57:50.941672
+313	mm3x7j6m4p6s4g2zz	KSEU0GpKnNikUdA6AAAF	online	2026-02-26 15:57:50.954485	2026-02-26 15:57:50.954485
+314	mm3x7j6m4p6s4g2zz	EGraRSXbWMFlTD0nAAAH	online	2026-02-26 15:57:50.97496	2026-02-26 15:57:50.97496
+315	mm3x7j6m4p6s4g2zz	NXlDsUb-rSHQ4ZUbAAAB	online	2026-02-26 16:10:34.129855	2026-02-26 16:10:34.129855
+316	mm3x7j6m4p6s4g2zz	H2plqLY78cjZW3oqAAAD	online	2026-02-26 16:10:34.146305	2026-02-26 16:10:34.146305
 \.
 
 
 --
+-- TOC entry 5374 (class 0 OID 17823)
+-- Dependencies: 250
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
 1	mlgqup29zlzugg8qk	["orders", "settle", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "dispatch", "inventory", "salesReport", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-02-24 15:55:37.7692	2026-02-24 16:20:29.657359
+3	mm3x7j6m4p6s4g2zz	["orders", "fichas-costo", "salesReport", "dispatch", "reports", "dispatchControl", "orderHistory", "reception", "returnReception", "fichas-diseno", "maletas", "inventory", "settle", "deliveryDates", "compras", "masters"]	2026-02-26 15:44:03.70884	2026-02-26 15:44:03.70884
 \.
 
 
 --
+-- TOC entry 5360 (class 0 OID 17360)
+-- Dependencies: 236
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
 mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-02-26 15:12:19.980219
 mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 15:33:24.215444
-mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-02-26 15:33:43.731851
-mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-24 11:51:24.534407
-mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	dise%�%adora	1	\N	2026-02-24 15:55:46.274803
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-26 15:38:58.120206
+mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-26 15:41:16.284679
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-02-26 15:44:26.049657
 \.
 
 
 --
+-- TOC entry 5393 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2907,6 +3132,8 @@ SELECT pg_catalog.setval('public.dispatch_items_id_seq', 357, true);
 
 
 --
+-- TOC entry 5394 (class 0 OID 0)
+-- Dependencies: 253
 -- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2914,6 +3141,8 @@ SELECT pg_catalog.setval('public.messages_id_seq', 18, true);
 
 
 --
+-- TOC entry 5395 (class 0 OID 0)
+-- Dependencies: 238
 -- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2921,6 +3150,8 @@ SELECT pg_catalog.setval('public.reception_items_id_seq', 16, true);
 
 
 --
+-- TOC entry 5396 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2928,20 +3159,26 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 1, false);
 
 
 --
+-- TOC entry 5397 (class 0 OID 0)
+-- Dependencies: 251
 -- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 250, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 366, true);
 
 
 --
+-- TOC entry 5398 (class 0 OID 0)
+-- Dependencies: 249
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 2, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 3, true);
 
 
 --
+-- TOC entry 5399 (class 0 OID 0)
+-- Dependencies: 240
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2949,6 +3186,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
+-- TOC entry 5120 (class 2606 OID 17346)
 -- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2957,6 +3195,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
+-- TOC entry 5122 (class 2606 OID 17359)
 -- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2965,6 +3204,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
+-- TOC entry 5157 (class 2606 OID 17754)
 -- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2973,6 +3213,7 @@ ALTER TABLE ONLY public.compras
 
 
 --
+-- TOC entry 5079 (class 2606 OID 17182)
 -- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2981,6 +3222,7 @@ ALTER TABLE ONLY public.confeccionistas
 
 
 --
+-- TOC entry 5102 (class 2606 OID 17265)
 -- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2989,6 +3231,7 @@ ALTER TABLE ONLY public.correria_catalog
 
 
 --
+-- TOC entry 5083 (class 2606 OID 17203)
 -- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2997,6 +3240,7 @@ ALTER TABLE ONLY public.correrias
 
 
 --
+-- TOC entry 5106 (class 2606 OID 17291)
 -- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3005,6 +3249,7 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
+-- TOC entry 5132 (class 2606 OID 17584)
 -- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3013,6 +3258,7 @@ ALTER TABLE ONLY public.disenadoras
 
 
 --
+-- TOC entry 5110 (class 2606 OID 17302)
 -- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3021,6 +3267,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
+-- TOC entry 5097 (class 2606 OID 17255)
 -- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3029,6 +3276,7 @@ ALTER TABLE ONLY public.dispatches
 
 
 --
+-- TOC entry 5144 (class 2606 OID 17689)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3037,6 +3285,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5146 (class 2606 OID 17687)
 -- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3045,6 +3294,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5139 (class 2606 OID 17651)
 -- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3053,6 +3303,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5141 (class 2606 OID 17653)
 -- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3061,6 +3312,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5134 (class 2606 OID 17608)
 -- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3069,6 +3321,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5136 (class 2606 OID 17610)
 -- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3077,6 +3330,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5168 (class 2606 OID 17794)
 -- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3085,6 +3339,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
+-- TOC entry 5149 (class 2606 OID 17706)
 -- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3093,6 +3348,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
+-- TOC entry 5153 (class 2606 OID 17724)
 -- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3101,6 +3357,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5155 (class 2606 OID 17722)
 -- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3109,6 +3366,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5186 (class 2606 OID 17974)
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3117,6 +3375,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
+-- TOC entry 5092 (class 2606 OID 17230)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3125,6 +3384,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
+-- TOC entry 5077 (class 2606 OID 17168)
 -- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3133,6 +3393,7 @@ ALTER TABLE ONLY public.product_references
 
 
 --
+-- TOC entry 5095 (class 2606 OID 17241)
 -- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3141,6 +3402,7 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
+-- TOC entry 5115 (class 2606 OID 17313)
 -- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3149,6 +3411,7 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
+-- TOC entry 5086 (class 2606 OID 17216)
 -- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3157,6 +3420,7 @@ ALTER TABLE ONLY public.receptions
 
 
 --
+-- TOC entry 5117 (class 2606 OID 17324)
 -- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3165,6 +3429,7 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
+-- TOC entry 5104 (class 2606 OID 17277)
 -- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3173,6 +3438,7 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
+-- TOC entry 5081 (class 2606 OID 17192)
 -- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3181,6 +3447,7 @@ ALTER TABLE ONLY public.sellers
 
 
 --
+-- TOC entry 5178 (class 2606 OID 17953)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3189,6 +3456,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
+-- TOC entry 5180 (class 2606 OID 17955)
 -- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3197,6 +3465,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
+-- TOC entry 5171 (class 2606 OID 17836)
 -- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3205,6 +3474,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5173 (class 2606 OID 17838)
 -- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3213,6 +3483,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5130 (class 2606 OID 17372)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3221,6 +3492,7 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 5123 (class 1259 OID 17381)
 -- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3228,6 +3500,7 @@ CREATE INDEX idx_clients_active ON public.clients USING btree (active);
 
 
 --
+-- TOC entry 5124 (class 1259 OID 17382)
 -- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3235,6 +3508,7 @@ CREATE INDEX idx_clients_name ON public.clients USING btree (name);
 
 
 --
+-- TOC entry 5125 (class 1259 OID 17383)
 -- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3242,6 +3516,7 @@ CREATE INDEX idx_clients_nit ON public.clients USING btree (nit);
 
 
 --
+-- TOC entry 5126 (class 1259 OID 17380)
 -- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3249,6 +3524,7 @@ CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
+-- TOC entry 5158 (class 1259 OID 17758)
 -- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3256,6 +3532,7 @@ CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta
 
 
 --
+-- TOC entry 5159 (class 1259 OID 17755)
 -- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3263,6 +3540,7 @@ CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
 
 
 --
+-- TOC entry 5160 (class 1259 OID 17757)
 -- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3270,6 +3548,7 @@ CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
 
 
 --
+-- TOC entry 5161 (class 1259 OID 17756)
 -- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3277,6 +3556,7 @@ CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
 
 
 --
+-- TOC entry 5107 (class 1259 OID 17860)
 -- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3284,6 +3564,7 @@ CREATE INDEX idx_delivery_dates_confeccionista_id ON public.delivery_dates USING
 
 
 --
+-- TOC entry 5108 (class 1259 OID 17861)
 -- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3291,6 +3572,7 @@ CREATE INDEX idx_delivery_dates_reference_id ON public.delivery_dates USING btre
 
 
 --
+-- TOC entry 5111 (class 1259 OID 17399)
 -- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3298,6 +3580,7 @@ CREATE INDEX idx_dispatch_items_dispatch_id ON public.dispatch_items USING btree
 
 
 --
+-- TOC entry 5112 (class 1259 OID 17400)
 -- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3305,6 +3588,7 @@ CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (
 
 
 --
+-- TOC entry 5098 (class 1259 OID 17850)
 -- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3312,6 +3596,7 @@ CREATE INDEX idx_dispatches_client_id ON public.dispatches USING btree (client_i
 
 
 --
+-- TOC entry 5099 (class 1259 OID 17851)
 -- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3319,6 +3604,7 @@ CREATE INDEX idx_dispatches_correria_id ON public.dispatches USING btree (correr
 
 
 --
+-- TOC entry 5100 (class 1259 OID 17852)
 -- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3326,6 +3612,7 @@ CREATE INDEX idx_dispatches_created_at ON public.dispatches USING btree (created
 
 
 --
+-- TOC entry 5147 (class 1259 OID 17732)
 -- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3333,6 +3620,7 @@ CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (
 
 
 --
+-- TOC entry 5142 (class 1259 OID 17731)
 -- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3340,6 +3628,7 @@ CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (ref
 
 
 --
+-- TOC entry 5137 (class 1259 OID 17730)
 -- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3347,6 +3636,7 @@ CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (r
 
 
 --
+-- TOC entry 5162 (class 1259 OID 17803)
 -- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3354,6 +3644,7 @@ CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USI
 
 
 --
+-- TOC entry 5163 (class 1259 OID 17859)
 -- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3361,6 +3652,7 @@ CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements US
 
 
 --
+-- TOC entry 5164 (class 1259 OID 17800)
 -- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3368,6 +3660,7 @@ CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING 
 
 
 --
+-- TOC entry 5165 (class 1259 OID 17802)
 -- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3375,6 +3668,7 @@ CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements US
 
 
 --
+-- TOC entry 5166 (class 1259 OID 17801)
 -- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3382,6 +3676,7 @@ CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements US
 
 
 --
+-- TOC entry 5150 (class 1259 OID 17733)
 -- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3389,6 +3684,7 @@ CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING 
 
 
 --
+-- TOC entry 5151 (class 1259 OID 17862)
 -- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3396,6 +3692,7 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
+-- TOC entry 5181 (class 1259 OID 17977)
 -- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3403,6 +3700,7 @@ CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at)
 
 
 --
+-- TOC entry 5182 (class 1259 OID 17978)
 -- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3410,6 +3708,7 @@ CREATE INDEX idx_messages_read ON public.messages USING btree (read);
 
 
 --
+-- TOC entry 5183 (class 1259 OID 17976)
 -- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3417,6 +3716,7 @@ CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
 
 
 --
+-- TOC entry 5184 (class 1259 OID 17975)
 -- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3424,6 +3724,7 @@ CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender
 
 
 --
+-- TOC entry 5118 (class 1259 OID 17857)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3431,6 +3732,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
+-- TOC entry 5087 (class 1259 OID 17853)
 -- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3438,6 +3740,7 @@ CREATE INDEX idx_orders_client_id ON public.orders USING btree (client_id);
 
 
 --
+-- TOC entry 5088 (class 1259 OID 17855)
 -- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3445,6 +3748,7 @@ CREATE INDEX idx_orders_correria_id ON public.orders USING btree (correria_id);
 
 
 --
+-- TOC entry 5089 (class 1259 OID 17856)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3452,6 +3756,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
+-- TOC entry 5090 (class 1259 OID 17854)
 -- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3459,6 +3764,7 @@ CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
+-- TOC entry 5093 (class 1259 OID 17858)
 -- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3466,6 +3772,7 @@ CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking U
 
 
 --
+-- TOC entry 5113 (class 1259 OID 17849)
 -- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3473,6 +3780,7 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 
 
 --
+-- TOC entry 5084 (class 1259 OID 17848)
 -- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3480,6 +3788,7 @@ CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created
 
 
 --
+-- TOC entry 5174 (class 1259 OID 17958)
 -- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3487,6 +3796,7 @@ CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree
 
 
 --
+-- TOC entry 5175 (class 1259 OID 17957)
 -- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3494,6 +3804,7 @@ CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (statu
 
 
 --
+-- TOC entry 5176 (class 1259 OID 17956)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3501,6 +3812,7 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
+-- TOC entry 5169 (class 1259 OID 17844)
 -- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3508,6 +3820,7 @@ CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences U
 
 
 --
+-- TOC entry 5127 (class 1259 OID 17846)
 -- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3515,6 +3828,7 @@ CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
+-- TOC entry 5128 (class 1259 OID 17847)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3522,6 +3836,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
+-- TOC entry 5195 (class 2620 OID 17864)
 -- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -3529,6 +3844,7 @@ CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON p
 
 
 --
+-- TOC entry 5190 (class 2606 OID 17690)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3537,6 +3853,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5189 (class 2606 OID 17654)
 -- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3545,6 +3862,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5188 (class 2606 OID 17611)
 -- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3553,6 +3871,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5187 (class 2606 OID 17394)
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3561,6 +3880,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
+-- TOC entry 5193 (class 2606 OID 17795)
 -- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3569,6 +3889,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
+-- TOC entry 5191 (class 2606 OID 17707)
 -- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3577,6 +3898,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
+-- TOC entry 5192 (class 2606 OID 17725)
 -- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3585,6 +3907,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5194 (class 2606 OID 17839)
 -- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3593,15 +3916,19 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5385 (class 0 OID 0)
+-- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
+-- Completed on 2026-02-27 07:56:26
+
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict oGii521vqUOZaIK7MhGQ7n67ZRoFUMSqHYsndI4h8SELxwUOy5u2zhDbmEY7cyf
+\unrestrict 0obEDczcecL5ocnXfHoerR9v4uic8FH5EhuK2yhPGUPMzEbtfhXbJtkto5yUdUK
 

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict UsFnrEscGmH224epMai5F4VCUAy1mGmzOre7e8qSWuXSJiRK80MnfIDUfMXiduh
+\restrict YvvRlyMhw08tacDnVyuZ4fK8W4pgVgcivWhHsIeeaKZlxcuwZnYP91WTbyRMKWn
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
@@ -19,6 +19,136 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_user_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_maleta_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.maletas DROP CONSTRAINT IF EXISTS maletas_correria_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.inventory_movements DROP CONSTRAINT IF EXISTS inventory_movements_compra_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.dispatch_items DROP CONSTRAINT IF EXISTS fk_dispatch_items_dispatch;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_disenadora_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_ficha_diseno_id_fkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_ficha_costo_id_fkey;
+DROP TRIGGER IF EXISTS trigger_update_user_view_preferences_timestamp ON public.user_view_preferences;
+DROP INDEX IF EXISTS public.idx_users_role;
+DROP INDEX IF EXISTS public.idx_users_login_code;
+DROP INDEX IF EXISTS public.idx_user_view_preferences_user_id;
+DROP INDEX IF EXISTS public.idx_user_sessions_user_id;
+DROP INDEX IF EXISTS public.idx_user_sessions_status;
+DROP INDEX IF EXISTS public.idx_user_sessions_last_activity;
+DROP INDEX IF EXISTS public.idx_receptions_created_at;
+DROP INDEX IF EXISTS public.idx_reception_items_reception_id;
+DROP INDEX IF EXISTS public.idx_production_tracking_correria_id;
+DROP INDEX IF EXISTS public.idx_orders_seller_id;
+DROP INDEX IF EXISTS public.idx_orders_created_at;
+DROP INDEX IF EXISTS public.idx_orders_correria_id;
+DROP INDEX IF EXISTS public.idx_orders_client_id;
+DROP INDEX IF EXISTS public.idx_order_items_order_id;
+DROP INDEX IF EXISTS public.idx_messages_sender_receiver;
+DROP INDEX IF EXISTS public.idx_messages_receiver;
+DROP INDEX IF EXISTS public.idx_messages_read;
+DROP INDEX IF EXISTS public.idx_messages_created_at;
+DROP INDEX IF EXISTS public.idx_maletas_referencias_maleta_id;
+DROP INDEX IF EXISTS public.idx_maletas_referencias_maleta;
+DROP INDEX IF EXISTS public.idx_inventory_movements_referencia;
+DROP INDEX IF EXISTS public.idx_inventory_movements_movimiento;
+DROP INDEX IF EXISTS public.idx_inventory_movements_insumo;
+DROP INDEX IF EXISTS public.idx_inventory_movements_created_at;
+DROP INDEX IF EXISTS public.idx_inventory_movements_compra_id;
+DROP INDEX IF EXISTS public.idx_fichas_diseno_referencia;
+DROP INDEX IF EXISTS public.idx_fichas_costo_referencia;
+DROP INDEX IF EXISTS public.idx_fichas_cortes_ficha_costo;
+DROP INDEX IF EXISTS public.idx_dispatches_created_at;
+DROP INDEX IF EXISTS public.idx_dispatches_correria_id;
+DROP INDEX IF EXISTS public.idx_dispatches_client_id;
+DROP INDEX IF EXISTS public.idx_dispatch_items_reference;
+DROP INDEX IF EXISTS public.idx_dispatch_items_dispatch_id;
+DROP INDEX IF EXISTS public.idx_delivery_dates_reference_id;
+DROP INDEX IF EXISTS public.idx_delivery_dates_confeccionista_id;
+DROP INDEX IF EXISTS public.idx_compras_proveedor;
+DROP INDEX IF EXISTS public.idx_compras_insumo;
+DROP INDEX IF EXISTS public.idx_compras_fecha;
+DROP INDEX IF EXISTS public.idx_compras_afecta_inventario;
+DROP INDEX IF EXISTS public.idx_clients_seller_id;
+DROP INDEX IF EXISTS public.idx_clients_nit;
+DROP INDEX IF EXISTS public.idx_clients_name;
+DROP INDEX IF EXISTS public.idx_clients_active;
+ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_user_id_key;
+ALTER TABLE IF EXISTS ONLY public.user_view_preferences DROP CONSTRAINT IF EXISTS user_view_preferences_pkey;
+ALTER TABLE IF EXISTS ONLY public.user_sessions DROP CONSTRAINT IF EXISTS user_sessions_user_id_socket_id_key;
+ALTER TABLE IF EXISTS ONLY public.user_sessions DROP CONSTRAINT IF EXISTS user_sessions_pkey;
+ALTER TABLE IF EXISTS ONLY public.sellers DROP CONSTRAINT IF EXISTS sellers_pkey;
+ALTER TABLE IF EXISTS ONLY public.return_receptions DROP CONSTRAINT IF EXISTS return_receptions_pkey;
+ALTER TABLE IF EXISTS ONLY public.return_reception_items DROP CONSTRAINT IF EXISTS return_reception_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.receptions DROP CONSTRAINT IF EXISTS receptions_pkey;
+ALTER TABLE IF EXISTS ONLY public.reception_items DROP CONSTRAINT IF EXISTS reception_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.production_tracking DROP CONSTRAINT IF EXISTS production_tracking_pkey;
+ALTER TABLE IF EXISTS ONLY public.product_references DROP CONSTRAINT IF EXISTS product_references_pkey;
+ALTER TABLE IF EXISTS ONLY public.orders DROP CONSTRAINT IF EXISTS orders_pkey;
+ALTER TABLE IF EXISTS ONLY public.messages DROP CONSTRAINT IF EXISTS messages_pkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_pkey;
+ALTER TABLE IF EXISTS ONLY public.maletas_referencias DROP CONSTRAINT IF EXISTS maletas_referencias_maleta_id_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.maletas DROP CONSTRAINT IF EXISTS maletas_pkey;
+ALTER TABLE IF EXISTS ONLY public.inventory_movements DROP CONSTRAINT IF EXISTS inventory_movements_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.fichas_diseno DROP CONSTRAINT IF EXISTS fichas_diseno_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_referencia_key;
+ALTER TABLE IF EXISTS ONLY public.fichas_costo DROP CONSTRAINT IF EXISTS fichas_costo_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_pkey;
+ALTER TABLE IF EXISTS ONLY public.fichas_cortes DROP CONSTRAINT IF EXISTS fichas_cortes_ficha_costo_id_numero_corte_key;
+ALTER TABLE IF EXISTS ONLY public.dispatches DROP CONSTRAINT IF EXISTS dispatches_pkey;
+ALTER TABLE IF EXISTS ONLY public.dispatch_items DROP CONSTRAINT IF EXISTS dispatch_items_pkey;
+ALTER TABLE IF EXISTS ONLY public.disenadoras DROP CONSTRAINT IF EXISTS disenadoras_pkey;
+ALTER TABLE IF EXISTS ONLY public.delivery_dates DROP CONSTRAINT IF EXISTS delivery_dates_pkey;
+ALTER TABLE IF EXISTS ONLY public.correrias DROP CONSTRAINT IF EXISTS correrias_pkey;
+ALTER TABLE IF EXISTS ONLY public.correria_catalog DROP CONSTRAINT IF EXISTS correria_catalog_pkey;
+ALTER TABLE IF EXISTS ONLY public.confeccionistas DROP CONSTRAINT IF EXISTS confeccionistas_pkey;
+ALTER TABLE IF EXISTS ONLY public.compras DROP CONSTRAINT IF EXISTS compras_pkey;
+ALTER TABLE IF EXISTS ONLY public.clients DROP CONSTRAINT IF EXISTS clients_pkey;
+ALTER TABLE IF EXISTS ONLY public.audit_log DROP CONSTRAINT IF EXISTS audit_log_pkey;
+ALTER TABLE IF EXISTS public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.user_view_preferences ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.user_sessions ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.return_reception_items ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.reception_items ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS public.messages ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE IF EXISTS public.users_id_seq;
+DROP TABLE IF EXISTS public.users;
+DROP SEQUENCE IF EXISTS public.user_view_preferences_id_seq;
+DROP TABLE IF EXISTS public.user_view_preferences;
+DROP SEQUENCE IF EXISTS public.user_sessions_id_seq;
+DROP TABLE IF EXISTS public.user_sessions;
+DROP TABLE IF EXISTS public.sellers;
+DROP TABLE IF EXISTS public.return_receptions;
+DROP SEQUENCE IF EXISTS public.return_reception_items_id_seq;
+DROP TABLE IF EXISTS public.return_reception_items;
+DROP TABLE IF EXISTS public.receptions;
+DROP SEQUENCE IF EXISTS public.reception_items_id_seq;
+DROP TABLE IF EXISTS public.reception_items;
+DROP TABLE IF EXISTS public.production_tracking;
+DROP TABLE IF EXISTS public.product_references;
+DROP TABLE IF EXISTS public.orders;
+DROP TABLE IF EXISTS public.order_items;
+DROP SEQUENCE IF EXISTS public.messages_id_seq;
+DROP TABLE IF EXISTS public.messages;
+DROP TABLE IF EXISTS public.maletas_referencias;
+DROP TABLE IF EXISTS public.maletas;
+DROP TABLE IF EXISTS public.inventory_movements;
+DROP TABLE IF EXISTS public.fichas_diseno;
+DROP TABLE IF EXISTS public.fichas_costo;
+DROP TABLE IF EXISTS public.fichas_cortes;
+DROP TABLE IF EXISTS public.dispatches;
+DROP TABLE IF EXISTS public.dispatch_items;
+DROP SEQUENCE IF EXISTS public.dispatch_items_id_seq;
+DROP TABLE IF EXISTS public.disenadoras;
+DROP TABLE IF EXISTS public.delivery_dates;
+DROP TABLE IF EXISTS public.correrias;
+DROP TABLE IF EXISTS public.correria_catalog;
+DROP TABLE IF EXISTS public.confeccionistas;
+DROP TABLE IF EXISTS public.compras;
+DROP TABLE IF EXISTS public.clients;
+DROP TABLE IF EXISTS public.audit_log;
+DROP FUNCTION IF EXISTS public.update_user_view_preferences_timestamp();
+-- *not* dropping schema, since initdb creates it
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
@@ -428,6 +558,45 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
+-- Name: messages; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.messages (
+    id integer NOT NULL,
+    sender_id character varying(255) NOT NULL,
+    receiver_id character varying(255) NOT NULL,
+    content text NOT NULL,
+    read boolean DEFAULT false,
+    created_at timestamp without time zone DEFAULT now(),
+    CONSTRAINT check_different_users CHECK (((sender_id)::text <> (receiver_id)::text))
+);
+
+
+ALTER TABLE public.messages OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.messages_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
+
+
+--
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -622,6 +791,44 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
+-- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_sessions (
+    id integer NOT NULL,
+    user_id character varying(255) NOT NULL,
+    socket_id character varying(255) NOT NULL,
+    status character varying(20) DEFAULT 'online'::character varying,
+    connected_at timestamp without time zone DEFAULT now(),
+    last_activity timestamp without time zone DEFAULT now()
+);
+
+
+ALTER TABLE public.user_sessions OWNER TO postgres;
+
+--
+-- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_sessions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
+
+--
+-- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
+
+
+--
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -698,6 +905,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
+
+
+--
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -709,6 +923,13 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 --
 
 ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextval('public.return_reception_items_id_seq'::regclass);
+
+
+--
+-- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('public.user_sessions_id_seq'::regclass);
 
 
 --
@@ -1802,6 +2023,32 @@ f3ade09b-e9f1-46e6-a0d2-2aeb04531f9c	6c253170-b1e0-433f-afe0-03e71e60f8a2	12000	
 
 
 --
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FROM stdin;
+1	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaa	f	2026-02-26 14:27:48.585249
+2	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaa	f	2026-02-26 14:28:12.964014
+3	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaaaaaaa	f	2026-02-26 14:36:45.690516
+4	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaa	f	2026-02-26 14:40:13.332692
+5	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaaaaaaa	f	2026-02-26 14:43:25.179993
+6	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaa	f	2026-02-26 14:43:53.153267
+7	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaa	f	2026-02-26 14:44:05.037576
+8	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	b	f	2026-02-26 14:44:14.080908
+9	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	abc	f	2026-02-26 14:51:35.569786
+10	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123123	f	2026-02-26 14:53:13.197181
+11	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	456456	f	2026-02-26 14:53:27.68156
+12	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123	f	2026-02-26 14:57:01.006756
+13	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	123	f	2026-02-26 14:57:09.310238
+14	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	12312331	f	2026-02-26 14:57:33.343687
+15	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	13131	f	2026-02-26 14:57:45.581003
+16	mlgqup29zlzugg8qk	mm3wcdhk7ksjtfh97	Holaaaaaaaaaa	f	2026-02-26 15:10:09.139626
+17	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	:(	f	2026-02-26 15:10:32.240156
+18	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	Anderson	f	2026-02-26 15:11:37.666752
+\.
+
+
+--
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2620,12 +2867,125 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
+-- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_activity) FROM stdin;
+1	mlgqup2eyhdq1lkxm	Qp7xMxfP5-xdNrnKAAAB	online	2026-02-26 14:25:23.522958	2026-02-26 14:25:23.522958
+2	mlgqup2eyhdq1lkxm	msxDnFd0DiqEKh9HAAAD	online	2026-02-26 14:25:23.548895	2026-02-26 14:25:23.548895
+3	mlgqup2eyhdq1lkxm	YNwzT3vuy7RHzIjnAAAF	online	2026-02-26 14:25:23.568254	2026-02-26 14:25:23.568254
+4	mlgqup2eyhdq1lkxm	GXkwE6lbiBs9adTmAAAH	online	2026-02-26 14:25:23.586067	2026-02-26 14:25:23.586067
+5	mlgqup2eyhdq1lkxm	GlGRYRYUw2UGnhTUAAAJ	online	2026-02-26 14:25:24.946723	2026-02-26 14:25:24.946723
+6	mlgqup2eyhdq1lkxm	DBoU2EEjC3p5M-wkAAAB	online	2026-02-26 14:25:39.061698	2026-02-26 14:25:39.061698
+7	mlgqup2eyhdq1lkxm	IN8QjacNqwKVqSOOAAAF	online	2026-02-26 14:25:39.100321	2026-02-26 14:25:39.100321
+8	mlgqup2eyhdq1lkxm	gHMSSZD_rNxKIFWVAAAJ	online	2026-02-26 14:25:39.14255	2026-02-26 14:25:39.14255
+9	mlgqup2eyhdq1lkxm	9TLuv2eQts3KleQuAAAD	online	2026-02-26 14:25:39.170119	2026-02-26 14:25:39.170119
+10	mlgqup2eyhdq1lkxm	9FKyKU3ZQqb9f4IKAAAH	online	2026-02-26 14:25:39.184453	2026-02-26 14:25:39.184453
+11	mlgqup2eyhdq1lkxm	S8Q5BUJ2fUxkbjD2AAAB	online	2026-02-26 14:26:07.523678	2026-02-26 14:26:07.523678
+12	mlgqup2eyhdq1lkxm	kIHXDMLAHw2lIdUAAAAF	online	2026-02-26 14:26:07.567817	2026-02-26 14:26:07.567817
+13	mlgqup2eyhdq1lkxm	7Z1se2qLQQwwGwQCAAAH	online	2026-02-26 14:26:07.59418	2026-02-26 14:26:07.59418
+14	mlgqup2eyhdq1lkxm	JN7opTzLaq7rmyE2AAAD	online	2026-02-26 14:26:07.731375	2026-02-26 14:26:07.731375
+15	mlgqup2eyhdq1lkxm	RKSPRl5sBWuqc4WbAAAJ	online	2026-02-26 14:26:08.948664	2026-02-26 14:26:08.948664
+16	mlgqup2eyhdq1lkxm	isBLVeIFHpFxti4EAAAB	online	2026-02-26 14:26:39.511076	2026-02-26 14:26:39.511076
+17	mlgqup2eyhdq1lkxm	SUq9v5BUtmkUEhAAAAAF	online	2026-02-26 14:26:39.552425	2026-02-26 14:26:39.552425
+18	mlgqup2eyhdq1lkxm	ld829PHO1dFttUvDAAAD	online	2026-02-26 14:26:39.615452	2026-02-26 14:26:39.615452
+19	mlgqup2eyhdq1lkxm	MysbY0jnhZUM3OUoAAAH	online	2026-02-26 14:26:39.617551	2026-02-26 14:26:39.617551
+20	mlgqup2eyhdq1lkxm	L7lX7YATQEa3UX-3AAAJ	online	2026-02-26 14:26:40.947192	2026-02-26 14:26:40.947192
+31	mlgqup29zlzugg8qk	xeJaTYlmbVkZVpJhAAAV	online	2026-02-26 14:27:40.878683	2026-02-26 14:27:40.878683
+32	mlgqup29zlzugg8qk	ZUIj24kLMiTWoU6xAAAX	online	2026-02-26 14:27:41.056495	2026-02-26 14:27:41.056495
+33	mlgqup29zlzugg8qk	PT3mC4UrI8LtxBsgAAAZ	online	2026-02-26 14:27:41.526418	2026-02-26 14:27:41.526418
+34	mlgqup29zlzugg8qk	hSeqy9xWwmNNUoaRAAAb	online	2026-02-26 14:27:41.576924	2026-02-26 14:27:41.576924
+35	mlgqup29zlzugg8qk	POinKjN3O1Bxgw6AAAAd	online	2026-02-26 14:27:41.607588	2026-02-26 14:27:41.607588
+36	mlgqup2eyhdq1lkxm	sqG6F9xAwvWy8UyoAAAf	online	2026-02-26 14:27:53.903866	2026-02-26 14:27:53.903866
+37	mlgqup2eyhdq1lkxm	81TzXMokNg4VNANSAAAh	online	2026-02-26 14:27:54.030064	2026-02-26 14:27:54.030064
+38	mlgqup2eyhdq1lkxm	uoT3w8TrmbkOIQLBAAAj	online	2026-02-26 14:27:54.182917	2026-02-26 14:27:54.182917
+39	mlgqup2eyhdq1lkxm	E44DN4hOvS-5LyTwAAAl	online	2026-02-26 14:27:54.218778	2026-02-26 14:27:54.218778
+40	mlgqup2eyhdq1lkxm	458qGwW5PcNYjuxnAAAn	online	2026-02-26 14:27:54.248034	2026-02-26 14:27:54.248034
+362	mm3x7j6m4p6s4g2zz	9rDCOfLwL2-Dsg6uAAAB	online	2026-02-27 07:27:06.803787	2026-02-27 07:27:06.803787
+364	mm3x7j6m4p6s4g2zz	0O-kzkjP1Z3lK8fdAAAF	online	2026-02-27 07:27:07.004985	2026-02-27 07:27:07.004985
+51	mlgqup2eyhdq1lkxm	Wc-EUD-miRZNfNhKAAAV	online	2026-02-26 14:30:07.611836	2026-02-26 14:30:07.611836
+52	mlgqup2eyhdq1lkxm	qi5FaO368z4prjwsAAAX	online	2026-02-26 14:30:07.615318	2026-02-26 14:30:07.615318
+53	mlgqup2eyhdq1lkxm	BrxH9w8u9UF4JA1UAAAZ	online	2026-02-26 14:30:07.903636	2026-02-26 14:30:07.903636
+54	mlgqup2eyhdq1lkxm	ZiXbA2pkI-h7oPccAAAb	online	2026-02-26 14:30:08.020859	2026-02-26 14:30:08.020859
+55	mlgqup2eyhdq1lkxm	bBksiBFM_K_iOMwLAAAd	online	2026-02-26 14:30:08.117309	2026-02-26 14:30:08.117309
+56	mlgqup29zlzugg8qk	da-fPm7dNtd1K-5XAAAf	online	2026-02-26 14:30:11.886864	2026-02-26 14:30:11.886864
+57	mlgqup29zlzugg8qk	hRrZvw9H3805-KvkAAAh	online	2026-02-26 14:30:12.063868	2026-02-26 14:30:12.063868
+58	mlgqup29zlzugg8qk	OT6VuMmXhEk1jfSDAAAj	online	2026-02-26 14:30:12.517563	2026-02-26 14:30:12.517563
+59	mlgqup29zlzugg8qk	dotN_4bQjJ5GsDjVAAAl	online	2026-02-26 14:30:12.617878	2026-02-26 14:30:12.617878
+60	mlgqup29zlzugg8qk	Zup1WalG84Aba_rxAAAn	online	2026-02-26 14:30:12.655842	2026-02-26 14:30:12.655842
+61	mlgqup2eyhdq1lkxm	GpljFNCcJLI_zzXNAAAB	online	2026-02-26 14:35:37.597149	2026-02-26 14:35:37.597149
+62	mlgqup29zlzugg8qk	rjdP-yHR6HrAE7iAAAAH	online	2026-02-26 14:35:37.657585	2026-02-26 14:35:37.657585
+63	mlgqup2eyhdq1lkxm	Z4oziJgiMbddBGv_AAAD	online	2026-02-26 14:35:37.667611	2026-02-26 14:35:37.667611
+64	mlgqup2eyhdq1lkxm	FCDNbNBkgCakp0kKAAAF	online	2026-02-26 14:35:37.701083	2026-02-26 14:35:37.701083
+65	mlgqup29zlzugg8qk	qEDrP9ybh4ttQjhsAAAJ	online	2026-02-26 14:35:37.910035	2026-02-26 14:35:37.910035
+66	mlgqup2eyhdq1lkxm	uXYSeP__ZpjvMpZzAAAM	online	2026-02-26 14:35:37.951215	2026-02-26 14:35:37.951215
+67	mlgqup29zlzugg8qk	gyY02q3d4oinF2OdAAAN	online	2026-02-26 14:35:37.971966	2026-02-26 14:35:37.971966
+68	mlgqup29zlzugg8qk	hB5haXQYronIpBaYAAAP	online	2026-02-26 14:35:38.046864	2026-02-26 14:35:38.046864
+69	mlgqup29zlzugg8qk	vmfBf-MHpO2gxijHAAAR	online	2026-02-26 14:35:38.233606	2026-02-26 14:35:38.233606
+70	mlgqup2eyhdq1lkxm	HljRAFEnhc-CHduNAAAT	online	2026-02-26 14:35:39.952018	2026-02-26 14:35:39.952018
+366	mm3x7j6m4p6s4g2zz	T4yxeLoNcKzBkL40AAAJ	online	2026-02-27 07:27:07.05519	2026-02-27 07:27:07.05519
+81	mlgqup29zlzugg8qk	7dQgLyBrD9oN-QBPAAAV	online	2026-02-26 14:36:34.003579	2026-02-26 14:36:34.003579
+82	mlgqup29zlzugg8qk	AUzsWgOMF7wiHa7HAAAX	online	2026-02-26 14:36:34.4668	2026-02-26 14:36:34.4668
+83	mlgqup29zlzugg8qk	mvOjQ0V2lr4UjtzMAAAZ	online	2026-02-26 14:36:34.739462	2026-02-26 14:36:34.739462
+84	mlgqup29zlzugg8qk	vyNBFXxLO15hSJzPAAAb	online	2026-02-26 14:36:34.793296	2026-02-26 14:36:34.793296
+85	mlgqup29zlzugg8qk	BTRpu1PVfu6uFGZvAAAd	online	2026-02-26 14:36:34.889209	2026-02-26 14:36:34.889209
+86	mlgqup2eyhdq1lkxm	_O42uA2hSlgjG7QGAAAf	online	2026-02-26 14:36:41.458597	2026-02-26 14:36:41.458597
+87	mlgqup2eyhdq1lkxm	nUboAgapS2HpwOeDAAAh	online	2026-02-26 14:36:41.471304	2026-02-26 14:36:41.471304
+88	mlgqup2eyhdq1lkxm	vu9jTa7Y4HqE7Kg3AAAj	online	2026-02-26 14:36:41.637421	2026-02-26 14:36:41.637421
+89	mlgqup2eyhdq1lkxm	yGkc_gF_WW8XixCYAAAl	online	2026-02-26 14:36:41.727336	2026-02-26 14:36:41.727336
+90	mlgqup2eyhdq1lkxm	s7THPbVO5KqDLRBCAAAn	online	2026-02-26 14:36:41.838088	2026-02-26 14:36:41.838088
+106	mlgqup29zlzugg8qk	0Whe3QvVa117J6NaAAAf	online	2026-02-26 14:40:09.051014	2026-02-26 14:40:09.051014
+107	mlgqup29zlzugg8qk	NHytY9MuVRbSEZ4FAAAh	online	2026-02-26 14:40:09.074583	2026-02-26 14:40:09.074583
+108	mlgqup29zlzugg8qk	74u2VqS4RwFilYYpAAAj	online	2026-02-26 14:40:09.422775	2026-02-26 14:40:09.422775
+109	mlgqup29zlzugg8qk	tRY6Er-FMraNu4-9AAAl	online	2026-02-26 14:40:09.527542	2026-02-26 14:40:09.527542
+110	mlgqup29zlzugg8qk	j-GsUgpYzsOVoIFqAAAn	online	2026-02-26 14:40:09.63017	2026-02-26 14:40:09.63017
+111	mlgqup2eyhdq1lkxm	uYMjwi4jwXwDn8UHAAAp	online	2026-02-26 14:40:18.012914	2026-02-26 14:40:18.012914
+112	mlgqup2eyhdq1lkxm	GBFRm66JF56iGABxAAAr	online	2026-02-26 14:40:18.016199	2026-02-26 14:40:18.016199
+113	mlgqup2eyhdq1lkxm	ZA1de1XuxZ7eqZMqAAAt	online	2026-02-26 14:40:18.186092	2026-02-26 14:40:18.186092
+114	mlgqup2eyhdq1lkxm	zDM_0jajsA2U7il7AAAv	online	2026-02-26 14:40:18.215578	2026-02-26 14:40:18.215578
+115	mlgqup2eyhdq1lkxm	opR5kgYKUyComBuhAAAx	online	2026-02-26 14:40:18.242748	2026-02-26 14:40:18.242748
+127	mlgqup2eyhdq1lkxm	rlCM6M3nNj-6QkLvAAAX	online	2026-02-26 14:43:17.798882	2026-02-26 14:43:17.798882
+126	mlgqup2eyhdq1lkxm	B5y05DocU917iFFkAAAV	online	2026-02-26 14:43:17.794462	2026-02-26 14:43:17.794462
+128	mlgqup2eyhdq1lkxm	C3UFhEUuceXKa-VhAAAZ	online	2026-02-26 14:43:17.982394	2026-02-26 14:43:17.982394
+129	mlgqup2eyhdq1lkxm	QWmjslV4tH37unspAAAb	online	2026-02-26 14:43:18.017242	2026-02-26 14:43:18.017242
+130	mlgqup2eyhdq1lkxm	58eZsCpCbxsYijywAAAd	online	2026-02-26 14:43:18.047661	2026-02-26 14:43:18.047661
+131	mlgqup29zlzugg8qk	hthtLYBLSnkdlRMOAAAf	online	2026-02-26 14:43:20.42766	2026-02-26 14:43:20.42766
+132	mlgqup29zlzugg8qk	rj0muaV8caXjUWpXAAAh	online	2026-02-26 14:43:20.564552	2026-02-26 14:43:20.564552
+133	mlgqup29zlzugg8qk	p4BmLiepwxQU225SAAAj	online	2026-02-26 14:43:20.861726	2026-02-26 14:43:20.861726
+134	mlgqup29zlzugg8qk	mTfrL-a2r6mmCw0dAAAl	online	2026-02-26 14:43:20.899654	2026-02-26 14:43:20.899654
+135	mlgqup29zlzugg8qk	YiQmvL7AAn_jas4XAAAn	online	2026-02-26 14:43:20.934453	2026-02-26 14:43:20.934453
+146	mlgqup29zlzugg8qk	AzdvE6yYXGpSEbRQAAAV	online	2026-02-26 14:51:23.645236	2026-02-26 14:51:23.645236
+147	mlgqup29zlzugg8qk	soVKo3_EDNUtg8oBAAAX	online	2026-02-26 14:51:23.756511	2026-02-26 14:51:23.756511
+148	mlgqup29zlzugg8qk	4_UKVb9X6ukE3UchAAAZ	online	2026-02-26 14:51:24.379021	2026-02-26 14:51:24.379021
+149	mlgqup29zlzugg8qk	HwTHOLEAXe2wFe07AAAb	online	2026-02-26 14:51:24.447144	2026-02-26 14:51:24.447144
+150	mlgqup29zlzugg8qk	z4gaxKhYtsowRP_FAAAd	online	2026-02-26 14:51:24.504013	2026-02-26 14:51:24.504013
+151	mlgqup2eyhdq1lkxm	xV2Q44N-3dtUf5EXAAAf	online	2026-02-26 14:51:28.792835	2026-02-26 14:51:28.792835
+152	mlgqup2eyhdq1lkxm	k3KLY9zmvkGhpR5OAAAh	online	2026-02-26 14:51:29.043466	2026-02-26 14:51:29.043466
+153	mlgqup2eyhdq1lkxm	H9NBTnVNykdEX8LWAAAk	online	2026-02-26 14:51:29.503049	2026-02-26 14:51:29.503049
+154	mlgqup2eyhdq1lkxm	AvxQ0OlHHtriVVSEAAAl	online	2026-02-26 14:51:29.513144	2026-02-26 14:51:29.513144
+155	mlgqup2eyhdq1lkxm	eF2-iqERHJNI6IBaAAAn	online	2026-02-26 14:51:29.655386	2026-02-26 14:51:29.655386
+363	mm3x7j6m4p6s4g2zz	3p7AI5NemdabRhJDAAAD	online	2026-02-27 07:27:06.857225	2026-02-27 07:27:06.857225
+365	mm3x7j6m4p6s4g2zz	fe95vXej4fBU1t24AAAH	online	2026-02-27 07:27:07.028859	2026-02-27 07:27:07.028859
+296	mm3x7j6m4p6s4g2zz	dlpwnCvAU9q_eOlGAAEZ	online	2026-02-26 15:42:18.949249	2026-02-26 15:42:18.949249
+297	mm3x7j6m4p6s4g2zz	nK7i3cFsOC98rEHUAAEb	online	2026-02-26 15:42:18.950177	2026-02-26 15:42:18.950177
+298	mm3x7j6m4p6s4g2zz	VnU5T5z_3lItJoM_AAEd	online	2026-02-26 15:42:19.257875	2026-02-26 15:42:19.257875
+299	mm3x7j6m4p6s4g2zz	C_yIyDhDhv9ME190AAEf	online	2026-02-26 15:42:19.307499	2026-02-26 15:42:19.307499
+311	mm3x7j6m4p6s4g2zz	aWm1tlJtylsrZyH9AAAB	online	2026-02-26 15:57:50.195908	2026-02-26 15:57:50.195908
+312	mm3x7j6m4p6s4g2zz	2iZPL8fluTGIUEIdAAAD	online	2026-02-26 15:57:50.941672	2026-02-26 15:57:50.941672
+313	mm3x7j6m4p6s4g2zz	KSEU0GpKnNikUdA6AAAF	online	2026-02-26 15:57:50.954485	2026-02-26 15:57:50.954485
+314	mm3x7j6m4p6s4g2zz	EGraRSXbWMFlTD0nAAAH	online	2026-02-26 15:57:50.97496	2026-02-26 15:57:50.97496
+315	mm3x7j6m4p6s4g2zz	NXlDsUb-rSHQ4ZUbAAAB	online	2026-02-26 16:10:34.129855	2026-02-26 16:10:34.129855
+316	mm3x7j6m4p6s4g2zz	H2plqLY78cjZW3oqAAAD	online	2026-02-26 16:10:34.146305	2026-02-26 16:10:34.146305
+\.
+
+
+--
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
 1	mlgqup29zlzugg8qk	["orders", "settle", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "dispatch", "inventory", "salesReport", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-02-24 15:55:37.7692	2026-02-24 16:20:29.657359
-2	mlgqup2eyhdq1lkxm	["orders", "dispatch", "salesReport", "orderHistory", "reception", "returnReception", "inventory", "settle", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-02-26 09:08:27.311822	2026-02-26 09:08:27.311822
+3	mm3x7j6m4p6s4g2zz	["orders", "fichas-costo", "salesReport", "dispatch", "reports", "dispatchControl", "orderHistory", "reception", "returnReception", "fichas-diseno", "maletas", "inventory", "settle", "deliveryDates", "compras", "masters"]	2026-02-26 15:44:03.70884	2026-02-26 15:44:03.70884
 \.
 
 
@@ -2634,10 +2994,11 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 09:55:49.234505
-mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-24 11:51:24.534407
-mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-24 15:55:46.274803
-mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMKsrLyLM.pg8JUrri	general	1	2026-02-10 15:16:40	2026-02-26 08:52:31.877147
+mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-02-26 15:12:19.980219
+mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 15:33:24.215444
+mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-26 15:38:58.120206
+mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-26 15:41:16.284679
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-02-26 15:44:26.049657
 \.
 
 
@@ -2646,6 +3007,13 @@ mlgqup2eyhdq1lkxm	Jhon Montoya	JAM	$2b$10$rrMgIQCgsyf9NVjdYzBgi.8UiRCTn/7TmvCXMK
 --
 
 SELECT pg_catalog.setval('public.dispatch_items_id_seq', 357, true);
+
+
+--
+-- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.messages_id_seq', 18, true);
 
 
 --
@@ -2663,10 +3031,17 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 1, false);
 
 
 --
+-- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 366, true);
+
+
+--
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 2, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 3, true);
 
 
 --
@@ -2837,6 +3212,14 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.messages
+    ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2898,6 +3281,22 @@ ALTER TABLE ONLY public.return_receptions
 
 ALTER TABLE ONLY public.sellers
     ADD CONSTRAINT sellers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions
+    ADD CONSTRAINT user_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_sessions
+    ADD CONSTRAINT user_sessions_user_id_socket_id_key UNIQUE (user_id, socket_id);
 
 
 --
@@ -3100,6 +3499,34 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
+-- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at);
+
+
+--
+-- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_read ON public.messages USING btree (read);
+
+
+--
+-- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
+
+
+--
+-- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender_id, receiver_id);
+
+
+--
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3153,6 +3580,27 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 --
 
 CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created_at);
+
+
+--
+-- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree (last_activity);
+
+
+--
+-- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (status);
+
+
+--
+-- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user_id);
 
 
 --
@@ -3258,5 +3706,5 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- PostgreSQL database dump complete
 --
 
-\unrestrict UsFnrEscGmH224epMai5F4VCUAy1mGmzOre7e8qSWuXSJiRK80MnfIDUfMXiduh
+\unrestrict YvvRlyMhw08tacDnVyuZ4fK8W4pgVgcivWhHsIeeaKZlxcuwZnYP91WTbyRMKWn
 

@@ -7,6 +7,7 @@ const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
 const BackupRotationService = require('./BackupRotationService');
+const BackupValidationService = require('./BackupValidationService');
 
 const execAsync = promisify(exec);
 
@@ -44,6 +45,7 @@ class BackupExecutionService {
   constructor(backupDir = path.join(__dirname, '../../backups')) {
     this.backupDir = backupDir;
     this.rotationService = new BackupRotationService(backupDir);
+    this.validationService = new BackupValidationService(backupDir);
   }
 
   /**
@@ -71,7 +73,15 @@ class BackupExecutionService {
       }
 
       // Comando pg_dump - respalda toda la BD con todas las tablas
-      const command = `pg_dump -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -F p > "${backupPath}"`;
+      // Opciones:
+      // --encoding=UTF8: Especifica codificación UTF-8 explícitamente
+      // --clean: Incluye DROP TABLE para limpiar antes de restaurar
+      // --if-exists: Evita errores si las tablas no existen
+      // --no-password: No pide contraseña (usa PGPASSWORD)
+      // -F p: Formato plano (SQL)
+      // -f: Archivo de salida (mejor que redirección en Windows)
+      // -v: Verbose para ver qué está pasando
+      const command = `pg_dump --encoding=UTF8 --clean --if-exists --no-password -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -F p -v -f "${backupPath}"`;
 
       console.log(`\n🔄 [${new Date().toISOString()}] Iniciando backup ${backupType}...`);
       console.log(`📁 Archivo: ${filename}`);
@@ -93,6 +103,17 @@ class BackupExecutionService {
 
       console.log(`✅ Backup ${backupType} completado`);
       console.log(`📦 Tamaño: ${sizeInMB} MB`);
+
+      // Validar integridad del backup
+      console.log(`🔍 Validando integridad del backup...`);
+      const validation = this.validationService.validateBackup(backupPath);
+      
+      if (!validation.valid) {
+        console.warn(`⚠️  ADVERTENCIA: El backup puede estar corrupto: ${validation.error}`);
+        console.warn(`   Intenta ejecutar: node scripts/validate-and-clean-backups.js`);
+      } else {
+        console.log(`✅ Backup validado correctamente (${validation.tableCount} tablas)`);
+      }
 
       // Rotar backups antiguos
       const deleted = this.rotationService.rotateBackups();
@@ -165,8 +186,9 @@ class BackupExecutionService {
       }
       console.log(`✅ Backup de seguridad creado: ${securityBackupResult.filename}`);
 
-      // Comando psql para restaurar
-      const command = `psql -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} < "${backupPath}"`;
+      // Comando psql para restaurar - usar -f en lugar de stdin
+      // Esto es más confiable en Windows
+      const command = `psql --no-password -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -f "${backupPath}"`;
 
       const env = { ...process.env, PGPASSWORD: dbPassword };
       const { stdout, stderr } = await execAsync(command, { env, maxBuffer: 10 * 1024 * 1024 });
