@@ -4,6 +4,7 @@ import { AppState } from '../../types';
 import { ConceptoFicha } from '../../types/typesFichas';
 import apiFichas from '../services/apiFichas';
 import SeccionConceptos from '../components/modules/SeccionConceptos';
+import DecimalInput from '../components/DecimalInput';
 
 interface Props {
     state: AppState; user: any;
@@ -50,10 +51,12 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         if (referencia) fetchFichaData();
     }, [referencia]);
 
-    const corteExistente = fichaData?.cortes?.find((c: any) => c.numeroCorte === Number(numeroCorte));
-
     useEffect(() => {
-        if (isNuevo && fichaData) {
+        if (!fichaData) return;
+
+        const corteExistente = fichaData?.cortes?.find((c: any) => c.numeroCorte === Number(numeroCorte));
+
+        if (isNuevo) {
             setMateriaPrima(fichaData.materiaPrima || []);
             setManoObra(fichaData.manoObra || []);
             setInsumosDirectos(fichaData.insumosDirectos || []);
@@ -69,7 +72,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setInsumosIndirectos(corteExistente.insumosIndirectos || []);
             setProvisiones(corteExistente.provisiones || []);
         }
-    }, [isNuevo, corteExistente]);
+    }, [fichaData, isNuevo, numeroCorte]);
 
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
@@ -129,8 +132,13 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             <input type="date" value={fechaCorte} onChange={e => { setFechaCorte(e.target.value); setHasUnsaved(true); }} readOnly={!canEdit}
                                 className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" /></div>
                         <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Cantidad Cortada</label>
-                            <input type="number" value={cantidadCortada} onChange={e => { setCantidadCortada(Number(e.target.value)); setHasUnsaved(true); }} readOnly={!canEdit}
-                                className="w-full px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl font-black text-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500" /></div>
+                            <DecimalInput 
+                                value={cantidadCortada} 
+                                onChange={v => { setCantidadCortada(v); setHasUnsaved(true); }} 
+                                readOnly={!canEdit}
+                                className="w-full px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl font-black text-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500" 
+                            />
+                        </div>
                     </div>
 
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-3xl border-2 border-blue-200 space-y-4">
