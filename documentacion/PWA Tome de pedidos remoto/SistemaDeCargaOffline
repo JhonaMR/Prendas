@@ -1,0 +1,474 @@
+Excelente pregunta. Este es el punto crítico del offline-first. Voy a explicar cómo funciona:
+
+🔑 LA CLAVE: CACHÉ DE DATOS
+El sistema descarga y cachea los datos ANTES de perder internet, no durante.
+
+📱 FLUJO COMPLETO: ONLINE → OFFLINE → ONLINE
+FASE 1: VENDEDOR LOGIN (CON INTERNET)
+1. Vendedor abre PWA
+   ↓
+2. Ingresa usuario y PIN
+   ↓
+3. PWA envía: POST /api/auth/login
+   ↓
+4. Backend valida y retorna:
+   {
+     token: "jwt_token_123",
+     usuario: {
+       id: "vendedor_001",
+       nombre: "Juan Pérez",
+       rol: "vendedor"
+     }
+   }
+   ↓
+5. PWA guarda en localStorage:
+   - token
+   - usuario
+   ↓
+6. PWA muestra: "✅ Bienvenido Juan"
+FASE 2: DESCARGAR DATOS MAESTROS (CON INTERNET)
+Cuando vendedor login exitosamente:
+   ↓
+PWA automáticamente descarga:
+
+1. GET /api/clientes
+   ↓
+   Backend retorna: Lista de TODOS los clientes
+   ↓
+   PWA guarda en IndexedDB:
+   {
+     id: "cliente_123",
+     nombre: "Almacén La 14",
+     ciudad: "Medellín",
+     contacto: "Juan García"
+   }
+
+2. GET /api/correrias
+   ↓
+   Backend retorna: Lista de correrias activas
+   ↓
+   PWA guarda en IndexedDB:
+   {
+     id: "correria_456",
+     nombre: "Verano 2024",
+     estado: "activa"
+   }
+
+3. GET /api/referencias?correriaId=correria_456
+   ↓
+   Backend retorna: Referencias de esa correría
+   ↓
+   PWA guarda en IndexedDB:
+   {
+     id: "ref_10210",
+     codigo: "10210",
+     nombre: "Camiseta Básica",
+     precio: 30900,
+     disponible: true
+   }
+
+Resultado en IndexedDB:
+├── usuarios (1 registro)
+├── clientes (45 registros)
+├── correrias (3 registros)
+└── referencias (245 registros)
+FASE 3: VENDEDOR VA A ZONA SIN INTERNET
+Vendedor sale de la ciudad
+   ↓
+Pierde conexión a internet
+   ↓
+PWA detecta: window.addEventListener('offline')
+   ↓
+Muestra: "⚠️ Sin conexión (offline)"
+   ↓
+Pero TODOS los datos están en IndexedDB
+   ↓
+✅ Puede seguir trabajando
+FASE 4: TOMAR PEDIDO OFFLINE
+Vendedor abre PWA (sin internet)
+   ↓
+PWA carga desde cache (Service Worker)
+   ↓
+Vendedor click: "Tomar Pedido"
+   ↓
+PWA obtiene datos de IndexedDB:
+
+1. Dropdown de clientes:
+   SELECT * FROM clientes
+   ↓
+   Muestra: "Almacén La 14", "Almacén 20", etc.
+
+2. Dropdown de correría:
+   SELECT * FROM correrias
+   ↓
+   Muestra: "Verano 2024", "Primavera 2024", etc.
+
+3. Cuando selecciona correría:
+   SELECT * FROM referencias WHERE correria_id = 'correria_456'
+   ↓
+   Muestra: "10210 - Camiseta Básica", "10211 - Camiseta Premium", etc.
+
+4. Vendedor llena formulario:
+   - Cliente: "Almacén La 14" ✅ (en IndexedDB)
+   - Correría: "Verano 2024" ✅ (en IndexedDB)
+   - Referencias: 10210, 10211 ✅ (en IndexedDB)
+   - Cantidades: 50, 30 ✅ (ingresa manualmente)
+   - Precios: $30,900, $28,900 ✅ (en IndexedDB)
+
+5. Click "GUARDAR PEDIDO"
+   ↓
+   PWA guarda en IndexedDB:
+   {
+     id: "pedido_uuid_1234",
+     clienteId: "cliente_123",
+     correriaId: "correria_456",
+     items: [
+       { ref: "10210", cantidad: 50, precio: 30900 },
+       { ref: "10211", cantidad: 30, precio: 28900 }
+     ],
+     sincronizado: false,
+     createdAt: "2024-03-02T10:00:00Z"
+   }
+   ↓
+   ✅ Confirmación: "Pedido guardado localmente"
+🗄️ ESTRUCTURA DE INDEXEDDB (OFFLINE)
+IndexedDB en navegador del vendedor:
+
+Tabla: usuarios
+├── id: "vendedor_001"
+├── nombre: "Juan Pérez"
+├── token: "jwt_token_123"
+└── rol: "vendedor"
+
+Tabla: clientes (45 registros)
+├── cliente_123: { nombre: "Almacén La 14", ciudad: "Medellín" }
+├── cliente_456: { nombre: "Almacén 20", ciudad: "Bogotá" }
+└── ... (43 más)
+
+Tabla: correrias (3 registros)
+├── correria_456: { nombre: "Verano 2024", estado: "activa" }
+├── correria_789: { nombre: "Primavera 2024", estado: "activa" }
+└── correria_012: { nombre: "Otoño 2024", estado: "inactiva" }
+
+Tabla: referencias (245 registros)
+├── ref_10210: { codigo: "10210", nombre: "Camiseta Básica", precio: 30900 }
+├── ref_10211: { codigo: "10211", nombre: "Camiseta Premium", precio: 28900 }
+└── ... (243 más)
+
+Tabla: pedidos (sin sincronizar)
+├── pedido_uuid_1234: { clienteId: "cliente_123", items: [...], sincronizado: false }
+├── pedido_uuid_5678: { clienteId: "cliente_456", items: [...], sincronizado: false }
+└── ... (más pedidos)
+🔄 FLUJO DETALLADO: OFFLINE-FIRST
+Código en PWA (React)
+// 1. CUANDO VENDEDOR LOGIN (CON INTERNET)
+
+const handleLogin = async (loginCode: string, pin: string) => {
+  try {
+    // Enviar credenciales a backend
+    const response = await fetch(
+      'https://pedidos.tudominio.com/api/auth/login',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ loginCode, pin })
+      }
+    );
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Guardar token y usuario
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('usuario', JSON.stringify(result.usuario));
+      
+      // IMPORTANTE: Descargar datos maestros
+      await descargarDatosMaestros(result.token);
+      
+      // Redirigir a home
+      navigate('/home');
+    }
+  } catch (error) {
+    console.error('Error login:', error);
+  }
+};
+
+// 2. DESCARGAR DATOS MAESTROS
+
+const descargarDatosMaestros = async (token: string) => {
+  const db = await openDB();
+  
+  try {
+    // Descargar clientes
+    const clientesResponse = await fetch(
+      'https://pedidos.tudominio.com/api/clientes',
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+    const clientes = await clientesResponse.json();
+    
+    // Guardar en IndexedDB
+    const tx = db.transaction(['clientes'], 'readwrite');
+    const store = tx.objectStore('clientes');
+    for (const cliente of clientes.data) {
+      store.put(cliente);
+    }
+    
+    // Descargar correrias
+    const correriasResponse = await fetch(
+      'https://pedidos.tudominio.com/api/correrias',
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+    const correrias = await correriasResponse.json();
+    
+    // Guardar en IndexedDB
+    const tx2 = db.transaction(['correrias'], 'readwrite');
+    const store2 = tx2.objectStore('correrias');
+    for (const correria of correrias.data) {
+      store2.put(correria);
+    }
+    
+    // Descargar referencias
+    const referenciasResponse = await fetch(
+      'https://pedidos.tudominio.com/api/referencias',
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
+    const referencias = await referenciasResponse.json();
+    
+    // Guardar en IndexedDB
+    const tx3 = db.transaction(['referencias'], 'readwrite');
+    const store3 = tx3.objectStore('referencias');
+    for (const ref of referencias.data) {
+      store3.put(ref);
+    }
+    
+    console.log('✅ Datos maestros descargados');
+  } catch (error) {
+    console.error('Error descargando datos:', error);
+  }
+};
+
+// 3. CUANDO VENDEDOR ABRE FORMULARIO (OFFLINE)
+
+const handleTomarPedido = async () => {
+  const db = await openDB();
+  
+  // Obtener clientes de IndexedDB (NO del servidor)
+  const clientesResponse = await db.getAll('clientes');
+  setClientes(clientesResponse);
+  
+  // Obtener correrias de IndexedDB (NO del servidor)
+  const correriasResponse = await db.getAll('correrias');
+  setCorrerias(correriasResponse);
+};
+
+// 4. CUANDO SELECCIONA CORRERÍA (OFFLINE)
+
+const handleCorreriaChange = async (correriaId: string) => {
+  const db = await openDB();
+  
+  // Obtener referencias de esa correría de IndexedDB
+  const tx = db.transaction(['referencias'], 'readonly');
+  const store = tx.objectStore('referencias');
+  const index = store.index('correriaId');
+  
+  const referencias = await index.getAll(correriaId);
+  setReferenciasDisponibles(referencias);
+};
+
+// 5. GUARDAR PEDIDO (OFFLINE)
+
+const handleGuardarPedido = async (formData) => {
+  const db = await openDB();
+  
+  const pedido = {
+    id: generateUUID(),
+    clienteId: formData.clienteId,
+    correriaId: formData.correriaId,
+    items: formData.items,
+    total: formData.total,
+    fechaInicioDespacho: formData.fechaInicio,
+    fechaFinDespacho: formData.fechaFin,
+    observaciones: formData.observaciones,
+    sincronizado: false,
+    createdAt: new Date().toISOString()
+  };
+  
+  // Guardar en IndexedDB
+  const tx = db.transaction(['pedidos'], 'readwrite');
+  const store = tx.objectStore('pedidos');
+  await store.add(pedido);
+  
+  showNotification('✅ Pedido guardado localmente');
+};
+🌐 CUANDO VUELVE INTERNET
+Vendedor llega a zona con WiFi
+   ↓
+PWA detecta: window.addEventListener('online')
+   ↓
+Automáticamente sincroniza:
+
+1. Obtiene pedidos no sincronizados de IndexedDB
+   SELECT * FROM pedidos WHERE sincronizado = false
+   ↓
+   Encuentra: 3 pedidos
+
+2. Prepara batch
+   {
+     pedidos: [
+       { clienteId: "cliente_123", items: [...] },
+       { clienteId: "cliente_456", items: [...] },
+       { clienteId: "cliente_789", items: [...] }
+     ]
+   }
+
+3. Envía a servidor
+   POST /api/pedidos-pendientes/batch
+   ↓
+   Cloudflare Tunnel → Tu servidor
+
+4. Backend procesa
+   - Valida datos
+   - Guarda en PostgreSQL
+   - Retorna: 200 OK
+
+5. PWA marca como sincronizados
+   UPDATE pedidos SET sincronizado = true
+   ↓
+   ✅ Confirmación: "3 pedidos sincronizados"
+📊 DIAGRAMA: OFFLINE-FIRST COMPLETO
+FASE 1: LOGIN (CON INTERNET)
+┌─────────────────────────────────────────┐
+│ Vendedor login                          │
+│ ↓                                       │
+│ Backend valida credenciales             │
+│ ↓                                       │
+│ Retorna: token + usuario                │
+│ ↓                                       │
+│ PWA guarda en localStorage              │
+│ ↓                                       │
+│ PWA descarga datos maestros:            │
+│   - Clientes (45)                       │
+│   - Correrias (3)                       │
+│   - Referencias (245)                   │
+│ ↓                                       │
+│ PWA guarda en IndexedDB                 │
+│ ↓                                       │
+│ ✅ Listo para trabajar offline          │
+└─────────────────────────────────────────┘
+
+FASE 2: OFFLINE (SIN INTERNET)
+┌─────────────────────────────────────────┐
+│ Vendedor va a zona sin internet         │
+│ ↓                                       │
+│ PWA carga desde cache (Service Worker)  │
+│ ↓                                       │
+│ Vendedor abre formulario                │
+│ ↓                                       │
+│ PWA obtiene datos de IndexedDB:         │
+│   - Clientes ✅                         │
+│   - Correrias ✅                        │
+│   - Referencias ✅                      │
+│ ↓                                       │
+│ Vendedor toma pedido                    │
+│ ↓                                       │
+│ PWA guarda en IndexedDB                 │
+│ ↓                                       │
+│ ✅ Pedido guardado localmente           │
+└─────────────────────────────────────────┘
+
+FASE 3: VUELVE INTERNET
+┌─────────────────────────────────────────┐
+│ Vendedor llega a zona con WiFi          │
+│ ↓                                       │
+│ PWA detecta conexión                    │
+│ ↓                                       │
+│ Automáticamente sincroniza:             │
+│   - Obtiene pedidos de IndexedDB        │
+│   - Envía a servidor                    │
+│   - Marca como sincronizados            │
+│ ↓                                       │
+│ ✅ Sincronización exitosa               │
+└─────────────────────────────────────────┘
+🎯 RESPUESTA A TUS PREGUNTAS
+P: ¿Va a reconocer el usuario?
+SÍ. El usuario está guardado en localStorage:
+
+const usuario = JSON.parse(localStorage.getItem('usuario'));
+// { id: "vendedor_001", nombre: "Juan Pérez", rol: "vendedor" }
+P: ¿Va a tener las referencias cargadas?
+SÍ. Las referencias están en IndexedDB:
+
+const referencias = await db.getAll('referencias');
+// [{ id: "ref_10210", nombre: "Camiseta Básica", ... }, ...]
+P: ¿Va a tener acceso a la base de datos de clientes?
+SÍ. Los clientes están en IndexedDB:
+
+const clientes = await db.getAll('clientes');
+// [{ id: "cliente_123", nombre: "Almacén La 14", ... }, ...]
+P: ¿Cómo funciona para trabajar offline?
+Así:
+
+Login (con internet) → Descarga datos maestros
+Offline → Usa datos del IndexedDB
+Toma pedidos → Guarda en IndexedDB
+Vuelve internet → Sincroniza automáticamente
+⚠️ CONSIDERACIONES IMPORTANTES
+1. Datos siempre actualizados
+Si cambias referencias en tu sistema:
+  - Vendedor debe login de nuevo
+  - PWA descarga referencias nuevas
+  - Reemplaza las viejas en IndexedDB
+2. Límite de datos
+IndexedDB tiene límite de ~50 MB
+
+Con 245 referencias:
+  - Cada referencia: ~200 bytes
+  - Total referencias: ~50 KB
+  - Clientes (45): ~20 KB
+  - Correrias (3): ~5 KB
+  - Pedidos (100): ~50 KB
+  
+TOTAL: ~125 KB (muy por debajo del límite)
+3. Sincronización de datos
+Si vendedor toma 10 pedidos offline:
+  - Todos se guardan en IndexedDB
+  - Cuando vuelve internet → Sincroniza todos
+  - Backend valida cada uno
+  - Si hay error → Reintenta
+💡 EJEMPLO PRÁCTICO COMPLETO
+LUNES 8:00 AM - Vendedor en oficina (con internet)
+  ↓
+  1. Abre PWA
+  2. Login: usuario "juan_perez", PIN "1234"
+  3. Backend valida y retorna token
+  4. PWA descarga:
+     - 45 clientes
+     - 3 correrias
+     - 245 referencias
+  5. Todo guardado en IndexedDB
+  6. ✅ Listo
+
+LUNES 10:00 AM - Vendedor en carretera (sin internet)
+  ↓
+  1. Abre PWA (carga desde cache)
+  2. Click "Tomar Pedido"
+  3. Selecciona cliente: "Almacén La 14" (de IndexedDB)
+  4. Selecciona correría: "Verano 2024" (de IndexedDB)
+  5. Selecciona referencias: "10210", "10211" (de IndexedDB)
+  6. Ingresa cantidades: 50, 30
+  7. Click "GUARDAR"
+  8. Pedido guardado en IndexedDB
+  9. Repite con 2 clientes más
+  10. Total: 3 pedidos sin sincronizar
+
+LUNES 1:00 PM - Vendedor en hotel (con WiFi)
+  ↓
+  1. Abre PWA
+  2. PWA detecta internet
+  3. Automáticamente sincroniza 3 pedidos
+  4. Backend recibe y guarda
+  5. ✅ Sincronización exitosa
+  6. Tú recibes notificación: "3 pedidos pendientes"
+  7. Revisas y apruebas
+  8. Se asientan en Orders
+¿Queda claro cómo funciona el offline-first? La clave es descargar datos ANTES de perder internet. 🚀
