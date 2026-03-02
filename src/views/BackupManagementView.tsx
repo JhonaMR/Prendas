@@ -25,6 +25,13 @@ interface BackupStats {
   };
 }
 
+interface BackupAlert {
+  type: 'SUCCESS' | 'WARNING' | 'ERROR' | 'INFO';
+  title: string;
+  message: string;
+  details?: any;
+}
+
 const BackupManagementView: React.FC = () => {
   const [backups, setBackups] = useState<Backup[]>([]);
   const [stats, setStats] = useState<BackupStats | null>(null);
@@ -33,6 +40,8 @@ const BackupManagementView: React.FC = () => {
   const [restoring, setRestoring] = useState(false);
   const [selectedBackup, setSelectedBackup] = useState<Backup | null>(null);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [alerts, setAlerts] = useState<BackupAlert[]>([]);
+  const [showAlerts, setShowAlerts] = useState(false);
   const backupsPagination = usePagination(1, 50);
 
   useEffect(() => {
@@ -84,17 +93,29 @@ const BackupManagementView: React.FC = () => {
   const handleManualBackup = async () => {
     try {
       setLoading(true);
+      setAlerts([]);
+      setShowAlerts(false);
+
       const response = await api.executeManualBackup();
 
+      if (response.alerts && response.alerts.length > 0) {
+        setAlerts(response.alerts);
+        setShowAlerts(true);
+      }
+
       if (response.success) {
-        const dbMsg = response.data?.database?.message || 'BD respaldada';
-        const imagesMsg = response.data?.images?.message || 'Imágenes respaldadas';
-        alert(`✅ Backup completado exitosamente\n\n📊 BD: ${dbMsg}\n📸 Imágenes: ${imagesMsg}`);
         loadBackups();
         loadStats();
       }
     } catch (err: any) {
-      alert('❌ Error ejecutando backup: ' + (err.response?.data?.error || err.message));
+      const errorAlert: BackupAlert = {
+        type: 'ERROR',
+        title: '❌ Error en Backup Manual',
+        message: err.response?.data?.error || err.message || 'Error desconocido',
+        details: err.response?.data?.alert?.details
+      };
+      setAlerts([errorAlert]);
+      setShowAlerts(true);
     } finally {
       setLoading(false);
     }
@@ -238,6 +259,66 @@ const BackupManagementView: React.FC = () => {
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700 font-semibold">
           {error}
+        </div>
+      )}
+
+      {/* Alertas de Backup */}
+      {showAlerts && alerts.length > 0 && (
+        <div className="space-y-3">
+          {alerts.map((alert, idx) => {
+            const bgColor = {
+              SUCCESS: 'bg-green-50 border-green-200',
+              WARNING: 'bg-yellow-50 border-yellow-200',
+              ERROR: 'bg-red-50 border-red-200',
+              INFO: 'bg-blue-50 border-blue-200'
+            }[alert.type];
+
+            const textColor = {
+              SUCCESS: 'text-green-700',
+              WARNING: 'text-yellow-700',
+              ERROR: 'text-red-700',
+              INFO: 'text-blue-700'
+            }[alert.type];
+
+            const borderColor = {
+              SUCCESS: 'border-green-200',
+              WARNING: 'border-yellow-200',
+              ERROR: 'border-red-200',
+              INFO: 'border-blue-200'
+            }[alert.type];
+
+            return (
+              <div key={idx} className={`rounded-2xl p-4 border ${bgColor}`}>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <h3 className={`font-bold text-lg ${textColor} mb-1`}>{alert.title}</h3>
+                    <p className={`text-sm ${textColor} mb-2`}>{alert.message}</p>
+                    {alert.details && (
+                      <div className={`text-xs ${textColor} opacity-75 space-y-1 mt-2`}>
+                        {typeof alert.details === 'object' ? (
+                          Object.entries(alert.details).map(([key, value]) => (
+                            <div key={key}>
+                              <strong>{key}:</strong> {String(value)}
+                            </div>
+                          ))
+                        ) : (
+                          <div>{String(alert.details)}</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowAlerts(false)}
+                    className={`flex-shrink-0 p-2 rounded-lg hover:bg-white/50 transition-colors ${textColor}`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 

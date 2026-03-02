@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const logger = require('../utils/logger');
 
 class BackupValidationService {
   constructor(backupDir = path.join(__dirname, '../../backups')) {
@@ -13,6 +14,43 @@ class BackupValidationService {
       /\\restrict/,
       /[\x00-\x08\x0B-\x0C\x0E-\x1F]/g,
     ];
+    this.alertsDir = path.join(__dirname, '../../logs/backup-alerts');
+    this.ensureAlertsDir();
+  }
+
+  /**
+   * Asegura que el directorio de alertas existe
+   */
+  ensureAlertsDir() {
+    if (!fs.existsSync(this.alertsDir)) {
+      fs.mkdirSync(this.alertsDir, { recursive: true });
+    }
+  }
+
+  /**
+   * Registra una alerta de validación
+   */
+  logAlert(alertType, message, details = {}) {
+    const timestamp = new Date().toISOString();
+    const alertFile = path.join(this.alertsDir, `backup-alerts-${new Date().toISOString().split('T')[0]}.log`);
+    
+    const alertEntry = {
+      timestamp,
+      type: alertType,
+      message,
+      details
+    };
+
+    const logLine = `[${timestamp}] [${alertType}] ${message} ${Object.keys(details).length > 0 ? JSON.stringify(details) : ''}\n`;
+    
+    try {
+      fs.appendFileSync(alertFile, logLine, 'utf8');
+      logger.warn(`🚨 ALERTA DE BACKUP: ${alertType} - ${message}`);
+    } catch (error) {
+      console.error('Error registrando alerta:', error.message);
+    }
+
+    return alertEntry;
   }
 
   /**
@@ -21,14 +59,17 @@ class BackupValidationService {
   validateBackup(filePath) {
     try {
       if (!fs.existsSync(filePath)) {
+        const alert = this.logAlert('VALIDATION_ERROR', 'Archivo de backup no encontrado', { filePath });
         return {
           valid: false,
           error: 'Archivo no encontrado',
-          filePath
+          filePath,
+          alert
         };
       }
 
       const stats = fs.statSync(filePath);
+      const filename = path.basename(filePath);
       const content = fs.readFileSync(filePath, 'utf8');
 
       // Verificar corrupción - SOLO si el archivo es grande
@@ -36,11 +77,17 @@ class BackupValidationService {
       if (stats.size > 1024 * 1024) {
         for (const pattern of this.CORRUPTION_PATTERNS) {
           if (pattern.test(content)) {
+            const alert = this.logAlert('CORRUPTION_DETECTED', `Backup corrupto detectado: ${filename}`, {
+              filePath,
+              sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+              pattern: pattern.toString()
+            });
             return {
               valid: false,
               error: 'Archivo contiene caracteres corruptos',
               filePath,
-              sizeInMB: (stats.size / 1024 / 1024).toFixed(2)
+              sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+              alert
             };
           }
         }
@@ -48,26 +95,55 @@ class BackupValidationService {
 
       // Verificar estructura SQL
       if (!content.includes('CREATE TABLE')) {
+        const alert = this.logAlert('INVALID_STRUCTURE', `Backup sin CREATE TABLE: ${filename}`, { filePath });
         return {
           valid: false,
           error: 'No contiene CREATE TABLE',
           filePath,
-          sizeInMB: (stats.size / 1024 / 1024).toFixed(2)
+          sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+          alert
         };
       }
 
       if (!content.includes('PRIMARY KEY')) {
+        const alert = this.logAlert('INVALID_STRUCTURE', `Backup sin PRIMARY KEY: ${filename}`, { filePath });
         return {
           valid: false,
           error: 'No contiene PRIMARY KEY',
           filePath,
-          sizeInMB: (stats.size / 1024 / 1024).toFixed(2)
+          sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+          alert
         };
       }
 
       // Contar tablas
       const tableMatches = content.match(/CREATE TABLE/g) || [];
       const tableCount = tableMatches.length;
+
+      // Verificar que tiene tablas críticas
+      const criticalTables = [
+        'return_receptions',
+        'return_reception_items',
+        'product_references',
+        'clients',
+        'users'
+      ];
+
+      const missingTables = criticalTables.filter(table => !content.includes(`CREATE TABLE public.${table}`));
+      
+      if (missingTables.length > 0) {
+        const alert = this.logAlert('MISSING_TABLES', `Backup falta tablas críticas: ${filename}`, {
+          filePath,
+          missingTables
+        });
+        return {
+          valid: false,
+          error: `Faltan tablas críticas: ${missingTables.join(', ')}`,
+          filePath,
+          sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+          alert
+        };
+      }
 
       return {
         valid: true,
@@ -77,10 +153,12 @@ class BackupValidationService {
         createdAt: stats.birthtime.toISOString()
       };
     } catch (error) {
+      const alert = this.logAlert('VALIDATION_ERROR', `Error validando backup: ${error.message}`, { filePath });
       return {
         valid: false,
         error: error.message,
-        filePath
+        filePath,
+        alert
       };
     }
   }
@@ -91,6 +169,7 @@ class BackupValidationService {
   validateAllBackups() {
     try {
       if (!fs.existsSync(this.backupDir)) {
+        this.logAlert('DIRECTORY_ERROR', 'Directorio de backups no encontrado', { backupDir: this.backupDir });
         return {
           success: false,
           error: 'Directorio de backups no encontrado',
@@ -133,11 +212,22 @@ class BackupValidationService {
 
       results.summary.totalSizeInMB = results.summary.totalSizeInMB.toFixed(2);
 
+      // Registrar alerta si hay backups inválidos
+      if (results.summary.invalidCount > 0) {
+        this.logAlert('INVALID_BACKUPS_FOUND', `Se encontraron ${results.summary.invalidCount} backups inválidos`, {
+          totalBackups: results.total,
+          validCount: results.summary.validCount,
+          invalidCount: results.summary.invalidCount,
+          invalidFiles: results.invalid.map(b => ({ filename: path.basename(b.filePath), error: b.error }))
+        });
+      }
+
       return {
         success: true,
         ...results
       };
     } catch (error) {
+      this.logAlert('VALIDATION_ERROR', `Error validando todos los backups: ${error.message}`, {});
       return {
         success: false,
         error: error.message
@@ -171,6 +261,7 @@ class BackupValidationService {
     const validation = this.validateAllBackups();
 
     if (!validation.success) {
+      this.logAlert('REPORT_ERROR', `Error generando reporte: ${validation.error}`, {});
       return {
         status: 'ERROR',
         message: validation.error,
@@ -199,6 +290,13 @@ class BackupValidationService {
         sizeInMB: b.sizeInMB
       }))
     };
+
+    // Registrar reporte en logs
+    if (report.status === 'WARNING') {
+      this.logAlert('BACKUP_REPORT', `Reporte de validación: ${report.summary.validBackups} válidos, ${report.summary.invalidBackups} inválidos`, {
+        summary: report.summary
+      });
+    }
 
     return report;
   }

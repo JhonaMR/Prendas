@@ -34,6 +34,27 @@ exports.listBackups = (req, res) => {
 };
 
 /**
+ * GET /api/backups/validation/report
+ * Obtiene el reporte de validación de backups
+ */
+exports.getValidationReport = (req, res) => {
+  try {
+    const report = backupExecutionService.validationService.generateReport();
+    
+    res.json({
+      success: true,
+      report
+    });
+  } catch (error) {
+    console.error('Error obteniendo reporte de validación:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+/**
  * GET /api/backups/stats
  * Obtiene estadísticas de almacenamiento
  */
@@ -152,6 +173,7 @@ exports.getBackupInfo = (req, res) => {
 /**
  * POST /api/backups/manual
  * Ejecuta un backup manual inmediato (BD + Imágenes)
+ * Incluye validación automática del backup
  */
 exports.executeManualBackup = async (req, res) => {
   try {
@@ -164,12 +186,50 @@ exports.executeManualBackup = async (req, res) => {
     if (!dbResult.success) {
       return res.status(500).json({
         success: false,
-        error: 'Error en backup de BD: ' + dbResult.error
+        error: 'Error en backup de BD: ' + dbResult.error,
+        alert: {
+          type: 'ERROR',
+          title: '❌ Error en Backup',
+          message: 'No se pudo crear el backup de la base de datos',
+          details: dbResult.error
+        }
       });
+    }
+
+    // Validar el backup creado
+    const backupPath = path.join(__dirname, '../../backups', dbResult.filename);
+    const validationService = backupExecutionService.validationService;
+    const validation = validationService.validateBackup(backupPath);
+
+    let dbAlert = null;
+    if (!validation.valid) {
+      dbAlert = {
+        type: 'WARNING',
+        title: '⚠️ Backup Creado pero con Problemas',
+        message: `El backup se creó pero tiene problemas: ${validation.error}`,
+        details: {
+          filename: dbResult.filename,
+          error: validation.error,
+          sizeInMB: validation.sizeInMB
+        }
+      };
+    } else {
+      dbAlert = {
+        type: 'SUCCESS',
+        title: '✅ Backup de BD Exitoso',
+        message: `Backup creado correctamente: ${dbResult.filename}`,
+        details: {
+          filename: dbResult.filename,
+          sizeInMB: dbResult.sizeInMB,
+          tableCount: validation.tableCount,
+          type: dbResult.type
+        }
+      };
     }
 
     // 2. Backup de Imágenes
     let imagesResult = { success: true, message: 'Sin imágenes para respaldar' };
+    let imagesAlert = null;
     
     try {
       const imagesDir = path.join(__dirname, '../../../public/images/references');
@@ -207,7 +267,20 @@ exports.executeManualBackup = async (req, res) => {
 
           imagesResult = {
             success: true,
-            message: `Backup de imágenes completado: ${backupName} (${sizeInMB} MB)`
+            message: `Backup de imágenes completado: ${backupName} (${sizeInMB} MB)`,
+            filename: backupName,
+            sizeInMB
+          };
+
+          imagesAlert = {
+            type: 'SUCCESS',
+            title: '✅ Backup de Imágenes Exitoso',
+            message: `${files.length} imágenes respaldadas correctamente`,
+            details: {
+              filename: backupName,
+              sizeInMB,
+              imageCount: files.length
+            }
           };
 
           // Limpiar backups antiguos (mantener últimos 30)
@@ -222,7 +295,21 @@ exports.executeManualBackup = async (req, res) => {
               fs.unlinkSync(path.join(backupsDir, file));
             });
           }
+        } else {
+          imagesAlert = {
+            type: 'INFO',
+            title: 'ℹ️ Sin Imágenes',
+            message: 'No hay imágenes para respaldar',
+            details: {}
+          };
         }
+      } else {
+        imagesAlert = {
+          type: 'INFO',
+          title: 'ℹ️ Directorio de Imágenes No Encontrado',
+          message: 'El directorio de imágenes no existe',
+          details: {}
+        };
       }
     } catch (imagesError) {
       console.error('Error en backup de imágenes:', imagesError);
@@ -230,22 +317,47 @@ exports.executeManualBackup = async (req, res) => {
         success: false,
         message: 'Error en backup de imágenes: ' + imagesError.message
       };
+      imagesAlert = {
+        type: 'WARNING',
+        title: '⚠️ Error en Backup de Imágenes',
+        message: 'No se pudo completar el backup de imágenes',
+        details: {
+          error: imagesError.message
+        }
+      };
     }
 
-    // Retornar resultado combinado
+    // Retornar resultado combinado con alertas
     res.json({
-      success: true,
+      success: validation.valid && imagesResult.success,
       message: 'Backup manual completado',
       data: {
-        database: dbResult,
+        database: {
+          ...dbResult,
+          validation: {
+            valid: validation.valid,
+            tableCount: validation.tableCount,
+            sizeInMB: validation.sizeInMB
+          }
+        },
         images: imagesResult
-      }
+      },
+      alerts: [
+        dbAlert,
+        imagesAlert
+      ].filter(a => a !== null)
     });
   } catch (error) {
     console.error('Error ejecutando backup manual:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
+      alert: {
+        type: 'ERROR',
+        title: '❌ Error en Backup Manual',
+        message: 'Ocurrió un error inesperado durante el backup',
+        details: error.message
+      }
     });
   }
 };

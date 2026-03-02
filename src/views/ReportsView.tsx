@@ -9,7 +9,7 @@ interface ReportsViewProps {
 }
 
 const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
-  const [reportType, setReportType] = useState<'kardex' | 'ref' | 'client' | 'seller' | 'conf' | 'prod_conf'>('kardex');
+  const [reportType, setReportType] = useState<'kardex' | 'ref' | 'client' | 'seller' | 'prod_conf' | 'conf'>('kardex');
   const [refInput, setRefInput] = useState('');
   const [clientInput, setClientInput] = useState('');
   const [confStatusFilter, setConfStatusFilter] = useState<'active' | 'all'>('active');
@@ -19,9 +19,15 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const [selectedCorreriaForOrders, setSelectedCorreriaForOrders] = useState('');
   const [correriaSearchOrders, setCorreriaSearchOrders] = useState('');
   const [correriaShowDropdownOrders, setCorreriaShowDropdownOrders] = useState(false);
+  const [selectedCorreriaForProdConf, setSelectedCorreriaForProdConf] = useState('');
+  const [correriaSearchProdConf, setCorreriaSearchProdConf] = useState('');
+  const [correriaShowDropdownProdConf, setCorreriaShowDropdownProdConf] = useState(false);
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const ordersReportPagination = usePagination(1, 50);
+  const prodConfReportPagination = usePagination(1, 50);
   const confReportPagination = usePagination(1, 50);
   const correriaTimeoutRef = useRef<NodeJS.Timeout>();
+  const correriaTimeoutRefProdConf = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     let ordersToShow: any[] = [];
@@ -31,6 +37,15 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     ordersReportPagination.pagination.total = ordersToShow.length;
     ordersReportPagination.pagination.totalPages = Math.ceil(ordersToShow.length / ordersReportPagination.pagination.limit);
   }, [state.orders, selectedCorreriaForOrders, ordersReportPagination.pagination.limit]);
+
+  useEffect(() => {
+    let ordersToShow: any[] = [];
+    if (selectedCorreriaForProdConf) {
+      ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForProdConf);
+    }
+    prodConfReportPagination.pagination.total = ordersToShow.length;
+    prodConfReportPagination.pagination.totalPages = Math.ceil(ordersToShow.length / prodConfReportPagination.pagination.limit);
+  }, [state.orders, selectedCorreriaForProdConf, prodConfReportPagination.pagination.limit]);
 
   useEffect(() => {
     let list = (state.confeccionistas || []).sort((a, b) => a.name.localeCompare(b.name));
@@ -432,6 +447,150 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     );
   };
 
+  const renderProdConfReport = () => {
+    let ordersToShow: any[] = [];
+    if (selectedCorreriaForProdConf) {
+      ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForProdConf);
+    }
+
+    const paginatedOrders = ordersToShow.slice(
+      (prodConfReportPagination.pagination.page - 1) * prodConfReportPagination.pagination.limit,
+      prodConfReportPagination.pagination.page * prodConfReportPagination.pagination.limit
+    );
+
+    const getDispatchColor = (ordered: number, dispatched: number) => {
+      if (dispatched === 0) return 'text-slate-400';
+      if (dispatched < ordered) return 'text-red-600';
+      if (dispatched === ordered) return 'text-green-600';
+      return 'text-yellow-600';
+    };
+
+    const getDispatchBgColor = (ordered: number, dispatched: number) => {
+      if (dispatched === 0) return 'bg-slate-50';
+      if (dispatched < ordered) return 'bg-red-50';
+      if (dispatched === ordered) return 'bg-green-50';
+      return 'bg-yellow-50';
+    };
+
+    return (
+      <div className="space-y-6">
+        {selectedCorreriaForProdConf && (
+          <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden animate-in fade-in">
+            <div className="p-10 bg-blue-50 border-b border-slate-100">
+              <h3 className="text-2xl font-black text-blue-900 tracking-tighter">Detalle de Pedidos por Correría</h3>
+            </div>
+            <div className="divide-y divide-slate-100">
+              {paginatedOrders.map(order => {
+                const client = (state.clients || []).find(c => c.id === order.clientId);
+                const seller = (state.sellers || []).find(s => s.id === order.sellerId);
+                const totalUnitsOrdered = (order.items || []).reduce((acc, i) => acc + i.quantity, 0);
+                
+                const dispatchesForOrder = (state.dispatches || []).filter(d => 
+                  d.clientId === order.clientId && d.correriaId === selectedCorreriaForProdConf
+                );
+                const totalUnitsDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + i.quantity, 0), 0);
+                
+                const percentageUnits = totalUnitsOrdered > 0 ? Math.round((totalUnitsDispatched / totalUnitsOrdered) * 100) : 0;
+                const isExpanded = expandedOrderId === order.id;
+
+                return (
+                  <div key={order.id}>
+                    <button
+                      onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
+                      className="w-full px-10 py-4 hover:bg-slate-50 transition-colors text-left"
+                    >
+                      <div className="grid grid-cols-6 gap-6 items-center">
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Cliente</p>
+                          <p className="font-black text-slate-800">{client?.name || 'Cliente desconocido'}</p>
+                          <p className="text-[9px] font-bold text-slate-500">{client?.id}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Dirección</p>
+                          <p className="font-bold text-slate-600">{client?.address || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Número de Pedido</p>
+                          <p className="font-black text-slate-800">{order.orderNumber || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Vendedor</p>
+                          <p className="font-bold text-pink-600">{seller?.name || '-'}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">% Cumplimiento</p>
+                          <p className="font-black text-green-600 text-lg">{percentageUnits}%</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-2xl text-slate-400">
+                            {isExpanded ? '▼' : '▶'}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+
+                    {isExpanded && (
+                      <div className="px-10 py-6 bg-slate-50 border-t border-slate-100">
+                        <table className="w-full text-left text-sm">
+                          <thead>
+                            <tr className="bg-white">
+                              <th className="px-4 py-2 text-[9px] font-black uppercase text-slate-700">Referencia</th>
+                              <th className="px-4 py-2 text-center text-[9px] font-black uppercase text-slate-700">Cantidad Pedida</th>
+                              <th className="px-4 py-2 text-center text-[9px] font-black uppercase text-slate-700">Cantidad Despachada</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(order.items || []).map((item, idx) => {
+                              const dispatchedQty = dispatchesForOrder.reduce((acc, d) => {
+                                const dispatchItem = (d.items || []).find(di => di.reference === item.reference);
+                                return acc + (dispatchItem?.quantity || 0);
+                              }, 0);
+
+                              return (
+                                <tr key={idx} className="border-b border-white last:border-0">
+                                  <td className="px-4 py-3 font-bold text-slate-800">{item.reference}</td>
+                                  <td className="px-4 py-3 text-center font-bold text-slate-600">{item.quantity}</td>
+                                  <td className={`px-4 py-3 text-center font-black ${getDispatchColor(item.quantity, dispatchedQty)}`}>
+                                    <span className={`px-3 py-1 rounded-lg ${getDispatchBgColor(item.quantity, dispatchedQty)}`}>
+                                      {dispatchedQty === 0 ? '-' : dispatchedQty}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                            <tr className="bg-white font-black border-t-2 border-slate-300">
+                              <td className="px-4 py-3 text-slate-800">TOTAL</td>
+                              <td className="px-4 py-3 text-center text-slate-800">{totalUnitsOrdered}</td>
+                              <td className={`px-4 py-3 text-center ${getDispatchColor(totalUnitsOrdered, totalUnitsDispatched)}`}>
+                                <span className={`px-3 py-1 rounded-lg ${getDispatchBgColor(totalUnitsOrdered, totalUnitsDispatched)}`}>
+                                  {totalUnitsDispatched === 0 ? '-' : totalUnitsDispatched}
+                                </span>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {selectedCorreriaForProdConf && (
+          <PaginationComponent
+            currentPage={prodConfReportPagination.pagination.page}
+            totalPages={prodConfReportPagination.pagination.totalPages}
+            pageSize={prodConfReportPagination.pagination.limit}
+            onPageChange={prodConfReportPagination.goToPage}
+            onPageSizeChange={prodConfReportPagination.setLimit}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-8 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
@@ -443,13 +602,51 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
           <TabBtnSmall active={reportType === 'kardex'} onClick={() => setReportType('kardex')} label="Kardex" />
           <TabBtnSmall active={reportType === 'ref'} onClick={() => setReportType('ref')} label="Referencias" />
           <TabBtnSmall active={reportType === 'client'} onClick={() => setReportType('client')} label="Clientes" />
-          <TabBtnSmall active={reportType === 'seller'} onClick={() => setReportType('seller')} label="Pedidos/Correría" />
+          <TabBtnSmall active={reportType === 'prod_conf'} onClick={() => setReportType('prod_conf')} label="Pedidos/Correría" />
+          <TabBtnSmall active={reportType === 'seller'} onClick={() => setReportType('seller')} label="Clientes/Correría" />
           <TabBtnSmall active={reportType === 'conf'} onClick={() => setReportType('conf')} label="Confeccionistas" />
         </div>
         
         {reportType === 'ref' && <input value={refInput} onChange={e => setRefInput(e.target.value)} placeholder="Ref..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
         {reportType === 'client' && <input value={clientInput} onChange={e => setClientInput(e.target.value)} placeholder="Cliente ID/Nombre..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
         {reportType === 'kardex' && <input value={kardexSearch} onChange={e => setKardexSearch(e.target.value)} placeholder="Ref..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
+        {reportType === 'prod_conf' && (
+          <div className="relative bg-white p-2 rounded-xl border">
+            <input
+              type="text"
+              value={correriaSearchProdConf}
+              onChange={e => setCorreriaSearchProdConf(e.target.value)}
+              onFocus={() => setCorreriaShowDropdownProdConf(true)}
+              onBlur={() => setTimeout(() => setCorreriaShowDropdownProdConf(false), 300)}
+              placeholder="Buscar correría..."
+              className="px-4 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 w-48"
+            />
+            {correriaShowDropdownProdConf && (
+              <div 
+                className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
+                onMouseDown={(e) => e.preventDefault()}
+              >
+                {((state.correrias || []).filter(c => !correriaSearchProdConf || c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf))).length === 0 ? (
+                  <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
+                ) : (
+                  (state.correrias || []).filter(c => !correriaSearchProdConf || c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf)).map(c => (
+                    <button
+                      key={c.id}
+                      onMouseDown={() => {
+                        setSelectedCorreriaForProdConf(c.id);
+                        setCorreriaShowDropdownProdConf(false);
+                        setCorreriaSearchProdConf('');
+                      }}
+                      className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+                    >
+                      <p className="font-black text-slate-800 text-xs">{c.name} {c.year}</p>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        )}
         {reportType === 'seller' && (
           <div className="relative bg-white p-2 rounded-xl border">
             <input
@@ -536,6 +733,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
         {reportType === 'kardex' && renderKardex()}
         {reportType === 'ref' && renderRefDetail()}
         {reportType === 'client' && renderClientDetail()}
+        {reportType === 'prod_conf' && renderProdConfReport()}
         {reportType === 'seller' && renderOrdersReport()}
         {reportType === 'conf' && renderConfReport()}
       </div>

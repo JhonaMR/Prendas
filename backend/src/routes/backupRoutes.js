@@ -14,6 +14,9 @@ router.use(verifyAdmin);
 // Listar todos los backups
 router.get('/', backupController.listBackups);
 
+// Obtener reporte de validación
+router.get('/validation/report', backupController.getValidationReport);
+
 // Obtener estadísticas de almacenamiento
 router.get('/stats', backupController.getBackupStats);
 
