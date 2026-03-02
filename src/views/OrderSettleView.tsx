@@ -25,6 +25,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
   const [selectedSellerId, setSelectedSellerId] = useState('');
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [orderNumber, setOrderNumber] = useState<number | ''>('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
   const [tempItems, setTempItems] = useState<ItemEntry[]>([]);
   const [invalidReferences, setInvalidReferences] = useState<InvalidReference[]>([]);
   const [excelLoaded, setExcelLoaded] = useState(false);
@@ -142,7 +144,9 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       totalValue,
       createdAt: new Date().toLocaleString(),
       settledBy: user.name,
-      orderNumber: orderNumber === '' ? undefined : orderNumber
+      orderNumber: orderNumber === '' ? undefined : orderNumber,
+      startDate: startDate || null,
+      endDate: endDate || null
     };
 
     try {
@@ -161,6 +165,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
         setSelectedClientId('');
         setClientSearch('');
         setOrderNumber('');
+        setStartDate('');
+        setEndDate('');
         setInvalidReferences([]);
         setExcelLoaded(false);
         if(fileInputRef.current) fileInputRef.current.value = '';
@@ -247,6 +253,27 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                   placeholder="Opcional"
                   className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Fecha de Inicio</label>
+                  <input 
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Fecha de Fin</label>
+                  <input 
+                    type="date" 
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                </div>
               </div>
             </div>
           </div>

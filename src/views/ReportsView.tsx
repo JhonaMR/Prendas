@@ -426,6 +426,16 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                       <td className="px-10 py-3 text-right font-bold text-slate-600">{formatCurrency(totalValueOrdered)}</td>
                       <td className="px-10 py-3 text-right font-bold text-blue-600">{formatCurrency(totalValueDispatched)}</td>
                       <td className="px-10 py-3 text-center font-black text-green-600">{percentageValue}%</td>
+                      <td className="px-10 py-3 text-center">
+                        <p className={`text-sm font-black ${order.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                          {order.startDate ? new Date(order.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                        </p>
+                      </td>
+                      <td className="px-10 py-3 text-center">
+                        <p className={`text-sm font-black ${order.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                          {order.endDate ? new Date(order.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                        </p>
+                      </td>
                     </tr>
                   );
                 })}
@@ -499,29 +509,43 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                       onClick={() => setExpandedOrderId(isExpanded ? null : order.id)}
                       className="w-full px-10 py-4 hover:bg-slate-50 transition-colors text-left"
                     >
-                      <div className="grid grid-cols-6 gap-6 items-center">
-                        <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Cliente</p>
-                          <p className="font-black text-slate-800">{client?.name || 'Cliente desconocido'}</p>
-                          <p className="text-[9px] font-bold text-slate-500">{client?.id}</p>
+                      <div className="flex items-center justify-between gap-6">
+                        <div className="grid grid-cols-7 gap-6 flex-1 items-center">
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Cliente</p>
+                            <p className="font-black text-slate-800">{client?.name || 'Cliente desconocido'}</p>
+                            <p className="text-[9px] font-bold text-slate-500">{client?.id}</p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Dirección</p>
+                            <p className="font-bold text-slate-600">{client?.address || '-'}</p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Número de Pedido</p>
+                            <p className="font-black text-slate-800">{order.orderNumber || '-'}</p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Vendedor</p>
+                            <p className="font-bold text-pink-600">{seller?.name || '-'}</p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">% Cumplimiento</p>
+                            <p className="font-black text-green-600 text-lg">{percentageUnits}%</p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Inicio Despacho</p>
+                            <p className={`font-black text-sm ${order.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                              {order.startDate ? new Date(order.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Límite Despacho</p>
+                            <p className={`font-black text-sm ${order.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                              {order.endDate ? new Date(order.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Dirección</p>
-                          <p className="font-bold text-slate-600">{client?.address || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Número de Pedido</p>
-                          <p className="font-black text-slate-800">{order.orderNumber || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Vendedor</p>
-                          <p className="font-bold text-pink-600">{seller?.name || '-'}</p>
-                        </div>
-                        <div>
-                          <p className="text-[8px] font-black text-slate-400 uppercase mb-1">% Cumplimiento</p>
-                          <p className="font-black text-green-600 text-lg">{percentageUnits}%</p>
-                        </div>
-                        <div className="text-right">
+                        <div className="text-right flex-shrink-0">
                           <p className="text-2xl text-slate-400">
                             {isExpanded ? '▼' : '▶'}
                           </p>

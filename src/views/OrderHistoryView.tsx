@@ -255,9 +255,25 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
                       <span className="text-[10px] text-slate-300 font-bold">{o.createdAt}</span>
                     </div>
-                    <div className="flex items-baseline gap-3">
-                      <h3 className="text-lg font-black text-slate-800">{client?.name || 'Cliente'}</h3>
-                      <p className="text-xs font-medium text-slate-500">{client?.address}</p>
+                  <div className="flex items-center justify-between gap-4 w-full">
+                      <div className="flex items-baseline gap-3 flex-1">
+                        <h3 className="text-lg font-black text-slate-800">{client?.name || 'Cliente'}</h3>
+                        <p className="text-xs font-medium text-slate-500">{client?.address}</p>
+                      </div>
+                      <div className="flex gap-8 items-center">
+                        <div className="text-center min-w-[140px]">
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Despacho</p>
+                          <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                            {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                          </p>
+                        </div>
+                        <div className="text-center min-w-[140px]">
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Despacho</p>
+                          <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                            {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                     <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}</p>
                   </div>
@@ -435,6 +451,28 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                 >
                   + Agregar Referencia
                 </button>
+              </div>
+
+              {/* Fechas */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Inicio</label>
+                  <input 
+                    type="date" 
+                    value={editingOrder.startDate || ''}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, startDate: e.target.value || null })}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Fin</label>
+                  <input 
+                    type="date" 
+                    value={editingOrder.endDate || ''}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, endDate: e.target.value || null })}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
               </div>
 
               {/* Total */}

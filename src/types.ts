@@ -117,6 +117,8 @@ export interface Order {
   createdAt: string;
   settledBy: string;
   orderNumber?: number;
+  startDate?: string | null;
+  endDate?: string | null;
 }
 
 export interface DeliveryDate {

@@ -216,6 +216,8 @@ CREATE TABLE IF NOT EXISTS public.orders (
     total_value numeric(10,2),
     settled_by character varying(255),
     order_number integer,
+    start_date date,
+    end_date date,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT orders_pkey PRIMARY KEY (id),
     CONSTRAINT orders_client_id_fkey FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE SET NULL,
@@ -555,6 +557,8 @@ CREATE INDEX IF NOT EXISTS idx_orders_client_id ON public.orders(client_id);
 CREATE INDEX IF NOT EXISTS idx_orders_seller_id ON public.orders(seller_id);
 CREATE INDEX IF NOT EXISTS idx_orders_correria_id ON public.orders(correria_id);
 CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at);
+CREATE INDEX IF NOT EXISTS idx_orders_start_date ON public.orders(start_date);
+CREATE INDEX IF NOT EXISTS idx_orders_end_date ON public.orders(end_date);
 
 -- Índices para order_items
 CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON public.order_items(order_id);
