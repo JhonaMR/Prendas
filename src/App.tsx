@@ -998,6 +998,7 @@ const App: React.FC = () => {
             updateState={updateState} 
             referencesMaster={state.references}
             correrias={state.correrias}
+            sellers={state.sellers}
             onAddDispatch={addDispatch}
             onUpdateDispatch={updateDispatch}
             onDeleteDispatch={deleteDispatch}

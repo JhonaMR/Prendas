@@ -28,7 +28,7 @@ const calcularPrecioVenta = (costoTotal, rentabilidad) =>
 
 const calcularRentabilidad = (precioVenta, costoTotal) => {
     if (costoTotal === 0) return 0;
-    return ((precioVenta / costoTotal) - 1) * 100;
+    return (1 - (costoTotal / precioVenta)) * 100;
 };
 
 const calcularDescuentos = (precioVenta, costoTotal) => {

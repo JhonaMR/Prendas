@@ -42,7 +42,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const [insumosIndirectos, setInsumosIndirectos] = useState<ConceptoFicha[]>([]);
     const [provisiones, setProvisiones] = useState<ConceptoFicha[]>([]);
     const [precioVenta, setPrecioVenta] = useState(0);
-    const [rentabilidad, setRentabilidad] = useState(49);
+    const [rentabilidad, setRentabilidad] = useState(35);
+    const [costoTotalGuardado, setCostoTotalGuardado] = useState(0);
 
     const fichaExistente = (state.fichasCosto || []).find(f => f.referencia === referencia);
 
@@ -52,6 +53,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
     useEffect(() => {
         if (fichaExistente) {
+            console.log('📋 Ficha cargada:', { referencia: fichaExistente.referencia, precioVenta: fichaExistente.precioVenta, rentabilidad: fichaExistente.rentabilidad, costoTotal: fichaExistente.costoTotal });
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');
@@ -66,7 +68,9 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setInsumosIndirectos(fichaExistente.insumosIndirectos || []);
             setProvisiones(fichaExistente.provisiones || []);
             setPrecioVenta(fichaExistente.precioVenta || 0);
-            setRentabilidad(fichaExistente.rentabilidad || 49);
+            // IMPORTANTE: Cargar rentabilidad tal como viene guardada, sin recalcular
+            setRentabilidad(fichaExistente.rentabilidad || 35);
+            setCostoTotalGuardado(fichaExistente.costoTotal || 0);
         }
     }, [fichaExistente?.referencia]);
 
@@ -79,11 +83,11 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
     const descuentos = useMemo(() => {
-        const calc = (desc: number) => { const p = ajustarA900(precioVenta * (1 - desc / 100)); return { precio: p, rent: calcRent(p, totales.total) }; };
+        const calc = (desc: number) => { const p = ajustarA900(precioVenta * (1 - desc / 100)); return { precio: p, rent: calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total) }; };
         return { desc0: { precio: precioVenta, rent: rentabilidad }, desc5: calc(5), desc10: calc(10), desc15: calc(15) };
-    }, [precioVenta, rentabilidad, totales.total]);
+    }, [precioVenta, rentabilidad, totales.total, costoTotalGuardado]);
 
-    const margenGanancia = useMemo(() => ajustarA900(precioVenta + (precioVenta * 0.35)), [precioVenta]);
+    const margenGanancia = useMemo(() => ajustarA900(precioVenta + (precioVenta * 0.30)), [precioVenta]);
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }
@@ -147,8 +151,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Contabilizar</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(costoTotalGuardado > 0 ? costoTotalGuardado : totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
                         </div>
                         <p className="text-xs text-yellow-700 font-bold italic">Los precios se ajustan automáticamente para terminar en 900</p>
                     </div>
@@ -164,7 +168,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-2xl border-2 border-pink-200 flex items-center justify-between">
                         <div>
                             <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Ganancia Cliente</h3>
-                            <p className="text-sm font-black text-pink-600">35%</p>
+                            <p className="text-sm font-black text-pink-600">30%</p>
                         </div>
                         <p className="text-3xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
                     </div>

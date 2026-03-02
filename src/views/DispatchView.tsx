@@ -14,12 +14,13 @@ interface DispatchViewProps {
   updateState: (updater: (prev: AppState) => AppState) => void;
   referencesMaster: Reference[];
   correrias: any[];
+  sellers: any[];
   onAddDispatch: (dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
   onUpdateDispatch: (id: string, dispatch: Partial<Dispatch>) => Promise<{ success: boolean }>;
   onDeleteDispatch: (id: string) => Promise<{ success: boolean }>;
 }
 
-const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, orders, updateState, referencesMaster, correrias, onAddDispatch, onUpdateDispatch, onDeleteDispatch }) => {
+const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, orders, updateState, referencesMaster, correrias, sellers, onAddDispatch, onUpdateDispatch, onDeleteDispatch }) => {
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
@@ -435,9 +436,10 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                        <div>
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Detalles del Cliente</p>
                           <div className="space-y-1">
+                             <p className="font-black text-blue-600 text-xs sm:text-sm mb-2">Código: {client?.id}</p>
                              <p className="font-black text-slate-800 text-base sm:text-lg">{client?.name}</p>
                              <p className="text-xs sm:text-sm font-bold text-slate-500">{client?.address} • {client?.city}</p>
-                             <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest">Vendedor: {client?.seller}</p>
+                             <p className="text-[9px] sm:text-[10px] font-black text-pink-600 uppercase tracking-widest mt-2">Vendedor: {sellers.find(s => s.id === client?.sellerId)?.name || client?.sellerId || '-'}</p>
                           </div>
                        </div>
                        <div className="md:text-right">

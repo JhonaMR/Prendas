@@ -101,11 +101,15 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
         .filter(dispatch => dispatch.items.some(item => item.reference === selectedReference))
         .slice(-1)[0];
 
+      // Obtener vendedor del cliente
+      const seller = state.sellers.find(s => s.id === client?.sellerId)?.name || '-';
+
       return {
         clientId: order.clientId,
         clientName: client?.name || 'Cliente Desconocido',
+        clientCode: client?.id || '',
         clientAddress: client?.address || '',
-        seller: state.sellers.find(s => s.id === order.sellerId)?.name || client?.seller || '-',
+        seller,
         totalSold,
         totalDispatched,
         price: salePrice,
@@ -302,7 +306,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
               <table className="w-full text-left text-xs min-w-[1000px]">
                 <thead className="bg-slate-50">
                   <tr className="border-b border-slate-100">
-                    <th className="px-4 py-4 font-black uppercase text-slate-700">Cliente / Dirección</th>
+                    <th className="px-4 py-4 font-black uppercase text-slate-700">Código / Cliente / Dirección</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-blue-800">Cant. Vendida</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-slate-700">Precio</th>
                     <th className="px-2 py-4 font-black uppercase text-center text-green-700">Und Despachadas</th>
@@ -323,7 +327,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                       <tr key={`${client.clientId}-${idx}`} className="hover:bg-slate-50/50 transition-colors">
                         <td className="px-4 py-4">
                           <p className="font-black text-slate-800 text-xs leading-tight">{client.clientName}</p>
-                          <p className="text-[10px] font-bold text-slate-500 truncate">{client.clientAddress}</p>
+                          <p className="text-[10px] font-bold text-slate-500 truncate">{client.clientAddress} • <span className="text-blue-600 font-black">{client.clientCode}</span></p>
                         </td>
                         <td className="px-2 py-4 text-center">
                           <span className={`px-2 py-1 rounded-md font-black ${client.totalSold > 0 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400'}`}>
