@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { ConceptoFicha, TipoMaterial } from '../../types/typesFichas';
+import DecimalInput from '../DecimalInput';
 
 interface SeccionConceptosProps {
     titulo: string;
@@ -182,14 +183,12 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-right focus:ring-2 focus:ring-blue-100" />
                                 </td>
                                 <td className="px-3 py-3">
-                                    <input type="text" inputMode="decimal" value={con.cant} onChange={e => {
-                                        const val = e.target.value.replace(',', '.');
-                                        const num = parseFloat(val);
-                                        if (!isNaN(num) || val === '' || val === '.') {
-                                            actualizar(i, 'cant', isNaN(num) ? 0 : num);
-                                        }
-                                    }} readOnly={readOnly}
-                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100" />
+                                    <DecimalInput
+                                        value={con.cant}
+                                        onChange={val => actualizar(i, 'cant', val)}
+                                        readOnly={readOnly}
+                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100"
+                                    />
                                 </td>
                                 <td className="px-3 py-3 text-right">
                                     <span className={`font-black ${c.text} text-base`}>$ {con.total.toLocaleString()}</span>
