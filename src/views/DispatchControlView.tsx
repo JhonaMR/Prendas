@@ -96,8 +96,10 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
         return sum + dispatchItems.reduce((s, item) => s + item.quantity, 0);
       }, 0);
 
-      // Obtener números de factura y remisión (del último despacho)
-      const lastDispatch = clientDispatches[clientDispatches.length - 1];
+      // Obtener números de factura y remisión (del último despacho que contenga esta referencia específica)
+      const lastDispatchWithReference = clientDispatches
+        .filter(dispatch => dispatch.items.some(item => item.reference === selectedReference))
+        .slice(-1)[0];
 
       return {
         clientId: order.clientId,
@@ -107,8 +109,8 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
         totalSold,
         totalDispatched,
         price: salePrice,
-        invoiceNo: lastDispatch?.invoiceNo || '-',
-        remissionNo: lastDispatch?.remissionNo || '-',
+        invoiceNo: lastDispatchWithReference?.invoiceNo || '-',
+        remissionNo: lastDispatchWithReference?.remissionNo || '-',
       };
     });
 
