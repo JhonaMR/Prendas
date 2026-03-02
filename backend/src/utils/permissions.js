@@ -46,6 +46,16 @@ function isDiseñadora(user) {
 }
 
 /**
+ * Verificar si un usuario es soporte
+ * @param {Object} user - Objeto de usuario con propiedad 'role'
+ * @returns {boolean} true si el usuario es soporte
+ */
+function isSoporte(user) {
+    if (!user || !user.role) return false;
+    return user.role.toLowerCase().trim() === 'soporte';
+}
+
+/**
  * Verificar si un usuario puede acceder a una sección
  * @param {Object} user - Objeto de usuario
  * @param {string} section - Nombre de la sección (ej: 'dashboard', 'maestras', 'users')
@@ -57,8 +67,8 @@ function canAccessSection(user, section) {
     const role = user.role.toLowerCase().trim();
     const sectionLower = section.toLowerCase().trim();
 
-    // Admin puede acceder a todo
-    if (role === 'admin') return true;
+    // Admin y Soporte pueden acceder a todo
+    if (role === 'admin' || role === 'soporte') return true;
 
     // Observer puede acceder a todo excepto user management
     if (role === 'observer') {
@@ -91,8 +101,8 @@ function canAccessSection(user, section) {
 function canEdit(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Solo admin puede editar
-    return role === 'admin';
+    // Admin y Soporte pueden editar
+    return role === 'admin' || role === 'soporte';
 }
 
 /**
@@ -115,8 +125,8 @@ function canCreate(user) {
 function canDelete(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Solo admin puede eliminar
-    return role === 'admin';
+    // Admin y Soporte pueden eliminar
+    return role === 'admin' || role === 'soporte';
 }
 
 /**
@@ -127,8 +137,8 @@ function canDelete(user) {
 function canAccessUserManagement(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Solo admin puede acceder a gestión de usuarios
-    return role === 'admin';
+    // Admin y Soporte pueden acceder a gestión de usuarios
+    return role === 'admin' || role === 'soporte';
 }
 
 /**
@@ -139,8 +149,8 @@ function canAccessUserManagement(user) {
 function canAssignRoles(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Solo admin puede asignar roles
-    return role === 'admin';
+    // Admin y Soporte pueden asignar roles
+    return role === 'admin' || role === 'soporte';
 }
 
 /**
@@ -151,8 +161,8 @@ function canAssignRoles(user) {
 function canAccessDashboard(user) {
     if (!user || !user.role) return false;
     const role = user.role.toLowerCase().trim();
-    // Admin y observer pueden acceder al dashboard
-    return role === 'admin' || role === 'observer';
+    // Admin, Soporte y observer pueden acceder al dashboard
+    return role === 'admin' || role === 'observer' || role === 'soporte';
 }
 
 /**
@@ -165,7 +175,7 @@ function getPermissionLevel(user) {
     
     const role = user.role.toLowerCase().trim();
     
-    if (role === 'admin') return 'FULL';
+    if (role === 'admin' || role === 'soporte') return 'FULL';
     if (role === 'observer') return 'READ_ONLY';
     if (role === 'general') return 'LIMITED';
     if (role === 'diseñadora') return 'LIMITED';
@@ -173,11 +183,22 @@ function getPermissionLevel(user) {
     return 'NONE';
 }
 
+/**
+ * Verificar si un usuario es el usuario del sistema "Soporte"
+ * @param {Object} user - Objeto de usuario
+ * @returns {boolean} true si es el usuario Soporte
+ */
+function isSystemSupportUser(user) {
+    if (!user) return false;
+    return user.loginCode === 'SOP' && user.role === 'soporte';
+}
+
 module.exports = {
     isObserver,
     isAdmin,
     isGeneral,
     isDiseñadora,
+    isSoporte,
     canAccessSection,
     canEdit,
     canCreate,
@@ -185,5 +206,6 @@ module.exports = {
     canAccessUserManagement,
     canAssignRoles,
     canAccessDashboard,
-    getPermissionLevel
+    getPermissionLevel,
+    isSystemSupportUser
 };

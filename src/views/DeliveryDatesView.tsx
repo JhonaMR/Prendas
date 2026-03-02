@@ -32,7 +32,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const deliveryDatesPagination = usePagination(1, 50);
   
   const hasUnsavedChanges = useRef(false);
-  const isAdmin = user?.role === UserRole.ADMIN || user?.role === 'admin';
+  const isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.SOPORTE || user?.role === 'admin' || user?.role === 'soporte';
 
   useEffect(() => {
     setInitialData(state.deliveryDates);
@@ -456,7 +456,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 
           {true && (
             <div className="flex items-center gap-2 border-l border-slate-100 pl-3">
-              {isAdmin && (
+              {(user?.role === UserRole.SOPORTE || user?.role === 'soporte') && (
                 <button
                   onClick={() => setIsImportModalOpen(true)}
                   className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all"

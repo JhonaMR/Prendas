@@ -25,7 +25,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const ordersPagination = usePagination(1, 50);
 
-  const isAdmin = currentUser?.role === UserRole.ADMIN;
+  const isAdmin = currentUser?.role === UserRole.ADMIN || currentUser?.role === UserRole.SOPORTE;
 
   const years = useMemo(() => Array.from(new Set(state.correrias.map(c => c.year))).sort(), [state.correrias]);
 

@@ -1078,7 +1078,7 @@ const App: React.FC = () => {
         );
       case 'backups':
         // Solo admin puede acceder a Backups
-        if (user.role !== UserRole.ADMIN) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
           setActiveTab('home');
           alert('No tienes permiso para acceder a esta sección');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
@@ -1153,7 +1153,7 @@ const App: React.FC = () => {
             <p className="font-bold text-sm leading-none">{user.name}</p>
             <p className="text-[10px] text-slate-400 capitalize font-bold mt-1">{user.role}</p>
           </div>
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.ADMIN ? 'bg-pink-500' : 'bg-blue-500'}`}>
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE ? 'bg-pink-500' : 'bg-blue-500'}`}>
             {user.loginCode}
           </div>
         </div>
@@ -1260,7 +1260,7 @@ const App: React.FC = () => {
               <div className="my-2 border-t border-slate-100 pt-2">
                 <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
                 <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
-                {user.role === UserRole.ADMIN && (
+                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                   <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
                 )}
               </div>

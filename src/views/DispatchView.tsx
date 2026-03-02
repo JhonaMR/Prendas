@@ -51,7 +51,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   };
 
   const handleEdit = (disp: Dispatch) => {
-    if (user.role !== UserRole.ADMIN) {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
       alert("Solo administradores pueden editar despachos.");
       return;
     }
@@ -395,7 +395,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                       <button onClick={(e) => { e.stopPropagation(); handleEdit(d); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                         <Icons.Edit />
                       </button>
-                      {user.role === UserRole.ADMIN && (
+                      {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                         <button onClick={async (e) => { 
                           e.stopPropagation(); 
                           if (confirm("¿Seguro que desea eliminar este despacho?")) {

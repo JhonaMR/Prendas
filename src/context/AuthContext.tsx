@@ -35,7 +35,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     const basePermissions = ['view:dashboard', 'view:profile'];
     
-    if (user.role === UserRole.ADMIN) {
+    if (user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) {
       return [
         ...basePermissions,
         'manage:users',

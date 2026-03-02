@@ -89,7 +89,7 @@ const verifyAdmin = (req, res, next) => {
     const userRole = (req.user.role || '').trim().toLowerCase();
     console.log('🔍 Verificando admin - Usuario:', req.user.loginCode, 'Rol:', userRole, 'Rol original:', req.user.role);
 
-    if (userRole !== 'admin') {
+    if (userRole !== 'admin' && userRole !== 'soporte') {
         return res.status(403).json({
             success: false,
             message: 'No tienes permisos de administrador para realizar esta acción'
@@ -114,7 +114,7 @@ const verifyAdminOrObserver = (req, res, next) => {
     const userRole = (req.user.role || '').trim().toLowerCase();
     console.log('🔍 Verificando admin o observer - Usuario:', req.user.loginCode, 'Rol:', userRole);
 
-    if (userRole !== 'admin' && userRole !== 'observer') {
+    if (userRole !== 'admin' && userRole !== 'observer' && userRole !== 'soporte') {
         return res.status(403).json({
             success: false,
             message: 'No tienes permisos para acceder a esta sección'

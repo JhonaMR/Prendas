@@ -64,7 +64,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
   };
 
   const handleEdit = (reception: any) => {
-    if (user.role !== UserRole.ADMIN) {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
       alert("Solo administradores pueden editar devoluciones.");
       return;
     }
@@ -78,7 +78,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
   };
 
   const handleDelete = async (id: string) => {
-    if (user.role !== UserRole.ADMIN) {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
       alert("Solo administradores pueden eliminar devoluciones.");
       return;
     }
@@ -420,7 +420,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                       <button onClick={(e) => { e.stopPropagation(); handleEdit(reception); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                         <Icons.Edit />
                       </button>
-                      {user.role === UserRole.ADMIN && (
+                      {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                         <button onClick={(e) => { e.stopPropagation(); handleDelete(reception.id); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                           <Icons.Delete />
                         </button>

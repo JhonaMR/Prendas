@@ -29,7 +29,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
   const hasUnsavedChanges = useRef(false);
 
   // Verificar si el usuario es admin
-  const isAdmin = user?.role === UserRole.ADMIN || user?.role === 'admin';
+  const isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.SOPORTE || user?.role === 'admin' || user?.role === 'soporte';
 // Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
 useEffect(() => {
   const currentCorreriaData = state.productionTracking.filter(

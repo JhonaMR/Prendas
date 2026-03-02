@@ -65,7 +65,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   };
 
   const handleEdit = (lot: BatchReception) => {
-    if (user.role !== UserRole.ADMIN) {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
       alert("Acceso administrativo requerido para editar.");
       return;
     }

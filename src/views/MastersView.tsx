@@ -133,7 +133,7 @@ const MastersView: React.FC<MastersViewProps> = ({
     usersPagination.pagination.totalPages = Math.ceil(state.users.length / usersPagination.pagination.limit);
   }, [state.users.length, usersPagination.pagination.limit]);
 
-  const isAdmin = user.role === UserRole.ADMIN;
+  const isAdmin = user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
 
   // Forms Shared state
   const [id, setId] = useState('');
@@ -1234,10 +1234,15 @@ const MastersView: React.FC<MastersViewProps> = ({
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {state.users.slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => (
-               <div key={u.id} className="bg-white p-8 rounded-[40px] border border-slate-100 flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+             {state.users.slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => {
+               const isSoporteUser = u.loginCode === 'SOP' && u.role === UserRole.SOPORTE;
+               return (
+               <div key={u.id} className={`bg-white p-8 rounded-[40px] border ${isSoporteUser ? 'border-amber-200 bg-amber-50' : 'border-slate-100'} flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden`}>
+                  {isSoporteUser && (
+                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded-lg text-[8px] font-black uppercase">Sistema</div>
+                  )}
                   <RoleBadge role={u.role} />
-                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
+                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.SOPORTE ? 'bg-gradient-to-br from-amber-500 to-amber-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}
                   </div>
                   <div>
@@ -1254,11 +1259,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                           setPin(u.pin); 
                           setUserRole(u.role); 
                         }} 
-                        className="flex-1 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-colors"
+                        disabled={isSoporteUser}
+                        className="flex-1 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         Editar
                       </button>
-                      {u.id !== user.id && (
+                      {u.id !== user.id && !isSoporteUser && (
                         <button 
                           onClick={() => handleDelete('user', u.id)} 
                           className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors"
@@ -1269,7 +1275,8 @@ const MastersView: React.FC<MastersViewProps> = ({
                     </div>
                   )}
                </div>
-             ))}
+             );
+             })}
           </div>
           <PaginationComponent 
             currentPage={usersPagination.pagination.page}

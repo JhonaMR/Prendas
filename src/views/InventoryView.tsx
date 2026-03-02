@@ -28,7 +28,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   const pagination = usePagination(1, 20);
 
   // Verificar si el usuario es Admin u Observer
-  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === 'admin' || user.role === UserRole.OBSERVER || user.role === 'observer');
+  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === 'admin' || user.role === 'soporte' || user.role === UserRole.OBSERVER || user.role === 'observer');
 
   // Create a map of reference ID to description for quick lookup
   const refDescriptionMap = useMemo(() => {

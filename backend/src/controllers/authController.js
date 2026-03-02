@@ -173,6 +173,15 @@ const register = async (req, res) => {
             });
         }
 
+        // ===== PROTEGER USUARIO SOPORTE =====
+        // No permitir crear otro usuario con login code "SOP"
+        if (loginCode.toUpperCase() === 'SOP') {
+            return res.status(409).json({
+                success: false,
+                message: 'El código "SOP" está reservado para el usuario del sistema'
+            });
+        }
+
         // ===== VERIFICAR SI YA EXISTE =====
 
         const existingResult = await query(`
@@ -328,8 +337,8 @@ const changePin = async (req, res) => {
  */
 const listUsers = async (req, res) => {
     try {
-        // Verificar que el usuario sea admin (esto se hace en el middleware auth)
-        if (req.user.role !== 'admin') {
+        // Verificar que el usuario sea admin o soporte (esto se hace en el middleware auth)
+        if (req.user.role !== 'admin' && req.user.role !== 'soporte') {
             return res.status(403).json({
                 success: false,
                 message: 'No tienes permisos para realizar esta acción'
@@ -395,11 +404,25 @@ const updateUser = async (req, res) => {
         // Normalizar rol a minúsculas
         const normalizedRole = role.toLowerCase();
 
-        if (!['admin', 'observer', 'general', 'diseñadora'].includes(normalizedRole)) {
+        if (!['admin', 'observer', 'general', 'diseñadora', 'soporte'].includes(normalizedRole)) {
             return res.status(400).json({
                 success: false,
-                message: 'El rol debe ser "admin", "observer", "general" o "diseñadora"'
+                message: 'El rol debe ser "admin", "observer", "general", "diseñadora" o "soporte"'
             });
+        }
+
+        // ===== PROTEGER USUARIO SOPORTE =====
+        // Verificar si el usuario a actualizar es el usuario Soporte
+        const userToUpdate = await query('SELECT login_code, role FROM users WHERE id = $1', [id]);
+        
+        if (userToUpdate.rows.length > 0) {
+            const user = userToUpdate.rows[0];
+            if (user.login_code === 'SOP' && user.role === 'soporte') {
+                return res.status(403).json({
+                    success: false,
+                    message: 'No se puede editar el usuario del sistema "Soporte"'
+                });
+            }
         }
 
         // ===== ACTUALIZAR USUARIO =====
@@ -463,6 +486,15 @@ const deleteUser = async (req, res) => {
 
         const user = userResult.rows[0];
         logger.info('📊 Usuario encontrado:', `${user.name} (${user.login_code})`);
+
+        // ===== PROTEGER USUARIO SOPORTE =====
+        if (user.login_code === 'SOP' && user.role === 'soporte') {
+            logger.info('❌ Intento de eliminar usuario del sistema "Soporte"');
+            return res.status(403).json({
+                success: false,
+                message: 'No se puede eliminar el usuario del sistema "Soporte"'
+            });
+        }
 
         // Hard delete: eliminar completamente
         logger.info('🔥 Ejecutando DELETE FROM users WHERE id =', id);

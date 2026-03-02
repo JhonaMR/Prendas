@@ -16,8 +16,8 @@ interface HomeViewProps {
 
 const HomeView: React.FC<HomeViewProps> = ({ user, onNavigate, onDirectNavigate, state, correrias, correriasLoading, correriasError }) => {
   // Render appropriate layout based on user role
-  // Admin and Observer can see the admin dashboard
-  if (user.role === UserRole.ADMIN || user.role === UserRole.OBSERVER) {
+  // Admin, Soporte and Observer can see the admin dashboard
+  if (user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === UserRole.OBSERVER) {
     return <AdminLayout user={user} onNavigate={onNavigate} onDirectNavigate={onDirectNavigate} state={state || {}} correrias={correrias || []} correriasLoading={correriasLoading || false} correriasError={correriasError} />;
   }
 

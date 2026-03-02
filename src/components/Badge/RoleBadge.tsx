@@ -27,6 +27,11 @@ const roleConfig = {
     backgroundColor: 'bg-green-400',
     label: 'Diseñadora',
     show: true
+  },
+  [UserRole.SOPORTE]: {
+    backgroundColor: 'bg-amber-500',
+    label: 'Soporte',
+    show: true
   }
 };
 

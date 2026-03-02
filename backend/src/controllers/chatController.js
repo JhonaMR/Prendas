@@ -256,8 +256,8 @@ const getUnreadMessages = async (req, res) => {
  */
 const deleteOldMessages = async (req, res) => {
   try {
-    // Solo admin puede limpiar mensajes
-    if (req.user.role !== 'admin') {
+    // Solo admin o soporte puede limpiar mensajes
+    if (req.user.role !== 'admin' && req.user.role !== 'soporte') {
       return res.status(403).json({
         success: false,
         message: 'No tienes permiso para limpiar mensajes'

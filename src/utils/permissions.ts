@@ -11,7 +11,7 @@ import { User, UserRole } from '../types';
  */
 export function canEdit(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
 }
 
 /**
@@ -19,7 +19,7 @@ export function canEdit(user: User | null): boolean {
  */
 export function canCreate(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
 }
 
 /**
@@ -27,7 +27,7 @@ export function canCreate(user: User | null): boolean {
  */
 export function canDelete(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
 }
 
 /**
@@ -43,7 +43,7 @@ export function isObserver(user: User | null): boolean {
  */
 export function isAdmin(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
 }
 
 /**
@@ -63,12 +63,20 @@ export function isDiseñadora(user: User | null): boolean {
 }
 
 /**
+ * Verificar si un usuario es soporte
+ */
+export function isSoporte(user: User | null): boolean {
+  if (!user) return false;
+  return user.role === UserRole.SOPORTE;
+}
+
+/**
  * Obtener el nivel de permiso
  */
 export function getPermissionLevel(user: User | null): 'FULL' | 'READ_ONLY' | 'LIMITED' | 'NONE' {
   if (!user) return 'NONE';
   
-  if (user.role === UserRole.ADMIN) return 'FULL';
+  if (user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) return 'FULL';
   if (user.role === UserRole.OBSERVER) return 'READ_ONLY';
   if (user.role === UserRole.GENERAL) return 'LIMITED';
   if (user.role === UserRole.DISEÑADORA) return 'LIMITED';

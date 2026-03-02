@@ -517,7 +517,7 @@ const deleteFichaCosto = async (req, res) => {
         const { referencia } = req.params;
         const user = req.user;
 
-        if (user.role !== 'admin') {
+        if (user.role !== 'admin' && user.role !== 'soporte') {
             return res.status(403).json({ success: false, message: 'Solo administradores pueden eliminar fichas' });
         }
 

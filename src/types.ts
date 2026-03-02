@@ -3,7 +3,8 @@ export enum UserRole {
   GENERAL = 'general',
   OBSERVER = 'observer',
   ADMIN = 'admin',
-  DISEÑADORA = 'diseñadora'
+  DISEÑADORA = 'diseñadora',
+  SOPORTE = 'soporte'
 }
 
 import type { Disenadora, FichaDiseno, FichaCosto, Maleta } from './types/typesFichas';

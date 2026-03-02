@@ -32,7 +32,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
   const [includeZeroStock, setIncludeZeroStock] = useState(false);
   
   // Verificar si el usuario es Admin u Observer
-  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === 'admin' || user.role === UserRole.OBSERVER || user.role === 'observer');
+  const canGenerateReports = user && (user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === 'admin' || user.role === 'soporte' || user.role === UserRole.OBSERVER || user.role === 'observer');
   
   // Filter states
   const [insumoFilter, setInsumoFilter] = useState('');
