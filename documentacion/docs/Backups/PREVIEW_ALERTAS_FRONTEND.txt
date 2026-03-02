@@ -1,0 +1,231 @@
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                    PREVIEW: ALERTAS EN EL FRONTEND                            ║
+║                     Gestión de Backups - Backup Manual                        ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+
+ESCENARIO 1: BACKUP EXITOSO ✅
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ✅ Backup de BD Exitoso                                              [✕]  │
+│  Backup creado correctamente: inventory-backup-daily-2026-03-02-10-07-30.sql│
+│                                                                             │
+│  Detalles:                                                                  │
+│    • filename: inventory-backup-daily-2026-03-02-10-07-30.sql              │
+│    • sizeInMB: 0.23                                                         │
+│    • tableCount: 29                                                         │
+│    • type: daily                                                            │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ✅ Backup de Imágenes Exitoso                                        [✕]  │
+│  15 imágenes respaldadas correctamente                                      │
+│                                                                             │
+│  Detalles:                                                                  │
+│    • filename: images-backup-2026-03-02-10-07-30.tar.gz                    │
+│    • sizeInMB: 2.45                                                         │
+│    • imageCount: 15                                                         │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+ESCENARIO 2: BACKUP CON ADVERTENCIA ⚠️
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ⚠️ Backup Creado pero con Problemas                                  [✕]  │
+│  El backup se creó pero tiene problemas: Faltan tablas críticas             │
+│                                                                             │
+│  Detalles:                                                                  │
+│    • filename: inventory-backup-daily-2026-03-02-10-07-30.sql              │
+│    • error: Faltan tablas críticas: return_receptions, return_reception... │
+│    • sizeInMB: 0.23                                                         │
+│                                                                             │
+│  ⚠️ Contacta al administrador para resolver este problema                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+ESCENARIO 3: ERROR EN BACKUP ❌
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ❌ Error en Backup Manual                                            [✕]  │
+│  No se pudo crear el backup de la base de datos                             │
+│                                                                             │
+│  Detalles:                                                                  │
+│    • error: DB_PASSWORD no está configurada en variables de entorno         │
+│                                                                             │
+│  ❌ Contacta al administrador inmediatamente                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+ESCENARIO 4: INFORMACIÓN ℹ️
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│  ℹ️ Sin Imágenes                                                      [✕]  │
+│  No hay imágenes para respaldar                                             │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+COMPONENTES VISUALES
+═══════════════════════════════════════════════════════════════════════════════
+
+Colores por tipo:
+  🟢 SUCCESS (Verde)   - Fondo: #dcfce7, Texto: #166534
+  🟡 WARNING (Amarillo) - Fondo: #fef3c7, Texto: #92400e
+  🔴 ERROR (Rojo)      - Fondo: #fee2e2, Texto: #991b1b
+  🔵 INFO (Azul)       - Fondo: #dbeafe, Texto: #1e40af
+
+Estructura:
+  ┌─ Título con emoji
+  ├─ Mensaje descriptivo
+  ├─ Detalles expandibles (clave-valor)
+  └─ Botón cerrar [✕]
+
+Interactividad:
+  • Click en [✕] cierra la alerta
+  • Detalles se muestran en formato legible
+  • Responsive en móvil y desktop
+
+
+FLUJO DE USUARIO
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Usuario hace click en "💾 Backup Manual"
+   ↓
+2. Botón muestra "⏳ Ejecutando..."
+   ↓
+3. Se envía POST /api/backups/manual
+   ↓
+4. Backend crea backup y valida
+   ↓
+5. Respuesta con alertas
+   ↓
+6. Frontend muestra alertas visuales
+   ↓
+7. Usuario ve resultado (✅ o ⚠️ o ❌)
+   ↓
+8. Usuario puede cerrar alertas o hacer otra acción
+
+
+ESTADÍSTICAS EN PANEL
+═══════════════════════════════════════════════════════════════════════════════
+
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ Total de Backups │  │ Almacenamiento   │  │ Diarios          │
+│       7          │  │    1.45 MB       │  │  7 (1.45 MB)     │
+└──────────────────┘  └──────────────────┘  └──────────────────┘
+
+┌──────────────────┐  ┌──────────────────┐
+│ Semanales        │  │ Mensuales        │
+│  0 (0.00 MB)     │  │  0 (0.00 MB)     │
+└──────────────────┘  └──────────────────┘
+
+
+TABLA DE BACKUPS
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────┬──────────────────────────────┬──────────┬──────────────┐
+│ Tipo    │ Fecha                        │ Tamaño   │ Acciones     │
+├─────────┼──────────────────────────────┼──────────┼──────────────┤
+│ Diario  │ 02/03/2026 10:07:30          │ 0.23 MB  │ ↩️ Restaurar │
+│ Diario  │ 02/03/2026 10:03:48          │ 0.22 MB  │ ↩️ Restaurar │
+│ Diario  │ 01/03/2026 22:15:12          │ 0.21 MB  │ ↩️ Restaurar │
+│ Diario  │ 28/02/2026 22:10:45          │ 0.20 MB  │ ↩️ Restaurar │
+│ Diario  │ 27/02/2026 22:08:30          │ 0.19 MB  │ ↩️ Restaurar │
+│ Diario  │ 26/02/2026 22:05:15          │ 0.18 MB  │ ↩️ Restaurar │
+│ Diario  │ 25/02/2026 22:02:00          │ 0.17 MB  │ ↩️ Restaurar │
+└─────────┴──────────────────────────────┴──────────┴──────────────┘
+
+
+MODAL DE CONFIRMACIÓN (Restaurar)
+═══════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  ⚠️ Confirmar Restauración                                 │
+│                                                             │
+│  ¿Estás seguro de que deseas restaurar el backup de        │
+│  02/03/2026 10:07:30?                                      │
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │ ⚠️ Se perderán todos los cambios posteriores a      │   │
+│  │    esta fecha. Se creará automáticamente un backup  │   │
+│  │    de seguridad del estado actual.                  │   │
+│  └─────────────────────────────────────────────────────┘   │
+│                                                             │
+│  [Cancelar]                    [✅ Restaurar]              │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+
+ARCHIVO DE ALERTAS (Backend)
+═══════════════════════════════════════════════════════════════════════════════
+
+Ubicación: Prendas/backend/logs/backup-alerts/backup-alerts-2026-03-02.log
+
+Contenido:
+[2026-03-02T15:04:12.143Z] [MISSING_TABLES] Backup falta tablas críticas
+[2026-03-02T15:07:30.704Z] [SUCCESS] Backup validado correctamente
+[2026-03-02T15:10:45.321Z] [CORRUPTION_DETECTED] Archivo contiene caracteres corruptos
+
+
+RESPUESTA API (JSON)
+═══════════════════════════════════════════════════════════════════════════════
+
+{
+  "success": true,
+  "message": "Backup manual completado",
+  "data": {
+    "database": {
+      "filename": "inventory-backup-daily-2026-03-02-10-07-30.sql",
+      "type": "daily",
+      "sizeInMB": "0.23",
+      "validation": {
+        "valid": true,
+        "tableCount": 29,
+        "sizeInMB": "0.23"
+      }
+    },
+    "images": {
+      "success": true,
+      "filename": "images-backup-2026-03-02-10-07-30.tar.gz",
+      "sizeInMB": "2.45"
+    }
+  },
+  "alerts": [
+    {
+      "type": "SUCCESS",
+      "title": "✅ Backup de BD Exitoso",
+      "message": "Backup creado correctamente",
+      "details": {
+        "filename": "inventory-backup-daily-2026-03-02-10-07-30.sql",
+        "sizeInMB": "0.23",
+        "tableCount": 29,
+        "type": "daily"
+      }
+    },
+    {
+      "type": "SUCCESS",
+      "title": "✅ Backup de Imágenes Exitoso",
+      "message": "15 imágenes respaldadas correctamente",
+      "details": {
+        "filename": "images-backup-2026-03-02-10-07-30.tar.gz",
+        "sizeInMB": "2.45",
+        "imageCount": 15
+      }
+    }
+  ]
+}
+
