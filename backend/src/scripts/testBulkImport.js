@@ -29,7 +29,7 @@ async function testBulkImport() {
     // 2. Verificar tabla de referencias
     console.log('\n2️⃣ Verificando tabla de referencias...');
     const referencesResult = await pool.query(`
-      SELECT COUNT(*) as count FROM "references"
+      SELECT COUNT(*) as count FROM product_references
     `);
     console.log(`   Total de referencias: ${referencesResult.rows[0].count}`);
 
@@ -74,8 +74,8 @@ async function testBulkImport() {
 
     // Referencias sin correrias
     const orphanReferencesResult = await pool.query(`
-      SELECT COUNT(*) as count FROM "references" r
-      WHERE NOT EXISTS (SELECT 1 FROM reference_correrias rc WHERE rc.reference_id = r.id)
+      SELECT COUNT(*) as count FROM product_references r
+      WHERE NOT EXISTS (SELECT 1 FROM correria_catalog rc WHERE rc.reference_id = r.id)
     `);
     console.log(`   Referencias sin correrias: ${orphanReferencesResult.rows[0].count}`);
 

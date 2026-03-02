@@ -132,14 +132,14 @@ async function bulkImportReferences(records) {
       try {
         // Verificar si la referencia ya existe
         const existingRef = await query(
-          'SELECT id FROM references WHERE id = $1',
+          'SELECT id FROM product_references WHERE id = $1',
           [record.id]
         );
 
         if (existingRef.rows.length > 0) {
           // Actualizar referencia existente
           await query(
-            `UPDATE references 
+            `UPDATE product_references 
              SET description = $1, price = $2, designer = $3, 
                  cloth1 = $4, avg_cloth1 = $5, cloth2 = $6, avg_cloth2 = $7
              WHERE id = $8`,
@@ -149,7 +149,7 @@ async function bulkImportReferences(records) {
         } else {
           // Crear nueva referencia
           await query(
-            `INSERT INTO references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2)
+            `INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
             [record.id, record.description, record.price, record.designer,
              record.cloth1, record.avgCloth1, record.cloth2, record.avgCloth2]
@@ -159,14 +159,14 @@ async function bulkImportReferences(records) {
         // Actualizar relación con correrias
         // Primero eliminar relaciones existentes
         await query(
-          'DELETE FROM reference_correrias WHERE reference_id = $1',
+          'DELETE FROM correria_catalog WHERE reference_id = $1',
           [record.id]
         );
 
         // Luego insertar nuevas relaciones
         for (const correriaId of record.correrias) {
           await query(
-            'INSERT INTO reference_correrias (reference_id, correria_id) VALUES ($1, $2)',
+            'INSERT INTO correria_catalog (reference_id, correria_id) VALUES ($1, $2)',
             [record.id, correriaId]
           );
         }

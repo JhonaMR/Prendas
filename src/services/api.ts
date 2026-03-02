@@ -1157,6 +1157,39 @@ class ApiService {
     }
   }
 
+  async updateReturnReception(id: string, returnReception: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/return-receptions/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(returnReception)
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al actualizar devolución'
+      };
+    }
+  }
+
+  async deleteReturnReception(id: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/return-receptions/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar devolución'
+      };
+    }
+  }
+
   // ==================== PEDIDOS ====================
 
   async getOrders(): Promise<Order[]> {

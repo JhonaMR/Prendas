@@ -760,6 +760,50 @@ const App: React.FC = () => {
     }
   };
 
+  const updateReturnReception = async (id: string, returnReception: any) => {
+    try {
+      const response = await api.updateReturnReception(id, returnReception);
+
+      if (response.success && response.data) {
+        setState(prev => ({
+          ...prev,
+          returnReceptions: prev.returnReceptions?.map(r => r.id === id ? response.data : r) || []
+        }));
+        console.log('✅ Devolución actualizada');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al actualizar devolución');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error actualizando devolución:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
+  const deleteReturnReception = async (id: string) => {
+    try {
+      const response = await api.deleteReturnReception(id);
+
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          returnReceptions: prev.returnReceptions?.filter(r => r.id !== id) || []
+        }));
+        console.log('✅ Devolución eliminada');
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar devolución');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando devolución:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
   /**
    * DESPACHOS
    */
@@ -940,6 +984,8 @@ const App: React.FC = () => {
             clientsMaster={state.clients} 
             referencesMaster={state.references}
             onAddReturnReception={addReturnReception}
+            onUpdateReturnReception={updateReturnReception}
+            onDeleteReturnReception={deleteReturnReception}
           />
         );
       case 'dispatch':

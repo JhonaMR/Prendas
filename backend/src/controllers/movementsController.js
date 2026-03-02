@@ -132,6 +132,79 @@ const createReturnReception = async (req, res) => {
     }
 };
 
+const updateReturnReception = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { clientId, creditNoteNumber, items, totalValue, receivedBy } = req.body;
+
+        if (!clientId || !items || !items.length || !receivedBy) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cliente, items y recibido por son requeridos'
+            });
+        }
+
+        const result = await ReturnService.updateReturnReception(id, {
+            clientId,
+            creditNoteNumber: creditNoteNumber || null,
+            totalValue: totalValue || 0,
+            receivedBy
+        }, items);
+
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Devolución no encontrada'
+            });
+        }
+
+        // Get the updated reception with items
+        const updatedReception = await ReturnService.getReturnReceptionById(id);
+
+        return res.json({
+            success: true,
+            message: 'Devolución actualizada exitosamente',
+            data: updatedReception
+        });
+
+    } catch (error) {
+        logger.error('❌ Error al actualizar devolución:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al actualizar devolución',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+const deleteReturnReception = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await ReturnService.deleteReturnReception(id);
+
+        if (!result) {
+            return res.status(404).json({
+                success: false,
+                message: 'Devolución no encontrada'
+            });
+        }
+
+        return res.json({
+            success: true,
+            message: 'Devolución eliminada exitosamente'
+        });
+
+    } catch (error) {
+        logger.error('❌ Error al eliminar devolución:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al eliminar devolución',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
 // ==================== RECEPCIONES ====================
 
 /**
@@ -957,6 +1030,8 @@ module.exports = {
     // Devoluciones
     getReturnReceptions,
     createReturnReception,
+    updateReturnReception,
+    deleteReturnReception,
     
     // Recepciones
     getReceptions,

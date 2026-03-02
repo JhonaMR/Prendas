@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS public.return_receptions (
 -- 11. TABLA: return_reception_items
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.return_reception_items (
-    id character varying(255) NOT NULL,
+    id integer NOT NULL,
     return_reception_id character varying(255) NOT NULL,
     reference character varying(255) NOT NULL,
     quantity integer NOT NULL,
@@ -163,6 +163,17 @@ CREATE TABLE IF NOT EXISTS public.return_reception_items (
     CONSTRAINT return_reception_items_pkey PRIMARY KEY (id),
     CONSTRAINT return_reception_items_return_reception_id_fkey FOREIGN KEY (return_reception_id) REFERENCES public.return_receptions(id) ON DELETE CASCADE
 );
+
+-- Create sequence for return_reception_items.id
+CREATE SEQUENCE IF NOT EXISTS public.return_reception_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_reception_items.id;
+ALTER TABLE public.return_reception_items ALTER COLUMN id SET DEFAULT nextval('public.return_reception_items_id_seq'::regclass);
 
 -- ============================================================================
 -- 12. TABLA: dispatches

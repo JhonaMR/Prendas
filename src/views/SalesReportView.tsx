@@ -677,7 +677,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
             onClick={() => setShowReportModal(true)}
             className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-6 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
           >
-            Generar Informe
+            ✓ Generar Informe
           </button>
 
           {/* Selector de correría */}

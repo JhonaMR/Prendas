@@ -22,6 +22,8 @@ const { getDeliveryDates, saveDeliveryDatesBatchHandler, deleteDeliveryDateHandl
 const { verifyToken, verifyAdmin, verifyAdminOrObserver } = require('../middleware/auth');
 const { preventNonAdminEdit } = require('../middleware/editRestriction');
 const { allowDispatchCreate, allowDispatchEditDelete } = require('../middleware/dispatchRestriction');
+const { allowReturnCreate, allowReturnEditDelete } = require('../middleware/returnRestriction');
+const { allowReceptionCreate, allowComprasCreate, allowOrdersCreate, allowDeliveryDatesCreate, allowAdminOnly } = require('../middleware/generalUserRestriction');
 
 // ==================== RUTAS PÚBLICAS (No requieren autenticación) ====================
 
@@ -145,10 +147,10 @@ router.delete('/correrias/:id', verifyToken, preventNonAdminEdit, correriasContr
 const comprasController = require('../controllers/entities/compras/comprasController');
 
 router.get('/compras', verifyToken, comprasController.list);
-router.post('/compras', verifyToken, preventNonAdminEdit, comprasController.create);
+router.post('/compras', verifyToken, allowComprasCreate, comprasController.create);
 router.get('/compras/:id', verifyToken, comprasController.read);
-router.put('/compras/:id', verifyToken, preventNonAdminEdit, comprasController.update);
-router.delete('/compras/:id', verifyToken, preventNonAdminEdit, comprasController.delete);
+router.put('/compras/:id', verifyToken, allowAdminOnly, comprasController.update);
+router.delete('/compras/:id', verifyToken, allowAdminOnly, comprasController.delete);
 
 // ==================== INVENTORY MOVEMENTS ====================
 
@@ -163,13 +165,15 @@ router.delete('/inventory-movements/:id', verifyToken, preventNonAdminEdit, inve
 // ==================== RECEPCIONES ====================
 
 router.get('/receptions', verifyToken, movementsController.getReceptions);
-router.post('/receptions', verifyToken, preventNonAdminEdit, movementsController.createReception);
-router.put('/receptions/:id', verifyToken, preventNonAdminEdit, movementsController.updateReception);
+router.post('/receptions', verifyToken, allowReceptionCreate, movementsController.createReception);
+router.put('/receptions/:id', verifyToken, allowAdminOnly, movementsController.updateReception);
 
 // ==================== DEVOLUCIONES ====================
 
 router.get('/return-receptions', verifyToken, movementsController.getReturnReceptions);
-router.post('/return-receptions', verifyToken, preventNonAdminEdit, movementsController.createReturnReception);
+router.post('/return-receptions', verifyToken, allowReturnCreate, movementsController.createReturnReception);
+router.put('/return-receptions/:id', verifyToken, movementsController.updateReturnReception);
+router.delete('/return-receptions/:id', verifyToken, movementsController.deleteReturnReception);
 
 // ==================== DESPACHOS ====================
 
@@ -181,9 +185,9 @@ router.delete('/dispatches/:id', verifyToken, allowDispatchEditDelete, movements
 // ==================== PEDIDOS ====================
 
 router.get('/orders', verifyToken, movementsController.getOrders);
-router.post('/orders', verifyToken, preventNonAdminEdit, movementsController.createOrder);
-router.put('/orders/:id', verifyToken, preventNonAdminEdit, movementsController.updateOrder);
-router.delete('/orders/:id', verifyToken, preventNonAdminEdit, movementsController.deleteOrder);
+router.post('/orders', verifyToken, allowOrdersCreate, movementsController.createOrder);
+router.put('/orders/:id', verifyToken, allowAdminOnly, movementsController.updateOrder);
+router.delete('/orders/:id', verifyToken, allowAdminOnly, movementsController.deleteOrder);
 
 // ==================== TRACKING DE PRODUCCIÓN ====================
 
@@ -194,8 +198,8 @@ router.post('/production/batch', verifyToken, preventNonAdminEdit, movementsCont
 // ==================== FECHAS DE ENTREGA ====================
 
 router.get('/delivery-dates', verifyToken, getDeliveryDates);
-router.post('/delivery-dates/batch', verifyToken, preventNonAdminEdit, saveDeliveryDatesBatchHandler);
-router.delete('/delivery-dates/:id', verifyToken, preventNonAdminEdit, deleteDeliveryDateHandler);
+router.post('/delivery-dates/batch', verifyToken, allowDeliveryDatesCreate, saveDeliveryDatesBatchHandler);
+router.delete('/delivery-dates/:id', verifyToken, allowAdminOnly, deleteDeliveryDateHandler);
 
 // ==================== IMPORTACIÓN MASIVA ====================
 

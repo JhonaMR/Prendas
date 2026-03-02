@@ -21,7 +21,8 @@ interface Props {
 const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const referencia = params?.referencia || '';
     const isAdmin = user?.role === 'admin';
-    const canEdit = isAdmin;
+    const isGeneral = user?.role === 'general';
+    const canEdit = isAdmin || isGeneral;
 
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);

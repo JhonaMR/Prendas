@@ -23,7 +23,8 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const isNueva = params?.nueva || false;
 
     const isDisenadora = user?.role === 'diseñadora';
-    const canEdit = isDisenadora || user?.role === 'admin' || user?.role === 'general';
+    const isGeneral = user?.role === 'general';
+    const canEdit = (isDisenadora || user?.role === 'admin') && !isGeneral;
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
