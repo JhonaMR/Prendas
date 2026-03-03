@@ -1,0 +1,93 @@
+# Configuración de ejemplo para Nginx como reverse proxy
+# Copia esto a /etc/nginx/sites-available/prendas (en Linux)
+# Luego: sudo ln -s /etc/nginx/sites-available/prendas /etc/nginx/sites-enabled/
+# Y recarga: sudo systemctl reload nginx
+
+upstream backend {
+    server 127.0.0.1:3000;
+}
+
+upstream frontend {
+    server 127.0.0.1:3001;
+}
+
+# Redirigir HTTP a HTTPS
+server {
+    listen 80;
+    server_name tu-dominio.com www.tu-dominio.com;
+    return 301 https://$server_name$request_uri;
+}
+
+# HTTPS
+server {
+    listen 443 ssl http2;
+    server_name tu-dominio.com www.tu-dominio.com;
+
+    # Certificados SSL (usar Let's Encrypt)
+    ssl_certificate /etc/letsencrypt/live/tu-dominio.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/tu-dominio.com/privkey.pem;
+
+    # Configuración SSL segura
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    # Compresión
+    gzip on;
+    gzip_types text/plain text/css text/javascript application/json application/javascript;
+    gzip_min_length 1000;
+
+    # Límite de tamaño de upload
+    client_max_body_size 100M;
+
+    # Frontend
+    location / {
+        proxy_pass http://frontend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Backend API
+    location /api {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Timeout para operaciones largas
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+
+    # WebSocket para Socket.io
+    location /socket.io {
+        proxy_pass http://backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Archivos estáticos con caché
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        proxy_pass http://frontend;
+        proxy_cache_valid 200 30d;
+        proxy_cache_bypass $http_pragma $http_authorization;
+        add_header Cache-Control "public, max-age=2592000";
+    }
+}

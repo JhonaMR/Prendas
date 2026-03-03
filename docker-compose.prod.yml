@@ -1,0 +1,130 @@
+version: '3.8'
+
+# Configuración para PRODUCCIÓN
+# Uso: docker-compose -f docker-compose.prod.yml up -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: prendas-postgres-prod
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "127.0.0.1:5432:5432"  # Solo acceso local
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+      - ./backend/backups:/backups:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - prendas-network-prod
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: prendas-backend-prod
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOST: 0.0.0.0
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_POOL_MIN: ${DB_POOL_MIN:-10}
+      DB_POOL_MAX: ${DB_POOL_MAX:-30}
+      DB_IDLE_TIMEOUT: ${DB_IDLE_TIMEOUT:-30000}
+      DB_CONNECTION_TIMEOUT: ${DB_CONNECTION_TIMEOUT:-5000}
+      DB_SSL: ${DB_SSL:-true}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+      CORS_ORIGIN: ${CORS_ORIGIN}
+      LOG_LEVEL: ${LOG_LEVEL:-warn}
+    ports:
+      - "127.0.0.1:3000:3000"  # Solo acceso local (usar reverse proxy)
+    volumes:
+      - ./backend/logs:/app/backend/logs
+      - ./backend/backups:/app/backend/backups
+      - ./backend/database:/app/backend/database
+      - ./backend/.env:/app/backend/.env:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - prendas-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: prendas-frontend-prod
+    environment:
+      NODE_ENV: production
+    ports:
+      - "127.0.0.1:3001:3000"  # Solo acceso local (usar reverse proxy)
+    depends_on:
+      - backend
+    networks:
+      - prendas-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+volumes:
+  postgres_data_prod:
+    driver: local
+
+networks:
+  prendas-network-prod:
+    driver: bridge

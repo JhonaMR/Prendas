@@ -1,0 +1,54 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+.npm
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist
+build
+.next
+out
+
+# Logs
+logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Backups (no incluir en imagen, usar volúmenes)
+backups
+database
+
+# Documentación
+*.md
+docs
+
+# Tests
+coverage
+.jest
+
+# Misc
+.kiro
+.vscode
+.git

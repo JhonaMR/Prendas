@@ -1,0 +1,91 @@
+version: '3.8'
+
+# Configuración para DESARROLLO con hot-reload
+# Uso: docker-compose -f docker-compose.dev.yml up
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: prendas-postgres-dev
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-inventory}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - prendas-network-dev
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: prendas-backend-dev
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      HOST: 0.0.0.0
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-postgres}
+      DB_NAME: ${DB_NAME:-inventory}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-key}
+      CORS_ORIGIN: http://localhost:5173,http://localhost:3000,http://localhost:3001
+      LOG_LEVEL: debug
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/backend/src
+      - ./backend/logs:/app/backend/logs
+      - ./backend/backups:/app/backend/backups
+      - ./backend/database:/app/backend/database
+      - ./backend/.env:/app/backend/.env:ro
+      - /app/backend/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - prendas-network-dev
+    restart: unless-stopped
+    command: npm run dev
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: prendas-frontend-dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./index.html:/app/index.html
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tailwind.config.js:/app/tailwind.config.js
+      - ./postcss.config.js:/app/postcss.config.js
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - prendas-network-dev
+    restart: unless-stopped
+
+volumes:
+  postgres_data_dev:
+    driver: local
+
+networks:
+  prendas-network-dev:
+    driver: bridge
