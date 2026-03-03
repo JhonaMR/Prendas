@@ -1,0 +1,198 @@
+/* PWA Animations */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* PWA Safe Area Support */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-top: max(12px, env(safe-area-inset-top));
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* Status bar styling for mobile */
+@media (max-width: 768px) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+
+/* ========== ORIENTACIÓN HORIZONTAL (LANDSCAPE) ========== */
+
+/* Soporte para orientación horizontal en tablets */
+@media (orientation: landscape) {
+  /* Ajustar márgenes en landscape */
+  body {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  /* Asegurar que el contenedor principal use todo el espacio */
+  #root {
+    height: 100vh;
+    width: 100vw;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* Optimizar scrolling en landscape */
+  .custom-scrollbar {
+    height: 100%;
+  }
+}
+
+/* Soporte para pantallas grandes en landscape */
+@media (orientation: landscape) and (min-height: 500px) {
+  body {
+    overflow: hidden;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+/* Ajustes para notch en landscape (iPhone X, etc.) */
+@media (orientation: landscape) and (device-height: 812px) {
+  body {
+    padding-left: max(44px, env(safe-area-inset-left));
+    padding-right: max(44px, env(safe-area-inset-right));
+  }
+}
+
+/* Soporte para tablets en landscape */
+@media (orientation: landscape) and (min-width: 1024px) {
+  body {
+    padding: max(12px, env(safe-area-inset-top)) 
+             max(12px, env(safe-area-inset-right)) 
+             max(12px, env(safe-area-inset-bottom)) 
+             max(12px, env(safe-area-inset-left));
+  }
+}
+
+/* Prevenir zoom en landscape */
+@media (orientation: landscape) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  /* Evitar que el teclado virtual cause problemas */
+  input:focus,
+  select:focus,
+  textarea:focus {
+    font-size: 16px;
+  }
+}
+
+/* ========== RESPONSIVE PARA DIFERENTES DISPOSITIVOS ========== */
+
+/* Teléfonos pequeños (< 480px) */
+@media (max-width: 480px) {
+  body {
+    padding: max(8px, env(safe-area-inset-top)) 
+             max(8px, env(safe-area-inset-right)) 
+             max(8px, env(safe-area-inset-bottom)) 
+             max(8px, env(safe-area-inset-left));
+  }
+}
+
+/* Teléfonos medianos (480px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  body {
+    padding: max(10px, env(safe-area-inset-top)) 
+             max(10px, env(safe-area-inset-right)) 
+             max(10px, env(safe-area-inset-bottom)) 
+             max(10px, env(safe-area-inset-left));
+  }
+}
+
+/* Tablets (> 768px) */
+@media (min-width: 769px) {
+  body {
+    padding: max(12px, env(safe-area-inset-top)) 
+             max(12px, env(safe-area-inset-right)) 
+             max(12px, env(safe-area-inset-bottom)) 
+             max(12px, env(safe-area-inset-left));
+  }
+}
+
+/* ========== AJUSTES PARA NOTCH Y SAFE AREAS ========== */
+
+/* iPhone X, 11, 12, 13, 14 en landscape */
+@media (orientation: landscape) and (max-height: 500px) {
+  body {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Dispositivos con notch en landscape */
+@supports (padding: max(0px)) {
+  @media (orientation: landscape) {
+    body {
+      padding-left: max(env(safe-area-inset-left), 12px);
+      padding-right: max(env(safe-area-inset-right), 12px);
+    }
+  }
+}
+
+/* ========== OPTIMIZACIONES DE RENDIMIENTO ========== */
+
+/* Deshabilitar animaciones en dispositivos con movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-up,
+  .animate-slide-down {
+    animation: none;
+  }
+}
+
+/* Optimizar para pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

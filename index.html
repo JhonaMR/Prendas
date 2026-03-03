@@ -3,12 +3,37 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <title>Plow - Ventas y producción</title>
-    <link rel="icon" type="image/x-icon" href="/icono.ico">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/pwa-512x512.png">
+    
+    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json">
+    
+    <!-- Theme Colors -->
     <meta name="theme-color" content="#3b82f6">
+    <meta name="msapplication-TileColor" content="#3b82f6">
+    
+    <!-- Description -->
     <meta name="description" content="Sistema de gestión de inventarios, ventas y producción">
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Plow">
+    <link rel="apple-touch-icon" href="/pwa-192x192.png">
+    
+    <!-- Android Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- Additional PWA Support -->
+    <meta name="application-name" content="Plow">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    <link rel="mask-icon" href="/masked-icon.svg" color="#3b82f6">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       body {

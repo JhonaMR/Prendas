@@ -5,6 +5,9 @@ import { Icons } from './constants';
 import { ClockDisplay } from './components/shared/ClockDisplay';
 import { ChatProvider } from './context/ChatContext';
 import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContainer } from './components/Chat';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
+import PWAUpdateNotification from './components/PWAUpdateNotification';
+import './styles/pwa.css';
 
 // Views
 import LoginView from './views/LoginView';
@@ -1291,6 +1294,10 @@ const App: React.FC = () => {
       <ChatContactsModal />
       <ChatWindow />
       <NotificationContainer />
+
+      {/* PWA Components */}
+      <PWAInstallPrompt />
+      <PWAUpdateNotification />
     </div>
     </ChatProvider>
   );
