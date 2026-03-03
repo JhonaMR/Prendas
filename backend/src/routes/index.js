@@ -147,6 +147,7 @@ router.delete('/correrias/:id', verifyToken, preventNonAdminEdit, correriasContr
 const comprasController = require('../controllers/entities/compras/comprasController');
 
 router.get('/compras', verifyToken, comprasController.list);
+router.post('/compras/batch', verifyToken, allowComprasCreate, comprasController.createBatch);
 router.post('/compras', verifyToken, allowComprasCreate, comprasController.create);
 router.get('/compras/:id', verifyToken, comprasController.read);
 router.put('/compras/:id', verifyToken, allowAdminOnly, comprasController.update);

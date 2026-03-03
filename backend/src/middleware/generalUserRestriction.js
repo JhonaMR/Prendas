@@ -5,7 +5,7 @@
  * pero solo admin puede editar/eliminar
  */
 
-const { isAdmin, isGeneral } = require('../utils/permissions');
+const { isAdmin, isGeneral, isSoporte } = require('../utils/permissions');
 
 /**
  * Middleware para permitir crear recepciones a admin y general
@@ -29,7 +29,7 @@ const allowReceptionCreate = (req, res, next) => {
 };
 
 /**
- * Middleware para permitir crear compras a admin y general
+ * Middleware para permitir crear compras a admin, general y soporte
  */
 const allowComprasCreate = (req, res, next) => {
     if (!req.user) {
@@ -39,7 +39,7 @@ const allowComprasCreate = (req, res, next) => {
         });
     }
 
-    if (!isAdmin(req.user) && !isGeneral(req.user)) {
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user)) {
         return res.status(403).json({
             success: false,
             message: 'No tienes permiso para crear compras'
@@ -92,7 +92,7 @@ const allowDeliveryDatesCreate = (req, res, next) => {
 };
 
 /**
- * Middleware para permitir editar/eliminar solo a admin
+ * Middleware para permitir editar/eliminar a admin y soporte
  */
 const allowAdminOnly = (req, res, next) => {
     if (!req.user) {
@@ -102,10 +102,10 @@ const allowAdminOnly = (req, res, next) => {
         });
     }
 
-    if (!isAdmin(req.user)) {
+    if (!isAdmin(req.user) && !isSoporte(req.user)) {
         return res.status(403).json({
             success: false,
-            message: 'Solo administradores pueden editar o eliminar'
+            message: 'Solo administradores y soporte pueden editar o eliminar'
         });
     }
 

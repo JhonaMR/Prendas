@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../services/api';
 import usePagination from '../hooks/usePagination';
+import ComprasImportModal from '../components/ComprasImportModal';
+import { UserRole } from '../types';
 
-interface Compra {
+export interface Compra {
   id: string;
   fecha: string;
   referencia: string | null;
@@ -30,6 +32,7 @@ const ComprasView: React.FC<ComprasViewProps> = ({ user, onNavigate }) => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   
   // Filter states
   const [insumoFilter, setInsumoFilter] = useState('');
@@ -378,6 +381,44 @@ const ComprasView: React.FC<ComprasViewProps> = ({ user, onNavigate }) => {
     }
   };
 
+  const handleImportData = (importedData: Compra[]) => {
+    setLoading(true);
+    
+    // Preparar datos para enviar al backend
+    const comprasToSave = importedData.map(compra => ({
+      fecha: compra.fecha,
+      referencia: compra.referencia,
+      unidades: compra.unidades,
+      insumo: compra.insumo,
+      cantidadInsumo: compra.cantidadInsumo,
+      precioUnidad: compra.precioUnidad,
+      cantidadTotal: compra.cantidadTotal,
+      total: compra.total,
+      proveedor: compra.proveedor,
+      fechaPedido: compra.fechaPedido,
+      observacion: compra.observacion,
+      factura: compra.factura,
+      precioRealInsumoUnd: compra.precioRealInsumoUnd,
+      afectaInventario: compra.afectaInventario
+    }));
+
+    api.saveComprasBatch(comprasToSave).then(result => {
+      if (result.success && result.data) {
+        const summary = result.data;
+        alert(`✅ Importación completada:\n${summary.created} compras creadas\n${summary.failed} errores`);
+        loadCompras();
+        setIsImportModalOpen(false);
+      } else {
+        alert('Error al importar compras: ' + result.message);
+      }
+    }).catch(error => {
+      console.error('Error importing compras:', error);
+      alert('Error al importar compras');
+    }).finally(() => {
+      setLoading(false);
+    });
+  };
+
   const getPrecioRealColor = (estado: string) => {
     switch (estado) {
       case 'pendiente':
@@ -541,6 +582,14 @@ const ComprasView: React.FC<ComprasViewProps> = ({ user, onNavigate }) => {
               className="px-3 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-300 transition-colors whitespace-nowrap"
             >
               Limpiar
+            </button>
+          )}
+          {user?.role === UserRole.SOPORTE && (
+            <button
+              onClick={() => setIsImportModalOpen(true)}
+              className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors whitespace-nowrap"
+            >
+              📥 Importar Excel
             </button>
           )}
           <button
@@ -875,6 +924,13 @@ const ComprasView: React.FC<ComprasViewProps> = ({ user, onNavigate }) => {
           </div>
         )}
       </div>
+
+      {/* Import Modal */}
+      <ComprasImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImport={handleImportData}
+      />
     </div>
   );
 };

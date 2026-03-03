@@ -911,6 +911,23 @@ class ApiService {
     }
   }
 
+  async saveComprasBatch(compras: any[]): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/compras/batch`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ compras })
+      });
+
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al guardar compras'
+      };
+    }
+  }
+
   // ==================== INVENTORY MOVEMENTS ====================
 
   async getInventoryMovements(): Promise<any[]> {
@@ -1010,10 +1027,36 @@ class ApiService {
 
   async createReception(reception: Partial<BatchReception>): Promise<ApiResponse<BatchReception>> {
     try {
+      // Validar que los campos requeridos estén presentes
+      if (!reception.batchCode || !reception.confeccionista || !reception.items?.length || !reception.receivedBy) {
+        console.error('❌ Campos faltantes en recepción:', {
+          batchCode: reception.batchCode,
+          confeccionista: reception.confeccionista,
+          items: reception.items,
+          receivedBy: reception.receivedBy
+        });
+        return {
+          success: false,
+          message: 'Faltan campos requeridos: Código de lote, confeccionista, items y recibido por'
+        };
+      }
+
+      // Enviar solo los campos necesarios
+      const payload = {
+        batchCode: reception.batchCode,
+        confeccionista: reception.confeccionista,
+        hasSeconds: reception.hasSeconds,
+        chargeType: reception.chargeType,
+        chargeUnits: reception.chargeUnits,
+        items: reception.items,
+        receivedBy: reception.receivedBy,
+        affectsInventory: reception.affectsInventory
+      };
+
       const response = await fetch(`${this.getApiUrl()}/receptions`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
-        body: JSON.stringify(reception)
+        body: JSON.stringify(payload)
       });
 
       return this.handleResponse<BatchReception>(response);
@@ -1027,10 +1070,28 @@ class ApiService {
 
   async updateReception(id: string, reception: Partial<BatchReception>): Promise<ApiResponse<BatchReception>> {
     try {
+      // Validar que los campos requeridos estén presentes
+      if (!reception.batchCode || !reception.confeccionista) {
+        return {
+          success: false,
+          message: 'Faltan campos requeridos: Código de lote y confeccionista'
+        };
+      }
+
+      // Enviar solo los campos necesarios
+      const payload = {
+        batchCode: reception.batchCode,
+        confeccionista: reception.confeccionista,
+        hasSeconds: reception.hasSeconds,
+        chargeType: reception.chargeType,
+        chargeUnits: reception.chargeUnits,
+        affectsInventory: reception.affectsInventory
+      };
+
       const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
-        body: JSON.stringify(reception)
+        body: JSON.stringify(payload)
       });
 
       return this.handleResponse<BatchReception>(response);

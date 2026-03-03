@@ -157,10 +157,59 @@ const delete_ = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/compras/batch
+ */
+const createBatch = async (req, res) => {
+  try {
+    const { compras } = req.body;
+
+    if (!Array.isArray(compras) || compras.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Se requiere un array de compras'
+      });
+    }
+
+    const results = {
+      created: 0,
+      failed: 0,
+      errors: []
+    };
+
+    for (let i = 0; i < compras.length; i++) {
+      try {
+        validateCreateCompra(compras[i]);
+        await createCompra(compras[i]);
+        results.created++;
+      } catch (error) {
+        results.failed++;
+        results.errors.push({
+          index: i,
+          message: error.message || 'Error creating compra'
+        });
+      }
+    }
+
+    return res.status(201).json({
+      success: true,
+      data: results,
+      message: `${results.created} compras created, ${results.failed} failed`
+    });
+  } catch (error) {
+    logger.error('Error creating batch compras', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error creating batch compras'
+    });
+  }
+};
+
 module.exports = {
   list,
   read,
   create,
   update,
-  delete: delete_
+  delete: delete_,
+  createBatch
 };

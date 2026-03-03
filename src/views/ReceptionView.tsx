@@ -124,6 +124,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       alert("Nombre de Confeccionista y Remisión son obligatorios");
       return;
     }
+    if (!items || items.length === 0) {
+      alert("Debe agregar al menos un item a la recepción");
+      return;
+    }
     if (chargeType && chargeUnits <= 0) {
       alert(`Debe especificar unidades para ${chargeType}`);
       return;

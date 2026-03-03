@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict ykxEyH4ZP0aV3Bk1H9xwLh61tAtgZC3HG3X7NB7MPrccOJb709xiuflg3FEtIRD
+\restrict 5ZBLXzrLZptb5tBB5mUJT35c406mOn70XW9ZRgG3wFPQXfUj9Qmq61ut8uby0Kb
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
 
--- Started on 2026-03-02 09:44:54
+-- Started on 2026-03-03 09:13:07
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -39,7 +39,9 @@ DROP INDEX IF EXISTS public.idx_user_sessions_last_activity;
 DROP INDEX IF EXISTS public.idx_receptions_created_at;
 DROP INDEX IF EXISTS public.idx_reception_items_reception_id;
 DROP INDEX IF EXISTS public.idx_production_tracking_correria_id;
+DROP INDEX IF EXISTS public.idx_orders_start_date;
 DROP INDEX IF EXISTS public.idx_orders_seller_id;
+DROP INDEX IF EXISTS public.idx_orders_end_date;
 DROP INDEX IF EXISTS public.idx_orders_created_at;
 DROP INDEX IF EXISTS public.idx_orders_correria_id;
 DROP INDEX IF EXISTS public.idx_orders_client_id;
@@ -162,7 +164,7 @@ DROP FUNCTION IF EXISTS public.update_user_view_preferences_timestamp();
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 5384 (class 0 OID 0)
+-- TOC entry 5386 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -615,7 +617,7 @@ CREATE SEQUENCE public.messages_id_seq
 ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5386 (class 0 OID 0)
+-- TOC entry 5388 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -651,7 +653,9 @@ CREATE TABLE public.orders (
     total_value numeric(10,2) NOT NULL,
     created_at character varying(255) NOT NULL,
     settled_by character varying(255) NOT NULL,
-    order_number integer
+    order_number integer,
+    start_date date,
+    end_date date
 );
 
 
@@ -725,7 +729,7 @@ CREATE SEQUENCE public.reception_items_id_seq
 ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5387 (class 0 OID 0)
+-- TOC entry 5389 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -754,7 +758,7 @@ CREATE TABLE public.receptions (
 ALTER TABLE public.receptions OWNER TO postgres;
 
 --
--- TOC entry 5388 (class 0 OID 0)
+-- TOC entry 5390 (class 0 OID 0)
 -- Dependencies: 244
 -- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -794,7 +798,7 @@ CREATE SEQUENCE public.return_reception_items_id_seq
 ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5389 (class 0 OID 0)
+-- TOC entry 5391 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -868,7 +872,7 @@ CREATE SEQUENCE public.user_sessions_id_seq
 ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5390 (class 0 OID 0)
+-- TOC entry 5392 (class 0 OID 0)
 -- Dependencies: 250
 -- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -909,7 +913,7 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5391 (class 0 OID 0)
+-- TOC entry 5393 (class 0 OID 0)
 -- Dependencies: 252
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -952,7 +956,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5392 (class 0 OID 0)
+-- TOC entry 5394 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -1009,7 +1013,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 5343 (class 0 OID 17987)
+-- TOC entry 5345 (class 0 OID 17987)
 -- Dependencies: 219
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1019,7 +1023,7 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
--- TOC entry 5344 (class 0 OID 17996)
+-- TOC entry 5346 (class 0 OID 17996)
 -- Dependencies: 220
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1337,7 +1341,7 @@ test-restore-1	Cliente Restore	NIT-RESTORE	Dirección	Ciudad	\N	\N	seller	\N	t
 
 
 --
--- TOC entry 5345 (class 0 OID 18007)
+-- TOC entry 5347 (class 0 OID 18007)
 -- Dependencies: 221
 -- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1350,7 +1354,7 @@ mm10k9v869lrxfoef	2026-02-24	\N	\N	Etiquetas gomitas	30000.00	110.00	30000.00	33
 
 
 --
--- TOC entry 5346 (class 0 OID 18024)
+-- TOC entry 5348 (class 0 OID 18024)
 -- Dependencies: 222
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1508,7 +1512,7 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 
 
 --
--- TOC entry 5347 (class 0 OID 18036)
+-- TOC entry 5349 (class 0 OID 18036)
 -- Dependencies: 223
 -- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1639,7 +1643,7 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 
 
 --
--- TOC entry 5348 (class 0 OID 18044)
+-- TOC entry 5350 (class 0 OID 18044)
 -- Dependencies: 224
 -- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1651,7 +1655,7 @@ mljjrcujmtckild4r	Madres	2026	1	2026-02-12 14:21:25
 
 
 --
--- TOC entry 5349 (class 0 OID 18053)
+-- TOC entry 5351 (class 0 OID 18053)
 -- Dependencies: 225
 -- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1806,7 +1810,7 @@ import_1772211653373_90	CAMILO HOYOS	12892	60	2026-02-10	2026-02-14	2026-02-27	E
 
 
 --
--- TOC entry 5350 (class 0 OID 18065)
+-- TOC entry 5352 (class 0 OID 18065)
 -- Dependencies: 226
 -- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1817,7 +1821,7 @@ COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updat
 
 
 --
--- TOC entry 5352 (class 0 OID 18075)
+-- TOC entry 5354 (class 0 OID 18075)
 -- Dependencies: 228
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2124,11 +2128,64 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 358	mm56exk9xgk5t4yyu	12943	138	16000.00
 359	mm56exk9xgk5t4yyu	12893	48	19000.00
 360	mm56exk9xgk5t4yyu	12959	60	35000.00
+361	mm9bhcaasyq4ggxoq	12943	24	19900.00
+362	mm9bhcaasyq4ggxoq	12923	24	24900.00
+363	mm9bhcaasyq4ggxoq	12875	24	19900.00
+364	mm9bhcaasyq4ggxoq	12937	24	14900.00
+365	mm9bijuzmofqzb41u	12923	14	23900.00
+366	mm9bijuzmofqzb41u	12926	18	26900.00
+367	mm9bjim16d7qqck29	12923	14	23900.00
+368	mm9bjim16d7qqck29	12926	18	26900.00
+369	mm9bkdst6k21tswkd	12934	12	24900.00
+370	mm9bkdst6k21tswkd	12898	12	24900.00
+371	mm9bkdst6k21tswkd	12943	12	19900.00
+372	mm9bkdst6k21tswkd	12893	12	24900.00
+373	mm9bkdst6k21tswkd	12875	12	19900.00
+374	mm9blqhknb861bm2v	12943	25	19900.00
+375	mm9blqhknb861bm2v	12875	24	19900.00
+376	mm9blqhknb861bm2v	12937	24	14900.00
+377	mm9fosxvx68nv1mo0	12905	10	34900.00
+378	mm9fosxvx68nv1mo0	12937	10	14900.00
+379	mm9fosxvx68nv1mo0	12910	10	22900.00
+380	mm9fphsult009cvdr	12905	12	34900.00
+381	mm9fphsult009cvdr	12937	12	14900.00
+382	mm9fphsult009cvdr	12910	12	22900.00
+383	mmancmbo8qna7ulnq	12937	24	14900.00
+384	mmancmbo8qna7ulnq	12943	25	19900.00
+385	mmancmbo8qna7ulnq	12921	13	24900.00
+386	mmanudpdqkcpojxyy	12951	4	27900.00
+387	mmanudpdqkcpojxyy	12909	4	23900.00
+388	mmanudpdqkcpojxyy	12747	4	31900.00
+389	mmanudpdqkcpojxyy	12872	6	24900.00
+390	mmanudpdqkcpojxyy	12926	4	27900.00
+391	mmanudpdqkcpojxyy	12919	4	25900.00
+392	mmanudpdqkcpojxyy	12873	4	22900.00
+393	mmanudpdqkcpojxyy	12923	4	24900.00
+394	mmanudpdqkcpojxyy	12862	4	23900.00
+395	mmanudpdqkcpojxyy	12952	4	26900.00
+396	mmanudpdqkcpojxyy	12911	4	18900.00
+397	mmanudpdqkcpojxyy	12937	4	14900.00
+398	mmanudpdqkcpojxyy	12885	4	23900.00
+399	mmanudpdqkcpojxyy	12883	4	24900.00
+400	mmanudpdqkcpojxyy	12877	4	19900.00
+401	mmanudpdqkcpojxyy	12898	4	24900.00
+402	mmanudpdqkcpojxyy	12945	4	19900.00
+403	mmanudpdqkcpojxyy	12934	4	24900.00
+404	mmanudpdqkcpojxyy	12897	4	19900.00
+405	mmanudpdqkcpojxyy	12870	4	35900.00
+406	mmanudpdqkcpojxyy	12924	4	21900.00
+407	mmanudpdqkcpojxyy	12860	4	16900.00
+408	mmanudpdqkcpojxyy	12884	4	21900.00
+409	mmanudpdqkcpojxyy	12640	4	24900.00
+410	mmanudpdqkcpojxyy	12921	4	24900.00
+411	mmanudpdqkcpojxyy	12692	4	21900.00
+412	mmanudpdqkcpojxyy	12783	4	17900.00
+413	mmanudpdqkcpojxyy	12871	4	19900.00
 \.
 
 
 --
--- TOC entry 5353 (class 0 OID 18086)
+-- TOC entry 5355 (class 0 OID 18086)
 -- Dependencies: 229
 -- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2189,11 +2246,20 @@ mm3l0uxit5mxrenqh	216	mljjqn48zbxhtg0yw	 -	RM-7695	Jhon Montoya	2026-02-26 14:52
 mm3l1t5hjgali24ts	264	mljjqn48zbxhtg0yw	FE-7240	RM-7696	Jhon Montoya	2026-02-26 14:52:56.406
 mm3l3zvlu15hgpefm	158	mljjqn48zbxhtg0yw	FE-7239	 -	Jhon Montoya	2026-02-26 14:54:38.434
 mm56exk9xgk5t4yyu	300	mljjqn48zbxhtg0yw	 -	 -	Jhon Montoya	2026-02-27 17:38:46.762
+mm9bhcaasyq4ggxoq	59	mljjqn48zbxhtg0yw	FE-7245	RM-7698	Jhon Montoya	2026-03-02 15:11:41.941
+mm9bijuzmofqzb41u	177	mljjqn48zbxhtg0yw	FE-7246	RM-7699	Jhon Montoya	2026-03-02 15:12:38.412
+mm9bjim16d7qqck29	179	mljjqn48zbxhtg0yw	FE-7247	RM-7700	Jhon Montoya	2026-03-02 15:13:23.45
+mm9bkdst6k21tswkd	270	mljjqn48zbxhtg0yw	FE-7242	 -	Jhon Montoya	2026-03-02 15:14:03.87
+mm9blqhknb861bm2v	81	mljjqn48zbxhtg0yw	FE-7243	FE-7244	Jhon Montoya	2026-03-02 15:15:06.97
+mm9fosxvx68nv1mo0	305	mljjqn48zbxhtg0yw	FE-7249	 -	Jhon Montoya	2026-03-02 17:09:28.582
+mm9fphsult009cvdr	231	mljjqn48zbxhtg0yw	FE-7248	 -	Jhon Montoya	2026-03-02 17:10:00.799
+mmancmbo8qna7ulnq	232	mljjqn48zbxhtg0yw	FE-7250	RM-7702	Jhon Montoya	2026-03-03 13:31:43.238
+mmanudpdqkcpojxyy	296	mljjqn48zbxhtg0yw	 -	RM-7701	Jhon Montoya	2026-03-03 13:45:31.873
 \.
 
 
 --
--- TOC entry 5354 (class 0 OID 18098)
+-- TOC entry 5356 (class 0 OID 18098)
 -- Dependencies: 230
 -- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2203,20 +2269,20 @@ COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantid
 
 
 --
--- TOC entry 5355 (class 0 OID 18125)
+-- TOC entry 5357 (class 0 OID 18125)
 -- Dependencies: 231
 -- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, precio_venta, rentabilidad, margen_ganancia, costo_contabilizar, desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent, cantidad_total_cortada, created_by, created_at, updated_at) FROM stdin;
-7ef92f0b-ce02-4a10-915e-3b561324ffb7	12963	0b99a3d1-8812-48fd-803e-adb9f1f91e03	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 14850, "concepto": "LINO PRAGA", "vlr_unit": 15000}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 165, "concepto": "LINO PRAGA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3921, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3921}]	15015.00	6500.00	324.00	0.00	4321.00	26160.00	40900.00	56.35	55900.00	21839.00	40900.00	56.35	38900.00	48.70	36900.00	41.06	34900.00	33.41	0	Admin Principal	2026-02-24 10:23:00.790495	2026-02-24 10:23:00.790495
 b4c4050d-29e3-4b6f-a0d5-25bc7d5e38da	10210	760c19e6-0089-4b3d-8712-a45900529e38	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "INSUMOS ", "vlr_unit": 2400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	2400.00	400.00	14500.00	20900.00	44.14	28900.00	14100.00	20900.00	44.14	19900.00	37.24	18900.00	30.34	17900.00	23.45	0	Admin Principal	2026-02-24 10:37:43.646101	2026-02-24 10:37:43.646101
-b1d92185-e33e-4b73-a2dd-a4fbe7299bdb	13032	00f0330d-8f07-44dd-8eeb-805f7e3f0af6	BUSO DE CIERRE	PLOW	CIERRE	12890		CIERRE  TALLA S  \t34\tTALLA M 34\tTALLA L36\n\t\t\t\n\t\t\t\n\t\t\t\nTRACE 112\t\t\t\n	/images/references/13032.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 8510, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO  MANGA", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 1700, "concepto": "PEGADA  ALEJANDRA 10 PERLAS POR MANGA ", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CIERRE  QUERUBIN CON DOBLE CREMALLERA", "vlr_unit": 3000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	8510.00	6900.00	324.00	3000.00	3764.00	22498.00	34900.00	55.12	47900.00	18734.00	34900.00	55.12	33900.00	50.68	31900.00	41.79	29900.00	32.90	0	Jhon Montoya	2026-02-27 09:30:42.835315	2026-02-27 09:30:42.835315
+7ef92f0b-ce02-4a10-915e-3b561324ffb7	12963	0b99a3d1-8812-48fd-803e-adb9f1f91e03	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 14850, "concepto": "LINO PRAGA", "vlr_unit": 15000}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 165, "concepto": "LINO PRAGA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3921, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3921}]	15015.00	6500.00	324.00	0.00	4321.00	26160.00	40900.00	36.04	55900.00	21839.00	40900.00	36.04	38900.00	32.75	36900.00	29.11	34900.00	25.04	0	Admin Principal	2026-02-24 10:23:00.790495	2026-02-24 10:23:00.790495
+b1d92185-e33e-4b73-a2dd-a4fbe7299bdb	13032	00f0330d-8f07-44dd-8eeb-805f7e3f0af6	BUSO DE CIERRE	PLOW	CIERRE	12890		CIERRE  TALLA S  \t34\tTALLA M 34\tTALLA L36\n\t\t\t\n\t\t\t\n\t\t\t\nTRACE 112\t\t\t\n	/images/references/13032.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 8510, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO  MANGA", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 1700, "concepto": "PEGADA  ALEJANDRA 10 PERLAS POR MANGA ", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CIERRE  QUERUBIN CON DOBLE CREMALLERA", "vlr_unit": 3000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	8510.00	6900.00	324.00	3000.00	3764.00	22498.00	34900.00	35.54	47900.00	18734.00	34900.00	35.54	33900.00	33.63	31900.00	29.47	29900.00	24.76	0	Jhon Montoya	2026-02-27 09:30:42.835315	2026-02-27 09:30:42.835315
 \.
 
 
 --
--- TOC entry 5356 (class 0 OID 18159)
+-- TOC entry 5358 (class 0 OID 18159)
 -- Dependencies: 232
 -- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2230,7 +2296,7 @@ COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, no
 
 
 --
--- TOC entry 5357 (class 0 OID 18181)
+-- TOC entry 5359 (class 0 OID 18181)
 -- Dependencies: 233
 -- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2242,7 +2308,7 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
--- TOC entry 5358 (class 0 OID 18197)
+-- TOC entry 5360 (class 0 OID 18197)
 -- Dependencies: 234
 -- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2254,7 +2320,7 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
--- TOC entry 5359 (class 0 OID 18207)
+-- TOC entry 5361 (class 0 OID 18207)
 -- Dependencies: 235
 -- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2267,7 +2333,7 @@ f3ade09b-e9f1-46e6-a0d2-2aeb04531f9c	6c253170-b1e0-433f-afe0-03e71e60f8a2	12000	
 
 
 --
--- TOC entry 5360 (class 0 OID 18216)
+-- TOC entry 5362 (class 0 OID 18216)
 -- Dependencies: 236
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2301,11 +2367,13 @@ COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FRO
 26	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🥳	f	2026-02-27 09:49:07.604754
 27	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	👩🏻	f	2026-02-27 09:52:48.924169
 28	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🤡	f	2026-02-27 09:53:12.33012
+29	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	Aaaaa	f	2026-03-02 11:48:40.259607
+30	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	aaaa	f	2026-03-02 11:48:49.688345
 \.
 
 
 --
--- TOC entry 5362 (class 0 OID 18229)
+-- TOC entry 5364 (class 0 OID 18229)
 -- Dependencies: 238
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2329,143 +2397,6 @@ mm25qs8bzb9btrgvw	12825	12	21900.00
 mm25qs8bzb9btrgvw	12818	12	40900.00
 mm25qs8bzb9btrgvw	12821	12	33900.00
 mm25qs8bzb9btrgvw	12840	12	33900.00
-mm25rzt79inviirmd	12923	18	23900.00
-mm25rzt79inviirmd	12882	18	23900.00
-mm25rzt79inviirmd	12909	18	23900.00
-mm25rzt79inviirmd	12872	18	23900.00
-mm25rzt79inviirmd	12911	18	18900.00
-mm25rzt79inviirmd	12919	18	24900.00
-mm25rzt79inviirmd	12926	18	26900.00
-mm25rzt79inviirmd	12835	12	19900.00
-mm25rzt79inviirmd	12831	12	23900.00
-mm25rzt79inviirmd	12836	12	20900.00
-mm25rzt79inviirmd	12855	12	23900.00
-mm25rzt79inviirmd	12129	12	26900.00
-mm25rzt79inviirmd	12841	12	19900.00
-mm25rzt79inviirmd	12834	12	16900.00
-mm25rzt79inviirmd	12825	12	21900.00
-mm25rzt79inviirmd	12818	12	40900.00
-mm25rzt79inviirmd	12821	12	33900.00
-mm25rzt79inviirmd	12840	12	33900.00
-mm25shroo1oy81pds	12906	24	28900.00
-mm25shroo1oy81pds	12933	24	34900.00
-mm25shroo1oy81pds	12889	24	28900.00
-mm25shroo1oy81pds	12708	24	24900.00
-mm25shroo1oy81pds	12919	24	25900.00
-mm25shroo1oy81pds	12951	24	27900.00
-mm25shroo1oy81pds	12937	24	14900.00
-mm25shroo1oy81pds	12862	24	23900.00
-mm25shroo1oy81pds	12911	24	18900.00
-mm25shroo1oy81pds	12882	24	23900.00
-mm25shroo1oy81pds	12952	24	26900.00
-mm25shroo1oy81pds	12913	24	29900.00
-mm25shroo1oy81pds	12880	24	24900.00
-mm25shroo1oy81pds	12883	24	24900.00
-mm25shroo1oy81pds	12885	24	23900.00
-mm25shroo1oy81pds	12892	24	24900.00
-mm25shroo1oy81pds	12704	24	29900.00
-mm25shroo1oy81pds	12888	24	19900.00
-mm25shroo1oy81pds	12939	24	20900.00
-mm25shroo1oy81pds	12366	24	19900.00
-mm25shroo1oy81pds	12893	24	24900.00
-mm25shroo1oy81pds	12921	24	24900.00
-mm25shroo1oy81pds	12860	24	16900.00
-mm25shroo1oy81pds	12754	24	16900.00
-mm25shroo1oy81pds	12000	24	49900.00
-mm25shroo1oy81pds	12771	24	16900.00
-mm25shroo1oy81pds	12574	24	25900.00
-mm25shroo1oy81pds	12876	24	19900.00
-mm25shroo1oy81pds	12950	24	27900.00
-mm25shroo1oy81pds	12877	24	19900.00
-mm25shroo1oy81pds	12917	24	19900.00
-mm25shroo1oy81pds	12680	24	16900.00
-mm25shroo1oy81pds	12897	24	19900.00
-mm25shroo1oy81pds	12945	24	19900.00
-mm25shroo1oy81pds	12918	24	19900.00
-mm25shroo1oy81pds	12920	24	21900.00
-mm25shroo1oy81pds	12934	24	24900.00
-mm25shroo1oy81pds	12943	24	19900.00
-mm25shroo1oy81pds	12898	24	24900.00
-mm25teuw5s5a06njw	12129	11	27900.00
-mm25teuw5s5a06njw	12694	11	24900.00
-mm25teuw5s5a06njw	12825	11	22900.00
-mm25teuw5s5a06njw	12828	11	14900.00
-mm25teuw5s5a06njw	12834	11	17900.00
-mm25teuw5s5a06njw	12835	11	20900.00
-mm25teuw5s5a06njw	12836	11	21900.00
-mm25teuw5s5a06njw	12837	11	27900.00
-mm25teuw5s5a06njw	12841	13	20900.00
-mm25v4aqgkqzh9j40	12704	10	29900.00
-mm25v4aqgkqzh9j40	12782	10	17900.00
-mm25v4aqgkqzh9j40	12870	9	35900.00
-mm25v4aqgkqzh9j40	12871	10	19900.00
-mm25v4aqgkqzh9j40	12876	10	19900.00
-mm25v4aqgkqzh9j40	12880	10	24900.00
-mm25v4aqgkqzh9j40	12882	10	23900.00
-mm25v4aqgkqzh9j40	12885	10	23900.00
-mm25v4aqgkqzh9j40	12889	10	28900.00
-mm25v4aqgkqzh9j40	12905	10	34900.00
-mm25v4aqgkqzh9j40	12907	9	28900.00
-mm25v4aqgkqzh9j40	12908	10	28900.00
-mm25v4aqgkqzh9j40	12909	10	23900.00
-mm25v4aqgkqzh9j40	12910	10	22900.00
-mm25v4aqgkqzh9j40	12916	10	20900.00
-mm25v4aqgkqzh9j40	12931	10	29900.00
-mm25v4aqgkqzh9j40	12937	10	14900.00
-mm25wans5fy2ikncb	12129	12	27900.00
-mm25wans5fy2ikncb	12694	12	24900.00
-mm25wans5fy2ikncb	12825	12	22900.00
-mm25wans5fy2ikncb	12828	12	14900.00
-mm25wans5fy2ikncb	12834	12	17900.00
-mm25wans5fy2ikncb	12835	12	20900.00
-mm25wans5fy2ikncb	12836	11	21900.00
-mm25wans5fy2ikncb	12837	12	27900.00
-mm25wans5fy2ikncb	12841	14	20900.00
-mm25wkgeaqmr6b8un	12129	11	27900.00
-mm25wkgeaqmr6b8un	12694	11	24900.00
-mm25wkgeaqmr6b8un	12825	11	22900.00
-mm25wkgeaqmr6b8un	12828	11	14900.00
-mm25wkgeaqmr6b8un	12834	11	17900.00
-mm25wkgeaqmr6b8un	12835	11	20900.00
-mm25wkgeaqmr6b8un	12836	11	21900.00
-mm25wkgeaqmr6b8un	12837	11	27900.00
-mm25wkgeaqmr6b8un	12841	13	20900.00
-mm25x0trsopvohrgo	12782	12	17900.00
-mm25x0trsopvohrgo	12870	11	35900.00
-mm25x0trsopvohrgo	12871	12	19900.00
-mm25x0trsopvohrgo	12876	12	19900.00
-mm25x0trsopvohrgo	12880	12	24900.00
-mm25x0trsopvohrgo	12882	12	23900.00
-mm25x0trsopvohrgo	12885	12	23900.00
-mm25x0trsopvohrgo	12889	12	28900.00
-mm25x0trsopvohrgo	12905	12	34900.00
-mm25x0trsopvohrgo	12907	11	28900.00
-mm25x0trsopvohrgo	12908	12	28900.00
-mm25x0trsopvohrgo	12909	12	23900.00
-mm25x0trsopvohrgo	12910	12	22900.00
-mm25x0trsopvohrgo	12916	12	20900.00
-mm25x0trsopvohrgo	12931	12	29900.00
-mm25x0trsopvohrgo	12937	12	14900.00
-mm25yurfvl3ytrp78	12366	24	19900.00
-mm25yurfvl3ytrp78	12871	24	19900.00
-mm25yurfvl3ytrp78	12922	24	21900.00
-mm25yurfvl3ytrp78	12860	24	16900.00
-mm25yurfvl3ytrp78	12888	24	19900.00
-mm25yurfvl3ytrp78	12782	24	17900.00
-mm25yurfvl3ytrp78	12893	24	24900.00
-mm25yurfvl3ytrp78	12920	24	21900.00
-mm25yurfvl3ytrp78	12917	24	19900.00
-mm25yurfvl3ytrp78	12943	24	19900.00
-mm25yurfvl3ytrp78	12950	24	27900.00
-mm25yurfvl3ytrp78	12883	24	24900.00
-mm25yurfvl3ytrp78	12913	24	29900.00
-mm25yurfvl3ytrp78	12873	24	22900.00
-mm25yurfvl3ytrp78	12951	24	27900.00
-mm25yurfvl3ytrp78	12926	24	27900.00
-mm25yurfvl3ytrp78	12875	24	19900.00
-mm25yurfvl3ytrp78	12911	24	18900.00
-mm25yurfvl3ytrp78	12952	24	26900.00
-mm25yurfvl3ytrp78	12937	24	14900.00
 mm25z1dbniegbh1m6	12909	4	23900.00
 mm25z1dbniegbh1m6	12911	4	18900.00
 mm25z1dbniegbh1m6	12882	4	23900.00
@@ -2496,96 +2427,86 @@ mm25z1dbniegbh1m6	12907	4	28900.00
 mm25z1dbniegbh1m6	12906	4	28900.00
 mm25z1dbniegbh1m6	12889	4	28900.00
 mm25z1dbniegbh1m6	12875	4	19900.00
-mm25z6898ea5cmw0f	12898	6	24900.00
-mm25z6898ea5cmw0f	12920	6	21900.00
-mm25z6898ea5cmw0f	12945	6	19900.00
-mm25z6898ea5cmw0f	12934	6	24900.00
-mm25z6898ea5cmw0f	12805	6	19900.00
-mm25z6898ea5cmw0f	12907	6	28900.00
-mm25z6898ea5cmw0f	12744	6	19900.00
-mm25z6898ea5cmw0f	12906	6	28900.00
-mm25z6898ea5cmw0f	12935	6	35900.00
-mm25z6898ea5cmw0f	12908	6	28900.00
-mm25z6898ea5cmw0f	12881	6	33900.00
-mm25z6898ea5cmw0f	12924	6	21900.00
-mm25z6898ea5cmw0f	12937	6	14900.00
-mm25z6898ea5cmw0f	12913	6	29900.00
-mm25z6898ea5cmw0f	12911	6	18900.00
-mm25z6898ea5cmw0f	12952	6	26900.00
-mm25z6898ea5cmw0f	12919	6	25900.00
-mm25z6898ea5cmw0f	12926	6	27900.00
-mm25z6898ea5cmw0f	12872	6	24900.00
-mm25zgt5curej417m	12951	9	27900.00
-mm25zgt5curej417m	12909	9	23900.00
-mm25zgt5curej417m	12926	8	27900.00
-mm25zgt5curej417m	12919	8	25900.00
-mm25zgt5curej417m	12873	8	22900.00
-mm25zgt5curej417m	12937	15	14900.00
-mm25zgt5curej417m	12893	9	24900.00
-mm25zgt5curej417m	12883	9	24900.00
-mm25zgt5curej417m	12924	9	21900.00
-mm25zgt5curej417m	12871	8	19900.00
-mm25zgt5curej417m	12931	8	29900.00
-mm25zgt5curej417m	12920	8	21900.00
-mm25zlnrm0l8pxyk3	12679	24	23900.00
-mm25zlnrm0l8pxyk3	12918	24	19900.00
-mm25zlnrm0l8pxyk3	12680	24	16900.00
-mm25zlnrm0l8pxyk3	12943	24	19900.00
-mm25zlnrm0l8pxyk3	12936	24	14900.00
-mm25zlnrm0l8pxyk3	12877	24	19900.00
-mm25zlnrm0l8pxyk3	12920	24	21900.00
-mm25zlnrm0l8pxyk3	12934	24	24900.00
-mm25zlnrm0l8pxyk3	12898	24	24900.00
-mm25zlnrm0l8pxyk3	12881	24	33900.00
-mm25zlnrm0l8pxyk3	12907	24	28900.00
-mm25zlnrm0l8pxyk3	12933	24	34900.00
-mm25zlnrm0l8pxyk3	12906	24	28900.00
-mm25zlnrm0l8pxyk3	12935	24	35900.00
-mm25zlnrm0l8pxyk3	12908	24	28900.00
-mm25zlnrm0l8pxyk3	12889	24	28900.00
-mm25zlnrm0l8pxyk3	12747	24	31900.00
-mm25zlnrm0l8pxyk3	12872	24	24900.00
-mm25zlnrm0l8pxyk3	12919	24	25900.00
-mm25zlnrm0l8pxyk3	12951	24	27900.00
-mm25zlnrm0l8pxyk3	12909	24	23900.00
-mm25zlnrm0l8pxyk3	12913	24	29900.00
-mm25zlnrm0l8pxyk3	12942	24	24900.00
-mm25zlnrm0l8pxyk3	12923	24	24900.00
-mm25zlnrm0l8pxyk3	12862	24	23900.00
-mm25zlnrm0l8pxyk3	12941	24	20900.00
-mm25zlnrm0l8pxyk3	12875	24	19900.00
-mm25zlnrm0l8pxyk3	12879	24	38900.00
-mm25zlnrm0l8pxyk3	12914	24	33900.00
-mm25zlnrm0l8pxyk3	12880	24	24900.00
-mm25zlnrm0l8pxyk3	12873	24	22900.00
-mm25zlnrm0l8pxyk3	12882	24	23900.00
-mm25zlnrm0l8pxyk3	12952	24	26900.00
-mm25zlnrm0l8pxyk3	12937	24	14900.00
-mm25zlnrm0l8pxyk3	12893	24	24900.00
-mm25zlnrm0l8pxyk3	12885	24	23900.00
-mm25zlnrm0l8pxyk3	12884	24	21900.00
-mm25zlnrm0l8pxyk3	12860	24	16900.00
-mm25zlnrm0l8pxyk3	12910	24	22900.00
-mm25zlnrm0l8pxyk3	12782	24	17900.00
-mm25zlnrm0l8pxyk3	12915	24	28900.00
-mm25zlnrm0l8pxyk3	12783	24	17900.00
-mm25zlnrm0l8pxyk3	12921	24	24900.00
-mm25zlnrm0l8pxyk3	12924	24	21900.00
-mm25zlnrm0l8pxyk3	12888	24	19900.00
-mm25zlnrm0l8pxyk3	12939	24	20900.00
-mm25zlnrm0l8pxyk3	12871	24	19900.00
-mm25zlnrm0l8pxyk3	12931	24	29900.00
-mm25zlnrm0l8pxyk3	12950	24	27900.00
-mm25zlnrm0l8pxyk3	12912	24	18900.00
-mm25zlnrm0l8pxyk3	12876	24	19900.00
-mm25zlnrm0l8pxyk3	12917	24	19900.00
-mm261bh9kjzjbs3n3	12906	12	28900.00
-mm261bh9kjzjbs3n3	12881	12	33900.00
-mm261bh9kjzjbs3n3	12880	12	24900.00
-mm261bh9kjzjbs3n3	12950	12	27900.00
-mm261bh9kjzjbs3n3	12693	12	25900.00
-mm261bh9kjzjbs3n3	12698	12	21900.00
-mm261bh9kjzjbs3n3	12936	12	14900.00
+mm25yurfvl3ytrp78	12366	24	19900.00
+mm25yurfvl3ytrp78	12871	24	19900.00
+mm25yurfvl3ytrp78	12922	24	21900.00
+mm25yurfvl3ytrp78	12860	24	16900.00
+mm25yurfvl3ytrp78	12888	24	19900.00
+mm25yurfvl3ytrp78	12782	24	17900.00
+mm25yurfvl3ytrp78	12893	24	24900.00
+mm25yurfvl3ytrp78	12920	24	21900.00
+mm25yurfvl3ytrp78	12917	24	19900.00
+mm25yurfvl3ytrp78	12943	24	19900.00
+mm25yurfvl3ytrp78	12950	24	27900.00
+mm25yurfvl3ytrp78	12883	24	24900.00
+mm25yurfvl3ytrp78	12913	24	29900.00
+mm25yurfvl3ytrp78	12873	24	22900.00
+mm25yurfvl3ytrp78	12951	24	27900.00
+mm25yurfvl3ytrp78	12926	24	27900.00
+mm25yurfvl3ytrp78	12875	24	19900.00
+mm25yurfvl3ytrp78	12911	24	18900.00
+mm25yurfvl3ytrp78	12952	24	26900.00
+mm25yurfvl3ytrp78	12937	24	14900.00
+mm25x0trsopvohrgo	12782	12	17900.00
+mm25x0trsopvohrgo	12870	11	35900.00
+mm25x0trsopvohrgo	12871	12	19900.00
+mm25x0trsopvohrgo	12876	12	19900.00
+mm25x0trsopvohrgo	12880	12	24900.00
+mm25x0trsopvohrgo	12882	12	23900.00
+mm25x0trsopvohrgo	12885	12	23900.00
+mm25x0trsopvohrgo	12889	12	28900.00
+mm25x0trsopvohrgo	12905	12	34900.00
+mm25x0trsopvohrgo	12907	11	28900.00
+mm25x0trsopvohrgo	12908	12	28900.00
+mm25x0trsopvohrgo	12909	12	23900.00
+mm25x0trsopvohrgo	12910	12	22900.00
+mm25x0trsopvohrgo	12916	12	20900.00
+mm25x0trsopvohrgo	12931	12	29900.00
+mm25x0trsopvohrgo	12937	12	14900.00
+mm25wkgeaqmr6b8un	12129	11	27900.00
+mm25wkgeaqmr6b8un	12694	11	24900.00
+mm25wkgeaqmr6b8un	12825	11	22900.00
+mm25wkgeaqmr6b8un	12828	11	14900.00
+mm25wkgeaqmr6b8un	12834	11	17900.00
+mm25wkgeaqmr6b8un	12835	11	20900.00
+mm25wkgeaqmr6b8un	12836	11	21900.00
+mm25wkgeaqmr6b8un	12837	11	27900.00
+mm25wkgeaqmr6b8un	12841	13	20900.00
+mm25wans5fy2ikncb	12129	12	27900.00
+mm25wans5fy2ikncb	12694	12	24900.00
+mm25wans5fy2ikncb	12825	12	22900.00
+mm25wans5fy2ikncb	12828	12	14900.00
+mm25wans5fy2ikncb	12834	12	17900.00
+mm25wans5fy2ikncb	12835	12	20900.00
+mm25wans5fy2ikncb	12836	11	21900.00
+mm25wans5fy2ikncb	12837	12	27900.00
+mm25wans5fy2ikncb	12841	14	20900.00
+mm25v4aqgkqzh9j40	12704	10	29900.00
+mm25v4aqgkqzh9j40	12782	10	17900.00
+mm25v4aqgkqzh9j40	12870	9	35900.00
+mm25v4aqgkqzh9j40	12871	10	19900.00
+mm25v4aqgkqzh9j40	12876	10	19900.00
+mm25v4aqgkqzh9j40	12880	10	24900.00
+mm25v4aqgkqzh9j40	12882	10	23900.00
+mm25v4aqgkqzh9j40	12885	10	23900.00
+mm25v4aqgkqzh9j40	12889	10	28900.00
+mm25v4aqgkqzh9j40	12905	10	34900.00
+mm25v4aqgkqzh9j40	12907	9	28900.00
+mm25v4aqgkqzh9j40	12908	10	28900.00
+mm25v4aqgkqzh9j40	12909	10	23900.00
+mm25v4aqgkqzh9j40	12910	10	22900.00
+mm25v4aqgkqzh9j40	12916	10	20900.00
+mm25v4aqgkqzh9j40	12931	10	29900.00
+mm25v4aqgkqzh9j40	12937	10	14900.00
+mm25teuw5s5a06njw	12129	11	27900.00
+mm25teuw5s5a06njw	12694	11	24900.00
+mm25teuw5s5a06njw	12825	11	22900.00
+mm25teuw5s5a06njw	12828	11	14900.00
+mm25teuw5s5a06njw	12834	11	17900.00
+mm25teuw5s5a06njw	12835	11	20900.00
+mm25teuw5s5a06njw	12836	11	21900.00
+mm25teuw5s5a06njw	12837	11	27900.00
+mm25teuw5s5a06njw	12841	13	20900.00
 mm261ih80nzxoq1lv	12698	12	21900.00
 mm261ih80nzxoq1lv	12936	12	14900.00
 mm261ih80nzxoq1lv	12917	12	19900.00
@@ -2634,6 +2555,214 @@ mm261ih80nzxoq1lv	12744	18	19900.00
 mm261ih80nzxoq1lv	12617	18	35900.00
 mm261ih80nzxoq1lv	12870	18	35900.00
 mm261ih80nzxoq1lv	12889	18	28900.00
+mm261bh9kjzjbs3n3	12906	12	28900.00
+mm261bh9kjzjbs3n3	12881	12	33900.00
+mm261bh9kjzjbs3n3	12880	12	24900.00
+mm261bh9kjzjbs3n3	12950	12	27900.00
+mm261bh9kjzjbs3n3	12693	12	25900.00
+mm261bh9kjzjbs3n3	12698	12	21900.00
+mm261bh9kjzjbs3n3	12936	12	14900.00
+mm25zlnrm0l8pxyk3	12679	24	23900.00
+mm25zlnrm0l8pxyk3	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12680	24	16900.00
+mm25zlnrm0l8pxyk3	12943	24	19900.00
+mm25zlnrm0l8pxyk3	12936	24	14900.00
+mm25zlnrm0l8pxyk3	12877	24	19900.00
+mm25zlnrm0l8pxyk3	12920	24	21900.00
+mm25zlnrm0l8pxyk3	12934	24	24900.00
+mm25zlnrm0l8pxyk3	12898	24	24900.00
+mm25zlnrm0l8pxyk3	12881	24	33900.00
+mm25zlnrm0l8pxyk3	12907	24	28900.00
+mm25zlnrm0l8pxyk3	12933	24	34900.00
+mm25zlnrm0l8pxyk3	12906	24	28900.00
+mm25zlnrm0l8pxyk3	12935	24	35900.00
+mm25zlnrm0l8pxyk3	12908	24	28900.00
+mm25zlnrm0l8pxyk3	12889	24	28900.00
+mm25zlnrm0l8pxyk3	12747	24	31900.00
+mm25zlnrm0l8pxyk3	12872	24	24900.00
+mm25zlnrm0l8pxyk3	12919	24	25900.00
+mm25zlnrm0l8pxyk3	12951	24	27900.00
+mm25zlnrm0l8pxyk3	12909	24	23900.00
+mm25zlnrm0l8pxyk3	12913	24	29900.00
+mm25zlnrm0l8pxyk3	12942	24	24900.00
+mm25zlnrm0l8pxyk3	12923	24	24900.00
+mm25zlnrm0l8pxyk3	12862	24	23900.00
+mm25zlnrm0l8pxyk3	12941	24	20900.00
+mm25zlnrm0l8pxyk3	12875	24	19900.00
+mm25zlnrm0l8pxyk3	12879	24	38900.00
+mm25zlnrm0l8pxyk3	12914	24	33900.00
+mm25zlnrm0l8pxyk3	12880	24	24900.00
+mm25zlnrm0l8pxyk3	12873	24	22900.00
+mm25zlnrm0l8pxyk3	12882	24	23900.00
+mm25zlnrm0l8pxyk3	12952	24	26900.00
+mm25zlnrm0l8pxyk3	12937	24	14900.00
+mm25zlnrm0l8pxyk3	12893	24	24900.00
+mm25shroo1oy81pds	12906	24	28900.00
+mm25shroo1oy81pds	12933	24	34900.00
+mm25shroo1oy81pds	12889	24	28900.00
+mm25shroo1oy81pds	12708	24	24900.00
+mm25shroo1oy81pds	12919	24	25900.00
+mm25shroo1oy81pds	12951	24	27900.00
+mm25shroo1oy81pds	12937	24	14900.00
+mm25shroo1oy81pds	12862	24	23900.00
+mm25shroo1oy81pds	12911	24	18900.00
+mm25shroo1oy81pds	12882	24	23900.00
+mm25shroo1oy81pds	12952	24	26900.00
+mm25shroo1oy81pds	12913	24	29900.00
+mm25shroo1oy81pds	12880	24	24900.00
+mm25shroo1oy81pds	12883	24	24900.00
+mm25shroo1oy81pds	12885	24	23900.00
+mm25shroo1oy81pds	12892	24	24900.00
+mm25shroo1oy81pds	12704	24	29900.00
+mm25shroo1oy81pds	12888	24	19900.00
+mm25shroo1oy81pds	12939	24	20900.00
+mm25shroo1oy81pds	12366	24	19900.00
+mm25shroo1oy81pds	12893	24	24900.00
+mm25shroo1oy81pds	12921	24	24900.00
+mm25shroo1oy81pds	12860	24	16900.00
+mm25shroo1oy81pds	12754	24	16900.00
+mm25shroo1oy81pds	12000	24	49900.00
+mm25shroo1oy81pds	12771	24	16900.00
+mm25shroo1oy81pds	12574	24	25900.00
+mm25shroo1oy81pds	12876	24	19900.00
+mm25shroo1oy81pds	12950	24	27900.00
+mm25shroo1oy81pds	12877	24	19900.00
+mm25shroo1oy81pds	12917	24	19900.00
+mm25shroo1oy81pds	12680	24	16900.00
+mm25shroo1oy81pds	12897	24	19900.00
+mm25shroo1oy81pds	12945	24	19900.00
+mm25shroo1oy81pds	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12885	24	23900.00
+mm25zlnrm0l8pxyk3	12884	24	21900.00
+mm25zlnrm0l8pxyk3	12860	24	16900.00
+mm25zlnrm0l8pxyk3	12910	24	22900.00
+mm25zlnrm0l8pxyk3	12782	24	17900.00
+mm25zlnrm0l8pxyk3	12915	24	28900.00
+mm25zlnrm0l8pxyk3	12783	24	17900.00
+mm25zlnrm0l8pxyk3	12921	24	24900.00
+mm25zlnrm0l8pxyk3	12924	24	21900.00
+mm25zlnrm0l8pxyk3	12888	24	19900.00
+mm25zlnrm0l8pxyk3	12939	24	20900.00
+mm25zlnrm0l8pxyk3	12871	24	19900.00
+mm25zlnrm0l8pxyk3	12931	24	29900.00
+mm25zlnrm0l8pxyk3	12950	24	27900.00
+mm25zlnrm0l8pxyk3	12912	24	18900.00
+mm25zlnrm0l8pxyk3	12876	24	19900.00
+mm25zlnrm0l8pxyk3	12917	24	19900.00
+mm25shroo1oy81pds	12920	24	21900.00
+mm25shroo1oy81pds	12934	24	24900.00
+mm2c7uonjxqwkjpf5	12945	168	14000.00
+mm2c7uonjxqwkjpf5	12860	168	14000.00
+mm2c7uonjxqwkjpf5	12665	168	14000.00
+mm2c7uonjxqwkjpf5	12897	138	16000.00
+mm2c7uonjxqwkjpf5	12876	168	16000.00
+mm2c7uonjxqwkjpf5	12943	138	16000.00
+mm2c7uonjxqwkjpf5	12877	168	16000.00
+mm2c7uonjxqwkjpf5	12864	138	16000.00
+mm2c7uonjxqwkjpf5	12888	168	16000.00
+mm2c7uonjxqwkjpf5	12871	138	16000.00
+mm2c7uonjxqwkjpf5	12911	168	16000.00
+mm2c7uonjxqwkjpf5	12861	168	16000.00
+mm2c7uonjxqwkjpf5	12920	48	19000.00
+mm2c7uonjxqwkjpf5	12893	48	19000.00
+mm2c7uonjxqwkjpf5	12924	48	19000.00
+mm2c7uonjxqwkjpf5	12955	48	19000.00
+mm2c7uonjxqwkjpf5	12919	48	19000.00
+mm2c7uonjxqwkjpf5	12959	60	35000.00
+mm2c7uonjxqwkjpf5	12960	60	35000.00
+mm25zgt5curej417m	12951	9	27900.00
+mm25zgt5curej417m	12909	9	23900.00
+mm25zgt5curej417m	12926	8	27900.00
+mm25zgt5curej417m	12919	8	25900.00
+mm25zgt5curej417m	12873	8	22900.00
+mm25zgt5curej417m	12937	15	14900.00
+mm25zgt5curej417m	12893	9	24900.00
+mm25zgt5curej417m	12883	9	24900.00
+mm25zgt5curej417m	12924	9	21900.00
+mm25zgt5curej417m	12871	8	19900.00
+mm25zgt5curej417m	12931	8	29900.00
+mm25zgt5curej417m	12920	8	21900.00
+mm25shroo1oy81pds	12943	24	19900.00
+mm25shroo1oy81pds	12898	24	24900.00
+mm25rzt79inviirmd	12923	18	23900.00
+mm25rzt79inviirmd	12882	18	23900.00
+mm25rzt79inviirmd	12909	18	23900.00
+mm25rzt79inviirmd	12872	18	23900.00
+mm261zsok2g1m5dod	12640	8	24900.00
+mm261zsok2g1m5dod	12884	8	21900.00
+mm261zsok2g1m5dod	12783	8	17900.00
+mm261zsok2g1m5dod	12860	8	16900.00
+mm261zsok2g1m5dod	12692	8	21900.00
+mm261zsok2g1m5dod	12918	8	19900.00
+mm261zsok2g1m5dod	12912	8	18900.00
+mm261zsok2g1m5dod	12754	8	16900.00
+mm261zsok2g1m5dod	12907	6	28900.00
+mm261zsok2g1m5dod	12908	6	28900.00
+mm261zsok2g1m5dod	12935	6	35900.00
+mm261zsok2g1m5dod	12744	6	19900.00
+mm261zsok2g1m5dod	12885	8	23900.00
+mm261zsok2g1m5dod	12909	8	23900.00
+mm261zsok2g1m5dod	12914	8	33900.00
+mm261zsok2g1m5dod	12911	8	18900.00
+mm261zsok2g1m5dod	12880	8	24900.00
+mm261zsok2g1m5dod	12937	8	14900.00
+mm25rzt79inviirmd	12911	18	18900.00
+mm25rzt79inviirmd	12919	18	24900.00
+mm25rzt79inviirmd	12926	18	26900.00
+mm25rzt79inviirmd	12835	12	19900.00
+mm25rzt79inviirmd	12831	12	23900.00
+mm25rzt79inviirmd	12836	12	20900.00
+mm25rzt79inviirmd	12855	12	23900.00
+mm25rzt79inviirmd	12129	12	26900.00
+mm25rzt79inviirmd	12841	12	19900.00
+mm25rzt79inviirmd	12834	12	16900.00
+mm25rzt79inviirmd	12825	12	21900.00
+mm25rzt79inviirmd	12818	12	40900.00
+mm25rzt79inviirmd	12821	12	33900.00
+mm25rzt79inviirmd	12840	12	33900.00
+mm261wafiiiwwshld	12933	12	34900.00
+mm261wafiiiwwshld	12908	12	28900.00
+mm261wafiiiwwshld	12870	12	35900.00
+mm261wafiiiwwshld	12881	12	33900.00
+mm261wafiiiwwshld	12920	12	21900.00
+mm261wafiiiwwshld	12892	12	24900.00
+mm261wafiiiwwshld	12943	12	19900.00
+mm261wafiiiwwshld	12640	12	24900.00
+mm261wafiiiwwshld	12910	12	22900.00
+mm261wafiiiwwshld	12922	12	21900.00
+mm261wafiiiwwshld	12921	12	24900.00
+mm261wafiiiwwshld	12884	12	21900.00
+mm261wafiiiwwshld	12871	12	19900.00
+mm261wafiiiwwshld	12888	12	19900.00
+mm261wafiiiwwshld	12917	12	19900.00
+mm261wafiiiwwshld	12771	12	16900.00
+mm261wafiiiwwshld	12877	12	19900.00
+mm261wafiiiwwshld	12893	12	24900.00
+mm261sicytqircpx5	12698	12	21900.00
+mm261sicytqircpx5	12737	12	22900.00
+mm261sicytqircpx5	12754	12	16900.00
+mm261sicytqircpx5	12876	12	19900.00
+mm261sicytqircpx5	12805	12	19900.00
+mm261sicytqircpx5	12893	12	24900.00
+mm261sicytqircpx5	12931	12	29900.00
+mm261sicytqircpx5	12911	12	18900.00
+mm261sicytqircpx5	12908	12	28900.00
+mm261sicytqircpx5	12933	12	34900.00
+mm261sicytqircpx5	12744	12	19900.00
+mm261sicytqircpx5	12907	12	28900.00
+mm261sicytqircpx5	12935	12	35900.00
+mm25zbho4eabh3lh4	12951	4	27900.00
+mm25zbho4eabh3lh4	12909	4	23900.00
+mm25zbho4eabh3lh4	12747	4	31900.00
+mm25zbho4eabh3lh4	12872	6	24900.00
+mm25zbho4eabh3lh4	12926	4	27900.00
+mm25zbho4eabh3lh4	12919	4	25900.00
+mm25zbho4eabh3lh4	12873	4	22900.00
+mm25zbho4eabh3lh4	12923	4	24900.00
+mm25zbho4eabh3lh4	12882	4	23900.00
+mm25zbho4eabh3lh4	12862	4	23900.00
+mm25zbho4eabh3lh4	12952	4	26900.00
+mm25zbho4eabh3lh4	12911	4	18900.00
 mm261ny1d0yfufg6p	12878	6	64900.00
 mm261ny1d0yfufg6p	12868	6	69900.00
 mm261ny1d0yfufg6p	12698	12	21900.00
@@ -2675,67 +2804,6 @@ mm261ny1d0yfufg6p	12907	12	28900.00
 mm261ny1d0yfufg6p	12881	12	33900.00
 mm261ny1d0yfufg6p	12905	12	34900.00
 mm261ny1d0yfufg6p	12908	12	28900.00
-mm261sicytqircpx5	12698	12	21900.00
-mm261sicytqircpx5	12737	12	22900.00
-mm261sicytqircpx5	12754	12	16900.00
-mm261sicytqircpx5	12876	12	19900.00
-mm261sicytqircpx5	12805	12	19900.00
-mm261sicytqircpx5	12893	12	24900.00
-mm261sicytqircpx5	12931	12	29900.00
-mm261sicytqircpx5	12911	12	18900.00
-mm261sicytqircpx5	12908	12	28900.00
-mm261sicytqircpx5	12933	12	34900.00
-mm261sicytqircpx5	12744	12	19900.00
-mm261sicytqircpx5	12907	12	28900.00
-mm261sicytqircpx5	12935	12	35900.00
-mm261wafiiiwwshld	12933	12	34900.00
-mm261wafiiiwwshld	12908	12	28900.00
-mm261wafiiiwwshld	12870	12	35900.00
-mm261wafiiiwwshld	12881	12	33900.00
-mm261wafiiiwwshld	12920	12	21900.00
-mm261wafiiiwwshld	12892	12	24900.00
-mm261wafiiiwwshld	12943	12	19900.00
-mm261wafiiiwwshld	12640	12	24900.00
-mm261wafiiiwwshld	12910	12	22900.00
-mm261wafiiiwwshld	12922	12	21900.00
-mm261wafiiiwwshld	12921	12	24900.00
-mm261wafiiiwwshld	12884	12	21900.00
-mm261wafiiiwwshld	12871	12	19900.00
-mm261wafiiiwwshld	12888	12	19900.00
-mm261wafiiiwwshld	12917	12	19900.00
-mm261wafiiiwwshld	12771	12	16900.00
-mm261wafiiiwwshld	12877	12	19900.00
-mm261wafiiiwwshld	12893	12	24900.00
-mm261zsok2g1m5dod	12640	8	24900.00
-mm261zsok2g1m5dod	12884	8	21900.00
-mm261zsok2g1m5dod	12783	8	17900.00
-mm261zsok2g1m5dod	12860	8	16900.00
-mm261zsok2g1m5dod	12692	8	21900.00
-mm261zsok2g1m5dod	12918	8	19900.00
-mm261zsok2g1m5dod	12912	8	18900.00
-mm261zsok2g1m5dod	12754	8	16900.00
-mm261zsok2g1m5dod	12907	6	28900.00
-mm261zsok2g1m5dod	12908	6	28900.00
-mm261zsok2g1m5dod	12935	6	35900.00
-mm261zsok2g1m5dod	12744	6	19900.00
-mm261zsok2g1m5dod	12885	8	23900.00
-mm261zsok2g1m5dod	12909	8	23900.00
-mm261zsok2g1m5dod	12914	8	33900.00
-mm261zsok2g1m5dod	12911	8	18900.00
-mm261zsok2g1m5dod	12880	8	24900.00
-mm261zsok2g1m5dod	12937	8	14900.00
-mm25zbho4eabh3lh4	12951	4	27900.00
-mm25zbho4eabh3lh4	12909	4	23900.00
-mm25zbho4eabh3lh4	12747	4	31900.00
-mm25zbho4eabh3lh4	12872	6	24900.00
-mm25zbho4eabh3lh4	12926	4	27900.00
-mm25zbho4eabh3lh4	12919	4	25900.00
-mm25zbho4eabh3lh4	12873	4	22900.00
-mm25zbho4eabh3lh4	12923	4	24900.00
-mm25zbho4eabh3lh4	12882	4	23900.00
-mm25zbho4eabh3lh4	12862	4	23900.00
-mm25zbho4eabh3lh4	12952	4	26900.00
-mm25zbho4eabh3lh4	12911	4	18900.00
 mm25zbho4eabh3lh4	12937	4	14900.00
 mm25zbho4eabh3lh4	12941	4	20900.00
 mm25zbho4eabh3lh4	12885	4	23900.00
@@ -2759,61 +2827,61 @@ mm25zbho4eabh3lh4	12921	4	24900.00
 mm25zbho4eabh3lh4	12692	4	21900.00
 mm25zbho4eabh3lh4	12871	4	19900.00
 mm25zbho4eabh3lh4	12783	4	17900.00
-mm2c7uonjxqwkjpf5	12945	168	14000.00
-mm2c7uonjxqwkjpf5	12860	168	14000.00
-mm2c7uonjxqwkjpf5	12665	168	14000.00
-mm2c7uonjxqwkjpf5	12897	138	16000.00
-mm2c7uonjxqwkjpf5	12876	168	16000.00
-mm2c7uonjxqwkjpf5	12943	138	16000.00
-mm2c7uonjxqwkjpf5	12877	168	16000.00
-mm2c7uonjxqwkjpf5	12864	138	16000.00
-mm2c7uonjxqwkjpf5	12888	168	16000.00
-mm2c7uonjxqwkjpf5	12871	138	16000.00
-mm2c7uonjxqwkjpf5	12911	168	16000.00
-mm2c7uonjxqwkjpf5	12861	168	16000.00
-mm2c7uonjxqwkjpf5	12920	48	19000.00
-mm2c7uonjxqwkjpf5	12893	48	19000.00
-mm2c7uonjxqwkjpf5	12924	48	19000.00
-mm2c7uonjxqwkjpf5	12955	48	19000.00
-mm2c7uonjxqwkjpf5	12919	48	19000.00
-mm2c7uonjxqwkjpf5	12959	60	35000.00
-mm2c7uonjxqwkjpf5	12960	60	35000.00
+mm25z6898ea5cmw0f	12898	6	24900.00
+mm25z6898ea5cmw0f	12920	6	21900.00
+mm25z6898ea5cmw0f	12945	6	19900.00
+mm25z6898ea5cmw0f	12934	6	24900.00
+mm25z6898ea5cmw0f	12805	6	19900.00
+mm25z6898ea5cmw0f	12907	6	28900.00
+mm25z6898ea5cmw0f	12744	6	19900.00
+mm25z6898ea5cmw0f	12906	6	28900.00
+mm25z6898ea5cmw0f	12935	6	35900.00
+mm25z6898ea5cmw0f	12908	6	28900.00
+mm25z6898ea5cmw0f	12881	6	33900.00
+mm25z6898ea5cmw0f	12924	6	21900.00
+mm25z6898ea5cmw0f	12937	6	14900.00
+mm25z6898ea5cmw0f	12913	6	29900.00
+mm25z6898ea5cmw0f	12911	6	18900.00
+mm25z6898ea5cmw0f	12952	6	26900.00
+mm25z6898ea5cmw0f	12919	6	25900.00
+mm25z6898ea5cmw0f	12926	6	27900.00
+mm25z6898ea5cmw0f	12872	6	24900.00
 \.
 
 
 --
--- TOC entry 5363 (class 0 OID 18239)
+-- TOC entry 5365 (class 0 OID 18239)
 -- Dependencies: 239
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number) FROM stdin;
-mm25qs8bzb9btrgvw	179	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:56:41.580Z	Admin Principal	1
-mm25rzt79inviirmd	177	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:57:38.059Z	Admin Principal	2
-mm25shroo1oy81pds	232	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	22346400.00	2026-02-25T14:58:01.332Z	Admin Principal	3
-mm25teuw5s5a06njw	74	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2242900.00	2026-02-25T14:58:44.216Z	Admin Principal	4
-mm25v4aqgkqzh9j40	305	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	4238200.00	2026-02-25T15:00:03.842Z	Admin Principal	5
-mm25wans5fy2ikncb	90	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2421100.00	2026-02-25T15:00:58.744Z	Admin Principal	6
-mm25wkgeaqmr6b8un	217	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2242900.00	2026-02-25T15:01:11.438Z	Admin Principal	7
-mm25x0trsopvohrgo	231	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	4740000.00	2026-02-25T15:01:32.655Z	Admin Principal	8
-mm25yurfvl3ytrp78	81	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	10680000.00	2026-02-25T15:02:58.107Z	Admin Principal	9
-mm25z1dbniegbh1m6	216	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2800000.00	2026-02-25T15:03:06.671Z	Admin Principal	10
-mm25z6898ea5cmw0f	158	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2874600.00	2026-02-25T15:03:12.969Z	Admin Principal	11
-mm25zgt5curej417m	107	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2522200.00	2026-02-25T15:03:26.681Z	Admin Principal	13
-mm25zlnrm0l8pxyk3	59	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	30523200.00	2026-02-25T15:03:32.967Z	Admin Principal	14
-mm261bh9kjzjbs3n3	258	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	2139600.00	2026-02-25T15:04:53.085Z	Admin Principal	1
-mm261ih80nzxoq1lv	270	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	16347800.00	2026-02-25T15:05:02.156Z	Admin Principal	2
-mm261ny1d0yfufg6p	138	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	11754000.00	2026-02-25T15:05:09.241Z	Admin Principal	3
-mm261sicytqircpx5	264	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3884400.00	2026-02-25T15:05:15.156Z	Admin Principal	4
-mm261wafiiiwwshld	50	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	5258400.00	2026-02-25T15:05:20.055Z	Admin Principal	5
-mm261zsok2g1m5dod	299	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3078400.00	2026-02-25T15:05:24.600Z	Admin Principal	6
-mm25zbho4eabh3lh4	296	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	3311800.00	2026-02-25T15:03:19.788Z	Admin Principal	12
-mm2c7uonjxqwkjpf5	300	mlia6gb0u2bhftxam	mljjqn48zbxhtg0yw	38088000.00	2026-02-25T17:57:55.607Z	Admin Principal	1
+COPY public.orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number, start_date, end_date) FROM stdin;
+mm2c7uonjxqwkjpf5	300	mlia6gb0u2bhftxam	mljjqn48zbxhtg0yw	38088000.00	2026-02-25T17:57:55.607Z	Admin Principal	1	2026-02-14	2026-02-26
+mm261zsok2g1m5dod	299	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3078400.00	2026-02-25T15:05:24.600Z	Admin Principal	6	2026-03-01	\N
+mm261wafiiiwwshld	50	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	5258400.00	2026-02-25T15:05:20.055Z	Admin Principal	5	2026-02-11	\N
+mm261sicytqircpx5	264	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	3884400.00	2026-02-25T15:05:15.156Z	Admin Principal	4	2026-02-04	\N
+mm261ny1d0yfufg6p	138	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	11754000.00	2026-02-25T15:05:09.241Z	Admin Principal	3	2026-02-04	\N
+mm261ih80nzxoq1lv	270	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	16347800.00	2026-02-25T15:05:02.156Z	Admin Principal	2	2026-01-22	\N
+mm261bh9kjzjbs3n3	258	mlia7rpjfmtwhg66q	mljjqn48zbxhtg0yw	2139600.00	2026-02-25T15:04:53.085Z	Admin Principal	1	2026-01-20	\N
+mm25zlnrm0l8pxyk3	59	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	30523200.00	2026-02-25T15:03:32.967Z	Admin Principal	14	2026-02-09	\N
+mm25zgt5curej417m	107	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2522200.00	2026-02-25T15:03:26.681Z	Admin Principal	13	2026-02-05	\N
+mm25zbho4eabh3lh4	296	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	3311800.00	2026-02-25T15:03:19.788Z	Admin Principal	12	2026-03-01	\N
+mm25z6898ea5cmw0f	158	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2874600.00	2026-02-25T15:03:12.969Z	Admin Principal	11	2026-02-02	\N
+mm25z1dbniegbh1m6	216	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2800000.00	2026-02-25T15:03:06.671Z	Admin Principal	10	2026-02-15	\N
+mm25yurfvl3ytrp78	81	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	10680000.00	2026-02-25T15:02:58.107Z	Admin Principal	9	2026-02-01	\N
+mm25x0trsopvohrgo	231	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	4740000.00	2026-02-25T15:01:32.655Z	Admin Principal	8	2026-02-16	2026-02-28
+mm25wkgeaqmr6b8un	217	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2242900.00	2026-02-25T15:01:11.438Z	Admin Principal	7	2026-02-16	2026-02-28
+mm25wans5fy2ikncb	90	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2421100.00	2026-02-25T15:00:58.744Z	Admin Principal	6	2026-02-16	2026-02-28
+mm25v4aqgkqzh9j40	305	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	4238200.00	2026-02-25T15:00:03.842Z	Admin Principal	5	2026-02-16	2026-02-28
+mm25teuw5s5a06njw	74	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2242900.00	2026-02-25T14:58:44.216Z	Admin Principal	4	2026-02-16	2026-02-28
+mm25shroo1oy81pds	232	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	22346400.00	2026-02-25T14:58:01.332Z	Admin Principal	3	2026-01-15	\N
+mm25rzt79inviirmd	177	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:57:38.059Z	Admin Principal	2	2026-02-14	\N
+mm25qs8bzb9btrgvw	179	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:56:41.580Z	Admin Principal	1	2026-02-14	\N
 \.
 
 
 --
--- TOC entry 5364 (class 0 OID 18251)
+-- TOC entry 5366 (class 0 OID 18251)
 -- Dependencies: 240
 -- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2939,15 +3007,15 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12959	CAMISETA BOLSILLO ENCAGE	37900.00	MARTHA RAMIREZ	LYCRA FRIA	0.92	\N	\N	1	2026-02-13 15:45:46
 12960	CAMISETA ENCAJE FTE	39900.00	MARTHA RAMIREZ	LYCRA FRIA	0.91	\N	\N	1	2026-02-13 15:45:46
 12961	CAMSILLA ENCEGE CORAZON	29900.00	MARTHA RAMIREZ	RIB	0.63	\N	\N	1	2026-02-13 15:45:46
-12963	BLUSA BOLER MANG ESTA	40900.00	prueba	LINO PRAGA	1.00	\N	\N	1	\N
 10210	BLUSA BASICA	20900.00	prueba	BURDA 	0.40	\N	\N	1	\N
 12000	CONJUN  CHAMPION B	49900.00	JACKELINE PEREA	QUIMBAYA	1.05	\N	\N	1	2026-02-16 18:11:38
 13032	BUSO DE CIERRE	34900.00	prueba	RIB	0.74	\N	\N	1	\N
+12963	BLUSA BOLER MANG ESTA	40900.00	prueba	LINO PRAGA	1.00	\N	\N	1	\N
 \.
 
 
 --
--- TOC entry 5365 (class 0 OID 18261)
+-- TOC entry 5367 (class 0 OID 18261)
 -- Dependencies: 241
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3057,7 +3125,7 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 
 
 --
--- TOC entry 5366 (class 0 OID 18271)
+-- TOC entry 5368 (class 0 OID 18271)
 -- Dependencies: 242
 -- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3079,11 +3147,43 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 14	mlr01i6d0g5qluf2h	12906	60
 15	mlttcu00vutreommn	12959	114
 16	mlty1yl4a6ry302z0	12960	114
+17	mmao4q01lxfht7ff2	12969	174
+18	mmao5su5kugcx7xv7	12921	60
+19	mmao6whwa2xbw9p4p	12923	60
+20	mmao79naem9n1qbe9	12917	126
+21	mmao8x1be6xx3btxl	13002	90
+22	mmao9do8m0lg17fr6	12875	90
+23	mmao9p3nebiokex9t	12937	180
+24	mmaoa0azmws6s54a	12943	252
+25	mmaoajr4ipuno6hl8	12893	150
+26	mmaoayvt347s1m4kf	12952	90
+27	mmaob8i7q5d7katdw	12934	60
+28	mmaobjlpzuoylcaag	12905	60
+29	mmaocgw2h81nskfgj	12898	60
+30	mmaocta0d700oicjj	12922	60
+31	mmaod67lqfxnpyn4d	12926	90
+32	mmaodgh2kf28twwgc	12910	60
+33	mmaoeh09ca7gtrvca	12911	171
+34	mmaoeq2wmo7gj6j6p	12897	198
+35	mmaof79qqdg6kd5pj	12876	150
+36	mmaofh4i892efv0o1	12913	90
+37	mmaofx1h06n1546ur	12877	150
+38	mmaogbltgoe8rv8ri	12888	150
+39	mmaohu58qvu5328vx	12955	48
+40	mmaoi9xpijfoza3p6	12909	198
+41	mmaoipiizi4ze0tjc	12896	60
+42	mmaok0r0kw9pb5szb	12890	105
+43	mmaokbqe7lbt1eszq	12894	317
+44	mmaon9lzzmjumgs7e	12888	129
+45	mmaoo6u5e2m5f4e7b	12877	120
+46	mmaootlnq6jt4ayyb	12871	84
+47	mmaoprvdbmx0vuvoc	12860	156
+48	mmaor9v5w9x81d2uf	12876	120
 \.
 
 
 --
--- TOC entry 5368 (class 0 OID 18281)
+-- TOC entry 5370 (class 0 OID 18281)
 -- Dependencies: 244
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3105,11 +3205,43 @@ mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z
 mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t
 mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t
 mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f
+mmao4q01lxfht7ff2	7760	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:53:34.370-05:00	t
+mmao5su5kugcx7xv7	7758	71223381	1	\N	0	Jhon Montoya	2026-03-03T08:54:24.702-05:00	t
+mmao6whwa2xbw9p4p	7761	1037264064	0	\N	0	Jhon Montoya	2026-03-03T08:55:16.100-05:00	t
+mmao79naem9n1qbe9	7742	43668259	0	\N	0	Jhon Montoya	2026-03-03T08:55:33.143-05:00	t
+mmao8x1be6xx3btxl	7740	42999087	0	\N	0	Jhon Montoya	2026-03-03T08:56:50.112-05:00	t
+mmao9do8m0lg17fr6	7744	15927569	0	\N	0	Jhon Montoya	2026-03-03T08:57:11.672-05:00	t
+mmao9p3nebiokex9t	7737	1045017301	0	\N	0	Jhon Montoya	2026-03-03T08:57:26.484-05:00	t
+mmaoa0azmws6s54a	7709	43048297	0	\N	0	Jhon Montoya	2026-03-03T08:57:41.003-05:00	t
+mmaoajr4ipuno6hl8	7720	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:58:06.210-05:00	t
+mmaoayvt347s1m4kf	7718	1128386891	0	\N	0	Jhon Montoya	2026-03-03T08:58:25.818-05:00	t
+mmaob8i7q5d7katdw	7728	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:58:38.288-05:00	t
+mmaobjlpzuoylcaag	7732	71223381	0	\N	0	Jhon Montoya	2026-03-03T08:58:52.670-05:00	t
+mmaocgw2h81nskfgj	7729	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:59:35.810-05:00	t
+mmaocta0d700oicjj	7731	700530400	0	\N	0	Jhon Montoya	2026-03-03T08:59:51.865-05:00	t
+mmaod67lqfxnpyn4d	7719	1037264064	1	\N	0	Jhon Montoya	2026-03-03T09:00:08.626-05:00	t
+mmaodgh2kf28twwgc	7739	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:00:21.926-05:00	t
+mmaoeh09ca7gtrvca	7667	43048297	0	\N	0	Jhon Montoya	2026-03-03T09:01:09.274-05:00	t
+mmaoeq2wmo7gj6j6p	7682	700530400	0	\N	0	Jhon Montoya	2026-03-03T09:01:21.033-05:00	t
+mmaof79qqdg6kd5pj	7684	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:01:43.311-05:00	t
+mmaofh4i892efv0o1	7679	1128386891	0	\N	0	Jhon Montoya	2026-03-03T09:01:56.083-05:00	t
+mmaofx1h06n1546ur	7678	32461771	1	\N	0	Jhon Montoya	2026-03-03T09:02:16.710-05:00	t
+mmaogbltgoe8rv8ri	7683	42999087	0	Compra	1	Jhon Montoya	2026-03-03T09:02:35.586-05:00	t
+mmaohu58qvu5328vx	7663	71223381	0	\N	0	Jhon Montoya	2026-03-03T09:03:46.268-05:00	t
+mmaoi9xpijfoza3p6	7676	1037264064	0	Compra	1	Jhon Montoya	2026-03-03T09:04:06.734-05:00	t
+mmaoipiizi4ze0tjc	7655	42999087	1	\N	0	Jhon Montoya	2026-03-03T09:04:26.922-05:00	t
+mmaok0r0kw9pb5szb	7655	42999087	0	\N	0	Jhon Montoya	2026-03-03T09:05:28.140-05:00	t
+mmaokbqe7lbt1eszq	7647	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:05:42.374-05:00	t
+mmaon9lzzmjumgs7e	7584	39439040	0	Cobro	2	Jhon Montoya	2026-03-03T09:07:59.591-05:00	t
+mmaoo6u5e2m5f4e7b	7658	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:08:42.654-05:00	t
+mmaootlnq6jt4ayyb	7657	98587077	0	\N	0	Jhon Montoya	2026-03-03T09:09:12.155-05:00	t
+mmaoprvdbmx0vuvoc	7570	15927569	0	\N	0	Jhon Montoya	2026-03-03T09:09:56.569-05:00	t
+mmaor9v5w9x81d2uf	7624	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:11:06.546-05:00	t
 \.
 
 
 --
--- TOC entry 5369 (class 0 OID 18293)
+-- TOC entry 5371 (class 0 OID 18293)
 -- Dependencies: 245
 -- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3121,7 +3253,7 @@ COPY public.return_reception_items (id, return_reception_id, reference, quantity
 
 
 --
--- TOC entry 5371 (class 0 OID 18303)
+-- TOC entry 5373 (class 0 OID 18303)
 -- Dependencies: 247
 -- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3132,7 +3264,7 @@ mm992elendvcsh0cp	133	NC-490	50800.00	Prueba general	2026-03-02T09:04:05.859-05:
 
 
 --
--- TOC entry 5372 (class 0 OID 18313)
+-- TOC entry 5374 (class 0 OID 18313)
 -- Dependencies: 248
 -- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3145,7 +3277,7 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
--- TOC entry 5373 (class 0 OID 18321)
+-- TOC entry 5375 (class 0 OID 18321)
 -- Dependencies: 249
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3285,12 +3417,89 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 832	mm9a66x3tqtxja160	h6RAg9QkOCX5TwEmAAAD	online	2026-03-02 09:44:44.31544	2026-03-02 09:44:44.31544
 833	mm9a66x3tqtxja160	1tRgljlUR_bnsv2rAAAF	online	2026-03-02 09:44:44.454261	2026-03-02 09:44:44.454261
 834	mm9a66x3tqtxja160	w__oI3C7lmkl3UatAAAH	online	2026-03-02 09:44:44.473653	2026-03-02 09:44:44.473653
-835	mm9a66x3tqtxja160	Rp_lu8oRsbBGHxwsAAAJ	online	2026-03-02 09:44:44.497363	2026-03-02 09:44:44.497363
+836	mm3x7j6m4p6s4g2zz	Q16Pbvs50_rRoAvTAAAL	online	2026-03-02 09:45:35.282929	2026-03-02 09:45:35.282929
+837	mm3x7j6m4p6s4g2zz	BzVO-Obun1UgQHbhAAAN	online	2026-03-02 09:45:35.451864	2026-03-02 09:45:35.451864
+838	mm3x7j6m4p6s4g2zz	q72Bqtifu4L9LJMFAAAP	online	2026-03-02 09:45:35.582672	2026-03-02 09:45:35.582672
+839	mm3x7j6m4p6s4g2zz	1oq45L77ycRVkq9fAAAR	online	2026-03-02 09:45:35.604459	2026-03-02 09:45:35.604459
+840	mm3x7j6m4p6s4g2zz	TQK_npMwopbNwANlAAAT	online	2026-03-02 09:45:35.624786	2026-03-02 09:45:35.624786
+850	mm3x7j6m4p6s4g2zz	9i70rzPYgNWA6qoTAAAT	online	2026-03-02 09:48:09.825003	2026-03-02 09:48:09.825003
+851	mm3x7j6m4p6s4g2zz	UthyaI_BL_9UVId8AAAV	online	2026-03-02 09:48:10.014113	2026-03-02 09:48:10.014113
+852	mm3x7j6m4p6s4g2zz	4tmRrDcOaUrL2pPLAAAX	online	2026-03-02 09:48:10.159898	2026-03-02 09:48:10.159898
+853	mm3x7j6m4p6s4g2zz	VW_wo1u3ZskWyb1VAAAZ	online	2026-03-02 09:48:10.173821	2026-03-02 09:48:10.173821
+855	mm9a66x3tqtxja160	pvCX5IDh2xUDZPl0AAAd	online	2026-03-02 09:48:17.232291	2026-03-02 09:48:17.232291
+856	mm9a66x3tqtxja160	78xxYl0dAKPDcTzAAAAf	online	2026-03-02 09:48:17.334773	2026-03-02 09:48:17.334773
+857	mm9a66x3tqtxja160	GNmpRZBt4uJCA7YeAAAh	online	2026-03-02 09:48:17.451296	2026-03-02 09:48:17.451296
+858	mm9a66x3tqtxja160	urxY_nQQDNO-1ybIAAAj	online	2026-03-02 09:48:17.466123	2026-03-02 09:48:17.466123
+859	mm9a66x3tqtxja160	p_rLLL8Xmd7RHIY4AAAl	online	2026-03-02 09:48:17.492656	2026-03-02 09:48:17.492656
+869	mm9a66x3tqtxja160	emhGK3X55thpOCzQAAAT	online	2026-03-02 09:50:28.861356	2026-03-02 09:50:28.861356
+870	mm9a66x3tqtxja160	0wTSoG5JQZA3c1JMAAAV	online	2026-03-02 09:50:29.002045	2026-03-02 09:50:29.002045
+871	mm9a66x3tqtxja160	9okPXMNzdW99kYjyAAAX	online	2026-03-02 09:50:29.165404	2026-03-02 09:50:29.165404
+872	mm9a66x3tqtxja160	SlTGO3Z1IA_WIcxZAAAZ	online	2026-03-02 09:50:29.19217	2026-03-02 09:50:29.19217
+874	mm3x7j6m4p6s4g2zz	9pbTnVF04JuK19B3AAAd	online	2026-03-02 09:50:34.577721	2026-03-02 09:50:34.577721
+875	mm3x7j6m4p6s4g2zz	Hz7CT1emVS-3pvPNAAAf	online	2026-03-02 09:50:34.653548	2026-03-02 09:50:34.653548
+876	mm3x7j6m4p6s4g2zz	-Ij8VvXXpJjphGp-AAAh	online	2026-03-02 09:50:34.771136	2026-03-02 09:50:34.771136
+877	mm3x7j6m4p6s4g2zz	Hwt5ylT3ZvysuA0QAAAj	online	2026-03-02 09:50:34.787694	2026-03-02 09:50:34.787694
+878	mm3x7j6m4p6s4g2zz	7KfPEIs8y9BpB6MpAAAl	online	2026-03-02 09:50:34.812431	2026-03-02 09:50:34.812431
+888	mm3x7j6m4p6s4g2zz	POWQmVS01Icre9iMAAAT	online	2026-03-02 10:07:53.341668	2026-03-02 10:07:53.341668
+889	mm3x7j6m4p6s4g2zz	6I9InUw-bsjRyohmAAAV	online	2026-03-02 10:07:53.513072	2026-03-02 10:07:53.513072
+890	mm3x7j6m4p6s4g2zz	o2laysiKpNy-QT2mAAAX	online	2026-03-02 10:07:53.661341	2026-03-02 10:07:53.661341
+891	mm3x7j6m4p6s4g2zz	Gv4cTuLNZUh0XJSkAAAZ	online	2026-03-02 10:07:53.67834	2026-03-02 10:07:53.67834
+892	mm3x7j6m4p6s4g2zz	gmZK-TzBGLHCVZQZAAAb	online	2026-03-02 10:07:53.716138	2026-03-02 10:07:53.716138
+913	mm3x7j6m4p6s4g2zz	i4O_ukuDBRbuHPf4AAAf	online	2026-03-02 10:40:19.992083	2026-03-02 10:40:19.992083
+914	mm3x7j6m4p6s4g2zz	55WAe8jQstsHCO9fAAAh	online	2026-03-02 10:40:20.170092	2026-03-02 10:40:20.170092
+915	mm3x7j6m4p6s4g2zz	-t5Bb_i3165LG9OsAAAj	online	2026-03-02 10:40:20.307873	2026-03-02 10:40:20.307873
+916	mm3x7j6m4p6s4g2zz	o1I_K-Zipco4BzgRAAAl	online	2026-03-02 10:40:20.32772	2026-03-02 10:40:20.32772
+898	mm3x7j6m4p6s4g2zz	_otKn6xAL1RBuGaGAAAL	online	2026-03-02 10:30:14.187726	2026-03-02 10:30:14.187726
+899	mm3x7j6m4p6s4g2zz	Bjf52Qg1Ilek6owoAAAN	online	2026-03-02 10:30:14.440806	2026-03-02 10:30:14.440806
+900	mm3x7j6m4p6s4g2zz	YqsHcsVP6e6FCTM4AAAP	online	2026-03-02 10:30:14.531918	2026-03-02 10:30:14.531918
+901	mm3x7j6m4p6s4g2zz	cImh-iSTekLNAgpVAAAR	online	2026-03-02 10:30:14.553854	2026-03-02 10:30:14.553854
+902	mm3x7j6m4p6s4g2zz	IRbbUYRRo3gWLG3rAAAT	online	2026-03-02 10:30:14.584183	2026-03-02 10:30:14.584183
+917	mm3x7j6m4p6s4g2zz	xc4mGv2e-eDJBdiWAAAn	online	2026-03-02 10:40:20.344547	2026-03-02 10:40:20.344547
+1128	mm3x7j6m4p6s4g2zz	RQjvOmYB6W9QBWNSAABR	online	2026-03-02 12:37:07.157173	2026-03-02 12:37:07.157173
+1129	mm3x7j6m4p6s4g2zz	Uy_D1AiMQEwkMOt7AABT	online	2026-03-02 12:37:07.327329	2026-03-02 12:37:07.327329
+1130	mm3x7j6m4p6s4g2zz	4oghv27kaTTRb3JiAABV	online	2026-03-02 12:37:07.440139	2026-03-02 12:37:07.440139
+1131	mm3x7j6m4p6s4g2zz	26_M49JbOjEIygfEAABX	online	2026-03-02 12:37:07.460107	2026-03-02 12:37:07.460107
+1132	mm3x7j6m4p6s4g2zz	MDfhtdEyteX-HR2NAABZ	online	2026-03-02 12:37:07.478808	2026-03-02 12:37:07.478808
+1143	mm3x7j6m4p6s4g2zz	L6D6GcJxqu13nw1eAAAV	online	2026-03-02 12:39:03.241198	2026-03-02 12:39:03.241198
+1144	mm3x7j6m4p6s4g2zz	i29aYmbyFvUv9EsFAAAX	online	2026-03-02 12:39:03.464461	2026-03-02 12:39:03.464461
+1145	mm3x7j6m4p6s4g2zz	HXs10gd5lUl4p6wAAAAZ	online	2026-03-02 12:39:03.600266	2026-03-02 12:39:03.600266
+1146	mm3x7j6m4p6s4g2zz	6uNDLvu0WWhsLpQMAAAb	online	2026-03-02 12:39:03.621439	2026-03-02 12:39:03.621439
+1147	mm3x7j6m4p6s4g2zz	jgnE9S6y021JrAGLAAAd	online	2026-03-02 12:39:03.639354	2026-03-02 12:39:03.639354
+948	mm3x7j6m4p6s4g2zz	4QAAgiK3fLsI1gf0AAAz	online	2026-03-02 11:17:43.729527	2026-03-02 11:17:43.729527
+949	mm3x7j6m4p6s4g2zz	DrEQTJPJbsAL5s6cAAA1	online	2026-03-02 11:17:43.918191	2026-03-02 11:17:43.918191
+950	mm3x7j6m4p6s4g2zz	FGxTa8qv6-H24Eo7AAA3	online	2026-03-02 11:17:44.077187	2026-03-02 11:17:44.077187
+951	mm3x7j6m4p6s4g2zz	NmTDd2KrQ_hzG-GtAAA5	online	2026-03-02 11:17:44.102231	2026-03-02 11:17:44.102231
+952	mm3x7j6m4p6s4g2zz	cM-vCbMWRw3AbZz7AAA7	online	2026-03-02 11:17:44.127243	2026-03-02 11:17:44.127243
+1158	mm3x7j6m4p6s4g2zz	4UcFCtOcDb9Mva0fAAAV	online	2026-03-02 12:40:59.365008	2026-03-02 12:40:59.365008
+1159	mm3x7j6m4p6s4g2zz	iixutngztYDCLqspAAAX	online	2026-03-02 12:40:59.368605	2026-03-02 12:40:59.368605
+1160	mm3x7j6m4p6s4g2zz	L2D8T76Rah3OfYK5AAAZ	online	2026-03-02 12:40:59.494963	2026-03-02 12:40:59.494963
+1161	mm3x7j6m4p6s4g2zz	yhLyOvV-GmAmSNh5AAAb	online	2026-03-02 12:40:59.523795	2026-03-02 12:40:59.523795
+1162	mm3x7j6m4p6s4g2zz	hPf8Qqs50MGuqONLAAAd	online	2026-03-02 12:40:59.543137	2026-03-02 12:40:59.543137
+1173	mm3x7j6m4p6s4g2zz	BExn3almeVwM-KD8AAAV	online	2026-03-02 12:42:06.102121	2026-03-02 12:42:06.102121
+1073	mm3x7j6m4p6s4g2zz	AgCiJ-5JsSYFQ7PdAAAX	online	2026-03-02 12:21:59.155783	2026-03-02 12:21:59.155783
+1074	mm3x7j6m4p6s4g2zz	sJWJMXersFmUxGQaAAAV	online	2026-03-02 12:21:59.189019	2026-03-02 12:21:59.189019
+1075	mm3x7j6m4p6s4g2zz	H93ccMXsQeRC23nQAAAZ	online	2026-03-02 12:21:59.29668	2026-03-02 12:21:59.29668
+1076	mm3x7j6m4p6s4g2zz	0MvJsjxRF84Xe1_4AAAb	online	2026-03-02 12:21:59.324683	2026-03-02 12:21:59.324683
+1077	mm3x7j6m4p6s4g2zz	Rl1VLqtl8B2MawYJAAAd	online	2026-03-02 12:21:59.343977	2026-03-02 12:21:59.343977
+1174	mm3x7j6m4p6s4g2zz	iEIa2MYWGAf1BL8jAAAX	online	2026-03-02 12:42:06.277108	2026-03-02 12:42:06.277108
+1175	mm3x7j6m4p6s4g2zz	dbHyTsCYMPEmbXeTAAAZ	online	2026-03-02 12:42:06.420424	2026-03-02 12:42:06.420424
+1176	mm3x7j6m4p6s4g2zz	cmWsGTsDhbSw0nhKAAAb	online	2026-03-02 12:42:06.443836	2026-03-02 12:42:06.443836
+1177	mm3x7j6m4p6s4g2zz	fPlRneRkKhtxqyUqAAAd	online	2026-03-02 12:42:06.469919	2026-03-02 12:42:06.469919
+1083	mm3x7j6m4p6s4g2zz	iLfZPf4NOgd9dfThAAAL	online	2026-03-02 12:22:20.63163	2026-03-02 12:22:20.63163
+1084	mm3x7j6m4p6s4g2zz	BQBZqrck9NVH6OC7AAAN	online	2026-03-02 12:22:20.859446	2026-03-02 12:22:20.859446
+1085	mm3x7j6m4p6s4g2zz	msXq53F411onQv0EAAAP	online	2026-03-02 12:22:20.997773	2026-03-02 12:22:20.997773
+1086	mm3x7j6m4p6s4g2zz	-NnOrpvJ3zCcDc-vAAAR	online	2026-03-02 12:22:21.017064	2026-03-02 12:22:21.017064
+1087	mm3x7j6m4p6s4g2zz	M8KuTePjvI7CkEarAAAT	online	2026-03-02 12:22:21.042989	2026-03-02 12:22:21.042989
+1305	mm3x7j6m4p6s4g2zz	fOovKo-GszT9naB4AACN	online	2026-03-03 09:13:03.072224	2026-03-03 09:13:03.072224
+1306	mm3x7j6m4p6s4g2zz	GgirpR28UNDyt5BGAACP	online	2026-03-03 09:13:03.27944	2026-03-03 09:13:03.27944
+1307	mm3x7j6m4p6s4g2zz	G2XpYbd6m_diIM8DAACR	online	2026-03-03 09:13:03.402271	2026-03-03 09:13:03.402271
+1308	mm3x7j6m4p6s4g2zz	JJMdZAuV4gc0obMjAACT	online	2026-03-03 09:13:03.419996	2026-03-03 09:13:03.419996
+1309	mm3x7j6m4p6s4g2zz	Z3pHgWOBZm2xu5TdAACV	online	2026-03-03 09:13:03.450922	2026-03-03 09:13:03.450922
 \.
 
 
 --
--- TOC entry 5375 (class 0 OID 18333)
+-- TOC entry 5377 (class 0 OID 18333)
 -- Dependencies: 251
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3303,7 +3512,7 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 
 
 --
--- TOC entry 5377 (class 0 OID 18345)
+-- TOC entry 5379 (class 0 OID 18345)
 -- Dependencies: 253
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3311,43 +3520,43 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
 mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 15:33:24.215444
 mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-26 15:38:58.120206
-mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-02-27 09:48:37.39224
 mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-02-27 15:14:37.741597
 mm5c36r94emvow7nf	Prueba general	GGG	$2b$10$KiKj2zay9at5581Xu6x5lukCOOoU9PF1HTpbojwfTL8LDS4sQHP/S	general	1	\N	2026-03-02 08:51:55.999934
-mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-03-02 09:15:17.713919
-mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-03-02 09:38:23.608111
+mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-03-02 11:48:31.442171
+mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-03-02 15:14:57.621399
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-03-03 07:49:48.651519
 \.
 
 
 --
--- TOC entry 5393 (class 0 OID 0)
+-- TOC entry 5395 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 360, true);
-
-
---
--- TOC entry 5394 (class 0 OID 0)
--- Dependencies: 237
--- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.messages_id_seq', 28, true);
-
-
---
--- TOC entry 5395 (class 0 OID 0)
--- Dependencies: 243
--- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public.reception_items_id_seq', 16, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 413, true);
 
 
 --
 -- TOC entry 5396 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.messages_id_seq', 30, true);
+
+
+--
+-- TOC entry 5397 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.reception_items_id_seq', 48, true);
+
+
+--
+-- TOC entry 5398 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -3356,16 +3565,16 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 7, true);
 
 
 --
--- TOC entry 5397 (class 0 OID 0)
+-- TOC entry 5399 (class 0 OID 0)
 -- Dependencies: 250
 -- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 835, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 1309, true);
 
 
 --
--- TOC entry 5398 (class 0 OID 0)
+-- TOC entry 5400 (class 0 OID 0)
 -- Dependencies: 252
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -3374,7 +3583,7 @@ SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 4, true);
 
 
 --
--- TOC entry 5399 (class 0 OID 0)
+-- TOC entry 5401 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -3572,7 +3781,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- TOC entry 5153 (class 2606 OID 18406)
+-- TOC entry 5155 (class 2606 OID 18406)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3581,7 +3790,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 5155 (class 2606 OID 18408)
+-- TOC entry 5157 (class 2606 OID 18408)
 -- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3590,7 +3799,7 @@ ALTER TABLE ONLY public.product_references
 
 
 --
--- TOC entry 5158 (class 2606 OID 18410)
+-- TOC entry 5160 (class 2606 OID 18410)
 -- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3599,7 +3808,7 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
--- TOC entry 5161 (class 2606 OID 18412)
+-- TOC entry 5163 (class 2606 OID 18412)
 -- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3608,7 +3817,7 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
--- TOC entry 5164 (class 2606 OID 18414)
+-- TOC entry 5166 (class 2606 OID 18414)
 -- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3617,7 +3826,7 @@ ALTER TABLE ONLY public.receptions
 
 
 --
--- TOC entry 5166 (class 2606 OID 18416)
+-- TOC entry 5168 (class 2606 OID 18416)
 -- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3626,7 +3835,7 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
--- TOC entry 5168 (class 2606 OID 18418)
+-- TOC entry 5170 (class 2606 OID 18418)
 -- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3635,7 +3844,7 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
--- TOC entry 5170 (class 2606 OID 18420)
+-- TOC entry 5172 (class 2606 OID 18420)
 -- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3644,7 +3853,7 @@ ALTER TABLE ONLY public.sellers
 
 
 --
--- TOC entry 5175 (class 2606 OID 18422)
+-- TOC entry 5177 (class 2606 OID 18422)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3653,7 +3862,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5177 (class 2606 OID 18424)
+-- TOC entry 5179 (class 2606 OID 18424)
 -- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3662,7 +3871,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5180 (class 2606 OID 18426)
+-- TOC entry 5182 (class 2606 OID 18426)
 -- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3671,7 +3880,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5182 (class 2606 OID 18428)
+-- TOC entry 5184 (class 2606 OID 18428)
 -- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3680,7 +3889,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5186 (class 2606 OID 18430)
+-- TOC entry 5188 (class 2606 OID 18430)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -3953,7 +4162,15 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
--- TOC entry 5151 (class 1259 OID 18464)
+-- TOC entry 5151 (class 1259 OID 18535)
+-- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_end_date ON public.orders USING btree (end_date);
+
+
+--
+-- TOC entry 5152 (class 1259 OID 18464)
 -- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3961,7 +4178,15 @@ CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
--- TOC entry 5156 (class 1259 OID 18465)
+-- TOC entry 5153 (class 1259 OID 18534)
+-- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_orders_start_date ON public.orders USING btree (start_date);
+
+
+--
+-- TOC entry 5158 (class 1259 OID 18465)
 -- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3969,7 +4194,7 @@ CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking U
 
 
 --
--- TOC entry 5159 (class 1259 OID 18466)
+-- TOC entry 5161 (class 1259 OID 18466)
 -- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3977,7 +4202,7 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 
 
 --
--- TOC entry 5162 (class 1259 OID 18467)
+-- TOC entry 5164 (class 1259 OID 18467)
 -- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3985,7 +4210,7 @@ CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created
 
 
 --
--- TOC entry 5171 (class 1259 OID 18468)
+-- TOC entry 5173 (class 1259 OID 18468)
 -- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -3993,7 +4218,7 @@ CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree
 
 
 --
--- TOC entry 5172 (class 1259 OID 18469)
+-- TOC entry 5174 (class 1259 OID 18469)
 -- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4001,7 +4226,7 @@ CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (statu
 
 
 --
--- TOC entry 5173 (class 1259 OID 18470)
+-- TOC entry 5175 (class 1259 OID 18470)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4009,7 +4234,7 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
--- TOC entry 5178 (class 1259 OID 18471)
+-- TOC entry 5180 (class 1259 OID 18471)
 -- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4017,7 +4242,7 @@ CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences U
 
 
 --
--- TOC entry 5183 (class 1259 OID 18472)
+-- TOC entry 5185 (class 1259 OID 18472)
 -- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4025,7 +4250,7 @@ CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
--- TOC entry 5184 (class 1259 OID 18473)
+-- TOC entry 5186 (class 1259 OID 18473)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -4033,7 +4258,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
--- TOC entry 5195 (class 2620 OID 18474)
+-- TOC entry 5197 (class 2620 OID 18474)
 -- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -4041,7 +4266,7 @@ CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON p
 
 
 --
--- TOC entry 5188 (class 2606 OID 18475)
+-- TOC entry 5190 (class 2606 OID 18475)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4050,7 +4275,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5189 (class 2606 OID 18480)
+-- TOC entry 5191 (class 2606 OID 18480)
 -- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4059,7 +4284,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5190 (class 2606 OID 18485)
+-- TOC entry 5192 (class 2606 OID 18485)
 -- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4068,7 +4293,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5187 (class 2606 OID 18490)
+-- TOC entry 5189 (class 2606 OID 18490)
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4077,7 +4302,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5191 (class 2606 OID 18495)
+-- TOC entry 5193 (class 2606 OID 18495)
 -- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4086,7 +4311,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5192 (class 2606 OID 18500)
+-- TOC entry 5194 (class 2606 OID 18500)
 -- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4095,7 +4320,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5193 (class 2606 OID 18505)
+-- TOC entry 5195 (class 2606 OID 18505)
 -- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4104,7 +4329,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5194 (class 2606 OID 18510)
+-- TOC entry 5196 (class 2606 OID 18510)
 -- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -4113,7 +4338,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5385 (class 0 OID 0)
+-- TOC entry 5387 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -4121,11 +4346,11 @@ ALTER TABLE ONLY public.user_view_preferences
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2026-03-02 09:44:54
+-- Completed on 2026-03-03 09:13:07
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ykxEyH4ZP0aV3Bk1H9xwLh61tAtgZC3HG3X7NB7MPrccOJb709xiuflg3FEtIRD
+\unrestrict 5ZBLXzrLZptb5tBB5mUJT35c406mOn70XW9ZRgG3wFPQXfUj9Qmq61ut8uby0Kb
 
