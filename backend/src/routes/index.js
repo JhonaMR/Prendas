@@ -124,6 +124,7 @@ router.delete('/clients/:id', verifyToken, preventNonAdminEdit, clientsControlle
 // ==================== CONFECCIONISTAS ====================
 
 router.get('/confeccionistas', verifyToken, confeccionistasController.list);
+router.post('/confeccionistas/bulk-import', verifyToken, preventNonAdminEdit, confeccionistasController.bulkImport);
 router.post('/confeccionistas', verifyToken, preventNonAdminEdit, confeccionistasController.create);
 router.put('/confeccionistas/:id', verifyToken, preventNonAdminEdit, confeccionistasController.update);
 router.delete('/confeccionistas/:id', verifyToken, preventNonAdminEdit, confeccionistasController.delete);

@@ -59,16 +59,34 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Función para hacer login
   const login = useCallback(async (credentials: { loginCode: string; pin: string }) => {
     try {
-      // Aquí iría la llamada a la API
-      // Por ahora, simulamos un login exitoso
-      const mockUser: User = {
-        id: '1',
-        name: 'Admin User',
-        loginCode: credentials.loginCode,
+      // Llamar a la API de login
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Guardar el token en localStorage
+      localStorage.setItem('auth_token', data.data.token);
+
+      // Establecer el usuario
+      const user: User = {
+        id: data.data.user.id,
+        name: data.data.user.name,
+        loginCode: data.data.user.loginCode,
         pin: credentials.pin,
-        role: UserRole.ADMIN
+        role: data.data.user.role as UserRole
       };
-      setUserState(mockUser);
+
+      setUserState(user);
     } catch (error) {
       console.error('Login failed:', error);
       throw error;
@@ -77,6 +95,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Función para hacer logout
   const logout = useCallback(() => {
+    localStorage.removeItem('auth_token');
     setUserState(null);
   }, []);
 

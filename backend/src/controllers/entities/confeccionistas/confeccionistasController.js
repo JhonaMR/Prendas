@@ -14,7 +14,9 @@ const {
   updateConfeccionista,
   deleteConfeccionista
 } = require('./confeccionistasService');
-const logger = require('../../shared/logger');
+const { bulkImportConfeccionistas } = require('../../../services/BulkConfeccionistaImportService');
+const { parseCSV } = require('../../../utils/csvParser');
+const logger = require('../../../utils/logger');
 
 /**
  * GET /api/confeccionistas
@@ -157,10 +159,66 @@ const delete_ = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/confeccionistas/bulk-import
+ * Importa confeccionistas masivamente desde un array de registros
+ */
+const bulkImport = async (req, res) => {
+  try {
+    const { records, csvContent } = req.body;
+
+    let recordsToImport = records;
+
+    // Si se proporciona contenido CSV, parsearlo
+    if (csvContent && !records) {
+      const parseResult = parseCSV(csvContent, ['id', 'name', 'phone', 'address', 'city', 'score']);
+      
+      if (!parseResult.success) {
+        return res.status(400).json({
+          success: false,
+          message: parseResult.error
+        });
+      }
+
+      recordsToImport = parseResult.data;
+    }
+
+    if (!recordsToImport || !Array.isArray(recordsToImport)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Se requiere un array de registros en el campo "records" o contenido CSV en "csvContent"'
+      });
+    }
+
+    if (recordsToImport.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'El array de registros no puede estar vacío'
+      });
+    }
+
+    const result = await bulkImportConfeccionistas(recordsToImport);
+
+    if (result.success) {
+      return res.status(201).json(result);
+    } else {
+      return res.status(400).json(result);
+    }
+  } catch (error) {
+    logger.error('Error in bulk import', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error durante la importación masiva',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   list,
   read,
   create,
   update,
-  delete: delete_
+  delete: delete_,
+  bulkImport
 };

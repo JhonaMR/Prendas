@@ -235,7 +235,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
               },
               body: JSON.stringify({ csvContent: content })
             });
@@ -246,7 +246,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               // Recargar clientes desde el backend
               const clientsResponse = await fetch('/api/clients', {
                 headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
                 }
               });
               const clientsData = await clientsResponse.json();
@@ -278,7 +278,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
               },
               body: JSON.stringify({ csvContent: content })
             });
@@ -289,7 +289,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               // Recargar referencias desde el backend
               const referencesResponse = await fetch('/api/references', {
                 headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
                 }
               });
               const referencesData = await referencesResponse.json();
@@ -321,7 +321,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
               },
               body: JSON.stringify({ csvContent: content })
             });
@@ -332,7 +332,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               // Recargar confeccionistas desde el backend
               const confeccionistasResponse = await fetch('/api/confeccionistas', {
                 headers: {
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`
+                  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
                 }
               });
               const confeccionistasData = await confeccionistasResponse.json();
