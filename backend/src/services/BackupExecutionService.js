@@ -42,10 +42,27 @@ function cleanOldBackupLogs() {
 }
 
 class BackupExecutionService {
-  constructor(backupDir = path.join(__dirname, '../../backups')) {
+  constructor(backupDir = null) {
+    // Si no se proporciona backupDir, determinar basado en DB_NAME
+    if (!backupDir) {
+      const dbName = process.env.DB_NAME || 'inventory';
+      const instanceName = dbName.includes('melas') ? 'melas' : 'plow';
+      backupDir = path.join(__dirname, '../../backups', instanceName);
+    }
+    
     this.backupDir = backupDir;
+    this.instanceName = this.extractInstanceName();
     this.rotationService = new BackupRotationService(backupDir);
     this.validationService = new BackupValidationService(backupDir);
+  }
+
+  /**
+   * Extrae el nombre de la instancia del backupDir
+   */
+  extractInstanceName() {
+    const parts = this.backupDir.split(path.sep);
+    const lastPart = parts[parts.length - 1];
+    return lastPart === 'plow' || lastPart === 'melas' ? lastPart : 'plow';
   }
 
   /**
@@ -140,7 +157,8 @@ class BackupExecutionService {
         sizeInMB,
         createdAt: new Date().toISOString(),
         deleted,
-        stats: stats_info
+        stats: stats_info,
+        instance: this.instanceName
       };
     } catch (error) {
       console.error(`❌ Error durante backup: ${error.message}`);

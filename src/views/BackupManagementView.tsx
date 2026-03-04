@@ -3,6 +3,7 @@ import { Icons } from '../constants';
 import api from '../services/api';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import { detectInstance, getInstanceName, getInstanceColor } from '../utils/instanceDetector';
 
 interface Backup {
   filename: string;
@@ -42,6 +43,7 @@ const BackupManagementView: React.FC = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [alerts, setAlerts] = useState<BackupAlert[]>([]);
   const [showAlerts, setShowAlerts] = useState(false);
+  const [instance, setInstance] = useState(detectInstance());
   const backupsPagination = usePagination(1, 50);
 
   useEffect(() => {
@@ -196,7 +198,12 @@ const BackupManagementView: React.FC = () => {
           </svg>
         </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-900">Gestión de Backups</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-black text-slate-900">Gestión de Backups</h1>
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+              {getInstanceName(instance)}
+            </span>
+          </div>
           <p className="text-sm text-slate-500 mt-1">Administra y restaura backups de la base de datos</p>
         </div>
       </div>

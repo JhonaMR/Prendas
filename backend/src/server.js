@@ -37,6 +37,7 @@ const postgres = require('./config/postgres');
 const { trackRemoteClient, logDatabaseOperation } = require('./middleware/remoteClientTracking');
 const { initializeSocket } = require('./config/socketio');
 const { startCleanupJob } = require('./jobs/cleanupMessagesJob');
+const { startSessionCloseJob } = require('./jobs/sessionCloseJob');
 
 // Crear aplicación Express
 const app = express();
@@ -227,6 +228,9 @@ async function startServer() {
 
         // Iniciar job de limpieza de mensajes
         startCleanupJob();
+
+        // Iniciar job de cierre de sesiones (8:00 PM)
+        startSessionCloseJob();
 
         // Iniciar servidor
         server.listen(PORT, HOST, () => {

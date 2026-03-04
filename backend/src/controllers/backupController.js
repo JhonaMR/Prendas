@@ -6,8 +6,35 @@ const BackupExecutionService = require('../services/BackupExecutionService');
 const BackupRotationService = require('../services/BackupRotationService');
 const path = require('path');
 
+// Inicializar servicios - detectan automáticamente la instancia
 const backupExecutionService = new BackupExecutionService();
-const backupRotationService = new BackupRotationService();
+
+// BackupRotationService necesita la misma carpeta que BackupExecutionService
+const backupRotationService = new BackupRotationService(backupExecutionService.backupDir);
+
+/**
+ * GET /api/backups/instance/current
+ * Obtiene la instancia actual (plow o melas)
+ */
+exports.getCurrentInstance = (req, res) => {
+  try {
+    const instance = backupExecutionService.instanceName;
+    const dbName = process.env.DB_NAME || 'inventory';
+
+    res.json({
+      success: true,
+      instance,
+      dbName,
+      port: process.env.PORT || 3000
+    });
+  } catch (error) {
+    console.error('Error obteniendo instancia actual:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
 
 /**
  * GET /api/backups
@@ -17,9 +44,11 @@ exports.listBackups = (req, res) => {
   try {
     const backups = backupRotationService.listAllBackups();
     const stats = backupRotationService.getStorageStats();
+    const instance = backupExecutionService.instanceName;
 
     res.json({
       success: true,
+      instance,
       backups,
       stats,
       count: backups.length
@@ -62,9 +91,11 @@ exports.getBackupStats = (req, res) => {
   try {
     const stats = backupRotationService.getStorageStats();
     const backups = backupRotationService.getBackupsByType();
+    const instance = backupExecutionService.instanceName;
 
     res.json({
       success: true,
+      instance,
       stats,
       backupsByType: {
         daily: backups.daily.map(b => ({
@@ -149,6 +180,7 @@ exports.getBackupInfo = (req, res) => {
   try {
     const { filename } = req.params;
     const backupInfo = backupExecutionService.getBackupInfo(filename);
+    const instance = backupExecutionService.instanceName;
 
     if (!backupInfo) {
       return res.status(404).json({
@@ -159,6 +191,7 @@ exports.getBackupInfo = (req, res) => {
 
     res.json({
       success: true,
+      instance,
       backup: backupInfo
     });
   } catch (error) {
@@ -197,7 +230,7 @@ exports.executeManualBackup = async (req, res) => {
     }
 
     // Validar el backup creado
-    const backupPath = path.join(__dirname, '../../backups', dbResult.filename);
+    const backupPath = path.join(__dirname, '../../backups', backupExecutionService.instanceName, dbResult.filename);
     const validationService = backupExecutionService.validationService;
     const validation = validationService.validateBackup(backupPath);
 
@@ -233,12 +266,13 @@ exports.executeManualBackup = async (req, res) => {
     
     try {
       const imagesDir = path.join(__dirname, '../../../public/images/references');
+      const instanceName = backupExecutionService.instanceName;
       
       if (fs.existsSync(imagesDir)) {
         const files = fs.readdirSync(imagesDir);
         
         if (files.length > 0) {
-          const backupsDir = path.join(__dirname, '../../backups/images');
+          const backupsDir = path.join(__dirname, '../../backups', instanceName, 'images');
           
           // Crear directorio si no existe
           if (!fs.existsSync(backupsDir)) {
@@ -331,6 +365,7 @@ exports.executeManualBackup = async (req, res) => {
     res.json({
       success: validation.valid && imagesResult.success,
       message: 'Backup manual completado',
+      instance: backupExecutionService.instanceName,
       data: {
         database: {
           ...dbResult,

@@ -218,6 +218,11 @@ router.post('/bulk-import/receptions', verifyToken, verifyAdmin, bulkImportContr
 const backupRoutes = require('./backupRoutes');
 router.use('/backups', backupRoutes);
 
+// ==================== SESIONES ====================
+
+const sessionRoutes = require('./sessionRoutes');
+router.use('/sessions', sessionRoutes);
+
 // ==================== HEALTH CHECK ====================
 
 const healthRoutes = require('./health');

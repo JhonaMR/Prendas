@@ -7,6 +7,7 @@ import { ChatProvider } from './context/ChatContext';
 import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContainer } from './components/Chat';
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import PWAUpdateNotification from './components/PWAUpdateNotification';
+import { useSessionClose } from './hooks/useSessionClose';
 import './styles/pwa.css';
 
 // Views
@@ -40,6 +41,8 @@ import { DottedBackground } from './components/DottedBackground';
 const App: React.FC = () => {
   // ========== ESTADOS ==========
   
+  // Hook para escuchar cierre de sesiones
+  useSessionClose();
   const [state, setState] = useState<AppState>({
     users: [],
     references: [],

@@ -11,6 +11,9 @@ const { verifyToken, verifyAdmin } = require('../middleware/auth');
 router.use(verifyToken);
 router.use(verifyAdmin);
 
+// Obtener instancia actual
+router.get('/instance/current', backupController.getCurrentInstance);
+
 // Listar todos los backups
 router.get('/', backupController.listBackups);
 
