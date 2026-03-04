@@ -1,17 +1,18 @@
 #!/bin/bash
 
-# 🐳 Script de Inicialización Docker - Proyecto Prendas
-# Este script configura y levanta el proyecto en Docker
+# 🐳 Script de Inicialización Docker - Proyecto Prendas (Multi-Instancia)
+# Este script configura y levanta el proyecto en Docker con Plow y Melas
 
 set -e
 
-echo "🐳 Inicializando Proyecto Prendas con Docker..."
+echo "🐳 Inicializando Proyecto Prendas con Docker (Plow + Melas)..."
 echo ""
 
 # Colores para output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Verificar que Docker está instalado
@@ -29,29 +30,30 @@ fi
 echo -e "${GREEN}✓ Docker y Docker Compose detectados${NC}"
 echo ""
 
-# Crear archivo .env si no existe
-if [ ! -f "backend/.env" ]; then
-    echo -e "${YELLOW}📝 Creando backend/.env...${NC}"
-    cp backend/.env.example backend/.env
-    
-    # Generar JWT_SECRET seguro
-    JWT_SECRET=$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")
-    
-    # Reemplazar en el archivo
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        # macOS
-        sed -i '' "s/tu_secreto_super_seguro_cambialo_123456/$JWT_SECRET/" backend/.env
-    else
-        # Linux
-        sed -i "s/tu_secreto_super_seguro_cambialo_123456/$JWT_SECRET/" backend/.env
-    fi
-    
-    echo -e "${GREEN}✓ backend/.env creado con JWT_SECRET seguro${NC}"
-else
-    echo -e "${GREEN}✓ backend/.env ya existe${NC}"
+# Crear carpetas de backups si no existen
+echo -e "${YELLOW}📁 Creando carpetas de backups...${NC}"
+mkdir -p backend/backups/plow/images
+mkdir -p backend/backups/melas/images
+echo -e "${GREEN}✓ Carpetas de backups creadas${NC}"
+echo ""
+
+# Verificar archivos .env
+echo -e "${YELLOW}🔐 Verificando configuración de instancias...${NC}"
+
+if [ ! -f ".env.prendas" ]; then
+    echo -e "${RED}❌ Archivo .env.prendas no encontrado${NC}"
+    exit 1
 fi
 
+if [ ! -f ".env.melas" ]; then
+    echo -e "${RED}❌ Archivo .env.melas no encontrado${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}✓ .env.prendas encontrado (Plow)${NC}"
+echo -e "${GREEN}✓ .env.melas encontrado (Melas)${NC}"
 echo ""
+
 echo -e "${YELLOW}🔨 Construyendo imágenes Docker...${NC}"
 docker-compose build
 
@@ -61,7 +63,7 @@ docker-compose up -d
 
 echo ""
 echo -e "${YELLOW}⏳ Esperando a que los servicios estén listos...${NC}"
-sleep 10
+sleep 15
 
 # Verificar que los servicios están corriendo
 echo ""
@@ -71,16 +73,38 @@ docker-compose ps
 echo ""
 echo -e "${GREEN}✅ ¡Proyecto iniciado correctamente!${NC}"
 echo ""
-echo "📍 Acceso a la aplicación:"
-echo "   Frontend: http://localhost:3001"
+echo -e "${BLUE}📍 ACCESO A LAS APLICACIONES:${NC}"
+echo ""
+echo -e "${YELLOW}PLOW (Instancia 1):${NC}"
+echo "   Frontend: http://localhost:5173"
 echo "   Backend:  http://localhost:3000/api"
 echo "   Health:   http://localhost:3000/api/health"
 echo ""
-echo "📋 Comandos útiles:"
-echo "   Ver logs:        docker-compose logs -f"
-echo "   Detener:         docker-compose down"
-echo "   Reiniciar:       docker-compose restart"
-echo "   Acceder a BD:    docker-compose exec postgres psql -U postgres -d inventory"
+echo -e "${YELLOW}MELAS (Instancia 2):${NC}"
+echo "   Frontend: http://localhost:5174"
+echo "   Backend:  http://localhost:3001/api"
+echo "   Health:   http://localhost:3001/api/health"
 echo ""
-echo "📖 Para más información, lee DOCKER_SETUP.md"
+echo -e "${BLUE}📋 COMANDOS ÚTILES:${NC}"
+echo ""
+echo "Ver logs:"
+echo "   docker-compose logs -f                    # Todos"
+echo "   docker-compose logs -f plow-backend       # Solo Plow backend"
+echo "   docker-compose logs -f melas-frontend     # Solo Melas frontend"
+echo ""
+echo "Gestión de servicios:"
+echo "   docker-compose ps                         # Ver estado"
+echo "   docker-compose restart                    # Reiniciar todo"
+echo "   docker-compose down                       # Detener todo"
+echo ""
+echo "Backups:"
+echo "   docker-compose exec plow-backend npm run backup:manual   # Backup Plow"
+echo "   docker-compose exec melas-backend npm run backup:manual  # Backup Melas"
+echo ""
+echo "Base de datos:"
+echo "   docker-compose exec postgres psql -U postgres -d inventory_plow"
+echo "   docker-compose exec postgres psql -U postgres -d inventory_melas"
+echo ""
+echo -e "${BLUE}📖 DOCUMENTACIÓN:${NC}"
+echo "   Lee: DOCKER_MULTI_INSTANCE.md"
 echo ""

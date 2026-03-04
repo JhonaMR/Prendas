@@ -31,9 +31,15 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({
   const input1Ref = useRef<HTMLInputElement>(null);
   const input2Ref = useRef<HTMLInputElement>(null);
 
-  const baseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3001'
-    : `http://${window.location.hostname}:3001`;
+  // Obtener URL base de la API desde la variable de entorno o config
+  const getBaseUrl = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 
+                   (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl?.()) ||
+                   'http://localhost:3000';
+    return apiUrl.replace('/api', '');
+  };
+  
+  const baseUrl = getBaseUrl();
 
   const handleFileSelect = async (file: File, numero: 1 | 2) => {
     if (!file) return;

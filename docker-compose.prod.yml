@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Configuración para PRODUCCIÓN
+# Configuración para PRODUCCIÓN (ambas instancias)
 # Uso: docker-compose -f docker-compose.prod.yml up -d
 
 services:
@@ -10,10 +10,9 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     ports:
-      - "127.0.0.1:5432:5432"  # Solo acceso local
+      - "127.0.0.1:5433:5432"  # Solo acceso local
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
       - ./backend/backups:/backups:ro
@@ -31,36 +30,27 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  backend:
+  # ============================================
+  # PLOW - Backend (Puerto 3000)
+  # ============================================
+  plow-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: prendas-backend-prod
+    container_name: prendas-plow-backend-prod
+    env_file: .env.prendas
     environment:
       NODE_ENV: production
-      PORT: 3000
-      HOST: 0.0.0.0
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
-      DB_POOL_MIN: ${DB_POOL_MIN:-10}
-      DB_POOL_MAX: ${DB_POOL_MAX:-30}
-      DB_IDLE_TIMEOUT: ${DB_IDLE_TIMEOUT:-30000}
-      DB_CONNECTION_TIMEOUT: ${DB_CONNECTION_TIMEOUT:-5000}
-      DB_SSL: ${DB_SSL:-true}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
-      CORS_ORIGIN: ${CORS_ORIGIN}
       LOG_LEVEL: ${LOG_LEVEL:-warn}
     ports:
       - "127.0.0.1:3000:3000"  # Solo acceso local (usar reverse proxy)
     volumes:
       - ./backend/logs:/app/backend/logs
-      - ./backend/backups:/app/backend/backups
+      - ./backend/backups/plow:/app/backend/backups
       - ./backend/database:/app/backend/database
-      - ./backend/.env:/app/backend/.env:ro
+      - ./backend/.env.prendas:/app/backend/.env:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -87,17 +77,114 @@ services:
           cpus: '1'
           memory: 512M
 
-  frontend:
+  # ============================================
+  # PLOW - Frontend (Puerto 5173)
+  # ============================================
+  plow-frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: prendas-frontend-prod
+    container_name: prendas-plow-frontend-prod
     environment:
       NODE_ENV: production
+      VITE_API_URL: http://localhost:3000/api
+      BRAND_NAME: Plow
+      BRAND_SHORT: plow
+      BRAND_COLOR: '#3b82f6'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Plow'
+    ports:
+      - "127.0.0.1:5173:3000"  # Solo acceso local (usar reverse proxy)
+    depends_on:
+      - plow-backend
+    networks:
+      - prendas-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # ============================================
+  # MELAS - Backend (Puerto 3001)
+  # ============================================
+  melas-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: prendas-melas-backend-prod
+    env_file: .env.melas
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_PORT: 5432
+      LOG_LEVEL: ${LOG_LEVEL:-warn}
     ports:
       - "127.0.0.1:3001:3000"  # Solo acceso local (usar reverse proxy)
+    volumes:
+      - ./backend/logs:/app/backend/logs
+      - ./backend/backups/melas:/app/backend/backups
+      - ./backend/database:/app/backend/database
+      - ./backend/.env.melas:/app/backend/.env:ro
     depends_on:
-      - backend
+      postgres:
+        condition: service_healthy
+    networks:
+      - prendas-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          cpus: '1'
+          memory: 512M
+
+  # ============================================
+  # MELAS - Frontend (Puerto 5174)
+  # ============================================
+  melas-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: prendas-melas-frontend-prod
+    environment:
+      NODE_ENV: production
+      VITE_API_URL: http://localhost:3001/api
+      BRAND_NAME: Melas
+      BRAND_SHORT: melas
+      BRAND_COLOR: '#ef4444'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Melas'
+    ports:
+      - "127.0.0.1:5174:3000"  # Solo acceso local (usar reverse proxy)
+    depends_on:
+      - melas-backend
     networks:
       - prendas-network-prod
     restart: always

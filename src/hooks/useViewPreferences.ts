@@ -5,31 +5,37 @@ interface ViewPreferences {
 }
 
 // Obtener URL base de la API
-function getBaseUrl(): string {
-  if (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl) {
-    const apiUrl = window.API_CONFIG.getApiUrl();
-    return apiUrl.replace('/api', '');
+function getApiUrl(): string {
+  // Primero intentar usar la variable de entorno de Vite
+  const envApiUrl = import.meta.env.VITE_API_URL;
+  if (envApiUrl) {
+    return envApiUrl;
   }
   
-  // Fallback: detect port based on current location
+  // Fallback: usar window.API_CONFIG si está disponible
+  if (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl) {
+    return window.API_CONFIG.getApiUrl();
+  }
+  
+  // Último fallback: construir URL basada en el hostname actual
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     const port = window.location.port;
     
     if (port === '5173' || port === '3000' || port === '') {
-      return `${protocol}//${hostname}:3000`;
+      return `${protocol}//${hostname}:3000/api`;
     } else if (port === '5174' || port === '3001') {
-      return `${protocol}//${hostname}:3001`;
+      return `${protocol}//${hostname}:3001/api`;
     }
     
-    return `${protocol}//${hostname}:3000`;
+    return `${protocol}//${hostname}:3000/api`;
   }
   
-  return 'http://localhost:3000';
+  return 'http://localhost:3000/api';
 }
 
-const API_BASE_URL = `${getBaseUrl()}/api`;
+const API_BASE_URL = getApiUrl();
 
 export const useViewPreferences = () => {
   const [preferences, setPreferences] = useState<ViewPreferences>({ viewOrder: [] });

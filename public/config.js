@@ -1,34 +1,32 @@
 /**
  * Configuración dinámica del frontend
- * Detecta automáticamente cuál marca es según el puerto
+ * Usa la variable de entorno VITE_API_URL configurada en tiempo de build
  */
 
 window.API_CONFIG = {
   getApiUrl: function() {
     const port = window.location.port;
-    const protocol = window.location.protocol;
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
     
-    // Detectar marca según puerto del frontend o backend
+    // Si estamos en un dominio externo (ngrok, producción, etc), usar el mismo host
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.includes('10.10.0.34')) {
+      return `${protocol}//${hostname}/api`;
+    }
+    
     if (port === '5173' || port === '3000' || port === '') {
-      // PLOW - Puerto 5173 (frontend) o 3000 (backend directo)
       if (hostname === '10.10.0.34' || hostname.includes('10.10.0.34')) {
         return 'https://10.10.0.34:3000/api';
       }
       return 'http://localhost:3000/api';
     } else if (port === '5174' || port === '3001') {
-      // MELAS - Puerto 5174 (frontend) o 3001 (backend directo)
       if (hostname === '10.10.0.34' || hostname.includes('10.10.0.34')) {
         return 'https://10.10.0.34:3001/api';
       }
       return 'http://localhost:3001/api';
-    } else {
-      // Fallback: intentar puerto 3000
-      if (hostname === '10.10.0.34' || hostname.includes('10.10.0.34')) {
-        return 'https://10.10.0.34:3000/api';
-      }
-      return 'http://localhost:3000/api';
     }
+    
+    return 'http://localhost:3000/api';
   },
 
   getBrand: function() {

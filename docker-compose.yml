@@ -1,17 +1,21 @@
 version: '3.8'
 
+# Configuración para ambas instancias: Plow y Melas
+# Uso: docker-compose up -d
+
 services:
-  # Base de datos PostgreSQL
+  # ============================================
+  # BASE DE DATOS COMPARTIDA
+  # ============================================
   postgres:
     image: postgres:16-alpine
     container_name: prendas-postgres
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-inventory}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/backups:/backups:ro
@@ -24,37 +28,26 @@ services:
       - prendas-network
     restart: unless-stopped
 
-  # Backend Node.js
-  backend:
+  # ============================================
+  # PLOW - Backend (Puerto 3000)
+  # ============================================
+  plow-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: prendas-backend
+    container_name: prendas-plow-backend
+    env_file: .env.prendas
     environment:
       NODE_ENV: ${NODE_ENV:-production}
-      PORT: 3000
-      HOST: 0.0.0.0
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-inventory}
-      DB_POOL_MIN: ${DB_POOL_MIN:-5}
-      DB_POOL_MAX: ${DB_POOL_MAX:-20}
-      DB_IDLE_TIMEOUT: ${DB_IDLE_TIMEOUT:-30000}
-      DB_CONNECTION_TIMEOUT: ${DB_CONNECTION_TIMEOUT:-5000}
-      DB_SSL: ${DB_SSL:-false}
-      JWT_SECRET: ${JWT_SECRET:-tu_secreto_super_seguro_cambialo_123456}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000,http://localhost:5173}
-      LOG_LEVEL: ${LOG_LEVEL:-info}
     ports:
       - "3000:3000"
     volumes:
       - ./backend/logs:/app/backend/logs
-      - ./backend/backups:/app/backend/backups
+      - ./backend/backups/plow:/app/backend/backups
       - ./backend/database:/app/backend/database
-      - ./backend/.env:/app/backend/.env:ro
+      - ./backend/.env.prendas:/app/backend/.env:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -68,18 +61,87 @@ services:
       retries: 3
       start_period: 40s
 
-  # Frontend React (solo en desarrollo)
-  frontend:
+  # ============================================
+  # PLOW - Frontend (Puerto 5173)
+  # ============================================
+  plow-frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: prendas-frontend
+    container_name: prendas-plow-frontend
     environment:
       NODE_ENV: ${NODE_ENV:-production}
+      VITE_API_URL: http://localhost:3000/api
+      BRAND_NAME: Plow
+      BRAND_SHORT: plow
+      BRAND_COLOR: '#3b82f6'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Plow'
+    ports:
+      - "5173:3000"
+    depends_on:
+      - plow-backend
+    networks:
+      - prendas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ============================================
+  # MELAS - Backend (Puerto 3001)
+  # ============================================
+  melas-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: prendas-melas-backend
+    env_file: .env.melas
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: postgres
+      DB_PORT: 5432
     ports:
       - "3001:3000"
+    volumes:
+      - ./backend/logs:/app/backend/logs
+      - ./backend/backups/melas:/app/backend/backups
+      - ./backend/database:/app/backend/database
+      - ./backend/.env.melas:/app/backend/.env:ro
     depends_on:
-      - backend
+      postgres:
+        condition: service_healthy
+    networks:
+      - prendas-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ============================================
+  # MELAS - Frontend (Puerto 5174)
+  # ============================================
+  melas-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: prendas-melas-frontend
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      VITE_API_URL: http://localhost:3001/api
+      BRAND_NAME: Melas
+      BRAND_SHORT: melas
+      BRAND_COLOR: '#ef4444'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Melas'
+    ports:
+      - "5174:3000"
+    depends_on:
+      - melas-backend
     networks:
       - prendas-network
     restart: unless-stopped

@@ -1,6 +1,6 @@
 version: '3.8'
 
-# Configuración para DESARROLLO con hot-reload
+# Configuración para DESARROLLO con hot-reload (ambas instancias)
 # Uso: docker-compose -f docker-compose.dev.yml up
 
 services:
@@ -10,9 +10,9 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-inventory}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT:-5433}:5432"
     volumes:
       - postgres_data_dev:/var/lib/postgresql/data
     healthcheck:
@@ -24,31 +24,28 @@ services:
       - prendas-network-dev
     restart: unless-stopped
 
-  backend:
+  # ============================================
+  # PLOW - Backend (Puerto 3000)
+  # ============================================
+  plow-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: prendas-backend-dev
+    container_name: prendas-plow-backend-dev
+    env_file: .env.prendas
     environment:
       NODE_ENV: development
-      PORT: 3000
-      HOST: 0.0.0.0
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_USER: ${DB_USER:-postgres}
-      DB_PASSWORD: ${DB_PASSWORD:-postgres}
-      DB_NAME: ${DB_NAME:-inventory}
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-key}
-      CORS_ORIGIN: http://localhost:5173,http://localhost:3000,http://localhost:3001
       LOG_LEVEL: debug
     ports:
       - "3000:3000"
     volumes:
       - ./backend/src:/app/backend/src
       - ./backend/logs:/app/backend/logs
-      - ./backend/backups:/app/backend/backups
+      - ./backend/backups/plow:/app/backend/backups
       - ./backend/database:/app/backend/database
-      - ./backend/.env:/app/backend/.env:ro
+      - ./backend/.env.prendas:/app/backend/.env:ro
       - /app/backend/node_modules
     depends_on:
       postgres:
@@ -58,13 +55,21 @@ services:
     restart: unless-stopped
     command: npm run dev
 
-  frontend:
+  # ============================================
+  # PLOW - Frontend (Puerto 5173)
+  # ============================================
+  plow-frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend.dev
-    container_name: prendas-frontend-dev
+    container_name: prendas-plow-frontend-dev
     environment:
       NODE_ENV: development
+      VITE_API_URL: http://localhost:3000/api
+      BRAND_NAME: Plow
+      BRAND_SHORT: plow
+      BRAND_COLOR: '#3b82f6'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Plow'
     ports:
       - "5173:5173"
     volumes:
@@ -77,7 +82,70 @@ services:
       - ./postcss.config.js:/app/postcss.config.js
       - /app/node_modules
     depends_on:
-      - backend
+      - plow-backend
+    networks:
+      - prendas-network-dev
+    restart: unless-stopped
+
+  # ============================================
+  # MELAS - Backend (Puerto 3001)
+  # ============================================
+  melas-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: prendas-melas-backend-dev
+    env_file: .env.melas
+    environment:
+      NODE_ENV: development
+      DB_HOST: postgres
+      DB_PORT: 5432
+      LOG_LEVEL: debug
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./backend/src:/app/backend/src
+      - ./backend/logs:/app/backend/logs
+      - ./backend/backups/melas:/app/backend/backups
+      - ./backend/database:/app/backend/database
+      - ./backend/.env.melas:/app/backend/.env:ro
+      - /app/backend/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - prendas-network-dev
+    restart: unless-stopped
+    command: npm run dev
+
+  # ============================================
+  # MELAS - Frontend (Puerto 5174)
+  # ============================================
+  melas-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: prendas-melas-frontend-dev
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:3001/api
+      BRAND_NAME: Melas
+      BRAND_SHORT: melas
+      BRAND_COLOR: '#ef4444'
+      BRAND_DESCRIPTION: 'Sistema de Gestión - Melas'
+    ports:
+      - "5174:5173"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./index.html:/app/index.html
+      - ./vite.config.ts:/app/vite.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tailwind.config.js:/app/tailwind.config.js
+      - ./postcss.config.js:/app/postcss.config.js
+      - /app/node_modules
+    depends_on:
+      - melas-backend
     networks:
       - prendas-network-dev
     restart: unless-stopped

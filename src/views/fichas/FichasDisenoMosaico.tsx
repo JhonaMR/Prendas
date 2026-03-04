@@ -107,9 +107,15 @@ const FichasDisenoMosaico: React.FC<FichasDisenoMosaicoProps> = ({ state, user, 
     }
   };
 
-  const baseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000'
-    : `http://${window.location.hostname}:3000`;
+  // Obtener URL base de la API desde la variable de entorno o config
+  const getBaseUrl = () => {
+    const apiUrl = import.meta.env.VITE_API_URL || 
+                   (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl?.()) ||
+                   'http://localhost:3000';
+    return apiUrl.replace('/api', '');
+  };
+  
+  const baseUrl = getBaseUrl();
 
   return (
     <div className="space-y-6 pb-20">
