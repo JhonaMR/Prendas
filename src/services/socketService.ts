@@ -27,11 +27,20 @@ export const socketService = {
       const apiUrl = window.API_CONFIG.getApiUrl();
       url = apiUrl.replace('/api', '');
     } else {
-      // Fallback: construir URL manualmente
+      // Fallback: construir URL manualmente basado en el puerto actual
       const protocol = window.location.protocol === 'https:' ? 'https' : 'http';
       const hostname = window.location.hostname;
-      const port = 3000;
-      url = `${protocol}://${hostname}:${port}`;
+      const port = window.location.port;
+      
+      // Detectar puerto basado en el frontend
+      let backendPort = '3000';
+      if (port === '5173' || port === '3000' || port === '') {
+        backendPort = '3000'; // PLOW
+      } else if (port === '5174' || port === '3001') {
+        backendPort = '3001'; // MELAS
+      }
+      
+      url = `${protocol}://${hostname}:${backendPort}`;
     }
 
     console.log(`🔌 Conectando a Socket.io en ${url}`);

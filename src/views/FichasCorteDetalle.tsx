@@ -37,7 +37,8 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     useEffect(() => {
         const fetchFichaData = async () => {
             try {
-                const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-costo/${referencia}`, {
+                const apiUrl = window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`;
+                const response = await fetch(`${apiUrl}/fichas-costo/${referencia}`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
                 });
                 const data = await response.json();

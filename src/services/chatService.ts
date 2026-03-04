@@ -3,10 +3,23 @@
  */
 
 const getApiUrl = () => {
+  // Use dynamic API configuration if available
+  if (window.API_CONFIG?.getApiUrl) {
+    return window.API_CONFIG.getApiUrl();
+  }
+  
+  // Fallback: detect port based on current location
   const protocol = window.location.protocol;
   const hostname = window.location.hostname;
-  const port = 3000;
-  return `${protocol}//${hostname}:${port}/api`;
+  const port = window.location.port;
+  
+  if (port === '5173' || port === '3000' || port === '') {
+    return `${protocol}//${hostname}:3000/api`;
+  } else if (port === '5174' || port === '3001') {
+    return `${protocol}//${hostname}:3001/api`;
+  }
+  
+  return `${protocol}//${hostname}:3000/api`;
 };
 
 const getAuthHeaders = () => {

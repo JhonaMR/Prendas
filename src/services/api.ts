@@ -54,11 +54,19 @@ class ApiService {
     if (window.API_CONFIG?.getApiUrl) {
       return window.API_CONFIG.getApiUrl();
     }
-    // Fallback si config.js no se cargó
+    // Fallback si config.js no se cargó - detectar puerto basado en ubicación actual
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    const port = 3000;
-    return `${protocol}//${hostname}:${port}/api`;
+    const port = window.location.port;
+    
+    let backendPort = '3000';
+    if (port === '5173' || port === '3000' || port === '') {
+      backendPort = '3000'; // PLOW
+    } else if (port === '5174' || port === '3001') {
+      backendPort = '3001'; // MELAS
+    }
+    
+    return `${protocol}//${hostname}:${backendPort}/api`;
   }
   
   // ==================== MÉTODOS AUXILIARES ====================

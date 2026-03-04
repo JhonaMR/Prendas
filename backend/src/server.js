@@ -5,11 +5,27 @@
  * Configura Express, middlewares, rutas, inicializa PostgreSQL y arranca el servidor
  */
 
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+
+// Determinar cuál archivo .env cargar basado en el nombre del proceso PM2
+let envFile = '.env';
+const processName = process.env.pm_id ? process.env.name : '';
+
+if (processName.includes('melas')) {
+  envFile = '.env.melas';
+} else if (processName.includes('plow')) {
+  envFile = '.env.prendas';
+} else if (fs.existsSync(path.join(__dirname, '../.env.melas'))) {
+  // Si no hay nombre de proceso, intentar detectar por archivo
+  envFile = '.env.melas';
+} else {
+  envFile = '.env.prendas';
+}
+
+require('dotenv').config({ path: path.join(__dirname, '../' + envFile) });
+const express = require('express');
+const cors = require('cors');
 const https = require('https');
 
 // Importar configuración y rutas

@@ -10,7 +10,23 @@ function getBaseUrl(): string {
     const apiUrl = window.API_CONFIG.getApiUrl();
     return apiUrl.replace('/api', '');
   }
-  return `${typeof window !== 'undefined' ? window.location.protocol : 'http:'}//${typeof window !== 'undefined' ? window.location.hostname : 'localhost'}:3000`;
+  
+  // Fallback: detect port based on current location
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = window.location.port;
+    
+    if (port === '5173' || port === '3000' || port === '') {
+      return `${protocol}//${hostname}:3000`;
+    } else if (port === '5174' || port === '3001') {
+      return `${protocol}//${hostname}:3001`;
+    }
+    
+    return `${protocol}//${hostname}:3000`;
+  }
+  
+  return 'http://localhost:3000';
 }
 
 const API_BASE_URL = `${getBaseUrl()}/api`;

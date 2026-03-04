@@ -1,39 +1,49 @@
 /**
- * Configuración de PM2 para el backend, frontend y scheduler de backups
+ * Configuración de PM2 para PLOW y MELAS
+ * 
+ * Ambas marcas corren simultáneamente:
+ * - PLOW: Backend puerto 3000, Frontend puerto 5173
+ * - MELAS: Backend puerto 3001, Frontend puerto 5174
  * 
  * Comandos útiles:
- * - npm run pm2:start          : Inicia backend + frontend + scheduler
+ * - npm run pm2:start          : Inicia ambas marcas
  * - npm run pm2:start:prod     : Inicia en producción
- * - npm run pm2:stop           : Detiene la aplicación
- * - npm run pm2:restart        : Reinicia la aplicación
+ * - npm run pm2:stop           : Detiene todo
+ * - npm run pm2:restart        : Reinicia todo
  * - npm run pm2:logs           : Ver logs
  * - npm run pm2:monit          : Monitor en tiempo real
  * - npm run pm2:save           : Guarda la configuración
  * - npm run pm2:resurrect      : Restaura procesos guardados
  * 
- * Procesos que se inician:
- * 1. inventario-backend - Servidor Node.js (puerto 3000)
- * 2. inventario-frontend - Vite dev server (puerto 5173)
- * 3. inventario-backup-scheduler - Backups BD (22:00 cada día)
- * 4. inventario-images-backup-scheduler - Backups de imágenes (23:00 cada día)
+ * Procesos que se inician (8 total):
+ * 1. plow-backend - Servidor Node.js (puerto 3000)
+ * 2. plow-frontend - Vite dev server (puerto 5173)
+ * 3. plow-backup-scheduler - Backups BD (22:00 cada día)
+ * 4. plow-images-backup-scheduler - Backups de imágenes (23:00 cada día)
+ * 5. melas-backend - Servidor Node.js (puerto 3001)
+ * 6. melas-frontend - Vite dev server (puerto 5174)
+ * 7. melas-backup-scheduler - Backups BD (22:00 cada día)
+ * 8. melas-images-backup-scheduler - Backups de imágenes (23:00 cada día)
  */
 
 module.exports = {
   apps: [
+    // ==================== PLOW ====================
     {
-      // Aplicación principal
-      name: 'inventario-backend',
+      name: 'plow-backend',
       script: './src/server.js',
       instances: 1,
       exec_mode: 'cluster',
+      cwd: './backend',
+      env_file: './.env.prendas',
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'production'
       },
       env_production: {
         NODE_ENV: 'production'
       },
-      error_file: './logs/error.log',
-      out_file: './logs/out.log',
+      error_file: './backend/logs/plow-error.log',
+      out_file: './backend/logs/plow-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
       autorestart: true,
@@ -42,18 +52,18 @@ module.exports = {
       ignore_watch: ['node_modules', 'logs', 'backups']
     },
     {
-      // Frontend - Vite dev server
-      name: 'inventario-frontend',
+      name: 'plow-frontend',
       script: 'node',
-      args: 'node_modules/vite/bin/vite.js',
-      cwd: '..',
+      args: 'node_modules/vite/bin/vite.js --port 5173',
+      cwd: '.',
       instances: 1,
       exec_mode: 'fork',
       env: {
-        NODE_ENV: 'development'
+        NODE_ENV: 'production',
+        VITE_API_URL: 'https://10.10.0.34:3000/api'
       },
-      error_file: './logs/frontend-error.log',
-      out_file: './logs/frontend-out.log',
+      error_file: './logs/plow-frontend-error.log',
+      out_file: './logs/plow-frontend-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
       autorestart: true,
@@ -63,38 +73,123 @@ module.exports = {
       max_memory_restart: '300M'
     },
     {
-      // Backup programado diariamente a las 22:00 (10pm)
-      name: 'inventario-backup-scheduler',
-      script: './src/scripts/scheduledBackup.js',
+      name: 'plow-backup-scheduler',
+      script: './backend/src/scripts/scheduledBackup.js',
       instances: 1,
       exec_mode: 'fork',
-      cron_restart: '0 22 * * *', // Cada día a las 22:00 (10pm)
+      cron_restart: '0 22 * * *',
+      env_file: './backend/.env.prendas',
+      cwd: '.',
       env: {
         NODE_ENV: 'production'
       },
-      error_file: './logs/backup-error.log',
-      out_file: './logs/backup-out.log',
+      error_file: './backend/logs/plow-backup-error.log',
+      out_file: './backend/logs/plow-backup-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
-      autorestart: false, // No reiniciar automáticamente, solo por cron
+      autorestart: false,
       watch: false,
       max_memory_restart: '200M'
     },
     {
-      // Backup de imágenes programado diariamente a las 23:00 (11pm)
-      name: 'inventario-images-backup-scheduler',
-      script: './src/scripts/backupImages.js',
+      name: 'plow-images-backup-scheduler',
+      script: './backend/src/scripts/backupImages.js',
       instances: 1,
       exec_mode: 'fork',
-      cron_restart: '0 23 * * *', // Cada día a las 23:00 (11pm)
+      cron_restart: '0 23 * * *',
+      env_file: './backend/.env.prendas',
+      cwd: '.',
       env: {
         NODE_ENV: 'production'
       },
-      error_file: './logs/images-backup-error.log',
-      out_file: './logs/images-backup-out.log',
+      error_file: './backend/logs/plow-images-backup-error.log',
+      out_file: './backend/logs/plow-images-backup-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
       merge_logs: true,
-      autorestart: false, // No reiniciar automáticamente, solo por cron
+      autorestart: false,
+      watch: false,
+      max_memory_restart: '200M'
+    },
+
+    // ==================== MELAS ====================
+    {
+      name: 'melas-backend',
+      script: './src/server.js',
+      instances: 1,
+      exec_mode: 'cluster',
+      cwd: './backend',
+      env_file: './.env.melas',
+      env: {
+        NODE_ENV: 'production'
+      },
+      env_production: {
+        NODE_ENV: 'production'
+      },
+      error_file: './backend/logs/melas-error.log',
+      out_file: './backend/logs/melas-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '500M',
+      ignore_watch: ['node_modules', 'logs', 'backups']
+    },
+    {
+      name: 'melas-frontend',
+      script: 'node',
+      args: 'node_modules/vite/bin/vite.js --port 5174',
+      cwd: '.',
+      instances: 1,
+      exec_mode: 'fork',
+      env: {
+        NODE_ENV: 'production',
+        VITE_API_URL: 'https://10.10.0.34:3001/api'
+      },
+      error_file: './logs/melas-frontend-error.log',
+      out_file: './logs/melas-frontend-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: true,
+      max_restarts: 10,
+      min_uptime: '5s',
+      watch: false,
+      max_memory_restart: '300M'
+    },
+    {
+      name: 'melas-backup-scheduler',
+      script: './backend/src/scripts/scheduledBackup.js',
+      instances: 1,
+      exec_mode: 'fork',
+      cron_restart: '0 22 * * *',
+      env_file: './backend/.env.melas',
+      cwd: '.',
+      env: {
+        NODE_ENV: 'production'
+      },
+      error_file: './backend/logs/melas-backup-error.log',
+      out_file: './backend/logs/melas-backup-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: false,
+      watch: false,
+      max_memory_restart: '200M'
+    },
+    {
+      name: 'melas-images-backup-scheduler',
+      script: './backend/src/scripts/backupImages.js',
+      instances: 1,
+      exec_mode: 'fork',
+      cron_restart: '0 23 * * *',
+      env_file: './backend/.env.melas',
+      cwd: '.',
+      env: {
+        NODE_ENV: 'production'
+      },
+      error_file: './backend/logs/melas-images-backup-error.log',
+      out_file: './backend/logs/melas-images-backup-out.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+      merge_logs: true,
+      autorestart: false,
       watch: false,
       max_memory_restart: '200M'
     }

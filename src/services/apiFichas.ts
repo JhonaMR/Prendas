@@ -13,9 +13,20 @@ declare global {
 
 function getApiUrl(): string {
     if (window.API_CONFIG?.getApiUrl) return window.API_CONFIG.getApiUrl();
+    
+    // Fallback - detectar puerto basado en ubicación actual
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    return `${protocol}//${hostname}:3000/api`;
+    const port = window.location.port;
+    
+    let backendPort = '3000';
+    if (port === '5173' || port === '3000' || port === '') {
+      backendPort = '3000'; // PLOW
+    } else if (port === '5174' || port === '3001') {
+      backendPort = '3001'; // MELAS
+    }
+    
+    return `${protocol}//${hostname}:${backendPort}/api`;
 }
 
 function getHeaders(): HeadersInit {

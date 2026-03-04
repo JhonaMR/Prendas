@@ -1,0 +1,275 @@
+================================================================================
+                        ARQUITECTURA DEL SISTEMA
+================================================================================
+
+                              USUARIOS
+                                 |
+                    _____________|_____________
+                   |                           |
+              PRENDAS                       MELAS
+                   |                           |
+        ___________|___________      ___________|___________
+       |                       |    |                       |
+   Frontend              Backend    Frontend              Backend
+   :5173                 :3000      :5174                 :3001
+       |                   |           |                   |
+       |___________________|           |___________________|
+              |                               |
+         API Calls                       API Calls
+              |                               |
+       ________________                ________________
+      |                |              |                |
+   JWT Auth        Database        JWT Auth        Database
+      |                |              |                |
+      |_______________|              |_________________|
+              |                               |
+         inventory_prendas            inventory_melas
+              |                               |
+              |_______________|_______________|
+                              |
+                        PostgreSQL
+                        localhost:5433
+                        (compartido)
+
+================================================================================
+                          FLUJO DE DATOS
+================================================================================
+
+USUARIO PRENDAS:
+  1. Accede a http://localhost:5173
+  2. Frontend detecta puerto 5173 → PRENDAS
+  3. Frontend obtiene API URL: http://localhost:3000/api
+  4. Frontend envía peticiones a Backend PRENDAS
+  5. Backend PRENDAS conecta a inventory_prendas
+  6. Datos se guardan en inventory_prendas
+
+USUARIO MELAS:
+  1. Accede a http://localhost:5174
+  2. Frontend detecta puerto 5174 → MELAS
+  3. Frontend obtiene API URL: http://localhost:3001/api
+  4. Frontend envía peticiones a Backend MELAS
+  5. Backend MELAS conecta a inventory_melas
+  6. Datos se guardan en inventory_melas
+
+================================================================================
+                          PROCESOS PM2
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                            PM2 PROCESOS (8)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  PRENDAS:                                                                    │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ 1. prendas-backend              (Node.js, puerto 3000)              │   │
+│  │    └─ Lee: .env.prendas                                             │   │
+│  │    └─ Conecta a: inventory_prendas                                  │   │
+│  │                                                                      │   │
+│  │ 2. prendas-frontend             (Vite, puerto 5173)                │   │
+│  │    └─ Lee: config.js                                               │   │
+│  │    └─ Apunta a: http://localhost:3000/api                          │   │
+│  │                                                                      │   │
+│  │ 3. prendas-backup-scheduler     (Cron 22:00)                       │   │
+│  │    └─ Backup de inventory_prendas                                  │   │
+│  │                                                                      │   │
+│  │ 4. prendas-images-backup-scheduler (Cron 23:00)                    │   │
+│  │    └─ Backup de imágenes PRENDAS                                   │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+│  MELAS:                                                                      │
+│  ┌──────────────────────────────────────────────────────────────────────┐   │
+│  │ 5. melas-backend                (Node.js, puerto 3001)              │   │
+│  │    └─ Lee: .env.melas                                              │   │
+│  │    └─ Conecta a: inventory_melas                                    │   │
+│  │                                                                      │   │
+│  │ 6. melas-frontend               (Vite, puerto 5174)                │   │
+│  │    └─ Lee: config.js                                               │   │
+│  │    └─ Apunta a: http://localhost:3001/api                          │   │
+│  │                                                                      │   │
+│  │ 7. melas-backup-scheduler       (Cron 22:00)                       │   │
+│  │    └─ Backup de inventory_melas                                    │   │
+│  │                                                                      │   │
+│  │ 8. melas-images-backup-scheduler (Cron 23:00)                      │   │
+│  │    └─ Backup de imágenes MELAS                                     │   │
+│  └──────────────────────────────────────────────────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                          BASES DE DATOS
+================================================================================
+
+PostgreSQL (localhost:5433)
+│
+├─ inventory_prendas
+│  ├─ users (usuarios PRENDAS)
+│  ├─ references (referencias PRENDAS)
+│  ├─ clients (clientes PRENDAS)
+│  ├─ sellers (vendedores PRENDAS)
+│  ├─ confeccionistas (confeccionistas PRENDAS)
+│  ├─ correrias (correrias PRENDAS)
+│  ├─ compras (compras PRENDAS)
+│  ├─ despachos (despachos PRENDAS)
+│  ├─ pedidos (pedidos PRENDAS)
+│  ├─ recepciones (recepciones PRENDAS)
+│  └─ ... (todas las tablas de PRENDAS)
+│
+└─ inventory_melas
+   ├─ users (usuarios MELAS)
+   ├─ references (referencias MELAS)
+   ├─ clients (clientes MELAS)
+   ├─ sellers (vendedores MELAS)
+   ├─ confeccionistas (confeccionistas MELAS)
+   ├─ correrias (correrias MELAS)
+   ├─ compras (compras MELAS)
+   ├─ despachos (despachos MELAS)
+   ├─ pedidos (pedidos MELAS)
+   ├─ recepciones (recepciones MELAS)
+   └─ ... (todas las tablas de MELAS)
+
+================================================================================
+                          PUERTOS
+================================================================================
+
+PRENDAS:
+  Frontend:  5173  (http://localhost:5173)
+  Backend:   3000  (http://localhost:3000/api)
+  BD:        5433  (PostgreSQL)
+
+MELAS:
+  Frontend:  5174  (http://localhost:5174)
+  Backend:   3001  (http://localhost:3001/api)
+  BD:        5433  (PostgreSQL)
+
+PostgreSQL:
+  Puerto:    5433  (compartido)
+
+================================================================================
+                          CONFIGURACIÓN
+================================================================================
+
+PRENDAS:
+  .env.prendas (raíz)
+  ├─ PORT=3000
+  ├─ DB_NAME=inventory_prendas
+  ├─ JWT_SECRET=tu_secreto_super_seguro_cambialo_123456
+  └─ CORS_ORIGIN=http://localhost:5173,http://localhost:3000,...
+
+  backend/.env.prendas
+  ├─ PORT=3000
+  ├─ DB_NAME=inventory_prendas
+  ├─ JWT_SECRET=tu_secreto_super_seguro_cambialo_123456
+  └─ CORS_ORIGIN=http://localhost:5173,http://localhost:3000,...
+
+MELAS:
+  .env.melas (raíz)
+  ├─ PORT=3001
+  ├─ DB_NAME=inventory_melas
+  ├─ JWT_SECRET=tu_secreto_super_seguro_cambialo_123456_melas
+  └─ CORS_ORIGIN=http://localhost:5174,http://localhost:3001,...
+
+  backend/.env.melas
+  ├─ PORT=3001
+  ├─ DB_NAME=inventory_melas
+  ├─ JWT_SECRET=tu_secreto_super_seguro_cambialo_123456_melas
+  └─ CORS_ORIGIN=http://localhost:5174,http://localhost:3001,...
+
+PostgreSQL (compartido):
+  DB_HOST=localhost
+  DB_PORT=5433
+  DB_USER=postgres
+  DB_PASSWORD=Contrasena14.
+
+================================================================================
+                          DETECCIÓN DE MARCA
+================================================================================
+
+El archivo public/config.js detecta automáticamente la marca:
+
+  window.location.port === '5173'  →  PRENDAS
+  window.location.port === '5174'  →  MELAS
+
+Esto permite que el frontend sepa automáticamente:
+  - Cuál es la marca
+  - Cuál es la URL del backend
+  - Cuál es el JWT secret
+
+================================================================================
+                          FLUJO DE INICIO
+================================================================================
+
+1. Usuario ejecuta: start-pm2.bat
+
+2. PM2 inicia 8 procesos:
+   ├─ prendas-backend (lee .env.prendas)
+   ├─ prendas-frontend (lee config.js)
+   ├─ prendas-backup-scheduler
+   ├─ prendas-images-backup-scheduler
+   ├─ melas-backend (lee .env.melas)
+   ├─ melas-frontend (lee config.js)
+   ├─ melas-backup-scheduler
+   └─ melas-images-backup-scheduler
+
+3. Cada backend se conecta a su BD:
+   ├─ prendas-backend → inventory_prendas
+   └─ melas-backend → inventory_melas
+
+4. Cada frontend se inicia en su puerto:
+   ├─ prendas-frontend → :5173
+   └─ melas-frontend → :5174
+
+5. Usuario accede a:
+   ├─ http://localhost:5173 (PRENDAS)
+   └─ http://localhost:5174 (MELAS)
+
+6. Frontend detecta puerto y obtiene API URL correcta:
+   ├─ Puerto 5173 → API: http://localhost:3000/api
+   └─ Puerto 5174 → API: http://localhost:3001/api
+
+7. Frontend envía peticiones al backend correcto:
+   ├─ PRENDAS frontend → PRENDAS backend → inventory_prendas
+   └─ MELAS frontend → MELAS backend → inventory_melas
+
+================================================================================
+                          INDEPENDENCIA
+================================================================================
+
+PRENDAS y MELAS son completamente independientes:
+
+  ✓ Bases de datos diferentes
+  ✓ Puertos diferentes
+  ✓ Procesos PM2 diferentes
+  ✓ Archivos .env diferentes
+  ✓ JWT secrets diferentes
+  ✓ Logs diferentes
+  ✓ Backups diferentes
+  ✓ Usuarios diferentes
+  ✓ Datos diferentes
+
+Lo único que comparten:
+  • PostgreSQL (servidor)
+  • Certificados SSL (opcional)
+  • Código fuente (mismo proyecto)
+
+================================================================================
+                          ESCALABILIDAD
+================================================================================
+
+Este sistema es escalable. Puedes agregar más marcas:
+
+  MARCA 3:
+    Backend:  :3002
+    Frontend: :5175
+    BD:       inventory_marca3
+
+  MARCA 4:
+    Backend:  :3003
+    Frontend: :5176
+    BD:       inventory_marca4
+
+Solo necesitas:
+  1. Crear .env.marca3 y .env.marca4
+  2. Agregar procesos a ecosystem.config.js
+  3. Actualizar config.js para detectar nuevos puertos
+
+================================================================================

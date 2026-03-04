@@ -4,36 +4,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-    <title>Plow - Ventas y producción</title>
+    <title id="page-title">Plow - Ventas y producción</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/pwa-512x512.png">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <!-- Early Brand Detection - MUST RUN BEFORE MANIFEST LOAD -->
+    <script>
+      (function() {
+        const port = window.location.port;
+        const isMelas = port === '5174' || port === '3001';
+        const manifestFile = isMelas ? 'manifest-melas.json' : 'manifest.json';
+        
+        // Crear el link del manifest dinámicamente ANTES de que se cargue
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = `/${manifestFile}?t=${Date.now()}`;
+        document.head.appendChild(manifestLink);
+        
+        console.log(`🔧 [EARLY] Manifest cargado: ${manifestFile}`);
+        
+        // Cambiar favicon dinámicamente
+        const faviconFile = isMelas ? 'favicon-melas.ico' : 'favicon.ico';
+        const favicon = document.querySelector('link[rel="icon"]');
+        if (favicon) {
+          favicon.href = `/${faviconFile}?t=${Date.now()}`;
+        }
+        
+        console.log(`🔧 [EARLY] Favicon cargado: ${faviconFile}`);
+        
+        // Guardar config para uso posterior
+        window.BRAND_CONFIG = {
+          name: isMelas ? 'Melas' : 'Plow',
+          short: isMelas ? 'melas' : 'plow',
+          color: isMelas ? '#ef4444' : '#3b82f6',
+          description: isMelas ? 'Sistema de Gestión - Melas' : 'Sistema de Gestión - Plow',
+          isMelas: isMelas,
+          isPlow: !isMelas
+        };
+      })();
+    </script>
+    
+    <!-- PWA Manifest - Will be replaced by early detection script above -->
+    <!-- This is kept as fallback only -->
     
     <!-- Theme Colors -->
-    <meta name="theme-color" content="#3b82f6">
-    <meta name="msapplication-TileColor" content="#3b82f6">
+    <meta name="theme-color" id="theme-color" content="#3b82f6">
+    <meta name="msapplication-TileColor" id="ms-tile-color" content="#3b82f6">
     
     <!-- Description -->
-    <meta name="description" content="Sistema de gestión de inventarios, ventas y producción">
+    <meta name="description" id="page-description" content="Sistema de gestión de inventarios, ventas y producción">
     
     <!-- iOS Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Plow">
+    <meta name="apple-mobile-web-app-title" id="app-title" content="Plow">
     <link rel="apple-touch-icon" href="/pwa-192x192.png">
     
     <!-- Android Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
     
     <!-- Additional PWA Support -->
-    <meta name="application-name" content="Plow">
+    <meta name="application-name" id="app-name" content="Plow">
     <meta name="msapplication-config" content="/browserconfig.xml">
-    <link rel="mask-icon" href="/masked-icon.svg" color="#3b82f6">
+    <link rel="mask-icon" href="/masked-icon.svg" id="mask-icon" color="#3b82f6">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
       body {
@@ -90,11 +126,41 @@
       }
     </style>
 
-    
+    <script>
+      // Actualizar metadatos según la marca detectada
+      // BRAND_CONFIG ya fue creado en el early detection script
+      (function() {
+        // Usar BRAND_CONFIG que ya fue creado
+        const brand = window.BRAND_CONFIG || {
+          name: 'Plow',
+          color: '#3b82f6',
+          description: 'Sistema de Gestión - Plow'
+        };
+        
+        // Actualizar title
+        document.getElementById('page-title').textContent = `${brand.name} - Ventas y producción`;
+        
+        // Actualizar colores
+        document.getElementById('theme-color').setAttribute('content', brand.color);
+        document.getElementById('ms-tile-color').setAttribute('content', brand.color);
+        document.getElementById('mask-icon').setAttribute('color', brand.color);
+        
+        // Actualizar nombres
+        document.getElementById('app-title').setAttribute('content', brand.name);
+        document.getElementById('app-name').setAttribute('content', brand.name);
+        
+        // Actualizar descripción
+        document.getElementById('page-description').setAttribute('content', brand.description);
+        
+        console.log(`✅ Metadatos actualizados para: ${brand.name}`);
+      })();
+    </script>
 </head>
   <body>
     <div id="root"></div>
     <script src="/config.js"></script>
+    <script src="/favicon-manager.js"></script>
+    <script src="/manifest-generator.js"></script>
     <script type="module" src="/src/index.tsx"></script>
     <script>
       // Registrar Service Worker para PWA

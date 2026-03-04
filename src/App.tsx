@@ -129,7 +129,7 @@ const App: React.FC = () => {
           // Fichas
           (async () => {
             try {
-              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/disenadoras`, {
+              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/disenadoras`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
               });
               const data = await response.json();
@@ -141,7 +141,7 @@ const App: React.FC = () => {
           })(),
           (async () => {
             try {
-              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-diseno`, {
+              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/fichas-diseno`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
               });
               const data = await response.json();
@@ -153,7 +153,7 @@ const App: React.FC = () => {
           })(),
           (async () => {
             try {
-              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/fichas-costo`, {
+              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/fichas-costo`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
               });
               const data = await response.json();
@@ -165,7 +165,7 @@ const App: React.FC = () => {
           })(),
           (async () => {
             try {
-              const response = await fetch(`${window.location.protocol}//${window.location.hostname}:3000/api/maletas`, {
+              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/maletas`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
               });
               const data = await response.json();
@@ -1132,7 +1132,7 @@ const App: React.FC = () => {
           
           <div className="flex items-center gap-3">
             <div className="w-20 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-md">
-              Plow
+              {window.BRAND_CONFIG?.name || 'Plow'}
             </div>
             <div className="hidden sm:block">
               <h1 className="font-extrabold text-lg tracking-tighter leading-none">Gestión de inventarios</h1>

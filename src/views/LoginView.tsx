@@ -101,13 +101,13 @@ const LoginView: React.FC<LoginViewProps> = ({ users, onLogin, onRegister }) => 
 
           <div className="text-center mb-.1 relative z-10">
             <div className="w-20 h-20 sm:w-32 sm:h-24 bg-gradient-to-br from-blue-500 to-pink-500 rounded-[24px] sm:rounded-[32px] mx-auto flex items-center justify-center text-white font-black text-3xl sm:text-4xl shadow-2xl shadow-blue-200 mb-6">
-              PLOW
+              {window.BRAND_CONFIG?.name || 'Plow'}
             </div>
           <h1 className="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
             {isRegister ? 'Crear Cuenta' : 'Bienvenido'}
           </h1>
           <p className="text-slate-500 font-medium">
-            {isRegister ? 'Registra tu usuario nuevo' : 'Gestion de inventario'}
+            {isRegister ? `Registra tu usuario nuevo en ${window.BRAND_CONFIG?.name || 'Plow'}` : `Gestión de inventario - ${window.BRAND_CONFIG?.name || 'Plow'}`}
           </p>
       </div>
 
