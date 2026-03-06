@@ -48,9 +48,9 @@ export default defineConfig(({ mode }) => {
         middlewareMode: false,
         https: httpsConfig,
         hmr: {
-          host: '10.10.0.34',
+          host: 'localhost',
           port: vitePort,
-          protocol: 'wss'
+          protocol: 'ws'
         }
       },
       plugins: [

@@ -16,8 +16,10 @@ const logger = require('../utils/logger');
 const getUserPreferences = async (req, res) => {
     try {
         const userId = req.user.id;
+        logger.info(`📋 Obteniendo preferencias para usuario: ${userId}`);
 
         if (!userId) {
+            logger.warn('⚠️ Usuario no autenticado');
             return res.status(401).json({
                 success: false,
                 message: 'Usuario no autenticado'
@@ -25,10 +27,12 @@ const getUserPreferences = async (req, res) => {
         }
 
         // Buscar preferencias del usuario
+        logger.info(`🔍 Ejecutando query para preferencias del usuario ${userId}`);
         const result = await query(
             `SELECT view_order FROM user_view_preferences WHERE user_id = $1`,
             [userId]
         );
+        logger.info(`✅ Query ejecutada. Filas encontradas: ${result.rows.length}`);
 
         // Si no existen preferencias, retornar array vacío (usará orden por defecto)
         if (result.rows.length === 0) {
@@ -40,10 +44,15 @@ const getUserPreferences = async (req, res) => {
             });
         }
 
-        // Asegurar que view_order es un array
-        const viewOrder = Array.isArray(result.rows[0].view_order) 
-            ? result.rows[0].view_order 
-            : (result.rows[0].view_order || []);
+        // Asegurar que view_order es un array (PostgreSQL devuelve JSONB como string)
+        let viewOrder = [];
+        if (result.rows[0].view_order) {
+            if (typeof result.rows[0].view_order === 'string') {
+                viewOrder = JSON.parse(result.rows[0].view_order);
+            } else if (Array.isArray(result.rows[0].view_order)) {
+                viewOrder = result.rows[0].view_order;
+            }
+        }
 
         return res.status(200).json({
             success: true,
@@ -112,13 +121,21 @@ const saveUserPreferences = async (req, res) => {
             );
         }
 
+        // Asegurar que view_order es un array (PostgreSQL devuelve JSONB como string)
+        let savedViewOrder = [];
+        if (result.rows[0].view_order) {
+            if (typeof result.rows[0].view_order === 'string') {
+                savedViewOrder = JSON.parse(result.rows[0].view_order);
+            } else if (Array.isArray(result.rows[0].view_order)) {
+                savedViewOrder = result.rows[0].view_order;
+            }
+        }
+
         return res.status(200).json({
             success: true,
             message: 'Preferencias guardadas correctamente',
             data: {
-                viewOrder: Array.isArray(result.rows[0].view_order) 
-                    ? result.rows[0].view_order 
-                    : (result.rows[0].view_order || [])
+                viewOrder: savedViewOrder
             }
         });
     } catch (error) {

@@ -10,23 +10,19 @@ window.API_CONFIG = {
     const protocol = window.location.protocol;
     
     // Si estamos en un dominio externo (ngrok, producción, etc), usar el mismo host
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.includes('10.10.0.34')) {
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.match(/^10\.10\./)) {
       return `${protocol}//${hostname}/api`;
     }
     
     if (port === '5173' || port === '3000' || port === '') {
-      if (hostname === '10.10.0.34' || hostname.includes('10.10.0.34')) {
-        return 'https://10.10.0.34:3000/api';
-      }
-      return 'http://localhost:3000/api';
+      // Usar localhost con HTTPS para conexiones locales
+      return 'https://localhost:3000/api';
     } else if (port === '5174' || port === '3001') {
-      if (hostname === '10.10.0.34' || hostname.includes('10.10.0.34')) {
-        return 'https://10.10.0.34:3001/api';
-      }
-      return 'http://localhost:3001/api';
+      // Usar localhost con HTTPS para conexiones locales
+      return 'https://localhost:3001/api';
     }
     
-    return 'http://localhost:3000/api';
+    return 'https://localhost:3000/api';
   },
 
   getBrand: function() {

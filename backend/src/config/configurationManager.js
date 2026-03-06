@@ -45,15 +45,15 @@ async function initializeConfiguration() {
     let validationStrict = false;
 
     if (nodeEnv === 'production') {
-      // Production: use detected IP, enforce strict validation
-      dbHost = detectedIP || 'localhost';
+      // Production: use DB_HOST from .env, enforce strict validation
+      dbHost = envConfig.DB_HOST || detectedIP || 'localhost';
       validationStrict = true;
-      logger.info(`🏭 Production mode: Using detected IP (${dbHost}) with strict validation`);
+      logger.info(`🏭 Production mode: Using DB_HOST from .env (${dbHost}) with strict validation`);
     } else if (nodeEnv === 'staging') {
-      // Staging: use detected IP with relaxed validation
-      dbHost = detectedIP || 'localhost';
+      // Staging: use DB_HOST from .env with relaxed validation
+      dbHost = envConfig.DB_HOST || detectedIP || 'localhost';
       validationStrict = false;
-      logger.info(`🔄 Staging mode: Using detected IP (${dbHost}) with relaxed validation`);
+      logger.info(`🔄 Staging mode: Using DB_HOST from .env (${dbHost}) with relaxed validation`);
     } else {
       // Development: use localhost, allow connection failures
       dbHost = 'localhost';
@@ -199,11 +199,7 @@ function validateConfiguration(config) {
   // Apply environment-specific validation rules
   if (config.NODE_ENV === 'production') {
     // Production: strict validation
-    // Ensure DB_HOST is not localhost (should be detected IP)
-    if (config.DB_HOST === 'localhost') {
-      errors.push('Production mode requires a detected network IP, not localhost');
-    }
-
+    // Allow localhost for local development/testing in production mode
     // Ensure SSL is configured in production
     if (config.DB_SSL === false) {
       logger.warn('⚠️ Production mode detected with SSL disabled. Consider enabling SSL for security.');
