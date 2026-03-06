@@ -4,17 +4,20 @@ interface ViewPreferences {
   viewOrder: string[];
 }
 
-// Obtener URL base de la API
+// Obtener URL base de la API dinámicamente
 function getApiUrl(): string {
   // Primero intentar usar la variable de entorno de Vite
   const envApiUrl = import.meta.env.VITE_API_URL;
   if (envApiUrl) {
+    console.log('📍 Usando VITE_API_URL:', envApiUrl);
     return envApiUrl;
   }
   
   // Fallback: usar window.API_CONFIG si está disponible
   if (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl) {
-    return window.API_CONFIG.getApiUrl();
+    const configUrl = window.API_CONFIG.getApiUrl();
+    console.log('📍 Usando window.API_CONFIG:', configUrl);
+    return configUrl;
   }
   
   // Último fallback: construir URL basada en el hostname actual
@@ -23,19 +26,28 @@ function getApiUrl(): string {
     const hostname = window.location.hostname;
     const port = window.location.port;
     
-    if (port === '5173' || port === '3000' || port === '') {
-      return `${protocol}//${hostname}:3000/api`;
-    } else if (port === '5174' || port === '3001') {
-      return `${protocol}//${hostname}:3001/api`;
+    console.log('🔍 Detectando puerto para API:', { protocol, hostname, port });
+    
+    // Detectar basado en el puerto del frontend
+    let backendPort = '3000'; // Default a Plow
+    
+    if (port === '5174') {
+      backendPort = '3001'; // Melas frontend
+    } else if (port === '5173') {
+      backendPort = '3000'; // Plow frontend
+    } else if (port === '3001') {
+      backendPort = '3001'; // Si está en 3001, es Melas
+    } else if (port === '3000') {
+      backendPort = '3000'; // Si está en 3000, es Plow
     }
     
-    return `${protocol}//${hostname}:3000/api`;
+    const url = `${protocol}//${hostname}:${backendPort}/api`;
+    console.log(`📍 API URL construida (puerto ${port} -> backend ${backendPort}):`, url);
+    return url;
   }
   
   return 'http://localhost:3000/api';
 }
-
-const API_BASE_URL = getApiUrl();
 
 export const useViewPreferences = () => {
   const [preferences, setPreferences] = useState<ViewPreferences>({ viewOrder: [] });
@@ -62,8 +74,10 @@ export const useViewPreferences = () => {
       setLoading(true);
       setError(null);
 
+      const apiUrl = getApiUrl();
+      console.log('📍 API URL detectada:', apiUrl);
       console.log('Obteniendo preferencias del servidor');
-      const response = await fetch(`${API_BASE_URL}/user/preferences`, {
+      const response = await fetch(`${apiUrl}/user/preferences`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -101,8 +115,10 @@ export const useViewPreferences = () => {
       setLoading(true);
       setError(null);
 
+      const apiUrl = getApiUrl();
+      console.log('📍 API URL detectada:', apiUrl);
       console.log('Enviando preferencias al servidor:', viewOrder);
-      const response = await fetch(`${API_BASE_URL}/user/preferences`, {
+      const response = await fetch(`${apiUrl}/user/preferences`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
