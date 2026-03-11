@@ -16,26 +16,32 @@ export const Message: React.FC<MessageProps> = ({ message, isOwn }) => {
   };
 
   return (
-    <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-3 animate-message-pop`}>
+    <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mb-3 animate-message-pop group`}>
       <div
         className={`
-          max-w-xs px-4 py-2 rounded-lg
-          ${
-            isOwn
-              ? 'bg-blue-500 text-white rounded-br-none'
-              : 'bg-gray-200 text-gray-900 rounded-bl-none'
+          max-w-[85%] px-4 py-2 rounded-2xl relative
+          ${isOwn
+            ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20 rounded-br-sm'
+            : 'bg-white text-gray-700 shadow-sm border border-gray-100 rounded-bl-sm'
           }
+          transition-transform hover:scale-[1.01]
         `}
       >
-        <p className="break-words text-sm">{message.content}</p>
+        <p className={`break-words text-[15px] leading-relaxed ${isOwn ? 'text-white/95' : 'text-gray-700'}`}>
+          {message.content}
+        </p>
         <div
           className={`
-            text-xs mt-1 flex items-center gap-1
-            ${isOwn ? 'text-blue-100' : 'text-gray-500'}
+            text-[10px] mt-1.5 flex items-center justify-end gap-1
+            ${isOwn ? 'text-blue-100 font-medium' : 'text-gray-400 font-medium'}
           `}
         >
           <span>{formatTime(message.timestamp)}</span>
-          {isOwn && <span>{message.read ? '✓✓' : '✓'}</span>}
+          {isOwn && (
+            <span className={message.read ? 'text-white' : 'text-blue-200'}>
+              {message.read ? '✓✓' : '✓'}
+            </span>
+          )}
         </div>
       </div>
     </div>

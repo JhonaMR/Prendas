@@ -1,10 +1,12 @@
 
 import React, { useState, useMemo } from 'react';
-import { Order, AppState, Correria, User, UserRole } from '../types';
+import { Order, AppState, Correria, User, UserRole, Client, Seller } from '../types';
 import { Icons } from '../constants';
 import { api } from '../services/api';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import { useBrand } from '../hooks/useBrand';
+import { exportOrderToExcel } from '../utils/exportOrderExcel';
 
 interface OrderHistoryViewProps {
   state: AppState;
@@ -14,7 +16,7 @@ interface OrderHistoryViewProps {
 }
 
 const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser, onOrderUpdate, onOrderDelete }) => {
-  
+
   const [filterSeller, setFilterSeller] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterCorreria, setFilterCorreria] = useState('');
@@ -26,8 +28,13 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const ordersPagination = usePagination(1, 50);
 
   const isAdmin = currentUser?.role === UserRole.ADMIN || currentUser?.role === UserRole.SOPORTE;
+  const brand = useBrand();
 
   const years = useMemo(() => Array.from(new Set(state.correrias.map(c => c.year))).sort(), [state.correrias]);
+
+  const handleGenerateExcel = async (order: Order, client: Client | undefined, seller: Seller | undefined) => {
+    await exportOrderToExcel(order, client, seller, state.references, brand.isMelas);
+  };
 
   const handleEditOrder = (order: Order) => {
     setEditingOrderId(order.id);
@@ -184,8 +191,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4">
           <div className="flex-1 min-w-[200px] space-y-2">
             <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest px-4 block">👤 Vendedor</label>
-            <select 
-              value={filterSeller} 
+            <select
+              value={filterSeller}
               onChange={e => setFilterSeller(e.target.value)}
               className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all shadow-sm hover:border-blue-300"
             >
@@ -196,8 +203,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
 
           <div className="flex-1 min-w-[150px] space-y-2">
             <label className="text-[10px] font-black text-pink-600 uppercase tracking-widest px-4 block">📅 Año</label>
-            <select 
-              value={filterYear} 
+            <select
+              value={filterYear}
               onChange={e => setFilterYear(e.target.value)}
               className="w-full px-4 py-3 bg-white border-2 border-pink-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-pink-100 focus:border-pink-400 transition-all shadow-sm hover:border-pink-300"
             >
@@ -219,8 +226,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
             />
           </div>
 
-          <button 
-            onClick={() => { setFilterSeller(''); setFilterYear(''); setFilterCorreria(''); }} 
+          <button
+            onClick={() => { setFilterSeller(''); setFilterYear(''); setFilterCorreria(''); }}
             className="px-8 py-3 bg-white text-slate-600 font-black rounded-2xl text-sm uppercase border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap"
           >
             ✕ Limpiar
@@ -239,135 +246,148 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
         ) : (
           <>
             {filteredOrders.slice((ordersPagination.pagination.page - 1) * ordersPagination.pagination.limit, ordersPagination.pagination.page * ordersPagination.pagination.limit).map(o => {
-            const client = state.clients.find(c => c.id === o.clientId);
-            const seller = state.sellers.find(s => s.id === o.sellerId);
-            const correria = state.correrias.find(c => c.id === o.correriaId);
-            const isExpanded = expandedId === o.id;
+              const client = state.clients.find(c => c.id === o.clientId);
+              const seller = state.sellers.find(s => s.id === o.sellerId);
+              const correria = state.correrias.find(c => c.id === o.correriaId);
+              const isExpanded = expandedId === o.id;
 
-            return (
-              <div key={o.id} className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden transition-all group">
-                <div 
-                  className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
-                  onClick={() => setExpandedId(isExpanded ? null : o.id)}
-                >
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
-                      <span className="text-[10px] text-slate-300 font-bold">{o.createdAt}</span>
-                    </div>
-                  <div className="flex items-center justify-between gap-4 w-full">
-                      <div className="flex items-baseline gap-3 flex-1">
-                        <h3 className="text-lg font-black text-slate-800">{client?.name || 'Cliente'}</h3>
-                        <p className="text-xs font-medium text-slate-500">{client?.address}</p>
-                      </div>
-                      <div className="flex gap-8 items-center">
-                        <div className="text-center min-w-[140px]">
-                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Despacho</p>
-                          <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
-                            {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
-                          </p>
-                        </div>
-                        <div className="text-center min-w-[140px]">
-                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Despacho</p>
-                          <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
-                            {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}</p>
-                  </div>
-                  <div className="flex items-center gap-6">
-                    <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-300 uppercase">Resumen</p>
-                      <p className="text-sm font-black text-slate-700">{o.items.length} Refs • {o.items.reduce((a,b)=>a+b.quantity,0)} Unid.</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[9px] font-black text-slate-300 uppercase">Valor Total</p>
-                      <p className="text-lg font-black text-blue-600">${o.totalValue.toLocaleString()}</p>
-                    </div>
-                    {isAdmin && (
+              return (
+                <div key={o.id} className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden transition-all group">
+                  <div
+                    className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
+                    onClick={() => setExpandedId(isExpanded ? null : o.id)}
+                  >
+                    <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditOrder(o);
-                          }}
-                          className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600 hover:text-blue-700"
-                          title="Editar pedido"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteOrder(o.id);
-                          }}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 hover:text-red-700"
-                          title="Eliminar pedido"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 2.991a1.125 1.125 0 00-1.06-.694H7.898a1.125 1.125 0 00-1.06.694L4.232 5.805M4.232 5.805a2.625 2.625 0 00-.5 5.177m.5-5.177l.8 12A1.125 1.125 0 005.971 20.625h12.058a1.125 1.125 0 001.065-1.393l.8-12M10.5 1.5H13.5m0 0H16.5M13.5 1.5h-3" />
-                          </svg>
-                        </button>
+                        <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
+                        <span className="text-[10px] text-slate-300 font-bold">{o.createdAt}</span>
                       </div>
-                    )}
-                    <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-
-                {isExpanded && (
-                  <div className="p-8 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
-                    <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
-                      <table className="w-full text-left text-xs">
-                        <thead>
-                          <tr className="bg-slate-50 border-b border-slate-100">
-                            <th className="px-6 py-4 font-black text-slate-400 uppercase">Referencia</th>
-                            <th className="px-6 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
-                            <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Precio Unit.</th>
-                            <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-50">
-                          {o.items.map((item, idx) => {
-                            const ref = state.references.find(r => r.id === item.reference);
-                            const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
-                            return (
-                              <tr key={idx}>
-                                <td className="px-6 py-2">
-                                  <p className="font-black text-slate-800 text-sm">{item.reference}</p>
-                                  <p className="text-[10px] font-bold text-slate-400 uppercase">{ref?.description}</p>
-                                </td>
-                                <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
-                                <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${displayPrice.toLocaleString()}</td>
-                                <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${(displayPrice * item.quantity).toLocaleString()}</td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                        <tfoot>
-                          <tr className="bg-slate-50/80 font-black text-slate-800">
-                            <td className="px-6 py-6 uppercase text-[9px] text-slate-400">Totales Pedido</td>
-                            <td className="px-6 py-6 text-center">{o.items.reduce((a,b)=>a+b.quantity,0)}</td>
-                            <td></td>
-                            <td className="px-6 py-6 text-right text-blue-600 text-lg">${o.totalValue.toLocaleString()}</td>
-                          </tr>
-                        </tfoot>
-                      </table>
+                      <div className="flex items-center justify-between gap-4 w-full">
+                        <div className="flex items-baseline gap-3 flex-1">
+                          <h3 className="text-lg font-black text-slate-800">{client?.name || 'Cliente'}</h3>
+                          <p className="text-xs font-medium text-slate-500">{client?.address}</p>
+                        </div>
+                        <div className="flex gap-4 md:gap-8 items-center">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleGenerateExcel(o, client, seller);
+                            }}
+                            className="px-4 py-2 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-emerald-200 focus:ring-4 focus:ring-emerald-50 transition-all shadow-sm"
+                            title="Generar pedido Excel"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Generar pedido
+                          </button>
+                          <div className="text-center min-w-[140px]">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Despacho</p>
+                            <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                              {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                            </p>
+                          </div>
+                          <div className="text-center min-w-[140px]">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Despacho</p>
+                            <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                              {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}</p>
+                    </div>
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <p className="text-[9px] font-black text-slate-300 uppercase">Resumen</p>
+                        <p className="text-sm font-black text-slate-700">{o.items.length} Refs • {o.items.reduce((a, b) => a + b.quantity, 0)} Unid.</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[9px] font-black text-slate-300 uppercase">Valor Total</p>
+                        <p className="text-lg font-black text-blue-600">${o.totalValue.toLocaleString()}</p>
+                      </div>
+                      {isAdmin && (
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditOrder(o);
+                            }}
+                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600 hover:text-blue-700"
+                            title="Editar pedido"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteOrder(o.id);
+                            }}
+                            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 hover:text-red-700"
+                            title="Eliminar pedido"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 2.991a1.125 1.125 0 00-1.06-.694H7.898a1.125 1.125 0 00-1.06.694L4.232 5.805M4.232 5.805a2.625 2.625 0 00-.5 5.177m.5-5.177l.8 12A1.125 1.125 0 005.971 20.625h12.058a1.125 1.125 0 001.065-1.393l.8-12M10.5 1.5H13.5m0 0H16.5M13.5 1.5h-3" />
+                            </svg>
+                          </button>
+                        </div>
+                      )}
+                      <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
-                )}
-              </div>
-            );
-          })}
+
+                  {isExpanded && (
+                    <div className="p-8 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
+                      <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                        <table className="w-full text-left text-xs">
+                          <thead>
+                            <tr className="bg-slate-50 border-b border-slate-100">
+                              <th className="px-6 py-4 font-black text-slate-400 uppercase">Referencia</th>
+                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
+                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Precio Unit.</th>
+                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-50">
+                            {o.items.map((item, idx) => {
+                              const ref = state.references.find(r => r.id === item.reference);
+                              const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
+                              return (
+                                <tr key={idx}>
+                                  <td className="px-6 py-2">
+                                    <p className="font-black text-slate-800 text-sm">{item.reference}</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{ref?.description}</p>
+                                  </td>
+                                  <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
+                                  <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${displayPrice.toLocaleString()}</td>
+                                  <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${(displayPrice * item.quantity).toLocaleString()}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                          <tfoot>
+                            <tr className="bg-slate-50/80 font-black text-slate-800">
+                              <td className="px-6 py-6 uppercase text-[9px] text-slate-400">Totales Pedido</td>
+                              <td className="px-6 py-6 text-center">{o.items.reduce((a, b) => a + b.quantity, 0)}</td>
+                              <td></td>
+                              <td className="px-6 py-6 text-right text-blue-600 text-lg">${o.totalValue.toLocaleString()}</td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <div className="mt-6">
-              <PaginationComponent 
+              <PaginationComponent
                 currentPage={ordersPagination.pagination.page}
                 totalPages={ordersPagination.pagination.totalPages}
                 pageSize={ordersPagination.pagination.limit}
@@ -457,8 +477,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Inicio</label>
-                  <input 
-                    type="date" 
+                  <input
+                    type="date"
                     value={editingOrder.startDate || ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, startDate: e.target.value || null })}
                     className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
@@ -466,8 +486,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                 </div>
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Fin</label>
-                  <input 
-                    type="date" 
+                  <input
+                    type="date"
                     value={editingOrder.endDate || ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, endDate: e.target.value || null })}
                     className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
@@ -555,7 +575,7 @@ const ReferenceAutocomplete: React.FC<{
         className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
       />
       {showDropdown && (
-        <div 
+        <div
           className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-100 rounded-lg shadow-xl max-h-48 overflow-y-auto z-50"
           onMouseDown={(e) => e.preventDefault()}
         >
@@ -619,7 +639,7 @@ const CorreriaAutocomplete: React.FC<{
         className="w-full px-4 py-3 bg-white border-2 border-purple-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all shadow-sm hover:border-purple-300"
       />
       {showDropdown && (
-        <div 
+        <div
           className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
           onMouseDown={(e) => e.preventDefault()}
         >

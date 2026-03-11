@@ -144,6 +144,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Compras',
       icon: <Icons.Orders />,
       description: 'Registrar compras'
+    },
+    {
+      id: 'comparativeDashboard',
+      label: 'Dashboard Comparativo',
+      icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 6.75c0-.621.504-1.125 1.125-1.125h2.25C13.496 5.625 14 6.129 14 6.75v13.5c0 .621-.504 1.125-1.125 1.125h-2.25c-.621 0-1.125-.504-1.125-1.125V6.75zm6-6c-.621 0-1.125.504-1.125 1.125v19.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V1.875c0-.621-.504-1.125-1.125-1.125h-2.25z" /></svg>,
+      description: 'Análisis comparativo'
     }
   ];
 

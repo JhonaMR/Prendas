@@ -19,10 +19,13 @@ export const MessagesList: React.FC<MessagesListProps> = ({
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-2">
+    <div className="flex-1 overflow-y-auto p-5 space-y-2 bg-[#f8fafc]/50">
       {messages.length === 0 ? (
-        <div className="flex items-center justify-center h-full text-gray-400">
-          <p className="text-sm">No hay mensajes aún</p>
+        <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-3 opacity-70">
+          <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center">
+            <span className="text-2xl">👋</span>
+          </div>
+          <p className="text-sm font-medium">Inicia una conversación</p>
         </div>
       ) : (
         messages.map((message) => (

@@ -1,0 +1,82 @@
+﻿src/components/__tests__/integration.test.tsx(223,5): error TS2322: Type 'Mock<Promise<{ ok: true; json: () => Promise<{ records: any[]; }>; }>, [], any>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit): Promise<Response>; (input: string | URL | Request, init?: RequestInit): Promise<...>; }'.
+  Type 'Promise<{ ok: true; json: () => Promise<{ records: any[]; }>; }>' is not assignable to type 'Promise<Response>'.
+    Type '{ ok: true; json: () => Promise<{ records: any[]; }>; }' is missing the following properties from type 'Response': headers, redirected, status, statusText, and 10 more.
+src/components/__tests__/integration.test.tsx(256,5): error TS2322: Type 'Mock<Promise<{ ok: true; json: () => Promise<{ records: { id: number; entity_type: string; entity_id: string; user_id: string; action: string; old_values: any; new_values: { name: string; }; changes: any; ip_address: string; user_agent: string; created_at: string; }[]; }>; }>, [], any>' is not assignable to type '{ (input: URL | RequestInfo, init?: RequestInit): Promise<Response>; (input: string | URL | Request, init?: RequestInit): Promise<...>; }'.
+  Type 'Promise<{ ok: true; json: () => Promise<{ records: { id: number; entity_type: string; entity_id: string; user_id: string; action: string; old_values: any; new_values: { name: string; }; changes: any; ip_address: string; user_agent: string; created_at: string; }[]; }>; }>' is not assignable to type 'Promise<Response>'.
+    Type '{ ok: true; json: () => Promise<{ records: { id: number; entity_type: string; entity_id: string; user_id: string; action: string; old_values: any; new_values: { name: string; }; changes: any; ip_address: string; user_agent: string; created_at: string; }[]; }>; }' is missing the following properties from type 'Response': headers, redirected, status, statusText, and 10 more.
+src/components/Chat/ChatInput.tsx(110,13): error TS2322: Type '"light"' is not assignable to type 'Theme'.
+src/components/fichas/SubidaFotos.tsx(36,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/components/modules/ClientsModule.test.tsx(7,9): error TS2322: Type '{ id: string; name: string; nit: string; address: string; city: string; seller: string; }[]' is not assignable to type 'Client[]'.
+  Property 'sellerId' is missing in type '{ id: string; name: string; nit: string; address: string; city: string; seller: string; }' but required in type 'Client'.
+src/components/modules/ClientsModule.unit.test.tsx(11,9): error TS2322: Type '{ id: string; name: string; nit: string; address: string; city: string; seller: string; }[]' is not assignable to type 'Client[]'.
+  Property 'sellerId' is missing in type '{ id: string; name: string; nit: string; address: string; city: string; seller: string; }' but required in type 'Client'.
+src/components/modules/ClientsModule.unit.test.tsx(386,11): error TS2561: Object literal may only specify known properties, but 'seller' does not exist in type 'Client'. Did you mean to write 'sellerId'?
+src/components/modules/ClientsModule.unit.test.tsx(410,11): error TS2561: Object literal may only specify known properties, but 'seller' does not exist in type 'Client'. Did you mean to write 'sellerId'?
+src/components/modules/ClientsModule.unit.test.tsx(433,11): error TS2561: Object literal may only specify known properties, but 'seller' does not exist in type 'Client'. Did you mean to write 'sellerId'?
+src/components/modules/ConfeccionistasModule.unit.test.tsx(11,9): error TS2322: Type '{ id: string; name: string; phone: string; score: number; active: boolean; }[]' is not assignable to type 'Confeccionista[]'.
+  Type '{ id: string; name: string; phone: string; score: number; active: boolean; }' is missing the following properties from type 'Confeccionista': address, city
+src/components/modules/ConfeccionistasModule.unit.test.tsx(308,9): error TS2739: Type '{ id: string; name: string; phone: undefined; score: undefined; active: true; }' is missing the following properties from type 'Confeccionista': address, city
+src/components/modules/modules.property.test.tsx(20,3): error TS2322: Type 'Arbitrary<{ id: string; name: string; nit: string; address: string; city: string; seller: unknown; }>' is not assignable to type 'Arbitrary<Client>'.
+  Property 'sellerId' is missing in type '{ id: string; name: string; nit: string; address: string; city: string; seller: unknown; }' but required in type 'Client'.
+src/components/modules/ReferencesModule.unit.test.tsx(11,9): error TS2322: Type '{ id: string; description: string; designer: string; price: number; cloth1: string; avgCloth1: number; cloth2: string; avgCloth2: number; }[]' is not assignable to type 'Reference[]'.
+  Property 'correrias' is missing in type '{ id: string; description: string; designer: string; price: number; cloth1: string; avgCloth1: number; cloth2: string; avgCloth2: number; }' but required in type 'Reference'.
+src/components/modules/ReferencesModule.unit.test.tsx(332,9): error TS2741: Property 'correrias' is missing in type '{ id: string; description: string; designer: undefined; price: undefined; cloth1: undefined; avgCloth1: undefined; cloth2: undefined; avgCloth2: undefined; }' but required in type 'Reference'.
+src/components/modules/ReferencesModule.unit.test.tsx(358,9): error TS2741: Property 'correrias' is missing in type '{ id: string; description: string; designer: string; price: number; cloth1: string; avgCloth1: number; cloth2: string; avgCloth2: number; }' but required in type 'Reference'.
+src/components/shared/index.ts(4,48): error TS2614: Module '"./CorreriaAutocomplete"' has no exported member 'CorreriaAutocompleteProps'. Did you mean to use 'import CorreriaAutocompleteProps from "./CorreriaAutocomplete"' instead?
+src/context/AppContext.tsx(29,7): error TS2322: Type '{ users: undefined[]; references: undefined[]; clients: undefined[]; confeccionistas: undefined[]; sellers: undefined[]; correrias: undefined[]; receptions: undefined[]; returnReceptions: undefined[]; dispatches: undefined[]; ... 4 more ...; error: null; }' is not assignable to type 'AppState & { loading: boolean; error: string; }'.
+  Type '{ users: undefined[]; references: undefined[]; clients: undefined[]; confeccionistas: undefined[]; sellers: undefined[]; correrias: undefined[]; receptions: undefined[]; returnReceptions: undefined[]; dispatches: undefined[]; ... 4 more ...; error: null; }' is missing the following properties from type 'AppState': disenadoras, fichasDiseno, fichasCosto, maletas
+src/context/AuthContext.test.tsx(51,26): error TS2551: Property 'admin' does not exist on type 'typeof UserRole'. Did you mean 'ADMIN'?
+src/context/MastersContext.test.tsx(37,7): error TS2561: Object literal may only specify known properties, but 'seller' does not exist in type 'Omit<Client, "id">'. Did you mean to write 'sellerId'?
+src/context/MastersContext.test.tsx(56,7): error TS2353: Object literal may only specify known properties, and 'email' does not exist in type 'Omit<Seller, "id">'.
+src/context/MastersContext.test.tsx(76,7): error TS2353: Object literal may only specify known properties, and 'email' does not exist in type 'Omit<Confeccionista, "id">'.
+src/context/MastersContext.test.tsx(110,61): error TS2339: Property 'email' does not exist on type 'Seller'.
+src/context/MastersContext.test.tsx(116,77): error TS2339: Property 'email' does not exist on type 'Confeccionista'.
+src/hooks/useClients.ts(9,22): error TS2339: Property 'clients' does not exist on type 'ApiService'.
+src/hooks/useConfeccionistas.ts(9,22): error TS2551: Property 'confeccionistas' does not exist on type 'ApiService'. Did you mean 'getConfeccionistas'?
+src/hooks/useCorrerias.ts(9,22): error TS2551: Property 'correrias' does not exist on type 'ApiService'. Did you mean 'getCorrerias'?
+src/hooks/useCRUD.ts(66,9): error TS2322: Type '`SET_${string}`' is not assignable to type '"SET_USER" | "SET_USERS" | "SET_REFERENCES" | "SET_CLIENTS" | "SET_CONFECCIONISTAS" | "SET_SELLERS" | "SET_CORRERIAS" | "SET_RECEPTIONS" | "SET_RETURN_RECEPTIONS" | "SET_DISPATCHES" | ... 5 more ... | "RESET_STATE"'.
+src/hooks/useCRUD.ts(109,9): error TS2322: Type '`SET_${string}`' is not assignable to type '"SET_USER" | "SET_USERS" | "SET_REFERENCES" | "SET_CLIENTS" | "SET_CONFECCIONISTAS" | "SET_SELLERS" | "SET_CORRERIAS" | "SET_RECEPTIONS" | "SET_RETURN_RECEPTIONS" | "SET_DISPATCHES" | ... 5 more ... | "RESET_STATE"'.
+src/hooks/useCRUD.ts(134,9): error TS2322: Type '`SET_${string}`' is not assignable to type '"SET_USER" | "SET_USERS" | "SET_REFERENCES" | "SET_CLIENTS" | "SET_CONFECCIONISTAS" | "SET_SELLERS" | "SET_CORRERIAS" | "SET_RECEPTIONS" | "SET_RETURN_RECEPTIONS" | "SET_DISPATCHES" | ... 5 more ... | "RESET_STATE"'.
+src/hooks/useCRUD.ts(158,9): error TS2322: Type '`SET_${string}`' is not assignable to type '"SET_USER" | "SET_USERS" | "SET_REFERENCES" | "SET_CLIENTS" | "SET_CONFECCIONISTAS" | "SET_SELLERS" | "SET_CORRERIAS" | "SET_RECEPTIONS" | "SET_RETURN_RECEPTIONS" | "SET_DISPATCHES" | ... 5 more ... | "RESET_STATE"'.
+src/hooks/useDataLoader.ts(46,18): error TS2345: Argument of type '{ type: string; payload: any; }' is not assignable to parameter of type 'AppAction'.
+  Type '{ type: string; payload: any; }' is not assignable to type '{ type: "SET_USER"; payload: User; } | { type: "SET_USERS"; payload: User[]; } | { type: "SET_REFERENCES"; payload: any[]; } | { type: "SET_CLIENTS"; payload: any[]; } | { type: "SET_CONFECCIONISTAS"; payload: any[]; } | ... 9 more ... | { ...; }'.
+    Type '{ type: string; payload: any; }' is not assignable to type '{ type: "SET_ERROR"; payload: string; }'.
+      Types of property 'type' are incompatible.
+        Type 'string' is not assignable to type '"SET_ERROR"'.
+src/hooks/useReferences.ts(11,28): error TS2551: Property 'references' does not exist on type 'ApiService'. Did you mean 'getReferences'?
+src/hooks/useReferences.ts(18,32): error TS2339: Property 'getCorreriaReferences' does not exist on type 'ApiService'.
+src/hooks/useSellers.ts(9,22): error TS2339: Property 'sellers' does not exist on type 'ApiService'.
+src/hooks/useViewPreferences.ts(10,33): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/services/api.ts(1388,7): error TS2740: Type '{}' is missing the following properties from type 'any[]': length, pop, push, concat, and 29 more.
+src/services/api.ts(1410,25): error TS2339: Property 'summary' does not exist on type 'ApiResponse<unknown>'.
+src/services/api.ts(1411,23): error TS2339: Property 'saved' does not exist on type 'ApiResponse<unknown>'.
+src/views/BackupManagementView.tsx(73,29): error TS2339: Property 'backups' does not exist on type 'ApiResponse<any>'.
+src/views/BackupManagementView.tsx(88,27): error TS2339: Property 'stats' does not exist on type 'ApiResponse<any>'.
+src/views/BackupManagementView.tsx(103,20): error TS2339: Property 'alerts' does not exist on type 'ApiResponse<any>'.
+src/views/BackupManagementView.tsx(103,39): error TS2339: Property 'alerts' does not exist on type 'ApiResponse<any>'.
+src/views/BackupManagementView.tsx(104,28): error TS2339: Property 'alerts' does not exist on type 'ApiResponse<any>'.
+src/views/fichas/FichasCostoDetalle.tsx(3,10): error TS2305: Module '"../../types/typesFichas"' has no exported member 'UserRole'.
+src/views/fichas/FichasCostoMosaico.tsx(3,10): error TS2305: Module '"../../types/typesFichas"' has no exported member 'UserRole'.
+src/views/fichas/FichasCostoMosaico.tsx(30,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/views/fichas/FichasDisenoDetalle.tsx(3,23): error TS2305: Module '"../../types/typesFichas"' has no exported member 'UserRole'.
+src/views/fichas/FichasDisenoMosaico.tsx(112,32): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/views/FichasCorteDetalle.tsx(3,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/FichasCorteDetalle.tsx(4,31): error TS2307: Cannot find module '../../types/typesFichas' or its corresponding type declarations.
+src/views/FichasCostoDetalle.tsx(7,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/FichasCostoDetalle.tsx(8,31): error TS2307: Cannot find module '../../types/typesFichas' or its corresponding type declarations.
+src/views/FichasCostoMosaico.tsx(7,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/FichasDisenoDetalle.tsx(7,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/FichasDisenoDetalle.tsx(8,31): error TS2307: Cannot find module '../../types/typesFichas' or its corresponding type declarations.
+src/views/FichasDisenoMosaico.tsx(7,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/FichasDisenoMosaico.tsx(8,41): error TS2307: Cannot find module '../../types/typesFichas' or its corresponding type declarations.
+src/views/maletas/MaletasListado.tsx(3,10): error TS2305: Module '"../../types/typesFichas"' has no exported member 'UserRole'.
+src/views/MaletasAsignar.tsx(3,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+src/views/MaletasListado.tsx(3,26): error TS2307: Cannot find module '../../types' or its corresponding type declarations.
+vite.config.ts(39,29): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '({ mode }: ConfigEnv) => { server: { port: number; host: string; middlewareMode: false; https: boolean | { cert: NonSharedBuffer; key: NonSharedBuffer; }; hmr: { ...; }; }; plugins: Plugin<...>[][]; define: { ...; }; resolve: { ...; }; }' is not assignable to parameter of type 'UserConfigExport'.
+      Type '({ mode }: ConfigEnv) => { server: { port: number; host: string; middlewareMode: false; https: boolean | { cert: NonSharedBuffer; key: NonSharedBuffer; }; hmr: { ...; }; }; plugins: Plugin<...>[][]; define: { ...; }; resolve: { ...; }; }' is not assignable to type 'UserConfigFnObject'.
+        Call signature return types '{ server: { port: number; host: string; middlewareMode: false; https: boolean | { cert: NonSharedBuffer; key: NonSharedBuffer; }; hmr: { host: string; port: number; protocol: string; }; }; plugins: Plugin<...>[][]; define: { ...; }; resolve: { ...; }; }' and 'UserConfig' are incompatible.
+          The types of 'server.https' are incompatible between these types.
+            Type 'boolean | { cert: NonSharedBuffer; key: NonSharedBuffer; }' is not assignable to type 'ServerOptions<typeof IncomingMessage, typeof ServerResponse>'.
+              Type 'false' has no properties in common with type 'ServerOptions<typeof IncomingMessage, typeof ServerResponse>'.

@@ -56,8 +56,21 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   }, [showEmojiPicker]);
 
   return (
-    <div className="border-t p-3 bg-gray-50">
-      <div className="flex gap-2 relative">
+    <div className="p-4 bg-white border-t border-gray-100">
+      <div className="flex items-center relative bg-gray-50 p-1.5 rounded-full border border-gray-200/60 shadow-inner focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-300 transition-all">
+        <button
+          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+          className="
+            p-2 w-10 h-10
+            text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 rounded-full
+            transition-all
+            text-xl flex items-center justify-center flex-shrink-0
+          "
+          title="Agregar emoji"
+        >
+          😊
+        </button>
+
         <input
           ref={inputRef}
           type="text"
@@ -66,48 +79,36 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
           onKeyPress={handleKeyPress}
           placeholder="Escribe tu mensaje..."
           className="
-            flex-1 px-3 py-2
-            border border-gray-300 rounded-lg
-            focus:outline-none focus:ring-2 focus:ring-blue-500
-            focus:border-transparent
-            text-sm
+            flex-1 bg-transparent px-3 py-2
+            focus:outline-none focus:ring-0
+            text-[14px] text-gray-700 placeholder-gray-400
+            min-w-0
           "
         />
-        <button
-          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="
-            px-3 py-2
-            text-gray-600 hover:text-gray-800
-            transition-colors
-            text-lg
-          "
-          title="Agregar emoji"
-        >
-          😊
-        </button>
+
         <button
           onClick={handleSend}
           disabled={!message.trim()}
-          className="
-            text-blue-500 hover:text-blue-600
-            disabled:text-gray-300
-            transition-colors
-            text-lg
-          "
+          className={`
+            p-2 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0
+            transition-all duration-200 ml-1
+            ${message.trim()
+              ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md shadow-blue-500/30 text-white transform hover:scale-105 active:scale-95'
+              : 'bg-gray-200 text-white cursor-not-allowed'}
+          `}
           title="Enviar mensaje"
         >
-          ➤
+          <span className="rotate-0 text-[15px] font-bold">➤</span>
         </button>
       </div>
-      
+
       {showEmojiPicker && (
-        <div 
+        <div
           ref={emojiPickerRef}
-          className="absolute bottom-full right-0 mb-2 z-50"
+          className="absolute bottom-full right-0 mb-2 z-50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden border border-gray-100"
         >
-          <EmojiPicker 
+          <EmojiPicker
             onEmojiClick={handleEmojiClick}
-            theme="light"
             height={400}
             width={350}
           />

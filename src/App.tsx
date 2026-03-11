@@ -27,6 +27,7 @@ import SalesReportView from './views/SalesReportView';
 import DeliveryDatesView from './views/DeliveryDatesView';
 import BackupManagementView from './views/BackupManagementView';
 import ComprasView from './views/ComprasView';
+import ComparativeDashboardView from './views/ComparativeDashboardView';
 
 // Fichas Views
 import FichasDisenoMosaico from './views/FichasDisenoMosaico';
@@ -1099,6 +1100,14 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <ComprasView user={user} onNavigate={handleTabChange} />;
+      case 'comparativeDashboard':
+        // Diseñadora no puede acceder al Dashboard Comparativo
+        if (user.role === UserRole.DISEÑADORA) {
+          setActiveTab('home');
+          alert('No tienes permiso para acceder a esta sección');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <ComparativeDashboardView state={state} user={user} />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':

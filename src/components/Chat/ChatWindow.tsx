@@ -48,31 +48,32 @@ export const ChatWindow: React.FC = () => {
   return (
     <div
       className="
-        fixed bottom-4 right-4 z-50
-        bg-white rounded-lg shadow-xl
-        w-96 h-96
+        fixed bottom-6 right-6 z-50
+        bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100
+        w-[22rem] h-[32rem]
         flex flex-col
+        overflow-hidden
         animate-scale-in
       "
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b bg-gradient-to-r from-blue-50 to-blue-100">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-bold">
+      <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm relative z-10">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-lg font-bold ring-2 ring-white/30 shadow-inner">
             {currentChat.userName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="font-semibold text-slate-800 text-sm">
+            <div className="font-semibold text-white text-sm tracking-wide">
               {currentChat.userName}
             </div>
-            <div className="text-xs text-gray-500 flex items-center gap-1">
-              <span>{getStatusIcon(otherUser?.status)}</span>
-              <span>
+            <div className="text-xs text-blue-100 flex items-center gap-1.5 opacity-90">
+              <span className="text-[10px]">{getStatusIcon(otherUser?.status)}</span>
+              <span className="font-medium">
                 {otherUser?.status === 'online'
-                  ? 'Online'
+                  ? 'En línea'
                   : otherUser?.status === 'inactive'
-                  ? 'Inactivo'
-                  : 'Offline'}
+                    ? 'Ausente'
+                    : 'Desconectado'}
               </span>
             </div>
           </div>
@@ -80,9 +81,9 @@ export const ChatWindow: React.FC = () => {
         <button
           onClick={closeChat}
           className="
-            text-gray-500 hover:text-gray-700
-            transition-colors
-            text-xl
+            text-white/70 hover:text-white hover:bg-white/10
+            transition-all duration-200 rounded-full w-8 h-8 flex items-center justify-center
+            text-lg focus:outline-none focus:ring-2 focus:ring-white/50
           "
         >
           ✕

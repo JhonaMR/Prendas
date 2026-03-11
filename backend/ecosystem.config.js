@@ -36,7 +36,7 @@ module.exports = {
         DB_IDLE_TIMEOUT: 30000,
         DB_CONNECTION_TIMEOUT: 5000,
         DB_SSL: 'false',
-        CORS_ORIGIN: 'http://localhost:3000,http://localhost:5173',
+        CORS_ORIGIN: 'http://localhost:3000,http://localhost:5173,http://10.10.0.42:3000,http://10.10.0.42:5173,https://10.10.0.42:3000,https://10.10.0.42:5173',
         HOST: '0.0.0.0',
         USE_HTTPS: 'true'
       },
@@ -130,7 +130,7 @@ module.exports = {
         DB_IDLE_TIMEOUT: 30000,
         DB_CONNECTION_TIMEOUT: 5000,
         DB_SSL: 'false',
-        CORS_ORIGIN: 'http://localhost:3001,http://localhost:5174',
+        CORS_ORIGIN: 'http://localhost:3001,http://localhost:5174,http://10.10.0.42:3001,http://10.10.0.42:5174,https://10.10.0.42:3001,https://10.10.0.42:5174',
         HOST: '0.0.0.0',
         USE_HTTPS: 'true'
       },
