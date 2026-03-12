@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "backup-prendas",
+  "private_key_id": "2c6e45399effd3e936e6eb8a09cb3a2f2ff5d9ee",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/ZcnV3egNAjr3\nph/KI7rESlFxGWxcP+kFE5yTh+8AoAtXGoQ4+9shJ1NUUYM/vHvitkM80cJCATlG\nmzhJlfni+lKD8Ooy+4AEYET1fW4M4bs/W4fwq/9HkVM+1IxRMzrGItIOJrB5s3KF\nSTmmnZxXuYVb+AfPUfl/KTo62edXIxjwp8uyXGHmhb5l+Mt/LV/5eT8PvwKi9jac\n6tVjy4hoD1ZNuDpZw1lK5CPoUBGBPEqubTBbiEioKigT8suBZKxK9l7qJi7jWWm1\nTM8nl18m//wvtM6O/ebvUxKqxG6lxwNDIx5qt16RjT1j7FF1eeLGR3M8LfuHaYmV\neMFzvCuHAgMBAAECggEAAPY4psPQCrYG0ypui8wqKsUE1mtTnr24z2G4g7VHKjBO\nXkhafxQk7Gxk1Xj4uTVFRMUNtByJvAiC39af2HQnJqYuC/kF9EOh8mOuyl0FqeLo\ngfpVGzcst+YEY73FsWgZ1Ne6nn+V8MafaLQO1MYt/Egzt1vuY3L8rKWUY/9RqPUY\noLrO2xWechLUYR6zwy+BLVd2qNirM8l4y3+4ZZ/c0MFtrdpgzP19XWVQojIolnV7\nsSuaaqyjzXqINp9YtLEXSJ0WGoRUYLm2OQv2QtjMFBFqjo+mjVkH2v3MFU555GVd\nGcAipWtsEzq//pV7oXzjDf81TAGwKjOeYnI5YXPSwQKBgQDxBmi/gR1NysueWYqR\nHio0luMqeQlRudRt/nviouPG4raSEMYUGuO4gU2ZYb1tJFfZHN56Cn7aZ6lQWnd2\n25bgqJAdOoWu8U2aSrtqmcXNGrffEs37Sre1iSp+PJtsgCLmzAA+i+Zox6bjuUcy\nlTtIADtTNzMKaKPsg2klSaFkDwKBgQDLSgl5nr1e+IiK1z/wXGZiseTZRVpyXsMD\n+kabrxWJEqF/WvVEyxXD2zKAip79BDjLv7VhoZNsmu5tHEkRP99vGlartgbuBi/d\n2uCzNnQXE2lP6nkiS9qBMAP8xU3oE5BKwdXeqWL46N6peMi19Zt2VFpoJNzAfkrb\nuX2bYSLpCQKBgGOi1qJz6X1DHDF1qoabBa9/wKDKMEQMofhmfygNVkPdbMOtE3U0\nOHcJXN7PPNNldrtV59JjjFUVDTUecMw9sn1ksU6j5qePMRlbU2aZ8t768I/S4jvD\ng3YUIfDVdRrBTaxDIMa6ZqFiB2eULA6JClyVW/DmnL7syvb2y/ySF5mZAoGBAJrG\nhspDMrkhDoxu7+5n20gfWzaVGBTl0yKvJZ0Yw5O2TKEzNnQnDy4sMJovcHcBBOET\n19w6cY0JtKf8FiF8+PeVHRHlKAeHTGBkahnoRqDfFZpT0eBr0jPzw8VqzzL32i8g\nv12kp4cNfaGYJXBsS+3esWqDTlN8lDAQXPK1FShJAoGAQNhChov71I4AQ5QdiHSD\nmt7SOJConlk1tZdeVYVmxAEg4g7MZm+Q+6YkDuEWrNJ+STyWXvaepw8aHYQCbI3X\n86yXVp4n15HkzlYO+t/rQk/fX+IX3ZRi+LQ0ITUTjpJX4IPoQJ7SEIc8FfxN8jnT\nKvU5vZ7xwxEcrtECA2LMN4g=\n-----END PRIVATE KEY-----\n",
+  "client_email": "backup-bot@backup-prendas.iam.gserviceaccount.com",
+  "client_id": "111996239334160406137",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/backup-bot%40backup-prendas.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

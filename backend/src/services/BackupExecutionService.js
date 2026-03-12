@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const BackupRotationService = require('./BackupRotationService');
 const BackupValidationService = require('./BackupValidationService');
+const googleDriveService = require('./GoogleDriveService');
 
 const execAsync = promisify(exec);
 
@@ -148,6 +149,22 @@ class BackupExecutionService {
       console.log(`   Diarios: ${stats_info.byType.daily.count} (${stats_info.byType.daily.sizeInMB} MB)`);
       console.log(`   Semanales: ${stats_info.byType.weekly.count} (${stats_info.byType.weekly.sizeInMB} MB)`);
       console.log(`   Mensuales: ${stats_info.byType.monthly.count} (${stats_info.byType.monthly.sizeInMB} MB)\n`);
+
+      // SUBIR A GOOGLE DRIVE
+      if (googleDriveService.enabled) {
+        try {
+          const mainFolderId = process.env[`GOOGLE_DRIVE_FOLDER_ID_${this.instanceName.toUpperCase()}`];
+          if (mainFolderId) {
+            console.log(`☁️ Iniciando subida a Google Drive (${this.instanceName})...`);
+            const dbFolderId = await googleDriveService.getOrCreateFolder('Database', mainFolderId);
+            await googleDriveService.uploadFile(backupPath, filename, dbFolderId);
+          } else {
+            console.warn(`⚠️ No se encontró GOOGLE_DRIVE_FOLDER_ID_${this.instanceName.toUpperCase()} en .env`);
+          }
+        } catch (driveError) {
+          console.error(`❌ Error al subir a Google Drive: ${driveError.message}`);
+        }
+      }
 
       return {
         success: true,

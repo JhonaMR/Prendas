@@ -1,0 +1,12 @@
+﻿
+­ƒÜÇ ┬íCasi listo! Sigue estos pasos para vincular tu cuenta:
+1. Abre este enlace en tu navegador:
+
+-----------------------------------------------------------
+https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.file&prompt=consent&response_type=code&client_id=929098708206-6656i215a7eln8h4gpk714anj65thupv.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost
+-----------------------------------------------------------
+
+2. Inicia sesi├│n con tu cuenta de Google.
+3. Si te sale un aviso de "Google no ha verificado esta app", dale a "Configuraci├│n avanzada" y luego a "Ir a Backups Prendas (no seguro)".
+4. Copia el c├│digo que aparece en pantalla y p├®galo aqu├¡ debajo.
+

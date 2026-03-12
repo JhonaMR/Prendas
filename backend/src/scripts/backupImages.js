@@ -12,6 +12,8 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
+const googleDriveService = require('../services/GoogleDriveService');
 
 // Configuración
 const IMAGES_DIR = path.join(__dirname, '../../../public/images/references');
@@ -90,6 +92,11 @@ function createBackup() {
     // Limpiar backups antiguos
     cleanOldBackups();
 
+    // SUBIR A GOOGLE DRIVE
+    if (googleDriveService.enabled) {
+      uploadToDrive(backupPath, backupName);
+    }
+
   } catch (error) {
     console.error('✗ Error al crear backup:', error.message);
     process.exit(1);
@@ -119,6 +126,28 @@ function cleanOldBackups() {
     }
   } catch (error) {
     console.error('⚠ Error al limpiar backups antiguos:', error.message);
+  }
+}
+
+/**
+ * Subir a Google Drive
+ */
+async function uploadToDrive(backupPath, filename) {
+  try {
+    const dbName = process.env.DB_NAME || 'inventory';
+    const instanceName = dbName.includes('melas') ? 'melas' : 'plow';
+    const mainFolderId = process.env[`GOOGLE_DRIVE_FOLDER_ID_${instanceName.toUpperCase()}`];
+
+    if (!mainFolderId) {
+      console.warn(`⚠️ No se encontró GOOGLE_DRIVE_FOLDER_ID_${instanceName.toUpperCase()} en .env`);
+      return;
+    }
+
+    console.log(`☁️ Iniciando subida de imágenes a Google Drive (${instanceName})...`);
+    const imagesFolderId = await googleDriveService.getOrCreateFolder('Images', mainFolderId);
+    await googleDriveService.uploadFile(backupPath, filename, imagesFolderId);
+  } catch (error) {
+    console.error(`❌ Error al subir imágenes a Google Drive: ${error.message}`);
   }
 }
 

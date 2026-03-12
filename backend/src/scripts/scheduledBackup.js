@@ -34,7 +34,7 @@ async function runBackup() {
 
 // Ejecutar solo según el cron_restart configurado en PM2 (22:00 cada día)
 // No ejecutar inmediatamente al iniciar para evitar backups duplicados
-// runBackup().catch(error => {
-//   console.error('Error fatal en backup programado:', error);
-//   process.exit(1);
-// });
+runBackup().catch(error => {
+  console.error('Error fatal en backup programado:', error);
+  process.exit(1);
+});
