@@ -4,10 +4,12 @@
 // ============================================
 
 import React, { useState } from 'react';
-import { AppState } from '../../types';
-import { Disenadora, FichaDiseno } from '../../types/typesFichas';
+import { AppState } from '../types';
+import { Disenadora, FichaDiseno } from '../types/typesFichas';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import FichaDisenoImportModal from '../components/FichaDisenoImportModal';
+import apiFichas from '../services/apiFichas';
 
 declare global { interface Window { API_CONFIG?: { getApiUrl: () => string } } }
 
@@ -28,6 +30,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const [showModal, setShowModal] = useState(false);
     const [nuevaRef, setNuevaRef] = useState('');
     const [disenadoraId, setDisenadoraId] = useState('');
+    const [showImportModal, setShowImportModal] = useState(false);
     const [showNewDisenadora, setShowNewDisenadora] = useState(false);
     const [newDisenadoraNombre, setNewDisenadoraNombre] = useState('');
     const [newDisenadoraCedula, setNewDisenadoraCedula] = useState('');
@@ -35,7 +38,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const fichasPagination = usePagination(1, 50);
 
     const isDisenadora = user?.role === 'diseñadora';
-    const canCreate = isDisenadora || user?.role === 'admin' || user?.role === 'general';
+    const canCreate = isDisenadora || user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte';
     const baseUrl = getBaseUrl();
 
     const fichas = (state.fichasDiseno || []).filter(f => {
@@ -137,6 +140,12 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                             Crear Ficha Nueva
                         </button>
                     )}
+                    {user?.role === 'soporte' && (
+                        <button onClick={() => setShowImportModal(true)} className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
+                            Excel Soporte
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -164,7 +173,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                                     </div>
                                 )}
                                 {ficha.importada && <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase">Importada</div>}
-                                {user?.role === 'admin' && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
                             </div>
                             <div className="p-3">
                                 <p className="font-black text-pink-600 text-sm mb-1">{ficha.referencia}</p>
@@ -258,6 +267,17 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                     </div>
                 </div>
             )}
+
+            <FichaDisenoImportModal 
+                isOpen={showImportModal}
+                onClose={() => setShowImportModal(false)}
+                state={state}
+                user={user}
+                onSuccess={async () => {
+                    const fichas = await apiFichas.getFichasDiseno();
+                    updateState(prev => ({ ...prev, fichasDiseno: fichas }));
+                }}
+            />
         </div>
     );
 };

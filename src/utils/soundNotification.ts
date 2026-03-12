@@ -3,10 +3,21 @@
  * Genera un tono simple y discreto cuando llega un mensaje
  */
 
-export const playMessageNotificationSound = () => {
+let audioContextSingleton: AudioContext | null = null;
+
+export const playMessageNotificationSound = async () => {
   try {
-    // Crear contexto de audio
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    // Crear o recuperar el contexto de audio
+    if (!audioContextSingleton) {
+      audioContextSingleton = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    
+    const audioContext = audioContextSingleton;
+
+    // Asegurar que el contexto se reanude (necesario por políticas de navegador)
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
     
     // Crear oscilador para generar el tono
     const oscillator = audioContext.createOscillator();
@@ -16,17 +27,19 @@ export const playMessageNotificationSound = () => {
     oscillator.connect(gainNode);
     gainNode.connect(audioContext.destination);
     
-    // Configurar el tono
-    oscillator.frequency.value = 800; // Frecuencia en Hz (tono discreto)
-    oscillator.type = 'sine'; // Onda sinusoidal (suave)
+    // Configurar el tono - Un tono muy suave y musical (E5 -> A5)
+    oscillator.type = 'sine'; 
+    oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime); // E5
+    oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.1); // A5
     
-    // Configurar volumen (bajo para ser discreto)
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    // Configurar volumen (ajustado para ser un poco más fuerte pero suave)
+    gainNode.gain.setValueAtTime(0.001, audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.12, audioContext.currentTime + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
     
     // Reproducir el tono
     oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.3); // Duración: 300ms
+    oscillator.stop(audioContext.currentTime + 0.15); // Duración: 150ms (muy corto y leve)
   } catch (error) {
     console.error('Error reproduciendo notificación de sonido:', error);
   }

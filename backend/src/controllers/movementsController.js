@@ -667,7 +667,9 @@ const getOrders = async (req, res) => {
                 settledBy: order.settled_by,
                 orderNumber: order.order_number,
                 startDate: order.start_date || null,
-                endDate: order.end_date || null
+                endDate: order.end_date || null,
+                porcentajeOficial: order.porcentaje_oficial ? parseFloat(order.porcentaje_oficial) : null,
+                porcentajeRemision: order.porcentaje_remision ? parseFloat(order.porcentaje_remision) : null
             };
         }));
 
@@ -692,7 +694,7 @@ const getOrders = async (req, res) => {
  */
 const createOrder = async (req, res) => {
     try {
-        const { clientId, sellerId, correriaId, items, totalValue, settledBy, orderNumber, startDate, endDate } = req.body;
+        const { clientId, sellerId, correriaId, items, totalValue, settledBy, orderNumber, startDate, endDate, porcentajeOficial, porcentajeRemision } = req.body;
 
         if (!clientId || !sellerId || !correriaId || !items || !items.length || !totalValue || !settledBy) {
             return res.status(400).json({
@@ -707,9 +709,9 @@ const createOrder = async (req, res) => {
         await transaction(async (client) => {
             // Insertar pedido
             await client.query(
-                `INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number, start_date, end_date)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-                [id, clientId, sellerId, correriaId, String(totalValue), createdAt, settledBy, orderNumber || null, startDate || null, endDate || null]
+                `INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number, start_date, end_date, porcentaje_oficial, porcentaje_remision)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+                [id, clientId, sellerId, correriaId, String(totalValue), createdAt, settledBy, orderNumber || null, startDate || null, endDate || null, porcentajeOficial || null, porcentajeRemision || null]
             );
 
             // Insertar items
@@ -750,7 +752,9 @@ const createOrder = async (req, res) => {
                 settledBy,
                 orderNumber: orderNumber || null,
                 startDate: startDate || null,
-                endDate: endDate || null
+                endDate: endDate || null,
+                porcentajeOficial: porcentajeOficial || null,
+                porcentajeRemision: porcentajeRemision || null
             }
         });
 
@@ -905,7 +909,7 @@ const saveProductionBatch = async (req, res) => {
 const updateOrder = async (req, res) => {
     try {
         const { id } = req.params;
-        const { clientId, sellerId, correriaId, items, totalValue, settledBy, startDate, endDate } = req.body;
+        const { clientId, sellerId, correriaId, items, totalValue, settledBy, startDate, endDate, porcentajeOficial, porcentajeRemision } = req.body;
 
         logger.info(`📝 Actualizando pedido ${id}:`, { clientId, sellerId, correriaId, itemsCount: items?.length, totalValue });
 
@@ -927,9 +931,9 @@ const updateOrder = async (req, res) => {
         await transaction(async (client) => {
             // Actualizar pedido
             const updateResult = await client.query(
-                `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5, start_date = $6, end_date = $7
-                WHERE id = $8`,
-                [clientId, sellerId, correriaId, String(totalValue), settledBy || null, startDate || null, endDate || null, id]
+                `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5, start_date = $6, end_date = $7, porcentaje_oficial = $8, porcentaje_remision = $9
+                WHERE id = $10`,
+                [clientId, sellerId, correriaId, String(totalValue), settledBy || null, startDate || null, endDate || null, porcentajeOficial || null, porcentajeRemision || null, id]
             );
 
             logger.info(`✏️ Pedido actualizado: ${updateResult.rowCount} filas afectadas`);
@@ -976,7 +980,9 @@ const updateOrder = async (req, res) => {
                 totalValue,
                 settledBy,
                 startDate: startDate || null,
-                endDate: endDate || null
+                endDate: endDate || null,
+                porcentajeOficial: porcentajeOficial || null,
+                porcentajeRemision: porcentajeRemision || null
             }
         });
 

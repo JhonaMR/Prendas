@@ -47,6 +47,10 @@ export const exportOrderToExcel = async (
         worksheet.getCell('N13').value = formatDate(order.createdAt);
         worksheet.getCell('N15').value = formatDate(order.startDate);
         worksheet.getCell('N16').value = formatDate(order.endDate);
+        
+        // PORCENTAJES
+        worksheet.getCell('J3').value = order.porcentajeOficial || 0;
+        worksheet.getCell('K3').value = order.porcentajeRemision || 0;
 
         // REFERENCIAS
         const ITEMS_START_ROW = 20;

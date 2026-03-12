@@ -52,12 +52,12 @@ export const ChatWindow: React.FC = () => {
         bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100
         w-[22rem] h-[32rem]
         flex flex-col
-        overflow-hidden
+        overflow-visible
         animate-scale-in
       "
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm relative z-10">
+      <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm relative z-10 rounded-t-2xl">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-lg font-bold ring-2 ring-white/30 shadow-inner">
             {currentChat.userName.charAt(0).toUpperCase()}

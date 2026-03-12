@@ -119,6 +119,8 @@ export interface Order {
   orderNumber?: number;
   startDate?: string | null;
   endDate?: string | null;
+  porcentajeOficial?: number | null;
+  porcentajeRemision?: number | null;
 }
 
 export interface DeliveryDate {

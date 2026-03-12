@@ -9,16 +9,20 @@ window.API_CONFIG = {
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
     
-    // Si estamos en un dominio externo (ngrok, producción, etc), usar el mismo host
-    if (hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.match(/^10\.10\./)) {
-      return `${protocol}//${hostname}/api`;
+    // Si estamos accediendo por el nombre del equipo o IP de red, usar ese mismo hostname
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // Determinar el puerto del backend según el puerto del frontend
+      let backendPort = '3000';
+      if (port === '5174' || port === '3001') {
+        backendPort = '3001';
+      }
+      return `${protocol}//${hostname}:${backendPort}/api`;
     }
     
+    // Para localhost, usar los puertos correspondientes
     if (port === '5173' || port === '3000' || port === '') {
-      // Usar localhost con HTTPS para conexiones locales
       return 'https://localhost:3000/api';
     } else if (port === '5174' || port === '3001') {
-      // Usar localhost con HTTPS para conexiones locales
       return 'https://localhost:3001/api';
     }
     

@@ -281,6 +281,20 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             </svg>
                             Generar pedido
                           </button>
+                          <div className="flex gap-2">
+                            <div className="text-center min-w-[60px]">
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">% OF</p>
+                              <p className="text-xs font-black text-blue-600">
+                                {o.porcentajeOficial !== null && o.porcentajeOficial !== undefined ? o.porcentajeOficial.toFixed(2) : '0.00'}
+                              </p>
+                            </div>
+                            <div className="text-center min-w-[60px]">
+                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">% RM</p>
+                              <p className="text-xs font-black text-pink-600">
+                                {o.porcentajeRemision !== null && o.porcentajeRemision !== undefined ? o.porcentajeRemision.toFixed(2) : '0.00'}
+                              </p>
+                            </div>
+                          </div>
                           <div className="text-center min-w-[140px]">
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Despacho</p>
                             <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
@@ -490,6 +504,32 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     type="date"
                     value={editingOrder.endDate || ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, endDate: e.target.value || null })}
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+              </div>
+
+              {/* Porcentajes de Facturación */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">% Oficial</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={editingOrder.porcentajeOficial || ''}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeOficial: e.target.value ? parseFloat(e.target.value) : null })}
+                    placeholder="0.00"
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">% Remisión</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={editingOrder.porcentajeRemision || ''}
+                    onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeRemision: e.target.value ? parseFloat(e.target.value) : null })}
+                    placeholder="0.00"
                     className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
                   />
                 </div>

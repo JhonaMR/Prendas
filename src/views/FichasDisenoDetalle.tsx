@@ -4,8 +4,8 @@
 // ============================================
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppState } from '../../types';
-import { ConceptoFicha } from '../../types/typesFichas';
+import { AppState } from '../types';
+import { ConceptoFicha } from '../types/typesFichas';
 import apiFichas from '../services/apiFichas';
 import SeccionConceptos from '../components/modules/SeccionConceptos';
 import SubidaFotos from '../components/modules/SubidaFotos';
@@ -24,7 +24,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
 
     const isDisenadora = user?.role === 'diseñadora';
     const isGeneral = user?.role === 'general';
-    const canEdit = (isDisenadora || user?.role === 'admin') && !isGeneral;
+    const canEdit = (isDisenadora || user?.role === 'admin' || user?.role === 'soporte') && !isGeneral;
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 

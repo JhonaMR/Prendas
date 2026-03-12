@@ -1,7 +1,7 @@
 // VISTA: Fichas Corte Detalle
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppState } from '../../types';
-import { ConceptoFicha } from '../../types/typesFichas';
+import { AppState } from '../types';
+import { ConceptoFicha } from '../types/typesFichas';
 import apiFichas from '../services/apiFichas';
 import SeccionConceptos from '../components/modules/SeccionConceptos';
 import DecimalInput from '../components/DecimalInput';
@@ -17,7 +17,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const referencia = params?.referencia || '';
     const numeroCorte = params?.numeroCorte || 1;
     const isNuevo = params?.nuevo || false;
-    const canEdit = user?.role === 'admin' || user?.role === 'general';
+    const canEdit = user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte';
 
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsaved, setHasUnsaved] = useState(false);

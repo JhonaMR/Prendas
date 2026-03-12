@@ -4,6 +4,7 @@ import { Order, ItemEntry, User, Client, AppState } from '../types';
 import { Icons } from '../constants';
 import api from '../services/api';
 import * as XLSX from 'xlsx';
+import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 
 interface OrderSettleViewProps {
   user: User;
@@ -24,9 +25,13 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
   
   const [selectedSellerId, setSelectedSellerId] = useState('');
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
+  const [correriaSearch, setCorreriaSearch] = useState('');
+  const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [orderNumber, setOrderNumber] = useState<number | ''>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const [porcentajeOficial, setPorcentajeOficial] = useState<number | ''>('');
+  const [porcentajeRemision, setPorcentajeRemision] = useState<number | ''>('');
   const [tempItems, setTempItems] = useState<ItemEntry[]>([]);
   const [invalidReferences, setInvalidReferences] = useState<InvalidReference[]>([]);
   const [excelLoaded, setExcelLoaded] = useState(false);
@@ -57,6 +62,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
         // Leer celdas específicas
         const clientCode = String(worksheet['N9']?.v || '').trim();
         const orderNum = worksheet['M4']?.v || '';
+        const porcentajeOficialExcel = worksheet['J3']?.v || '';
+        const porcentajeRemisionExcel = worksheet['K3']?.v || '';
         
         // Validar que el cliente existe
         const clientExists = state.clients.find(c => c.id === clientCode);
@@ -65,10 +72,18 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           return;
         }
 
-        // Establecer cliente y número de pedido
+        // Establecer cliente, número de pedido y porcentajes
         setSelectedClientId(clientCode);
         setClientSearch(`${clientCode} - ${clientExists.name}`);
         setOrderNumber(orderNum ? parseInt(orderNum) : '');
+        
+        // Establecer porcentajes si existen en el Excel
+        if (porcentajeOficialExcel) {
+          setPorcentajeOficial(parseFloat(porcentajeOficialExcel));
+        }
+        if (porcentajeRemisionExcel) {
+          setPorcentajeRemision(parseFloat(porcentajeRemisionExcel));
+        }
 
         // Leer items desde fila 20
         const newItems: ItemEntry[] = [];
@@ -130,6 +145,12 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       alert("No hay ítems cargados");
       return;
     }
+    
+    // Validar que los porcentajes estén presentes
+    if (porcentajeOficial === '' || porcentajeRemision === '') {
+      alert("⚠️ Recuerde agregar el porcentaje de facturación (Oficial y Remisión)");
+      return;
+    }
 
     const totalValue = tempItems.reduce((acc, item) => {
       return acc + (item.salePrice || 0) * item.quantity;
@@ -146,7 +167,9 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       settledBy: user.name,
       orderNumber: orderNumber === '' ? undefined : orderNumber,
       startDate: startDate || null,
-      endDate: endDate || null
+      endDate: endDate || null,
+      porcentajeOficial: porcentajeOficial === '' ? null : porcentajeOficial,
+      porcentajeRemision: porcentajeRemision === '' ? null : porcentajeRemision
     };
 
     try {
@@ -164,9 +187,13 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
         setTempItems([]);
         setSelectedClientId('');
         setClientSearch('');
+        setSelectedSellerId('');
+        setSelectedCorreriaId('');
         setOrderNumber('');
         setStartDate('');
         setEndDate('');
+        setPorcentajeOficial('');
+        setPorcentajeRemision('');
         setInvalidReferences([]);
         setExcelLoaded(false);
         if(fileInputRef.current) fileInputRef.current.value = '';
@@ -234,14 +261,16 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
 
               <div className="space-y-1">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Campaña</label>
-                <select 
-                  value={selectedCorreriaId} 
-                  onChange={e => setSelectedCorreriaId(e.target.value)}
-                  className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900"
-                >
-                  <option value="">-- Seleccionar --</option>
-                  {state.correrias.map(c => <option key={c.id} value={c.id}>{c.name} {c.year}</option>)}
-                </select>
+                <CorreriaAutocomplete
+                  value={selectedCorreriaId}
+                  correrias={state.correrias}
+                  onChange={setSelectedCorreriaId}
+                  search={correriaSearch}
+                  setSearch={setCorreriaSearch}
+                  showDropdown={showCorreriaDropdown}
+                  setShowDropdown={setShowCorreriaDropdown}
+                  placeholder="Buscar campaña..."
+                />
               </div>
 
               <div className="space-y-1">
@@ -271,6 +300,31 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                     type="date" 
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
+                    className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">% Oficial</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    value={porcentajeOficial}
+                    onChange={(e) => setPorcentajeOficial(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                    placeholder="0.00"
+                    className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">% Remisión</label>
+                  <input 
+                    type="number" 
+                    step="0.01"
+                    value={porcentajeRemision}
+                    onChange={(e) => setPorcentajeRemision(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                    placeholder="0.00"
                     className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
                   />
                 </div>

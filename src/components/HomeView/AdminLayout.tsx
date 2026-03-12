@@ -178,8 +178,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
           .sort((a, b) => {
             const aIndex = preferences.viewOrder.indexOf(a.id);
             const bIndex = preferences.viewOrder.indexOf(b.id);
-            const aPos = aIndex === -1 ? navigationItems.indexOf(a) : aIndex;
-            const bPos = bIndex === -1 ? navigationItems.indexOf(b) : bIndex;
+            // Si la vista no está en el orden guardado, ponerla al final
+            const aPos = aIndex === -1 ? navigationItems.length + navigationItems.indexOf(a) : aIndex;
+            const bPos = bIndex === -1 ? navigationItems.length + navigationItems.indexOf(b) : bIndex;
             return aPos - bPos;
           })
           .map((item) => (

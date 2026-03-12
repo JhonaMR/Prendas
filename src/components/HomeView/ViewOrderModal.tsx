@@ -32,11 +32,17 @@ const ViewOrderModal: React.FC<ViewOrderModalProps> = ({
 
   // Inicializar orden
   useEffect(() => {
+    // Obtener todas las vistas disponibles
+    const allViewIds = availableViews.map(v => v.id);
+    
     if (currentOrder.length > 0) {
-      setOrder(currentOrder);
+      // Combinar el orden guardado con las nuevas vistas que no están en el orden
+      const existingViews = currentOrder.filter(id => allViewIds.includes(id));
+      const newViews = allViewIds.filter(id => !currentOrder.includes(id));
+      setOrder([...existingViews, ...newViews]);
     } else {
       // Si no hay orden guardada, usar el orden por defecto
-      setOrder(availableViews.map(v => v.id));
+      setOrder(allViewIds);
     }
   }, [currentOrder, availableViews, isOpen]);
 

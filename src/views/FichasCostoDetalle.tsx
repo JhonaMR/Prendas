@@ -4,8 +4,8 @@
 // ============================================
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { AppState } from '../../types';
-import { ConceptoFicha } from '../../types/typesFichas';
+import { AppState } from '../types';
+import { ConceptoFicha } from '../types/typesFichas';
 import apiFichas from '../services/apiFichas';
 import SeccionConceptos from '../components/modules/SeccionConceptos';
 import SubidaFotos from '../components/modules/SubidaFotos';
@@ -20,7 +20,7 @@ interface Props {
 
 const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const referencia = params?.referencia || '';
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role === 'admin' || user?.role === 'soporte';
     const isGeneral = user?.role === 'general';
     const canEdit = isAdmin || isGeneral;
 

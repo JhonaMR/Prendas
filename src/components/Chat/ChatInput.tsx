@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, Theme } from 'emoji-picker-react';
 import { ChatContext } from '../../context/ChatContext';
 
 interface ChatInputProps {
@@ -56,7 +56,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   }, [showEmojiPicker]);
 
   return (
-    <div className="p-4 bg-white border-t border-gray-100">
+    <div className="p-4 bg-white border-t border-gray-100 relative rounded-b-2xl">
       <div className="flex items-center relative bg-gray-50 p-1.5 rounded-full border border-gray-200/60 shadow-inner focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-300 transition-all">
         <button
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -102,15 +102,31 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
         </button>
       </div>
 
+      {/* Quick emojis shortcuts */}
+      <div className="flex gap-3 mt-2 px-1 justify-center">
+        {['👍', '❤️', '😂', '🔥', '👏'].map(emoji => (
+          <button 
+            key={emoji}
+            onClick={() => onSendMessage(emoji)}
+            className="text-lg hover:scale-125 transition-transform duration-200 opacity-70 hover:opacity-100 grayscale hover:grayscale-0"
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
       {showEmojiPicker && (
         <div
           ref={emojiPickerRef}
-          className="absolute bottom-full right-0 mb-2 z-50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden border border-gray-100"
+          className="absolute bottom-full right-0 mb-4 z-50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden border border-gray-100 bg-white"
         >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}
-            height={400}
-            width={350}
+            autoFocusSearch={false}
+            theme={Theme.LIGHT}
+            searchPlaceholder="Buscar emoji..."
+            width={320}
+            height={360}
           />
         </div>
       )}

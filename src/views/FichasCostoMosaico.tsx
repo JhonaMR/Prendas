@@ -4,7 +4,7 @@
 // ============================================
 
 import React, { useState } from 'react';
-import { AppState } from '../../types';
+import { AppState } from '../types';
 import apiFichas from '../services/apiFichas';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
@@ -30,7 +30,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [importando, setImportando] = useState(false);
     const fichasPagination = usePagination(1, 50);
 
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role === 'admin' || user?.role === 'soporte';
     const isGeneral = user?.role === 'general';
     const canEdit = isAdmin || isGeneral;
     const baseUrl = getBaseUrl();

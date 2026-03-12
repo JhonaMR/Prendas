@@ -218,6 +218,8 @@ CREATE TABLE IF NOT EXISTS public.orders (
     order_number integer,
     start_date date,
     end_date date,
+    porcentaje_oficial numeric(5,2),
+    porcentaje_remision numeric(5,2),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT orders_pkey PRIMARY KEY (id),
     CONSTRAINT orders_client_id_fkey FOREIGN KEY (client_id) REFERENCES public.clients(id) ON DELETE SET NULL,
