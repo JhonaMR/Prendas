@@ -668,8 +668,8 @@ const getOrders = async (req, res) => {
                 orderNumber: order.order_number,
                 startDate: order.start_date || null,
                 endDate: order.end_date || null,
-                porcentajeOficial: order.porcentaje_oficial ? parseFloat(order.porcentaje_oficial) : null,
-                porcentajeRemision: order.porcentaje_remision ? parseFloat(order.porcentaje_remision) : null
+                porcentajeOficial: order.porcentaje_oficial !== null && order.porcentaje_oficial !== undefined ? parseFloat(order.porcentaje_oficial) : null,
+                porcentajeRemision: order.porcentaje_remision !== null && order.porcentaje_remision !== undefined ? parseFloat(order.porcentaje_remision) : null
             };
         }));
 
@@ -711,7 +711,9 @@ const createOrder = async (req, res) => {
             await client.query(
                 `INSERT INTO orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number, start_date, end_date, porcentaje_oficial, porcentaje_remision)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
-                [id, clientId, sellerId, correriaId, String(totalValue), createdAt, settledBy, orderNumber || null, startDate || null, endDate || null, porcentajeOficial || null, porcentajeRemision || null]
+                [id, clientId, sellerId, correriaId, String(totalValue), createdAt, settledBy, orderNumber || null, startDate || null, endDate || null, 
+                 porcentajeOficial !== undefined && porcentajeOficial !== '' ? porcentajeOficial : null, 
+                 porcentajeRemision !== undefined && porcentajeRemision !== '' ? porcentajeRemision : null]
             );
 
             // Insertar items
@@ -933,7 +935,9 @@ const updateOrder = async (req, res) => {
             const updateResult = await client.query(
                 `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5, start_date = $6, end_date = $7, porcentaje_oficial = $8, porcentaje_remision = $9
                 WHERE id = $10`,
-                [clientId, sellerId, correriaId, String(totalValue), settledBy || null, startDate || null, endDate || null, porcentajeOficial || null, porcentajeRemision || null, id]
+                [clientId, sellerId, correriaId, String(totalValue), settledBy || null, startDate || null, endDate || null, 
+                 porcentajeOficial !== undefined && porcentajeOficial !== '' ? porcentajeOficial : null, 
+                 porcentajeRemision !== undefined && porcentajeRemision !== '' ? porcentajeRemision : null, id]
             );
 
             logger.info(`✏️ Pedido actualizado: ${updateResult.rowCount} filas afectadas`);

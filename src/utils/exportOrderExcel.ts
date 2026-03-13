@@ -49,8 +49,9 @@ export const exportOrderToExcel = async (
         worksheet.getCell('N16').value = formatDate(order.endDate);
         
         // PORCENTAJES
-        worksheet.getCell('J3').value = order.porcentajeOficial || 0;
-        worksheet.getCell('K3').value = order.porcentajeRemision || 0;
+        console.log("Exportando porcentajes:", { oficial: order.porcentajeOficial, remision: order.porcentajeRemision });
+        worksheet.getCell('J4').value = Number(order.porcentajeOficial) || 0;
+        worksheet.getCell('K4').value = Number(order.porcentajeRemision) || 0;
 
         // REFERENCIAS
         const ITEMS_START_ROW = 20;
@@ -92,16 +93,18 @@ export const exportOrderToExcel = async (
             const refAsNumber = Number(item.reference);
             row.getCell('B').value = isNaN(refAsNumber) ? item.reference : refAsNumber;
             row.getCell('C').value = refDetail?.description || '';
-            row.getCell('L').value = item.quantity;
+            const quantity = Number(item.quantity) || 0;
+            const salePrice = Number(item.salePrice !== undefined ? item.salePrice : refDetail?.price || 0);
+            
+            row.getCell('L').value = quantity;
 
-            const salePrice = item.salePrice !== undefined ? item.salePrice : refDetail?.price || 0;
             const priceCell = row.getCell('M');
             priceCell.value = salePrice;
             priceCell.numFmt = '"$"#,##0'; // Contabilidad sin decimales
 
             // Asegurarnos de que N tenga la fórmula del subtotal (Cantidad * Precio) si fue clonada o es nueva
             const subtotalCell = row.getCell('N');
-            subtotalCell.value = { formula: `L${rowNum}*M${rowNum}`, result: item.quantity * salePrice };
+            subtotalCell.value = { formula: `L${rowNum}*M${rowNum}`, result: quantity * salePrice };
             subtotalCell.numFmt = '"$"#,##0';
 
             row.commit();
