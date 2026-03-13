@@ -66,6 +66,7 @@ export interface ProductionTracking {
   programmed: number;
   cut: number;
   inventory?: number;
+  novedades?: string;
 }
 
 export type ChargeType = 'Compra' | 'Cobro' | null;

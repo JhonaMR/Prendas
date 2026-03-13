@@ -253,7 +253,7 @@ useEffect(() => {
     return data;
   }, [selectedCorreriaId, state.orders, state.references, state.receptions, state.dispatches, state.productionTracking, refFilter, hideZeros, columnFilters]);
 
-  const updateProduction = (refId: string, field: 'programmed' | 'cut' | 'inventory', value: number) => {
+  const updateProduction = (refId: string, field: 'programmed' | 'cut' | 'inventory' | 'novedades', value: number | string) => {
     updateState(prev => {
       const existingIdx = prev.productionTracking.findIndex(p => p.refId === refId && p.correriaId === selectedCorreriaId);
       const newList = [...prev.productionTracking];
@@ -349,7 +349,10 @@ const handleSaveProduction = async () => {
       if (!initial) return true;
       
       // Si cambió algún valor, incluirlo
-      return initial.programmed !== current.programmed || initial.cut !== current.cut || initial.inventory !== current.inventory;
+      return initial.programmed !== current.programmed ||
+             initial.cut !== current.cut ||
+             initial.inventory !== current.inventory ||
+             initial.novedades !== current.novedades;
     });
 
     // ===== LOG DE DEBUG =====
@@ -625,12 +628,14 @@ const handleSaveProduction = async () => {
           )}
         </div>
       </div>
-      <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left text-[10px] min-w-[1250px] table-fixed">
-            <thead className="bg-slate-50">
+      <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 flex flex-col" style={{ height: 'calc(100vh - 220px)' }}>
+        <div
+          className="overflow-auto custom-scrollbar flex-1"
+        >
+          <table className="w-full text-left text-[10px] min-w-[1400px] table-fixed">
+            <thead className="bg-slate-50 sticky top-0 z-20 shadow-sm">
               <tr className="border-b border-slate-100">
-                <th className="px-4 py-3 font-black uppercase w-32 text-slate-700">Referencia</th>
+                <th className="px-4 py-3 font-black uppercase w-32 text-slate-700 sticky left-0 z-10 bg-slate-50">Referencia</th>
                 <th className="px-2 py-3 font-black uppercase text-center w-16 text-blue-800">
                   <div className="flex items-center justify-center gap-1">
                     Vendido
@@ -680,6 +685,9 @@ const handleSaveProduction = async () => {
                     <FilterButton columnKey="cloth2" color="pink" isTextFilter={true} />
                   </div>
                 </th>
+                <th className="px-3 py-3 font-black uppercase text-center w-32 border-l border-slate-200 text-amber-700">
+                  Novedades
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -687,7 +695,7 @@ const handleSaveProduction = async () => {
                 const prod = state.productionTracking.find(p => p.refId === row.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
                 return (
                 <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 sticky left-0 z-10 bg-white">
                     <p className="font-black text-slate-800 text-sm leading-tight">{row.id}</p>
                     <p className="text-[9px] font-bold text-slate-500 uppercase truncate">{row.description}</p>
                   </td>
@@ -769,6 +777,19 @@ const handleSaveProduction = async () => {
                       <div className="text-center text-slate-300">-</div>
                     )}
                   </td>
+
+                  {/* NOVEDADES Column */}
+                  <td className="px-3 py-2 border-l border-amber-100">
+                    <input
+                      type="text"
+                      value={prod.novedades || ''}
+                      onChange={e => updateProduction(row.id, 'novedades', e.target.value)}
+                      onFocus={e => e.target.select()}
+                      readOnly={!isAdmin}
+                      placeholder={isAdmin ? 'Agregar nota...' : ''}
+                      className={`w-full px-2 py-1 bg-amber-50 border border-amber-200 rounded-lg font-bold text-amber-900 text-xs focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none placeholder:text-amber-300 ${!isAdmin ? 'cursor-default bg-slate-50 border-slate-200 text-slate-600' : ''}`}
+                    />
+                  </td>
                 </tr>
                 );
               })}
@@ -809,6 +830,7 @@ const handleSaveProduction = async () => {
                   </td>
                   <td className="px-3 py-3 border-l border-slate-200"></td>
                   <td className="px-3 py-3 border-l border-slate-200"></td>
+                  <td className="px-3 py-3 border-l border-amber-100"></td>
                 </tr>
               )}
             </tbody>

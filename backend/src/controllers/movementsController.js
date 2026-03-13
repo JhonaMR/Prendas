@@ -798,7 +798,7 @@ const createOrder = async (req, res) => {
 const getProductionTracking = async (req, res) => {
     try {
         const result = await query(`
-            SELECT ref_id, correria_id, programmed, cut, inventory
+            SELECT ref_id, correria_id, programmed, cut, inventory, novedades
             FROM production_tracking
         `);
 
@@ -809,7 +809,8 @@ const getProductionTracking = async (req, res) => {
             correriaId: t.correria_id,
             programmed: t.programmed,
             cut: t.cut,
-            inventory: t.inventory || 0
+            inventory: t.inventory || 0,
+            novedades: t.novedades || null
         }));
 
         return res.json({
@@ -833,7 +834,7 @@ const getProductionTracking = async (req, res) => {
  */
 const updateProductionTracking = async (req, res) => {
     try {
-        const { refId, correriaId, programmed, cut, inventory } = req.body;
+        const { refId, correriaId, programmed, cut, inventory, novedades } = req.body;
 
         if (!refId || !correriaId || programmed === undefined || cut === undefined) {
             return res.status(400).json({
@@ -844,16 +845,16 @@ const updateProductionTracking = async (req, res) => {
 
         // UPSERT - Si existe actualiza, si no existe crea
         await query(
-            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
-            VALUES ($1, $2, $3, $4, $5)
-            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
-            [refId, correriaId, programmed, cut, inventory || 0]
+            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6`,
+            [refId, correriaId, programmed, cut, inventory || 0, novedades || null]
         );
 
         return res.json({
             success: true,
             message: 'Tracking actualizado exitosamente',
-            data: { refId, correriaId, programmed, cut, inventory: inventory || 0 }
+            data: { refId, correriaId, programmed, cut, inventory: inventory || 0, novedades: novedades || null }
         });
 
     } catch (error) {
@@ -889,7 +890,7 @@ const saveProductionBatch = async (req, res) => {
         await transaction(async (client) => {
             // Guardar cada registro
             for (const item of trackingData) {
-                const { refId, correriaId, programmed, cut, inventory } = item;
+                const { refId, correriaId, programmed, cut, inventory, novedades } = item;
 
                 // Validar cada registro
                 if (!refId || !correriaId || programmed === undefined || cut === undefined) {
@@ -898,10 +899,10 @@ const saveProductionBatch = async (req, res) => {
 
                 // Ejecutar UPSERT
                 await client.query(
-                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
-                    VALUES ($1, $2, $3, $4, $5)
-                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
-                    [refId, correriaId, programmed, cut, inventory || 0]
+                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades)
+                    VALUES ($1, $2, $3, $4, $5, $6)
+                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6`,
+                    [refId, correriaId, programmed, cut, inventory || 0, novedades || null]
                 );
                 savedCount++;
             }
