@@ -14,7 +14,8 @@ const {
   createReference,
   updateReference,
   deleteReference,
-  getReferencesByCorreria
+  getReferencesByCorreria,
+  batchRemoveCorreriaFromReferences
 } = require('./referencesService');
 const { bulkImportReferences } = require('../../../services/BulkReferenceImportService');
 const { parseCSV } = require('../../../utils/csvParser');
@@ -244,6 +245,38 @@ const bulkImport = async (req, res) => {
   }
 };
 
+/**
+ * POST /api/references/batch-remove-correria
+ * Elimina una correría de múltiples referencias
+ */
+const batchRemoveCorreria = async (req, res) => {
+  try {
+    const { referenceIds, correriaId } = req.body;
+
+    if (!referenceIds || !correriaId) {
+      return res.status(400).json({
+        success: false,
+        message: 'referenceIds and correriaId are required'
+      });
+    }
+
+    logger.info(`Batch removing correria ${correriaId} from ${referenceIds.length} references`);
+    const result = await batchRemoveCorreriaFromReferences(referenceIds, correriaId);
+
+    return res.json({
+      success: true,
+      message: `${result.count} referencias actualizadas exitosamente`,
+      data: result
+    });
+  } catch (error) {
+    logger.error('Error in batch remove correria controller', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error al procesar la eliminación masiva'
+    });
+  }
+};
+
 module.exports = {
   list,
   read,
@@ -251,5 +284,6 @@ module.exports = {
   update,
   delete: delete_,
   getCorreriaReferences,
-  bulkImport
+  bulkImport,
+  batchRemoveCorreria
 };

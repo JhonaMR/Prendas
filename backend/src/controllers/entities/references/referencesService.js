@@ -255,11 +255,40 @@ async function getReferencesByCorreria(correria_id) {
   }
 }
 
+/**
+ * Elimina una correría de múltiples referencias de forma masiva
+ * @async
+ */
+async function batchRemoveCorreriaFromReferences(referenceIds, correriaId) {
+  try {
+    if (!referenceIds || !referenceIds.length) return { success: true, count: 0 };
+
+    await transaction(async (client) => {
+      await client.query(`
+        DELETE FROM correria_catalog 
+        WHERE reference_id = ANY($1) AND correria_id = $2
+      `, [referenceIds, correriaId]);
+    });
+
+    // Invalidar cache
+    if (typeof invalidateOnUpdate === 'function') {
+      invalidateOnUpdate('Reference');
+    }
+
+    logger.info('Batch removed correria from references', { correriaId, referenceCount: referenceIds.length });
+    return { success: true, count: referenceIds.length };
+  } catch (error) {
+    logger.error('Error in batch remove correria', error, { referenceIds, correriaId });
+    throw new DatabaseError('Failed to batch remove correria from references', error);
+  }
+}
+
 module.exports = {
   getAllReferences,
   getReferenceById,
   createReference,
   updateReference,
   deleteReference,
-  getReferencesByCorreria
+  getReferencesByCorreria,
+  batchRemoveCorreriaFromReferences
 };

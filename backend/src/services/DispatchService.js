@@ -79,6 +79,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                   salePrice: item.sale_price
                 })),
                 dispatchedBy: d.dispatched_by,
+                checkedBy: d.checked_by,
                 createdAt: d.created_at
             };
         }));
@@ -102,8 +103,8 @@ const createDispatch = async (dispatchData, items) => {
         return await transaction(async (client) => {
             // Insert dispatch
             const dispatchResult = await client.query(
-                `INSERT INTO dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                `INSERT INTO dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, checked_by, created_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING *`,
                 [
                     dispatchData.id,
@@ -112,6 +113,7 @@ const createDispatch = async (dispatchData, items) => {
                     dispatchData.invoiceNo,
                     dispatchData.remissionNo,
                     dispatchData.dispatchedBy,
+                    dispatchData.checkedBy || '0',
                     new Date().toISOString()
                 ]
             );
@@ -160,6 +162,7 @@ const getDispatchById = async (id) => {
             ...dispatch,
             clientId: dispatch.client_id,
             correriaId: dispatch.correria_id,
+            checkedBy: dispatch.checked_by,
             items: itemsResult.rows.map(item => ({
               reference: item.reference,
               quantity: item.quantity,
@@ -183,10 +186,10 @@ const updateDispatch = async (id, data) => {
     try {
         const result = await query(
             `UPDATE dispatches 
-            SET invoice_no = $1, remission_no = $2, dispatched_by = $3
-            WHERE id = $4
+            SET invoice_no = $1, remission_no = $2, dispatched_by = $3, checked_by = $4
+            WHERE id = $5
             RETURNING *`,
-            [data.invoiceNo, data.remissionNo, data.dispatchedBy, id]
+            [data.invoiceNo, data.remissionNo, data.dispatchedBy, data.checkedBy, id]
         );
 
         return result.rows[0];

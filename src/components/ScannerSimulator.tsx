@@ -47,6 +47,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
                 placeholder="Número de referencia..."
                 className="w-full pl-12 pr-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-black text-slate-900 text-sm sm:text-base uppercase"
                 onKeyDown={(e) => e.key === 'Enter' && handleTrigger()}
+                onFocus={(e) => e.target.select()}
               />
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
                 <Icons.Inventory />
@@ -69,6 +70,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
                 type="number" 
                 value={qty}
                 onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
+                onFocus={(e) => e.target.select()}
                 className="w-full min-w-0 bg-transparent border-none text-center font-black text-lg sm:text-xl focus:ring-0 px-2 text-slate-800"
               />
               <button 

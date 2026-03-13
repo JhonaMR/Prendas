@@ -48,6 +48,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [hasSeconds, setHasSeconds] = useState<boolean | null>(null);
   const [chargeType, setChargeType] = useState<ChargeType>(null);
   const [chargeUnits, setChargeUnits] = useState(0);
+  const [incompleteUnits, setIncompleteUnits] = useState(0);
+  const [hasIncomplete, setHasIncomplete] = useState<boolean | null>(null);
+  const [isPacked, setIsPacked] = useState<boolean | null>(null);
+  const [bagQuantity, setBagQuantity] = useState(0);
   const [items, setItems] = useState<ItemEntry[]>([]);
 
   const handleStart = () => {
@@ -60,6 +64,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setHasSeconds(null);
     setChargeType(null);
     setChargeUnits(0);
+    setIncompleteUnits(0);
+    setHasIncomplete(null);
+    setIsPacked(null);
+    setBagQuantity(0);
     setItems([]);
     setAffectsInventory(true);
   };
@@ -79,6 +87,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setHasSeconds(lot.hasSeconds);
     setChargeType(lot.chargeType);
     setChargeUnits(lot.chargeUnits);
+    setIncompleteUnits(lot.incompleteUnits || 0);
+    setHasIncomplete((lot.incompleteUnits || 0) > 0);
+    setIsPacked(lot.isPacked ?? null);
+    setBagQuantity(lot.bagQuantity || 0);
     setItems(lot.items);
     setAffectsInventory(lot.affectsInventory !== false);
   };
@@ -132,6 +144,14 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       alert(`Debe especificar unidades para ${chargeType}`);
       return;
     }
+    if (isPacked === null) {
+      alert("Debe especificar si el lote está empacado");
+      return;
+    }
+    if (hasIncomplete === true && incompleteUnits <= 0) {
+      alert("Debe especificar la cantidad de unidades incompletas");
+      return;
+    }
 
     const data: BatchReception = {
       id: editingLot ? editingLot.id : Math.random().toString(36).substr(2, 9),
@@ -140,6 +160,9 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       hasSeconds,
       chargeType,
       chargeUnits,
+      incompleteUnits: hasIncomplete ? incompleteUnits : 0,
+      isPacked: isPacked ?? false,
+      bagQuantity: bagQuantity || 0,
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
       createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
@@ -270,93 +293,159 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">{editingLot ? 'Editar Lote' : 'Conteo de Lote'}</h2>
             <p className="text-slate-400 font-bold text-xs sm:text-base">Registro de ingreso de producción</p>
           </div>
-          <button onClick={() => setReceptionType('listing')} className="px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white text-slate-400 font-bold hover:text-red-500 transition-all border border-slate-100 text-sm">
+          <button onClick={() => { setReceptionType('listing'); setIsCounting(false); setEditingLot(null); }} className="px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white text-slate-400 font-bold hover:text-red-500 transition-all border border-slate-100 text-sm">
             Atrás
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100">
-          <div className="space-y-2 relative">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Confeccionista (Cédula o Nombre)</label>
-            <div className="relative">
-              <input 
-                value={confSearch} 
-                onChange={e => { setConfSearch(e.target.value); setShowConfResults(true); if(!e.target.value) setConfeccionista(''); }} 
-                onFocus={() => setShowConfResults(true)}
-                placeholder="Buscar confeccionista..." 
-                className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" 
-              />
-              {showConfResults && confSearch.length > 0 && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-48 overflow-y-auto custom-scrollbar">
-                  {filteredConf.map(c => (
-                    <button 
-                      key={c.id} 
-                      onClick={() => selectConf(c)}
-                      className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
-                    >
-                      <p className="font-black text-slate-800">{c.name}</p>
-                      <p className="text-[10px] text-slate-400 font-bold">Cédula: {c.id} • Score: {c.score}</p>
-                    </button>
-                  ))}
-                  {filteredConf.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron activos</p>}
+        <div className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 space-y-8">
+          {/* Row 1: Confeccionista & Remisión */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2 relative">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Confeccionista</label>
+              <div className="relative">
+                <input 
+                  value={confSearch} 
+                  onChange={e => { setConfSearch(e.target.value); setShowConfResults(true); if(!e.target.value) setConfeccionista(''); }} 
+                  onFocus={() => setShowConfResults(true)}
+                  placeholder="Buscar confeccionista..." 
+                  className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" 
+                />
+                {showConfResults && confSearch.length > 0 && (
+                  <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-48 overflow-y-auto custom-scrollbar">
+                    {filteredConf.map(c => (
+                      <button 
+                        key={c.id} 
+                        onClick={() => selectConf(c)}
+                        className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+                      >
+                        <p className="font-black text-slate-800">{c.name}</p>
+                        <p className="text-[10px] text-slate-400 font-bold">Cédula: {c.id} • Score: {c.score}</p>
+                      </button>
+                    ))}
+                    {filteredConf.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron activos</p>}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Remisión</label>
+              <input value={batchCode} onChange={e => setBatchCode(e.target.value)} placeholder="Remisión de entrega..." className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" />
+            </div>
+          </div>
+
+          {/* Row 2: Status Toggles (Segundas, Empacado, Inventario) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Tiene Segundas?</label>
+              <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setHasSeconds(true)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasSeconds === true ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >SÍ</button>
+                <button 
+                  onClick={() => setHasSeconds(false)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasSeconds === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >NO</button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Lote Empacado? *</label>
+              <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setIsPacked(true)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${isPacked === true ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >SÍ</button>
+                <button 
+                  onClick={() => setIsPacked(false)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${isPacked === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >NO</button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Inventario</label>
+              <button 
+                onClick={() => setAffectsInventory(!affectsInventory)} 
+                className={`w-full flex items-center justify-between px-6 py-3.5 rounded-2xl transition-all font-bold text-xs ${affectsInventory ? 'bg-teal-50 text-teal-700 border border-teal-100' : 'bg-orange-50 text-orange-700 border border-orange-100'}`}
+              >
+                <span>{affectsInventory ? 'CARGA STOCK' : 'SIN CARGO'}</span>
+                <div className={`w-4 h-4 rounded-full ${affectsInventory ? 'bg-teal-500' : 'bg-orange-500'} flex items-center justify-center`}>
+                  {affectsInventory && <span className="text-white text-[8px]">✓</span>}
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Row 3: Special Units Consolidated */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+            {/* Cobros */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Cobros</label>
+              <div className="flex gap-1.5 p-1 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setChargeType(chargeType === 'Compra' ? null : 'Compra')} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${chargeType === 'Compra' ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >COMPRA</button>
+                <button 
+                  onClick={() => setChargeType(chargeType === 'Cobro' ? null : 'Cobro')} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${chargeType === 'Cobro' ? 'bg-pink-600 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >COBRO</button>
+              </div>
+              {chargeType && (
+                <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl animate-in fade-in zoom-in duration-300 border border-slate-100">
+                  <div className="flex-1 flex items-center bg-white rounded-lg p-1">
+                    <button onClick={() => setChargeUnits(u => Math.max(0, u - 1))} className="w-6 h-6 flex items-center justify-center bg-slate-50 rounded-md text-slate-500 font-bold text-xs">-</button>
+                    <input type="number" value={chargeUnits} onChange={e => setChargeUnits(Number(e.target.value))} onFocus={(e) => e.target.select()} className="flex-1 text-center font-black bg-transparent border-none focus:ring-0 text-slate-900 text-xs" />
+                    <button onClick={() => setChargeUnits(u => u + 1)} className="w-6 h-6 flex items-center justify-center bg-slate-50 rounded-md text-slate-500 font-bold text-xs">+</button>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Tiene Segundas?</label>
-            <div className="flex gap-2 px-6 py-3.5 bg-slate-50 border-none rounded-2xl">
-              <button 
-                onClick={() => setHasSeconds(true)} 
-                className={`flex-1 px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-xl text-xs font-bold transition-all ${hasSeconds === true ? 'bg-pink-500 text-white shadow-lg shadow-pink-100' : 'bg-white text-slate-400 border border-slate-100'}`}
-              >SÍ</button>
-              <button 
-                onClick={() => setHasSeconds(false)} 
-                className={`flex-1 px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-xl text-xs font-bold transition-all ${hasSeconds === false ? 'bg-slate-300 text-white shadow-lg shadow-slate-100' : 'bg-white text-slate-400 border border-slate-100'}`}
-              >NO</button>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Remisión</label>
-            <input value={batchCode} onChange={e => setBatchCode(e.target.value)} placeholder="Remisión de entrega..." className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" />
-          </div>
-
-          <div className="flex flex-col items-start justify-start">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4 mb-2">Cobros a confeccionista</label>
-            <div className="flex gap-2 px-6 py-3.5 bg-slate-50 border-none rounded-2xl w-full">
-              <button onClick={() => setChargeType(chargeType === 'Compra' ? null : 'Compra')} className={`flex-1 px-3 py-1.5 rounded-xl text-[10px] font-black tracking-widest transition-all ${chargeType === 'Compra' ? 'bg-blue-600 text-white shadow-lg shadow-blue-100' : 'bg-white text-slate-400 border border-slate-100'}`}>COMPRA</button>
-              <button onClick={() => setChargeType(chargeType === 'Cobro' ? null : 'Cobro')} className={`flex-1 px-3 py-1.5 rounded-xl text-[10px] font-black tracking-widest transition-all ${chargeType === 'Cobro' ? 'bg-pink-600 text-white shadow-lg shadow-pink-100' : 'bg-white text-slate-400 border border-slate-100'}`}>COBRO</button>
-            </div>
-            {chargeType && (
-              <div className="flex items-center gap-2 mt-2 animate-in slide-in-from-top-2 w-full px-6 py-3.5 bg-slate-50 rounded-2xl">
-                <p className={`text-[10px] font-black uppercase w-20 sm:w-24 ${chargeType === 'Compra' ? 'text-blue-500' : 'text-pink-500'}`}>Unid. a {chargeType.toLowerCase()}:</p>
-                <div className="flex-1 flex items-center bg-white rounded-2xl border border-slate-200 p-1">
-                   <button type="button" onClick={() => setChargeUnits(u => Math.max(0, u - 1))} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-slate-50 rounded-xl text-slate-500 font-bold active:scale-90">-</button>
-                   <input type="number" value={chargeUnits} onChange={e => setChargeUnits(Number(e.target.value))} className="flex-1 text-center font-black bg-transparent border-none focus:ring-0 text-slate-900 text-sm" />
-                   <button type="button" onClick={() => setChargeUnits(u => u + 1)} className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-slate-50 rounded-xl text-slate-500 font-bold active:scale-90">+</button>
-                </div>
+            {/* Incompletas */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-purple-500 tracking-widest px-4">Incompletas</label>
+              <div className="flex gap-1.5 p-1 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setHasIncomplete(true)} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${hasIncomplete === true ? 'bg-purple-600 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >SÍ</button>
+                <button 
+                  onClick={() => setHasIncomplete(false)} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${hasIncomplete === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >NO</button>
               </div>
-            )}
-          </div>
-
-          <div className="space-y-2 md:col-span-2">
-            <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Impacto en Inventario</label>
-            <div className="flex items-center gap-3 px-6 py-3.5 bg-slate-50 border-none rounded-2xl">
-              <button 
-                onClick={() => setAffectsInventory(!affectsInventory)} 
-                className={`flex items-center justify-center w-6 h-6 rounded-lg border-2 transition-all ${affectsInventory ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-300'}`}
-              >
-                {affectsInventory && <span className="text-white font-black text-sm">✓</span>}
-              </button>
-              <span className="text-sm font-black text-slate-700">
-                {affectsInventory ? 'Esta recepción CARGA al inventario' : 'Esta recepción NO carga al inventario'}
-              </span>
+              {hasIncomplete && (
+                <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl animate-in fade-in zoom-in duration-300 border border-slate-100">
+                  <div className="flex-1 flex items-center bg-white rounded-lg p-1">
+                    <button onClick={() => setIncompleteUnits(u => Math.max(0, u - 1))} className="w-6 h-6 flex items-center justify-center bg-slate-50 rounded-md text-slate-500 font-bold text-xs">-</button>
+                    <input type="number" value={incompleteUnits} onChange={e => setIncompleteUnits(Number(e.target.value))} onFocus={(e) => e.target.select()} className="flex-1 text-center font-black bg-transparent border-none focus:ring-0 text-slate-900 text-xs" />
+                    <button onClick={() => setIncompleteUnits(u => u + 1)} className="w-6 h-6 flex items-center justify-center bg-slate-50 rounded-md text-slate-500 font-bold text-xs">+</button>
+                  </div>
+                </div>
+              )}
             </div>
-            <p className="text-[9px] text-slate-400 font-bold px-4 italic">
-              Desactiva si esta recepción es parte de un lote que se descarga en múltiples partes
-            </p>
+
+            {/* Talegos */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-slate-500 tracking-widest px-4">Talegos</label>
+              <div className="flex items-center bg-slate-50 rounded-2xl p-1 px-3 gap-3 h-[38px]">
+                <div className="text-slate-400 scale-75">
+                  <Icons.Reception />
+                </div>
+                <input 
+                  type="number" 
+                  value={bagQuantity === 0 ? '' : bagQuantity} 
+                  onChange={e => setBagQuantity(Number(e.target.value))} 
+                  onFocus={(e) => e.target.select()}
+                  placeholder="0" 
+                  className="flex-1 bg-transparent border-none focus:ring-0 font-black text-slate-900 text-sm"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -364,10 +453,21 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
 
         {items.length > 0 && (
           <div className="bg-white rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-            <div className="p-6 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="font-black text-slate-700">Resumen de Lectura</h3>
-              <div className="px-6 py-2 bg-blue-600 text-white rounded-full font-black text-sm shadow-lg shadow-blue-100 w-fit">
-                Total Global: {totalCount}
+            <div className="p-6 bg-slate-50 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <h3 className="font-black text-slate-700">Resumen de Recepción</h3>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="px-4 py-1.5 bg-blue-50 text-blue-700 rounded-full font-bold text-[10px] uppercase tracking-wider">
+                  Completas: <span className="font-black ml-1 text-sm">{totalCount}</span>
+                </div>
+                <div className="px-4 py-1.5 bg-purple-50 text-purple-700 rounded-full font-bold text-[10px] uppercase tracking-wider">
+                  Incompletas: <span className="font-black ml-1 text-sm">{hasIncomplete ? incompleteUnits : 0}</span>
+                </div>
+                <div className="px-4 py-1.5 bg-pink-50 text-pink-700 rounded-full font-bold text-[10px] uppercase tracking-wider">
+                  {chargeType || 'Cobros'}: <span className="font-black ml-1 text-sm">{chargeUnits}</span>
+                </div>
+                <div className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-black text-sm shadow-lg shadow-blue-100">
+                  TOTAL: {totalCount + (hasIncomplete ? incompleteUnits : 0) + chargeUnits}
+                </div>
               </div>
             </div>
             <div className="divide-y divide-slate-100">
@@ -482,6 +582,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                         <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty}</span></span>
                         {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segundas</span>}
                         {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
+                        {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc. {r.incompleteUnits}</span> : null}
+                        {r.isPacked && <span className="text-teal-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span> Empacado</span>}
                         {r.affectsInventory === false && <span className="text-orange-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> No Inv.</span>}
                         {r.affectsInventory !== false && <span className="text-green-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Inv.</span>}
                       </div>
@@ -508,9 +610,12 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                             <div className="space-y-1">
                                <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {getConfeccionistaName(r.confeccionista)}</p>
                                <p className="text-xs sm:text-sm font-bold text-slate-500">Remisión: {r.batchCode}</p>
-                               {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
-                               {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}
-                            </div>
+                                {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
+                                {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}
+                                {r.incompleteUnits && r.incompleteUnits > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-purple-500 uppercase">INCOMPLETAS: {r.incompleteUnits} unidades</p> : null}
+                                <p className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase">{r.isPacked ? 'LOTE EMPACADO' : 'LOTE NO EMPACADO'}</p>
+                                {r.bagQuantity && r.bagQuantity > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-teal-600 uppercase">TALEGOS: {r.bagQuantity}</p> : null}
+                             </div>
                          </div>
                          <div className="md:text-right">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>

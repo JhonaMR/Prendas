@@ -88,6 +88,9 @@ export interface BatchReception {
   hasSeconds: boolean | null;
   chargeType: ChargeType;
   chargeUnits: number;
+  incompleteUnits?: number;
+  isPacked?: boolean;
+  bagQuantity?: number;
   items: ItemEntry[];
   receivedBy: string;
   createdAt: string;
@@ -103,6 +106,7 @@ export interface Dispatch {
   remissionNo: string;
   items: ItemEntry[];
   dispatchedBy: string;
+  checkedBy: string;
   createdAt: string;
   editLogs: AuditLog[];
 }

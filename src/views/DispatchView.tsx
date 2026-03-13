@@ -35,6 +35,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [invoiceNo, setInvoiceNo] = useState('');
   const [remissionNo, setRemissionNo] = useState('');
+  const [checkedBy, setCheckedBy] = useState('');
   const [items, setItems] = useState<ItemEntry[]>([]);
 
   // History detail toggle
@@ -48,6 +49,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setClientSearch('');
     setInvoiceNo('');
     setRemissionNo('');
+    setCheckedBy('');
     setItems([]);
   };
 
@@ -64,6 +66,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setClientSearch(client ? `${client.id} - ${client.name}` : disp.clientId);
     setInvoiceNo(disp.invoiceNo);
     setRemissionNo(disp.remissionNo);
+    setCheckedBy(disp.checkedBy || '0');
     setItems(disp.items);
   };
 
@@ -104,6 +107,10 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
       alert("Debe seleccionar una correría");
       return;
     }
+    if (!checkedBy.trim()) {
+      alert("Debe ingresar quién revisó el despacho");
+      return;
+    }
     if (items.length === 0) {
       alert("Debe agregar al menos una prenda");
       return;
@@ -137,7 +144,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           invoiceNo,
           remissionNo,
           items: itemsConPrecio,
-          dispatchedBy: editingDisp.dispatchedBy
+          dispatchedBy: editingDisp.dispatchedBy,
+          checkedBy
         };
 
         const result = await onUpdateDispatch(editingDisp.id, updatedData);
@@ -161,6 +169,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           remissionNo,
           items: itemsConPrecio,
           dispatchedBy: user.name,
+          checkedBy,
           createdAt: new Date().toLocaleString(),
           editLogs: [{ user: user.name, date: new Date().toLocaleString() }]
         };
@@ -241,18 +250,29 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 )}
               </div>
             </div>
-            {/* SELECTOR DE CORRERÍA */}
-            <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Correría / Campaña</label>
-              <CorreriaAutocomplete
-                value={correriaId}
-                correrias={correrias}
-                onChange={setCorreriaId}
-                search={correriaSearch}
-                setSearch={setCorreriaSearch}
-                showDropdown={showCorreriaDropdown}
-                setShowDropdown={setShowCorreriaDropdown}
-              />
+            {/* SECCIÓN CORRERÍA Y REVISADO POR */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Correría / Campaña</label>
+                <CorreriaAutocomplete
+                  value={correriaId}
+                  correrias={correrias}
+                  onChange={setCorreriaId}
+                  search={correriaSearch}
+                  setSearch={setCorreriaSearch}
+                  showDropdown={showCorreriaDropdown}
+                  setShowDropdown={setShowCorreriaDropdown}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black uppercase text-purple-500 tracking-widest px-4">Revisado por</label>
+                <input 
+                  value={checkedBy} 
+                  onChange={e => setCheckedBy(e.target.value)} 
+                  placeholder="Nombre..." 
+                  className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-purple-100 transition-all font-bold text-slate-900" 
+                />
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -444,9 +464,12 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                        </div>
                        <div className="md:text-right">
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
-                          <p className="text-xs sm:text-sm font-bold text-slate-600">Ingresado por: <span className="text-slate-900 font-black">{d.dispatchedBy}</span></p>
-                          <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{d.createdAt}</span></p>
-                       </div>
+                           <p className="text-xs sm:text-sm font-bold text-slate-600">Ingresado por: <span className="text-slate-900 font-black">{d.dispatchedBy}</span></p>
+                           <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{d.createdAt}</span></p>
+                           <div className="mt-2 pt-2 border-t border-slate-100">
+                             <p className="text-xs sm:text-sm font-bold text-slate-600">Revisado por: <span className="text-slate-900 font-black">{d.checkedBy || '0'}</span></p>
+                           </div>
+                        </div>
                     </div>
 
                     <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">

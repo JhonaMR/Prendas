@@ -509,6 +509,23 @@ class ApiService {
     }
   }
 
+  async batchRemoveCorreriaFromReferences(referenceIds: string[], correriaId: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/references/batch-remove-correria`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ referenceIds, correriaId })
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar referencias de la maleta'
+      };
+    }
+  }
+
   // ==================== CLIENTES ====================
 
   async getClients(): Promise<Client[]> {
@@ -1056,6 +1073,9 @@ class ApiService {
         hasSeconds: reception.hasSeconds,
         chargeType: reception.chargeType,
         chargeUnits: reception.chargeUnits,
+        incompleteUnits: reception.incompleteUnits,
+        isPacked: reception.isPacked,
+        bagQuantity: reception.bagQuantity,
         items: reception.items,
         receivedBy: reception.receivedBy,
         affectsInventory: reception.affectsInventory
@@ -1093,6 +1113,9 @@ class ApiService {
         hasSeconds: reception.hasSeconds,
         chargeType: reception.chargeType,
         chargeUnits: reception.chargeUnits,
+        incompleteUnits: reception.incompleteUnits,
+        isPacked: reception.isPacked,
+        bagQuantity: reception.bagQuantity,
         affectsInventory: reception.affectsInventory
       };
 

@@ -26,6 +26,8 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
   const [numericFilterInputs, setNumericFilterInputs] = useState<{ [key: string]: string }>({});
   const [initialProductionData, setInitialProductionData] = useState<ProductionTracking[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [showDepurarModal, setShowDepurarModal] = useState(false);
+  const [selectedRefsToDepurar, setSelectedRefsToDepurar] = useState<string[]>([]);
   const hasUnsavedChanges = useRef(false);
 
   // Verificar si el usuario es admin
@@ -271,6 +273,47 @@ useEffect(() => {
     });
   };
 
+  const handleToggleRefToDepurar = (refId: string) => {
+    setSelectedRefsToDepurar(prev => 
+      prev.includes(refId) ? prev.filter(id => id !== refId) : [...prev, refId]
+    );
+  };
+
+  const handleSaveDepurar = async () => {
+    if (selectedRefsToDepurar.length === 0) {
+      alert("Seleccione al menos una referencia");
+      return;
+    }
+
+    if (window.confirm(`¿Seguro que desea realizar la eliminación de estas ${selectedRefsToDepurar.length} referencias de la maleta de la correría?`)) {
+      try {
+        const result = await api.batchRemoveCorreriaFromReferences(selectedRefsToDepurar, selectedCorreriaId);
+        if (result.success) {
+          updateState(prev => ({
+            ...prev,
+            references: prev.references.map(ref => {
+              if (selectedRefsToDepurar.includes(ref.id)) {
+                return {
+                  ...ref,
+                  correrias: ref.correrias.filter(cId => cId !== selectedCorreriaId)
+                };
+              }
+              return ref;
+            })
+          }));
+          setShowDepurarModal(false);
+          setSelectedRefsToDepurar([]);
+          alert("Maleta depurada exitosamente");
+        } else {
+          alert("Error: " + (result.message || "Error desconocido"));
+        }
+      } catch (error) {
+        console.error("Error depurando maleta:", error);
+        alert("Error de conexión");
+      }
+    }
+  };
+
   // Función para guardar los cambios
 const handleSaveProduction = async () => {
   if (!isAdmin) {
@@ -506,6 +549,18 @@ const handleSaveProduction = async () => {
           <p className="text-slate-500 font-bold text-xs mt-1">Campaña: {state.correrias.find(c => c.id === selectedCorreriaId)?.name}</p>
         </div>
         
+        {isAdmin && selectedCorreriaId && (
+          <button 
+            onClick={() => {
+              setSelectedRefsToDepurar([]);
+              setShowDepurarModal(true);
+            }}
+            className="px-6 py-3 bg-red-50 text-red-600 font-black rounded-3xl text-xs uppercase tracking-wider hover:bg-red-100 transition-all shadow-sm border border-red-100 hover:shadow-md"
+          >
+            Depurar maleta
+          </button>
+        )}
+        
         <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
           <div className="flex flex-col">
             <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Referencia</span>
@@ -644,6 +699,7 @@ const handleSaveProduction = async () => {
                       type="number" 
                       value={prod.inventory || 0} 
                       onChange={e => updateProduction(row.id, 'inventory', Number(e.target.value))} 
+                      onFocus={(e) => e.target.select()}
                       readOnly={!isAdmin}
                       className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-orange-700 text-sm focus:ring-2 focus:ring-orange-100 ${!isAdmin ? 'cursor-default' : ''}`}
                     />
@@ -653,6 +709,7 @@ const handleSaveProduction = async () => {
                         type="number" 
                         value={row.programmed} 
                         onChange={e => updateProduction(row.id, 'programmed', Number(e.target.value))} 
+                        onFocus={(e) => e.target.select()}
                         readOnly={!isAdmin}
                         className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-indigo-700 text-sm focus:ring-2 focus:ring-indigo-100 ${!isAdmin ? 'cursor-default' : ''}`}
                       />
@@ -662,6 +719,7 @@ const handleSaveProduction = async () => {
                         type="number" 
                         value={row.cut} 
                         onChange={e => updateProduction(row.id, 'cut', Number(e.target.value))} 
+                        onFocus={(e) => e.target.select()}
                         readOnly={!isAdmin}
                         className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-pink-700 text-sm focus:ring-2 focus:ring-pink-100 ${!isAdmin ? 'cursor-default' : ''}`}
                       />
@@ -757,6 +815,74 @@ const handleSaveProduction = async () => {
           </table>
         </div>
       </div>
+
+      {showDepurarModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 w-full max-w-5xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+              <div>
+                <h3 className="text-2xl font-black text-slate-800 tracking-tighter">Depurar Maleta</h3>
+                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-1">Seleccione las referencias que desea eliminar de esta correría</p>
+              </div>
+              <button 
+                onClick={() => setShowDepurarModal(false)}
+                className="p-3 bg-white text-slate-400 hover:text-slate-800 rounded-2xl shadow-sm border border-slate-100 transition-all hover:scale-110"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-8 overflow-y-auto custom-scrollbar flex-1">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {state.references
+                  .filter(ref => ref.correrias.includes(selectedCorreriaId))
+                  .sort((a, b) => a.id.localeCompare(b.id))
+                  .map(ref => {
+                    const isSelected = selectedRefsToDepurar.includes(ref.id);
+                    return (
+                      <button
+                        key={ref.id}
+                        onClick={() => handleToggleRefToDepurar(ref.id)}
+                        className={`p-4 rounded-2xl border-2 transition-all text-xs font-black uppercase tracking-tight text-center flex flex-col gap-1 ${
+                          isSelected 
+                            ? 'bg-red-50 border-red-200 text-red-600 shadow-inner' 
+                            : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm'
+                        }`}
+                      >
+                        <span className="text-sm">{ref.id}</span>
+                        <span className={`text-[8px] font-bold ${isSelected ? 'text-red-400' : 'text-slate-400'} truncate`}>{ref.description}</span>
+                      </button>
+                    );
+                  })}
+              </div>
+            </div>
+
+            <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Seleccionadas:</span>
+                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full font-black text-xs">{selectedRefsToDepurar.length}</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setShowDepurarModal(false)}
+                  className="px-8 py-3 text-slate-500 font-black text-xs uppercase tracking-widest hover:text-slate-800 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button 
+                  onClick={handleSaveDepurar}
+                  disabled={selectedRefsToDepurar.length === 0}
+                  className="px-10 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-red-100 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
+                >
+                  Confirmar Eliminación
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

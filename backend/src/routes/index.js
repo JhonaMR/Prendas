@@ -111,6 +111,7 @@ router.post('/references', verifyToken, preventNonAdminEdit, referencesControlle
 router.post('/references/bulk-import', verifyToken, preventNonAdminEdit, referencesController.bulkImport);
 router.put('/references/:id', verifyToken, preventNonAdminEdit, referencesController.update);
 router.delete('/references/:id', verifyToken, preventNonAdminEdit, referencesController.delete);
+router.post('/references/batch-remove-correria', verifyToken, preventNonAdminEdit, referencesController.batchRemoveCorreria);
 router.get('/correrias/:id/references', referencesController.getCorreriaReferences);
 
 // ==================== CLIENTES ====================

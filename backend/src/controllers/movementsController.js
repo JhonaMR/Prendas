@@ -253,6 +253,9 @@ const getReceptions = async (req, res) => {
                 hasSeconds: reception.has_seconds === 1 ? true : reception.has_seconds === 0 ? false : null,
                 chargeType: reception.charge_type,
                 chargeUnits: reception.charge_units,
+                incompleteUnits: reception.incomplete_units || 0,
+                isPacked: reception.is_packed === true || reception.is_packed === 1,
+                bagQuantity: reception.bag_quantity || 0,
                 items: itemsResult.rows,
                 receivedBy: reception.received_by,
                 createdAt: reception.created_at,
@@ -281,7 +284,7 @@ const getReceptions = async (req, res) => {
  */
 const createReception = async (req, res) => {
     try {
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, bagQuantity } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista || !items || !items.length || !receivedBy) {
@@ -303,6 +306,9 @@ const createReception = async (req, res) => {
                 hasSeconds,
                 chargeType: chargeType || null,
                 chargeUnits: chargeUnits || 0,
+                incompleteUnits: incompleteUnits || 0,
+                isPacked: isPacked || false,
+                bagQuantity: bagQuantity || 0,
                 receivedBy,
                 affectsInventory: affectsInventory !== false
             },
@@ -319,6 +325,9 @@ const createReception = async (req, res) => {
                 hasSeconds,
                 chargeType,
                 chargeUnits,
+                incompleteUnits: incompleteUnits || 0,
+                isPacked: isPacked || false,
+                bagQuantity: bagQuantity || 0,
                 items,
                 receivedBy,
                 affectsInventory: affectsInventory !== false,
@@ -343,7 +352,7 @@ const createReception = async (req, res) => {
 const updateReception = async (req, res) => {
     try {
         const { id } = req.params;
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory, incompleteUnits, isPacked, bagQuantity } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista) {
@@ -360,6 +369,9 @@ const updateReception = async (req, res) => {
             hasSeconds,
             chargeType: chargeType || null,
             chargeUnits: chargeUnits || 0,
+            incompleteUnits: incompleteUnits || 0,
+            isPacked: isPacked || false,
+            bagQuantity: bagQuantity || 0,
             affectsInventory: affectsInventory !== false
         });
 
@@ -380,6 +392,9 @@ const updateReception = async (req, res) => {
                 hasSeconds: result.has_seconds === 1 ? true : result.has_seconds === 0 ? false : null,
                 chargeType: result.charge_type,
                 chargeUnits: result.charge_units,
+                incompleteUnits: result.incomplete_units || 0,
+                isPacked: result.is_packed === true || result.is_packed === 1,
+                bagQuantity: result.bag_quantity || 0,
                 affectsInventory: result.affects_inventory !== false,
                 receivedBy: result.received_by,
                 createdAt: result.created_at
@@ -448,6 +463,7 @@ const getDispatches = async (req, res) => {
                   salePrice: item.sale_price
                 })),
                 dispatchedBy: dispatch.dispatched_by,
+                checkedBy: dispatch.checked_by,
                 createdAt: dispatch.created_at
             };
         }));
@@ -473,12 +489,12 @@ const getDispatches = async (req, res) => {
  */
 const createDispatch = async (req, res) => {
     try {
-        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
+        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy, checkedBy } = req.body;
 
-        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length || !dispatchedBy) {
+        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length || !dispatchedBy || !checkedBy) {
             return res.status(400).json({
                 success: false,
-                message: 'Cliente, correría, factura, remisión, items y despachado por son requeridos'
+                message: 'Cliente, correría, factura, remisión, items, despachado por y revisado por son requeridos'
             });
         }
 
@@ -491,7 +507,8 @@ const createDispatch = async (req, res) => {
                 correriaId,
                 invoiceNo,
                 remissionNo,
-                dispatchedBy
+                dispatchedBy,
+                checkedBy
             },
             items
         );
@@ -507,6 +524,7 @@ const createDispatch = async (req, res) => {
                 remissionNo,
                 items,
                 dispatchedBy,
+                checkedBy,
                 createdAt: new Date()
             }
         });
@@ -528,12 +546,12 @@ const createDispatch = async (req, res) => {
 const updateDispatch = async (req, res) => {
     try {
         const { id } = req.params;
-        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy } = req.body;
+        const { clientId, correriaId, invoiceNo, remissionNo, items, dispatchedBy, checkedBy } = req.body;
 
-        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length) {
+        if (!clientId || !correriaId || !invoiceNo || !remissionNo || !items || !items.length || !checkedBy) {
             return res.status(400).json({
                 success: false,
-                message: 'Cliente, correría, factura, remisión e items son requeridos'
+                message: 'Cliente, correría, factura, remisión, items y revisado por son requeridos'
             });
         }
 
@@ -541,9 +559,9 @@ const updateDispatch = async (req, res) => {
             // Actualizar despacho
             await client.query(
                 `UPDATE dispatches 
-                SET client_id = $1, correria_id = $2, invoice_no = $3, remission_no = $4, dispatched_by = $5
-                WHERE id = $6`,
-                [clientId, correriaId, invoiceNo, remissionNo, dispatchedBy || null, id]
+                SET client_id = $1, correria_id = $2, invoice_no = $3, remission_no = $4, dispatched_by = $5, checked_by = $6
+                WHERE id = $7`,
+                [clientId, correriaId, invoiceNo, remissionNo, dispatchedBy || null, checkedBy, id]
             );
 
             // Eliminar items antiguos
@@ -577,7 +595,8 @@ const updateDispatch = async (req, res) => {
                 invoiceNo,
                 remissionNo,
                 items,
-                dispatchedBy
+                dispatchedBy,
+                checkedBy
             }
         });
 
