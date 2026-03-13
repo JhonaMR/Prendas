@@ -15,6 +15,7 @@ const clientsController = require('../controllers/entities/clients/clientsContro
 const confeccionistasController = require('../controllers/entities/confeccionistas/confeccionistasController');
 const sellersController = require('../controllers/entities/sellers/sellersController');
 const correriasController = require('../controllers/entities/correrias/correriasController');
+const novedadesController = require('../controllers/entities/correrias/novedadesController');
 const movementsController = require('../controllers/movementsController');
 const { getDeliveryDates, saveDeliveryDatesBatchHandler, deleteDeliveryDateHandler } = require('../controllers/entities/deliveryDates/deliveryDatesController');
 
@@ -143,6 +144,11 @@ router.get('/correrias', verifyToken, correriasController.list);
 router.post('/correrias', verifyToken, preventNonAdminEdit, correriasController.create);
 router.put('/correrias/:id', verifyToken, preventNonAdminEdit, correriasController.update);
 router.delete('/correrias/:id', verifyToken, preventNonAdminEdit, correriasController.delete);
+
+// ==================== NOVEDADES DE CORRERIA ====================
+
+router.get('/correrias/:correriaId/novedades', verifyToken, novedadesController.getNovedades);
+router.post('/correrias/:correriaId/novedades', verifyToken, preventNonAdminEdit, novedadesController.saveNovedades);
 
 // ==================== COMPRAS ====================
 

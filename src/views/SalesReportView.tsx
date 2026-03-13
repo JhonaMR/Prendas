@@ -1,11 +1,13 @@
-import React, { useState, useMemo, useRef } from 'react';
-import { AppState, Correria } from '../types';
+import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
+import { AppState, Correria, User } from '../types';
+import { api } from '../services/api';
 
 interface SalesReportViewProps {
   state: AppState;
+  user: User;
 }
 
-const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
+const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [correriaSearch, setCorreriaSearch] = useState('');
@@ -17,6 +19,55 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
     format: 'pdf', // 'pdf' o 'excel'
     includeZeroSales: true // incluir referencias con 0 vendidas
   });
+
+  // ==================== NOVEDADES ====================
+  const [novedades, setNovedades] = useState<{ id: number; contenido: string }[]>([]);
+  const [showNovedadesModal, setShowNovedadesModal] = useState(false);
+  const [showEditNovedadesModal, setShowEditNovedadesModal] = useState(false);
+  const [editNovedadesLines, setEditNovedadesLines] = useState<string[]>(['']);
+  const [savingNovedades, setSavingNovedades] = useState(false);
+
+  const isAdminOrSoporte = user?.role === 'admin' || user?.role === 'soporte';
+
+  const loadNovedades = useCallback(async (correriaId: string) => {
+    if (!correriaId) { setNovedades([]); return; }
+    const data = await api.getNovedadesCorreria(correriaId);
+    setNovedades(data);
+  }, []);
+
+  useEffect(() => {
+    loadNovedades(selectedCorreriaId);
+  }, [selectedCorreriaId, loadNovedades]);
+
+  const handleOpenEditModal = () => {
+    setEditNovedadesLines(
+      novedades.length > 0 ? novedades.map(n => n.contenido) : ['']
+    );
+    setShowEditNovedadesModal(true);
+  };
+
+  const handleAddLine = () => setEditNovedadesLines(prev => [...prev, '']);
+
+  const handleLineChange = (idx: number, value: string) => {
+    setEditNovedadesLines(prev => prev.map((l, i) => i === idx ? value : l));
+  };
+
+  const handleRemoveLine = (idx: number) => {
+    setEditNovedadesLines(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSaveNovedades = async () => {
+    const clean = editNovedadesLines.filter(l => l.trim());
+    setSavingNovedades(true);
+    const result = await api.saveNovedadesCorreria(selectedCorreriaId, clean);
+    setSavingNovedades(false);
+    if (result.success) {
+      await loadNovedades(selectedCorreriaId);
+      setShowEditNovedadesModal(false);
+    } else {
+      alert('Error al guardar: ' + result.message);
+    }
+  };
 
   // Obtener solo las referencias de la correría seleccionada (maleta)
   const maletaReferences = useMemo(() => {
@@ -673,6 +724,17 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
 
         {/* Botón Generar Informe y Selector de correría */}
         <div className="flex items-end gap-3">
+
+          {/* Botón Agregar Novedades - Solo Admin/Soporte */}
+          {isAdminOrSoporte && selectedCorreriaId && (
+            <button
+              onClick={handleOpenEditModal}
+              className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
+            >
+              📋 Agregar Novedades
+            </button>
+          )}
+
           <button
             onClick={() => setShowReportModal(true)}
             className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-6 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
@@ -699,6 +761,22 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
           </div>
         </div>
       </div>
+
+      {/* Banner Novedades - Visible para todos cuando hay novedades */}
+      {novedades.length > 0 && selectedCorreriaId && (
+        <button
+          onClick={() => setShowNovedadesModal(true)}
+          className="w-full text-left flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-all group"
+        >
+          <span className="text-xl">💡</span>
+          <div className="flex-1">
+            <span className="text-amber-800 font-black text-sm">
+              Esta correría tiene {novedades.length} novedad{novedades.length > 1 ? 'es' : ''} registrada{novedades.length > 1 ? 's' : ''}.
+            </span>
+            <span className="text-amber-600 font-bold text-xs ml-2">Haz clic para verlas →</span>
+          </div>
+        </button>
+      )}
 
       {!metrics ? (
         <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
@@ -1247,6 +1325,93 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state }) => {
               <button
                 onClick={() => setShowReportModal(false)}
                 className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-slate-300 text-slate-700 hover:bg-slate-400 transition-all shadow-sm"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Modal lectura de Novedades - visible para todos */}
+      {showNovedadesModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
+            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-black text-amber-900">Novedades de la Correría</h3>
+                <p className="text-amber-600 font-bold text-xs mt-0.5 uppercase tracking-wider">{selectedCorreria?.name} {selectedCorreria?.year}</p>
+              </div>
+              <button onClick={() => setShowNovedadesModal(false)} className="text-amber-400 hover:text-amber-600 text-2xl font-black">×</button>
+            </div>
+            <div className="p-8 space-y-3 max-h-[60vh] overflow-y-auto">
+              {novedades.map((n, idx) => (
+                <div key={n.id} className="flex items-start gap-3">
+                  <span className="mt-1 w-5 h-5 flex-shrink-0 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black flex items-center justify-center">{idx + 1}</span>
+                  <p className="text-slate-700 font-bold text-sm leading-relaxed">{n.contenido}</p>
+                </div>
+              ))}
+            </div>
+            {isAdminOrSoporte && (
+              <div className="px-8 py-4 bg-slate-50 border-t border-slate-100">
+                <button
+                  onClick={() => { setShowNovedadesModal(false); handleOpenEditModal(); }}
+                  className="w-full py-2.5 rounded-xl font-black text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all"
+                >
+                  Editar novedades
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal edición de Novedades - solo Admin/Soporte */}
+      {showEditNovedadesModal && isAdminOrSoporte && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
+            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-black text-amber-900">Agregar Novedades</h3>
+                <p className="text-amber-600 font-bold text-xs mt-0.5 uppercase tracking-wider">Correría: {selectedCorreria?.name} {selectedCorreria?.year}</p>
+              </div>
+              <button
+                onClick={handleAddLine}
+                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl font-black text-sm transition-all"
+              >
+                + Agregar
+              </button>
+            </div>
+            <div className="p-6 space-y-3 max-h-[55vh] overflow-y-auto">
+              {editNovedadesLines.map((line, idx) => (
+                <div key={idx} className="flex items-center gap-3">
+                  <span className="w-5 h-5 flex-shrink-0 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black flex items-center justify-center">{idx + 1}</span>
+                  <input
+                    type="text"
+                    value={line}
+                    onChange={e => handleLineChange(idx, e.target.value)}
+                    placeholder="Escribe una novedad..."
+                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none"
+                  />
+                  {editNovedadesLines.length > 1 && (
+                    <button
+                      onClick={() => handleRemoveLine(idx)}
+                      className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 text-red-500 font-black text-sm transition-all"
+                    >×</button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-3 px-8 py-5 bg-slate-50 border-t border-slate-100">
+              <button
+                onClick={handleSaveNovedades}
+                disabled={savingNovedades}
+                className="flex-1 py-3 rounded-xl font-black text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all disabled:opacity-50"
+              >
+                {savingNovedades ? 'Guardando...' : 'Guardar Novedades'}
+              </button>
+              <button
+                onClick={() => setShowEditNovedadesModal(false)}
+                className="flex-1 py-3 rounded-xl font-black text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all"
               >
                 Cancelar
               </button>

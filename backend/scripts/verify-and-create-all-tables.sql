@@ -612,10 +612,25 @@ CREATE INDEX IF NOT EXISTS idx_messages_receiver ON public.messages(receiver_id)
 CREATE INDEX IF NOT EXISTS idx_messages_created_at ON public.messages(created_at);
 CREATE INDEX IF NOT EXISTS idx_messages_read ON public.messages(read);
 
+-- ============================================================================
+-- 30. TABLA: correria_novedades
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.correria_novedades (
+    id SERIAL PRIMARY KEY,
+    correria_id character varying(255) NOT NULL,
+    contenido text NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT correria_novedades_correria_id_fkey FOREIGN KEY (correria_id) REFERENCES public.correrias(id) ON DELETE CASCADE
+);
+
 -- Índices para user_sessions
 CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON public.user_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_status ON public.user_sessions(status);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_last_activity ON public.user_sessions(last_activity);
+
+-- Índices para correria_novedades
+CREATE INDEX IF NOT EXISTS idx_correria_novedades_correria_id ON public.correria_novedades(correria_id);
+CREATE INDEX IF NOT EXISTS idx_correria_novedades_created_at ON public.correria_novedades(created_at);
 
 -- ============================================================================
 -- TRIGGERS

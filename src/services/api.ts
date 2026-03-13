@@ -811,6 +811,37 @@ class ApiService {
     }
   }
 
+  // ==================== NOVEDADES DE CORRERIA ====================
+
+  async getNovedadesCorreria(correriaId: string): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/correrias/${correriaId}/novedades`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo novedades:', error);
+      return [];
+    }
+  }
+
+  async saveNovedadesCorreria(correriaId: string, novedades: string[]): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/correrias/${correriaId}/novedades`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ novedades })
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al guardar novedades'
+      };
+    }
+  }
+
   // ==================== COMPRAS ====================
 
   async getCompras(): Promise<any[]> {

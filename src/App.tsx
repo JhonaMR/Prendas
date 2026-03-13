@@ -1025,7 +1025,7 @@ const App: React.FC = () => {
       case 'settle':
         return <OrderSettleView state={state} user={user} updateState={updateState} />;
       case 'salesReport':
-        return <SalesReportView state={state} />;
+        return <SalesReportView state={state} user={user} />;
       case 'orderHistory':
         return (
           <OrderHistoryView 

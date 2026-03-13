@@ -1,5 +1,6 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { AppState, Correria } from '../types';
+import { api } from '../services/api';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   TrendingUp, Users, Package, DollarSign, ChevronDown, Filter,
@@ -21,6 +22,34 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedCorreriaId, setSelectedCorreriaId] = useState<string | 'all'>('all');
   const [vendorView, setVendorView] = useState<'units' | 'value' | 'discounts'>('units');
+
+  // ==================== NOVEDADES ====================
+  const [novedadesByCorreria, setNovedadesByCorreria] = useState<Record<string, { id: number; contenido: string }[]>>({});
+  const [showNovedadesModal, setShowNovedadesModal] = useState(false);
+
+  useEffect(() => {
+    const yearCorrerias = state.correrias.filter(c => Number(c.year) === selectedYear);
+    if (yearCorrerias.length === 0) return;
+    // Fetch novedades of each correria in parallel
+    Promise.all(
+      yearCorrerias.map(c =>
+        api.getNovedadesCorreria(c.id).then(data => ({ id: c.id, data }))
+      )
+    ).then(results => {
+      const map: Record<string, { id: number; contenido: string }[]> = {};
+      results.forEach(r => { if (r.data.length > 0) map[r.id] = r.data; });
+      setNovedadesByCorreria(map);
+    });
+  }, [selectedYear, state.correrias]);
+
+  const totalNovedades = useMemo(() => {
+    const values = novedadesByCorreria as Record<string, { id: number; contenido: string }[]>;
+    return Object.values(values).reduce((acc, arr) => acc + arr.length, 0);
+  }, [novedadesByCorreria]);
+
+  const correriaIdsWithNovedades = useMemo(() =>
+    state.correrias.filter(c => Number(c.year) === selectedYear && novedadesByCorreria[c.id]?.length > 0)
+  , [novedadesByCorreria, selectedYear, state.correrias]);
 
   // Compute the data similarly to how SalesReportView works
   const filteredCorrerias = useMemo(() => {
@@ -237,6 +266,22 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
           </div>
         </div>
       </div>
+
+      {/* Banner Novedades */}
+      {totalNovedades > 0 && (
+        <button
+          onClick={() => setShowNovedadesModal(true)}
+          className="w-full text-left flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-all"
+        >
+          <span className="text-xl">💡</span>
+          <div className="flex-1">
+            <span className="text-amber-800 font-black text-sm">
+              Hay {totalNovedades} novedad{totalNovedades > 1 ? 'es' : ''} registrada{totalNovedades > 1 ? 's' : ''} en las correrías de {selectedYear}.
+            </span>
+            <span className="text-amber-600 font-bold text-xs ml-2">Haz clic para ver novedades →</span>
+          </div>
+        </button>
+      )}
 
       {filteredCorrerias.length === 0 ? (
         <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
@@ -600,6 +645,55 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
             </div>
           </section>
         </>
+      )}
+      {/* Modal de Novedades - solo lectura */}
+      {showNovedadesModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
+            {/* Header */}
+            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between flex-shrink-0">
+              <div>
+                <h3 className="text-xl font-black text-amber-900">Novedades de Correrías</h3>
+                <p className="text-amber-600 font-bold text-xs mt-0.5 uppercase tracking-wider">Año {selectedYear} · {correriaIdsWithNovedades.length} correría{correriaIdsWithNovedades.length > 1 ? 's' : ''} con novedades</p>
+              </div>
+              <button onClick={() => setShowNovedadesModal(false)} className="text-amber-400 hover:text-amber-600 text-3xl font-black leading-none">×</button>
+            </div>
+
+            {/* Body */}
+            <div className="overflow-y-auto flex-1 p-8 space-y-6">
+              {correriaIdsWithNovedades.map(correria => (
+                <div key={correria.id} className="grid grid-cols-[200px_1fr] gap-6 items-start border-b border-slate-100 pb-6 last:border-0 last:pb-0">
+                  {/* Columna izquierda: nombre de la correría */}
+                  <div className="sticky top-0">
+                    <div className="bg-amber-100 rounded-2xl px-4 py-3">
+                      <p className="font-black text-amber-900 text-sm leading-tight">{correria.name}</p>
+                      <p className="text-amber-600 font-bold text-[10px] uppercase tracking-wider mt-0.5">{correria.year}</p>
+                    </div>
+                  </div>
+                  {/* Columna derecha: novedades enumeradas */}
+                  <div className="space-y-2.5">
+                    {(novedadesByCorreria[correria.id] || []).map((n, idx) => (
+                      <div key={n.id} className="flex items-start gap-3">
+                        <span className="mt-0.5 w-5 h-5 flex-shrink-0 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black flex items-center justify-center">{idx + 1}</span>
+                        <p className="text-slate-700 font-bold text-sm leading-relaxed">{n.contenido}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 py-4 border-t border-slate-100 bg-slate-50 flex-shrink-0">
+              <button
+                onClick={() => setShowNovedadesModal(false)}
+                className="w-full py-2.5 rounded-xl font-black text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
