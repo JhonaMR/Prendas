@@ -62,8 +62,8 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
         // Leer celdas específicas
         const clientCode = String(worksheet['N9']?.v || '').trim();
         const orderNum = worksheet['M4']?.v || '';
-        const porcentajeOficialExcel = worksheet['J4']?.v !== undefined ? worksheet['J4'].v : '';
-        const porcentajeRemisionExcel = worksheet['K4']?.v !== undefined ? worksheet['K4'].v : '';
+        const porcentajeOficialExcel = worksheet['J3']?.v !== undefined ? worksheet['J3'].v : '';
+        const porcentajeRemisionExcel = worksheet['K3']?.v !== undefined ? worksheet['K3'].v : '';
         
         // Validar que el cliente existe
         const clientExists = state.clients.find(c => c.id === clientCode);

@@ -221,8 +221,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100">
-          <div className="space-y-4 relative">
-            <div className="space-y-2">
+          <div className="space-y-4">
+            <div className="space-y-2 relative z-[100]">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Buscar Cliente</label>
               <div className="relative">
                 <input 
@@ -234,15 +234,19 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                   className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900"
                 />
                 {showClientResults && clientSearch.length > 0 && (
-                  <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-60 overflow-y-auto custom-scrollbar">
+                  <div className="fixed bg-white rounded-2xl shadow-2xl border border-slate-200 z-[9999] min-h-[280px] max-h-[350px] overflow-y-auto custom-scrollbar" style={{
+                    top: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().bottom + 8}px`,
+                    left: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().left}px`,
+                    width: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().width}px`
+                  }}>
                     {filteredClients.map(c => (
                       <button 
                         key={c.id} 
                         onClick={() => selectClient(c)}
                         className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                       >
-                        <p className="font-black text-slate-800">{c.name}</p>
-                        <p className="text-[10px] text-slate-400 font-bold">ID: {c.id} • {c.city}</p>
+                        <p className="font-black text-slate-800 text-base">{c.name}</p>
+                        <p className="text-xs text-slate-400 font-bold">ID: {c.id} • {c.city}</p>
                       </button>
                     ))}
                     {filteredClients.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>}

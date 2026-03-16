@@ -10,14 +10,37 @@ const { DatabaseError, ValidationError } = require('../controllers/shared/errorH
 const logger = require('../controllers/shared/logger');
 
 /**
+ * Parsea un número que puede tener coma o punto como separador decimal
+ * @param {string|number} value - Valor a parsear
+ * @returns {number} Número parseado o 0 si no es válido
+ */
+function parseDecimal(value) {
+  if (!value || value === '') return 0;
+  
+  // Convertir a string y reemplazar coma por punto
+  const stringValue = value.toString().trim().replace(',', '.');
+  const parsed = parseFloat(stringValue);
+  
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+/**
  * Mapea nombres de correrias a sus IDs
- * @param {Array} correrias - Array de correrias con id y name
- * @returns {Map} Mapa de nombre -> id
+ * @param {Array} correrias - Array de correrias con id, name y year
+ * @returns {Map} Mapa de nombre -> id (soporta "Nombre" y "Nombre YYYY")
  */
 function createCorreriaMap(correrias) {
   const map = new Map();
   correrias.forEach(correria => {
-    map.set(correria.name.toLowerCase().trim(), correria.id);
+    // Agregar por nombre solo (ej: "madres")
+    const nameOnly = correria.name.toLowerCase().trim();
+    map.set(nameOnly, correria.id);
+    
+    // Agregar por nombre + año (ej: "madres 2026")
+    const nameWithYear = `${correria.name} ${correria.year}`.toLowerCase().trim();
+    map.set(nameWithYear, correria.id);
+    
+    logger.info(`Correria mapeada: "${nameOnly}" y "${nameWithYear}" -> ${correria.id}`);
   });
   return map;
 }
@@ -43,7 +66,7 @@ function validateAndTransformRecord(record, correriaMap, rowNumber) {
   }
 
   // Validar precio
-  const price = parseFloat(record.price);
+  const price = parseDecimal(record.price);
   if (isNaN(price) || price < 0) {
     errors.push('Precio debe ser un número válido y positivo');
   }
@@ -56,7 +79,9 @@ function validateAndTransformRecord(record, correriaMap, rowNumber) {
     const invalidCorrerias = correriaNames.filter(name => !correriaMap.has(name));
     
     if (invalidCorrerias.length > 0) {
-      errors.push(`Correrias no válidas: ${invalidCorrerias.join(', ')}`);
+      // Mostrar las correrias disponibles para ayudar al usuario
+      const availableCorrerias = Array.from(correriaMap.keys()).join(', ');
+      errors.push(`Correrias no válidas: ${invalidCorrerias.join(', ')}. Disponibles: ${availableCorrerias}`);
     }
   }
 
@@ -71,6 +96,15 @@ function validateAndTransformRecord(record, correriaMap, rowNumber) {
   const correriaNames = record.correrias.toString().trim().split(';').map(c => c.trim().toLowerCase());
   const correriaIds = correriaNames.map(name => correriaMap.get(name));
   
+  // Parsear promedios de tela con manejo de valores vacíos y comas/puntos decimales
+  const avgCloth1 = record.avgcloth1 || record.avgCloth1 || record.avgcloth1 || record.avg_cloth1;
+  const avgCloth2 = record.avgcloth2 || record.avgCloth2 || record.avgcloth2 || record.avg_cloth2;
+  
+  const parsedAvgCloth1 = parseDecimal(avgCloth1);
+  const parsedAvgCloth2 = parseDecimal(avgCloth2);
+  
+  logger.info(`Procesando referencia ${record.id}: avgCloth1="${avgCloth1}" -> ${parsedAvgCloth1}, avgCloth2="${avgCloth2}" -> ${parsedAvgCloth2}`);
+  
   return {
     valid: true,
     data: {
@@ -79,9 +113,9 @@ function validateAndTransformRecord(record, correriaMap, rowNumber) {
       price: price,
       designer: record.designer ? record.designer.toString().trim() : '',
       cloth1: record.cloth1 ? record.cloth1.toString().trim() : '',
-      avgCloth1: record.avgCloth1 ? parseFloat(record.avgCloth1) : 0,
+      avgCloth1: parsedAvgCloth1,
       cloth2: record.cloth2 ? record.cloth2.toString().trim() : '',
-      avgCloth2: record.avgCloth2 ? parseFloat(record.avgCloth2) : 0,
+      avgCloth2: parsedAvgCloth2,
       correrias: correriaIds
     }
   };
@@ -95,9 +129,13 @@ function validateAndTransformRecord(record, correriaMap, rowNumber) {
  */
 async function bulkImportReferences(records) {
   try {
-    // Obtener correrias del sistema
-    const correriasResult = await query('SELECT id, name FROM correrias');
+    // Obtener correrias del sistema (incluyendo year)
+    const correriasResult = await query('SELECT id, name, year FROM correrias');
     const correriaMap = createCorreriaMap(correriasResult.rows);
+
+    // Crear lista legible de correrias para logs
+    const correriasDisplay = correriasResult.rows.map(c => `"${c.name} ${c.year}"`).join(', ');
+    logger.info(`Correrias disponibles: ${correriasDisplay}`);
 
     // Validar y transformar registros
     const validRecords = [];
@@ -110,14 +148,16 @@ async function bulkImportReferences(records) {
         validRecords.push(result.data);
       } else {
         errors.push(result.error);
+        logger.warn(`Validación fallida: ${result.error}`);
       }
     });
 
     // Si hay errores, retornar sin importar nada
     if (errors.length > 0) {
+      logger.error(`Errores de validación encontrados: ${errors.length}`);
       return {
         success: false,
-        message: `Errores en validación: ${errors.length} registros rechazados`,
+        message: `Errores en validación: ${errors.length} registros rechazados. Correrias disponibles: ${correriasDisplay}`,
         errors: errors,
         saved: 0,
         summary: `0 referencias importadas, ${errors.length} errores`
@@ -141,34 +181,39 @@ async function bulkImportReferences(records) {
           await query(
             `UPDATE product_references 
              SET description = $1, price = $2, designer = $3, 
-                 cloth1 = $4, avg_cloth1 = $5, cloth2 = $6, avg_cloth2 = $7
-             WHERE id = $8`,
+                 cloth1 = $4, avg_cloth1 = $5, cloth2 = $6, avg_cloth2 = $7, active = $8
+             WHERE id = $9`,
             [record.description, record.price, record.designer, 
-             record.cloth1, record.avgCloth1, record.cloth2, record.avgCloth2, record.id]
+             record.cloth1, record.avgCloth1, record.cloth2, record.avgCloth2, 1, record.id]
           );
         } else {
           // Crear nueva referencia
           await query(
-            `INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            `INSERT INTO product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
             [record.id, record.description, record.price, record.designer,
-             record.cloth1, record.avgCloth1, record.cloth2, record.avgCloth2]
+             record.cloth1, record.avgCloth1, record.cloth2, record.avgCloth2, 1]
           );
         }
 
         // Actualizar relación con correrias
-        // Primero eliminar relaciones existentes
-        await query(
-          'DELETE FROM correria_catalog WHERE reference_id = $1',
+        // Obtener correrias existentes
+        const existingCorreriasResult = await query(
+          'SELECT correria_id FROM correria_catalog WHERE reference_id = $1',
           [record.id]
         );
+        const existingCorreriaIds = existingCorreriasResult.rows.map(row => row.correria_id);
 
-        // Luego insertar nuevas relaciones
+        // Insertar solo las nuevas correrias (las que no existen)
         for (const correriaId of record.correrias) {
-          await query(
-            'INSERT INTO correria_catalog (reference_id, correria_id) VALUES ($1, $2)',
-            [record.id, correriaId]
-          );
+          if (!existingCorreriaIds.includes(correriaId)) {
+            // Generar ID único para la relación
+            const catalogId = `${record.id}_${correriaId}_${Date.now()}`;
+            await query(
+              'INSERT INTO correria_catalog (id, reference_id, correria_id) VALUES ($1, $2, $3)',
+              [catalogId, record.id, correriaId]
+            );
+          }
         }
 
         saved++;

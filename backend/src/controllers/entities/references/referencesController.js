@@ -222,25 +222,36 @@ const bulkImport = async (req, res) => {
     }
 
     // Parsear CSV
-    const records = parseCSV(csvContent);
+    const parseResult = parseCSV(csvContent);
 
-    if (records.length === 0) {
+    if (!parseResult.success) {
       return res.status(400).json({
         success: false,
-        message: 'No valid records found in CSV'
+        message: 'Error al parsear CSV',
+        error: parseResult.error,
+        errors: [parseResult.error]
+      });
+    }
+
+    if (parseResult.data.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'No se encontraron registros válidos en el CSV',
+        errors: ['El archivo CSV está vacío o no tiene datos']
       });
     }
 
     // Importar referencias
-    const result = await bulkImportReferences(records);
+    const result = await bulkImportReferences(parseResult.data);
 
     return res.json(result);
   } catch (error) {
     logger.error('Error in bulk import', error);
     return res.status(500).json({
       success: false,
-      message: 'Error in bulk import',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+      message: 'Error en importación masiva',
+      error: error.message,
+      errors: [error.message]
     });
   }
 };

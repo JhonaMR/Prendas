@@ -24,21 +24,32 @@ function validateCreateClient(data) {
   const nameValidation = validateString(data.name, 'Name', 1, 255);
   if (!nameValidation.valid) errors.name = nameValidation.error;
 
-  // Validar NIT
-  const nitValidation = validateString(data.nit, 'NIT', 1, 50);
-  if (!nitValidation.valid) errors.nit = nitValidation.error;
+  // Validar NIT (opcional)
+  if (data.nit) {
+    const nitValidation = validateString(data.nit, 'NIT', 0, 50);
+    if (!nitValidation.valid) errors.nit = nitValidation.error;
+  }
 
-  // Validar dirección
-  const addressValidation = validateString(data.address, 'Address', 1, 255);
-  if (!addressValidation.valid) errors.address = addressValidation.error;
+  // Validar dirección (opcional)
+  if (data.address) {
+    const addressValidation = validateString(data.address, 'Address', 0, 255);
+    if (!addressValidation.valid) errors.address = addressValidation.error;
+  }
 
-  // Validar ciudad
-  const cityValidation = validateString(data.city, 'City', 1, 100);
-  if (!cityValidation.valid) errors.city = cityValidation.error;
+  // Validar ciudad (opcional)
+  if (data.city) {
+    const cityValidation = validateString(data.city, 'City', 0, 100);
+    if (!cityValidation.valid) errors.city = cityValidation.error;
+  }
 
-  // Validar vendedor
-  const sellerValidation = validateString(data.seller, 'Seller', 1, 100);
-  if (!sellerValidation.valid) errors.seller = sellerValidation.error;
+  // Validar vendedor (sellerId o seller_id)
+  const sellerId = data.sellerId || data.seller_id;
+  if (!sellerId) {
+    errors.sellerId = 'Seller ID is required';
+  } else {
+    const sellerValidation = validateString(sellerId, 'Seller ID', 1, 100);
+    if (!sellerValidation.valid) errors.sellerId = sellerValidation.error;
+  }
 
   if (Object.keys(errors).length > 0) {
     throw new ValidationError(errors);
@@ -57,23 +68,25 @@ function validateUpdateClient(data) {
   }
 
   if (data.nit !== undefined) {
-    const nitValidation = validateString(data.nit, 'NIT', 1, 50);
+    const nitValidation = validateString(data.nit, 'NIT', 0, 50);
     if (!nitValidation.valid) errors.nit = nitValidation.error;
   }
 
   if (data.address !== undefined) {
-    const addressValidation = validateString(data.address, 'Address', 1, 255);
+    const addressValidation = validateString(data.address, 'Address', 0, 255);
     if (!addressValidation.valid) errors.address = addressValidation.error;
   }
 
   if (data.city !== undefined) {
-    const cityValidation = validateString(data.city, 'City', 1, 100);
+    const cityValidation = validateString(data.city, 'City', 0, 100);
     if (!cityValidation.valid) errors.city = cityValidation.error;
   }
 
-  if (data.seller !== undefined) {
-    const sellerValidation = validateString(data.seller, 'Seller', 1, 100);
-    if (!sellerValidation.valid) errors.seller = sellerValidation.error;
+  // Validar sellerId o seller_id
+  const sellerId = data.sellerId || data.seller_id;
+  if (sellerId !== undefined) {
+    const sellerValidation = validateString(sellerId, 'Seller ID', 1, 100);
+    if (!sellerValidation.valid) errors.sellerId = sellerValidation.error;
   }
 
   if (Object.keys(errors).length > 0) {

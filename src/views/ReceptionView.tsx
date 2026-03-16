@@ -301,7 +301,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
         <div className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 space-y-8">
           {/* Row 1: Confeccionista & Remisión */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2 relative">
+            <div className="space-y-2 relative z-[100]">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Confeccionista</label>
               <div className="relative">
                 <input 
@@ -312,15 +312,19 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                   className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" 
                 />
                 {showConfResults && confSearch.length > 0 && (
-                  <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-48 overflow-y-auto custom-scrollbar">
+                  <div className="fixed bg-white rounded-2xl shadow-2xl border border-slate-200 z-[9999] min-h-[280px] max-h-[350px] overflow-y-auto custom-scrollbar" style={{
+                    top: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().bottom + 8}px`,
+                    left: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().left}px`,
+                    width: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().width}px`
+                  }}>
                     {filteredConf.map(c => (
                       <button 
                         key={c.id} 
                         onClick={() => selectConf(c)}
                         className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
                       >
-                        <p className="font-black text-slate-800">{c.name}</p>
-                        <p className="text-[10px] text-slate-400 font-bold">Cédula: {c.id} • Score: {c.score}</p>
+                        <p className="font-black text-slate-800 text-base">{c.name}</p>
+                        <p className="text-xs text-slate-400 font-bold">Cédula: {c.id} • Score: {c.score}</p>
                       </button>
                     ))}
                     {filteredConf.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron activos</p>}

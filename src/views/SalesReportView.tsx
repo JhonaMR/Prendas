@@ -127,13 +127,14 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       ? ((totalDespachadas / totalVendidas) * 100) 
       : 0;
 
-    // Total valores
+    // Total valores - usando precio real de venta de los pedidos
     const totalVendidoValor = correriaOrders.reduce((acc, order) => {
       return acc + order.items
         .filter(item => maletaRefIds.includes(item.reference))
         .reduce((sum, item) => {
-          const ref = state.references.find(r => r.id === item.reference);
-          return sum + (item.quantity * (ref?.price || 0));
+          // Usar salePrice del pedido si existe, si no usar el precio de lista
+          const salePrice = item.salePrice || state.references.find(r => r.id === item.reference)?.price || 0;
+          return sum + (item.quantity * salePrice);
         }, 0);
     }, 0);
 

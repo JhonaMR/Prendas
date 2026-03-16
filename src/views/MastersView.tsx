@@ -12,6 +12,20 @@ const TabBtn = ({ active, onClick, label }: any) => (
   <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:bg-slate-50'}`}>{label}</button>
 );
 
+// Función para ordenar IDs correctamente (numérico si es posible, sino alfabético)
+const sortByIdNaturally = (a: string, b: string) => {
+  const aNum = parseInt(a);
+  const bNum = parseInt(b);
+  
+  // Si ambos son números, ordenar numéricamente
+  if (!isNaN(aNum) && !isNaN(bNum)) {
+    return aNum - bNum;
+  }
+  
+  // Si no, ordenar alfabéticamente
+  return a.localeCompare(b);
+};
+
 const FormWrapper = ({ children, title }: any) => (
   <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
     <h3 className="text-xl font-black text-slate-800">{title}</h3>
@@ -104,21 +118,6 @@ const MastersView: React.FC<MastersViewProps> = ({
 
   // Update pagination state when data changes
   React.useEffect(() => {
-    clientsPagination.pagination.total = state.clients.length;
-    clientsPagination.pagination.totalPages = Math.ceil(state.clients.length / clientsPagination.pagination.limit);
-  }, [state.clients.length, clientsPagination.pagination.limit]);
-
-  React.useEffect(() => {
-    confeccionistasPagination.pagination.total = (state.confeccionistas || []).length;
-    confeccionistasPagination.pagination.totalPages = Math.ceil((state.confeccionistas || []).length / confeccionistasPagination.pagination.limit);
-  }, [state.confeccionistas?.length, confeccionistasPagination.pagination.limit]);
-
-  React.useEffect(() => {
-    referencesPagination.pagination.total = state.references.length;
-    referencesPagination.pagination.totalPages = Math.ceil(state.references.length / referencesPagination.pagination.limit);
-  }, [state.references.length, referencesPagination.pagination.limit]);
-
-  React.useEffect(() => {
     sellersPagination.pagination.total = state.sellers.length;
     sellersPagination.pagination.totalPages = Math.ceil(state.sellers.length / sellersPagination.pagination.limit);
   }, [state.sellers.length, sellersPagination.pagination.limit]);
@@ -163,6 +162,11 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Estados para búsqueda
+  const [clientSearchTerm, setClientSearchTerm] = useState('');
+  const [referenceSearchTerm, setReferenceSearchTerm] = useState('');
+  const [confeccionistaSearchTerm, setConfeccionistaSearchTerm] = useState('');
+
   // Estados para autocompletado de correrías
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
@@ -170,6 +174,61 @@ const MastersView: React.FC<MastersViewProps> = ({
   // Estados para autocompletado de vendedores
   const [sellerSearch, setSellerSearch] = useState('');
   const [showSellerDropdown, setShowSellerDropdown] = useState(false);
+
+  // Filtros de búsqueda
+  const filteredClients = useMemo(() => {
+    return state.clients.filter(client => {
+      const searchLower = clientSearchTerm.toLowerCase();
+      const sellerName = state.sellers.find(s => s.id === client.sellerId)?.name || '';
+      
+      return (
+        client.id.toLowerCase().includes(searchLower) ||
+        client.name.toLowerCase().includes(searchLower) ||
+        client.nit?.toLowerCase().includes(searchLower) ||
+        sellerName.toLowerCase().includes(searchLower)
+      );
+    }).sort((a, b) => sortByIdNaturally(a.id, b.id));
+  }, [state.clients, state.sellers, clientSearchTerm]);
+
+  const filteredReferences = useMemo(() => {
+    return state.references.filter(ref => {
+      const searchLower = referenceSearchTerm.toLowerCase();
+      
+      return (
+        ref.id.toLowerCase().includes(searchLower) ||
+        ref.description.toLowerCase().includes(searchLower) ||
+        ref.designer?.toLowerCase().includes(searchLower)
+      );
+    }).sort((a, b) => sortByIdNaturally(a.id, b.id));
+  }, [state.references, referenceSearchTerm]);
+
+  const filteredConfeccionistas = useMemo(() => {
+    return (state.confeccionistas || []).filter(conf => {
+      const searchLower = confeccionistaSearchTerm.toLowerCase();
+      
+      return (
+        conf.id.toLowerCase().includes(searchLower) ||
+        conf.name.toLowerCase().includes(searchLower) ||
+        conf.phone?.toLowerCase().includes(searchLower)
+      );
+    }).sort((a, b) => a.name.localeCompare(b.name));
+  }, [state.confeccionistas, confeccionistaSearchTerm]);
+
+  // Update pagination for filtered data
+  React.useEffect(() => {
+    clientsPagination.pagination.total = filteredClients.length;
+    clientsPagination.pagination.totalPages = Math.ceil(filteredClients.length / clientsPagination.pagination.limit);
+  }, [filteredClients.length, clientsPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    confeccionistasPagination.pagination.total = filteredConfeccionistas.length;
+    confeccionistasPagination.pagination.totalPages = Math.ceil(filteredConfeccionistas.length / confeccionistasPagination.pagination.limit);
+  }, [filteredConfeccionistas.length, confeccionistasPagination.pagination.limit]);
+
+  React.useEffect(() => {
+    referencesPagination.pagination.total = filteredReferences.length;
+    referencesPagination.pagination.totalPages = Math.ceil(filteredReferences.length / referencesPagination.pagination.limit);
+  }, [filteredReferences.length, referencesPagination.pagination.limit]);
 
   const resetForms = () => {
     setId('');
@@ -366,7 +425,7 @@ const MastersView: React.FC<MastersViewProps> = ({
         if(e.target) e.target.value = '';
       }
     };
-    reader.readAsText(file);
+    reader.readAsText(file, 'UTF-8');
   };
 
   const handleSaveClient = async () => {
@@ -787,12 +846,33 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title="Listado de Clientes">
+          <TableWrapper title={
+            <div className="flex items-center justify-between">
+              <span>Listado de Clientes</span>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={clientSearchTerm}
+                  onChange={(e) => setClientSearchTerm(e.target.value)}
+                  placeholder="Buscar cliente..."
+                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                />
+                {clientSearchTerm && (
+                  <button
+                    onClick={() => setClientSearchTerm('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+          }>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
-                  {state.clients.sort((a,b)=>a.id.localeCompare(b.id)).slice((clientsPagination.pagination.page - 1) * clientsPagination.pagination.limit, clientsPagination.pagination.page * clientsPagination.pagination.limit).map(c => {
+                  {filteredClients.slice((clientsPagination.pagination.page - 1) * clientsPagination.pagination.limit, clientsPagination.pagination.page * clientsPagination.pagination.limit).map(c => {
                     const seller = state.sellers.find(s => s.id === c.sellerId);
                     return (
                     <tr key={c.id} className="hover:bg-slate-50 transition-colors">
@@ -880,11 +960,32 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title="Listado de Confeccionistas">
+          <TableWrapper title={
+            <div className="flex items-center justify-between">
+              <span>Listado de Confeccionistas</span>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={confeccionistaSearchTerm}
+                  onChange={(e) => setConfeccionistaSearchTerm(e.target.value)}
+                  placeholder="Buscar confeccionista..."
+                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                />
+                {confeccionistaSearchTerm && (
+                  <button
+                    onClick={() => setConfeccionistaSearchTerm('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+          }>
             <table className="w-full text-left">
               <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cédula</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Nombre</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Celular</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Score</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Estado</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
-                {(state.confeccionistas || []).sort((a,b)=>a.name.localeCompare(b.name)).slice((confeccionistasPagination.pagination.page - 1) * confeccionistasPagination.pagination.limit, confeccionistasPagination.pagination.page * confeccionistasPagination.pagination.limit).map(c => (
+                {filteredConfeccionistas.slice((confeccionistasPagination.pagination.page - 1) * confeccionistasPagination.pagination.limit, confeccionistasPagination.pagination.page * confeccionistasPagination.pagination.limit).map(c => (
                   <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-8 py-4 font-bold text-slate-400">{c.id}</td>
                     <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
@@ -1052,12 +1153,33 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title="Listado de Referencias">
+          <TableWrapper title={
+            <div className="flex items-center justify-between">
+              <span>Listado de Referencias</span>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={referenceSearchTerm}
+                  onChange={(e) => setReferenceSearchTerm(e.target.value)}
+                  placeholder="Buscar referencia..."
+                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                />
+                {referenceSearchTerm && (
+                  <button
+                    onClick={() => setReferenceSearchTerm('')}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            </div>
+          }>
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[800px]">
                 <thead><tr className="bg-slate-50/50"><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Ref</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Descripción</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Precio</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Telas / Prom</th><th className="px-6 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
-                  {state.references.sort((a,b)=>a.id.localeCompare(b.id)).slice((referencesPagination.pagination.page - 1) * referencesPagination.pagination.limit, referencesPagination.pagination.page * referencesPagination.pagination.limit).map(r => (
+                  {filteredReferences.slice((referencesPagination.pagination.page - 1) * referencesPagination.pagination.limit, referencesPagination.pagination.page * referencesPagination.pagination.limit).map(r => (
                     <tr key={r.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 font-black text-indigo-600">{r.id}</td>
                       <td className="px-6 py-4 font-black text-slate-900">{r.description}</td>
