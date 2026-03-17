@@ -1109,6 +1109,7 @@ class ApiService {
         bagQuantity: reception.bagQuantity,
         items: reception.items,
         receivedBy: reception.receivedBy,
+        arrivalDate: reception.arrivalDate,
         affectsInventory: reception.affectsInventory
       };
 
@@ -1147,6 +1148,7 @@ class ApiService {
         incompleteUnits: reception.incompleteUnits,
         isPacked: reception.isPacked,
         bagQuantity: reception.bagQuantity,
+        arrivalDate: reception.arrivalDate,
         affectsInventory: reception.affectsInventory
       };
 

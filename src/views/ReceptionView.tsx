@@ -45,6 +45,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [confSearch, setConfSearch] = useState('');
   const [showConfResults, setShowConfResults] = useState(false);
   const [batchCode, setBatchCode] = useState('');
+  const [arrivalDate, setArrivalDate] = useState('');
   const [hasSeconds, setHasSeconds] = useState<boolean | null>(null);
   const [chargeType, setChargeType] = useState<ChargeType>(null);
   const [chargeUnits, setChargeUnits] = useState(0);
@@ -61,6 +62,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setConfeccionista('');
     setConfSearch('');
     setBatchCode('');
+    setArrivalDate('');
     setHasSeconds(null);
     setChargeType(null);
     setChargeUnits(0);
@@ -84,6 +86,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     const confName = confeccionistasMaster.find(c => c.id === lot.confeccionista)?.name || lot.confeccionista;
     setConfSearch(`${lot.confeccionista} - ${confName}`);
     setBatchCode(lot.batchCode);
+    setArrivalDate(lot.arrivalDate);
     setHasSeconds(lot.hasSeconds);
     setChargeType(lot.chargeType);
     setChargeUnits(lot.chargeUnits);
@@ -114,6 +117,32 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     return confeccionistasMaster.find(c => c.id === confId)?.name || confId;
   };
 
+  const formatAuditDate = (dateString: string) => {
+    // Convierte "2026-03-17T08:48:47.045-05:00" a "2026-03-17 T08:48"
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} T${hours}:${minutes}`;
+  };
+
+  const formatArrivalDate = (dateString: string) => {
+    // Convierte "2026-03-16T05:00:00.000Z" o "2026-03-16" a "2026-03-16"
+    if (!dateString) return '';
+    // Si ya es formato YYYY-MM-DD, retornarlo tal cual
+    if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dateString;
+    }
+    // Si es ISO format, extraer solo la fecha
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const handleScan = (ref: string, quantity: number) => {
     const refExists = referencesMaster.some(r => r.id === ref);
     if (!refExists) {
@@ -134,6 +163,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const handleSave = async () => {
     if (!confeccionista || !batchCode) {
       alert("Nombre de Confeccionista y Remisión son obligatorios");
+      return;
+    }
+    if (!arrivalDate) {
+      alert("Fecha de llegada del lote es obligatoria");
       return;
     }
     if (!items || items.length === 0) {
@@ -166,6 +199,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
       createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
+      arrivalDate,
       editLogs: editingLot ? [...(editingLot.editLogs || []), { user: user.name, date: new Date().toISOString() }] : [],
       affectsInventory
     };
@@ -299,8 +333,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
         </div>
 
         <div className="bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 space-y-8">
-          {/* Row 1: Confeccionista & Remisión */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Row 1: Confeccionista & Remisión & Fecha de llegada */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2 relative z-[100]">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Confeccionista</label>
               <div className="relative">
@@ -336,6 +370,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Remisión</label>
               <input value={batchCode} onChange={e => setBatchCode(e.target.value)} placeholder="Remisión de entrega..." className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Fecha de llegada lote *</label>
+              <input type="date" value={arrivalDate} onChange={e => setArrivalDate(e.target.value)} className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900" />
             </div>
           </div>
 
@@ -624,7 +663,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                          <div className="md:text-right">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
                             <p className="text-xs sm:text-sm font-bold text-slate-600">Asentado por: <span className="text-slate-900 font-black">{r.receivedBy}</span></p>
-                            <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{r.createdAt}</span></p>
+                            <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{formatAuditDate(r.createdAt)}</span></p>
+                            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200">
+                              <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha de llegada lote: <span className="text-slate-900 font-black">{formatArrivalDate(r.arrivalDate)}</span></p>
+                            </div>
                          </div>
                       </div>
 

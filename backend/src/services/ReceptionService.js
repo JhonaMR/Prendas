@@ -80,6 +80,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 items: itemsResult.rows,
                 receivedBy: r.received_by,
                 createdAt: r.created_at,
+                arrivalDate: r.arrival_date,
                 affectsInventory: r.affects_inventory !== false
             };
         }));
@@ -103,8 +104,8 @@ const createReception = async (receptionData, items) => {
         return await transaction(async (client) => {
             // Insert reception
             const receptionResult = await client.query(
-                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, incomplete_units, is_packed, bag_quantity, received_by, created_at, affects_inventory)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, incomplete_units, is_packed, bag_quantity, received_by, created_at, arrival_date, affects_inventory)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
                 RETURNING *`,
                 [
                     receptionData.id,
@@ -118,6 +119,7 @@ const createReception = async (receptionData, items) => {
                     receptionData.bagQuantity || 0,
                     receptionData.receivedBy,
                     new Date(),
+                    receptionData.arrivalDate,
                     receptionData.affectsInventory !== false ? true : false
                 ]
             );
@@ -184,8 +186,8 @@ const updateReception = async (id, data) => {
         const result = await query(
             `UPDATE receptions 
             SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5, affects_inventory = $6,
-                incomplete_units = $7, is_packed = $8, bag_quantity = $9
-            WHERE id = $10
+                incomplete_units = $7, is_packed = $8, bag_quantity = $9, arrival_date = $10
+            WHERE id = $11
             RETURNING *`,
             [
                 data.batchCode, 
@@ -197,6 +199,7 @@ const updateReception = async (id, data) => {
                 data.incompleteUnits || 0,
                 data.isPacked ? 1 : 0,
                 data.bagQuantity || 0,
+                data.arrivalDate,
                 id
             ]
         );

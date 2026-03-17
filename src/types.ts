@@ -95,6 +95,7 @@ export interface BatchReception {
   items: ItemEntry[];
   receivedBy: string;
   createdAt: string;
+  arrivalDate: string; // Fecha de llegada del lote a la bodega (YYYY-MM-DD)
   editLogs: AuditLog[];
   affectsInventory?: boolean;
 }

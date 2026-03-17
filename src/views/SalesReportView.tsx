@@ -511,6 +511,44 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
         drawDataRow(rowData);
       }
 
+      // Calcular totales
+      const totales = {
+        count: reportData.length,
+        vendidas: reportData.reduce((sum, r) => sum + r.vendidas, 0),
+        inventario: reportData.reduce((sum, r) => sum + r.inventario, 0),
+        programadas: reportData.reduce((sum, r) => sum + r.programadas, 0),
+        cortadas: reportData.reduce((sum, r) => sum + r.cortadas, 0),
+        pendientes: reportData.reduce((sum, r) => sum + r.pendientes, 0),
+        despachadas: reportData.reduce((sum, r) => sum + r.despachadas, 0)
+      };
+
+      // Verificar si necesita nueva página para totales
+      const totalRowHeight = 7;
+      if (yPosition + totalRowHeight > pageHeight - margin) {
+        doc.addPage();
+        yPosition = margin;
+        drawTableHeader();
+      }
+
+      // Dibujar fila de totales
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+
+      const totalesData = reportConfig.includeDespachadas
+        ? [`${totales.count} Refs`, totales.vendidas, totales.inventario, totales.programadas, totales.cortadas, totales.pendientes, totales.despachadas]
+        : [`${totales.count} Refs`, totales.vendidas, totales.inventario, totales.programadas, totales.cortadas, totales.pendientes];
+
+      let xPos = margin;
+      totalesData.forEach((cell, idx) => {
+        doc.rect(xPos, yPosition, columnWidths[idx], totalRowHeight);
+        const text = cell.toString();
+        doc.text(text, xPos + columnWidths[idx] / 2, yPosition + 4.5, { align: 'center', maxWidth: columnWidths[idx] - 1 });
+        xPos += columnWidths[idx];
+      });
+
       // Descargar PDF
       doc.save(`Informe_Ventas_${selectedCorreria?.name}_${new Date().getTime()}.pdf`);
       setShowReportModal(false);
@@ -689,6 +727,33 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
         dataRow.eachCell((cell, colNumber) => {
           cell.style = colNumber === 1 ? refStyle : dataStyle;
         });
+      });
+
+      // Calcular totales
+      const totales = {
+        count: reportData.length,
+        vendidas: reportData.reduce((sum, r) => sum + r.vendidas, 0),
+        inventario: reportData.reduce((sum, r) => sum + r.inventario, 0),
+        programadas: reportData.reduce((sum, r) => sum + r.programadas, 0),
+        cortadas: reportData.reduce((sum, r) => sum + r.cortadas, 0),
+        pendientes: reportData.reduce((sum, r) => sum + r.pendientes, 0),
+        despachadas: reportData.reduce((sum, r) => sum + r.despachadas, 0)
+      };
+
+      // Agregar fila de totales
+      const totalesData = reportConfig.includeDespachadas
+        ? [`${totales.count} Refs`, totales.vendidas, totales.inventario, totales.programadas, totales.cortadas, totales.pendientes, totales.despachadas]
+        : [`${totales.count} Refs`, totales.vendidas, totales.inventario, totales.programadas, totales.cortadas, totales.pendientes];
+
+      const totalRow = worksheet.addRow(totalesData);
+      totalRow.height = 22;
+      totalRow.eachCell(cell => {
+        cell.style = {
+          font: { bold: true, size: 12 },
+          alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+          border: border,
+          fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFE0E0E0' } }
+        };
       });
 
       // Descargar Excel

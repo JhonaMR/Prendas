@@ -21,7 +21,14 @@
     "pm2:resurrect": "pm2 resurrect",
     "init-db": "node src/scripts/initDatabase.js",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "migrate:create": "node scripts/createMigration.js",
+    "migrate:up": "node scripts/applyMigrations.js --env=dev",
+    "migrate:up:prod": "node scripts/applyMigrations.js --env=prod",
+    "migrate:status": "node scripts/migrationStatus.js",
+    "migrate:status:all": "node scripts/migrationStatus.js --all",
+    "migrate:rollback": "node scripts/rollbackMigration.js",
+    "migrate:setup": "node scripts/setupDevDatabase.js"
   },
   "keywords": [
     "inventario",

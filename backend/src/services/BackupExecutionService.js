@@ -95,11 +95,14 @@ class BackupExecutionService {
       // --encoding=UTF8: Especifica codificación UTF-8 explícitamente
       // --clean: Incluye DROP TABLE para limpiar antes de restaurar
       // --if-exists: Evita errores si las tablas no existen
+      // --create: Incluye CREATE DATABASE (útil para restauración completa)
       // --no-password: No pide contraseña (usa PGPASSWORD)
       // -F p: Formato plano (SQL)
       // -f: Archivo de salida (mejor que redirección en Windows)
       // -v: Verbose para ver qué está pasando
-      const command = `pg_dump --encoding=UTF8 --clean --if-exists --no-password -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -F p -v -f "${backupPath}"`;
+      // 
+      // NOTA: --clean es seguro aquí porque solo afecta al RESTAURAR, no al hacer backup
+      const command = `pg_dump --encoding=UTF8 --clean --if-exists --create --no-password -U ${dbUser} -h ${dbHost} -p ${dbPort} -d ${dbName} -F p -v -f "${backupPath}"`;
 
       console.log(`\n🔄 [${new Date().toISOString()}] Iniciando backup ${backupType}...`);
       console.log(`📁 Archivo: ${filename}`);
