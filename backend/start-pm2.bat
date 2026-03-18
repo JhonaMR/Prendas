@@ -8,7 +8,7 @@ echo Iniciando PLOW y MELAS con PM2
 echo ========================================
 echo.
 
-cd /d "C:\Users\luisf\OneDrive\Desktop\Proyecto\Prendas"
+cd /d "G:\COMPARTIR\Proyecto\Prendas"
 
 REM Verificar si PM2 está instalado
 pm2 --version >nul 2>&1
@@ -36,12 +36,12 @@ echo Procesos iniciados correctamente
 echo ========================================
 echo.
 echo PLOW:
-echo   - Backend: https://10.10.0.34:3000
-echo   - Frontend: https://10.10.0.34:5173
+echo   - Backend: https://10.10.0.51:3000
+echo   - Frontend: https://10.10.0.51:5173
 echo.
 echo MELAS:
-echo   - Backend: https://10.10.0.34:3001
-echo   - Frontend: https://10.10.0.34:5174
+echo   - Backend: https://10.10.0.51:3001
+echo   - Frontend: https://10.10.0.51:5174
 echo.
 echo Ver logs: pm2 logs
 echo Monitor: pm2 monit
