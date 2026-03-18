@@ -35,10 +35,10 @@ async function setupDevDatabase() {
 
   try {
     // 1. Crear base de datos de desarrollo
-    console.log(`${colors.cyan}→${colors.reset} Creando base de datos prendas_dev...`);
+    console.log(`${colors.cyan}→${colors.reset} Creando base de datos inventory_dev...`);
     try {
       execSync(
-        `psql -h ${dbHost} -p ${dbPort} -U ${dbUser} -c "CREATE DATABASE prendas_dev;"`,
+        `psql -h ${dbHost} -p ${dbPort} -U ${dbUser} -c "CREATE DATABASE inventory_dev;"`,
         { stdio: 'ignore' }
       );
       console.log(`${colors.green}✓${colors.reset} Base de datos creada`);
@@ -55,9 +55,9 @@ async function setupDevDatabase() {
       { stdio: 'inherit' }
     );
 
-    console.log(`${colors.cyan}→${colors.reset} Aplicando estructura a prendas_dev...`);
+    console.log(`${colors.cyan}→${colors.reset} Aplicando estructura a inventory_dev...`);
     execSync(
-      `psql -h ${dbHost} -p ${dbPort} -U ${dbUser} -d prendas_dev -f "${tempFile}"`,
+      `psql -h ${dbHost} -p ${dbPort} -U ${dbUser} -d inventory_dev -f "${tempFile}"`,
       { stdio: 'inherit' }
     );
 
@@ -66,7 +66,7 @@ async function setupDevDatabase() {
 
     console.log(`\n${colors.green}✓ CONFIGURACIÓN COMPLETADA${colors.reset}`);
     console.log(`\n${colors.cyan}Próximos pasos:${colors.reset}`);
-    console.log('  1. Crear archivo backend/.env.dev con DB_NAME=prendas_dev');
+    console.log('  1. Archivo backend/.env.dev ya está configurado con DB_NAME=inventory_dev');
     console.log('  2. Ejecutar: node scripts/migrationStatus.js');
     console.log('  3. Crear tu primera migración\n');
 

@@ -126,8 +126,8 @@ useEffect(() => {
         const prod = state.productionTracking.find(p => p.refId === ref.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
         const pending = totalSold - (prod.inventory + prod.programmed + prod.cut);
 
-        const totalCloth1 = (ref.avgCloth1 || 0) * totalSold;
-        const totalCloth2 = (ref.avgCloth2 || 0) * totalSold;
+        const totalCloth1 = (ref.avgCloth1 || 0) * prod.programmed;
+        const totalCloth2 = (ref.avgCloth2 || 0) * prod.programmed;
 
         return {
           ...ref,

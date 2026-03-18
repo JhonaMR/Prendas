@@ -64,6 +64,8 @@ class ApiService {
       backendPort = '3000'; // PLOW
     } else if (port === '5174' || port === '3001') {
       backendPort = '3001'; // MELAS
+    } else if (port === '5175' || port === '5000') {
+      backendPort = '5000'; // DEV
     }
     
     return `${protocol}//${hostname}:${backendPort}/api`;

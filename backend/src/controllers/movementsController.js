@@ -761,6 +761,24 @@ const createOrder = async (req, res) => {
                     VALUES ($1, $2, $3, $4)`,
                     [id, item.reference, item.quantity, salePrice]
                 );
+
+                // NUEVO: Actualizar production_tracking si vienen los datos (retrocompatible)
+                // Si el item tiene programmed, cut, o inventory, actualizar production_tracking
+                if (item.programmed !== undefined || item.cut !== undefined || item.inventory !== undefined) {
+                    const programmed = item.programmed !== undefined ? item.programmed : 0;
+                    const cut = item.cut !== undefined ? item.cut : 0;
+                    const inventory = item.inventory !== undefined ? item.inventory : 0;
+                    
+                    logger.info(`📊 Creando production_tracking para ${item.reference}:`, { programmed, cut, inventory });
+                    
+                    // UPSERT en production_tracking
+                    await client.query(
+                        `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+                        [item.reference, correriaId, programmed, cut, inventory]
+                    );
+                }
             }
         });
 
@@ -994,6 +1012,24 @@ const updateOrder = async (req, res) => {
                     VALUES ($1, $2, $3, $4)`,
                     [id, item.reference, item.quantity, salePrice]
                 );
+
+                // NUEVO: Actualizar production_tracking si vienen los datos (retrocompatible)
+                // Si el item tiene programmed, cut, o inventory, actualizar production_tracking
+                if (item.programmed !== undefined || item.cut !== undefined || item.inventory !== undefined) {
+                    const programmed = item.programmed !== undefined ? item.programmed : 0;
+                    const cut = item.cut !== undefined ? item.cut : 0;
+                    const inventory = item.inventory !== undefined ? item.inventory : 0;
+                    
+                    logger.info(`📊 Actualizando production_tracking para ${item.reference}:`, { programmed, cut, inventory });
+                    
+                    // UPSERT en production_tracking
+                    await client.query(
+                        `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+                        [item.reference, correriaId, programmed, cut, inventory]
+                    );
+                }
             }
         });
 

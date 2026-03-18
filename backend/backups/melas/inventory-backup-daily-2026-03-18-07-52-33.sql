@@ -2,10 +2,39 @@
 -- PostgreSQL database dump
 --
 
-\restrict div2gVaXZAekTZdivCsbG3gjR9FjYTN8YTtowzAnEEMS63zCQtxOwcrKUbzlwKC
+\restrict PhUMxEyFvK8zWQ3B6Kv1Zh4xrIG4mAA8n7ge6c5dqWZv9s9LGw9DNQTT0erL4xp
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
+
+-- Started on 2026-03-18 07:52:33
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE IF EXISTS inventory_melas;
+--
+-- TOC entry 5406 (class 1262 OID 18556)
+-- Name: inventory_melas; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE inventory_melas WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'C';
+
+
+ALTER DATABASE inventory_melas OWNER TO postgres;
+
+\unrestrict PhUMxEyFvK8zWQ3B6Kv1Zh4xrIG4mAA8n7ge6c5dqWZv9s9LGw9DNQTT0erL4xp
+\connect inventory_melas
+\restrict PhUMxEyFvK8zWQ3B6Kv1Zh4xrIG4mAA8n7ge6c5dqWZv9s9LGw9DNQTT0erL4xp
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,6 +49,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- TOC entry 5 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -29,6 +59,8 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
+-- TOC entry 5407 (class 0 OID 0)
+-- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
@@ -36,6 +68,7 @@ COMMENT ON SCHEMA public IS '';
 
 
 --
+-- TOC entry 257 (class 1255 OID 18557)
 -- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -61,6 +94,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- TOC entry 219 (class 1259 OID 18558)
 -- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -82,6 +116,7 @@ CREATE TABLE public.audit_log (
 ALTER TABLE public.audit_log OWNER TO postgres;
 
 --
+-- TOC entry 220 (class 1259 OID 18567)
 -- Name: clients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -102,6 +137,7 @@ CREATE TABLE public.clients (
 ALTER TABLE public.clients OWNER TO postgres;
 
 --
+-- TOC entry 221 (class 1259 OID 18578)
 -- Name: compras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -129,6 +165,7 @@ CREATE TABLE public.compras (
 ALTER TABLE public.compras OWNER TO postgres;
 
 --
+-- TOC entry 222 (class 1259 OID 18595)
 -- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -147,6 +184,7 @@ CREATE TABLE public.confeccionistas (
 ALTER TABLE public.confeccionistas OWNER TO postgres;
 
 --
+-- TOC entry 223 (class 1259 OID 18607)
 -- Name: correria_catalog; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -161,6 +199,7 @@ CREATE TABLE public.correria_catalog (
 ALTER TABLE public.correria_catalog OWNER TO postgres;
 
 --
+-- TOC entry 224 (class 1259 OID 18615)
 -- Name: correrias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -176,6 +215,7 @@ CREATE TABLE public.correrias (
 ALTER TABLE public.correrias OWNER TO postgres;
 
 --
+-- TOC entry 225 (class 1259 OID 18624)
 -- Name: delivery_dates; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -197,6 +237,7 @@ CREATE TABLE public.delivery_dates (
 ALTER TABLE public.delivery_dates OWNER TO postgres;
 
 --
+-- TOC entry 226 (class 1259 OID 18636)
 -- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -214,6 +255,7 @@ CREATE TABLE public.disenadoras (
 ALTER TABLE public.disenadoras OWNER TO postgres;
 
 --
+-- TOC entry 227 (class 1259 OID 18645)
 -- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -228,6 +270,7 @@ CREATE SEQUENCE public.dispatch_items_id_seq
 ALTER SEQUENCE public.dispatch_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 228 (class 1259 OID 18646)
 -- Name: dispatch_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -243,6 +286,7 @@ CREATE TABLE public.dispatch_items (
 ALTER TABLE public.dispatch_items OWNER TO postgres;
 
 --
+-- TOC entry 229 (class 1259 OID 18657)
 -- Name: dispatches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -261,6 +305,7 @@ CREATE TABLE public.dispatches (
 ALTER TABLE public.dispatches OWNER TO postgres;
 
 --
+-- TOC entry 230 (class 1259 OID 18669)
 -- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -295,6 +340,7 @@ CREATE TABLE public.fichas_cortes (
 ALTER TABLE public.fichas_cortes OWNER TO postgres;
 
 --
+-- TOC entry 231 (class 1259 OID 18696)
 -- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -343,6 +389,7 @@ CREATE TABLE public.fichas_costo (
 ALTER TABLE public.fichas_costo OWNER TO postgres;
 
 --
+-- TOC entry 232 (class 1259 OID 18730)
 -- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -379,6 +426,7 @@ CREATE TABLE public.fichas_diseno (
 ALTER TABLE public.fichas_diseno OWNER TO postgres;
 
 --
+-- TOC entry 233 (class 1259 OID 18752)
 -- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -403,6 +451,7 @@ CREATE TABLE public.inventory_movements (
 ALTER TABLE public.inventory_movements OWNER TO postgres;
 
 --
+-- TOC entry 234 (class 1259 OID 18768)
 -- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -419,6 +468,7 @@ CREATE TABLE public.maletas (
 ALTER TABLE public.maletas OWNER TO postgres;
 
 --
+-- TOC entry 235 (class 1259 OID 18778)
 -- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -434,6 +484,7 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
+-- TOC entry 236 (class 1259 OID 18787)
 -- Name: messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -451,6 +502,7 @@ CREATE TABLE public.messages (
 ALTER TABLE public.messages OWNER TO postgres;
 
 --
+-- TOC entry 237 (class 1259 OID 18799)
 -- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -466,6 +518,8 @@ CREATE SEQUENCE public.messages_id_seq
 ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5409 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -473,6 +527,7 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
+-- TOC entry 238 (class 1259 OID 18800)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -487,6 +542,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
+-- TOC entry 239 (class 1259 OID 18810)
 -- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -509,6 +565,7 @@ CREATE TABLE public.orders (
 ALTER TABLE public.orders OWNER TO postgres;
 
 --
+-- TOC entry 240 (class 1259 OID 18822)
 -- Name: product_references; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -529,6 +586,7 @@ CREATE TABLE public.product_references (
 ALTER TABLE public.product_references OWNER TO postgres;
 
 --
+-- TOC entry 241 (class 1259 OID 18832)
 -- Name: production_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -537,13 +595,15 @@ CREATE TABLE public.production_tracking (
     correria_id character varying(255) NOT NULL,
     programmed integer NOT NULL,
     cut integer NOT NULL,
-    inventory integer DEFAULT 0
+    inventory integer DEFAULT 0,
+    novedades text
 );
 
 
 ALTER TABLE public.production_tracking OWNER TO postgres;
 
 --
+-- TOC entry 242 (class 1259 OID 18842)
 -- Name: reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -558,6 +618,7 @@ CREATE TABLE public.reception_items (
 ALTER TABLE public.reception_items OWNER TO postgres;
 
 --
+-- TOC entry 243 (class 1259 OID 18851)
 -- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -572,6 +633,8 @@ CREATE SEQUENCE public.reception_items_id_seq
 ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5410 (class 0 OID 0)
+-- Dependencies: 243
 -- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -579,6 +642,7 @@ ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
 
 
 --
+-- TOC entry 244 (class 1259 OID 18852)
 -- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -602,6 +666,8 @@ CREATE TABLE public.receptions (
 ALTER TABLE public.receptions OWNER TO postgres;
 
 --
+-- TOC entry 5411 (class 0 OID 0)
+-- Dependencies: 244
 -- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -609,6 +675,7 @@ COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this 
 
 
 --
+-- TOC entry 245 (class 1259 OID 18864)
 -- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -624,6 +691,7 @@ CREATE TABLE public.return_reception_items (
 ALTER TABLE public.return_reception_items OWNER TO postgres;
 
 --
+-- TOC entry 246 (class 1259 OID 18873)
 -- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -638,6 +706,8 @@ CREATE SEQUENCE public.return_reception_items_id_seq
 ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5412 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -645,6 +715,7 @@ ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_recep
 
 
 --
+-- TOC entry 247 (class 1259 OID 18874)
 -- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -661,6 +732,7 @@ CREATE TABLE public.return_receptions (
 ALTER TABLE public.return_receptions OWNER TO postgres;
 
 --
+-- TOC entry 256 (class 1259 OID 19166)
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -677,6 +749,7 @@ CREATE TABLE public.schema_migrations (
 ALTER TABLE public.schema_migrations OWNER TO postgres;
 
 --
+-- TOC entry 255 (class 1259 OID 19165)
 -- Name: schema_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -692,6 +765,8 @@ CREATE SEQUENCE public.schema_migrations_id_seq
 ALTER SEQUENCE public.schema_migrations_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5413 (class 0 OID 0)
+-- Dependencies: 255
 -- Name: schema_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -699,6 +774,7 @@ ALTER SEQUENCE public.schema_migrations_id_seq OWNED BY public.schema_migrations
 
 
 --
+-- TOC entry 248 (class 1259 OID 18884)
 -- Name: sellers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -713,6 +789,7 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
+-- TOC entry 249 (class 1259 OID 18892)
 -- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -729,6 +806,7 @@ CREATE TABLE public.user_sessions (
 ALTER TABLE public.user_sessions OWNER TO postgres;
 
 --
+-- TOC entry 250 (class 1259 OID 18903)
 -- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -744,6 +822,8 @@ CREATE SEQUENCE public.user_sessions_id_seq
 ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5414 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -751,6 +831,7 @@ ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
 
 
 --
+-- TOC entry 251 (class 1259 OID 18904)
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -766,6 +847,7 @@ CREATE TABLE public.user_view_preferences (
 ALTER TABLE public.user_view_preferences OWNER TO postgres;
 
 --
+-- TOC entry 252 (class 1259 OID 18915)
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -781,6 +863,8 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5415 (class 0 OID 0)
+-- Dependencies: 252
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -788,6 +872,7 @@ ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_pre
 
 
 --
+-- TOC entry 253 (class 1259 OID 18916)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -806,6 +891,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
+-- TOC entry 254 (class 1259 OID 18927)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -820,6 +906,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
+-- TOC entry 5416 (class 0 OID 0)
+-- Dependencies: 254
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -827,6 +915,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- TOC entry 5063 (class 2604 OID 18928)
 -- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -834,6 +923,7 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
+-- TOC entry 5068 (class 2604 OID 18929)
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -841,6 +931,7 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
+-- TOC entry 5074 (class 2604 OID 18930)
 -- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -848,6 +939,7 @@ ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextv
 
 
 --
+-- TOC entry 5084 (class 2604 OID 19169)
 -- Name: schema_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -855,6 +947,7 @@ ALTER TABLE ONLY public.schema_migrations ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
+-- TOC entry 5075 (class 2604 OID 18931)
 -- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -862,6 +955,7 @@ ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
+-- TOC entry 5079 (class 2604 OID 18932)
 -- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -869,6 +963,7 @@ ALTER TABLE ONLY public.user_view_preferences ALTER COLUMN id SET DEFAULT nextva
 
 
 --
+-- TOC entry 5083 (class 2604 OID 18933)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -876,6 +971,8 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- TOC entry 5363 (class 0 OID 18558)
+-- Dependencies: 219
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -884,6 +981,8 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
+-- TOC entry 5364 (class 0 OID 18567)
+-- Dependencies: 220
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1201,6 +1300,8 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 
 
 --
+-- TOC entry 5365 (class 0 OID 18578)
+-- Dependencies: 221
 -- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1209,6 +1310,8 @@ COPY public.compras (id, fecha, referencia, unidades, insumo, cantidad_insumo, p
 
 
 --
+-- TOC entry 5366 (class 0 OID 18595)
+-- Dependencies: 222
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1218,7 +1321,6 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 43988597	Marisol Bustos Jimenez	CRA 91A CLL 78A - 56	Robledo	3013613656	A	1	\N
 43756956	Bellaflor Ramos Suarez	CRA 91 # 78 A 56 PISO 302	Robledo	3145155697	A	1	\N
 43710368	Maria de los Angeles Tabarez Serna	CRA 46 A # 95 A 30	Aranajuez	3217056823	A	1	\N
-43841705	Clara Ines Cano Sanchez	CR 66 # 29 - 34	San Antonio de Prado	3011481011	S	1	\N
 43164208	Maria Jhannet Ospina Pineda	CLLE 69 B # 60-145 INT 2016	Itag��	3243248027	A	1	\N
 35478587	Olga Lucia Arias Escobar	VDA VARGAS CEC RAMAL 4	Marinilla	3044917929	A	1	\N
 32390147	Luz Angela Ramirez Buitrago	CL 20 # 18 - 29 P1	Cocorna	3126467374	A	1	\N
@@ -1229,10 +1331,13 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 42941830	Gloria del Pilar Hernandez Vallejo	BARRIO EL TRAPICHE	Moravia	3207130439	A	1	\N
 43686396	Liliana Maria Espinoza Ramirez	CR 63 33 60	ITAGUI	3234057968	A	1	\N
 43161179	Aura Angelica Ospina Henao	CLL 75 # 49 - 111 PISO 01	Medellin	3136483932	A	1	\N
+43841705	Clara Ines Cano Sanchez	CR 66 # 29 - 34	San Antonio de Prado	3011481011	A	1	\N
 \.
 
 
 --
+-- TOC entry 5367 (class 0 OID 18607)
+-- Dependencies: 223
 -- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1358,6 +1463,8 @@ COPY public.correria_catalog (id, correria_id, reference_id, added_at) FROM stdi
 
 
 --
+-- TOC entry 5368 (class 0 OID 18615)
+-- Dependencies: 224
 -- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1368,6 +1475,8 @@ jq5do8iqv	Madres	2026	1	\N
 
 
 --
+-- TOC entry 5369 (class 0 OID 18624)
+-- Dependencies: 225
 -- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1376,6 +1485,8 @@ COPY public.delivery_dates (id, confeccionista_id, reference_id, quantity, send_
 
 
 --
+-- TOC entry 5370 (class 0 OID 18636)
+-- Dependencies: 226
 -- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1384,6 +1495,8 @@ COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updat
 
 
 --
+-- TOC entry 5372 (class 0 OID 18646)
+-- Dependencies: 228
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1392,19 +1505,138 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 2	mmv4xbw60638hsbkh	1005	18	31000.00
 3	mmv4xbw60638hsbkh	1500	16	32000.00
 4	mmv4xbw60638hsbkh	4013	12	40000.00
+5	mmvzw7im05u6elhrp	1020	24	40900.00
+6	mmvzw7im05u6elhrp	1258	24	38900.00
+7	mmvzw7im05u6elhrp	1502	24	34900.00
+8	mmvzw7im05u6elhrp	4013	18	40900.00
+9	mmw04mnfks2yvl34o	3012	9	30900.00
+10	mmw04mnfks2yvl34o	3002	9	36900.00
+11	mmw04mnfks2yvl34o	1197	9	36900.00
+12	mmw04mnfks2yvl34o	1009	9	30900.00
+13	mmw04mnfks2yvl34o	1500	9	32900.00
+14	mmw05jvqwra8t0y4i	3009	9	28900.00
+15	mmw05jvqwra8t0y4i	3010	9	36900.00
+16	mmw05jvqwra8t0y4i	1258	9	38900.00
+17	mmw05jvqwra8t0y4i	1278	9	42900.00
+18	mmw07eq1miyor6a85	1502	24	30900.00
+19	mmw07eq1miyor6a85	1005	24	31900.00
+20	mmw07eq1miyor6a85	1197	24	36900.00
+21	mmw07eq1miyor6a85	1011	21	26900.00
+22	mmw07wtdhl23e9cmg	1278	24	42900.00
+23	mmw08fggxfmu3ifjw	3012	24	30900.00
+24	mmw09enwzra81qha8	1009	9	30900.00
+25	mmw09zt56po752uci	1197	9	36900.00
+26	mmw09zt56po752uci	1011	10	26900.00
+27	mmw0ahkndepnr88f5	3010	9	36900.00
+28	mmw0cf7qs7o0yuar8	1500	6	32900.00
+29	mmw0cf7qs7o0yuar8	3002	6	36900.00
+30	mmw0dmzd6amtfekv9	1005	6	31900.00
+31	mmw0dmzd6amtfekv9	1197	6	36900.00
+32	mmw0dmzd6amtfekv9	1502	6	30900.00
+33	mmw0e2t0rqdq6jgpg	1009	6	30900.00
+34	mmw0f69x8tapoy1iq	3012	12	30900.00
+35	mmw0f69x8tapoy1iq	1502	6	30900.00
+36	mmw0fk4wr4gxllpl6	1278	6	42900.00
+37	mmw0hcsmz1fxv9bcu	3010	11	36900.00
+38	mmw0hcsmz1fxv9bcu	3009	12	28900.00
+39	mmw0hcsmz1fxv9bcu	1014	12	28900.00
+40	mmw0i1ce8qh9clg7j	3008	12	25900.00
+41	mmw0i1ce8qh9clg7j	1502	12	30900.00
+42	mmw0i1ce8qh9clg7j	1197	12	36900.00
+46	mmw0kghlp17m9a9wd	1278	12	42900.00
+47	mmw0kghlp17m9a9wd	1500	12	32900.00
+48	mmw0kghlp17m9a9wd	1197	12	36900.00
+49	mmw0oc00vmz2yoh9e	1009	12	30900.00
+50	mmw0oc00vmz2yoh9e	1011	14	26900.00
+51	mmw0paxy9jnhahdgl	1014	12	28900.00
+52	mmw0ry5von2svzwrb	1502	12	30900.00
+53	mmw0ry5von2svzwrb	1197	12	36900.00
+54	mmw0ry5von2svzwrb	1011	12	26900.00
+55	mmw0ry5von2svzwrb	3002	12	36900.00
+56	mmw0sey0ahranru8z	1014	12	28900.00
+57	mmw0tbo8bw0lbq9ae	1197	13	34900.00
+58	mmw0uc5ku01cw6nqo	1258	13	38900.00
+59	mmw0uc5ku01cw6nqo	1014	13	28900.00
+60	mmw0uc5ku01cw6nqo	3009	13	28900.00
+61	mmw0uzzkepwp0t83u	1009	11	30900.00
+62	mmw0yixj573uuqecs	1197	11	34900.00
+63	mmw0yixj573uuqecs	1258	11	38900.00
+64	mmw0yixj573uuqecs	1009	9	30900.00
+65	mmw0z033ul8hj5rp4	1014	11	28900.00
+66	mmw0z033ul8hj5rp4	3009	11	28900.00
+67	mmw0zw5vh9be4cqqv	1197	11	34900.00
+68	mmw10jebgc0a6un4w	1258	11	38900.00
+69	mmw10jebgc0a6un4w	1014	11	28900.00
+70	mmw10jebgc0a6un4w	3009	11	28900.00
+71	mmw10wmj0hikzh03u	1009	9	30900.00
+72	mmw187p8w2vplc4bs	1278	12	42900.00
+73	mmw187p8w2vplc4bs	3009	24	28900.00
+74	mmw187p8w2vplc4bs	3010	18	36900.00
+75	mmw18sinnmxtj08e3	1502	12	30900.00
+76	mmw18sinnmxtj08e3	1009	24	30900.00
+77	mmw19bt6y3t7fxbps	3011	24	38900.00
+78	mmw19bt6y3t7fxbps	3012	24	30900.00
+79	mmw1akhbbii7z29gv	1009	12	30900.00
+80	mmw1b0fajclialu8l	1197	12	36900.00
+81	mmw1b0fajclialu8l	1005	12	31900.00
+82	mmw1g6nqmafbyn8cj	1258	132	38000.00
+83	mmw1g6nqmafbyn8cj	1278	138	43000.00
+84	mmw1g6nqmafbyn8cj	1500	126	32000.00
+85	mmw1g6nqmafbyn8cj	1502	126	32000.00
+86	mmw1g6nqmafbyn8cj	3002	96	37000.00
+87	mmw1g6nqmafbyn8cj	3011	96	39000.00
 \.
 
 
 --
+-- TOC entry 5373 (class 0 OID 18657)
+-- Dependencies: 229
 -- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at, checked_by) FROM stdin;
 mmv4xbw60638hsbkh	232	jq5do8iqv	FE-358	RM-272	Jhon Montoya	2026-03-17 21:39:06.487	-
+mmvzw7im05u6elhrp	298	jq5do8iqv	FE-353	RM-266	Jhon Montoya	2026-03-18 12:06:02.256	-
+mmw04mnfks2yvl34o	50	hyzlk69gl	FE-326	RM-244	Jhon Montoya	2026-03-18 12:12:35.116	-
+mmw05jvqwra8t0y4i	50	hyzlk69gl	FE-349	RM-261	Jhon Montoya	2026-03-18 12:13:18.184	-
+mmw07eq1miyor6a85	59	hyzlk69gl	FE-310	RM-232	Jhon Montoya	2026-03-18 12:14:44.811	-
+mmw07wtdhl23e9cmg	59	hyzlk69gl	FE-347	RM-259	Jhon Montoya	2026-03-18 12:15:08.258	-
+mmw08fggxfmu3ifjw	59	hyzlk69gl	FE-325	RM-243	Jhon Montoya	2026-03-18 12:15:32.417	-
+mmw09enwzra81qha8	107	hyzlk69gl	FE-329	RM-246	Jhon Montoya	2026-03-18 12:16:18.046	-
+mmw09zt56po752uci	107	hyzlk69gl	FE-303	RM-225	Jhon Montoya	2026-03-18 12:16:45.45	-
+mmw0ahkndepnr88f5	107	hyzlk69gl	FE-352	RM-265	Jhon Montoya	2026-03-18 12:17:08.472	-
+mmw0cf7qs7o0yuar8	296	hyzlk69gl	 -	RM-263	Jhon Montoya	2026-03-18 12:18:38.728	-
+mmw0dmzd6amtfekv9	158	hyzlk69gl	FE-300	 -	Jhon Montoya	2026-03-18 12:19:35.449	-
+mmw0e2t0rqdq6jgpg	158	hyzlk69gl	FE-311	 -	Jhon Montoya	2026-03-18 12:19:55.958	-
+mmw0f69x8tapoy1iq	264	hyzlk69gl	FE-328	RM-245	Jhon Montoya	2026-03-18 12:20:47.113	-
+mmw0fk4wr4gxllpl6	264	hyzlk69gl	FE-350	RM-262	Jhon Montoya	2026-03-18 12:21:05.074	-
+mmw0hcsmz1fxv9bcu	138	hyzlk69gl	FE-351	RM-264	Jhon Montoya	2026-03-18 12:22:28.871	-
+mmw0i1ce8qh9clg7j	138	hyzlk69gl	FE-302	RM-224	Jhon Montoya	2026-03-18 12:23:00.687	-
+mmw0kghlp17m9a9wd	270	hyzlk69gl	FE-292	 -	Jhon Montoya	2026-03-18 12:24:53.628	-
+mmw0oc00vmz2yoh9e	270	hyzlk69gl	FE-312	 -	Jhon Montoya	2026-03-18 12:27:54.433	-
+mmw0paxy9jnhahdgl	270	hyzlk69gl	FE-345	 -	Jhon Montoya	2026-03-18 12:28:39.719	-
+mmw0ry5von2svzwrb	258	hyzlk69gl	FE-301	 -	Jhon Montoya	2026-03-18 12:30:43.124	-
+mmw0sey0ahranru8z	258	hyzlk69gl	FE-346	 -	Jhon Montoya	2026-03-18 12:31:04.874	-
+mmw0tbo8bw0lbq9ae	231	hyzlk69gl	FE-298	 -	Jhon Montoya	2026-03-18 12:31:47.288	-
+mmw0uc5ku01cw6nqo	231	hyzlk69gl	FE-343	 -	Jhon Montoya	2026-03-18 12:32:34.569	-
+mmw0uzzkepwp0t83u	231	hyzlk69gl	FE-323	 -	Jhon Montoya	2026-03-18 12:33:05.458	-
+mmw0yixj573uuqecs	200	hyzlk69gl	FE-327	 -	Jhon Montoya	2026-03-18 12:35:49.976	-
+mmw0z033ul8hj5rp4	200	hyzlk69gl	FE-342	 -	Jhon Montoya	2026-03-18 12:36:12.208	-
+mmw0zw5vh9be4cqqv	305	hyzlk69gl	FE-299	 -	Jhon Montoya	2026-03-18 12:36:53.782	-
+mmw10jebgc0a6un4w	305	hyzlk69gl	FE-344	 -	Jhon Montoya	2026-03-18 12:37:23.893	-
+mmw10wmj0hikzh03u	305	hyzlk69gl	FE-324	 -	Jhon Montoya	2026-03-18 12:37:41.036	-
+mmw187p8w2vplc4bs	232	hyzlk69gl	FE-348	RM-260	Jhon Montoya	2026-03-18 12:43:21.982	-
+mmw18sinnmxtj08e3	232	hyzlk69gl	FE-314	RM-234	Jhon Montoya	2026-03-18 12:43:48.96	-
+mmw19bt6y3t7fxbps	232	hyzlk69gl	FE-330	RM-247	Jhon Montoya	2026-03-18 12:44:13.964	-
+mmw1akhbbii7z29gv	179	hyzlk69gl	FE-313	RM-233	Jhon Montoya	2026-03-18 12:45:11.856	-
+mmw1b0fajclialu8l	179	hyzlk69gl	FE-290	RM-218	Jhon Montoya	2026-03-18 12:45:32.518	-
+mmw1g6nqmafbyn8cj	300	hyzlk69gl	 -	 -	Jhon Montoya	2026-03-18 12:49:33.878	-
 \.
 
 
 --
+-- TOC entry 5374 (class 0 OID 18669)
+-- Dependencies: 230
 -- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1413,6 +1645,8 @@ COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantid
 
 
 --
+-- TOC entry 5375 (class 0 OID 18696)
+-- Dependencies: 231
 -- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1421,6 +1655,8 @@ COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, n
 
 
 --
+-- TOC entry 5376 (class 0 OID 18730)
+-- Dependencies: 232
 -- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1429,6 +1665,8 @@ COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, no
 
 
 --
+-- TOC entry 5377 (class 0 OID 18752)
+-- Dependencies: 233
 -- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1437,6 +1675,8 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
+-- TOC entry 5378 (class 0 OID 18768)
+-- Dependencies: 234
 -- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1445,6 +1685,8 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
+-- TOC entry 5379 (class 0 OID 18778)
+-- Dependencies: 235
 -- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1453,6 +1695,8 @@ COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) F
 
 
 --
+-- TOC entry 5380 (class 0 OID 18787)
+-- Dependencies: 236
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1461,6 +1705,8 @@ COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FRO
 
 
 --
+-- TOC entry 5382 (class 0 OID 18800)
+-- Dependencies: 238
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1795,6 +2041,8 @@ mmv2i2a8wup6a3qlk	2140	30	48900.00
 
 
 --
+-- TOC entry 5383 (class 0 OID 18810)
+-- Dependencies: 239
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1837,6 +2085,8 @@ mmv2i2a8wup6a3qlk	311	t47okzgix	jq5do8iqv	11417400.00	2026-03-17T20:31:14.960Z	J
 
 
 --
+-- TOC entry 5384 (class 0 OID 18822)
+-- Dependencies: 240
 -- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1924,17 +2174,38 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 
 
 --
+-- TOC entry 5385 (class 0 OID 18832)
+-- Dependencies: 241
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory) FROM stdin;
-1009	hyzlk69gl	5	3	2
-1197	hyzlk69gl	5	3	2
-1005	hyzlk69gl	5	3	2
+COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades) FROM stdin;
+1009	hyzlk69gl	5	3	2	\N
+1197	hyzlk69gl	5	3	2	\N
+1005	hyzlk69gl	5	3	2	\N
+4013	jq5do8iqv	0	0	95	\N
+4001	jq5do8iqv	0	150	0	\N
+1003	jq5do8iqv	0	0	269	\N
+1004	jq5do8iqv	0	0	70	\N
+1005	jq5do8iqv	0	0	23	\N
+1009	jq5do8iqv	0	0	54	\N
+1020	jq5do8iqv	0	0	47	\N
+1197	jq5do8iqv	0	120	4	\N
+1278	jq5do8iqv	0	0	41	\N
+1258	jq5do8iqv	0	0	106	\N
+1500	jq5do8iqv	0	0	160	\N
+1502	jq5do8iqv	0	0	111	\N
+1505	jq5do8iqv	0	120	0	\N
+2140	jq5do8iqv	0	120	0	\N
+2203	jq5do8iqv	0	120	0	\N
+3002	jq5do8iqv	0	120	75	\N
+3008	jq5do8iqv	0	0	48	\N
 \.
 
 
 --
+-- TOC entry 5386 (class 0 OID 18842)
+-- Dependencies: 242
 -- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1943,6 +2214,8 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 
 
 --
+-- TOC entry 5388 (class 0 OID 18852)
+-- Dependencies: 244
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1951,6 +2224,8 @@ COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type
 
 
 --
+-- TOC entry 5389 (class 0 OID 18864)
+-- Dependencies: 245
 -- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1959,6 +2234,8 @@ COPY public.return_reception_items (id, return_reception_id, reference, quantity
 
 
 --
+-- TOC entry 5391 (class 0 OID 18874)
+-- Dependencies: 247
 -- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1967,16 +2244,21 @@ COPY public.return_receptions (id, client_id, credit_note_number, total_value, r
 
 
 --
+-- TOC entry 5400 (class 0 OID 19166)
+-- Dependencies: 256
 -- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.schema_migrations (id, migration_name, applied_at, success, error_message, execution_time_ms) FROM stdin;
 1	001_add_arrival_date_to_receptions.sql	2026-03-17 09:40:53.510984	t	\N	4
 2	002_add_checked_by_column_to_dispatches_melas.sql	2026-03-17 16:26:39.408152	t	\N	42
+3	003_add_novedades_column_to_production_tracking_melas.sql	2026-03-17 16:45:06.948429	t	\N	14
 \.
 
 
 --
+-- TOC entry 5392 (class 0 OID 18884)
+-- Dependencies: 248
 -- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1988,6 +2270,8 @@ ye3j7ykci	Bodega	1	\N
 
 
 --
+-- TOC entry 5393 (class 0 OID 18892)
+-- Dependencies: 249
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1997,6 +2281,11 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 413	mmc6rtuqnu4p7lxlx	hWcYg5Ew3U-QvwSLAANJ	online	2026-03-04 11:49:48.750678	2026-03-04 11:49:48.750678
 414	mmc6rtuqnu4p7lxlx	788UDbUeOqKEEaPEAANL	online	2026-03-04 11:49:48.768622	2026-03-04 11:49:48.768622
 415	mmc6rtuqnu4p7lxlx	CkwWwwl3iMyeb8FfAANN	online	2026-03-04 11:49:48.791137	2026-03-04 11:49:48.791137
+829	mmc6rtuqnu4p7lxlx	VoDDvuq4ul21bk1bAABb	online	2026-03-18 07:52:24.257451	2026-03-18 07:52:24.257451
+830	mmc6rtuqnu4p7lxlx	POaYjvWp1b4ka78EAABd	online	2026-03-18 07:52:24.35308	2026-03-18 07:52:24.35308
+831	mmc6rtuqnu4p7lxlx	ZtAQW0G7ERIDTCkyAABf	online	2026-03-18 07:52:24.538504	2026-03-18 07:52:24.538504
+832	mmc6rtuqnu4p7lxlx	_d8mwDq0MbxyIZvOAABh	online	2026-03-18 07:52:24.559592	2026-03-18 07:52:24.559592
+833	mmc6rtuqnu4p7lxlx	5mMIEzFmzpGXdnRbAABj	online	2026-03-18 07:52:24.588851	2026-03-18 07:52:24.588851
 426	mmc6rtuqnu4p7lxlx	Vva4eWAShepHSp8DAAAV	online	2026-03-04 12:39:18.460242	2026-03-04 12:39:18.460242
 427	mmc6rtuqnu4p7lxlx	CtD_ov1znu8AG-rBAAAX	online	2026-03-04 12:39:18.510301	2026-03-04 12:39:18.510301
 428	mmc6rtuqnu4p7lxlx	xRlu9YQwfvrsO62RAAAZ	online	2026-03-04 12:39:18.580429	2026-03-04 12:39:18.580429
@@ -2017,6 +2306,11 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 573	mmc6rtuqnu4p7lxlx	tMO_CAIHjkm1WGYeAAAZ	online	2026-03-06 09:16:16.597839	2026-03-06 09:16:16.597839
 574	mmc6rtuqnu4p7lxlx	58BB5pXxvf2ONyOWAAAb	online	2026-03-06 09:16:16.613051	2026-03-06 09:16:16.613051
 575	mmc6rtuqnu4p7lxlx	MLTFCOI_yjD97gxlAAAd	online	2026-03-06 09:16:16.626959	2026-03-06 09:16:16.626959
+779	mmc6rtuqnu4p7lxlx	6ACITI6-irrdtbbnAAAh	online	2026-03-17 16:52:21.435583	2026-03-17 16:52:21.435583
+780	mmc6rtuqnu4p7lxlx	yxMBm8mjvrxnyxlNAAAf	online	2026-03-17 16:52:21.442178	2026-03-17 16:52:21.442178
+781	mmc6rtuqnu4p7lxlx	Hzpqs_EbIcsjStGXAAAj	online	2026-03-17 16:52:21.574109	2026-03-17 16:52:21.574109
+782	mmc6rtuqnu4p7lxlx	e9G-WgtxmSyGsjRnAAAl	online	2026-03-17 16:52:21.624656	2026-03-17 16:52:21.624656
+783	mmc6rtuqnu4p7lxlx	MLN7lrQfuYeo-hCTAAAn	online	2026-03-17 16:52:21.660976	2026-03-17 16:52:21.660976
 601	mmc6rtuqnu4p7lxlx	b3i1mEqoBFkdfJxZAAAz	online	2026-03-06 09:21:06.0939	2026-03-06 09:21:06.0939
 602	mmc6rtuqnu4p7lxlx	EprxvovdniLJ3kKgAAA1	online	2026-03-06 09:21:06.110117	2026-03-06 09:21:06.110117
 603	mmc6rtuqnu4p7lxlx	fkjQOif0UPuymkBQAAA3	online	2026-03-06 09:21:06.159083	2026-03-06 09:21:06.159083
@@ -2031,16 +2325,20 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 
 
 --
+-- TOC entry 5395 (class 0 OID 18904)
+-- Dependencies: 251
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
-1	mmc6rtuqnu4p7lxlx	["orders", "settle", "dispatch", "comparativeDashboard", "salesReport", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "inventory", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-03-04 14:11:31.442388	2026-03-17 14:36:37.320185
 2	mmceztampsosqrnq8	["settle", "orders", "salesReport", "fichas-diseno", "fichas-costo", "reception", "returnReception", "maletas", "dispatch", "inventory", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras", "comparativeDashboard"]	2026-03-17 15:59:11.16347	2026-03-17 15:59:11.16347
+1	mmc6rtuqnu4p7lxlx	["orders", "settle", "dispatch", "reports", "comparativeDashboard", "salesReport", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "inventory", "orderHistory", "dispatchControl", "deliveryDates", "masters", "compras"]	2026-03-04 14:11:31.442388	2026-03-18 07:18:04.77564
 \.
 
 
 --
+-- TOC entry 5397 (class 0 OID 18916)
+-- Dependencies: 253
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2051,13 +2349,17 @@ mmceztampsosqrnq8	MARIA MERCEDES	MMB	$2b$10$BJJPq.GzQGoh/APAG9ISUOk11HJ3aHVm3bYM
 
 
 --
+-- TOC entry 5417 (class 0 OID 0)
+-- Dependencies: 227
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 4, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 87, true);
 
 
 --
+-- TOC entry 5418 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2065,6 +2367,8 @@ SELECT pg_catalog.setval('public.messages_id_seq', 1, false);
 
 
 --
+-- TOC entry 5419 (class 0 OID 0)
+-- Dependencies: 243
 -- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2072,6 +2376,8 @@ SELECT pg_catalog.setval('public.reception_items_id_seq', 1, false);
 
 
 --
+-- TOC entry 5420 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2079,20 +2385,26 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 1, false);
 
 
 --
+-- TOC entry 5421 (class 0 OID 0)
+-- Dependencies: 255
 -- Name: schema_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.schema_migrations_id_seq', 2, true);
+SELECT pg_catalog.setval('public.schema_migrations_id_seq', 3, true);
 
 
 --
+-- TOC entry 5422 (class 0 OID 0)
+-- Dependencies: 250
 -- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 763, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 833, true);
 
 
 --
+-- TOC entry 5423 (class 0 OID 0)
+-- Dependencies: 252
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2100,6 +2412,8 @@ SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 2, true);
 
 
 --
+-- TOC entry 5424 (class 0 OID 0)
+-- Dependencies: 254
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -2107,6 +2421,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
+-- TOC entry 5090 (class 2606 OID 18935)
 -- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2115,6 +2430,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
+-- TOC entry 5092 (class 2606 OID 18937)
 -- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2123,6 +2439,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
+-- TOC entry 5098 (class 2606 OID 18939)
 -- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2131,6 +2448,7 @@ ALTER TABLE ONLY public.compras
 
 
 --
+-- TOC entry 5104 (class 2606 OID 18941)
 -- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2139,6 +2457,7 @@ ALTER TABLE ONLY public.confeccionistas
 
 
 --
+-- TOC entry 5106 (class 2606 OID 18943)
 -- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2147,6 +2466,7 @@ ALTER TABLE ONLY public.correria_catalog
 
 
 --
+-- TOC entry 5108 (class 2606 OID 18945)
 -- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2155,6 +2475,7 @@ ALTER TABLE ONLY public.correrias
 
 
 --
+-- TOC entry 5110 (class 2606 OID 18947)
 -- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2163,6 +2484,7 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
+-- TOC entry 5114 (class 2606 OID 18949)
 -- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2171,6 +2493,7 @@ ALTER TABLE ONLY public.disenadoras
 
 
 --
+-- TOC entry 5116 (class 2606 OID 18951)
 -- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2179,6 +2502,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
+-- TOC entry 5120 (class 2606 OID 18953)
 -- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2187,6 +2511,7 @@ ALTER TABLE ONLY public.dispatches
 
 
 --
+-- TOC entry 5125 (class 2606 OID 18955)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2195,6 +2520,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5127 (class 2606 OID 18957)
 -- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2203,6 +2529,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5130 (class 2606 OID 18959)
 -- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2211,6 +2538,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5132 (class 2606 OID 18961)
 -- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2219,6 +2547,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5135 (class 2606 OID 18963)
 -- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2227,6 +2556,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5137 (class 2606 OID 18965)
 -- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2235,6 +2565,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5145 (class 2606 OID 18967)
 -- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2243,6 +2574,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
+-- TOC entry 5147 (class 2606 OID 18969)
 -- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2251,6 +2583,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
+-- TOC entry 5151 (class 2606 OID 18971)
 -- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2259,6 +2592,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5153 (class 2606 OID 18973)
 -- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2267,6 +2601,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5159 (class 2606 OID 18975)
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2275,6 +2610,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
+-- TOC entry 5168 (class 2606 OID 18977)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2283,6 +2619,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
+-- TOC entry 5170 (class 2606 OID 18979)
 -- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2291,6 +2628,7 @@ ALTER TABLE ONLY public.product_references
 
 
 --
+-- TOC entry 5173 (class 2606 OID 18981)
 -- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2299,6 +2637,7 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
+-- TOC entry 5176 (class 2606 OID 18983)
 -- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2307,6 +2646,7 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
+-- TOC entry 5180 (class 2606 OID 18985)
 -- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2315,6 +2655,7 @@ ALTER TABLE ONLY public.receptions
 
 
 --
+-- TOC entry 5182 (class 2606 OID 18987)
 -- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2323,6 +2664,7 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
+-- TOC entry 5184 (class 2606 OID 18989)
 -- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2331,6 +2673,7 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
+-- TOC entry 5204 (class 2606 OID 19179)
 -- Name: schema_migrations schema_migrations_migration_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2339,6 +2682,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- TOC entry 5206 (class 2606 OID 19177)
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2347,6 +2691,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- TOC entry 5186 (class 2606 OID 18991)
 -- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2355,6 +2700,7 @@ ALTER TABLE ONLY public.sellers
 
 
 --
+-- TOC entry 5191 (class 2606 OID 18993)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2363,6 +2709,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
+-- TOC entry 5193 (class 2606 OID 18995)
 -- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2371,6 +2718,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
+-- TOC entry 5196 (class 2606 OID 18997)
 -- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2379,6 +2727,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5198 (class 2606 OID 18999)
 -- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2387,6 +2736,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5202 (class 2606 OID 19001)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2395,6 +2745,7 @@ ALTER TABLE ONLY public.users
 
 
 --
+-- TOC entry 5093 (class 1259 OID 19002)
 -- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2402,6 +2753,7 @@ CREATE INDEX idx_clients_active ON public.clients USING btree (active);
 
 
 --
+-- TOC entry 5094 (class 1259 OID 19003)
 -- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2409,6 +2761,7 @@ CREATE INDEX idx_clients_name ON public.clients USING btree (name);
 
 
 --
+-- TOC entry 5095 (class 1259 OID 19004)
 -- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2416,6 +2769,7 @@ CREATE INDEX idx_clients_nit ON public.clients USING btree (nit);
 
 
 --
+-- TOC entry 5096 (class 1259 OID 19005)
 -- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2423,6 +2777,7 @@ CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
+-- TOC entry 5099 (class 1259 OID 19006)
 -- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2430,6 +2785,7 @@ CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta
 
 
 --
+-- TOC entry 5100 (class 1259 OID 19007)
 -- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2437,6 +2793,7 @@ CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
 
 
 --
+-- TOC entry 5101 (class 1259 OID 19008)
 -- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2444,6 +2801,7 @@ CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
 
 
 --
+-- TOC entry 5102 (class 1259 OID 19009)
 -- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2451,6 +2809,7 @@ CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
 
 
 --
+-- TOC entry 5111 (class 1259 OID 19010)
 -- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2458,6 +2817,7 @@ CREATE INDEX idx_delivery_dates_confeccionista_id ON public.delivery_dates USING
 
 
 --
+-- TOC entry 5112 (class 1259 OID 19011)
 -- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2465,6 +2825,7 @@ CREATE INDEX idx_delivery_dates_reference_id ON public.delivery_dates USING btre
 
 
 --
+-- TOC entry 5117 (class 1259 OID 19012)
 -- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2472,6 +2833,7 @@ CREATE INDEX idx_dispatch_items_dispatch_id ON public.dispatch_items USING btree
 
 
 --
+-- TOC entry 5118 (class 1259 OID 19013)
 -- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2479,6 +2841,7 @@ CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (
 
 
 --
+-- TOC entry 5121 (class 1259 OID 19014)
 -- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2486,6 +2849,7 @@ CREATE INDEX idx_dispatches_client_id ON public.dispatches USING btree (client_i
 
 
 --
+-- TOC entry 5122 (class 1259 OID 19015)
 -- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2493,6 +2857,7 @@ CREATE INDEX idx_dispatches_correria_id ON public.dispatches USING btree (correr
 
 
 --
+-- TOC entry 5123 (class 1259 OID 19016)
 -- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2500,6 +2865,7 @@ CREATE INDEX idx_dispatches_created_at ON public.dispatches USING btree (created
 
 
 --
+-- TOC entry 5128 (class 1259 OID 19017)
 -- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2507,6 +2873,7 @@ CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (
 
 
 --
+-- TOC entry 5133 (class 1259 OID 19018)
 -- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2514,6 +2881,7 @@ CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (ref
 
 
 --
+-- TOC entry 5138 (class 1259 OID 19019)
 -- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2521,6 +2889,7 @@ CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (r
 
 
 --
+-- TOC entry 5139 (class 1259 OID 19020)
 -- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2528,6 +2897,7 @@ CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USI
 
 
 --
+-- TOC entry 5140 (class 1259 OID 19021)
 -- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2535,6 +2905,7 @@ CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements US
 
 
 --
+-- TOC entry 5141 (class 1259 OID 19022)
 -- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2542,6 +2913,7 @@ CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING 
 
 
 --
+-- TOC entry 5142 (class 1259 OID 19023)
 -- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2549,6 +2921,7 @@ CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements US
 
 
 --
+-- TOC entry 5143 (class 1259 OID 19024)
 -- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2556,6 +2929,7 @@ CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements US
 
 
 --
+-- TOC entry 5148 (class 1259 OID 19025)
 -- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2563,6 +2937,7 @@ CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING 
 
 
 --
+-- TOC entry 5149 (class 1259 OID 19026)
 -- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2570,6 +2945,7 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
+-- TOC entry 5154 (class 1259 OID 19027)
 -- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2577,6 +2953,7 @@ CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at)
 
 
 --
+-- TOC entry 5155 (class 1259 OID 19028)
 -- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2584,6 +2961,7 @@ CREATE INDEX idx_messages_read ON public.messages USING btree (read);
 
 
 --
+-- TOC entry 5156 (class 1259 OID 19029)
 -- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2591,6 +2969,7 @@ CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
 
 
 --
+-- TOC entry 5157 (class 1259 OID 19030)
 -- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2598,6 +2977,7 @@ CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender
 
 
 --
+-- TOC entry 5160 (class 1259 OID 19031)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2605,6 +2985,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
+-- TOC entry 5161 (class 1259 OID 19032)
 -- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2612,6 +2993,7 @@ CREATE INDEX idx_orders_client_id ON public.orders USING btree (client_id);
 
 
 --
+-- TOC entry 5162 (class 1259 OID 19033)
 -- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2619,6 +3001,7 @@ CREATE INDEX idx_orders_correria_id ON public.orders USING btree (correria_id);
 
 
 --
+-- TOC entry 5163 (class 1259 OID 19034)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2626,6 +3009,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
+-- TOC entry 5164 (class 1259 OID 19035)
 -- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2633,6 +3017,7 @@ CREATE INDEX idx_orders_end_date ON public.orders USING btree (end_date);
 
 
 --
+-- TOC entry 5165 (class 1259 OID 19036)
 -- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2640,6 +3025,7 @@ CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
+-- TOC entry 5166 (class 1259 OID 19037)
 -- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2647,6 +3033,7 @@ CREATE INDEX idx_orders_start_date ON public.orders USING btree (start_date);
 
 
 --
+-- TOC entry 5171 (class 1259 OID 19038)
 -- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2654,6 +3041,7 @@ CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking U
 
 
 --
+-- TOC entry 5174 (class 1259 OID 19039)
 -- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2661,6 +3049,7 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 
 
 --
+-- TOC entry 5177 (class 1259 OID 19182)
 -- Name: idx_receptions_arrival_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2668,6 +3057,7 @@ CREATE INDEX idx_receptions_arrival_date ON public.receptions USING btree (arriv
 
 
 --
+-- TOC entry 5178 (class 1259 OID 19040)
 -- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2675,6 +3065,7 @@ CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created
 
 
 --
+-- TOC entry 5187 (class 1259 OID 19041)
 -- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2682,6 +3073,7 @@ CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree
 
 
 --
+-- TOC entry 5188 (class 1259 OID 19042)
 -- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2689,6 +3081,7 @@ CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (statu
 
 
 --
+-- TOC entry 5189 (class 1259 OID 19043)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2696,6 +3089,7 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
+-- TOC entry 5194 (class 1259 OID 19044)
 -- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2703,6 +3097,7 @@ CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences U
 
 
 --
+-- TOC entry 5199 (class 1259 OID 19045)
 -- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2710,6 +3105,7 @@ CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
+-- TOC entry 5200 (class 1259 OID 19046)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -2717,6 +3113,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
+-- TOC entry 5215 (class 2620 OID 19047)
 -- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -2724,6 +3121,7 @@ CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON p
 
 
 --
+-- TOC entry 5208 (class 2606 OID 19048)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2732,6 +3130,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
+-- TOC entry 5209 (class 2606 OID 19053)
 -- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2740,6 +3139,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
+-- TOC entry 5210 (class 2606 OID 19058)
 -- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2748,6 +3148,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
+-- TOC entry 5207 (class 2606 OID 19063)
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2756,6 +3157,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
+-- TOC entry 5211 (class 2606 OID 19068)
 -- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2764,6 +3166,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
+-- TOC entry 5212 (class 2606 OID 19073)
 -- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2772,6 +3175,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
+-- TOC entry 5213 (class 2606 OID 19078)
 -- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2780,6 +3184,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
+-- TOC entry 5214 (class 2606 OID 19083)
 -- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -2788,15 +3193,19 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
+-- TOC entry 5408 (class 0 OID 0)
+-- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
+-- Completed on 2026-03-18 07:52:34
+
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict div2gVaXZAekTZdivCsbG3gjR9FjYTN8YTtowzAnEEMS63zCQtxOwcrKUbzlwKC
+\unrestrict PhUMxEyFvK8zWQ3B6Kv1Zh4xrIG4mAA8n7ge6c5dqWZv9s9LGw9DNQTT0erL4xp
 
