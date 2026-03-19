@@ -28,6 +28,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
   const [showNovedadesModal, setShowNovedadesModal] = useState(false);
 
   useEffect(() => {
+    setNovedadesByCorreria({});
     const yearCorrerias = state.correrias.filter(c => Number(c.year) === selectedYear);
     if (yearCorrerias.length === 0) return;
     // Fetch novedades of each correria in parallel
@@ -143,6 +144,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
         id: correria.id,
         nombre: correria.name,
         año: Number(correria.year),
+        totalPedidos: correriaOrders.length,
         kpis: {
           cantReferencias: maletaReferences.length,
           referenciasCero,
@@ -191,6 +193,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
   const chartData = useMemo(() => {
     return filteredCorrerias.map(c => ({
       name: c.nombre,
+      pedidos: c.totalPedidos,
       ventas: c.kpis.ventasTotalesPesos,
       despachos: c.kpis.despachosRealesReal,
       ventasUnd: c.kpis.ventasTotalesUnd,
@@ -363,8 +366,17 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                       dataKey="name"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: '#64748B', fontSize: 12, fontWeight: 600 }}
-                      dy={10}
+                      tick={(props) => {
+                        const { x, y, payload } = props;
+                        const item = chartData.find(d => d.name === payload.value);
+                        return (
+                          <g transform={`translate(${x},${y})`}>
+                            <text x={0} y={0} dy={14} textAnchor="middle" fill="#64748B" fontSize={12} fontWeight={600}>{payload.value}</text>
+                            <text x={0} y={0} dy={28} textAnchor="middle" fill="#94A3B8" fontSize={10} fontWeight={600}>{item ? `${item.pedidos} pedidos` : ''}</text>
+                          </g>
+                        );
+                      }}
+                      height={50}
                     />
                     <YAxis
                       hide

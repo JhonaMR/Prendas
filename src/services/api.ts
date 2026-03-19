@@ -172,6 +172,14 @@ class ApiService {
       
       // 3.1 Use response.ok as source of truth
       if (!response.ok) {
+        // Token expirado o no autorizado — cerrar sesión limpiamente
+        if (response.status === 401) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('current_user');
+          window.location.href = '/login';
+          return { success: false, message: 'Sesión expirada' };
+        }
+
         // 1.4 Add error logging with full context
         console.warn(`[${timestamp}] ⚠️ Response not OK:`, {
           status: response.status,

@@ -454,6 +454,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           min="1"
                           value={item.quantity}
                           onChange={(e) => handleUpdateItemQuantity(idx, parseInt(e.target.value) || 1)}
+                          onFocus={(e) => e.target.select()}
                           className="w-16 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
                           placeholder="Cant."
                         />
@@ -463,6 +464,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           step="0.01"
                           value={displayPrice}
                           onChange={(e) => handleUpdateItemPrice(idx, parseFloat(e.target.value) || 0)}
+                          onFocus={(e) => e.target.select()}
                           className="w-20 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
                           placeholder="Precio"
                         />

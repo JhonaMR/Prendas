@@ -91,6 +91,7 @@ export interface BatchReception {
   chargeUnits: number;
   incompleteUnits?: number;
   isPacked?: boolean;
+  hasMuestra?: boolean;
   bagQuantity?: number;
   items: ItemEntry[];
   receivedBy: string;
@@ -136,6 +137,7 @@ export interface DeliveryDate {
   quantity: number;
   sendDate: string;
   expectedDate: string;
+  rem?: number | null;
   deliveryDate: string | null;
   process: string;
   observation: string;

@@ -3,7 +3,7 @@ import { ChatContext } from '../../context/ChatContext';
 import { ChatNotification } from './ChatNotification';
 
 export const NotificationContainer: React.FC = () => {
-  const { notifications, removeNotification } = useContext(ChatContext)!;
+  const { notifications, removeNotification, openChat, clearPending } = useContext(ChatContext)!;
 
   return (
     <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 pointer-events-none">
@@ -13,7 +13,11 @@ export const NotificationContainer: React.FC = () => {
             userName={notification.userName}
             messagePreview={notification.messagePreview}
             onClose={() => removeNotification(notification.id)}
-            onClick={() => removeNotification(notification.id)}
+            onClick={() => {
+              removeNotification(notification.id);
+              clearPending(notification.userId);
+              openChat(notification.userId, notification.userName);
+            }}
           />
         </div>
       ))}

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { ChatContext } from '../../context/ChatContext';
+import React, { useEffect } from 'react';
+import { chatService } from '../../services/chatService';
 import { MessagesList } from './MessagesList';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
@@ -13,17 +13,27 @@ export const ChatWindow: React.FC = () => {
     closeChat,
     sendMessage,
     markAsRead,
+    setMessages,
     activeUsers,
-    markUserRead
+    markUserRead,
+    clearPending
   } = useChat();
+
+  // Cargar mensajes al abrir chat
+  useEffect(() => {
+    if (currentChat) {
+      chatService.getMessages(currentChat.userId).then(setMessages).catch(console.error);
+    }
+  }, [currentChat]);
 
   // Marcar como leído cuando abre el chat
   useEffect(() => {
     if (currentChat) {
       markAsRead(currentChat.userId);
       markUserRead(currentChat.userId);
+      clearPending(currentChat.userId);
     }
-  }, [currentChat, markAsRead, markUserRead]);
+  }, [currentChat, markAsRead, markUserRead, clearPending]);
 
   if (!currentChat) return null;
 

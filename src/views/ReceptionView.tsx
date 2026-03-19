@@ -52,6 +52,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [incompleteUnits, setIncompleteUnits] = useState(0);
   const [hasIncomplete, setHasIncomplete] = useState<boolean | null>(null);
   const [isPacked, setIsPacked] = useState<boolean | null>(null);
+  const [hasMuestra, setHasMuestra] = useState<boolean | null>(null);
   const [bagQuantity, setBagQuantity] = useState(0);
   const [items, setItems] = useState<ItemEntry[]>([]);
 
@@ -69,6 +70,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setIncompleteUnits(0);
     setHasIncomplete(null);
     setIsPacked(null);
+    setHasMuestra(null);
     setBagQuantity(0);
     setItems([]);
     setAffectsInventory(true);
@@ -93,6 +95,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setIncompleteUnits(lot.incompleteUnits || 0);
     setHasIncomplete((lot.incompleteUnits || 0) > 0);
     setIsPacked(lot.isPacked ?? null);
+    setHasMuestra(lot.hasMuestra ?? false);
     setBagQuantity(lot.bagQuantity || 0);
     setItems(lot.items);
     setAffectsInventory(lot.affectsInventory !== false);
@@ -195,6 +198,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       chargeUnits,
       incompleteUnits: hasIncomplete ? incompleteUnits : 0,
       isPacked: isPacked ?? false,
+      hasMuestra: hasMuestra ?? false,
       bagQuantity: bagQuantity || 0,
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
@@ -378,8 +382,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Status Toggles (Segundas, Empacado, Inventario) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {/* Row 2: Status Toggles (Segundas, Empacado, Muestra, Inventario) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Tiene Segundas?</label>
               <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
@@ -404,6 +408,20 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                 <button 
                   onClick={() => setIsPacked(false)} 
                   className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${isPacked === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >NO</button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-emerald-500 tracking-widest px-4">¿Tiene Muestra?</label>
+              <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setHasMuestra(true)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasMuestra === true ? 'bg-emerald-500 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >SÍ</button>
+                <button 
+                  onClick={() => setHasMuestra(false)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasMuestra === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
                 >NO</button>
               </div>
             </div>
@@ -624,6 +642,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                       <div className="flex flex-wrap gap-2 items-center">
                         <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty}</span></span>
                         {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segundas</span>}
+                        {r.hasMuestra && <span className="text-emerald-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Muestra</span>}
                         {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
                         {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc. {r.incompleteUnits}</span> : null}
                         {r.isPacked && <span className="text-teal-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span> Empacado</span>}
@@ -658,6 +677,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                 {r.incompleteUnits && r.incompleteUnits > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-purple-500 uppercase">INCOMPLETAS: {r.incompleteUnits} unidades</p> : null}
                                 <p className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase">{r.isPacked ? 'LOTE EMPACADO' : 'LOTE NO EMPACADO'}</p>
                                 {r.bagQuantity && r.bagQuantity > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-teal-600 uppercase">TALEGOS: {r.bagQuantity}</p> : null}
+                                <p className="text-[9px] sm:text-[10px] font-black uppercase" style={{ color: r.hasMuestra ? '#10b981' : '#94a3b8' }}>{r.hasMuestra ? 'CON MUESTRA' : 'SIN MUESTRA'}</p>
                              </div>
                          </div>
                          <div className="md:text-right">

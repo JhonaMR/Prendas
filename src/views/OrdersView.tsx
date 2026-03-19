@@ -793,10 +793,12 @@ const handleSaveProduction = async () => {
                 </tr>
                 );
               })}
-              {/* FILA DE TOTALES */}
-              {reportData.length > 0 && (
-                <tr className="bg-slate-100 border-t-2 border-slate-300 font-black">
-                  <td className="px-4 py-3 text-slate-800 uppercase text-xs">TOTALES</td>
+            </tbody>
+            {/* FILA DE TOTALES — sticky en la parte inferior */}
+            {reportData.length > 0 && (
+              <tfoot className="sticky bottom-0 z-20">
+                <tr className="bg-slate-100 border-t-2 border-slate-300 font-black shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
+                  <td className="px-4 py-3 text-slate-800 uppercase text-xs sticky left-0 bg-slate-100">TOTALES</td>
                   <td className="px-2 py-3 text-center">
                     <span className="px-2 py-1 rounded-md font-black text-sm bg-blue-600 text-white shadow-sm">
                       {reportData.reduce((sum, row) => sum + row.totalSold, 0)}
@@ -832,8 +834,8 @@ const handleSaveProduction = async () => {
                   <td className="px-3 py-3 border-l border-slate-200"></td>
                   <td className="px-3 py-3 border-l border-amber-100"></td>
                 </tr>
-              )}
-            </tbody>
+              </tfoot>
+            )}
           </table>
         </div>
       </div>

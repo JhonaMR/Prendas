@@ -138,6 +138,12 @@ const DeliveryDatesImportModal: React.FC<DeliveryDatesImportModalProps> = ({
             quantity: Number(getColumnValue(row, ['CANTIDAD', 'CANT'])),
             sendDate: sendDate || '',
             expectedDate: expectedDate || '',
+            rem: (() => {
+              const remVal = getColumnValue(row, ['REM', 'Rem', 'rem']);
+              if (remVal === null || remVal === undefined || remVal === '') return null;
+              const n = Number(remVal);
+              return isNaN(n) ? null : n;
+            })(),
             deliveryDate,
             process: getColumnValue(row, ['PROCESO']) ? String(getColumnValue(row, ['PROCESO'])).trim() : '',
             observation: getColumnValue(row, ['OBSERVACION', 'OBSERVACIÓN']) ? String(getColumnValue(row, ['OBSERVACION', 'OBSERVACIÓN'])).trim() : '',

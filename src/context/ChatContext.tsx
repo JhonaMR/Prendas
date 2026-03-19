@@ -1,4 +1,6 @@
-import React, { createContext, useCallback, useMemo, useReducer, ReactNode, useEffect } from 'react';
+import React, { createContext, useCallback, useMemo, useReducer, ReactNode } from 'react';
+import { ChatInitializer } from '../components/Chat/ChatInitializer';
+import { usePendingMessages } from '../hooks/usePendingMessages';
 
 export interface ChatMessage {
   id: string;
@@ -22,6 +24,7 @@ export interface ActiveUser {
 
 export interface Notification {
   id: string;
+  userId: string;
   userName: string;
   messagePreview: string;
 }
@@ -34,6 +37,12 @@ export interface ChatContextType {
   isContactsModalOpen: boolean;
   isTyping: boolean;
   notifications: Notification[];
+  // Mensajes pendientes (recibidos estando desconectado)
+  pendingUserIds: Set<string>;
+  hasPending: (userId: string) => boolean;
+  clearPending: (userId: string) => void;
+  addPending: (userId: string, userName: string) => void;
+  reloadPending: () => void;
   
   openContactsModal: () => void;
   closeContactsModal: () => void;
@@ -49,6 +58,7 @@ export interface ChatContextType {
   removeNotification: (notificationId: string) => void;
   incrementUnread: () => void;
   decrementUnread: () => void;
+  setUnreadCount: (count: number) => void;
   markUserUnread: (userId: string) => void;
   markUserRead: (userId: string) => void;
 }
@@ -65,6 +75,7 @@ type ChatAction =
   | { type: 'SET_IS_TYPING'; payload: boolean }
   | { type: 'INCREMENT_UNREAD' }
   | { type: 'DECREMENT_UNREAD' }
+  | { type: 'SET_UNREAD_COUNT'; payload: number }
   | { type: 'ADD_NOTIFICATION'; payload: Notification }
   | { type: 'REMOVE_NOTIFICATION'; payload: string }
   | { type: 'MARK_USER_UNREAD'; payload: string }
@@ -138,6 +149,9 @@ function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case 'DECREMENT_UNREAD':
       return { ...state, unreadCount: Math.max(0, state.unreadCount - 1) };
     
+    case 'SET_UNREAD_COUNT':
+      return { ...state, unreadCount: action.payload };
+    
     case 'ADD_NOTIFICATION':
       console.log('➕ ADD_NOTIFICATION action:', action.payload);
       return { ...state, notifications: [...state.notifications, action.payload] };
@@ -178,6 +192,7 @@ interface ChatProviderProps {
 
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, initialState);
+  const pending = usePendingMessages();
 
   const openContactsModal = useCallback(() => {
     dispatch({ type: 'OPEN_CONTACTS_MODAL' });
@@ -231,6 +246,10 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
     dispatch({ type: 'DECREMENT_UNREAD' });
   }, []);
 
+  const setUnreadCount = useCallback((count: number) => {
+    dispatch({ type: 'SET_UNREAD_COUNT', payload: count });
+  }, []);
+
   const markUserUnread = useCallback((userId: string) => {
     dispatch({ type: 'MARK_USER_UNREAD', payload: userId });
   }, []);
@@ -264,6 +283,12 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       isContactsModalOpen: state.isContactsModalOpen,
       isTyping: state.isTyping,
       notifications: state.notifications,
+      // Pending messages
+      pendingUserIds: new Set(pending.pendingConversations.map(c => c.userId)),
+      hasPending: pending.hasPending,
+      clearPending: pending.clearPending,
+      addPending: pending.addPending,
+      reloadPending: pending.reload,
       openContactsModal,
       closeContactsModal,
       openChat,
@@ -278,6 +303,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       removeNotification,
       incrementUnread,
       decrementUnread,
+      setUnreadCount,
       markUserUnread,
       markUserRead
     }),
@@ -289,6 +315,11 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       state.isContactsModalOpen,
       state.isTyping,
       state.notifications,
+      pending.pendingConversations,
+      pending.hasPending,
+      pending.clearPending,
+      pending.addPending,
+      pending.reload,
       openContactsModal,
       closeContactsModal,
       openChat,
@@ -303,6 +334,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
       removeNotification,
       incrementUnread,
       decrementUnread,
+      setUnreadCount,
       markUserUnread,
       markUserRead
     ]
@@ -310,6 +342,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   return (
     <ChatContext.Provider value={value}>
+      <ChatInitializer />
       {children}
     </ChatContext.Provider>
   );

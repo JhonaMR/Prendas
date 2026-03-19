@@ -180,6 +180,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                 </td>
                                 <td className="px-3 py-3">
                                     <input type="number" value={con.vlr_unit} onChange={e => actualizar(i, 'vlr_unit', Number(e.target.value))} readOnly={readOnly}
+                                        onFocus={e => e.target.select()}
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-right focus:ring-2 focus:ring-blue-100" />
                                 </td>
                                 <td className="px-3 py-3">
@@ -187,6 +188,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         value={con.cant}
                                         onChange={val => actualizar(i, 'cant', val)}
                                         readOnly={readOnly}
+                                        onFocus={e => e.target.select()}
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100"
                                     />
                                 </td>

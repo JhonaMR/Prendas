@@ -65,6 +65,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
             quantity: d.quantity,
             sendDate: d.send_date,
             expectedDate: d.expected_date,
+            rem: d.rem,
             deliveryDate: d.delivery_date,
             process: d.process,
             observation: d.observation,
@@ -95,6 +96,7 @@ const getAllDeliveryDates = async () => {
             quantity: d.quantity,
             sendDate: d.send_date,
             expectedDate: d.expected_date,
+            rem: d.rem,
             deliveryDate: d.delivery_date,
             process: d.process,
             observation: d.observation,
@@ -182,9 +184,9 @@ const saveDeliveryDatesBatch = async (dates, userId) => {
                     await client.query(`
                         INSERT INTO delivery_dates (
                             id, confeccionista_id, reference_id, quantity, 
-                            send_date, expected_date, delivery_date, 
+                            send_date, expected_date, delivery_date, rem,
                             process, observation, created_by, created_at
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
                         ON CONFLICT(id) DO UPDATE SET
                             confeccionista_id = excluded.confeccionista_id,
                             reference_id = excluded.reference_id,
@@ -192,6 +194,7 @@ const saveDeliveryDatesBatch = async (dates, userId) => {
                             send_date = excluded.send_date,
                             expected_date = excluded.expected_date,
                             delivery_date = excluded.delivery_date,
+                            rem = excluded.rem,
                             process = excluded.process,
                             observation = excluded.observation
                     `, [
@@ -202,6 +205,7 @@ const saveDeliveryDatesBatch = async (dates, userId) => {
                         date.sendDate,
                         date.expectedDate,
                         date.deliveryDate || null,
+                        date.rem ?? null,
                         date.process || '',
                         date.observation || '',
                         createdBy,
@@ -281,6 +285,7 @@ const getDeliveryDateById = async (id) => {
             quantity: date.quantity,
             sendDate: date.send_date,
             expectedDate: date.expected_date,
+            rem: date.rem,
             deliveryDate: date.delivery_date,
             process: date.process,
             observation: date.observation,

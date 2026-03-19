@@ -8,6 +8,7 @@ import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContaine
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import PWAUpdateNotification from './components/PWAUpdateNotification';
 import { useSessionClose } from './hooks/useSessionClose';
+import { socketService } from './services/socketService';
 import './styles/pwa.css';
 
 // Views
@@ -79,6 +80,17 @@ const App: React.FC = () => {
     
     if (storedUser && token) {
       try {
+        // Verificar si el token ya expiró antes de restaurar la sesión
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const isExpired = payload.exp && Date.now() / 1000 > payload.exp;
+
+        if (isExpired) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('current_user');
+          console.warn('⏰ Token expirado, sesión cerrada');
+          return;
+        }
+
         const user = JSON.parse(storedUser);
         setUser(user);
         console.log('✅ Usuario recuperado del localStorage:', user.name);
@@ -223,6 +235,7 @@ const App: React.FC = () => {
   // ========== FUNCIONES GENERALES ==========
 
   const handleLogout = () => {
+    socketService.disconnect();
     api.logout();
     setUser(null);
     setIsNavOpen(false);

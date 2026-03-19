@@ -86,6 +86,15 @@ const login = async (req, res) => {
         }
 
         // ===== GENERAR TOKEN JWT =====
+        // El token expira a las 8:00 PM del día actual
+        // Si el login ocurre después de las 8pm, expira a las 8pm del día siguiente
+        const now = new Date();
+        const expiry = new Date(now);
+        expiry.setHours(20, 0, 0, 0);
+        if (now >= expiry) {
+            expiry.setDate(expiry.getDate() + 1);
+        }
+        const secondsUntilExpiry = Math.floor((expiry.getTime() - now.getTime()) / 1000);
 
         const token = jwt.sign(
             {
@@ -96,7 +105,7 @@ const login = async (req, res) => {
             },
             process.env.JWT_SECRET || 'secret_default',
             {
-                expiresIn: process.env.JWT_EXPIRES_IN || '24h'
+                expiresIn: secondsUntilExpiry
             }
         );
 
