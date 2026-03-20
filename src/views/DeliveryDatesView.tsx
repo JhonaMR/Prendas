@@ -20,6 +20,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [hideDelivered, setHideDelivered] = useState(false);
   const [confFilterId, setConfFilterId] = useState('');
   const [refFilterId, setRefFilterId] = useState('');
+  const [processFilter, setProcessFilter] = useState('');
   const [yearFilter, setYearFilter] = useState('');
   const [sendDateMonthFilter, setSendDateMonthFilter] = useState('');
   const [expectedDateMonthFilter, setExpectedDateMonthFilter] = useState('');
@@ -246,7 +247,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       const expected = new Date(d.expectedDate);
       const today = new Date();
       const diff = Math.round((today.getTime() - expected.getTime()) / (1000 * 60 * 60 * 24));
-      return diff > 20;
+      return diff > 10;
     }).length;
 
     const avgDelay = delivered.length > 0
@@ -281,16 +282,20 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         const expected = new Date(d.expectedDate);
         const today = new Date();
         const diff = Math.round((today.getTime() - expected.getTime()) / (1000 * 60 * 60 * 24));
-        return diff > 20;
+        return diff > 10;
       });
     }
 
     if (confFilterId) {
-      data = data.filter(d => d.confeccionistaId.toLowerCase() === confFilterId.toLowerCase());
+      data = data.filter(d => d.confeccionistaId.toLowerCase().includes(confFilterId.toLowerCase()));
     }
 
     if (refFilterId) {
-      data = data.filter(d => d.referenceId.toLowerCase() === refFilterId.toLowerCase());
+      data = data.filter(d => d.referenceId.toLowerCase().includes(refFilterId.toLowerCase()));
+    }
+
+    if (processFilter) {
+      data = data.filter(d => d.process.toLowerCase().includes(processFilter.toLowerCase()));
     }
 
     // Filtro de año - solo en sendDate
@@ -325,7 +330,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     }
 
     return data;
-  }, [state.deliveryDates, hideDelivered, filterHighPriority, confFilterId, refFilterId, yearFilter, sendDateMonthFilter, expectedDateMonthFilter, deliveryDateMonthFilter]);
+  }, [state.deliveryDates, hideDelivered, filterHighPriority, confFilterId, refFilterId, processFilter, yearFilter, sendDateMonthFilter, expectedDateMonthFilter, deliveryDateMonthFilter]);
 
   // Actualizar paginación cuando cambia filteredData
   useEffect(() => {
@@ -391,6 +396,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
             onClick={() => {
               setConfFilterId('');
               setRefFilterId('');
+              setProcessFilter('');
               setYearFilter('');
               setSendDateMonthFilter('');
               setExpectedDateMonthFilter('');
@@ -406,28 +412,6 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
             </svg>
             Limpiar
           </button>
-
-          <div className="flex flex-col w-48">
-            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Confeccionista</span>
-            <TextAutocomplete
-              value={confFilterId}
-              suggestions={confeccionistasSuggestions}
-              onChange={setConfFilterId}
-              placeholder="Filtrar..."
-              disabled={false}
-            />
-          </div>
-
-          <div className="flex flex-col w-48">
-            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Referencia</span>
-            <TextAutocomplete
-              value={refFilterId}
-              suggestions={referenciasSuggestions}
-              onChange={setRefFilterId}
-              placeholder="Filtrar..."
-              disabled={false}
-            />
-          </div>
 
           <div className="flex flex-col">
             <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Año (Envío)</span>
@@ -485,7 +469,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         >
           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2">Lotes de atención prioritaria</p>
           <p className="text-5xl font-black text-red-700">{metrics.highPriority}</p>
-          <p className="text-[10px] font-bold text-red-500 uppercase mt-1">Lotes con 20 días de retraso</p>
+          <p className="text-[10px] font-bold text-red-500 uppercase mt-1">Lotes con 10 días de retraso</p>
         </button>
 
         <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border border-yellow-200">
@@ -542,8 +526,24 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                 <th className="px-3 py-2 text-center w-16"></th>
               </tr>
               <tr className="bg-slate-100">
-                <th className="px-4 py-1"></th>
-                <th className="px-3 py-1"></th>
+                <th className="px-4 py-1">
+                  <TextAutocomplete
+                    value={confFilterId}
+                    suggestions={confeccionistasSuggestions}
+                    onChange={setConfFilterId}
+                    placeholder="Filtrar..."
+                    disabled={false}
+                  />
+                </th>
+                <th className="px-3 py-1">
+                  <TextAutocomplete
+                    value={refFilterId}
+                    suggestions={referenciasSuggestions}
+                    onChange={setRefFilterId}
+                    placeholder="Filtrar..."
+                    disabled={false}
+                  />
+                </th>
                 <th className="px-3 py-1"></th>
                 <th className="px-3 py-1 bg-yellow-100">
                   <select
@@ -592,7 +592,15 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                 <th className="px-3 py-1"></th>
                 <th className="px-3 py-1"></th>
                 <th className="px-3 py-1"></th>
-                <th className="px-4 py-1"></th>
+                <th className="px-4 py-1">
+                  <TextAutocomplete
+                    value={processFilter}
+                    suggestions={procesosSuggestions}
+                    onChange={setProcessFilter}
+                    placeholder="Filtrar..."
+                    disabled={false}
+                  />
+                </th>
                 <th className="px-4 py-1"></th>
                 <th className="px-3 py-1"></th>
               </tr>
@@ -643,6 +651,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           type="number"
                           value={row.quantity}
                           onChange={e => updateRow(row.id, 'quantity', Number(e.target.value))}
+                          onFocus={e => e.target.select()}
                           readOnly={false}
                           className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100 ${hasErrors?.quantity ? 'border-red-500' : 'border-slate-200'}`}
                         />
