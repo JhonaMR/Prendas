@@ -45,7 +45,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
         if (!searchTerm) return true;
         const t = searchTerm.toLowerCase();
         return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
-    });
+    }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
 
     React.useEffect(() => {
         fichasPagination.pagination.total = fichas.length;

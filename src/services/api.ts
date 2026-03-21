@@ -1177,6 +1177,21 @@ class ApiService {
     }
   }
 
+  async deleteReception(id: string): Promise<ApiResponse<void>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse<void>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar recepción'
+      };
+    }
+  }
+
   // ==================== DEVOLUCIONES ====================
 
   async getReturnReceptions(): Promise<any[]> {

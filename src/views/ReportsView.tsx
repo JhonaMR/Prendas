@@ -385,7 +385,8 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
             <div className="p-10 bg-blue-50 border-b border-slate-100">
               <h3 className="text-2xl font-black text-blue-900 tracking-tighter">Pedidos por Correría</h3>
             </div>
-            <table className="w-full text-left">
+            <div className="overflow-x-auto">
+            <table className="w-full text-left min-w-[1100px]">
               <thead>
                 <tr className="bg-slate-50">
                   <th className="px-10 py-3 text-[10px] font-black uppercase text-slate-700">Cliente</th>
@@ -395,6 +396,8 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                   <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Valor Pedido</th>
                   <th className="px-10 py-3 text-right text-[10px] font-black uppercase text-slate-700">Valor Despachado</th>
                   <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">% Cumpl. Valor</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">Fecha Inicio Desp.</th>
+                  <th className="px-10 py-3 text-center text-[10px] font-black uppercase text-slate-700">Fecha Fin Desp.</th>
                 </tr>
               </thead>
               <tbody>
@@ -441,6 +444,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                 })}
               </tbody>
             </table>
+            </div>
           </div>
         )}
 

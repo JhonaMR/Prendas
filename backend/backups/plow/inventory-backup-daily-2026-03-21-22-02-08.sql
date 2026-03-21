@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict qnmr4OGMoAhQpqjkp3rOxHB3a3uJ7dxvbBi62q0hyodhQDXjBwtyNnfFR0Kxwri
+\restrict 1ATaNCfJHKlAGIzWdqpZWtGlSWMvWhXbzYvA1fT0yuBj657SsZW81wcpZx07IaY
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
 
--- Started on 2026-03-17 09:25:00
+-- Started on 2026-03-20 22:02:08
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,7 +23,7 @@ SET row_security = off;
 
 DROP DATABASE IF EXISTS inventory_plow;
 --
--- TOC entry 5403 (class 1262 OID 16388)
+-- TOC entry 5268 (class 1262 OID 16387)
 -- Name: inventory_plow; Type: DATABASE; Schema: -; Owner: postgres
 --
 
@@ -32,9 +32,9 @@ CREATE DATABASE inventory_plow WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCAL
 
 ALTER DATABASE inventory_plow OWNER TO postgres;
 
-\unrestrict qnmr4OGMoAhQpqjkp3rOxHB3a3uJ7dxvbBi62q0hyodhQDXjBwtyNnfFR0Kxwri
+\unrestrict 1ATaNCfJHKlAGIzWdqpZWtGlSWMvWhXbzYvA1fT0yuBj657SsZW81wcpZx07IaY
 \connect inventory_plow
-\restrict qnmr4OGMoAhQpqjkp3rOxHB3a3uJ7dxvbBi62q0hyodhQDXjBwtyNnfFR0Kxwri
+\restrict 1ATaNCfJHKlAGIzWdqpZWtGlSWMvWhXbzYvA1fT0yuBj657SsZW81wcpZx07IaY
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -49,7 +49,7 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- TOC entry 5 (class 2615 OID 17156)
+-- TOC entry 5 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -59,7 +59,7 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 5404 (class 0 OID 0)
+-- TOC entry 5269 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -68,7 +68,7 @@ COMMENT ON SCHEMA public IS '';
 
 
 --
--- TOC entry 257 (class 1255 OID 17986)
+-- TOC entry 259 (class 1255 OID 16390)
 -- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -89,7 +89,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 219 (class 1259 OID 17987)
+-- TOC entry 219 (class 1259 OID 16391)
 -- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -111,7 +111,7 @@ CREATE TABLE public.audit_log (
 ALTER TABLE public.audit_log OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 17996)
+-- TOC entry 220 (class 1259 OID 16400)
 -- Name: clients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -132,7 +132,7 @@ CREATE TABLE public.clients (
 ALTER TABLE public.clients OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 18007)
+-- TOC entry 221 (class 1259 OID 16411)
 -- Name: compras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -160,7 +160,7 @@ CREATE TABLE public.compras (
 ALTER TABLE public.compras OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 18024)
+-- TOC entry 222 (class 1259 OID 16428)
 -- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -179,7 +179,7 @@ CREATE TABLE public.confeccionistas (
 ALTER TABLE public.confeccionistas OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 18036)
+-- TOC entry 223 (class 1259 OID 16440)
 -- Name: correria_catalog; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -194,7 +194,7 @@ CREATE TABLE public.correria_catalog (
 ALTER TABLE public.correria_catalog OWNER TO postgres;
 
 --
--- TOC entry 256 (class 1259 OID 19120)
+-- TOC entry 224 (class 1259 OID 16448)
 -- Name: correria_novedades; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -209,7 +209,7 @@ CREATE TABLE public.correria_novedades (
 ALTER TABLE public.correria_novedades OWNER TO postgres;
 
 --
--- TOC entry 255 (class 1259 OID 19119)
+-- TOC entry 225 (class 1259 OID 16457)
 -- Name: correria_novedades_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -225,8 +225,8 @@ CREATE SEQUENCE public.correria_novedades_id_seq
 ALTER SEQUENCE public.correria_novedades_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5406 (class 0 OID 0)
--- Dependencies: 255
+-- TOC entry 5271 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: correria_novedades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -234,7 +234,7 @@ ALTER SEQUENCE public.correria_novedades_id_seq OWNED BY public.correria_novedad
 
 
 --
--- TOC entry 224 (class 1259 OID 18044)
+-- TOC entry 226 (class 1259 OID 16458)
 -- Name: correrias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -250,7 +250,7 @@ CREATE TABLE public.correrias (
 ALTER TABLE public.correrias OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 18053)
+-- TOC entry 227 (class 1259 OID 16467)
 -- Name: delivery_dates; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -265,14 +265,15 @@ CREATE TABLE public.delivery_dates (
     process character varying(255),
     observation character varying(255),
     created_at timestamp without time zone,
-    created_by character varying(255) NOT NULL
+    created_by character varying(255) NOT NULL,
+    rem numeric
 );
 
 
 ALTER TABLE public.delivery_dates OWNER TO postgres;
 
 --
--- TOC entry 226 (class 1259 OID 18065)
+-- TOC entry 228 (class 1259 OID 16479)
 -- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -290,7 +291,7 @@ CREATE TABLE public.disenadoras (
 ALTER TABLE public.disenadoras OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 18074)
+-- TOC entry 229 (class 1259 OID 16488)
 -- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -305,7 +306,7 @@ CREATE SEQUENCE public.dispatch_items_id_seq
 ALTER SEQUENCE public.dispatch_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 228 (class 1259 OID 18075)
+-- TOC entry 230 (class 1259 OID 16489)
 -- Name: dispatch_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -321,7 +322,7 @@ CREATE TABLE public.dispatch_items (
 ALTER TABLE public.dispatch_items OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 18086)
+-- TOC entry 231 (class 1259 OID 16500)
 -- Name: dispatches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -340,7 +341,7 @@ CREATE TABLE public.dispatches (
 ALTER TABLE public.dispatches OWNER TO postgres;
 
 --
--- TOC entry 230 (class 1259 OID 18098)
+-- TOC entry 232 (class 1259 OID 16513)
 -- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -375,7 +376,7 @@ CREATE TABLE public.fichas_cortes (
 ALTER TABLE public.fichas_cortes OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 18125)
+-- TOC entry 233 (class 1259 OID 16540)
 -- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -424,7 +425,7 @@ CREATE TABLE public.fichas_costo (
 ALTER TABLE public.fichas_costo OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 18159)
+-- TOC entry 234 (class 1259 OID 16574)
 -- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -461,7 +462,7 @@ CREATE TABLE public.fichas_diseno (
 ALTER TABLE public.fichas_diseno OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 18181)
+-- TOC entry 235 (class 1259 OID 16596)
 -- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -486,7 +487,7 @@ CREATE TABLE public.inventory_movements (
 ALTER TABLE public.inventory_movements OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 18197)
+-- TOC entry 236 (class 1259 OID 16612)
 -- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -503,7 +504,7 @@ CREATE TABLE public.maletas (
 ALTER TABLE public.maletas OWNER TO postgres;
 
 --
--- TOC entry 235 (class 1259 OID 18207)
+-- TOC entry 237 (class 1259 OID 16622)
 -- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -519,7 +520,7 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
--- TOC entry 236 (class 1259 OID 18216)
+-- TOC entry 238 (class 1259 OID 16631)
 -- Name: messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -537,7 +538,7 @@ CREATE TABLE public.messages (
 ALTER TABLE public.messages OWNER TO postgres;
 
 --
--- TOC entry 237 (class 1259 OID 18228)
+-- TOC entry 239 (class 1259 OID 16643)
 -- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -553,8 +554,8 @@ CREATE SEQUENCE public.messages_id_seq
 ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5407 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 5272 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -562,7 +563,7 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
--- TOC entry 238 (class 1259 OID 18229)
+-- TOC entry 240 (class 1259 OID 16644)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -577,7 +578,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
--- TOC entry 239 (class 1259 OID 18239)
+-- TOC entry 241 (class 1259 OID 16654)
 -- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -600,7 +601,7 @@ CREATE TABLE public.orders (
 ALTER TABLE public.orders OWNER TO postgres;
 
 --
--- TOC entry 240 (class 1259 OID 18251)
+-- TOC entry 242 (class 1259 OID 16666)
 -- Name: product_references; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -621,7 +622,7 @@ CREATE TABLE public.product_references (
 ALTER TABLE public.product_references OWNER TO postgres;
 
 --
--- TOC entry 241 (class 1259 OID 18261)
+-- TOC entry 243 (class 1259 OID 16676)
 -- Name: production_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -638,7 +639,7 @@ CREATE TABLE public.production_tracking (
 ALTER TABLE public.production_tracking OWNER TO postgres;
 
 --
--- TOC entry 242 (class 1259 OID 18271)
+-- TOC entry 244 (class 1259 OID 16686)
 -- Name: reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -653,7 +654,7 @@ CREATE TABLE public.reception_items (
 ALTER TABLE public.reception_items OWNER TO postgres;
 
 --
--- TOC entry 243 (class 1259 OID 18280)
+-- TOC entry 245 (class 1259 OID 16695)
 -- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -668,8 +669,8 @@ CREATE SEQUENCE public.reception_items_id_seq
 ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5408 (class 0 OID 0)
--- Dependencies: 243
+-- TOC entry 5273 (class 0 OID 0)
+-- Dependencies: 245
 -- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -677,7 +678,7 @@ ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
 
 
 --
--- TOC entry 244 (class 1259 OID 18281)
+-- TOC entry 246 (class 1259 OID 16696)
 -- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -693,15 +694,17 @@ CREATE TABLE public.receptions (
     affects_inventory boolean DEFAULT true,
     incomplete_units integer DEFAULT 0,
     is_packed boolean DEFAULT false,
-    bag_quantity integer DEFAULT 0
+    bag_quantity integer DEFAULT 0,
+    arrival_date date DEFAULT '2026-01-01'::date NOT NULL,
+    has_muestra boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE public.receptions OWNER TO postgres;
 
 --
--- TOC entry 5409 (class 0 OID 0)
--- Dependencies: 244
+-- TOC entry 5274 (class 0 OID 0)
+-- Dependencies: 246
 -- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
 
@@ -709,7 +712,7 @@ COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this 
 
 
 --
--- TOC entry 245 (class 1259 OID 18293)
+-- TOC entry 247 (class 1259 OID 16713)
 -- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -725,7 +728,7 @@ CREATE TABLE public.return_reception_items (
 ALTER TABLE public.return_reception_items OWNER TO postgres;
 
 --
--- TOC entry 246 (class 1259 OID 18302)
+-- TOC entry 248 (class 1259 OID 16722)
 -- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -740,8 +743,8 @@ CREATE SEQUENCE public.return_reception_items_id_seq
 ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5410 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 5275 (class 0 OID 0)
+-- Dependencies: 248
 -- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -749,7 +752,7 @@ ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_recep
 
 
 --
--- TOC entry 247 (class 1259 OID 18303)
+-- TOC entry 249 (class 1259 OID 16723)
 -- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -766,7 +769,49 @@ CREATE TABLE public.return_receptions (
 ALTER TABLE public.return_receptions OWNER TO postgres;
 
 --
--- TOC entry 248 (class 1259 OID 18313)
+-- TOC entry 250 (class 1259 OID 16733)
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.schema_migrations (
+    id integer NOT NULL,
+    migration_name character varying(255) NOT NULL,
+    applied_at timestamp without time zone DEFAULT now(),
+    success boolean DEFAULT true,
+    error_message text,
+    execution_time_ms integer
+);
+
+
+ALTER TABLE public.schema_migrations OWNER TO postgres;
+
+--
+-- TOC entry 251 (class 1259 OID 16742)
+-- Name: schema_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.schema_migrations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.schema_migrations_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5276 (class 0 OID 0)
+-- Dependencies: 251
+-- Name: schema_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.schema_migrations_id_seq OWNED BY public.schema_migrations.id;
+
+
+--
+-- TOC entry 252 (class 1259 OID 16743)
 -- Name: sellers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -781,7 +826,7 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
--- TOC entry 249 (class 1259 OID 18321)
+-- TOC entry 253 (class 1259 OID 16751)
 -- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -798,7 +843,7 @@ CREATE TABLE public.user_sessions (
 ALTER TABLE public.user_sessions OWNER TO postgres;
 
 --
--- TOC entry 250 (class 1259 OID 18332)
+-- TOC entry 254 (class 1259 OID 16762)
 -- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -814,8 +859,8 @@ CREATE SEQUENCE public.user_sessions_id_seq
 ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5411 (class 0 OID 0)
--- Dependencies: 250
+-- TOC entry 5277 (class 0 OID 0)
+-- Dependencies: 254
 -- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -823,7 +868,7 @@ ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
 
 
 --
--- TOC entry 251 (class 1259 OID 18333)
+-- TOC entry 255 (class 1259 OID 16763)
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -839,7 +884,7 @@ CREATE TABLE public.user_view_preferences (
 ALTER TABLE public.user_view_preferences OWNER TO postgres;
 
 --
--- TOC entry 252 (class 1259 OID 18344)
+-- TOC entry 256 (class 1259 OID 16774)
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -855,8 +900,8 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5412 (class 0 OID 0)
--- Dependencies: 252
+-- TOC entry 5278 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -864,7 +909,7 @@ ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_pre
 
 
 --
--- TOC entry 253 (class 1259 OID 18345)
+-- TOC entry 257 (class 1259 OID 16775)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -883,7 +928,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 254 (class 1259 OID 18356)
+-- TOC entry 258 (class 1259 OID 16786)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -898,8 +943,8 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5413 (class 0 OID 0)
--- Dependencies: 254
+-- TOC entry 5279 (class 0 OID 0)
+-- Dependencies: 258
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -907,7 +952,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 5083 (class 2604 OID 19123)
+-- TOC entry 4838 (class 2604 OID 16787)
 -- Name: correria_novedades id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -915,7 +960,7 @@ ALTER TABLE ONLY public.correria_novedades ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 5063 (class 2604 OID 18357)
+-- TOC entry 4918 (class 2604 OID 16788)
 -- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -923,7 +968,7 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
--- TOC entry 5068 (class 2604 OID 18358)
+-- TOC entry 4923 (class 2604 OID 16789)
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -931,7 +976,7 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 5073 (class 2604 OID 18359)
+-- TOC entry 4930 (class 2604 OID 16790)
 -- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -939,7 +984,15 @@ ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextv
 
 
 --
--- TOC entry 5074 (class 2604 OID 18360)
+-- TOC entry 4931 (class 2604 OID 16791)
+-- Name: schema_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schema_migrations ALTER COLUMN id SET DEFAULT nextval('public.schema_migrations_id_seq'::regclass);
+
+
+--
+-- TOC entry 4934 (class 2604 OID 16792)
 -- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -947,7 +1000,7 @@ ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 5078 (class 2604 OID 18361)
+-- TOC entry 4938 (class 2604 OID 16793)
 -- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -955,7 +1008,7 @@ ALTER TABLE ONLY public.user_view_preferences ALTER COLUMN id SET DEFAULT nextva
 
 
 --
--- TOC entry 5082 (class 2604 OID 18362)
+-- TOC entry 4942 (class 2604 OID 16794)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -963,7 +1016,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 5360 (class 0 OID 17987)
+-- TOC entry 5223 (class 0 OID 16391)
 -- Dependencies: 219
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -973,7 +1026,7 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
--- TOC entry 5361 (class 0 OID 17996)
+-- TOC entry 5224 (class 0 OID 16400)
 -- Dependencies: 220
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1288,11 +1341,12 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 99	RAYOTEX S.A.S	800144409	CL 9 4 90 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 test-restore-1	Cliente Restore	NIT-RESTORE	Dirección	Ciudad	\N	\N	seller	\N	t
 310	ALIANZA VC SAS	900225992	CRA 3A # 17 - 61	CAUCASIA	\N	\N	mlia6sxbdfmbvlex0	\N	t
+311	ANTEXTIL S.A.S.	901170873	AV PEDRO HEREDIA 26 - 75	CARTAGENA	\N	\N	mlia6sxbdfmbvlex0	\N	t
 \.
 
 
 --
--- TOC entry 5362 (class 0 OID 18007)
+-- TOC entry 5225 (class 0 OID 16411)
 -- Dependencies: 221
 -- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1332,7 +1386,7 @@ mmapjhr3vfzfej7hg	2026-02-17	12970	138	GUIPURE	1.68	2500.00	231.84	579600.00	BOM
 
 
 --
--- TOC entry 5363 (class 0 OID 18024)
+-- TOC entry 5226 (class 0 OID 16428)
 -- Dependencies: 222
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1490,7 +1544,7 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 
 
 --
--- TOC entry 5364 (class 0 OID 18036)
+-- TOC entry 5227 (class 0 OID 16440)
 -- Dependencies: 223
 -- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1783,8 +1837,8 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 
 
 --
--- TOC entry 5397 (class 0 OID 19120)
--- Dependencies: 256
+-- TOC entry 5228 (class 0 OID 16448)
+-- Dependencies: 224
 -- Data for Name: correria_novedades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1794,8 +1848,8 @@ COPY public.correria_novedades (id, correria_id, contenido, created_at) FROM std
 
 
 --
--- TOC entry 5365 (class 0 OID 18044)
--- Dependencies: 224
+-- TOC entry 5230 (class 0 OID 16458)
+-- Dependencies: 226
 -- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1806,172 +1860,274 @@ mljjrcujmtckild4r	Madres	2026	1	2026-02-12 14:21:25
 
 
 --
--- TOC entry 5366 (class 0 OID 18053)
--- Dependencies: 225
+-- TOC entry 5231 (class 0 OID 16467)
+-- Dependencies: 227
 -- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.delivery_dates (id, confeccionista_id, reference_id, quantity, send_date, expected_date, delivery_date, process, observation, created_at, created_by) FROM stdin;
-import_1772211653372_0	MELVA GALLEGO	5000/ BLUSA	130	2026-01-30	2026-02-04	2026-02-07	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_1	ALEJANDRA CHAVERRA	12921	60	2026-02-16	2026-02-19	2026-02-20	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_2	CAMILO HOYOS	12871	84	2025-12-15	2025-12-22	2026-01-20	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_3	CAMILO HOYOS	12782	120	2025-12-23	2025-12-24	2026-01-08	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_4	DIANA CORREA	12884	120	2025-12-24	2025-12-30	2026-01-10	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_5	LIDA LONDOÑO	12754	120	2026-01-05	2026-01-09	2026-01-10	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_6	MARLENY RAMIREZ	12880	120	2026-01-06	2026-01-13	2026-01-16	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_7	PEDRO LLANEZ	12486	143	2026-01-06	2026-01-13	2026-01-19	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_8	MELVA GALLEGO	12889	117	2026-01-07	2026-01-15	2026-01-20	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_9	MELVA GALLEGO	12885	117	2026-01-07	2026-01-15	2026-01-20	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_10	MICHEL CANO	12862	147	2026-01-07	2026-01-13	2026-01-20	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_11	MILENA SALAZAR	12771	120	2026-01-07	2026-01-14	2026-01-13	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_12	NANCY ARBOLEDA	12783	120	2026-01-07	2026-01-14	2026-01-13	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_13	VIVIANA OLAYA	12882	120	2026-01-07	2026-01-14	2026-01-13	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_14	MARGARITA VASQUEZ	12782	120	2026-01-08	2026-01-15	2026-01-16	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_15	JOSEFINA PULGARIN	12497	173	2026-01-09	2026-01-15	2026-01-15	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_16	CLARA HERRERA	12754	120	2026-01-13	2026-01-15	2026-01-14	OJAL Y BOTÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_17	LIDA LONDOÑO	12894	318	2026-01-15	2026-01-26	2026-01-29	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_18	MARIA TERESA	12891	120	2026-01-15	2026-01-21	2026-01-23	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_19	MARIU CUBILLON	12901	147	2026-01-16	2026-01-23	2026-01-22	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_20	MARIA VICTORIA JARAMILLO	DOTACION	38	2026-01-19	2026-01-24	2026-01-21	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_21	HERNAN LONDOÑO	12911	342	2026-01-20	2026-01-24	2026-01-26	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_22	ERICA GIL	5001	102	2026-01-21	2026-01-27	2026-01-31	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_23	HOIBER TORO	12871	84	2026-01-21	2026-01-27	2026-01-27	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_24	JOSEFINA PULGARIN	12890	105	2026-01-21	2026-01-27	2026-01-29	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_25	JOSEFINA PULGARIN	12896	60	2026-01-21	2026-01-27	2026-01-29	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_26	ELVIA MUÑOZ	12877	120	2026-01-22	2026-01-28	2026-01-27	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_27	ALEJANDRA CHAVERRA	12913	90	2026-01-23	2026-01-29	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_28	CAMILO HOYOS	12871	150	2026-01-26	2026-01-30	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_29	CAMILO HOYOS	12876	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_30	HERNAN LONDOÑO	12919	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_31	HERNAN LONDOÑO	12909	198	2026-01-26	2026-01-28	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_32	HERNAN LONDOÑO	12877	150	2026-01-26	2026-01-28	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_33	HERNAN LONDOÑO	12913	90	2026-01-26	2026-01-28	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_34	NANCY ARBOLEDA	12955	48	2026-01-26	2026-01-29	2026-02-03	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_35	ALBA MIRIAM ARCILA	12911	171	2026-01-27	2026-01-28	2026-02-11	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_36	ALEJANDRA CHAVERRA	12888	150	2026-01-27	2026-02-02	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_37	CAMILO HOYOS	12864	99	2026-01-27	2026-02-02	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_38	CAMILO HOYOS	12860	132	2026-01-27	2026-02-02	2026-02-03	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_39	CAMILO HOYOS	CAMISETAS	107	2026-01-27	2026-02-02	2026-02-04	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_40	HERNAN LONDOÑO	12871	150	2026-01-27	2026-01-29	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_41	HERNAN LONDOÑO	12945	264	2026-01-27	2026-01-29	2026-01-29	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_42	HERNAN LONDOÑO	12888	150	2026-01-27	2026-01-29	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_43	HERNAN LONDOÑO	12864	99	2026-01-27	2026-01-29	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_44	HERNAN LONDOÑO	12897	198	2026-01-27	2026-01-29	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_45	HERNAN LONDOÑO	12924	90	2026-01-27	2026-01-29	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_46	HERNAN LONDOÑO	12860	132	2026-01-27	2026-01-29	2026-02-02	ESTAMPACION		2026-02-27 17:00:53.372	import
-import_1772211653372_47	MARLENY RAMIREZ	12911	171	2026-01-27	2026-02-05	2026-02-09	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_48	DIANA CORREA	12909	198	2026-01-29	2026-02-04	2026-02-02	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_49	MELVA GALLEGO	5002	250	2026-01-29	2026-02-04	2026-02-07	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653372_50	MELVA GALLEGO	5002	332	2026-01-29	2026-02-04	2026-02-07	CONFECCIÓN		2026-02-27 17:00:53.372	import
-import_1772211653373_51	VIVIANA OLAYA	12945	264	2026-01-29	2026-02-06	2026-02-11	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_52	ELVIA MUÑOZ	12877	150	2026-01-30	2026-02-05	2026-02-04	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_53	MARGARITA VASQUEZ	12913	90	2026-01-30	2026-02-03	2026-02-04	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_54	HERNAN LONDOÑO	12933	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_55	HERNAN LONDOÑO	12908	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_56	HERNAN LONDOÑO	12881	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_57	HERNAN LONDOÑO	12907	42	2026-02-02	2026-02-04	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_58	HERNAN LONDOÑO	12870	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_59	JOSEFINA PULGARIN	12888	150	2026-02-02	2026-02-06	2026-02-04	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_60	LIDA LONDOÑO	12876	150	2026-02-02	2026-02-09	2026-02-06	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_61	MARIU CUBILLON	12897	198	2026-02-02	2026-02-09	2026-02-09	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_62	CAMILO HOYOS	12933	60	2026-02-03	2026-02-09	2026-02-10	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_63	CLARA HERRERA	12894	317	2026-02-03	2026-02-06	2026-02-07	OJAL Y BOTÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_64	DIANA CORREA	CAMISETAS	107	2026-02-03	2026-02-09	2026-02-07	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_65	MICHEL CANO	12919	150	2026-02-03	2026-02-09	2026-02-11	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_66	NANCY ARBOLEDA	12924	90	2026-02-03	2026-02-06	2026-02-11	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_67	CAMILO HOYOS	12950	90	2026-02-04	2026-02-10	2026-02-20	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_68	HERNAN LONDOÑO	12959	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_69	HERNAN LONDOÑO	12960	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_70	HERNAN LONDOÑO	12893	132	2026-02-04	2026-02-06	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_71	HERNAN LONDOÑO	12950	90	2026-02-04	2026-02-06	2026-02-06	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_72	MILENA SALAZAR	12864	99	2026-02-04	2026-02-09	2026-02-14	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_73	HERNAN LONDOÑO	12926	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_74	HERNAN LONDOÑO	12952	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_75	HERNAN LONDOÑO	12951	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_76	HERNAN LONDOÑO	12943	252	2026-02-05	2026-02-09	2026-02-09	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_77	CAMILO HOYOS	12926	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_78	CAMILO HOYOS	12951	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_79	CAMILO HOYOS	12952	90	2026-02-06	2026-02-06	2026-02-10	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_80	CLAUDIA ARISMENDI	12908	66	2026-02-06	2026-02-11	2026-02-12	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_81	ELVIA MUÑOZ	12881	66	2026-02-06	2026-02-11	2026-02-10	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_82	HOIBER TORO	12871	150	2026-02-06	2026-02-10	2026-02-16	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_83	LIDA LONDOÑO	12870	60	2026-02-06	2026-02-12	2026-02-17	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_84	LIDA LONDOÑO	12907	42	2026-02-06	2026-02-12	2026-02-17	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_85	MELVA GALLEGO	12959	114	2026-02-06	2026-02-12	2026-02-19	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_86	MELVA GALLEGO	12960	114	2026-02-06	2026-02-16	2026-02-19	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_87	MARIU CUBILLON	12860	132	2026-02-09	2026-02-12	2026-02-11	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_88	MARLENY RAMIREZ	12943	252	2026-02-09	2026-02-16	2026-02-25	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_89	CAMILO HOYOS	12923	60	2026-02-10	2026-02-14	2026-02-20	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_91	CAMILO HOYOS	12921	60	2026-02-10	2026-02-14	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_92	ELVIA MUÑOZ	12933	60	2026-02-10	2026-02-14	2026-02-16	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_93	HERNAN LONDOÑO	12905	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_94	HERNAN LONDOÑO	12892	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_95	HERNAN LONDOÑO	12922	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_96	HERNAN LONDOÑO	12921	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_97	HERNAN LONDOÑO	12923	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_98	DIANA CORREA	12926	90	2026-02-11	2026-02-12	2026-02-20	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_99	JOSEFINA PULGARIN	12951	90	2026-02-11	2026-02-12	2026-02-17	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_100	MARGARITA VASQUEZ	12952	90	2026-02-11	2026-02-12	2026-02-24	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_101	ALEJANDRA CHAVERRA	12960	114	2026-02-12	2026-02-16	2026-02-13	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_102	CLAUDIA ARISMENDI	12906	60	2026-02-12	2026-02-17	2026-02-17	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_103	HERNAN LONDOÑO	12875	90	2026-02-12	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_104	HERNAN LONDOÑO	12937	180	2026-02-12	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_105	HERNAN LONDOÑO	12920	225	2026-02-12	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_106	MARIU CUBILLON	12893	150	2026-02-12	2026-02-19	2026-02-24	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_107	CAMILO HOYOS	12918	60	2026-02-13	2026-02-18	\N	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_108	HERNAN LONDOÑO	12918	60	2026-02-13	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_109	HERNAN LONDOÑO	13002	120	2026-02-13	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_110	HERNAN LONDOÑO	12917	126	2026-02-13	2026-02-16	2026-02-16	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_111	ALEJANDRA CHAVERRA	12893	150	2026-02-14	2026-02-17	2026-02-20	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_112	MARIU CUBILLON	12922	60	2026-02-14	2026-02-20	2026-02-20	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_113	MILENA SALAZAR	12920	225	2026-02-14	2026-02-23	\N	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_114	NANCY ARBOLEDA	12905	60	2026-02-14	2026-02-20	2026-02-23	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_115	VIVIANA OLAYA	12934	60	2026-02-14	2026-02-20	2026-02-23	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_116	VIVIANA OLAYA	12898	60	2026-02-14	2026-02-20	2026-02-20	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_117	CAMILO HOYOS	12968	117	2026-02-17	2026-02-23	\N	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_118	ELVIA MUÑOZ	12910	60	2026-02-17	2026-02-23	2026-02-20	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_121	MICHEL CANO	12937	180	2026-02-17	2026-02-23	2026-02-25	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_123	HERNAN LONDOÑO	13012	120	2026-02-19	2026-02-21	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_124	HERNAN LONDOÑO	12968	117	2026-02-19	2026-02-21	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_125	HERNAN LONDOÑO	12935	60	2026-02-19	2026-02-21	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_126	HERNAN LONDOÑO	12969	174	2026-02-19	2026-02-21	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_127	HERNAN LONDOÑO	13010	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_128	HERNAN LONDOÑO	12980	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_129	HERNAN LONDOÑO	12936	60	2026-02-21	2026-02-23	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_130	HERNAN LONDOÑO	13013	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_131	HERNAN LONDOÑO	13011	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_132	VIVIANA OLAYA	12950	90	2026-02-21	2026-02-27	\N	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_135	CAMILO HOYOS	12980	195	2026-02-23	2026-02-28	\N	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_136	CAMILO HOYOS	12936	60	2026-02-23	2026-02-28	\N	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_137	CAMILO HOYOS	13011	120	2026-02-23	2026-02-28	\N	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_138	NANCY ARBOLEDA	12921	60	2026-02-23	2026-02-28	\N	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_141	CLAUDIA ARISMENDI	12935	60	2026-02-24	2026-02-28	\N	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_140	DIANA CORREA	12923	60	2026-02-24	2026-02-28	2026-02-27	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_120	LIDA LONDOÑO	12917	126	2026-02-17	2026-02-23	2026-02-27	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_119	JOSEFINA PULGARIN	13002	120	2026-02-17	2026-02-24	2026-02-26	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_122	PEDRO LLANEZ	12875	90	2026-02-18	2026-02-25	2026-02-26	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_90	CAMILO HOYOS	12892	60	2026-02-10	2026-02-14	2026-02-27	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_139	MARIU CUBILLON	12969	174	2026-02-24	2026-03-02	2026-02-28	CONFECCIÓN		2026-02-27 17:00:53.373	import
-import_1772211653373_134	ALEJANDRA CHAVERRA	13010	120	2026-02-21	2026-02-27	2026-02-27	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_133	ALEJANDRA CHAVERRA	12910	60	2026-02-21	2026-02-27	2026-02-28	ESTAMPACION		2026-02-27 17:00:53.373	import
-mmb4ds9mq8s8ddrw1	MARLENY RAMIREZ	12970	138	2026-03-03	2026-03-11	\N	CONFECCIÓN		2026-03-03 21:23:44.789	Jhon Montoya
-mmb4ds9ocgwaf5sqa	MARIU CUBILLON	13013	195	2026-03-03	2026-03-09	\N	CONFECCIÓN		2026-03-03 21:23:44.311	Jhon Montoya
-mmb4ds9nn9dr5e2v8	VIVIANA OLAYA	12986	120	2026-03-03	2026-03-09	\N	CONFECCIÓN		2026-03-03 21:23:44.467	Jhon Montoya
-mmb4ds98i2bqg53sg	ALBA MIRIAM ARCILA	13010	120	2026-03-03	2026-03-09	\N	CONFECCIÓN		2026-03-03 21:23:45.226	Jhon Montoya
-mmb4ds9p1lxrt72yg	LIDA LONDOÑO	12907	54	2026-03-02	2026-03-06	\N	CONFECCIÓN		2026-03-03 21:23:43.55	Jhon Montoya
-mmb4ds9pxoryl1jux	NANCY ARBOLEDA	12892	60	2026-03-02	2026-03-09	\N	CONFECCIÓN		2026-03-03 21:23:37.09	Jhon Montoya
-mmb4ds9os9amnfl81	ELVIA MUÑOZ	12908	60	2026-03-02	2026-03-06	\N	CONFECCIÓN		2026-03-03 21:23:43.702	Jhon Montoya
-mmb4ds9qlgp0ux1cj	HERNAN LONDOÑO	12907	54	2026-02-28	2026-03-02	2026-03-02	ESTAMPACION		2026-03-03 21:23:36.58	Jhon Montoya
-mmb4ds9qiuupdj3du	HERNAN LONDOÑO	12908	60	2026-02-28	2026-03-02	2026-03-02	ESTAMPACION		2026-03-03 21:23:36.752	Jhon Montoya
-import_1772211653373_144	HERNAN LONDOÑO	12986	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_143	HERNAN LONDOÑO	12869	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPACION		2026-02-27 17:00:53.373	import
-import_1772211653373_142	HERNAN LONDOÑO	12962	117	2026-02-25	2026-02-27	2026-02-28	ESTAMPACION		2026-02-27 17:00:53.373	import
+COPY public.delivery_dates (id, confeccionista_id, reference_id, quantity, send_date, expected_date, delivery_date, process, observation, created_at, created_by, rem) FROM stdin;
+import_1773954086630_0	MARIU CUBILLON	13084	150	2026-03-19	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.63	import	7850
+import_1773954086631_1	HERNAN LONDOÑO	13068	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_2	HERNAN LONDOÑO	13110	252	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_3	HERNAN LONDOÑO	13117	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_4	HERNAN LONDOÑO	13118	147	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_5	HERNAN LONDOÑO	12909	162	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_6	HERNAN LONDOÑO	13129	81	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_7	HERNAN LONDOÑO	13121	81	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_8	MICHEL CANO	13074	120	2026-03-19	2026-03-25	\N	CONFECCION		2026-03-19 21:01:26.631	import	7848
+import_1773954086631_9	CAMILO HOYOS	13118	147	2026-03-19	2026-03-25	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7847
+import_1773954086631_10	ALEJANDRA CHAVERRA	13129	81	2026-03-18	2026-03-25	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7846
+import_1773954086631_11	MARLENY RAMIREZ	13100	180	2026-03-18	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.631	import	7845
+import_1773954086631_12	CLARA HERRERA	12964	123	2026-03-18	2026-03-20	\N	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7843
+import_1773954086631_13	ALEJANDRA CHAVERRA	13086	282	2026-03-17	2026-03-25	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7842
+import_1773954086631_14	MARCELA GRACIANO	13091	252	2026-03-17	2026-03-27	\N	CONFECCION		2026-03-19 21:01:26.631	import	7841
+import_1773954086631_15	CLARA HERRERA	13095	300	2026-03-17	2026-03-19	\N	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7840
+import_1773954086631_16	LIDA LONDOÑO	12963	120	2026-03-17	2026-03-27	\N	CONFECCION		2026-03-19 21:01:26.631	import	7839
+import_1773954086631_17	DIANA CORREA	13090	252	2026-03-17	2026-03-25	\N	CONFECCION		2026-03-19 21:01:26.631	import	7838
+import_1773954086631_18	ELIANA ZAPATA	12968	117	2026-03-17	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.631	import	7837
+import_1773954086631_19	PEDRO LLANEZ	12936	39	2026-03-17	2026-03-19	\N	CONFECCION		2026-03-19 21:01:26.631	import	7836
+import_1773954086631_20	HERNAN LONDOÑO	13064	180	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_21	HERNAN LONDOÑO	13074	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_22	HERNAN LONDOÑO	13081	183	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_23	HERNAN LONDOÑO	13083	282	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_24	HERNAN LONDOÑO	13116	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_25	CAMILO HOYOS	12864	279	2026-03-17	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
+import_1773954086631_26	CAMILO HOYOS	13074	201	2026-03-17	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
+import_1773954086631_27	CAMILO HOYOS	13081	183	2026-03-17	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
+import_1773954086631_28	CAMILO HOYOS	13116	201	2026-03-17	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
+import_1773954086631_29	MELVA GALLEGO	13096	201	2026-03-16	2026-03-24	\N	CONFECCION		2026-03-19 21:01:26.631	import	7832
+import_1773954086631_30	ELVIA MUÑOZ	12877	192	2026-03-16	2026-03-24	\N	CONFECCION		2026-03-19 21:01:26.631	import	7831
+import_1773954086631_31	JOSEFINA PULGARIN	13002	120	2026-03-16	2026-03-21	\N	CONFECCION		2026-03-19 21:01:26.631	import	7830
+import_1773954086631_32	CARMEN USUGA	13093	120	2026-03-14	2026-03-19	\N	CONFECCION		2026-03-19 21:01:26.631	import	7829
+import_1773954086631_33	PEDRO LLANEZ	12973	138	2026-03-13	2026-03-18	\N	CONFECCION		2026-03-19 21:01:26.631	import	7828
+import_1773954086631_34	PEDRO LLANEZ	13077	123	2026-03-13	2026-03-18	\N	CONFECCION		2026-03-19 21:01:26.631	import	7827
+import_1773954086631_35	CAMILO HOYOS	12864	279	2026-03-13	2026-03-19	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7824
+import_1773954086631_36	CAMILO HOYOS	13109	201	2026-03-13	2026-03-19	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7824
+import_1773954086631_37	MARIA TERESA QUICENO	13086	120	2026-03-13	2026-03-20	\N	CONFECCION		2026-03-19 21:01:26.631	import	7823
+import_1773954086631_38	EBETH BELEÑO ARIZA	13005	168	2026-03-12	2026-03-20	\N	CONFECCION		2026-03-19 21:01:26.631	import	7821
+import_1773954086631_39	CLAUDIA ARISMENDI	12782	54	2026-03-12	2026-03-20	\N	CONFECCION		2026-03-19 21:01:26.631	import	7820
+import_1773954086631_40	CLAUDIA ARISMENDI	13081	120	2026-03-12	2026-03-20	\N	CONFECCION		2026-03-19 21:01:26.631	import	7819
+import_1773954086631_42	NANCY ARBOLEDA	13077	123	2026-03-11	2026-03-19	\N	CONFECCION		2026-03-19 21:01:26.631	import	7817
+import_1773954086631_43	HERNAN LONDOÑO	13002	120	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_44	HERNAN LONDOÑO	13084	150	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_45	HERNAN LONDOÑO	13100	180	2026-03-11	2026-03-13	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_46	ALEJANDRA CHAVERRA	13036	120	2026-03-11	2026-03-18	2026-03-18	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7815
+import_1773954086631_48	JOSEFINA PULGARIN	13010	90	2026-03-11	2026-03-18	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7813
+import_1773954086631_49	ADRIANA TABORDA	12869	120	2026-03-10	2026-03-18	\N	CONFECCION		2026-03-19 21:01:26.631	import	7811
+import_1773954086631_50	MARGARITA VASQUEZ	13094	201	2026-03-10	2026-03-18	\N	CONFECCION		2026-03-19 21:01:26.631	import	7809
+import_1773954086631_51	HERNAN LONDOÑO	12877	192	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_52	HERNAN LONDOÑO	13016	120	2026-03-10	2026-03-12	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_53	HERNAN LONDOÑO	13090	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_54	HERNAN LONDOÑO	13091	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_55	CAROLINA GALLEGO	12931	138	2026-03-09	2026-03-16	\N	CONFECCION		2026-03-19 21:01:26.631	import	7805
+import_1773954086631_56	MELVA GALLEGO	13095	300	2026-03-09	2026-03-16	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7804
+import_1773954086631_58	ALEJANDRA CHAVERRA	13086	120	2026-03-06	2026-03-12	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7802
+import_1773954086631_59	CAMILO HOYOS	13074	120	2026-03-06	2026-03-13	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
+import_1773954086631_60	CAMILO HOYOS	13081	120	2026-03-06	2026-03-13	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
+import_1773954086631_61	CAMILO HOYOS	13096	201	2026-03-06	2026-03-13	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
+import_1773954086631_62	JOSEFINA PULGARIN	13036	120	2026-03-06	2026-03-13	\N	CONFECCION		2026-03-19 21:01:26.631	import	7800
+import_1773954086631_63	PEDRO LLANEZ	12980	195	2026-03-06	2026-03-13	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7799
+import_1773954086631_64	ELIANA ZAPATA	12964	123	2026-03-06	2026-03-16	2026-03-17	CONFECCION		2026-03-19 21:01:26.631	import	7798
+import_1773954086631_65	CLARA HERRERA	12917	126	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
+import_1773954086631_66	CLARA HERRERA	12920	222	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
+import_1773954086631_67	CLARA HERRERA	12935	59	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
+import_1773954086631_68	HERNAN LONDOÑO	12931	138	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_69	HERNAN LONDOÑO	13074	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_70	HERNAN LONDOÑO	13081	120	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_71	HERNAN LONDOÑO	13086	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_72	HERNAN LONDOÑO	13093	120	2026-03-06	2026-03-10	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_73	HERNAN LONDOÑO	13094	201	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_74	HERNAN LONDOÑO	13096	201	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_75	MILENA SALAZAR	12965	135	2026-03-06	2026-03-16	\N	CONFECCION		2026-03-19 21:01:26.631	import	7795
+import_1773954086631_76	ELVIA MUÑOZ	12971	102	2026-03-05	2026-03-16	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7790
+import_1773954086631_77	CLAUDIA ARISMENDI	13011	120	2026-03-05	2026-03-12	2026-03-12	CONFECCION		2026-03-19 21:01:26.631	import	7789
+import_1773954086631_78	LIDA LONDOÑO	13014	123	2026-03-05	2026-03-16	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7788
+import_1773954086631_79	CLARA CANO	12966	120	2026-03-05	2026-03-16	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7787
+import_1773954086631_80	MERY ALZATE	12990	111	2026-03-05	2026-03-16	\N	CONFECCION		2026-03-19 21:01:26.631	import	7786
+import_1773954086631_81	ALBA MIRIAM ARCILA	12936	60	2026-03-05	2026-03-12	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7784
+import_1773954086631_82	ERIKA GIL	12918	60	2026-03-05	2026-03-10	2026-03-10	CONFECCION		2026-03-19 21:01:26.631	import	7783
+import_1773954086631_83	AURA RODRIGUEZ	12869	120	2026-03-04	2026-03-13	\N	CONFECCION		2026-03-19 21:01:26.631	import	7782
+import_1773954086631_84	CAMILO HOYOS	12782	54	2026-03-04	2026-03-10	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7781
+import_1773954086631_85	HERNAN LONDOÑO	12869	120	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_86	HERNAN LONDOÑO	12963	120	2026-03-04	2026-03-06	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_87	HERNAN LONDOÑO	13010	90	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_88	HERNAN LONDOÑO	13095	300	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_89	JOSEFINA PULGARIN	12962	117	2026-03-04	2026-03-11	2026-03-11	CONFECCION		2026-03-19 21:01:26.631	import	7779
+import_1773954086631_91	ALBA MIRIAM ARCILA	13010	120	2026-03-03	2026-03-09	2026-10-18	CONFECCION		2026-03-19 21:01:26.631	import	7773
+import_1773954086631_92	MARLENY RAMIREZ	12970	138	2026-03-03	2026-03-11	\N	CONFECCION		2026-03-19 21:01:26.631	import	7772
+import_1773954086631_93	VIVIANA OLAYA	12986	120	2026-03-03	2026-06-09	2026-03-09	CONFECCION		2026-03-19 21:01:26.631	import	7771
+import_1773954086631_94	MARIU CUBILLON	13013	195	2026-03-03	2026-03-09	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7770
+import_1773954086631_95	ELVIA MUÑOZ	12908	60	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7769
+import_1773954086631_96	LIDA LONDOÑO	12907	54	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7768
+import_1773954086631_97	NANCY ARBOLEDA	12892	60	2026-03-02	2026-03-09	2026-03-11	CONFECCION		2026-03-19 21:01:26.631	import	7767
+import_1773954086631_98	HERNAN LONDOÑO	12907	54	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
+import_1773954086631_99	HERNAN LONDOÑO	12908	60	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
+import_1773954086631_100	HERNAN LONDOÑO	12869	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_101	HERNAN LONDOÑO	12962	117	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_102	HERNAN LONDOÑO	12986	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_103	CLAUDIA ARISMENDI	12935	60	2026-02-24	2026-02-28	2026-03-05	CONFECCION		2026-03-19 21:01:26.631	import	7762
+import_1773954086631_104	DIANA CORREA	12923	60	2026-02-24	2026-02-28	2026-02-27	CONFECCION		2026-03-19 21:01:26.631	import	7761
+import_1773954086631_105	MARIU CUBILLON	12969	174	2026-02-24	2026-03-02	2026-02-28	CONFECCION		2026-03-19 21:01:26.631	import	7760
+import_1773954086631_106	NANCY ARBOLEDA	12921	60	2026-02-23	2026-02-28	2026-03-02	CONFECCION		2026-03-19 21:01:26.631	import	7758
+import_1773954086631_107	CAMILO HOYOS	12936	60	2026-02-23	2026-02-28	2026-03-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7757
+import_1773954086631_108	CAMILO HOYOS	12980	195	2026-02-23	2026-02-28	2026-03-05	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7757
+import_1773954086631_109	CAMILO HOYOS	13011	120	2026-02-23	2026-02-28	2026-03-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7757
+import_1773954086631_110	ALEJANDRA CHAVERRA	12910	60	2026-02-21	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
+import_1773954086631_111	ALEJANDRA CHAVERRA	13010	120	2026-02-21	2026-02-27	2026-02-27	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
+import_1773954086631_112	ALEJANDRA CHAVERRA	13010	90	2026-03-05	2026-03-09	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
+import_1773954086631_113	HERNAN LONDOÑO	12936	60	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_114	HERNAN LONDOÑO	12980	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_115	HERNAN LONDOÑO	13010	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_116	HERNAN LONDOÑO	13011	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_117	HERNAN LONDOÑO	13013	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_118	VIVIANA OLAYA	12950	90	2026-02-21	2026-02-27	2026-03-09	CONFECCION		2026-03-19 21:01:26.631	import	7754
+import_1773954086631_119	HERNAN LONDOÑO	12935	60	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_120	HERNAN LONDOÑO	12968	117	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_121	HERNAN LONDOÑO	12969	174	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_122	HERNAN LONDOÑO	13012	120	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_123	PEDRO LLANEZ	12875	90	2026-02-18	2026-02-25	2026-02-26	CONFECCION		2026-03-19 21:01:26.631	import	7744
+import_1773954086631_124	CAMILO HOYOS	12968	117	2026-02-17	2026-02-23	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7743
+import_1773954086631_125	LIDA LONDOÑO	12917	126	2026-02-17	2026-02-23	2026-02-27	CONFECCION		2026-03-19 21:01:26.631	import	7742
+import_1773954086632_126	JOSEFINA PULGARIN	13002	120	2026-02-17	2026-02-24	2026-02-26	CONFECCION		2026-03-19 21:01:26.632	import	7740
+import_1773954086632_127	ELVIA MUÑOZ	12910	60	2026-02-17	2026-02-23	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7739
+import_1773954086632_128	MICHEL CANO	12937	180	2026-02-17	2026-02-23	2026-02-25	CONFECCION		2026-03-19 21:01:26.632	import	7737
+import_1773954086632_129	ALEJANDRA CHAVERRA	12921	60	2026-02-16	2026-02-19	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7735
+import_1773954086632_130	MILENA SALAZAR	12920	225	2026-02-14	2026-02-23	2026-03-09	CONFECCION		2026-03-19 21:01:26.632	import	7734
+import_1773954086632_131	ALEJANDRA CHAVERRA	12893	150	2026-02-14	2026-02-17	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7733
+import_1773954086632_132	NANCY ARBOLEDA	12905	60	2026-02-14	2026-02-20	2026-02-23	CONFECCION		2026-03-19 21:01:26.632	import	7732
+import_1773954086632_133	MARIU CUBILLON	12922	60	2026-02-14	2026-02-20	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7731
+import_1773954086632_134	VIVIANA OLAYA	12898	60	2026-02-14	2026-02-20	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7729
+import_1773954086632_135	VIVIANA OLAYA	12934	60	2026-02-14	2026-02-20	2026-02-23	CONFECCION		2026-03-19 21:01:26.632	import	7728
+import_1773954086632_136	CAMILO HOYOS	12918	60	2026-02-13	2026-02-18	2026-03-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7727
+import_1773954086632_137	HERNAN LONDOÑO	12917	126	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_138	HERNAN LONDOÑO	12918	60	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_139	HERNAN LONDOÑO	13002	120	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_140	HERNAN LONDOÑO	12875	90	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_141	HERNAN LONDOÑO	12920	225	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_142	HERNAN LONDOÑO	12937	180	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_143	ALEJANDRA CHAVERRA	12960	114	2026-02-12	2026-02-16	2026-02-13	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7723
+import_1773954086632_144	CLAUDIA ARISMENDI	12906	60	2026-02-12	2026-02-17	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7722
+import_1773954086632_145	MARIU CUBILLON	12893	150	2026-02-12	2026-02-19	2026-02-24	CONFECCION		2026-03-19 21:01:26.632	import	7720
+import_1773954086632_146	DIANA CORREA	12926	90	2026-02-11	2026-02-12	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7719
+import_1773954086632_147	MARGARITA VASQUEZ	12952	90	2026-02-11	2026-02-12	2026-02-24	CONFECCION		2026-03-19 21:01:26.632	import	7718
+import_1773954086632_148	JOSEFINA PULGARIN	12951	90	2026-02-11	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7717
+import_1773954086632_149	ELVIA MUÑOZ	12933	60	2026-02-10	2026-02-14	2026-02-16	CONFECCION		2026-03-19 21:01:26.632	import	7716
+import_1773954086632_150	CAMILO HOYOS	12892	60	2026-02-10	2026-02-14	2026-02-27	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
+import_1773954086632_151	CAMILO HOYOS	12921	60	2026-02-10	2026-02-14	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
+import_1773954086632_152	CAMILO HOYOS	12923	60	2026-02-10	2026-02-14	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
+import_1773954086632_153	HERNAN LONDOÑO	12892	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_154	HERNAN LONDOÑO	12905	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_155	HERNAN LONDOÑO	12921	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_156	HERNAN LONDOÑO	12922	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_157	HERNAN LONDOÑO	12923	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_158	MARIU CUBILLON	12860	132	2026-02-09	2026-02-12	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7711
+import_1773954086632_159	MARLENY RAMIREZ	12943	252	2026-02-09	2026-02-16	2026-02-25	CONFECCION		2026-03-19 21:01:26.632	import	7709
+import_1773954086632_160	HOIBER TORO	12871	150	2026-02-06	2026-02-10	2026-02-16	CONFECCION		2026-03-19 21:01:26.632	import	7707
+import_1773954086632_161	MELVA GALLEGO	12960	114	2026-02-06	2026-02-16	2026-02-19	CONFECCION		2026-03-19 21:01:26.632	import	7706
+import_1773954086632_162	MELVA GALLEGO	12959	114	2026-02-06	2026-02-12	2026-02-19	CONFECCION		2026-03-19 21:01:26.632	import	7705
+import_1773954086632_163	LIDA LONDOÑO	12907	42	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7704
+import_1773954086632_164	LIDA LONDOÑO	12870	60	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7703
+import_1773954086632_165	CLAUDIA ARISMENDI	12908	66	2026-02-06	2026-02-11	2026-02-12	CONFECCION		2026-03-19 21:01:26.632	import	7702
+import_1773954086632_166	ELVIA MUÑOZ	12881	66	2026-02-06	2026-02-11	2026-02-10	CONFECCION		2026-03-19 21:01:26.632	import	7701
+import_1773954086632_167	CAMILO HOYOS	12926	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
+import_1773954086632_168	CAMILO HOYOS	12951	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
+import_1773954086632_169	CAMILO HOYOS	12952	90	2026-02-06	2026-02-06	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
+import_1773954086632_170	HERNAN LONDOÑO	12926	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_171	HERNAN LONDOÑO	12943	252	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_172	HERNAN LONDOÑO	12951	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_173	HERNAN LONDOÑO	12952	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_174	CAMILO HOYOS	12950	90	2026-02-04	2026-02-10	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7697
+import_1773954086632_175	MILENA SALAZAR	12864	99	2026-02-04	2026-02-09	2026-02-14	CONFECCION		2026-03-19 21:01:26.632	import	7695
+import_1773954086632_176	CLARA HERRERA	12894	317	2026-02-03	2026-02-06	2026-02-07	OJAL Y BOTON		2026-03-19 21:01:26.632	import	7694
+import_1773954086632_177	HERNAN LONDOÑO	12893	132	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_178	HERNAN LONDOÑO	12950	90	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_179	HERNAN LONDOÑO	12959	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_180	HERNAN LONDOÑO	12960	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_181	NANCY ARBOLEDA	12924	90	2026-02-03	2026-02-06	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7690
+import_1773954086632_182	CAMILO HOYOS	12933	60	2026-02-03	2026-02-09	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7689
+import_1773954086632_183	MICHEL CANO	12919	150	2026-02-03	2026-02-09	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7688
+import_1773954086632_184	DIANA CORREA	CAMISETAS	107	2026-02-03	2026-02-09	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7686
+import_1773954086632_185	HERNAN LONDOÑO	12870	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_186	HERNAN LONDOÑO	12881	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_187	HERNAN LONDOÑO	12907	42	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_188	HERNAN LONDOÑO	12908	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_189	HERNAN LONDOÑO	12933	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_190	LIDA LONDOÑO	12876	150	2026-02-02	2026-02-09	2026-02-06	CONFECCION		2026-03-19 21:01:26.632	import	7684
+import_1773954086632_191	JOSEFINA PULGARIN	12888	150	2026-02-02	2026-02-06	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7683
+import_1773954086632_192	MARIU CUBILLON	12897	198	2026-02-02	2026-02-09	2026-02-09	CONFECCION		2026-03-19 21:01:26.632	import	7682
+import_1773954086632_193	MELVA GALLEGO	5000	130	2026-01-30	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7680
+import_1773954086632_194	MARGARITA VASQUEZ	12913	90	2026-01-30	2026-02-03	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7679
+import_1773954086632_195	ELVIA MUÑOZ	12877	150	2026-01-30	2026-02-05	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7678
+import_1773954086632_196	DIANA CORREA	12909	198	2026-01-29	2026-02-04	2026-02-02	CONFECCION		2026-03-19 21:01:26.632	import	7676
+import_1773954086632_197	MELVA GALLEGO	5002	250	2026-01-29	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7675
+import_1773954086632_198	MELVA GALLEGO	5002	332	2026-01-29	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7675
+import_1773954086632_199	HERNAN LONDOÑO	12860	132	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_200	HERNAN LONDOÑO	12864	99	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_201	HERNAN LONDOÑO	12888	150	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_202	HERNAN LONDOÑO	12897	198	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_203	HERNAN LONDOÑO	12924	90	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_204	VIVIANA OLAYA	12945	264	2026-01-29	2026-02-06	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7673
+import_1773954086632_205	HERNAN LONDOÑO	12871	150	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
+import_1773954086632_206	HERNAN LONDOÑO	12945	264	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
+import_1773954086632_207	CAMILO HOYOS	12860	132	2026-01-27	2026-02-02	2026-02-03	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
+import_1773954086632_208	CAMILO HOYOS	12864	99	2026-01-27	2026-02-02	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
+import_1773954086632_209	CAMILO HOYOS	CAMISETAS	107	2026-01-27	2026-02-02	2026-02-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
+import_1773954086632_210	MARLENY RAMIREZ	12911	171	2026-01-27	2026-02-05	2026-02-09	CONFECCION		2026-03-19 21:01:26.632	import	7668
+import_1773954086632_211	ALBA MIRIAM ARCILA	12911	171	2026-01-27	2026-01-28	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7667
+import_1773954086632_212	ALEJANDRA CHAVERRA	12888	150	2026-01-27	2026-02-02	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7665
+import_1773954086632_213	CAMILO HOYOS	12871	150	2026-01-26	2026-01-30	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7664
+import_1773954086632_214	CAMILO HOYOS	12876	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7664
+import_1773954086632_215	NANCY ARBOLEDA	12955	48	2026-01-26	2026-01-29	2026-02-03	CONFECCION		2026-03-19 21:01:26.632	import	7663
+import_1773954086632_216	HERNAN LONDOÑO	12877	150	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_217	HERNAN LONDOÑO	12909	198	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_218	HERNAN LONDOÑO	12913	90	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_219	HERNAN LONDOÑO	12919	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_220	ALEJANDRA CHAVERRA	12913	90	2026-01-23	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7659
+import_1773954086632_221	HOIBER TORO	12871	84	2026-01-21	2026-01-27	2026-01-27	CONFECCION		2026-03-19 21:01:26.632	import	7657
+import_1773954086632_222	ERIKA GIL	5001	102	2026-01-21	2026-01-27	2026-01-31	CONFECCION		2026-03-19 21:01:26.632	import	7656
+import_1773954086632_223	JOSEFINA PULGARIN	12890	105	2026-01-21	2026-01-27	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7655
+import_1773954086632_224	JOSEFINA PULGARIN	12896	60	2026-01-21	2026-01-27	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7655
+import_1773954086632_225	HERNAN LONDOÑO	12911	342	2026-01-20	2026-01-24	2026-01-26	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7654
+import_1773954086632_226	MARIA VICTORIA JARAMILLO	DOTACION	38	2026-01-19	2026-01-24	2026-01-21	CONFECCION		2026-03-19 21:01:26.632	import	7652
+import_1773954086632_227	MARIU CUBILLON	12901	147	2026-01-16	2026-01-23	2026-01-22	CONFECCION		2026-03-19 21:01:26.632	import	7651
+import_1773954086632_228	MARIA TERESA QUICENO	12891	120	2026-01-15	2026-01-21	2026-01-23	CONFECCION		2026-03-19 21:01:26.632	import	7648
+import_1773954086632_229	LIDA LONDOÑO	12894	318	2026-01-15	2026-01-26	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7647
+import_1773954086632_230	CLARA HERRERA	12754	120	2026-01-13	2026-01-15	2026-01-14	OJAL Y BOTON		2026-03-19 21:01:26.632	import	7644
+import_1773954086632_231	JOSEFINA PULGARIN	12497	173	2026-01-09	2026-01-15	2026-01-15	CONFECCION		2026-03-19 21:01:26.632	import	7643
+import_1773954086632_232	MARGARITA VASQUEZ	12782	120	2026-01-08	2026-01-15	2026-01-16	CONFECCION		2026-03-19 21:01:26.632	import	7642
+import_1773954086632_233	VIVIANA OLAYA	12882	120	2026-01-07	2026-01-14	2026-01-13	CONFECCION		2026-03-19 21:01:26.632	import	7641
+import_1773954086632_234	MILENA SALAZAR	12771	120	2026-01-07	2026-01-14	2026-01-13	CONFECCION		2026-03-19 21:01:26.632	import	7640
+import_1773954086632_235	NANCY ARBOLEDA	12783	120	2026-01-07	2026-01-14	2026-01-13	CONFECCION		2026-03-19 21:01:26.632	import	7639
+import_1773954086632_236	MELVA GALLEGO	12885	117	2026-01-07	2026-01-15	2026-01-20	CONFECCION		2026-03-19 21:01:26.632	import	7638
+import_1773954086632_237	MELVA GALLEGO	12889	117	2026-01-07	2026-01-15	2026-01-20	CONFECCION		2026-03-19 21:01:26.632	import	7637
+import_1773954086632_238	MICHEL CANO	12862	147	2026-01-07	2026-01-13	2026-01-20	CONFECCION		2026-03-19 21:01:26.632	import	7636
+import_1773954086632_239	PEDRO LLANEZ	12486	143	2026-01-06	2026-01-13	2026-01-19	CONFECCION		2026-03-19 21:01:26.632	import	7635
+import_1773954086632_240	MARLENY RAMIREZ	12880	120	2026-01-06	2026-01-13	2026-01-16	CONFECCION		2026-03-19 21:01:26.632	import	7633
+import_1773954086632_241	LIDA LONDOÑO	12754	120	2026-01-05	2026-01-09	2026-01-10	CONFECCION		2026-03-19 21:01:26.632	import	7628
+import_1773954086632_242	ELVIA MUÑOZ	12877	120	2026-01-22	2026-01-28	2026-01-27	CONFECCION		2026-03-19 21:01:26.632	import	7624
+import_1773954086632_243	HERNAN LONDOÑO	12782	54	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7623
+import_1773954086632_244	DIANA CORREA	12884	120	2025-12-24	2025-12-30	2026-01-10	CONFECCION		2026-03-19 21:01:26.632	import	7619
+import_1773954086632_245	CAMILO HOYOS	12782	120	2025-12-23	2025-12-24	2026-01-08	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7617
+import_1773954086632_246	CAMILO HOYOS	12871	84	2025-12-15	2025-12-22	2026-01-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7590
+mmy0dhek5x9w7i2qq	VIVIANA OLAYA	13067	258	2026-03-19	2026-03-31	\N	CONFECCION		2026-03-19 21:53:44.22	HERMOSA	7851
+mmzfuvml8mgvsk35p	HERNAN LONDOÑO	13098	120	2026-03-20	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.368	Fernanda Marin	7858
+mmzfuvo3zxbvv0lin	HERNAN LONDOÑO	12975	140	2026-03-20	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.139	Fernanda Marin	7858
+mmzfuvo58akdm7hbp	MARIA TERESA QUICENO	13058	138	2026-03-20	2026-03-28	\N	CONFECCION		2026-03-20 21:37:24.912	Fernanda Marin	7857
+mmzfuvo5akaj71vzr	PEDRO LLANEZ	12864	279	2026-03-20	2026-03-30	\N	CONFECCION		2026-03-20 21:37:24.648	Fernanda Marin	7856
+mmzfuvo6z7xeh3t77	ALEJANDRA CHAVERRA	13016	120	2026-03-20	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:37:24.4	Fernanda Marin	7855
+mmzfuvo7phvvavn3a	EBETH BELEÑO ARIZA	12973	135	2026-03-20	2026-03-20	\N	CONFECCION		2026-03-20 21:30:16.882	Fernanda Marin	7854
+mmzfuvo8o5l5a28pp	CAMILO HOYOS	13117	150	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:16.419	Fernanda Marin	7853
+mmzfuvo94o12v3qe8	CAMILO HOYOS	13110	252	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:15.642	Fernanda Marin	7853
+mmzfuvoagk5dt3avp	CAMILO HOYOS	13068	150	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:13.899	Fernanda Marin	7853
+import_1773954086631_57	VIVIANA OLAYA	13015	201	2026-03-07	2026-03-14	2026-03-19	CONFECCION		2026-03-19 21:01:26.631	import	7803
+import_1773954086631_90	DIANA CORREA	13012	120	2026-03-04	2026-03-11	2026-03-20	CONFECCION		2026-03-19 21:01:26.631	import	7778
+import_1773954086631_41	MARIU CUBILLON	13016	120	2026-03-12	2026-03-19	2026-03-19	CONFECCION		2026-03-19 21:01:26.631	import	7818
 \.
 
 
 --
--- TOC entry 5367 (class 0 OID 18065)
--- Dependencies: 226
+-- TOC entry 5232 (class 0 OID 16479)
+-- Dependencies: 228
 -- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1985,8 +2141,8 @@ ce75694c-000d-4b9a-a5fe-0ff716248e08	Jackeline Perea	43925256	3116142944	t	2026-
 
 
 --
--- TOC entry 5369 (class 0 OID 18075)
--- Dependencies: 228
+-- TOC entry 5234 (class 0 OID 16489)
+-- Dependencies: 230
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2006,6 +2162,16 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 72	mm3i59dj2t7a7x8dy	12955	37	19000.00
 73	mm3i59dj2t7a7x8dy	12919	48	19000.00
 74	mm3i59dj2t7a7x8dy	12960	60	35000.00
+820	mmv30yndburn5c2fs	12877	17	18900.00
+821	mmv30yndburn5c2fs	12920	18	20900.00
+822	mmv30yndburn5c2fs	13013	18	22900.00
+823	mmv30yndburn5c2fs	12609	15	23900.00
+824	mmv30yndburn5c2fs	12888	17	18900.00
+825	mmv30yndburn5c2fs	12579	12	39900.00
+826	mmv30yndburn5c2fs	13104	12	35900.00
+847	mmw9ing3b51mv35fc	12884	18	19900.00
+848	mmw9ing3b51mv35fc	13010	18	27900.00
+849	mmw9ing3b51mv35fc	13013	18	21900.00
 88	mm3ia6pyad0jlmyz1	12909	18	23900.00
 89	mm3ia6pyad0jlmyz1	12911	18	18900.00
 90	mm3ia6pyad0jlmyz1	12919	18	24900.00
@@ -2042,12 +2208,29 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 688	mm3jq8fsf12q2vqq1	12754	12	16900.00
 156	mm3j5ydlutatddpm6	12870	9	35900.00
 157	mm3j5ydlutatddpm6	12907	9	28900.00
+827	mmv32fx8q93ahsptc	13013	18	23900.00
+828	mmv32fx8q93ahsptc	13010	18	29900.00
 689	mm3jq8fsf12q2vqq1	12865	12	16900.00
 690	mm3jq8fsf12q2vqq1	12805	6	19900.00
 691	mm3jq8fsf12q2vqq1	12644	12	24900.00
 692	mm3jq8fsf12q2vqq1	12883	12	24900.00
 693	mm3jq8fsf12q2vqq1	12909	12	23900.00
 694	mm3jq8fsf12q2vqq1	12744	12	19900.00
+829	mmv32fx8q93ahsptc	12884	18	21900.00
+830	mmv339lkirv0jhd36	12962	9	43900.00
+831	mmv339lkirv0jhd36	13107	9	28900.00
+832	mmv339lkirv0jhd36	13013	9	22900.00
+833	mmv339lkirv0jhd36	12609	9	23900.00
+834	mmv349hes2rmnigca	12579	24	38000.00
+835	mmv349hes2rmnigca	12712	24	26900.00
+836	mmv349hes2rmnigca	12971	24	35000.00
+837	mmv349hes2rmnigca	12969	24	21900.00
+838	mmv349hes2rmnigca	12777	24	13900.00
+839	mmv349hes2rmnigca	13013	24	22000.00
+840	mmv35pslnzffrk5er	12962	12	43900.00
+841	mmv35pslnzffrk5er	13107	12	28900.00
+842	mmv35pslnzffrk5er	13013	12	22900.00
+843	mmv35pslnzffrk5er	12609	12	23900.00
 759	mm3j459dl23fwhf8a	12704	10	29900.00
 760	mm3j459dl23fwhf8a	12782	10	17900.00
 761	mm3j459dl23fwhf8a	12880	10	24900.00
@@ -2443,12 +2626,25 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 752	mm3ja6nt56tf7nb5q	12782	12	17900.00
 753	mm3ja6nt56tf7nb5q	12880	12	24900.00
 754	mm3ja6nt56tf7nb5q	12882	12	23900.00
+850	mmwhw5qxrb4bmldh5	12712	24	25900.00
+851	mmwhw5qxrb4bmldh5	12960	13	39900.00
+852	mmwhw5qxrb4bmldh5	13104	36	35900.00
+853	mmwhw5qxrb4bmldh5	13103	41	39900.00
+854	mmwhw5qxrb4bmldh5	12969	36	21900.00
+855	mmwhw5qxrb4bmldh5	12920	36	21900.00
+856	mmwhxo6dzulrjzrj5	13107	12	29900.00
+857	mmwhxo6dzulrjzrj5	12652	24	29900.00
+858	mmwhxo6dzulrjzrj5	12579	24	39900.00
+859	mmwhxo6dzulrjzrj5	13014	24	29900.00
+860	mmwhxo6dzulrjzrj5	13011	24	29900.00
+861	mmwhxo6dzulrjzrj5	12905	18	34900.00
+862	mmwhxo6dzulrjzrj5	12971	24	36900.00
 \.
 
 
 --
--- TOC entry 5370 (class 0 OID 18086)
--- Dependencies: 229
+-- TOC entry 5235 (class 0 OID 16500)
+-- Dependencies: 231
 -- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2538,12 +2734,20 @@ mm3jsyw9y49qmhcwt	264	mljjqn48zbxhtg0yw	FE-7186	RM-7620	Jhon Montoya	2026-02-26 
 mm3iwuz4mqe8jnigt	232	mljjqn48zbxhtg0yw	FE-7175	RM-7611	Jhon Montoya	2026-02-26 13:53:06.26	NURY - JAIME
 mm3ja6nt56tf7nb5q	231	mljjqn48zbxhtg0yw	FE-7160	 -	Jhon Montoya	2026-02-26 14:03:27.93	MARIA M - FELIPE - JHON
 mmfa8vvx6ednbbcwh	270	mljjqn48zbxhtg0yw	FE-7258	 -	Jhon Montoya	2026-03-06 19:23:44.878	NURY - DAVID
+mmv30yndburn5c2fs	233	mljjrcujmtckild4r	FE-7280	RM-7745	Jhon Montoya	2026-03-17 20:45:56.713	JHON - NURY
+mmv32fx8q93ahsptc	179	mljjrcujmtckild4r	FE-7281	RM-7746	Jhon Montoya	2026-03-17 20:47:05.756	JHON - NURY
+mmv339lkirv0jhd36	230	mljjrcujmtckild4r	FE-7284	RM-7749	Jhon Montoya	2026-03-17 20:47:44.217	JHON - NURY
+mmv349hes2rmnigca	232	mljjrcujmtckild4r	FE-7283	RM-7748	Jhon Montoya	2026-03-17 20:48:30.722	JHON - NURY
+mmv35pslnzffrk5er	159	mljjrcujmtckild4r	FE-7285	RM-7750	Jhon Montoya	2026-03-17 20:49:38.517	JHON - NURY
+mmw9ing3b51mv35fc	177	mljjrcujmtckild4r	7282	7747	M@R!@ M	2026-03-18 16:35:25.876	Nury-Jhon Anderson
+mmwhw5qxrb4bmldh5	311	mljjrcujmtckild4r	FE-7287	RM-7753	Jhon Montoya	2026-03-18 20:29:53.05	NURY - LUISA
+mmwhxo6dzulrjzrj5	311	mljjrcujmtckild4r	FE-7287	RM-7753	Jhon Montoya	2026-03-18 20:31:03.59	NURY - LUISA
 \.
 
 
 --
--- TOC entry 5371 (class 0 OID 18098)
--- Dependencies: 230
+-- TOC entry 5236 (class 0 OID 16513)
+-- Dependencies: 232
 -- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2552,36 +2756,44 @@ COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantid
 
 
 --
--- TOC entry 5372 (class 0 OID 18125)
--- Dependencies: 231
+-- TOC entry 5237 (class 0 OID 16540)
+-- Dependencies: 233
 -- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, precio_venta, rentabilidad, margen_ganancia, costo_contabilizar, desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent, cantidad_total_cortada, created_by, created_at, updated_at) FROM stdin;
-b4c4050d-29e3-4b6f-a0d5-25bc7d5e38da	10210	760c19e6-0089-4b3d-8712-a45900529e38	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "INSUMOS ", "vlr_unit": 2400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	2400.00	400.00	14500.00	20900.00	44.14	28900.00	14100.00	20900.00	44.14	19900.00	37.24	18900.00	30.34	17900.00	23.45	0	Admin Principal	2026-02-24 10:37:43.646101	2026-02-24 10:37:43.646101
-7ef92f0b-ce02-4a10-915e-3b561324ffb7	12963	0b99a3d1-8812-48fd-803e-adb9f1f91e03	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 14850, "concepto": "LINO PRAGA", "vlr_unit": 15000}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 165, "concepto": "LINO PRAGA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3921, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3921}]	15015.00	6500.00	324.00	0.00	4321.00	26160.00	40900.00	36.04	55900.00	21839.00	40900.00	36.04	38900.00	32.75	36900.00	29.11	34900.00	25.04	0	Admin Principal	2026-02-24 10:23:00.790495	2026-02-24 10:23:00.790495
-b1d92185-e33e-4b73-a2dd-a4fbe7299bdb	13032	00f0330d-8f07-44dd-8eeb-805f7e3f0af6	BUSO DE CIERRE	PLOW	CIERRE	12890		CIERRE  TALLA S  \t34\tTALLA M 34\tTALLA L36\n\t\t\t\n\t\t\t\n\t\t\t\nTRACE 112\t\t\t\n	/images/references/13032.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 8510, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO  MANGA", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 1700, "concepto": "PEGADA  ALEJANDRA 10 PERLAS POR MANGA ", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CIERRE  QUERUBIN CON DOBLE CREMALLERA", "vlr_unit": 3000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	8510.00	6900.00	324.00	3000.00	3764.00	22498.00	34900.00	35.54	47900.00	18734.00	34900.00	35.54	33900.00	33.63	31900.00	29.47	29900.00	24.76	0	Jhon Montoya	2026-02-27 09:30:42.835315	2026-02-27 09:30:42.835315
 \.
 
 
 --
--- TOC entry 5373 (class 0 OID 18159)
--- Dependencies: 232
+-- TOC entry 5238 (class 0 OID 16574)
+-- Dependencies: 234
 -- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
-0b99a3d1-8812-48fd-803e-adb9f1f91e03	12963	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BOLER MANG ESTA	Plow	Madres pluss	12031-1		TRACE 145\nCUELLO ESP 38 CM \nDE UNA TIRA DE SESGO ME SALEN 3 ESPALDAS\n\n\nESTAMPAR FONDEO DE MANGA\n	/images/references/12963.jPG	\N	[{"um": "UNIDAD", "cant": 0.99, "tipo": "TELA", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.011, "tipo": "SESGO", "total": 0, "concepto": "LINO PRAGA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "ESTAMPADO-HERNAN-ESTAMPAR FONDEO DE MANGA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 1225, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1225}]	0.00	6500.00	324.00	0.00	1625.00	8449.00	t	PRUEBA	2026-02-23 15:12:59.222394	2026-02-23 15:12:59.222394
-760c19e6-0089-4b3d-8712-a45900529e38	10210	23e36d4f-0002-41d8-b861-99e68b9992e3	BLUSA BASICA	PLOW	MADRES	10210-1	10210-2	BLUSA DAMA CON TIRAS 	/images/references/10210.jpg	/images/references/10210-2.jpg	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BURDA ", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 1400, "concepto": "INSUMOS ", "vlr_unit": 1400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "CARTERA", "vlr_unit": 200}]	6000.00	5700.00	0.00	1400.00	400.00	13500.00	t	PRUEBA	2026-02-23 11:09:05.097294	2026-02-23 11:09:05.097294
-1aae080c-0db1-4202-ab8d-559dce0d3bcf	12976	23e36d4f-0002-41d8-b861-99e68b9992e3	BUS SUB EN PUNT	Plow	MADRES 	12003-1		SESGO 4 CM TRACE 145\nTIRA DE SISAS CON GARDERA LIBRE 60 CM  DE UNA TIRA LIBRE ME SALE LA S SISAS COMPLETA Y CUELLO \nSESGO ESCOTE FRENTE 32 CM \nSESGO ESCOTE ESPALDA 32 CM \n\nELASTICO DE 1 CM  PARA LAS MANGA \nTALLA SY M DE 18 CM  Y PARA L DE 19 CM MANGAS EN CENTRO PARA RECOGIDO	/images/references/12976.jpg	\N	[{"um": "UNIDAD", "cant": 0.4, "tipo": "RESORTE", "total": 100, "concepto": "ELASTICO DE 1", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 0.72, "tipo": "TELA", "total": 0, "concepto": "MAYATEX", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.24, "tipo": "TELA", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 0.046, "tipo": "SESGO", "total": 0, "concepto": "POLILICRA", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 0.72, "total": 4608, "concepto": "ESTAMPADO GLOQUI SUBLIMACION", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 780, "concepto": "CORTE", "vlr_unit": 780}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.08, "total": 16, "concepto": "FRAMILÓN", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "COLLAR YAQUELINE MANUALIDAD CON BOLSA Y PICO LORO", "vlr_unit": 2800}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 2339, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2339}]	100.00	9788.00	324.00	2816.00	2739.00	15767.00	f	Admin Principal	2026-02-25 15:08:12.798511	2026-02-25 15:08:12.798511
-00f0330d-8f07-44dd-8eeb-805f7e3f0af6	13032	23e36d4f-0002-41d8-b861-99e68b9992e3	BUSO DE CIERRE	PLOW	CIERRE	12890		CIERRE  TALLA S  \t34\tTALLA M 34\tTALLA L36\n\t\t\t\n\t\t\t\n\t\t\t\nTRACE 112\t\t\t\n	/images/references/13032.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 0, "concepto": "RIB", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO  MANGA", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 1700, "concepto": "PEGADA  ALEJANDRA 10 PERLAS POR MANGA ", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CIERRE  QUERUBIN CON DOBLE CREMALLERA", "vlr_unit": 3000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "TRANSPORTE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 1, "total": 1836, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1836}]	0.00	6900.00	324.00	3000.00	2236.00	12460.00	t	PRUEBA	2026-02-27 09:30:20.538307	2026-02-27 09:30:20.538307
-9d46b84e-ccbd-4f42-92bb-34e8a742c962	12878	ce75694c-000d-4b9a-a5fe-0ff716248e08	DUO CON TOP	PLOW	MEDIA MODA	11939-1		TELA  ARIDA ANCHO DE  140 DE UNA TIRA DE SESGO ME SALEN 4 ESCOTES ES DECIR 2 BLUSAS Y DE UNA TIRA SESGAR SISAS Y TIRA LIBRE DE 27 CM PARA LA TALLA M Y DE 28 PARA L	\N	\N	[{"um": "METRO", "cant": 1.24, "total": 17980, "concepto": "ARIDA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.25, "total": 2750, "concepto": "LYCRA ALGODÓN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.053, "total": 583, "concepto": "SESGO 1 LYCRA ALGODÓN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.8, "total": 360, "concepto": "ELASTICO ( 4 ) CMS", "vlr_unit": 450}]	[{"um": "PRENDA", "cant": 1, "total": 1035, "concepto": "FUSION DE CUELLO Y PERILLA", "vlr_unit": 1035}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 1100, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 1100}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCIÓN SHORT / FALDA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 1000, "concepto": "CORTE", "vlr_unit": 1000}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "APLIQUE", "vlr_unit": 0}, {"um": "UNIDAD", "cant": 4, "total": 880, "concepto": "BROCHE", "vlr_unit": 220}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 6523, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 6523}]	21673.00	12755.00	324.00	1580.00	6923.00	43255.00	f	Soporte	2026-03-12 14:47:42.148694	2026-03-12 14:47:42.148694
+5c77a70c-3541-42fa-b959-e5d74de9b993	13254	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU ESTA BOT FRENT	PLOW	MADRE	12100-2		LLEVA 5 BOTONES POR BLUSA ESTAMPAR FRENTE Y COSTADOS OJAL DE 6 CM \n\nDE UNA TIRA CON LARGO 100 ME SALEN 3 BLUSAS \n\nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13254.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 8410, "concepto": "BENGALINA PANA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.035, "total": 507.50000000000006, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 14500}]	[{"um": "UND", "cant": 1, "total": 2400, "concepto": "ESTAMPADO   CAMILO FRENTES Y COSTADO", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 5, "total": 1500, "concepto": "BOTON BPO 2 1194 LINEA 24 DOÑA MARTA  EIM", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3248, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3248}]	8917.50	7350.00	324.00	1500.00	3648.00	21739.50	f	Soporte	2026-03-20 15:44:20.884339	2026-03-20 15:44:20.884339
+39984bb8-8797-47ba-a2bd-dfb8525bb970	13132	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL APLIE HELLO	PLOW	MADRE			TRACE112 DE UNA TIRA DE SESGO ME SALE EL CUELLO	/images/references/13132.jPG	\N	[{"um": "METRO", "cant": 0.48, "tipo": "TELA", "total": 5568, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 64, "concepto": "SESGO 1 RIB 4CM", "vlr_unit": 1600}]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "APLIQUE Y PEGADA  ALEJANDRA CHAVERRA", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1985, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1985}]	5632.00	5100.00	324.00	0.00	2385.00	13441.00	f	Soporte	2026-03-20 15:48:40.58979	2026-03-20 15:48:40.58979
+30f40ec9-4715-42dd-ae8e-488dcf16c48a	13131	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL  EST  EN CENEFA	PLOW	MADRE	12226-1		TRACE 155 DE UNA TIRA DE SESGO ME SALEN LA TIRA LIBRE PARA AMARRE DE 72 CM CADA UNA	/images/references/13131.jPG	/images/references/13131-2.jPG	[{"um": "METRO", "cant": 0.26, "tipo": "TELA", "total": 3900, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.46, "tipo": "RESORTE", "total": 115, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1807, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1807}]	4540.00	5200.00	324.00	0.00	2207.00	12271.00	f	Soporte	2026-03-20 16:00:00.142158	2026-03-20 16:00:00.142158
+9e8bad3d-527b-4eb2-996c-138b58ccce19	13129	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP THE BESTIS	PLOW	ECONO	12225		DE 1 TIRA ME SALEN 2 SIZAS ES DECIR 1 BLUSA DE 1 TIRA SALEN CUELLO DELANTERO Y POST	/images/references/13129.jpg	\N	[{"um": "METRO", "cant": 0.28, "tipo": "TELA", "total": 5600.000000000001, "concepto": "RAYA VICTORIA #1", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.08, "total": 928, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2092, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2092}]	6528.00	4800.00	324.00	0.00	2492.00	14144.00	f	Soporte	2026-03-20 16:11:12.489399	2026-03-20 16:11:12.489399
+37b6bedd-4624-4112-a858-d81077fda104	13128	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL CENTO BOTON	PLOW	MADRE	12220-1	12220-2	LLEVA 2 BOTONES POR BLUSA\n Y EN RUEDO MANGA INSUMO \nCUELLO 70 CM	/images/references/13128.jPG	\N	[{"um": "METRO", "cant": 0.53, "tipo": "TELA", "total": 6148, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 464, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 2, "total": 320, "concepto": "BOTONADA", "vlr_unit": 160}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 600, "concepto": "FLECO PONPO PEQUEÑOMP-5 BLANCO BOMBAY", "vlr_unit": 750}, {"um": "UNIDAD", "cant": 2, "total": 1200, "concepto": "BOTON BTH.0187 DM DORADO INSUTEX", "vlr_unit": 600}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2201, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2201}]	6612.00	3520.00	324.00	1800.00	2601.00	14857.00	f	Soporte	2026-03-20 16:14:38.238877	2026-03-20 16:14:38.238877
+d3c1e2c1-b0d8-4252-9101-9e1d10e0b543	13127	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL ESTAN ESC	PLOW	MADRE	12223-1		TRACE 112 ESTAMPAR FRENTE  CON TEXTO EN DORADO HERNAN	/images/references/13127.jPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "UND", "cant": 1, "total": 2000, "concepto": "HERNAN ESTAMPAR FRENTE  CON TEXTO EN DORADO", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1949, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1949}]	6032.00	4500.00	324.00	0.00	2349.00	13205.00	f	Soporte	2026-03-20 16:17:07.606815	2026-03-20 16:17:07.606815
+aee44bdc-b7e7-45b8-bd3c-35db3ce383fb	13126	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL D TI ESTASM Y BOT	PLOW	MADRE	12221-1		TRACE 155 32 ESCOTE ESP 52 CM SISA CON TIRA LIBRE  28 CM TALLA M 27 CM S Y TALLA 29 CM PERILLA SESGO 14 CM ESTAMPAR COPA FRENT Y FAJON FRENTE	/images/references/13126.jPG	\N	[{"um": "METRO", "cant": 0.32, "tipo": "TELA", "total": 4800, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}]	[{"um": "UND", "cant": 1, "total": 1800, "concepto": "ESTAMPADO HERNAN ESTAMPAR COPA FRENT Y FAJON FRENTE", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 2, "total": 300, "concepto": "BOTONADA", "vlr_unit": 150}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 400, "concepto": "BOTON 20 LINEA", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2038, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2038}]	5325.00	5300.00	324.00	400.00	2438.00	13787.00	f	Soporte	2026-03-20 16:30:43.475637	2026-03-20 16:30:43.475637
+80c52e4b-1f31-4ecb-9de1-0fd78f48de63	13125	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP ROMANTIC	PLOW	MADRES/ECONO	12222		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13125.jpG	\N	[{"um": "METRO", "cant": 0.39, "tipo": "TELA", "total": 4524, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.083, "tipo": "TELA", "total": 962.8000000000001, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2012, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2012}]	6182.80	4700.00	324.00	0.00	2412.00	13618.80	f	Soporte	2026-03-20 16:34:15.434201	2026-03-20 16:34:15.434201
+5107bc11-6b24-466f-913e-5b5b20e2c018	13123	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA TEXTO TONO ATONO	PLOW	ECONOM MADRAES	12219			/images/references/13123.JPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1900, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1931, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1931}]	6032.00	4400.00	324.00	0.00	2331.00	13087.00	f	Soporte	2026-03-20 16:41:04.900943	2026-03-20 16:41:04.900943
+0b85a1b3-b4f8-49e1-a211-0f4a4db857c9	13124	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA RIB DOS COLORES	PLOW	ECONO	12224		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13124.jpg	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 3132, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.097, "tipo": "TELA", "total": 1125.2, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1657, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1657}]	4953.20	3400.00	324.00	550.00	2057.00	11284.20	f	Soporte	2026-03-20 16:37:19.142961	2026-03-20 16:37:19.142961
+7c2e69c8-6089-4b60-8bc1-e1ad5edcdfef	13122	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA RAYA DOBLE	PLOW	ECONOM MADRES	12218		SESGO DE 4 TIRA LIBRE DE 16 CMS LAGRIMA 24 CMS CUELLO FTE 12 POR 2 CUELLO ESPALDA 14 SISA 64 DE UNA TIRA SALEN 4 LAGRIMAS. DE OTRA TIRA SALE LOS CUELLO FTE Y CUELLO ESPALDA 1Y UNA SISA  Y OTRA 1 SOLA SISA   ANCHO 112	/images/references/13122.JPG	\N	[{"um": "METRO", "cant": 0.35, "tipo": "TELA", "total": 4059.9999999999995, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.09, "total": 1044, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 2000, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 0}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "PLACA PLOW", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1801, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1801}]	5104.00	4600.00	324.00	0.00	2201.00	12229.00	f	Soporte	2026-03-20 16:44:50.566474	2026-03-20 16:44:50.566474
+d4f6795a-1200-47e2-819d-655dbb2cbfcf	13121	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA RAYA		ECONOMICA MAFRES	12217-1		ANCHO 145 EN UN ANCHO DE 1,20    SISA 0,60	/images/references/13121.jPG	\N	[{"um": "METRO", "cant": 0.34, "tipo": "TELA", "total": 6800.000000000001, "concepto": "RIB VICTORIA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.035, "tipo": "TELA", "total": 406.00000000000006, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.08, "total": 928, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA TRIANGULO", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2120, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2120}]	8134.00	2800.00	324.00	550.00	2520.00	14328.00	f	Soporte	2026-03-20 16:46:22.859636	2026-03-20 16:46:22.859636
+2ca47889-e5f2-46d8-b66e-4761c78e3eb8	13120	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	ESTRAPLE BOLERO		MADRE ECONOM	12216			/images/references/13120.jPG	\N	[{"um": "METRO", "cant": 0.37, "tipo": "TELA", "total": 4292, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.38, "total": 83.6, "concepto": "ELASTICO (  1) CMS", "vlr_unit": 220}, {"um": "METRO", "cant": 0.35, "total": 87.5, "concepto": "ELASTICO DE 2 CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA TRIANGULO", "vlr_unit": 550}, {"um": "UNIDAD", "cant": 0.8, "total": 240, "concepto": "FRAMILON", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1702, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1702}]	4463.10	3900.00	324.00	790.00	2102.00	11579.10	f	Soporte	2026-03-20 16:50:20.388111	2026-03-20 16:50:20.388111
+1956dda1-2bde-4b83-ac33-cd3b7ed56e66	13119	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CROP TOP PUNTOS		ECONOM MADRES	12215		DE UNA TIRA SALEN 3 CARGADERAS DE 38 CMS SESGO DE 4	/images/references/13119.JPG	\N	[{"um": "METRO", "cant": 0.37, "total": 4292, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.027, "total": 313.2, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.35, "total": 87.5, "concepto": "ELASTICO (2  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 2, "total": 100, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 50}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1852, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1852}]	4692.70	5300.00	324.00	0.00	2252.00	12568.70	f	Soporte	2026-03-20 16:52:04.922156	2026-03-20 16:52:04.922156
+c8a1ac60-c66a-4f09-9c47-198d0facc16c	13109	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA PLUSS MANGA SISA RAYAS	PLOW	MADRES PLUS				/images/references/13109.JPG	\N	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 8550, "concepto": "LYCRA FRIA FRANK", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1", "vlr_unit": 15000}]	[{"um": "PRENDA", "cant": 1, "total": 2700, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2926, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2926}]	9075.00	6900.00	324.00	0.00	3326.00	19625.00	f	Soporte	2026-03-20 16:53:19.387091	2026-03-20 16:53:19.387091
+c3c6ead1-31a7-4527-8675-8b0627dc7cbb	13108	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA CREPE BORADADO	PLOW	DAMA MADRES	12207			/images/references/13108.JPG	\N	[{"um": "METRO", "cant": 0.91, "tipo": "TELA", "total": 19110, "concepto": "CREP BORD", "vlr_unit": 21000}]	[{"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 1000, "concepto": "BOTON EIM", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4728, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4728}]	19110.00	5900.00	324.00	1000.00	5128.00	31462.00	f	Soporte	2026-03-20 16:55:01.065514	2026-03-20 16:55:01.065514
 \.
 
 
 --
--- TOC entry 5374 (class 0 OID 18181)
--- Dependencies: 233
+-- TOC entry 5239 (class 0 OID 16596)
+-- Dependencies: 235
 -- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2592,8 +2804,8 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
--- TOC entry 5375 (class 0 OID 18197)
--- Dependencies: 234
+-- TOC entry 5240 (class 0 OID 16612)
+-- Dependencies: 236
 -- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2602,8 +2814,8 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
--- TOC entry 5376 (class 0 OID 18207)
--- Dependencies: 235
+-- TOC entry 5241 (class 0 OID 16622)
+-- Dependencies: 237
 -- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -2612,97 +2824,39 @@ COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) F
 
 
 --
--- TOC entry 5377 (class 0 OID 18216)
--- Dependencies: 236
+-- TOC entry 5242 (class 0 OID 16631)
+-- Dependencies: 238
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FROM stdin;
-1	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaa	f	2026-02-26 14:27:48.585249
-2	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaa	f	2026-02-26 14:28:12.964014
-3	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaaaaaaa	f	2026-02-26 14:36:45.690516
-4	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaa	f	2026-02-26 14:40:13.332692
-5	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaaaaaaaaaaaaa	f	2026-02-26 14:43:25.179993
-6	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	aaaaaaaa	f	2026-02-26 14:43:53.153267
-7	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	aaaaaa	f	2026-02-26 14:44:05.037576
-8	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	b	f	2026-02-26 14:44:14.080908
-9	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	abc	f	2026-02-26 14:51:35.569786
-10	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123123	f	2026-02-26 14:53:13.197181
-11	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	456456	f	2026-02-26 14:53:27.68156
-12	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	123	f	2026-02-26 14:57:01.006756
-13	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	123	f	2026-02-26 14:57:09.310238
-14	mlgqup29zlzugg8qk	mlgqup2eyhdq1lkxm	12312331	f	2026-02-26 14:57:33.343687
-15	mlgqup2eyhdq1lkxm	mlgqup29zlzugg8qk	13131	f	2026-02-26 14:57:45.581003
-16	mlgqup29zlzugg8qk	mm3wcdhk7ksjtfh97	Holaaaaaaaaaa	f	2026-02-26 15:10:09.139626
-17	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	:(	f	2026-02-26 15:10:32.240156
-18	mm3wcdhk7ksjtfh97	mlgqup29zlzugg8qk	Anderson	f	2026-02-26 15:11:37.666752
-19	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	HOLAAAAA	f	2026-02-27 09:02:19.300223
-20	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	:(	f	2026-02-27 09:02:35.732443
-21	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	quiero emogis	f	2026-02-27 09:07:07.138758
-22	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	quiero emogis	f	2026-02-27 09:07:11.992554
-23	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	quiero emogis	f	2026-02-27 09:07:15.304012
-24	mltycdim2me5704rt	mm3x7j6m4p6s4g2zz	🙂🙃	f	2026-02-27 09:47:38.51916
-25	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	😃😃😃	f	2026-02-27 09:48:42.764565
-26	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🥳	f	2026-02-27 09:49:07.604754
-27	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	👩🏻	f	2026-02-27 09:52:48.924169
-28	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🤡	f	2026-02-27 09:53:12.33012
-29	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	Aaaaa	f	2026-03-02 11:48:40.259607
-30	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	aaaa	f	2026-03-02 11:48:49.688345
-31	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🥳	f	2026-03-03 12:26:28.975421
-32	mm3x7j6m4p6s4g2zz	mmcek5ivcck8np2xg	Hola	f	2026-03-04 14:04:47.414175
-33	mmcek5ivcck8np2xg	mm3x7j6m4p6s4g2zz	😝	f	2026-03-04 14:05:13.501822
-34	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	Llega mensaje normal?	f	2026-03-05 07:44:42.476576
-35	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🙃	f	2026-03-05 07:44:53.933215
-36	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	HOLA	f	2026-03-12 13:20:39.91177
-37	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	Holi	f	2026-03-12 13:21:59.115217
-38	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	🔥	f	2026-03-12 14:51:08.786641
-39	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaaa	f	2026-03-12 14:51:48.531408
-40	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaa	f	2026-03-12 14:51:51.87783
-41	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaaa	f	2026-03-12 14:51:55.574147
-42	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaaa	f	2026-03-12 14:51:57.589917
-43	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaaa	f	2026-03-12 14:51:59.473355
-44	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaaa	f	2026-03-12 14:52:01.797956
-45	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaa	f	2026-03-12 14:53:46.464012
-46	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaa	f	2026-03-12 14:53:48.988092
-47	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	aaaa	f	2026-03-12 14:53:51.370443
-48	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	👍	f	2026-03-12 14:53:53.755588
-49	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	🔥	f	2026-03-12 14:53:54.661442
-50	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	👏	f	2026-03-12 14:53:54.991657
-51	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	😂	f	2026-03-12 14:53:55.616041
-52	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	👍	f	2026-03-12 14:53:56.442632
-53	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	❤️	f	2026-03-12 14:53:56.772438
-54	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	😂	f	2026-03-12 14:53:57.092754
-55	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	❤️	f	2026-03-13 16:07:29.207186
-56	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	🔥	f	2026-03-13 16:20:27.869201
-57	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	👏	f	2026-03-13 16:20:29.506624
-58	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	👍	f	2026-03-13 16:20:44.751228
-59	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	😒🙄	f	2026-03-13 16:21:09.198549
-60	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	helo	f	2026-03-13 16:21:29.926028
-61	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	hello	f	2026-03-13 16:21:33.385183
-62	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	🥟 de cocorollo	f	2026-03-13 16:23:19.637504
-63	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😓	f	2026-03-13 16:23:21.07226
-64	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😡	f	2026-03-13 16:23:33.676135
-65	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😂	f	2026-03-13 16:25:01.258
-66	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	🙈	f	2026-03-13 16:25:36.925353
-67	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	🙈🙉🙊	f	2026-03-13 16:25:54.42658
-68	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	mensaje	f	2026-03-13 16:28:59.364416
-69	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😡	f	2026-03-16 13:18:07.822905
-70	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	Holi	f	2026-03-16 16:33:07.290195
-71	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	zumbido	f	2026-03-16 16:33:16.70018
-72	mm3x7j6m4p6s4g2zz	mmtovpuh0hhrz20qp	Holi, recibes mensajes?	f	2026-03-17 08:20:48.763735
-73	mmtovpuh0hhrz20qp	mm3x7j6m4p6s4g2zz	sii	f	2026-03-17 08:21:17.359974
-74	mmtovpuh0hhrz20qp	mm3x7j6m4p6s4g2zz	ya le aparece es de melva? , yo no veo que me halla quedado guardado	f	2026-03-17 08:31:49.078552
-75	mm3x7j6m4p6s4g2zz	mmtovpuh0hhrz20qp	Nada, no lo veo, subo y lo hacemos a ver qué pasA?	f	2026-03-17 08:32:24.473519
-76	mmtovpuh0hhrz20qp	mm3x7j6m4p6s4g2zz	sii por  fa	f	2026-03-17 08:38:14.163696
-77	mm3wcdhk7ksjtfh97	mmtovpuh0hhrz20qp	❤️	f	2026-03-17 08:49:28.064702
-78	mmtovpuh0hhrz20qp	mm3wcdhk7ksjtfh97	🤪	f	2026-03-17 08:49:54.810091
-79	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	❤️	f	2026-03-17 08:59:05.757306
+116	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	adsdsasada	t	2026-03-19 14:15:53.745567
+117	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	asdasdsad	t	2026-03-19 14:23:05.185419
+119	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	adasdsa	t	2026-03-19 14:23:24.493308
+118	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	asdasdasd	t	2026-03-19 14:23:19.469469
+120	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	asdasd	t	2026-03-19 14:23:26.041659
+121	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	asdasd	t	2026-03-19 14:23:27.797468
+122	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😡	t	2026-03-19 15:42:52.857943
+123	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	Holi	t	2026-03-19 15:42:54.405688
+124	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😡	t	2026-03-19 15:42:58.243765
+125	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	Ahora sí?	t	2026-03-19 15:43:00.771317
+126	mm3x7j6m4p6s4g2zz	mm3wcdhk7ksjtfh97	asasa	f	2026-03-19 15:43:13.246198
+127	mm3wcdhk7ksjtfh97	mm3x7j6m4p6s4g2zz	😡	f	2026-03-19 15:56:45.757622
+128	mmxyjrub7hx690dr8	mm3wcdhk7ksjtfh97	HOLI	f	2026-03-19 16:04:11.699855
+129	mm3wcdhk7ksjtfh97	mmxyjrub7hx690dr8	lUISA	f	2026-03-19 16:05:36.427885
+130	mm3wcdhk7ksjtfh97	mmxyjrub7hx690dr8	JAJAJA	f	2026-03-19 16:05:39.560831
+131	mm3wcdhk7ksjtfh97	mmcek5ivcck8np2xg	Jefe me trae cositas del centro	f	2026-03-20 09:24:34.479401
+132	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	Llegan mensajes?	f	2026-03-20 16:34:21.077561
+133	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	Recibes mensajes?	f	2026-03-20 16:42:30.703217
+134	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	123	f	2026-03-20 16:42:41.886069
+135	mm9a66x3tqtxja160	mm3x7j6m4p6s4g2zz	56255625665	f	2026-03-20 16:42:59.372542
+136	mm3x7j6m4p6s4g2zz	mm9a66x3tqtxja160	24616511	f	2026-03-20 16:43:13.993387
 \.
 
 
 --
--- TOC entry 5379 (class 0 OID 18229)
--- Dependencies: 238
+-- TOC entry 5244 (class 0 OID 16644)
+-- Dependencies: 240
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3738,12 +3892,252 @@ mmun9a0vcpsv8yiiw	12881	6	32900.00
 mmun9a0vcpsv8yiiw	12935	6	34900.00
 mmun9a0vcpsv8yiiw	12907	6	28900.00
 mmun9a0vcpsv8yiiw	12744	6	19900.00
+mmuz2vh288k4e59ve	13041	12	29900.00
+mmuz2vh288k4e59ve	13001	12	32900.00
+mmuz2vh288k4e59ve	13107	12	29900.00
+mmuz2vh288k4e59ve	12972	12	48900.00
+mmuz2vh288k4e59ve	13002	24	41900.00
+mmuz2vh288k4e59ve	12652	24	29900.00
+mmuz2vh288k4e59ve	12579	24	39900.00
+mmuz2vh288k4e59ve	12968	24	44900.00
+mmuz2vh288k4e59ve	13014	24	29900.00
+mmuz2vh288k4e59ve	13068	24	21900.00
+mmuz2vh288k4e59ve	13011	24	29900.00
+mmuz2vh288k4e59ve	13036	24	29900.00
+mmuz2vh288k4e59ve	13086	24	24900.00
+mmuz2vh288k4e59ve	13116	24	21900.00
+mmuz2vh288k4e59ve	13120	24	17900.00
+mmuz2vh288k4e59ve	13029	24	32900.00
+mmuz2vh288k4e59ve	12907	24	28900.00
+mmuz2vh288k4e59ve	12986	24	34900.00
+mmuz2vh288k4e59ve	12744	24	19900.00
+mmuz2vh288k4e59ve	12984	24	24900.00
+mmuz2vh288k4e59ve	12881	24	33900.00
+mmuz2vh288k4e59ve	12905	24	34900.00
+mmuz2vh288k4e59ve	12908	24	28900.00
+mmuz2vh288k4e59ve	12935	24	35900.00
+mmuz2vh288k4e59ve	12987	24	27900.00
+mmuz2vh288k4e59ve	13042	24	29900.00
+mmuz2vh288k4e59ve	13003	24	32900.00
+mmuz2vh288k4e59ve	12965	24	27900.00
+mmuz2vh288k4e59ve	13047	24	25900.00
+mmuz2vh288k4e59ve	12971	24	36900.00
+mmuz2vh288k4e59ve	13040	24	32900.00
+mmuz2vh288k4e59ve	12712	24	25900.00
+mmuz2vh288k4e59ve	13098	24	22900.00
+mmuz2vh288k4e59ve	13129	24	22900.00
+mmuz2vh288k4e59ve	13122	24	18900.00
+mmuz2vh288k4e59ve	12963	24	35900.00
+mmuz2vh288k4e59ve	13015	24	37900.00
+mmuz2vh288k4e59ve	13023	24	34900.00
+mmuz2vh288k4e59ve	13012	24	39900.00
+mmuz2vh288k4e59ve	13016	24	32900.00
+mmuz2vh288k4e59ve	12990	24	32900.00
+mmuz2vh288k4e59ve	12869	24	31900.00
+mmuz2vh288k4e59ve	13115	24	49900.00
+mmuz2vh288k4e59ve	13102	36	29900.00
+mmuz2vh288k4e59ve	12960	36	39900.00
+mmuz2vh288k4e59ve	12962	36	44900.00
+mmuz2vh288k4e59ve	13065	36	32900.00
+mmuz2vh288k4e59ve	13104	36	35900.00
+mmuz2vh288k4e59ve	13103	36	39900.00
+mmuz2vh288k4e59ve	13100	36	25900.00
+mmuz2vh288k4e59ve	13117	36	23900.00
+mmuz2vh288k4e59ve	13090	36	21900.00
+mmuz2vh288k4e59ve	13110	36	19900.00
+mmuz2vh288k4e59ve	13074	36	19900.00
+mmuz2vh288k4e59ve	13118	36	21900.00
+mmuz2vh288k4e59ve	13094	36	21900.00
+mmuz2vh288k4e59ve	13079	36	19900.00
+mmuz2vh288k4e59ve	13078	36	22900.00
+mmuz2vh288k4e59ve	13084	36	29900.00
+mmuz2vh288k4e59ve	12969	36	21900.00
+mmuz2vh288k4e59ve	12920	36	21900.00
+mmuz2vh288k4e59ve	13013	36	23900.00
+mmuz2vh288k4e59ve	12877	36	19900.00
+mmuz2vh288k4e59ve	13097	36	24900.00
+mmuz2vh288k4e59ve	12943	36	19900.00
+mmuz3v4f45k1zx63o	12395	18	29900.00
+mmuz3v4f45k1zx63o	12402	18	39900.00
+mmuz3v4f45k1zx63o	13002	18	41900.00
+mmuz3v4f45k1zx63o	13090	18	21900.00
+mmuz3v4f45k1zx63o	13116	18	21900.00
+mmuz3v4f45k1zx63o	12980	18	20900.00
+mmuz3v4f45k1zx63o	13055	18	29900.00
+mmuz3v4f45k1zx63o	13254	18	34900.00
+mmuz3v4f45k1zx63o	13039	18	30900.00
+mmuz3v4f45k1zx63o	13118	18	21900.00
+mmuz3v4f45k1zx63o	13091	18	18900.00
+mmuz3v4f45k1zx63o	13110	18	19900.00
+mmuz3v4f45k1zx63o	13121	18	22900.00
+mmuz3v4f45k1zx63o	12771	18	16900.00
+mmuz3v4f45k1zx63o	12877	18	19900.00
+mmuz3v4f45k1zx63o	13122	18	18900.00
+mmuz3v4f45k1zx63o	12943	18	19900.00
+mmuz3v4f45k1zx63o	12895	18	30900.00
+mmuz3v4f45k1zx63o	13084	18	29900.00
+mmz6ste278jak610v	12984	12	24000.00
+mmz6ste278jak610v	12744	12	19000.00
+mmz6ste278jak610v	12975	6	34000.00
+mmz6ste278jak610v	12617	12	35000.00
+mmz6ste278jak610v	13081	24	19000.00
+mmz6ste278jak610v	12909	24	19000.00
+mmz6ste278jak610v	13011	12	29000.00
+mmz6ste278jak610v	13036	12	29000.00
+mmz6ste278jak610v	12747	12	31000.00
+mmz6ste278jak610v	13068	24	21000.00
+mmz6ste278jak610v	13100	24	25000.00
+mmz6ste278jak610v	13128	12	23000.00
+mmz6ste278jak610v	13090	24	21000.00
+mmz6ste278jak610v	13116	24	21000.00
+mmz6ste278jak610v	13094	24	21000.00
+mmz6ste278jak610v	13129	24	22000.00
+mmz6ste278jak610v	13079	24	19000.00
+mmz6ste278jak610v	13095	24	17000.00
+mmz6ste278jak610v	12692	24	21000.00
+mmz6ste278jak610v	12640	12	24000.00
+mmz6ste278jak610v	13083	24	19000.00
+mmz6ste278jak610v	13074	24	19000.00
+mmz6ste278jak610v	13121	24	22000.00
+mmz6ste278jak610v	13110	24	19000.00
+mmz6ste278jak610v	13091	24	18000.00
+mmz6ste278jak610v	13118	24	21000.00
+mmz6ste278jak610v	13122	24	18000.00
+mmz6ste278jak610v	12943	24	19000.00
+mmz6ste278jak610v	13119	24	19000.00
+mmz6ste278jak610v	13013	24	23000.00
+mmz6ste278jak610v	12920	24	21000.00
+mmz6ste278jak610v	13097	24	24000.00
+mmz6ste278jak610v	13120	24	17000.00
+mmwi1or2y1lmz89j1	13117	36	22900.00
+mmwi1or2y1lmz89j1	13100	36	24900.00
+mmwi1or2y1lmz89j1	13094	36	19900.00
+mmwi1or2y1lmz89j1	13013	36	21900.00
+mmwi1or2y1lmz89j1	12877	36	19900.00
+mmwi1or2y1lmz89j1	13097	36	22900.00
+mmwi1or2y1lmz89j1	12943	36	18900.00
+mmwi1or2y1lmz89j1	12881	36	29900.00
+mmwi1or2y1lmz89j1	12907	36	28900.00
+mmwi22ybmtlp3xmn4	13117	18	22900.00
+mmwi22ybmtlp3xmn4	13100	18	24900.00
+mmwi22ybmtlp3xmn4	13094	18	19900.00
+mmwi22ybmtlp3xmn4	13013	18	21900.00
+mmwi22ybmtlp3xmn4	12877	18	19900.00
+mmwi22ybmtlp3xmn4	13097	18	22900.00
+mmwi22ybmtlp3xmn4	12943	18	18900.00
+mmwi22ybmtlp3xmn4	12881	18	29900.00
+mmwi22ybmtlp3xmn4	12907	18	28900.00
+mmwi2g8gthkv4t76s	13117	18	22900.00
+mmwi2g8gthkv4t76s	13100	18	24900.00
+mmwi2g8gthkv4t76s	13094	18	19900.00
+mmwi2g8gthkv4t76s	13013	18	21900.00
+mmwi2g8gthkv4t76s	12877	18	19900.00
+mmwi2g8gthkv4t76s	13097	18	22900.00
+mmwi2g8gthkv4t76s	12943	18	18900.00
+mmwi2g8gthkv4t76s	12881	18	29900.00
+mmwi2g8gthkv4t76s	12907	18	28900.00
+mmwi2xc7yi4fpkkkm	13117	12	22900.00
+mmwi2xc7yi4fpkkkm	13094	12	19900.00
+mmwi2xc7yi4fpkkkm	13013	12	21900.00
+mmwi2xc7yi4fpkkkm	12877	12	19900.00
+mmwi2xc7yi4fpkkkm	13097	12	22900.00
+mmwi2xc7yi4fpkkkm	12881	12	29900.00
+mmwi2xc7yi4fpkkkm	12907	12	28900.00
+mmxfucvhrv09phu8u	13104	12	35900.00
+mmxfucvhrv09phu8u	13100	12	25900.00
+mmxfucvhrv09phu8u	13011	12	29900.00
+mmxfucvhrv09phu8u	13036	12	29900.00
+mmxfucvhrv09phu8u	13116	12	21900.00
+mmxfucvhrv09phu8u	13128	12	23900.00
+mmxfucvhrv09phu8u	13117	12	24900.00
+mmxfucvhrv09phu8u	12909	12	19900.00
+mmxfucvhrv09phu8u	13079	12	19900.00
+mmxfucvhrv09phu8u	13118	12	21900.00
+mmxfucvhrv09phu8u	13091	12	18900.00
+mmxfucvhrv09phu8u	13094	12	21900.00
+mmxfucvhrv09phu8u	13013	12	23900.00
+mmxfucvhrv09phu8u	13097	12	24900.00
+mmxfucvhrv09phu8u	12877	12	19900.00
+mmxfucvhrv09phu8u	13058	12	29900.00
+mmxfucvhrv09phu8u	13042	12	29900.00
+mmxfucvhrv09phu8u	13055	12	29900.00
+mmxfucvhrv09phu8u	13003	12	32900.00
+mmxfucvhrv09phu8u	12965	12	27900.00
+mmxfucvhrv09phu8u	12935	12	35900.00
+mmxfucvhrv09phu8u	12975	12	34900.00
+mmxfucvhrv09phu8u	12744	12	19900.00
+mmwi4lq7py8arrw07	13117	36	22900.00
+mmwi4lq7py8arrw07	13100	36	25900.00
+mmwi4lq7py8arrw07	12909	36	19900.00
+mmwi4lq7py8arrw07	13094	36	19900.00
+mmwi4lq7py8arrw07	13013	36	21900.00
+mmwi4lq7py8arrw07	12877	36	19900.00
+mmwi4lq7py8arrw07	13097	36	22900.00
+mmwi4lq7py8arrw07	12943	36	18900.00
+mmwi4lq7py8arrw07	12965	36	25900.00
+mmwi4lq7py8arrw07	12969	36	20900.00
+mmwi4lq7py8arrw07	12973	36	39900.00
+mmwi4lq7py8arrw07	12881	36	29900.00
+mmwi4lq7py8arrw07	12907	36	28900.00
+mmwi4lq7py8arrw07	12744	36	18900.00
+mmwi4lq7py8arrw07	12975	36	32900.00
+mmyzdhro97mizxlhk	13116	18	21900.00
+mmyzdhro97mizxlhk	13117	18	24900.00
+mmyzdhro97mizxlhk	13068	18	21900.00
+mmyzdhro97mizxlhk	13010	18	29900.00
+mmyzdhro97mizxlhk	13067	18	33900.00
+mmyzdhro97mizxlhk	12980	18	22900.00
+mmyzdhro97mizxlhk	13100	18	25900.00
+mmyzdhro97mizxlhk	13011	18	29900.00
+mmyzdhro97mizxlhk	13036	18	29900.00
+mmyzdhro97mizxlhk	12747	18	31900.00
+mmyzdhro97mizxlhk	13033	18	29900.00
+mmyzdhro97mizxlhk	13086	18	24900.00
+mmyzdhro97mizxlhk	13112	12	37900.00
+mmyzdhro97mizxlhk	13113	12	49900.00
+mmyzdhro97mizxlhk	12962	12	44900.00
+mmyzdhro97mizxlhk	13102	18	29900.00
+mmyzdhro97mizxlhk	13077	12	42900.00
+mmyzdhro97mizxlhk	13115	12	49900.00
+mmyzdhro97mizxlhk	12963	12	35900.00
+mmyzdhro97mizxlhk	13016	12	32900.00
+mmyzdhro97mizxlhk	13002	12	41900.00
+mmyzdhro97mizxlhk	12395	18	29900.00
+mmyzdhro97mizxlhk	13029	12	32900.00
+mmyzdhro97mizxlhk	12987	18	27900.00
+mmyzdhro97mizxlhk	13042	18	29900.00
+mmyzdhro97mizxlhk	13055	18	29900.00
+mmyzdhro97mizxlhk	12965	18	27900.00
+mmyzdhro97mizxlhk	13058	18	29900.00
+mmyzdhro97mizxlhk	13084	18	29900.00
+mmyzdhro97mizxlhk	13001	18	32900.00
+mmyzdhro97mizxlhk	13041	18	29900.00
+mmyzdhro97mizxlhk	13254	12	34900.00
+mmyzdhro97mizxlhk	12964	12	46900.00
+mmyzdhro97mizxlhk	12986	12	34900.00
+mmyzdhro97mizxlhk	12972	12	48900.00
+mmyzdhro97mizxlhk	13120	18	18900.00
+mmyzdhro97mizxlhk	13097	18	24900.00
+mmyzdhro97mizxlhk	12920	18	21900.00
+mmyzdhro97mizxlhk	13079	18	19900.00
+mmyzdhro97mizxlhk	13129	18	22900.00
+mmyzdhro97mizxlhk	13094	18	21900.00
+mmyzdhro97mizxlhk	13091	18	18900.00
+mmyzdhro97mizxlhk	13118	18	21900.00
+mmyzdhro97mizxlhk	12692	18	22900.00
+mmyzdhro97mizxlhk	13121	18	22900.00
+mmyzdhro97mizxlhk	12640	18	24900.00
+mmyzdhro97mizxlhk	13083	18	19900.00
+mmyzdhro97mizxlhk	13074	18	19900.00
+mmyzdhro97mizxlhk	13110	18	19900.00
+mmyzdhro97mizxlhk	13095	18	17900.00
+mmyzdhro97mizxlhk	12909	18	19900.00
 \.
 
 
 --
--- TOC entry 5380 (class 0 OID 18239)
--- Dependencies: 239
+-- TOC entry 5245 (class 0 OID 16654)
+-- Dependencies: 241
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -3769,32 +4163,42 @@ mm25teuw5s5a06njw	74	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	2242900.00	2026-02-25T1
 mm25shroo1oy81pds	232	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	22346400.00	2026-02-25T14:58:01.332Z	Admin Principal	3	2026-01-15	\N	0.00	0.00
 mm25rzt79inviirmd	177	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:57:38.059Z	Admin Principal	2	2026-02-14	\N	0.00	0.00
 mm25qs8bzb9btrgvw	179	mlia6sxbdfmbvlex0	mljjqn48zbxhtg0yw	6388200.00	2026-02-25T14:56:41.580Z	Admin Principal	1	2026-02-14	\N	0.00	0.00
-mmpgtfe31h7o4pg3g	300	mlia6gb0u2bhftxam	mljjrcujmtckild4r	87136800.00	2026-03-13T22:25:22.731Z	Jhon Montoya	\N	2026-03-16	2026-06-04	50.00	50.00
-mmpgxr0cmqouvxsuz	298	mlia6gb0u2bhftxam	mljjrcujmtckild4r	20677200.00	2026-03-13T22:28:44.412Z	Jhon Montoya	1	2026-03-06	\N	20.00	80.00
-mmph0ntzrz5dgbf7e	276	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	6481200.00	2026-03-13T22:31:00.263Z	Jhon Montoya	1	2026-04-10	\N	30.00	70.00
-mmph224zawpf1wfbp	152	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	6481200.00	2026-03-13T22:32:05.459Z	Jhon Montoya	2	2026-04-10	\N	30.00	70.00
-mmph2vwqtgig74spi	193	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	981600.00	2026-03-13T22:32:44.042Z	Jhon Montoya	3	2026-03-20	\N	100.00	0.00
-mmt9cg4gbu5dnloup	310	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7104000.00	2026-03-16T14:07:17.920Z	Jhon Montoya	1	2026-03-10	\N	50.00	50.00
-mmt9f0zv75r8qf1g9	283	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5434500.00	2026-03-16T14:09:18.283Z	Jhon Montoya	2	2026-03-11	\N	100.00	0.00
-mmt9gf24g1f0g2km0	114	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	9314700.00	2026-03-16T14:10:23.164Z	Jhon Montoya	4	2026-03-11	2026-04-30	100.00	0.00
-mmt9hjj6xd4mpipig	179	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	9142200.00	2026-03-16T14:11:15.618Z	Jhon Montoya	3	2026-03-11	\N	50.00	50.00
-mmt9ijwvjz21wl7nq	177	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	11741400.00	2026-03-16T14:12:02.767Z	Jhon Montoya	4	2026-03-11	\N	50.00	50.00
-mmt9ka1qt9uumiqoj	115	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	7312000.00	2026-03-16T14:13:23.294Z	Jhon Montoya	5	2026-04-10	\N	50.00	50.00
-mmt9nlw0bj2eouw27	216	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7336500.00	2026-03-16T14:15:58.609Z	Jhon Montoya	5	2026-03-20	\N	20.00	80.00
-mmt9omzsn8q7wdcw0	232	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	22644000.00	2026-03-16T14:16:46.696Z	Jhon Montoya	6	2026-03-12	\N	50.00	50.00
-mmt9pnknmcc4u2twt	158	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5155800.00	2026-03-16T14:17:34.103Z	Jhon Montoya	7	2026-04-01	\N	100.00	0.00
-mmt9qjskej5ms6x1x	233	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	12354000.00	2026-03-16T14:18:15.860Z	Jhon Montoya	8	2026-03-13	2026-04-20	50.00	50.00
-mmt9r6b2q007ajtnt	296	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	3204400.00	2026-03-16T14:18:45.038Z	Jhon Montoya	9	\N	\N	0.00	100.00
-mmt9s8xtkyhxxqxvt	159	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	10214400.00	2026-03-16T14:19:35.105Z	Jhon Montoya	10	2026-03-14	2026-04-20	50.00	50.00
-mmt9tei8ytk1h00vz	230	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7603800.00	2026-03-16T14:20:28.976Z	Jhon Montoya	11	2026-03-14	2026-04-20	50.00	50.00
-mmt9ud7lqklo7j0pc	201	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	2235600.00	2026-03-16T14:21:13.953Z	Jhon Montoya	12	2026-03-15	\N	0.00	100.00
-mmun9a0vcpsv8yiiw	80	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	4940400.00	2026-03-17T13:24:30.847Z	Maria Mercedes	13	2026-04-15	\N	100.00	0.00
+mmpgtfe31h7o4pg3g	300	mlia6gb0u2bhftxam	mljjrcujmtckild4r	87136800.00	2026-03-13T22:25:22.731Z	Jhon Montoya	1	2026-03-16	2026-06-04	50.00	50.00
+mmpgxr0cmqouvxsuz	298	mlia6gb0u2bhftxam	mljjrcujmtckild4r	20677200.00	2026-03-13T22:28:44.412Z	Jhon Montoya	2	2026-03-06	\N	20.00	80.00
+mmph0ntzrz5dgbf7e	276	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	6481200.00	2026-03-13T22:31:00.263Z	Jhon Montoya	3	2026-04-10	\N	30.00	70.00
+mmph224zawpf1wfbp	152	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	6481200.00	2026-03-13T22:32:05.459Z	Jhon Montoya	4	2026-04-10	\N	30.00	70.00
+mmph2vwqtgig74spi	193	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	981600.00	2026-03-13T22:32:44.042Z	Jhon Montoya	5	2026-03-20	\N	100.00	0.00
+mmt9cg4gbu5dnloup	310	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7104000.00	2026-03-16T14:07:17.920Z	Jhon Montoya	6	2026-03-10	\N	50.00	50.00
+mmt9f0zv75r8qf1g9	283	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5434500.00	2026-03-16T14:09:18.283Z	Jhon Montoya	7	2026-03-11	\N	100.00	0.00
+mmt9gf24g1f0g2km0	114	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	9314700.00	2026-03-16T14:10:23.164Z	Jhon Montoya	8	2026-03-11	2026-04-30	100.00	0.00
+mmt9hjj6xd4mpipig	179	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	9142200.00	2026-03-16T14:11:15.618Z	Jhon Montoya	9	2026-03-11	\N	50.00	50.00
+mmt9ijwvjz21wl7nq	177	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	11741400.00	2026-03-16T14:12:02.767Z	Jhon Montoya	10	2026-03-11	\N	50.00	50.00
+mmt9ka1qt9uumiqoj	115	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	7312000.00	2026-03-16T14:13:23.294Z	Jhon Montoya	11	2026-04-10	\N	50.00	50.00
+mmt9nlw0bj2eouw27	216	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7336500.00	2026-03-16T14:15:58.609Z	Jhon Montoya	12	2026-03-20	\N	20.00	80.00
+mmt9omzsn8q7wdcw0	232	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	22644000.00	2026-03-16T14:16:46.696Z	Jhon Montoya	13	2026-03-12	\N	50.00	50.00
+mmt9pnknmcc4u2twt	158	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5155800.00	2026-03-16T14:17:34.103Z	Jhon Montoya	14	2026-04-01	\N	100.00	0.00
+mmt9qjskej5ms6x1x	233	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	12354000.00	2026-03-16T14:18:15.860Z	Jhon Montoya	15	2026-03-13	2026-04-20	50.00	50.00
+mmt9r6b2q007ajtnt	296	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	3204400.00	2026-03-16T14:18:45.038Z	Jhon Montoya	16	\N	\N	50.00	50.00
+mmt9s8xtkyhxxqxvt	159	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	10214400.00	2026-03-16T14:19:35.105Z	Jhon Montoya	17	2026-03-14	2026-04-20	50.00	50.00
+mmt9tei8ytk1h00vz	230	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7603800.00	2026-03-16T14:20:28.976Z	Jhon Montoya	18	2026-03-14	2026-04-20	50.00	50.00
+mmt9ud7lqklo7j0pc	201	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	2235600.00	2026-03-16T14:21:13.953Z	Jhon Montoya	19	2026-03-15	\N	0.00	100.00
+mmun9a0vcpsv8yiiw	80	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	4940400.00	2026-03-17T13:24:30.847Z	Maria Mercedes	20	2026-04-15	\N	100.00	0.00
+mmuz2vh288k4e59ve	311	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	51734400.00	2026-03-17T18:55:27.446Z	Jhon Montoya	22	2026-03-17	\N	50.00	50.00
+mmuz3v4f45k1zx63o	100	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	8857800.00	2026-03-17T18:56:13.647Z	Jhon Montoya	21	2026-04-01	\N	50.00	50.00
+mmwi1or2y1lmz89j1	255	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7563600.00	2026-03-18T20:34:10.958Z	Jhon Montoya	23	2026-03-18	\N	50.00	50.00
+mmwi22ybmtlp3xmn4	225	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	3781800.00	2026-03-18T20:34:29.363Z	Jhon Montoya	24	2026-03-18	\N	50.00	50.00
+mmwi2g8gthkv4t76s	28	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	3781800.00	2026-03-18T20:34:46.576Z	Jhon Montoya	25	2026-03-18	\N	50.00	50.00
+mmwi2xc7yi4fpkkkm	310	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	1995600.00	2026-03-18T20:35:08.744Z	Jhon Montoya	26	2026-03-18	\N	50.00	50.00
+mmwi4lq7py8arrw07	17	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	13302000.00	2026-03-18T20:36:27.007Z	Jhon Montoya	27	2026-03-18	\N	50.00	50.00
+mmxfucvhrv09phu8u	21	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7256400.00	2026-03-19T12:20:15.917Z	M@R!@ M	28	2026-03-18	\N	50.00	50.00
+mmyzdhro97mizxlhk	29	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	23790000.00	2026-03-20T14:14:47.604Z	M@R!@ M	29	2026-03-19	\N	50.00	50.00
+mmz6ste278jak610v	277	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	14412000.00	2026-03-20T17:42:39.818Z	Jhon Montoya	30	2026-03-20	\N	50.00	50.00
 \.
 
 
 --
--- TOC entry 5381 (class 0 OID 18251)
--- Dependencies: 240
+-- TOC entry 5246 (class 0 OID 16666)
+-- Dependencies: 242
 -- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4065,8 +4469,8 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 
 
 --
--- TOC entry 5382 (class 0 OID 18261)
--- Dependencies: 241
+-- TOC entry 5247 (class 0 OID 16676)
+-- Dependencies: 243
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4170,9 +4574,9 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 12884	mljjqn48zbxhtg0yw	0	0	120	\N
 12885	mljjqn48zbxhtg0yw	0	0	117	\N
 12889	mljjqn48zbxhtg0yw	0	0	117	\N
+12402	mljjrcujmtckild4r	0	0	27	Sale de maleta agotada
 12955	mljjqn48zbxhtg0yw	0	48	0	Tela inventario
 12395	mljjrcujmtckild4r	0	0	244	\N
-12402	mljjrcujmtckild4r	0	0	27	\N
 12412	mljjrcujmtckild4r	0	0	31	\N
 12416	mljjrcujmtckild4r	0	0	26	\N
 12431	mljjrcujmtckild4r	0	0	56	\N
@@ -4200,110 +4604,133 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 12709	mljjrcujmtckild4r	0	0	33	\N
 12712	mljjrcujmtckild4r	0	0	110	\N
 12737	mljjrcujmtckild4r	0	0	53	\N
-12744	mljjrcujmtckild4r	0	0	24	\N
 12747	mljjrcujmtckild4r	0	0	142	\N
 12754	mljjrcujmtckild4r	0	0	63	\N
-12771	mljjrcujmtckild4r	0	0	80	\N
 12777	mljjrcujmtckild4r	0	0	198	\N
 12862	mljjrcujmtckild4r	0	0	88	\N
 12865	mljjrcujmtckild4r	0	0	66	\N
-12877	mljjrcujmtckild4r	0	192	25	\N
 12869	mljjrcujmtckild4r	0	240	0	\N
-12905	mljjrcujmtckild4r	0	0	26	\N
-12907	mljjrcujmtckild4r	0	0	16	\N
 12908	mljjrcujmtckild4r	0	0	7	\N
 12920	mljjrcujmtckild4r	0	0	217	\N
 12931	mljjrcujmtckild4r	0	138	0	\N
 12935	mljjrcujmtckild4r	0	0	28	\N
 12959	mljjrcujmtckild4r	0	0	54	\N
 12960	mljjrcujmtckild4r	0	0	54	\N
-12962	mljjrcujmtckild4r	0	117	0	\N
-12969	mljjrcujmtckild4r	0	0	111	\N
-13103	mljjrcujmtckild4r	0	0	82	\N
 13104	mljjrcujmtckild4r	0	0	159	\N
 13105	mljjrcujmtckild4r	0	0	117	\N
 13106	mljjrcujmtckild4r	0	0	281	\N
 13107	mljjrcujmtckild4r	0	0	157	\N
 12963	mljjrcujmtckild4r	0	120	0	\N
 12964	mljjrcujmtckild4r	0	120	0	\N
-12965	mljjrcujmtckild4r	0	135	0	\N
 12966	mljjrcujmtckild4r	0	120	0	\N
 12968	mljjrcujmtckild4r	0	117	0	\N
 12970	mljjrcujmtckild4r	0	138	0	\N
-12972	mljjrcujmtckild4r	99	0	0	\N
-12975	mljjrcujmtckild4r	120	0	0	\N
 12980	mljjrcujmtckild4r	0	195	0	\N
-12984	mljjrcujmtckild4r	120	0	0	\N
 12986	mljjrcujmtckild4r	0	120	0	\N
 13010	mljjrcujmtckild4r	0	210	0	\N
 13011	mljjrcujmtckild4r	0	120	0	\N
 13012	mljjrcujmtckild4r	0	120	0	\N
-13013	mljjrcujmtckild4r	0	195	0	\N
 13014	mljjrcujmtckild4r	0	123	0	\N
 13015	mljjrcujmtckild4r	0	201	0	\N
 13028	mljjrcujmtckild4r	120	0	0	\N
 13036	mljjrcujmtckild4r	0	120	0	\N
-13047	mljjrcujmtckild4r	90	0	0	\N
-13048	mljjrcujmtckild4r	90	0	0	\N
 13055	mljjrcujmtckild4r	120	0	0	\N
 13058	mljjrcujmtckild4r	0	138	0	\N
-13065	mljjrcujmtckild4r	120	0	0	\N
 13067	mljjrcujmtckild4r	0	258	0	\N
-13068	mljjrcujmtckild4r	90	0	0	\N
 13086	mljjrcujmtckild4r	0	120	0	\N
 13090	mljjrcujmtckild4r	0	252	0	\N
-13091	mljjrcujmtckild4r	0	252	0	\N
 13093	mljjrcujmtckild4r	0	120	0	\N
-13094	mljjrcujmtckild4r	0	201	0	\N
 13095	mljjrcujmtckild4r	0	300	0	\N
 13096	mljjrcujmtckild4r	0	201	0	\N
 13098	mljjrcujmtckild4r	120	0	0	\N
 13101	mljjrcujmtckild4r	120	0	0	\N
 13109	mljjrcujmtckild4r	0	201	0	\N
-13110	mljjrcujmtckild4r	120	0	0	\N
-13116	mljjrcujmtckild4r	200	0	0	\N
-13117	mljjrcujmtckild4r	90	0	0	\N
-13119	mljjrcujmtckild4r	90	0	0	\N
-13120	mljjrcujmtckild4r	150	0	0	\N
-13121	mljjrcujmtckild4r	120	0	0	\N
-13129	mljjrcujmtckild4r	120	0	0	\N
 13131	mljjrcujmtckild4r	90	0	0	\N
 12971	mljjrcujmtckild4r	0	102	0	\N
 12973	mljjrcujmtckild4r	0	135	0	\N
 13016	mljjrcujmtckild4r	0	120	0	\N
 12685	mljjrcujmtckild4r	0	0	56	Salio de la maleta
-12686	mljjrcujmtckild4r	180	0	38	Tela pedida
 12782	mljjrcujmtckild4r	0	54	24	Salio de maleta media
 12783	mljjrcujmtckild4r	0	0	123	Salio de maleta media
 12864	mljjrcujmtckild4r	0	279	58	OK tela media
 12883	mljjrcujmtckild4r	0	0	29	Salio de maleta media
 12884	mljjrcujmtckild4r	0	0	50	Sale de maleta agotada
+13047	mljjrcujmtckild4r	150	0	0	\N
+13048	mljjrcujmtckild4r	120	0	0	\N
+13116	mljjrcujmtckild4r	0	201	0	\N
+13119	mljjrcujmtckild4r	120	0	0	\N
+13120	mljjrcujmtckild4r	180	0	0	\N
+13103	mljjrcujmtckild4r	0	0	82	Sale de maleta agotada
+12771	mljjrcujmtckild4r	0	0	80	Sale de maleta agotada
+12905	mljjrcujmtckild4r	0	0	26	Sale de maleta agotada
+12962	mljjrcujmtckild4r	0	117	0	Sale de maleta agotada
+12965	mljjrcujmtckild4r	0	135	0	Sale de maleta agotada
+12972	mljjrcujmtckild4r	99	0	0	Tela pedida
+12686	mljjrcujmtckild4r	180	0	38	Ok tela
 12885	mljjrcujmtckild4r	0	0	22	Salio de maleta media
 12888	mljjrcujmtckild4r	0	0	23	\N
 12889	mljjrcujmtckild4r	0	0	24	Salio de maleta media
-12895	mljjrcujmtckild4r	150	0	0	\N
-12909	mljjrcujmtckild4r	300	0	63	OK tela
 12976	mljjrcujmtckild4r	0	111	0	Tela en sublimación
 13002	mljjrcujmtckild4r	0	240	0	OK tela
 13005	mljjrcujmtckild4r	0	168	0	Salio de la maleta
 13029	mljjrcujmtckild4r	180	0	0	Reemplazar tela
 13033	mljjrcujmtckild4r	180	0	0	X definir tela
 13064	mljjrcujmtckild4r	0	180	0	Tela pedida
-13074	mljjrcujmtckild4r	200	120	0	Tela pedida
 13076	mljjrcujmtckild4r	120	0	0	Tela en sublimación
 13077	mljjrcujmtckild4r	0	123	0	OK corte
 13079	mljjrcujmtckild4r	400	0	0	X definir tela
-13081	mljjrcujmtckild4r	180	120	0	OK tela
-13083	mljjrcujmtckild4r	300	0	0	Tela pedida
 13084	mljjrcujmtckild4r	0	150	0	OK
-13100	mljjrcujmtckild4r	0	180	0	OK
-13118	mljjrcujmtckild4r	120	0	0	Tela pedida
+12693	mljjrcujmtckild4r	0	0	28	\N
+13074	mljjrcujmtckild4r	0	321	0	Tela pedida
+13081	mljjrcujmtckild4r	0	303	0	OK tela
+13083	mljjrcujmtckild4r	0	282	0	Tela pedida
+12990	mljjrcujmtckild4r	0	111	0	\N
+13123	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13073	mljjrcujmtckild4r	0	0	0	Sale de maleta
+12744	mljjrcujmtckild4r	150	0	24	\N
+12907	mljjrcujmtckild4r	250	0	16	\N
+13013	mljjrcujmtckild4r	200	195	0	\N
+12895	mljjrcujmtckild4r	180	0	0	\N
+12975	mljjrcujmtckild4r	0	120	0	\N
+13068	mljjrcujmtckild4r	0	150	0	\N
+13110	mljjrcujmtckild4r	0	252	0	\N
+13117	mljjrcujmtckild4r	150	150	0	\N
+13118	mljjrcujmtckild4r	0	147	0	Tela pedida
+13066	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13057	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13035	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13027	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13004	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13008	mljjrcujmtckild4r	0	0	0	Sale de maleta
+12974	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13121	mljjrcujmtckild4r	0	81	0	\N
+13129	mljjrcujmtckild4r	0	81	0	\N
+12909	mljjrcujmtckild4r	0	162	63	OK tela
+12969	mljjrcujmtckild4r	0	0	111	SALE DE LA MALETA
+13065	mljjrcujmtckild4r	150	0	0	\N
+13091	mljjrcujmtckild4r	120	252	0	\N
+13094	mljjrcujmtckild4r	250	201	0	\N
+12984	mljjrcujmtckild4r	150	0	0	\N
+13100	mljjrcujmtckild4r	150	180	0	OK
+12881	mljjrcujmtckild4r	200	0	0	\N
+12943	mljjrcujmtckild4r	300	0	0	\N
+12987	mljjrcujmtckild4r	120	0	0	\N
+13003	mljjrcujmtckild4r	90	0	0	\N
+13039	mljjrcujmtckild4r	120	0	0	\N
+13040	mljjrcujmtckild4r	120	0	0	\N
+13042	mljjrcujmtckild4r	120	0	0	\N
+13078	mljjrcujmtckild4r	150	0	0	\N
+13097	mljjrcujmtckild4r	250	0	0	\N
+13102	mljjrcujmtckild4r	120	0	0	\N
+13122	mljjrcujmtckild4r	120	0	0	\N
+13115	mljjrcujmtckild4r	120	0	0	\N
+12877	mljjrcujmtckild4r	200	192	25	Sale de maleta agotada
 \.
 
 
 --
--- TOC entry 5383 (class 0 OID 18271)
--- Dependencies: 242
+-- TOC entry 5248 (class 0 OID 16686)
+-- Dependencies: 244
 -- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4371,108 +4798,136 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 61	mmtkx8pcpn0utjkhp	13013	195
 62	mmtp19eox7u0he5w4	13010	90
 63	mmuo4hmspea34ibjf	13095	300
+64	mmv33njzk0f3az1dt	12964	122
+65	mmw7x9dnktu9qpyh9	13014	123
+66	mmxhzrpimjrptkjgm	13010	118
+68	mmz0iaoqywa17o8q6	13016	120
+69	mmz1tjsluudsjcs88	13015	201
+70	mmz3sfl42ox4fpr21	13012	119
 \.
 
 
 --
--- TOC entry 5385 (class 0 OID 18281)
--- Dependencies: 244
+-- TOC entry 5250 (class 0 OID 16696)
+-- Dependencies: 246
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory, incomplete_units, is_packed, bag_quantity) FROM stdin;
-mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z	t	0	t	1
-mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z	t	0	t	1
-mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z	t	0	t	1
-mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z	t	0	t	1
-mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z	t	0	t	1
-mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z	t	0	t	1
-mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z	t	0	t	1
-mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z	t	0	t	1
-mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z	t	0	t	1
-mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z	t	0	t	1
-mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z	t	0	t	1
-mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z	t	0	t	1
-mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z	t	0	t	1
-mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t	0	t	1
-mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t	0	t	1
-mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f	0	t	1
-mmao4q01lxfht7ff2	7760	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:53:34.370-05:00	t	0	t	1
-mmao5su5kugcx7xv7	7758	71223381	1	\N	0	Jhon Montoya	2026-03-03T08:54:24.702-05:00	t	0	t	1
-mmao6whwa2xbw9p4p	7761	1037264064	0	\N	0	Jhon Montoya	2026-03-03T08:55:16.100-05:00	t	0	t	1
-mmao79naem9n1qbe9	7742	43668259	0	\N	0	Jhon Montoya	2026-03-03T08:55:33.143-05:00	t	0	t	1
-mmao8x1be6xx3btxl	7740	42999087	0	\N	0	Jhon Montoya	2026-03-03T08:56:50.112-05:00	t	0	t	1
-mmao9do8m0lg17fr6	7744	15927569	0	\N	0	Jhon Montoya	2026-03-03T08:57:11.672-05:00	t	0	t	1
-mmao9p3nebiokex9t	7737	1045017301	0	\N	0	Jhon Montoya	2026-03-03T08:57:26.484-05:00	t	0	t	1
-mmaoa0azmws6s54a	7709	43048297	0	\N	0	Jhon Montoya	2026-03-03T08:57:41.003-05:00	t	0	t	1
-mmaoajr4ipuno6hl8	7720	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:58:06.210-05:00	t	0	t	1
-mmaoayvt347s1m4kf	7718	1128386891	0	\N	0	Jhon Montoya	2026-03-03T08:58:25.818-05:00	t	0	t	1
-mmaob8i7q5d7katdw	7728	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:58:38.288-05:00	t	0	t	1
-mmaobjlpzuoylcaag	7732	71223381	0	\N	0	Jhon Montoya	2026-03-03T08:58:52.670-05:00	t	0	t	1
-mmaocgw2h81nskfgj	7729	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:59:35.810-05:00	t	0	t	1
-mmaocta0d700oicjj	7731	700530400	0	\N	0	Jhon Montoya	2026-03-03T08:59:51.865-05:00	t	0	t	1
-mmaod67lqfxnpyn4d	7719	1037264064	1	\N	0	Jhon Montoya	2026-03-03T09:00:08.626-05:00	t	0	t	1
-mmaodgh2kf28twwgc	7739	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:00:21.926-05:00	t	0	t	1
-mmaoeh09ca7gtrvca	7667	43048297	0	\N	0	Jhon Montoya	2026-03-03T09:01:09.274-05:00	t	0	t	1
-mmaoeq2wmo7gj6j6p	7682	700530400	0	\N	0	Jhon Montoya	2026-03-03T09:01:21.033-05:00	t	0	t	1
-mmaof79qqdg6kd5pj	7684	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:01:43.311-05:00	t	0	t	1
-mmaofh4i892efv0o1	7679	1128386891	0	\N	0	Jhon Montoya	2026-03-03T09:01:56.083-05:00	t	0	t	1
-mmaofx1h06n1546ur	7678	32461771	1	\N	0	Jhon Montoya	2026-03-03T09:02:16.710-05:00	t	0	t	1
-mmaogbltgoe8rv8ri	7683	42999087	0	Compra	1	Jhon Montoya	2026-03-03T09:02:35.586-05:00	t	0	t	1
-mmaohu58qvu5328vx	7663	71223381	0	\N	0	Jhon Montoya	2026-03-03T09:03:46.268-05:00	t	0	t	1
-mmaoi9xpijfoza3p6	7676	1037264064	0	Compra	1	Jhon Montoya	2026-03-03T09:04:06.734-05:00	t	0	t	1
-mmaoipiizi4ze0tjc	7655	42999087	1	\N	0	Jhon Montoya	2026-03-03T09:04:26.922-05:00	t	0	t	1
-mmaok0r0kw9pb5szb	7655	42999087	0	\N	0	Jhon Montoya	2026-03-03T09:05:28.140-05:00	t	0	t	1
-mmaokbqe7lbt1eszq	7647	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:05:42.374-05:00	t	0	t	1
-mmaon9lzzmjumgs7e	7584	39439040	0	Cobro	2	Jhon Montoya	2026-03-03T09:07:59.591-05:00	t	0	t	1
-mmaoo6u5e2m5f4e7b	7658	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:08:42.654-05:00	t	0	t	1
-mmaootlnq6jt4ayyb	7657	98587077	0	\N	0	Jhon Montoya	2026-03-03T09:09:12.155-05:00	t	0	t	1
-mmaoprvdbmx0vuvoc	7570	15927569	0	\N	0	Jhon Montoya	2026-03-03T09:09:56.569-05:00	t	0	t	1
-mmaor9v5w9x81d2uf	7624	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:11:06.546-05:00	t	0	t	1
-mmatdii6pijgxundn	7754	43097913	0	Compra	1	Jhon Montoya	2026-03-03T11:20:22.640-05:00	t	0	f	0
-mmtkptc0epwlcqmxv	7762	42843342	0	\N	0	Jhon Montoya	2026-03-16T14:25:37.345-05:00	t	0	f	1
-mmtkqhp1d1x0k0vz4	7769	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:26:08.917-05:00	t	0	t	1
-mmtkrqo8uztc861vm	7734	43189668	0	Compra	1	Jhon Montoya	2026-03-16T14:27:07.209-05:00	t	0	f	2
-mmtksjkyneo9y28m9	7768	43668259	0	\N	0	Jhon Montoya	2026-03-16T14:27:44.675-05:00	t	0	t	1
-mmtkt91os8d9s4699	7771	43097913	0	Compra	1	Jhon Montoya	2026-03-16T14:28:17.677-05:00	t	0	t	1
-mmtktv9awnd5r5fr4	7783	43181466	0	\N	0	Jhon Montoya	2026-03-16T14:28:46.462-05:00	t	0	t	1
-mmtkulxysfu621goy	7779	42999087	1	\N	0	Jhon Montoya	2026-03-16T14:29:21.046-05:00	t	0	t	3
-mmtkv4mz2ig8vt28w	7767	71223381	0	\N	0	Jhon Montoya	2026-03-16T14:29:45.275-05:00	t	0	t	1
-mmtkvmpihcbzv09lu	7789	42843342	1	\N	0	Jhon Montoya	2026-03-16T14:30:08.694-05:00	t	0	t	1
-mmtkw7eh639ljr8uh	7799	15927569	0	\N	0	Jhon Montoya	2026-03-16T14:30:35.514-05:00	t	0	t	1
-mmtkwoxetz288gyck	7790	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:30:58.227-05:00	t	0	t	1
-mmtkx8pcpn0utjkhp	7770	700530400	0	\N	0	Jhon Montoya	2026-03-16T14:31:23.857-05:00	t	0	t	2
-mmtp19eox7u0he5w4	000	42999087	0	\N	0	Nury	2026-03-16T16:26:29.857-05:00	t	0	t	2
-mmuo4hmspea34ibjf	000	24368442	0	\N	0	Nury	2026-03-17T08:48:47.045-05:00	t	0	f	1
+COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory, incomplete_units, is_packed, bag_quantity, arrival_date, has_muestra) FROM stdin;
+mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z	t	0	t	1	2026-01-01	f
+mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z	t	0	t	1	2026-01-01	f
+mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z	t	0	t	1	2026-01-01	f
+mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z	t	0	t	1	2026-01-01	f
+mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z	t	0	t	1	2026-01-01	f
+mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z	t	0	t	1	2026-01-01	f
+mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z	t	0	t	1	2026-01-01	f
+mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z	t	0	t	1	2026-01-01	f
+mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z	t	0	t	1	2026-01-01	f
+mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z	t	0	t	1	2026-01-01	f
+mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z	t	0	t	1	2026-01-01	f
+mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z	t	0	t	1	2026-01-01	f
+mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z	t	0	t	1	2026-01-01	f
+mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t	0	t	1	2026-01-01	f
+mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t	0	t	1	2026-01-01	f
+mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f	0	t	1	2026-01-01	f
+mmao4q01lxfht7ff2	7760	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:53:34.370-05:00	t	0	t	1	2026-01-01	f
+mmao5su5kugcx7xv7	7758	71223381	1	\N	0	Jhon Montoya	2026-03-03T08:54:24.702-05:00	t	0	t	1	2026-01-01	f
+mmao6whwa2xbw9p4p	7761	1037264064	0	\N	0	Jhon Montoya	2026-03-03T08:55:16.100-05:00	t	0	t	1	2026-01-01	f
+mmao79naem9n1qbe9	7742	43668259	0	\N	0	Jhon Montoya	2026-03-03T08:55:33.143-05:00	t	0	t	1	2026-01-01	f
+mmao8x1be6xx3btxl	7740	42999087	0	\N	0	Jhon Montoya	2026-03-03T08:56:50.112-05:00	t	0	t	1	2026-01-01	f
+mmao9do8m0lg17fr6	7744	15927569	0	\N	0	Jhon Montoya	2026-03-03T08:57:11.672-05:00	t	0	t	1	2026-01-01	f
+mmao9p3nebiokex9t	7737	1045017301	0	\N	0	Jhon Montoya	2026-03-03T08:57:26.484-05:00	t	0	t	1	2026-01-01	f
+mmaoa0azmws6s54a	7709	43048297	0	\N	0	Jhon Montoya	2026-03-03T08:57:41.003-05:00	t	0	t	1	2026-01-01	f
+mmaoajr4ipuno6hl8	7720	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:58:06.210-05:00	t	0	t	1	2026-01-01	f
+mmaoayvt347s1m4kf	7718	1128386891	0	\N	0	Jhon Montoya	2026-03-03T08:58:25.818-05:00	t	0	t	1	2026-01-01	f
+mmaob8i7q5d7katdw	7728	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:58:38.288-05:00	t	0	t	1	2026-01-01	f
+mmaobjlpzuoylcaag	7732	71223381	0	\N	0	Jhon Montoya	2026-03-03T08:58:52.670-05:00	t	0	t	1	2026-01-01	f
+mmaocgw2h81nskfgj	7729	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:59:35.810-05:00	t	0	t	1	2026-01-01	f
+mmaocta0d700oicjj	7731	700530400	0	\N	0	Jhon Montoya	2026-03-03T08:59:51.865-05:00	t	0	t	1	2026-01-01	f
+mmaod67lqfxnpyn4d	7719	1037264064	1	\N	0	Jhon Montoya	2026-03-03T09:00:08.626-05:00	t	0	t	1	2026-01-01	f
+mmaodgh2kf28twwgc	7739	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:00:21.926-05:00	t	0	t	1	2026-01-01	f
+mmaoeh09ca7gtrvca	7667	43048297	0	\N	0	Jhon Montoya	2026-03-03T09:01:09.274-05:00	t	0	t	1	2026-01-01	f
+mmaoeq2wmo7gj6j6p	7682	700530400	0	\N	0	Jhon Montoya	2026-03-03T09:01:21.033-05:00	t	0	t	1	2026-01-01	f
+mmaof79qqdg6kd5pj	7684	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:01:43.311-05:00	t	0	t	1	2026-01-01	f
+mmaofh4i892efv0o1	7679	1128386891	0	\N	0	Jhon Montoya	2026-03-03T09:01:56.083-05:00	t	0	t	1	2026-01-01	f
+mmaofx1h06n1546ur	7678	32461771	1	\N	0	Jhon Montoya	2026-03-03T09:02:16.710-05:00	t	0	t	1	2026-01-01	f
+mmaogbltgoe8rv8ri	7683	42999087	0	Compra	1	Jhon Montoya	2026-03-03T09:02:35.586-05:00	t	0	t	1	2026-01-01	f
+mmaohu58qvu5328vx	7663	71223381	0	\N	0	Jhon Montoya	2026-03-03T09:03:46.268-05:00	t	0	t	1	2026-01-01	f
+mmaoi9xpijfoza3p6	7676	1037264064	0	Compra	1	Jhon Montoya	2026-03-03T09:04:06.734-05:00	t	0	t	1	2026-01-01	f
+mmaoipiizi4ze0tjc	7655	42999087	1	\N	0	Jhon Montoya	2026-03-03T09:04:26.922-05:00	t	0	t	1	2026-01-01	f
+mmaok0r0kw9pb5szb	7655	42999087	0	\N	0	Jhon Montoya	2026-03-03T09:05:28.140-05:00	t	0	t	1	2026-01-01	f
+mmaokbqe7lbt1eszq	7647	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:05:42.374-05:00	t	0	t	1	2026-01-01	f
+mmaon9lzzmjumgs7e	7584	39439040	0	Cobro	2	Jhon Montoya	2026-03-03T09:07:59.591-05:00	t	0	t	1	2026-01-01	f
+mmaoo6u5e2m5f4e7b	7658	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:08:42.654-05:00	t	0	t	1	2026-01-01	f
+mmaootlnq6jt4ayyb	7657	98587077	0	\N	0	Jhon Montoya	2026-03-03T09:09:12.155-05:00	t	0	t	1	2026-01-01	f
+mmaoprvdbmx0vuvoc	7570	15927569	0	\N	0	Jhon Montoya	2026-03-03T09:09:56.569-05:00	t	0	t	1	2026-01-01	f
+mmaor9v5w9x81d2uf	7624	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:11:06.546-05:00	t	0	t	1	2026-01-01	f
+mmtkw7eh639ljr8uh	7799	15927569	0	\N	0	Jhon Montoya	2026-03-16T14:30:35.514-05:00	t	0	t	1	2026-03-13	f
+mmtkvmpihcbzv09lu	7789	42843342	1	\N	0	Jhon Montoya	2026-03-16T14:30:08.694-05:00	t	0	t	1	2026-03-12	f
+mmtkulxysfu621goy	7779	42999087	1	\N	0	Jhon Montoya	2026-03-16T14:29:21.046-05:00	t	0	t	3	2026-03-11	f
+mmtkv4mz2ig8vt28w	7767	71223381	0	\N	0	Jhon Montoya	2026-03-16T14:29:45.275-05:00	t	0	t	1	2026-03-11	f
+mmatdii6pijgxundn	7754	43097913	0	Compra	1	Jhon Montoya	2026-03-03T11:20:22.640-05:00	t	0	f	0	2026-01-01	f
+mmtkptc0epwlcqmxv	7762	42843342	0	\N	0	Jhon Montoya	2026-03-16T14:25:37.345-05:00	t	0	f	1	2026-01-01	f
+mmtkqhp1d1x0k0vz4	7769	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:26:08.917-05:00	t	0	t	1	2026-01-01	f
+mmtkrqo8uztc861vm	7734	43189668	0	Compra	1	Jhon Montoya	2026-03-16T14:27:07.209-05:00	t	0	f	2	2026-01-01	f
+mmtksjkyneo9y28m9	7768	43668259	0	\N	0	Jhon Montoya	2026-03-16T14:27:44.675-05:00	t	0	t	1	2026-01-01	f
+mmtkt91os8d9s4699	7771	43097913	0	Compra	1	Jhon Montoya	2026-03-16T14:28:17.677-05:00	t	0	t	1	2026-01-01	f
+mmtktv9awnd5r5fr4	7783	43181466	0	\N	0	Jhon Montoya	2026-03-16T14:28:46.462-05:00	t	0	t	1	2026-01-01	f
+mmtkx8pcpn0utjkhp	7770	700530400	0	\N	0	Jhon Montoya	2026-03-16T14:31:23.857-05:00	t	0	t	2	2026-03-13	f
+mmtkwoxetz288gyck	7790	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:30:58.227-05:00	t	0	t	1	2026-03-13	f
+mmuo4hmspea34ibjf	7804	24368442	0	\N	0	Nury	2026-03-17T08:48:47.045-05:00	t	0	f	1	2026-03-16	f
+mmtp19eox7u0he5w4	7813	42999087	0	\N	0	Nury	2026-03-16T16:26:29.857-05:00	t	0	t	2	2026-03-16	f
+mmv33njzk0f3az1dt	7798	43818822	0	\N	0	Nury	2026-03-17T15:48:02.305-05:00	t	1	f	1	2026-03-17	f
+mmw7x9dnktu9qpyh9	7788	43668259	0	\N	0	Nury	2026-03-18T10:50:48.254-05:00	t	0	t	2	2026-03-18	f
+mmxhzrpimjrptkjgm	000	39439040	0	Compra	1	Nury	2026-03-19T08:20:27.655-05:00	t	1	t	1	2026-03-18	f
+mmz0iaoqywa17o8q6	000	700530400	0	\N	0	Fernanda Marin	2026-03-20T09:46:31.323-05:00	t	0	f	1	2026-03-19	f
+mmz1tjsluudsjcs88	000	43097913	0	\N	0	Nury	2026-03-20T10:23:15.958-05:00	t	0	t	2	2026-03-19	f
+mmz3sfl42ox4fpr21	000	1037264064	0	\N	0	Nury	2026-03-20T11:18:23.081-05:00	t	0	t	2	2026-03-20	f
 \.
 
 
 --
--- TOC entry 5386 (class 0 OID 18293)
--- Dependencies: 245
+-- TOC entry 5251 (class 0 OID 16713)
+-- Dependencies: 247
 -- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.return_reception_items (id, return_reception_id, reference, quantity, unit_price) FROM stdin;
 6	mm992elendvcsh0cp	12694	1	24900.00
 7	mm992elendvcsh0cp	12693	1	25900.00
+8	mmus2t8njmqmbax7y	12905	12	34900.00
+9	mmus2t8njmqmbax7y	12937	12	14900.00
+10	mmus2t8njmqmbax7y	12910	12	22900.00
 \.
 
 
 --
--- TOC entry 5388 (class 0 OID 18303)
--- Dependencies: 247
+-- TOC entry 5253 (class 0 OID 16723)
+-- Dependencies: 249
 -- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.return_receptions (id, client_id, credit_note_number, total_value, received_by, created_at) FROM stdin;
 mm992elendvcsh0cp	133	NC-490	50800.00	Prueba general	2026-03-02T09:04:05.859-05:00
+mmus2t8njmqmbax7y	231	000	872400.00	Jhon Montoya	2026-03-17T10:39:27.245-05:00
 \.
 
 
 --
--- TOC entry 5389 (class 0 OID 18313)
--- Dependencies: 248
+-- TOC entry 5254 (class 0 OID 16733)
+-- Dependencies: 250
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.schema_migrations (id, migration_name, applied_at, success, error_message, execution_time_ms) FROM stdin;
+1	001_example_migration.sql	2026-03-17 09:40:27.007668	f	La sección UP está vacía	\N
+2	001_add_arrival_date_to_receptions.sql	2026-03-17 09:40:44.221754	t	\N	15
+\.
+
+
+--
+-- TOC entry 5256 (class 0 OID 16743)
+-- Dependencies: 252
 -- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -4485,258 +4940,129 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
--- TOC entry 5390 (class 0 OID 18321)
--- Dependencies: 249
+-- TOC entry 5257 (class 0 OID 16751)
+-- Dependencies: 253
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_activity) FROM stdin;
-1	mlgqup2eyhdq1lkxm	Qp7xMxfP5-xdNrnKAAAB	online	2026-02-26 14:25:23.522958	2026-02-26 14:25:23.522958
-2	mlgqup2eyhdq1lkxm	msxDnFd0DiqEKh9HAAAD	online	2026-02-26 14:25:23.548895	2026-02-26 14:25:23.548895
-3	mlgqup2eyhdq1lkxm	YNwzT3vuy7RHzIjnAAAF	online	2026-02-26 14:25:23.568254	2026-02-26 14:25:23.568254
-4	mlgqup2eyhdq1lkxm	GXkwE6lbiBs9adTmAAAH	online	2026-02-26 14:25:23.586067	2026-02-26 14:25:23.586067
-5	mlgqup2eyhdq1lkxm	GlGRYRYUw2UGnhTUAAAJ	online	2026-02-26 14:25:24.946723	2026-02-26 14:25:24.946723
-6	mlgqup2eyhdq1lkxm	DBoU2EEjC3p5M-wkAAAB	online	2026-02-26 14:25:39.061698	2026-02-26 14:25:39.061698
-7	mlgqup2eyhdq1lkxm	IN8QjacNqwKVqSOOAAAF	online	2026-02-26 14:25:39.100321	2026-02-26 14:25:39.100321
-8	mlgqup2eyhdq1lkxm	gHMSSZD_rNxKIFWVAAAJ	online	2026-02-26 14:25:39.14255	2026-02-26 14:25:39.14255
-9	mlgqup2eyhdq1lkxm	9TLuv2eQts3KleQuAAAD	online	2026-02-26 14:25:39.170119	2026-02-26 14:25:39.170119
-10	mlgqup2eyhdq1lkxm	9FKyKU3ZQqb9f4IKAAAH	online	2026-02-26 14:25:39.184453	2026-02-26 14:25:39.184453
-11	mlgqup2eyhdq1lkxm	S8Q5BUJ2fUxkbjD2AAAB	online	2026-02-26 14:26:07.523678	2026-02-26 14:26:07.523678
-12	mlgqup2eyhdq1lkxm	kIHXDMLAHw2lIdUAAAAF	online	2026-02-26 14:26:07.567817	2026-02-26 14:26:07.567817
-13	mlgqup2eyhdq1lkxm	7Z1se2qLQQwwGwQCAAAH	online	2026-02-26 14:26:07.59418	2026-02-26 14:26:07.59418
-14	mlgqup2eyhdq1lkxm	JN7opTzLaq7rmyE2AAAD	online	2026-02-26 14:26:07.731375	2026-02-26 14:26:07.731375
-15	mlgqup2eyhdq1lkxm	RKSPRl5sBWuqc4WbAAAJ	online	2026-02-26 14:26:08.948664	2026-02-26 14:26:08.948664
-16	mlgqup2eyhdq1lkxm	isBLVeIFHpFxti4EAAAB	online	2026-02-26 14:26:39.511076	2026-02-26 14:26:39.511076
-17	mlgqup2eyhdq1lkxm	SUq9v5BUtmkUEhAAAAAF	online	2026-02-26 14:26:39.552425	2026-02-26 14:26:39.552425
-18	mlgqup2eyhdq1lkxm	ld829PHO1dFttUvDAAAD	online	2026-02-26 14:26:39.615452	2026-02-26 14:26:39.615452
-19	mlgqup2eyhdq1lkxm	MysbY0jnhZUM3OUoAAAH	online	2026-02-26 14:26:39.617551	2026-02-26 14:26:39.617551
-20	mlgqup2eyhdq1lkxm	L7lX7YATQEa3UX-3AAAJ	online	2026-02-26 14:26:40.947192	2026-02-26 14:26:40.947192
-31	mlgqup29zlzugg8qk	xeJaTYlmbVkZVpJhAAAV	online	2026-02-26 14:27:40.878683	2026-02-26 14:27:40.878683
-32	mlgqup29zlzugg8qk	ZUIj24kLMiTWoU6xAAAX	online	2026-02-26 14:27:41.056495	2026-02-26 14:27:41.056495
-33	mlgqup29zlzugg8qk	PT3mC4UrI8LtxBsgAAAZ	online	2026-02-26 14:27:41.526418	2026-02-26 14:27:41.526418
-34	mlgqup29zlzugg8qk	hSeqy9xWwmNNUoaRAAAb	online	2026-02-26 14:27:41.576924	2026-02-26 14:27:41.576924
-35	mlgqup29zlzugg8qk	POinKjN3O1Bxgw6AAAAd	online	2026-02-26 14:27:41.607588	2026-02-26 14:27:41.607588
-36	mlgqup2eyhdq1lkxm	sqG6F9xAwvWy8UyoAAAf	online	2026-02-26 14:27:53.903866	2026-02-26 14:27:53.903866
-37	mlgqup2eyhdq1lkxm	81TzXMokNg4VNANSAAAh	online	2026-02-26 14:27:54.030064	2026-02-26 14:27:54.030064
-38	mlgqup2eyhdq1lkxm	uoT3w8TrmbkOIQLBAAAj	online	2026-02-26 14:27:54.182917	2026-02-26 14:27:54.182917
-39	mlgqup2eyhdq1lkxm	E44DN4hOvS-5LyTwAAAl	online	2026-02-26 14:27:54.218778	2026-02-26 14:27:54.218778
-40	mlgqup2eyhdq1lkxm	458qGwW5PcNYjuxnAAAn	online	2026-02-26 14:27:54.248034	2026-02-26 14:27:54.248034
-362	mm3x7j6m4p6s4g2zz	9rDCOfLwL2-Dsg6uAAAB	online	2026-02-27 07:27:06.803787	2026-02-27 07:27:06.803787
-364	mm3x7j6m4p6s4g2zz	0O-kzkjP1Z3lK8fdAAAF	online	2026-02-27 07:27:07.004985	2026-02-27 07:27:07.004985
-51	mlgqup2eyhdq1lkxm	Wc-EUD-miRZNfNhKAAAV	online	2026-02-26 14:30:07.611836	2026-02-26 14:30:07.611836
-52	mlgqup2eyhdq1lkxm	qi5FaO368z4prjwsAAAX	online	2026-02-26 14:30:07.615318	2026-02-26 14:30:07.615318
-53	mlgqup2eyhdq1lkxm	BrxH9w8u9UF4JA1UAAAZ	online	2026-02-26 14:30:07.903636	2026-02-26 14:30:07.903636
-54	mlgqup2eyhdq1lkxm	ZiXbA2pkI-h7oPccAAAb	online	2026-02-26 14:30:08.020859	2026-02-26 14:30:08.020859
-55	mlgqup2eyhdq1lkxm	bBksiBFM_K_iOMwLAAAd	online	2026-02-26 14:30:08.117309	2026-02-26 14:30:08.117309
-56	mlgqup29zlzugg8qk	da-fPm7dNtd1K-5XAAAf	online	2026-02-26 14:30:11.886864	2026-02-26 14:30:11.886864
-57	mlgqup29zlzugg8qk	hRrZvw9H3805-KvkAAAh	online	2026-02-26 14:30:12.063868	2026-02-26 14:30:12.063868
-58	mlgqup29zlzugg8qk	OT6VuMmXhEk1jfSDAAAj	online	2026-02-26 14:30:12.517563	2026-02-26 14:30:12.517563
-59	mlgqup29zlzugg8qk	dotN_4bQjJ5GsDjVAAAl	online	2026-02-26 14:30:12.617878	2026-02-26 14:30:12.617878
-60	mlgqup29zlzugg8qk	Zup1WalG84Aba_rxAAAn	online	2026-02-26 14:30:12.655842	2026-02-26 14:30:12.655842
-61	mlgqup2eyhdq1lkxm	GpljFNCcJLI_zzXNAAAB	online	2026-02-26 14:35:37.597149	2026-02-26 14:35:37.597149
-62	mlgqup29zlzugg8qk	rjdP-yHR6HrAE7iAAAAH	online	2026-02-26 14:35:37.657585	2026-02-26 14:35:37.657585
-63	mlgqup2eyhdq1lkxm	Z4oziJgiMbddBGv_AAAD	online	2026-02-26 14:35:37.667611	2026-02-26 14:35:37.667611
-64	mlgqup2eyhdq1lkxm	FCDNbNBkgCakp0kKAAAF	online	2026-02-26 14:35:37.701083	2026-02-26 14:35:37.701083
-65	mlgqup29zlzugg8qk	qEDrP9ybh4ttQjhsAAAJ	online	2026-02-26 14:35:37.910035	2026-02-26 14:35:37.910035
-66	mlgqup2eyhdq1lkxm	uXYSeP__ZpjvMpZzAAAM	online	2026-02-26 14:35:37.951215	2026-02-26 14:35:37.951215
-67	mlgqup29zlzugg8qk	gyY02q3d4oinF2OdAAAN	online	2026-02-26 14:35:37.971966	2026-02-26 14:35:37.971966
-68	mlgqup29zlzugg8qk	hB5haXQYronIpBaYAAAP	online	2026-02-26 14:35:38.046864	2026-02-26 14:35:38.046864
-69	mlgqup29zlzugg8qk	vmfBf-MHpO2gxijHAAAR	online	2026-02-26 14:35:38.233606	2026-02-26 14:35:38.233606
-70	mlgqup2eyhdq1lkxm	HljRAFEnhc-CHduNAAAT	online	2026-02-26 14:35:39.952018	2026-02-26 14:35:39.952018
-366	mm3x7j6m4p6s4g2zz	T4yxeLoNcKzBkL40AAAJ	online	2026-02-27 07:27:07.05519	2026-02-27 07:27:07.05519
-81	mlgqup29zlzugg8qk	7dQgLyBrD9oN-QBPAAAV	online	2026-02-26 14:36:34.003579	2026-02-26 14:36:34.003579
-82	mlgqup29zlzugg8qk	AUzsWgOMF7wiHa7HAAAX	online	2026-02-26 14:36:34.4668	2026-02-26 14:36:34.4668
-83	mlgqup29zlzugg8qk	mvOjQ0V2lr4UjtzMAAAZ	online	2026-02-26 14:36:34.739462	2026-02-26 14:36:34.739462
-84	mlgqup29zlzugg8qk	vyNBFXxLO15hSJzPAAAb	online	2026-02-26 14:36:34.793296	2026-02-26 14:36:34.793296
-85	mlgqup29zlzugg8qk	BTRpu1PVfu6uFGZvAAAd	online	2026-02-26 14:36:34.889209	2026-02-26 14:36:34.889209
-86	mlgqup2eyhdq1lkxm	_O42uA2hSlgjG7QGAAAf	online	2026-02-26 14:36:41.458597	2026-02-26 14:36:41.458597
-87	mlgqup2eyhdq1lkxm	nUboAgapS2HpwOeDAAAh	online	2026-02-26 14:36:41.471304	2026-02-26 14:36:41.471304
-88	mlgqup2eyhdq1lkxm	vu9jTa7Y4HqE7Kg3AAAj	online	2026-02-26 14:36:41.637421	2026-02-26 14:36:41.637421
-89	mlgqup2eyhdq1lkxm	yGkc_gF_WW8XixCYAAAl	online	2026-02-26 14:36:41.727336	2026-02-26 14:36:41.727336
-90	mlgqup2eyhdq1lkxm	s7THPbVO5KqDLRBCAAAn	online	2026-02-26 14:36:41.838088	2026-02-26 14:36:41.838088
-106	mlgqup29zlzugg8qk	0Whe3QvVa117J6NaAAAf	online	2026-02-26 14:40:09.051014	2026-02-26 14:40:09.051014
-107	mlgqup29zlzugg8qk	NHytY9MuVRbSEZ4FAAAh	online	2026-02-26 14:40:09.074583	2026-02-26 14:40:09.074583
-108	mlgqup29zlzugg8qk	74u2VqS4RwFilYYpAAAj	online	2026-02-26 14:40:09.422775	2026-02-26 14:40:09.422775
-109	mlgqup29zlzugg8qk	tRY6Er-FMraNu4-9AAAl	online	2026-02-26 14:40:09.527542	2026-02-26 14:40:09.527542
-110	mlgqup29zlzugg8qk	j-GsUgpYzsOVoIFqAAAn	online	2026-02-26 14:40:09.63017	2026-02-26 14:40:09.63017
-111	mlgqup2eyhdq1lkxm	uYMjwi4jwXwDn8UHAAAp	online	2026-02-26 14:40:18.012914	2026-02-26 14:40:18.012914
-112	mlgqup2eyhdq1lkxm	GBFRm66JF56iGABxAAAr	online	2026-02-26 14:40:18.016199	2026-02-26 14:40:18.016199
-113	mlgqup2eyhdq1lkxm	ZA1de1XuxZ7eqZMqAAAt	online	2026-02-26 14:40:18.186092	2026-02-26 14:40:18.186092
-114	mlgqup2eyhdq1lkxm	zDM_0jajsA2U7il7AAAv	online	2026-02-26 14:40:18.215578	2026-02-26 14:40:18.215578
-115	mlgqup2eyhdq1lkxm	opR5kgYKUyComBuhAAAx	online	2026-02-26 14:40:18.242748	2026-02-26 14:40:18.242748
-127	mlgqup2eyhdq1lkxm	rlCM6M3nNj-6QkLvAAAX	online	2026-02-26 14:43:17.798882	2026-02-26 14:43:17.798882
-126	mlgqup2eyhdq1lkxm	B5y05DocU917iFFkAAAV	online	2026-02-26 14:43:17.794462	2026-02-26 14:43:17.794462
-128	mlgqup2eyhdq1lkxm	C3UFhEUuceXKa-VhAAAZ	online	2026-02-26 14:43:17.982394	2026-02-26 14:43:17.982394
-129	mlgqup2eyhdq1lkxm	QWmjslV4tH37unspAAAb	online	2026-02-26 14:43:18.017242	2026-02-26 14:43:18.017242
-130	mlgqup2eyhdq1lkxm	58eZsCpCbxsYijywAAAd	online	2026-02-26 14:43:18.047661	2026-02-26 14:43:18.047661
-131	mlgqup29zlzugg8qk	hthtLYBLSnkdlRMOAAAf	online	2026-02-26 14:43:20.42766	2026-02-26 14:43:20.42766
-132	mlgqup29zlzugg8qk	rj0muaV8caXjUWpXAAAh	online	2026-02-26 14:43:20.564552	2026-02-26 14:43:20.564552
-133	mlgqup29zlzugg8qk	p4BmLiepwxQU225SAAAj	online	2026-02-26 14:43:20.861726	2026-02-26 14:43:20.861726
-134	mlgqup29zlzugg8qk	mTfrL-a2r6mmCw0dAAAl	online	2026-02-26 14:43:20.899654	2026-02-26 14:43:20.899654
-135	mlgqup29zlzugg8qk	YiQmvL7AAn_jas4XAAAn	online	2026-02-26 14:43:20.934453	2026-02-26 14:43:20.934453
-146	mlgqup29zlzugg8qk	AzdvE6yYXGpSEbRQAAAV	online	2026-02-26 14:51:23.645236	2026-02-26 14:51:23.645236
-147	mlgqup29zlzugg8qk	soVKo3_EDNUtg8oBAAAX	online	2026-02-26 14:51:23.756511	2026-02-26 14:51:23.756511
-148	mlgqup29zlzugg8qk	4_UKVb9X6ukE3UchAAAZ	online	2026-02-26 14:51:24.379021	2026-02-26 14:51:24.379021
-149	mlgqup29zlzugg8qk	HwTHOLEAXe2wFe07AAAb	online	2026-02-26 14:51:24.447144	2026-02-26 14:51:24.447144
-150	mlgqup29zlzugg8qk	z4gaxKhYtsowRP_FAAAd	online	2026-02-26 14:51:24.504013	2026-02-26 14:51:24.504013
-151	mlgqup2eyhdq1lkxm	xV2Q44N-3dtUf5EXAAAf	online	2026-02-26 14:51:28.792835	2026-02-26 14:51:28.792835
-152	mlgqup2eyhdq1lkxm	k3KLY9zmvkGhpR5OAAAh	online	2026-02-26 14:51:29.043466	2026-02-26 14:51:29.043466
-153	mlgqup2eyhdq1lkxm	H9NBTnVNykdEX8LWAAAk	online	2026-02-26 14:51:29.503049	2026-02-26 14:51:29.503049
-154	mlgqup2eyhdq1lkxm	AvxQ0OlHHtriVVSEAAAl	online	2026-02-26 14:51:29.513144	2026-02-26 14:51:29.513144
-155	mlgqup2eyhdq1lkxm	eF2-iqERHJNI6IBaAAAn	online	2026-02-26 14:51:29.655386	2026-02-26 14:51:29.655386
-363	mm3x7j6m4p6s4g2zz	3p7AI5NemdabRhJDAAAD	online	2026-02-27 07:27:06.857225	2026-02-27 07:27:06.857225
-365	mm3x7j6m4p6s4g2zz	fe95vXej4fBU1t24AAAH	online	2026-02-27 07:27:07.028859	2026-02-27 07:27:07.028859
-296	mm3x7j6m4p6s4g2zz	dlpwnCvAU9q_eOlGAAEZ	online	2026-02-26 15:42:18.949249	2026-02-26 15:42:18.949249
-297	mm3x7j6m4p6s4g2zz	nK7i3cFsOC98rEHUAAEb	online	2026-02-26 15:42:18.950177	2026-02-26 15:42:18.950177
-298	mm3x7j6m4p6s4g2zz	VnU5T5z_3lItJoM_AAEd	online	2026-02-26 15:42:19.257875	2026-02-26 15:42:19.257875
-299	mm3x7j6m4p6s4g2zz	C_yIyDhDhv9ME190AAEf	online	2026-02-26 15:42:19.307499	2026-02-26 15:42:19.307499
-311	mm3x7j6m4p6s4g2zz	aWm1tlJtylsrZyH9AAAB	online	2026-02-26 15:57:50.195908	2026-02-26 15:57:50.195908
-312	mm3x7j6m4p6s4g2zz	2iZPL8fluTGIUEIdAAAD	online	2026-02-26 15:57:50.941672	2026-02-26 15:57:50.941672
-313	mm3x7j6m4p6s4g2zz	KSEU0GpKnNikUdA6AAAF	online	2026-02-26 15:57:50.954485	2026-02-26 15:57:50.954485
-314	mm3x7j6m4p6s4g2zz	EGraRSXbWMFlTD0nAAAH	online	2026-02-26 15:57:50.97496	2026-02-26 15:57:50.97496
-315	mm3x7j6m4p6s4g2zz	NXlDsUb-rSHQ4ZUbAAAB	online	2026-02-26 16:10:34.129855	2026-02-26 16:10:34.129855
-316	mm3x7j6m4p6s4g2zz	H2plqLY78cjZW3oqAAAD	online	2026-02-26 16:10:34.146305	2026-02-26 16:10:34.146305
-2328	mm5c36r94emvow7nf	8ergcMwXND8ZcQAJAAAf	online	2026-03-12 12:32:01.127043	2026-03-12 12:32:01.127043
-2334	mm3x7j6m4p6s4g2zz	Kq4mFwITjCoZeYeHAAAr	online	2026-03-12 12:32:12.767933	2026-03-12 12:32:12.767933
-529	mm3x7j6m4p6s4g2zz	seRSMmNrijCHwbmYAAFF	online	2026-02-27 11:55:26.726223	2026-02-27 11:55:26.726223
-530	mm3x7j6m4p6s4g2zz	MBgwIIAtMlPL-pcmAAFH	online	2026-02-27 11:55:26.885319	2026-02-27 11:55:26.885319
-531	mm3x7j6m4p6s4g2zz	8H4YdlaJA1d1THQwAAFJ	online	2026-02-27 11:55:27.000153	2026-02-27 11:55:27.000153
-532	mm3x7j6m4p6s4g2zz	jXua4A2R0mxtUI3ZAAFL	online	2026-02-27 11:55:27.025369	2026-02-27 11:55:27.025369
-533	mm3x7j6m4p6s4g2zz	zGp88UJLE7boTIjiAAFN	online	2026-02-27 11:55:27.040715	2026-02-27 11:55:27.040715
-541	mm3x7j6m4p6s4g2zz	ae12qfjq8OvwjBm7AAAP	online	2026-02-27 11:58:14.930857	2026-02-27 11:58:14.930857
-542	mm3x7j6m4p6s4g2zz	P02zad7GFltBRi2MAAAR	online	2026-02-27 11:58:14.935805	2026-02-27 11:58:14.935805
-543	mm3x7j6m4p6s4g2zz	Jb5U07KndlIQR-4HAAAT	online	2026-02-27 11:58:15.043534	2026-02-27 11:58:15.043534
-544	mm3x7j6m4p6s4g2zz	l3a9Wjwoh1n21j7RAAAV	online	2026-02-27 11:58:15.067414	2026-02-27 11:58:15.067414
-545	mm3x7j6m4p6s4g2zz	Pxt5gt-Q3W1yF-xrAAAX	online	2026-02-27 11:58:15.078698	2026-02-27 11:58:15.078698
-546	mm3x7j6m4p6s4g2zz	gN_qYdDTVljz0tROAAAB	online	2026-02-27 11:59:10.850297	2026-02-27 11:59:10.850297
-547	mm3x7j6m4p6s4g2zz	WGwXkefARCbqlHCsAAAD	online	2026-02-27 11:59:10.868268	2026-02-27 11:59:10.868268
-548	mm3x7j6m4p6s4g2zz	SwW0_O0DWYjevkGfAAAF	online	2026-02-27 11:59:10.884258	2026-02-27 11:59:10.884258
-549	mm3x7j6m4p6s4g2zz	ADeOdEZfMm2RGsL4AAAH	online	2026-02-27 11:59:10.901028	2026-02-27 11:59:10.901028
-550	mm3x7j6m4p6s4g2zz	yNNwLGYReKITzUxgAAAJ	online	2026-02-27 11:59:10.915993	2026-02-27 11:59:10.915993
-796	mm3x7j6m4p6s4g2zz	Oy6-4h9ppcB90Q2mAAAV	online	2026-03-02 09:15:36.059992	2026-03-02 09:15:36.059992
-797	mm3x7j6m4p6s4g2zz	ofJNTmPtZ2OZt60SAAAX	online	2026-03-02 09:15:36.140522	2026-03-02 09:15:36.140522
-798	mm3x7j6m4p6s4g2zz	M2WvDL7Bijmjw2JTAAAZ	online	2026-03-02 09:15:36.250992	2026-03-02 09:15:36.250992
-799	mm3x7j6m4p6s4g2zz	1BGwRiaR0vECHSBBAAAb	online	2026-03-02 09:15:36.277732	2026-03-02 09:15:36.277732
-800	mm3x7j6m4p6s4g2zz	tKFmuojssIl-IaoRAAAd	online	2026-03-02 09:15:36.294424	2026-03-02 09:15:36.294424
-751	mm5c36r94emvow7nf	jFq3Ik5uFvclnHMGAAAV	online	2026-03-02 08:52:25.385819	2026-03-02 08:52:25.385819
-752	mm5c36r94emvow7nf	OckDOtHVoGzKqE-7AAAX	online	2026-03-02 08:52:25.469476	2026-03-02 08:52:25.469476
-753	mm5c36r94emvow7nf	RK77QQitZGp7Bv9wAAAZ	online	2026-03-02 08:52:25.598239	2026-03-02 08:52:25.598239
-754	mm5c36r94emvow7nf	SDfiD7pLIWY5-HAHAAAb	online	2026-03-02 08:52:25.617029	2026-03-02 08:52:25.617029
-755	mm5c36r94emvow7nf	czD0aBzuYy6OIchNAAAd	online	2026-03-02 08:52:25.650461	2026-03-02 08:52:25.650461
-831	mm9a66x3tqtxja160	CurjL3isqPd1eSJ-AAAB	online	2026-03-02 09:44:44.31474	2026-03-02 09:44:44.31474
-832	mm9a66x3tqtxja160	h6RAg9QkOCX5TwEmAAAD	online	2026-03-02 09:44:44.31544	2026-03-02 09:44:44.31544
-833	mm9a66x3tqtxja160	1tRgljlUR_bnsv2rAAAF	online	2026-03-02 09:44:44.454261	2026-03-02 09:44:44.454261
-834	mm9a66x3tqtxja160	w__oI3C7lmkl3UatAAAH	online	2026-03-02 09:44:44.473653	2026-03-02 09:44:44.473653
-836	mm3x7j6m4p6s4g2zz	Q16Pbvs50_rRoAvTAAAL	online	2026-03-02 09:45:35.282929	2026-03-02 09:45:35.282929
-837	mm3x7j6m4p6s4g2zz	BzVO-Obun1UgQHbhAAAN	online	2026-03-02 09:45:35.451864	2026-03-02 09:45:35.451864
-838	mm3x7j6m4p6s4g2zz	q72Bqtifu4L9LJMFAAAP	online	2026-03-02 09:45:35.582672	2026-03-02 09:45:35.582672
-839	mm3x7j6m4p6s4g2zz	1oq45L77ycRVkq9fAAAR	online	2026-03-02 09:45:35.604459	2026-03-02 09:45:35.604459
-840	mm3x7j6m4p6s4g2zz	TQK_npMwopbNwANlAAAT	online	2026-03-02 09:45:35.624786	2026-03-02 09:45:35.624786
-850	mm3x7j6m4p6s4g2zz	9i70rzPYgNWA6qoTAAAT	online	2026-03-02 09:48:09.825003	2026-03-02 09:48:09.825003
-851	mm3x7j6m4p6s4g2zz	UthyaI_BL_9UVId8AAAV	online	2026-03-02 09:48:10.014113	2026-03-02 09:48:10.014113
-852	mm3x7j6m4p6s4g2zz	4tmRrDcOaUrL2pPLAAAX	online	2026-03-02 09:48:10.159898	2026-03-02 09:48:10.159898
-853	mm3x7j6m4p6s4g2zz	VW_wo1u3ZskWyb1VAAAZ	online	2026-03-02 09:48:10.173821	2026-03-02 09:48:10.173821
-855	mm9a66x3tqtxja160	pvCX5IDh2xUDZPl0AAAd	online	2026-03-02 09:48:17.232291	2026-03-02 09:48:17.232291
-856	mm9a66x3tqtxja160	78xxYl0dAKPDcTzAAAAf	online	2026-03-02 09:48:17.334773	2026-03-02 09:48:17.334773
-857	mm9a66x3tqtxja160	GNmpRZBt4uJCA7YeAAAh	online	2026-03-02 09:48:17.451296	2026-03-02 09:48:17.451296
-858	mm9a66x3tqtxja160	urxY_nQQDNO-1ybIAAAj	online	2026-03-02 09:48:17.466123	2026-03-02 09:48:17.466123
-859	mm9a66x3tqtxja160	p_rLLL8Xmd7RHIY4AAAl	online	2026-03-02 09:48:17.492656	2026-03-02 09:48:17.492656
-869	mm9a66x3tqtxja160	emhGK3X55thpOCzQAAAT	online	2026-03-02 09:50:28.861356	2026-03-02 09:50:28.861356
-870	mm9a66x3tqtxja160	0wTSoG5JQZA3c1JMAAAV	online	2026-03-02 09:50:29.002045	2026-03-02 09:50:29.002045
-871	mm9a66x3tqtxja160	9okPXMNzdW99kYjyAAAX	online	2026-03-02 09:50:29.165404	2026-03-02 09:50:29.165404
-872	mm9a66x3tqtxja160	SlTGO3Z1IA_WIcxZAAAZ	online	2026-03-02 09:50:29.19217	2026-03-02 09:50:29.19217
-874	mm3x7j6m4p6s4g2zz	9pbTnVF04JuK19B3AAAd	online	2026-03-02 09:50:34.577721	2026-03-02 09:50:34.577721
-875	mm3x7j6m4p6s4g2zz	Hz7CT1emVS-3pvPNAAAf	online	2026-03-02 09:50:34.653548	2026-03-02 09:50:34.653548
-876	mm3x7j6m4p6s4g2zz	-Ij8VvXXpJjphGp-AAAh	online	2026-03-02 09:50:34.771136	2026-03-02 09:50:34.771136
-877	mm3x7j6m4p6s4g2zz	Hwt5ylT3ZvysuA0QAAAj	online	2026-03-02 09:50:34.787694	2026-03-02 09:50:34.787694
-878	mm3x7j6m4p6s4g2zz	7KfPEIs8y9BpB6MpAAAl	online	2026-03-02 09:50:34.812431	2026-03-02 09:50:34.812431
-2329	mm5c36r94emvow7nf	hTS3N10n3exUSbpiAAAh	online	2026-03-12 12:32:01.184403	2026-03-12 12:32:01.184403
-2333	mm3x7j6m4p6s4g2zz	LtVuk66ttOZuhfl9AAAp	online	2026-03-12 12:32:12.701207	2026-03-12 12:32:12.701207
-2335	mm3x7j6m4p6s4g2zz	4FS_nhnOSL_7a8GSAAAu	online	2026-03-12 12:32:12.919715	2026-03-12 12:32:12.919715
-888	mm3x7j6m4p6s4g2zz	POWQmVS01Icre9iMAAAT	online	2026-03-02 10:07:53.341668	2026-03-02 10:07:53.341668
-889	mm3x7j6m4p6s4g2zz	6I9InUw-bsjRyohmAAAV	online	2026-03-02 10:07:53.513072	2026-03-02 10:07:53.513072
-890	mm3x7j6m4p6s4g2zz	o2laysiKpNy-QT2mAAAX	online	2026-03-02 10:07:53.661341	2026-03-02 10:07:53.661341
-891	mm3x7j6m4p6s4g2zz	Gv4cTuLNZUh0XJSkAAAZ	online	2026-03-02 10:07:53.67834	2026-03-02 10:07:53.67834
-892	mm3x7j6m4p6s4g2zz	gmZK-TzBGLHCVZQZAAAb	online	2026-03-02 10:07:53.716138	2026-03-02 10:07:53.716138
-913	mm3x7j6m4p6s4g2zz	i4O_ukuDBRbuHPf4AAAf	online	2026-03-02 10:40:19.992083	2026-03-02 10:40:19.992083
-914	mm3x7j6m4p6s4g2zz	55WAe8jQstsHCO9fAAAh	online	2026-03-02 10:40:20.170092	2026-03-02 10:40:20.170092
-915	mm3x7j6m4p6s4g2zz	-t5Bb_i3165LG9OsAAAj	online	2026-03-02 10:40:20.307873	2026-03-02 10:40:20.307873
-916	mm3x7j6m4p6s4g2zz	o1I_K-Zipco4BzgRAAAl	online	2026-03-02 10:40:20.32772	2026-03-02 10:40:20.32772
-898	mm3x7j6m4p6s4g2zz	_otKn6xAL1RBuGaGAAAL	online	2026-03-02 10:30:14.187726	2026-03-02 10:30:14.187726
-899	mm3x7j6m4p6s4g2zz	Bjf52Qg1Ilek6owoAAAN	online	2026-03-02 10:30:14.440806	2026-03-02 10:30:14.440806
-900	mm3x7j6m4p6s4g2zz	YqsHcsVP6e6FCTM4AAAP	online	2026-03-02 10:30:14.531918	2026-03-02 10:30:14.531918
-901	mm3x7j6m4p6s4g2zz	cImh-iSTekLNAgpVAAAR	online	2026-03-02 10:30:14.553854	2026-03-02 10:30:14.553854
-902	mm3x7j6m4p6s4g2zz	IRbbUYRRo3gWLG3rAAAT	online	2026-03-02 10:30:14.584183	2026-03-02 10:30:14.584183
-917	mm3x7j6m4p6s4g2zz	xc4mGv2e-eDJBdiWAAAn	online	2026-03-02 10:40:20.344547	2026-03-02 10:40:20.344547
-1128	mm3x7j6m4p6s4g2zz	RQjvOmYB6W9QBWNSAABR	online	2026-03-02 12:37:07.157173	2026-03-02 12:37:07.157173
-1129	mm3x7j6m4p6s4g2zz	Uy_D1AiMQEwkMOt7AABT	online	2026-03-02 12:37:07.327329	2026-03-02 12:37:07.327329
-1130	mm3x7j6m4p6s4g2zz	4oghv27kaTTRb3JiAABV	online	2026-03-02 12:37:07.440139	2026-03-02 12:37:07.440139
-1131	mm3x7j6m4p6s4g2zz	26_M49JbOjEIygfEAABX	online	2026-03-02 12:37:07.460107	2026-03-02 12:37:07.460107
-1132	mm3x7j6m4p6s4g2zz	MDfhtdEyteX-HR2NAABZ	online	2026-03-02 12:37:07.478808	2026-03-02 12:37:07.478808
-1143	mm3x7j6m4p6s4g2zz	L6D6GcJxqu13nw1eAAAV	online	2026-03-02 12:39:03.241198	2026-03-02 12:39:03.241198
-1144	mm3x7j6m4p6s4g2zz	i29aYmbyFvUv9EsFAAAX	online	2026-03-02 12:39:03.464461	2026-03-02 12:39:03.464461
-1145	mm3x7j6m4p6s4g2zz	HXs10gd5lUl4p6wAAAAZ	online	2026-03-02 12:39:03.600266	2026-03-02 12:39:03.600266
-1146	mm3x7j6m4p6s4g2zz	6uNDLvu0WWhsLpQMAAAb	online	2026-03-02 12:39:03.621439	2026-03-02 12:39:03.621439
-1147	mm3x7j6m4p6s4g2zz	jgnE9S6y021JrAGLAAAd	online	2026-03-02 12:39:03.639354	2026-03-02 12:39:03.639354
-948	mm3x7j6m4p6s4g2zz	4QAAgiK3fLsI1gf0AAAz	online	2026-03-02 11:17:43.729527	2026-03-02 11:17:43.729527
-949	mm3x7j6m4p6s4g2zz	DrEQTJPJbsAL5s6cAAA1	online	2026-03-02 11:17:43.918191	2026-03-02 11:17:43.918191
-950	mm3x7j6m4p6s4g2zz	FGxTa8qv6-H24Eo7AAA3	online	2026-03-02 11:17:44.077187	2026-03-02 11:17:44.077187
-951	mm3x7j6m4p6s4g2zz	NmTDd2KrQ_hzG-GtAAA5	online	2026-03-02 11:17:44.102231	2026-03-02 11:17:44.102231
-952	mm3x7j6m4p6s4g2zz	cM-vCbMWRw3AbZz7AAA7	online	2026-03-02 11:17:44.127243	2026-03-02 11:17:44.127243
-2086	mm3x7j6m4p6s4g2zz	L2HmCR0uJhZJeQ9GAAAV	online	2026-03-11 12:53:06.114502	2026-03-11 12:53:06.114502
-2087	mm3x7j6m4p6s4g2zz	gckmZA19DAWYOfrZAAAX	online	2026-03-11 12:53:06.119399	2026-03-11 12:53:06.119399
-2088	mm3x7j6m4p6s4g2zz	WEx7pVYM8vixPLX1AAAZ	online	2026-03-11 12:53:06.588745	2026-03-11 12:53:06.588745
-2089	mm3x7j6m4p6s4g2zz	SawzcOJ5mBrNhuK2AAAb	online	2026-03-11 12:53:06.608207	2026-03-11 12:53:06.608207
-1158	mm3x7j6m4p6s4g2zz	4UcFCtOcDb9Mva0fAAAV	online	2026-03-02 12:40:59.365008	2026-03-02 12:40:59.365008
-1159	mm3x7j6m4p6s4g2zz	iixutngztYDCLqspAAAX	online	2026-03-02 12:40:59.368605	2026-03-02 12:40:59.368605
-1160	mm3x7j6m4p6s4g2zz	L2D8T76Rah3OfYK5AAAZ	online	2026-03-02 12:40:59.494963	2026-03-02 12:40:59.494963
-1161	mm3x7j6m4p6s4g2zz	yhLyOvV-GmAmSNh5AAAb	online	2026-03-02 12:40:59.523795	2026-03-02 12:40:59.523795
-1162	mm3x7j6m4p6s4g2zz	hPf8Qqs50MGuqONLAAAd	online	2026-03-02 12:40:59.543137	2026-03-02 12:40:59.543137
-2090	mm3x7j6m4p6s4g2zz	P4rh3kelyzXi8Q-eAAAd	online	2026-03-11 12:53:06.636806	2026-03-11 12:53:06.636806
-1173	mm3x7j6m4p6s4g2zz	BExn3almeVwM-KD8AAAV	online	2026-03-02 12:42:06.102121	2026-03-02 12:42:06.102121
-1073	mm3x7j6m4p6s4g2zz	AgCiJ-5JsSYFQ7PdAAAX	online	2026-03-02 12:21:59.155783	2026-03-02 12:21:59.155783
-1074	mm3x7j6m4p6s4g2zz	sJWJMXersFmUxGQaAAAV	online	2026-03-02 12:21:59.189019	2026-03-02 12:21:59.189019
-1075	mm3x7j6m4p6s4g2zz	H93ccMXsQeRC23nQAAAZ	online	2026-03-02 12:21:59.29668	2026-03-02 12:21:59.29668
-1076	mm3x7j6m4p6s4g2zz	0MvJsjxRF84Xe1_4AAAb	online	2026-03-02 12:21:59.324683	2026-03-02 12:21:59.324683
-1077	mm3x7j6m4p6s4g2zz	Rl1VLqtl8B2MawYJAAAd	online	2026-03-02 12:21:59.343977	2026-03-02 12:21:59.343977
-1174	mm3x7j6m4p6s4g2zz	iEIa2MYWGAf1BL8jAAAX	online	2026-03-02 12:42:06.277108	2026-03-02 12:42:06.277108
-1175	mm3x7j6m4p6s4g2zz	dbHyTsCYMPEmbXeTAAAZ	online	2026-03-02 12:42:06.420424	2026-03-02 12:42:06.420424
-1176	mm3x7j6m4p6s4g2zz	cmWsGTsDhbSw0nhKAAAb	online	2026-03-02 12:42:06.443836	2026-03-02 12:42:06.443836
-1177	mm3x7j6m4p6s4g2zz	fPlRneRkKhtxqyUqAAAd	online	2026-03-02 12:42:06.469919	2026-03-02 12:42:06.469919
-1083	mm3x7j6m4p6s4g2zz	iLfZPf4NOgd9dfThAAAL	online	2026-03-02 12:22:20.63163	2026-03-02 12:22:20.63163
-1084	mm3x7j6m4p6s4g2zz	BQBZqrck9NVH6OC7AAAN	online	2026-03-02 12:22:20.859446	2026-03-02 12:22:20.859446
-1085	mm3x7j6m4p6s4g2zz	msXq53F411onQv0EAAAP	online	2026-03-02 12:22:20.997773	2026-03-02 12:22:20.997773
-1086	mm3x7j6m4p6s4g2zz	-NnOrpvJ3zCcDc-vAAAR	online	2026-03-02 12:22:21.017064	2026-03-02 12:22:21.017064
-1087	mm3x7j6m4p6s4g2zz	M8KuTePjvI7CkEarAAAT	online	2026-03-02 12:22:21.042989	2026-03-02 12:22:21.042989
-1996	mm3x7j6m4p6s4g2zz	NzVTlb5MdoRB7SFFAAAB	online	2026-03-06 08:57:03.745344	2026-03-06 08:57:03.745344
-1997	mm3x7j6m4p6s4g2zz	Za-fUi2LR1WXyOJiAAAD	online	2026-03-06 08:57:03.745614	2026-03-06 08:57:03.745614
-1998	mm3x7j6m4p6s4g2zz	Vn_nB6rgNRpX3nrgAAAF	online	2026-03-06 08:57:04.160285	2026-03-06 08:57:04.160285
-1999	mm3x7j6m4p6s4g2zz	U7BdormK5PYoAHGQAAAH	online	2026-03-06 08:57:04.180805	2026-03-06 08:57:04.180805
-2000	mm3x7j6m4p6s4g2zz	jpQreSXsbi8edXJuAAAJ	online	2026-03-06 08:57:04.198676	2026-03-06 08:57:04.198676
-2006	mm3x7j6m4p6s4g2zz	maapniB9aeuX3pH5AAAL	online	2026-03-06 09:03:29.949961	2026-03-06 09:03:29.949961
-2007	mm3x7j6m4p6s4g2zz	_KT1wXhdmabcQY_RAAAN	online	2026-03-06 09:03:29.963387	2026-03-06 09:03:29.963387
-2008	mm3x7j6m4p6s4g2zz	LJvds-CVlAoK6HQ5AAAP	online	2026-03-06 09:03:30.23568	2026-03-06 09:03:30.23568
-2009	mm3x7j6m4p6s4g2zz	W0qzt7krliXdouxiAAAR	online	2026-03-06 09:03:30.250827	2026-03-06 09:03:30.250827
-2010	mm3x7j6m4p6s4g2zz	b_367RQ9N0pMzDI3AAAT	online	2026-03-06 09:03:30.263531	2026-03-06 09:03:30.263531
-1330	mm9a66x3tqtxja160	Kr2MqMk4QQPISEjqAAC_	online	2026-03-03 09:30:04.647883	2026-03-03 09:30:04.647883
-1331	mm9a66x3tqtxja160	LbMtvomFxIkS93m7AADB	online	2026-03-03 09:30:04.773784	2026-03-03 09:30:04.773784
-1332	mm9a66x3tqtxja160	8vmf1PB616EjANjpAADD	online	2026-03-03 09:30:04.900256	2026-03-03 09:30:04.900256
-1333	mm9a66x3tqtxja160	Jq_qL0Z0V_TSNNc_AADF	online	2026-03-03 09:30:04.917623	2026-03-03 09:30:04.917623
-1334	mm9a66x3tqtxja160	PPXceDku6T7j4nX2AADH	online	2026-03-03 09:30:04.933124	2026-03-03 09:30:04.933124
-1340	mm9a66x3tqtxja160	6FrT8kzFK5GIzQkOAAAL	online	2026-03-03 09:30:35.436313	2026-03-03 09:30:35.436313
-1341	mm9a66x3tqtxja160	-p5xrZ1OSX8DFA9VAAAN	online	2026-03-03 09:30:35.439134	2026-03-03 09:30:35.439134
-1342	mm9a66x3tqtxja160	ZnvY5-sB6pARBmqQAAAP	online	2026-03-03 09:30:35.606682	2026-03-03 09:30:35.606682
-1343	mm9a66x3tqtxja160	39QTHRnSH7SYePB4AAAR	online	2026-03-03 09:30:35.630602	2026-03-03 09:30:35.630602
-1344	mm9a66x3tqtxja160	vv-yHlNGdl16avGIAAAT	online	2026-03-03 09:30:35.64592	2026-03-03 09:30:35.64592
-2330	mm5c36r94emvow7nf	dCFEGUcWC5ctEkNBAAAj	online	2026-03-12 12:32:01.296675	2026-03-12 12:32:01.296675
-2336	mm3x7j6m4p6s4g2zz	r6voNzxuvH4ei-spAAAv	online	2026-03-12 12:32:12.921217	2026-03-12 12:32:12.921217
-2603	mm3x7j6m4p6s4g2zz	-ygsn-Aexr8GXm-AAAAL	online	2026-03-12 16:16:58.309552	2026-03-12 16:16:58.309552
-2605	mm3x7j6m4p6s4g2zz	owvup49YIZJD6IwhAAAP	online	2026-03-12 16:16:58.44678	2026-03-12 16:16:58.44678
-2606	mm3x7j6m4p6s4g2zz	kxCzLY22q7ZqSbVAAAAR	online	2026-03-12 16:16:58.468515	2026-03-12 16:16:58.468515
-2366	mm3x7j6m4p6s4g2zz	4V_FWHK2U07yX4XwAAA5	online	2026-03-12 12:36:04.462811	2026-03-12 12:36:04.462811
-2369	mm3x7j6m4p6s4g2zz	a8oDtw9YSVIedIzYAAA_	online	2026-03-12 12:36:04.598821	2026-03-12 12:36:04.598821
-2380	mm3x7j6m4p6s4g2zz	69l-p-y0Be7IVei9AAAV	online	2026-03-12 12:41:21.485587	2026-03-12 12:41:21.485587
-2383	mm3x7j6m4p6s4g2zz	raMLC622s-WZDBiQAAAb	online	2026-03-12 12:41:21.670192	2026-03-12 12:41:21.670192
+3927	mm3wcdhk7ksjtfh97	i94Mq-fy6fxKMb9PAAAB	online	2026-03-19 09:59:13.140455	2026-03-19 09:59:13.140455
+4051	mmcek5ivcck8np2xg	mClcmiV-1LUy4wT_AAC_	online	2026-03-19 12:03:06.595928	2026-03-19 12:03:06.595928
+3929	mm3wcdhk7ksjtfh97	wjk7Uk8lfmrZzi70AAAF	online	2026-03-19 09:59:13.250853	2026-03-19 09:59:13.250853
+3930	mm3wcdhk7ksjtfh97	vUIRZ_Nwx1CEI_l7AAAJ	online	2026-03-19 09:59:13.31175	2026-03-19 09:59:13.31175
+4052	mmcek5ivcck8np2xg	Hcof6aXNJwvkgiEOAADB	online	2026-03-19 12:03:06.627613	2026-03-19 12:03:06.627613
+3932	mm3wcdhk7ksjtfh97	XasNrOsA1Z_Q_92wAAAN	online	2026-03-19 09:59:13.33727	2026-03-19 09:59:13.33727
+4053	mmcek5ivcck8np2xg	VOVaFExk1sdjhgguAADD	online	2026-03-19 12:03:07.57698	2026-03-19 12:03:07.57698
+3934	mm3wcdhk7ksjtfh97	AGV8YRPv3GDEw8cfAAAR	online	2026-03-19 09:59:13.36366	2026-03-19 09:59:13.36366
+3874	mmtovpuh0hhrz20qp	Yq6l7GOc-jMMGzxzAAC6	online	2026-03-19 09:05:07.162762	2026-03-19 09:05:07.162762
+3889	mm3x7j6m4p6s4g2zz	T8IUnHTDlM6t48zTAADX	online	2026-03-19 09:31:39.051178	2026-03-19 09:31:39.051178
+3943	mm3x7j6m4p6s4g2zz	AjNd-VwkIT41abfoAAAh	online	2026-03-19 09:59:31.016873	2026-03-19 09:59:31.016873
+3944	mm3x7j6m4p6s4g2zz	aHRLANOkjaunQqyPAAAj	online	2026-03-19 09:59:31.282464	2026-03-19 09:59:31.282464
+3946	mm3x7j6m4p6s4g2zz	I6blKmgE4g9Z1hZ7AAAn	online	2026-03-19 09:59:31.345047	2026-03-19 09:59:31.345047
+3955	mmtovpuh0hhrz20qp	CiqUwcF67imYkCEAAAA5	online	2026-03-19 10:01:14.842268	2026-03-19 10:01:14.842268
+3956	mmtovpuh0hhrz20qp	cNrDaQuctImkt78tAAA7	online	2026-03-19 10:01:14.956033	2026-03-19 10:01:14.956033
+4093	mm9a66x3tqtxja160	lMMA2g3ulDvzyirnAABM	online	2026-03-19 12:09:15.773158	2026-03-19 12:09:15.773158
+3984	mm3x7j6m4p6s4g2zz	LIQQP_moSdxhLgmZAAA3	online	2026-03-19 10:24:11.856793	2026-03-19 10:24:11.856793
+3986	mm3x7j6m4p6s4g2zz	PNQdRMLRtse2BiCSAAA7	online	2026-03-19 10:24:11.903065	2026-03-19 10:24:11.903065
+4100	mm3x7j6m4p6s4g2zz	iUopN0zmT6en29mEAABa	online	2026-03-19 12:10:21.517621	2026-03-19 12:10:21.517621
+4116	mmcek5ivcck8np2xg	NduenfEF4KMKHnTzAAAd	online	2026-03-19 12:15:12.21117	2026-03-19 12:15:12.21117
+4233	mmcek5ivcck8np2xg	uZul5krwsQLNjB7XAAAd	online	2026-03-19 12:44:52.754616	2026-03-19 12:44:52.754616
+4260	mm3x7j6m4p6s4g2zz	Mfx8cY5Yu7-bUzu_AABT	online	2026-03-19 12:45:25.291086	2026-03-19 12:45:25.291086
+4261	mm3x7j6m4p6s4g2zz	vcGjdJXKA-wmQluKAABV	online	2026-03-19 12:45:25.562925	2026-03-19 12:45:25.562925
+4262	mm3x7j6m4p6s4g2zz	W89BwO0nj24zzGpNAABX	online	2026-03-19 12:45:25.619844	2026-03-19 12:45:25.619844
+4155	mm3x7j6m4p6s4g2zz	ja-fIURq2CpGlQX9AABs	online	2026-03-19 12:17:27.582443	2026-03-19 12:17:27.582443
+4156	mm3x7j6m4p6s4g2zz	kUnEmPF8nNGjyR_EAABu	online	2026-03-19 12:17:27.602233	2026-03-19 12:17:27.602233
+4168	mm3x7j6m4p6s4g2zz	7KAf3q6Imt-jhMSrAAAV	online	2026-03-19 12:29:43.899136	2026-03-19 12:29:43.899136
+4263	mm3x7j6m4p6s4g2zz	7o-grSlndBHUfQmlAABZ	online	2026-03-19 12:45:25.660027	2026-03-19 12:45:25.660027
+4435	mm9a66x3tqtxja160	55MsmufVSt3LVHOdAAAZ	online	2026-03-19 14:16:03.36418	2026-03-19 14:16:03.36418
+4444	mm3x7j6m4p6s4g2zz	TG0v4UThFFarO6CiAAAX	online	2026-03-19 14:23:38.780144	2026-03-19 14:23:38.780144
+4206	mm9a66x3tqtxja160	8QtaK_dzsgTPT9wCAABh	online	2026-03-19 12:31:36.074393	2026-03-19 12:31:36.074393
+4214	mm3x7j6m4p6s4g2zz	Ic7x4O4IxQ9V4m0TAABx	online	2026-03-19 12:31:43.373715	2026-03-19 12:31:43.373715
+4216	mm3x7j6m4p6s4g2zz	_V1un7EoLd5h65HGAAB1	online	2026-03-19 12:31:43.697598	2026-03-19 12:31:43.697598
+4217	mm3x7j6m4p6s4g2zz	xJEWsjBQiaiK8CyOAAB3	online	2026-03-19 12:31:43.728073	2026-03-19 12:31:43.728073
+4303	mm9a66x3tqtxja160	3grzRgOtPM9Qhqa9AABF	online	2026-03-19 12:54:10.3612	2026-03-19 12:54:10.3612
+4310	mm3x7j6m4p6s4g2zz	kXKwJVmFhrtXQxObAABT	online	2026-03-19 12:54:29.378853	2026-03-19 12:54:29.378853
+4316	mm9a66x3tqtxja160	ZQZ3COeI4x4j1aR-AABf	online	2026-03-19 12:54:48.866239	2026-03-19 12:54:48.866239
+4580	mm3x7j6m4p6s4g2zz	pyXyZH_M-6HDKy4YAAAI	online	2026-03-20 21:58:57.303582	2026-03-20 21:58:57.303582
+4382	mm3x7j6m4p6s4g2zz	IjLqiiSmaZ_L3SjxAACB	online	2026-03-19 13:00:06.348166	2026-03-19 13:00:06.348166
+4395	mm9a66x3tqtxja160	kfl3J1vFxMGk93BwAACb	online	2026-03-19 13:00:18.500636	2026-03-19 13:00:18.500636
+4396	mm9a66x3tqtxja160	i2rjY77EXaW9QjjVAACd	online	2026-03-19 13:00:18.523312	2026-03-19 13:00:18.523312
+4054	mmcek5ivcck8np2xg	CB2KEvjfNqNUVui7AADF	online	2026-03-19 12:03:07.620293	2026-03-19 12:03:07.620293
+3945	mm3x7j6m4p6s4g2zz	GtnX9bisf2WV-wGMAAAl	online	2026-03-19 09:59:31.315207	2026-03-19 09:59:31.315207
+4055	mmcek5ivcck8np2xg	lvz0aQzvlxT0fjUXAADH	online	2026-03-19 12:03:08.56236	2026-03-19 12:03:08.56236
+4079	mm3x7j6m4p6s4g2zz	jdOWaG3MXdblgk5bAAAv	online	2026-03-19 12:08:27.54731	2026-03-19 12:08:27.54731
+4080	mm3x7j6m4p6s4g2zz	-Xw96jIYFH0nD8FMAAAx	online	2026-03-19 12:08:27.838583	2026-03-19 12:08:27.838583
+4094	mm9a66x3tqtxja160	uCD4hb_OjT38il_JAABO	online	2026-03-19 12:09:15.939411	2026-03-19 12:09:15.939411
+4095	mm9a66x3tqtxja160	9hEx_-F-Ci_V9JmTAABQ	online	2026-03-19 12:09:15.958672	2026-03-19 12:09:15.958672
+4096	mm9a66x3tqtxja160	6JpAsi0nkgvBQ6vDAABS	online	2026-03-19 12:09:15.98156	2026-03-19 12:09:15.98156
+3985	mm3x7j6m4p6s4g2zz	CTsBVhGNeqmBx3kZAAA5	online	2026-03-19 10:24:11.88826	2026-03-19 10:24:11.88826
+3872	mmtovpuh0hhrz20qp	zr8JGPbqKngrGB8KAAC1	online	2026-03-19 09:05:06.266535	2026-03-19 09:05:06.266535
+3875	mmtovpuh0hhrz20qp	uGCyJNzLdTjTK3YiAAC7	online	2026-03-19 09:05:07.164483	2026-03-19 09:05:07.164483
+4098	mm3x7j6m4p6s4g2zz	GLyqL5VCO-u0YCUFAABW	online	2026-03-19 12:10:20.872315	2026-03-19 12:10:20.872315
+3882	mm3wcdhk7ksjtfh97	xe367rQd1ONkQjVfAADJ	online	2026-03-19 09:20:02.18735	2026-03-19 09:20:02.18735
+3883	mm3wcdhk7ksjtfh97	mY-f-hjccP9Dvx-XAADL	online	2026-03-19 09:20:02.416576	2026-03-19 09:20:02.416576
+3890	mm3x7j6m4p6s4g2zz	FxgqhM8Sf5qzWKqJAADZ	online	2026-03-19 09:31:39.070423	2026-03-19 09:31:39.070423
+4101	mm3x7j6m4p6s4g2zz	-hDYfBG-8jIjPxjDAABc	online	2026-03-19 12:10:21.611225	2026-03-19 12:10:21.611225
+4117	mmcek5ivcck8np2xg	E2JklppDaewtHxvmAAAf	online	2026-03-19 12:15:12.474684	2026-03-19 12:15:12.474684
+4232	mmcek5ivcck8np2xg	JP8kc5A8zI8eGS7UAAAb	online	2026-03-19 12:44:52.617012	2026-03-19 12:44:52.617012
+4244	mm9a66x3tqtxja160	v4kRGYyNQz2m1yEnAAAz	online	2026-03-19 12:45:04.675442	2026-03-19 12:45:04.675442
+4246	mm9a66x3tqtxja160	ReJshkQrNKvvDOPVAAA3	online	2026-03-19 12:45:05.29681	2026-03-19 12:45:05.29681
+4259	mm3x7j6m4p6s4g2zz	JkbuNH8pUFANY4IaAABR	online	2026-03-19 12:45:25.090294	2026-03-19 12:45:25.090294
+4264	mm9a66x3tqtxja160	O_HQVbXLCJ4gUIONAABb	online	2026-03-19 12:45:38.177264	2026-03-19 12:45:38.177264
+4167	mmcek5ivcck8np2xg	M-zuetJ9d8S9zojiAAAT	online	2026-03-19 12:29:30.396806	2026-03-19 12:29:30.396806
+4266	mm9a66x3tqtxja160	pugpv1riKbwt85jHAABf	online	2026-03-19 12:45:38.725453	2026-03-19 12:45:38.725453
+4268	mm9a66x3tqtxja160	4CHCLBgrl60Nj1kpAABj	online	2026-03-19 12:45:38.839315	2026-03-19 12:45:38.839315
+4450	mm3x7j6m4p6s4g2zz	Hr4eLdqB-VllWHLVAAAG	online	2026-03-19 14:43:26.48184	2026-03-19 14:43:26.48184
+4274	mmcek5ivcck8np2xg	T-rq9OH23UJ4xqspAAAL	online	2026-03-19 12:52:49.270792	2026-03-19 12:52:49.270792
+4275	mmcek5ivcck8np2xg	lp-AYiHhxsvYbv9oAAAN	online	2026-03-19 12:52:49.39998	2026-03-19 12:52:49.39998
+4276	mmcek5ivcck8np2xg	sdNXqcRaEzwiom4oAAAR	online	2026-03-19 12:52:49.694096	2026-03-19 12:52:49.694096
+4576	mmznzctvojut4aax3	mIg8ToLJJFXLP1YNAAAH	online	2026-03-20 21:44:45.763181	2026-03-20 21:44:45.763181
+4304	mm9a66x3tqtxja160	Qk9QncklsHFogpnNAABH	online	2026-03-19 12:54:10.582616	2026-03-19 12:54:10.582616
+4313	mm9a66x3tqtxja160	pji8BgC9rc4NhBAFAABZ	online	2026-03-19 12:54:48.552523	2026-03-19 12:54:48.552523
+4383	mm3x7j6m4p6s4g2zz	We8L6msDdtSk7jtDAACD	online	2026-03-19 13:00:06.350725	2026-03-19 13:00:06.350725
+4392	mm9a66x3tqtxja160	NRtmfWMW46q2uUBsAACV	online	2026-03-19 13:00:18.209167	2026-03-19 13:00:18.209167
+4056	mmcek5ivcck8np2xg	yTT0bsxMk61X9MkGAAAB	online	2026-03-19 12:07:53.838488	2026-03-19 12:07:53.838488
+4057	mmcek5ivcck8np2xg	x5Y6EuQtwjTY9fTdAAAH	online	2026-03-19 12:07:53.974146	2026-03-19 12:07:53.974146
+4059	mmcek5ivcck8np2xg	LUeG75qJteNBxdEkAAAJ	online	2026-03-19 12:07:54.025878	2026-03-19 12:07:54.025878
+4229	mmcek5ivcck8np2xg	afMNcZ8jUFzGSdpjAAAV	online	2026-03-19 12:44:52.276344	2026-03-19 12:44:52.276344
+4230	mmcek5ivcck8np2xg	oiIWJKRmXzm5ea7ZAAAX	online	2026-03-19 12:44:52.37539	2026-03-19 12:44:52.37539
+4231	mmcek5ivcck8np2xg	UAiZd9ERGvr8EgDCAAAZ	online	2026-03-19 12:44:52.44799	2026-03-19 12:44:52.44799
+4078	mm3x7j6m4p6s4g2zz	eohQDbo9WpHr97R0AAAt	online	2026-03-19 12:08:27.54636	2026-03-19 12:08:27.54636
+4081	mm3x7j6m4p6s4g2zz	QOD1CbSIq__W3C8YAAAz	online	2026-03-19 12:08:27.858233	2026-03-19 12:08:27.858233
+4245	mm9a66x3tqtxja160	eGca_fNH_kSL6LoeAAA1	online	2026-03-19 12:45:04.977054	2026-03-19 12:45:04.977054
+3982	mm3x7j6m4p6s4g2zz	I2czSkOwZ5duA4qpAAAz	online	2026-03-19 10:24:10.953711	2026-03-19 10:24:10.953711
+3876	mmtovpuh0hhrz20qp	1mG-QLSn7P-ffIk5AAC9	online	2026-03-19 09:05:07.201941	2026-03-19 09:05:07.201941
+3884	mm3wcdhk7ksjtfh97	MJvllphhCQ9UtoYVAADN	online	2026-03-19 09:20:02.961417	2026-03-19 09:20:02.961417
+3891	mm3x7j6m4p6s4g2zz	0DzT2WZYU8Xz440FAADb	online	2026-03-19 09:31:39.122041	2026-03-19 09:31:39.122041
+4092	mm9a66x3tqtxja160	U6dJHzdWjHrkPEuDAABK	online	2026-03-19 12:09:15.613168	2026-03-19 12:09:15.613168
+4097	mm3x7j6m4p6s4g2zz	067DaeSWNbKU6CTLAABU	online	2026-03-19 12:10:20.66038	2026-03-19 12:10:20.66038
+4424	mm3x7j6m4p6s4g2zz	OKE3bT1dhDYR38UYAAA1	online	2026-03-19 14:06:18.884487	2026-03-19 14:06:18.884487
+4277	mmcek5ivcck8np2xg	KQmfe8Ox0Ar3nw2KAAAP	online	2026-03-19 12:52:49.737696	2026-03-19 12:52:49.737696
+4442	mm9a66x3tqtxja160	o-NHhvKrs5qiv-F6AAAR	online	2026-03-19 14:23:34.404415	2026-03-19 14:23:34.404415
+4447	mm3x7j6m4p6s4g2zz	M081lZrgPIFXddioAAAH	online	2026-03-19 14:32:52.853335	2026-03-19 14:32:52.853335
+4305	mm9a66x3tqtxja160	3sG25i0HUwDyzukeAABJ	online	2026-03-19 12:54:10.84481	2026-03-19 12:54:10.84481
+4306	mm9a66x3tqtxja160	NnZJqoraPYjJ68D3AABL	online	2026-03-19 12:54:10.876562	2026-03-19 12:54:10.876562
+4311	mm3x7j6m4p6s4g2zz	7BqH1fmOr7aaWZ65AABV	online	2026-03-19 12:54:29.414853	2026-03-19 12:54:29.414853
+4312	mm3x7j6m4p6s4g2zz	WTYjCZIfy_IpVdyKAABX	online	2026-03-19 12:54:29.461043	2026-03-19 12:54:29.461043
+4118	mmcek5ivcck8np2xg	-ta12QGloFg6Ya83AAAh	online	2026-03-19 12:15:12.935567	2026-03-19 12:15:12.935567
+4119	mmcek5ivcck8np2xg	txkSvveITz4T0zgiAAAj	online	2026-03-19 12:15:13.005941	2026-03-19 12:15:13.005941
+4120	mmcek5ivcck8np2xg	f7AigeeP1DpZEKEhAAAl	online	2026-03-19 12:15:13.120465	2026-03-19 12:15:13.120465
+4314	mm9a66x3tqtxja160	kZJD74uuRInm6W-TAABb	online	2026-03-19 12:54:48.555313	2026-03-19 12:54:48.555313
+4317	mm9a66x3tqtxja160	sOJ8jPRO5jWfq-WwAABh	online	2026-03-19 12:54:48.914206	2026-03-19 12:54:48.914206
+4458	mm3wcdhk7ksjtfh97	Jl08AkpfKnKNoSy1AAAS	online	2026-03-19 15:40:54.468076	2026-03-19 15:40:54.468076
+4153	mm3x7j6m4p6s4g2zz	g2klghKJ-fBVAs6qAABo	online	2026-03-19 12:17:27.366754	2026-03-19 12:17:27.366754
+4157	mm3x7j6m4p6s4g2zz	P1-Eb1ungiGP4fzOAABw	online	2026-03-19 12:17:27.632141	2026-03-19 12:17:27.632141
+4165	mmcek5ivcck8np2xg	TqR70xRCW4eICs6nAAAP	online	2026-03-19 12:29:29.898113	2026-03-19 12:29:29.898113
+4385	mm3x7j6m4p6s4g2zz	xJ79YMRL_SVWnOo0AACH	online	2026-03-19 13:00:06.633143	2026-03-19 13:00:06.633143
+4386	mm3x7j6m4p6s4g2zz	fAvU8Rcwb_Th_OCYAACJ	online	2026-03-19 13:00:06.673609	2026-03-19 13:00:06.673609
+4393	mm9a66x3tqtxja160	RmW67GyixhFmrp0YAACX	online	2026-03-19 13:00:18.317905	2026-03-19 13:00:18.317905
+4394	mm9a66x3tqtxja160	2OgT1mxEH0BaaBmeAACZ	online	2026-03-19 13:00:18.481541	2026-03-19 13:00:18.481541
+4218	mm3x7j6m4p6s4g2zz	3vEoAxFG74bTJWVdAAB5	online	2026-03-19 12:31:43.75984	2026-03-19 12:31:43.75984
+3562	mm3wcdhk7ksjtfh97	42j4pcSeYEdN8WdiAAAf	online	2026-03-18 08:14:41.82424	2026-03-18 08:14:41.82424
+3564	mm3wcdhk7ksjtfh97	xIqqIyLWCRUigNXYAAAj	online	2026-03-18 08:14:42.460404	2026-03-18 08:14:42.460404
+4498	mm3x7j6m4p6s4g2zz	jOrYFbfKL3jfiBj9AAA7	online	2026-03-20 08:06:15.202434	2026-03-20 08:06:15.202434
+4518	mmcek5ivcck8np2xg	Oha_JdnQwWoRm7saAAAw	online	2026-03-20 10:02:49.072306	2026-03-20 10:02:49.072306
+4519	mmtovpuh0hhrz20qp	1ybQ5KPoa9Ci9MAXAAAy	online	2026-03-20 10:14:27.155709	2026-03-20 10:14:27.155709
 3058	mm3x7j6m4p6s4g2zz	DmcW9j2S-4AvDF58AAAP	online	2026-03-16 12:46:31.911065	2026-03-16 12:46:31.911065
 3059	mm3x7j6m4p6s4g2zz	NztAvPBBBmxr2ci3AAAR	online	2026-03-16 12:46:31.911743	2026-03-16 12:46:31.911743
 3060	mm3x7j6m4p6s4g2zz	P6F6SUoEwUlqaC3GAAAT	online	2026-03-16 12:46:32.01499	2026-03-16 12:46:32.01499
@@ -4747,24 +5073,12 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 2908	mm3x7j6m4p6s4g2zz	wev7xQf0OYqYu7e9AAA3	online	2026-03-13 16:55:19.522445	2026-03-13 16:55:19.522445
 2909	mm3x7j6m4p6s4g2zz	nie9UglmlXv2dtM-AAA5	online	2026-03-13 16:55:19.782865	2026-03-13 16:55:19.782865
 2910	mm3x7j6m4p6s4g2zz	_7WsYCYcEzn8HS8ZAAA7	online	2026-03-13 16:55:19.919229	2026-03-13 16:55:19.919229
-2289	mm3x7j6m4p6s4g2zz	wOSo_x9uuw875GxzAAAh	online	2026-03-12 12:11:57.095808	2026-03-12 12:11:57.095808
-2291	mm3x7j6m4p6s4g2zz	YFMKJFKJKhl57qc9AAAl	online	2026-03-12 12:11:57.303339	2026-03-12 12:11:57.303339
-2292	mm3x7j6m4p6s4g2zz	WK3Q7O7rcwUVyBU5AAAn	online	2026-03-12 12:11:57.354007	2026-03-12 12:11:57.354007
+4540	mm9a66x3tqtxja160	PB6bknpt5bm4HSYjAAAJ	online	2026-03-20 14:56:14.188172	2026-03-20 14:56:14.188172
 2911	mm3x7j6m4p6s4g2zz	9OKwMn2K6dIAO2LLAAA9	online	2026-03-13 16:55:19.945951	2026-03-13 16:55:19.945951
 2912	mm3x7j6m4p6s4g2zz	dfrKGHzYsJIQzBJMAAA_	online	2026-03-13 16:55:20.003273	2026-03-13 16:55:20.003273
 2804	mm3x7j6m4p6s4g2zz	cEeRm0le3FDGhZ10AAAV	online	2026-03-13 14:24:31.466629	2026-03-13 14:24:31.466629
-2532	mm9a66x3tqtxja160	F3u1eoSkaO4OwmrFAAAZ	online	2026-03-12 14:50:58.893067	2026-03-12 14:50:58.893067
-2533	mm9a66x3tqtxja160	XMdFgsMuttXl2SKsAAAb	online	2026-03-12 14:50:58.948303	2026-03-12 14:50:58.948303
-2309	mm3x7j6m4p6s4g2zz	QXQirB5aFXgS76rnAAAh	online	2026-03-12 12:27:22.123471	2026-03-12 12:27:22.123471
-2311	mm3x7j6m4p6s4g2zz	ND1nHNjiHPoaeqDHAAAl	online	2026-03-12 12:27:22.27115	2026-03-12 12:27:22.27115
-2312	mm3x7j6m4p6s4g2zz	By9fnGqU84tsIuUhAAAn	online	2026-03-12 12:27:22.289672	2026-03-12 12:27:22.289672
-2535	mm9a66x3tqtxja160	wgGkqBTXXH7U-FOAAAAf	online	2026-03-12 14:50:59.076585	2026-03-12 14:50:59.076585
-2536	mm9a66x3tqtxja160	pbtniPRqvxiL7m64AAAh	online	2026-03-12 14:50:59.097652	2026-03-12 14:50:59.097652
-2320	mm3x7j6m4p6s4g2zz	O7CXZ64WiUIDJLgBAAAP	online	2026-03-12 12:31:27.681671	2026-03-12 12:31:27.681671
-2537	mm3x7j6m4p6s4g2zz	q656QB_RArtARekqAAAj	online	2026-03-12 14:51:39.14148	2026-03-12 14:51:39.14148
-2325	mltycdim2me5704rt	xAZExIM5cWPpvXL2AAAZ	online	2026-03-12 12:31:47.12009	2026-03-12 12:31:47.12009
-2326	mltycdim2me5704rt	D787QawAeI2gbBoGAAAb	online	2026-03-12 12:31:47.150029	2026-03-12 12:31:47.150029
-2540	mm3x7j6m4p6s4g2zz	OIhmCeG01FMgvvjyAAAp	online	2026-03-12 14:51:39.833848	2026-03-12 14:51:39.833848
+4560	mmznzctvojut4aax3	mIMWmQmte3LzUX4UAAA2	online	2026-03-20 20:43:41.199715	2026-03-20 20:43:41.199715
+4573	mmznzctvojut4aax3	gghmm6YafE_fVSvSAAAc	online	2026-03-20 21:36:17.927241	2026-03-20 21:36:17.927241
 2822	mm3x7j6m4p6s4g2zz	KH3H2IxivdH4iOt6AAAc	online	2026-03-13 14:47:31.432342	2026-03-13 14:47:31.432342
 2824	mm3x7j6m4p6s4g2zz	fCqzAb5y46blimHeAAAg	online	2026-03-13 14:47:31.633207	2026-03-13 14:47:31.633207
 2837	mm3x7j6m4p6s4g2zz	SttQ1ZLPYrjopkuLAAAX	online	2026-03-13 15:18:43.296762	2026-03-13 15:18:43.296762
@@ -4801,72 +5115,42 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 3031	mm3x7j6m4p6s4g2zz	IBDTTdZ-4bVmFeLaAAAb	online	2026-03-16 12:38:39.395564	2026-03-16 12:38:39.395564
 3032	mm3x7j6m4p6s4g2zz	GpAKH6GKpAd9AHs9AAAd	online	2026-03-16 12:38:39.557298	2026-03-16 12:38:39.557298
 3033	mm3x7j6m4p6s4g2zz	iR79EX3opfaxkKxIAAAf	online	2026-03-16 12:38:39.577402	2026-03-16 12:38:39.577402
-2331	mm5c36r94emvow7nf	yhY3deJJ8nycJA4FAAAl	online	2026-03-12 12:32:01.321827	2026-03-12 12:32:01.321827
-2337	mm3x7j6m4p6s4g2zz	MqLXAMvzLdPYDj1qAAAx	online	2026-03-12 12:32:12.937439	2026-03-12 12:32:12.937439
-2101	mm3x7j6m4p6s4g2zz	B_KEbLA3JmfhSTNJAAAV	online	2026-03-11 13:47:38.177518	2026-03-11 13:47:38.177518
-2102	mm3x7j6m4p6s4g2zz	Gzy0pFQlkAnbdSVxAAAX	online	2026-03-11 13:47:38.201459	2026-03-11 13:47:38.201459
-2103	mm3x7j6m4p6s4g2zz	8hFsfgmI_cYV3BArAAAZ	online	2026-03-11 13:47:38.467559	2026-03-11 13:47:38.467559
-2104	mm3x7j6m4p6s4g2zz	Enq-NzkGlcBLp-0aAAAb	online	2026-03-11 13:47:38.482249	2026-03-11 13:47:38.482249
-2105	mm3x7j6m4p6s4g2zz	aJ93STD1S49mFfaQAAAd	online	2026-03-11 13:47:38.495488	2026-03-11 13:47:38.495488
-2604	mm3x7j6m4p6s4g2zz	PW-g9zUnDSdRiLl6AAAN	online	2026-03-12 16:16:58.309963	2026-03-12 16:16:58.309963
-2111	mm3x7j6m4p6s4g2zz	_j0qo3qtoN2Fc_ImAAAL	online	2026-03-11 13:47:57.980785	2026-03-11 13:47:57.980785
-2112	mm3x7j6m4p6s4g2zz	RXGc2JwDUIykVnFRAAAN	online	2026-03-11 13:47:58.008395	2026-03-11 13:47:58.008395
-2113	mm3x7j6m4p6s4g2zz	ZjjyPA7owwrvk2vuAAAP	online	2026-03-11 13:47:58.293348	2026-03-11 13:47:58.293348
-2114	mm3x7j6m4p6s4g2zz	pb_IymWwcDoI8EL7AAAR	online	2026-03-11 13:47:58.311134	2026-03-11 13:47:58.311134
-2115	mm3x7j6m4p6s4g2zz	0vjI0GkskRxNVtaNAAAT	online	2026-03-11 13:47:58.328476	2026-03-11 13:47:58.328476
-2121	mm3x7j6m4p6s4g2zz	bSHR3ZdRn8wtzgFHAAAL	online	2026-03-11 14:15:36.897068	2026-03-11 14:15:36.897068
-2122	mm3x7j6m4p6s4g2zz	LvU444ujXHGvlq49AAAN	online	2026-03-11 14:15:36.938781	2026-03-11 14:15:36.938781
-2123	mm3x7j6m4p6s4g2zz	_0PfFLgU3VfDwydqAAAP	online	2026-03-11 14:15:37.221096	2026-03-11 14:15:37.221096
-2124	mm3x7j6m4p6s4g2zz	knpKJYHlEt6GTWyHAAAR	online	2026-03-11 14:15:37.235866	2026-03-11 14:15:37.235866
-2125	mm3x7j6m4p6s4g2zz	8tJu9-OjIDSFalGWAAAT	online	2026-03-11 14:15:37.250417	2026-03-11 14:15:37.250417
-2365	mm3x7j6m4p6s4g2zz	Uos8C9MN6V5dyMkPAAA3	online	2026-03-12 12:36:04.462106	2026-03-12 12:36:04.462106
-2367	mm3x7j6m4p6s4g2zz	shPXN5o5Co56vBKSAAA7	online	2026-03-12 12:36:04.557345	2026-03-12 12:36:04.557345
-2368	mm3x7j6m4p6s4g2zz	rrwna65jqpJgVNjQAAA9	online	2026-03-12 12:36:04.586029	2026-03-12 12:36:04.586029
-2131	mm3x7j6m4p6s4g2zz	VtsJT0u6vp6Xzf3eAAAL	online	2026-03-11 14:27:50.09596	2026-03-11 14:27:50.09596
-2132	mm3x7j6m4p6s4g2zz	KK_Ev2MHxDrLOa2yAAAN	online	2026-03-11 14:27:50.148288	2026-03-11 14:27:50.148288
-2133	mm3x7j6m4p6s4g2zz	-Xpy0DLBj_6jPaWxAAAP	online	2026-03-11 14:27:50.379142	2026-03-11 14:27:50.379142
-2134	mm3x7j6m4p6s4g2zz	H9lrx1mU6ZiGXFubAAAR	online	2026-03-11 14:27:50.399229	2026-03-11 14:27:50.399229
-2135	mm3x7j6m4p6s4g2zz	XnLGt4pb_cTInn1gAAAT	online	2026-03-11 14:27:50.448098	2026-03-11 14:27:50.448098
-2381	mm3x7j6m4p6s4g2zz	1anDO1r8g0c_nvqsAAAX	online	2026-03-12 12:41:21.534511	2026-03-12 12:41:21.534511
-2382	mm3x7j6m4p6s4g2zz	grbsmtDjSdQFRDnsAAAZ	online	2026-03-12 12:41:21.646985	2026-03-12 12:41:21.646985
-2384	mm3x7j6m4p6s4g2zz	Uko6gph36lN_TvweAAAd	online	2026-03-12 12:41:21.688217	2026-03-12 12:41:21.688217
-2151	mm3x7j6m4p6s4g2zz	FNErrWRaWuNmvDT2AAAf	online	2026-03-11 14:35:46.812115	2026-03-11 14:35:46.812115
-2152	mm3x7j6m4p6s4g2zz	NbB2cegCTTIgsPEDAAAh	online	2026-03-11 14:35:46.836341	2026-03-11 14:35:46.836341
-2153	mm3x7j6m4p6s4g2zz	K6lrC-hyqcYjBwTkAAAj	online	2026-03-11 14:35:47.10602	2026-03-11 14:35:47.10602
-2154	mm3x7j6m4p6s4g2zz	XgxcF5vT99Lnp-ZLAAAl	online	2026-03-11 14:35:47.11834	2026-03-11 14:35:47.11834
-2155	mm3x7j6m4p6s4g2zz	11BtLSIaEb7_D2TiAAAn	online	2026-03-11 14:35:47.132139	2026-03-11 14:35:47.132139
-2288	mm3x7j6m4p6s4g2zz	pLuOXi9uTNJQSEDnAAAf	online	2026-03-12 12:11:56.897785	2026-03-12 12:11:56.897785
-2290	mm3x7j6m4p6s4g2zz	4W0uBlnRFeyPNNdbAAAj	online	2026-03-12 12:11:57.269601	2026-03-12 12:11:57.269601
-2534	mm9a66x3tqtxja160	-SJqSnMgupki-V5MAAAd	online	2026-03-12 14:50:59.053754	2026-03-12 14:50:59.053754
-2538	mm3x7j6m4p6s4g2zz	Hl9U_ng4T3UW90b-AAAl	online	2026-03-12 14:51:39.363537	2026-03-12 14:51:39.363537
-2539	mm3x7j6m4p6s4g2zz	wLiCPUnGYBkH3wH-AAAn	online	2026-03-12 14:51:39.77574	2026-03-12 14:51:39.77574
-2541	mm3x7j6m4p6s4g2zz	I2nFJ2xReKV3aWkaAAAr	online	2026-03-12 14:51:39.881718	2026-03-12 14:51:39.881718
-2166	mm3x7j6m4p6s4g2zz	SZckZ2dyVmo0ppG6AAAV	online	2026-03-11 14:41:37.19202	2026-03-11 14:41:37.19202
-2167	mm3x7j6m4p6s4g2zz	HEfcJKQHe8yllKGgAAAX	online	2026-03-11 14:41:37.242745	2026-03-11 14:41:37.242745
-2168	mm3x7j6m4p6s4g2zz	5G2OmchuQPVx3WNUAAAZ	online	2026-03-11 14:41:37.843037	2026-03-11 14:41:37.843037
-2169	mm3x7j6m4p6s4g2zz	CtvCaMNOAEB9QWs3AAAb	online	2026-03-11 14:41:37.861416	2026-03-11 14:41:37.861416
-2170	mm3x7j6m4p6s4g2zz	bIt6wBUM7Y1zavt6AAAd	online	2026-03-11 14:41:37.887705	2026-03-11 14:41:37.887705
-2308	mm3x7j6m4p6s4g2zz	a-5bD-hTXTpdEKuPAAAf	online	2026-03-12 12:27:22.121493	2026-03-12 12:27:22.121493
-2310	mm3x7j6m4p6s4g2zz	82aU94h0En9CYnfIAAAj	online	2026-03-12 12:27:22.252535	2026-03-12 12:27:22.252535
-2318	mm3x7j6m4p6s4g2zz	Dl_uePQMgOGFYQlpAAAL	online	2026-03-12 12:31:27.52848	2026-03-12 12:31:27.52848
-2319	mm3x7j6m4p6s4g2zz	GuGcHkevdEC6hlieAAAN	online	2026-03-12 12:31:27.530115	2026-03-12 12:31:27.530115
-2321	mm3x7j6m4p6s4g2zz	XoyB5UuoBP_O_o_vAAAR	online	2026-03-12 12:31:27.704546	2026-03-12 12:31:27.704546
-2323	mltycdim2me5704rt	oUVoyaK70sMz89zpAAAV	online	2026-03-12 12:31:47.002273	2026-03-12 12:31:47.002273
-2324	mltycdim2me5704rt	x5tqg_STS465haaYAAAX	online	2026-03-12 12:31:47.012558	2026-03-12 12:31:47.012558
+3565	mm3wcdhk7ksjtfh97	SnvbHNmenf_PM76oAAAl	online	2026-03-18 08:14:42.47403	2026-03-18 08:14:42.47403
+3573	mm3x7j6m4p6s4g2zz	uGdcDk1ZX-X19kNOAABb	online	2026-03-18 08:50:15.076988	2026-03-18 08:50:15.076988
+4058	mmcek5ivcck8np2xg	qgXG7rI2QhDGw8B0AAAD	online	2026-03-19 12:07:53.974371	2026-03-19 12:07:53.974371
+3885	mm3wcdhk7ksjtfh97	uqvcwT4Ky132Ql4XAADP	online	2026-03-19 09:20:02.974168	2026-03-19 09:20:02.974168
+3886	mm3wcdhk7ksjtfh97	uWB8tFyafhA9FP5OAADR	online	2026-03-19 09:20:02.992729	2026-03-19 09:20:02.992729
+3892	mmtovpuh0hhrz20qp	YfcHaPeOOGogdJ7hAAAB	online	2026-03-19 09:56:29.781151	2026-03-19 09:56:29.781151
+3893	mmtovpuh0hhrz20qp	6U3hbX84R6HSPKxuAAAD	online	2026-03-19 09:56:29.794052	2026-03-19 09:56:29.794052
+3894	mmtovpuh0hhrz20qp	WjchZ4jnlS2k2dklAAAF	online	2026-03-19 09:56:29.823054	2026-03-19 09:56:29.823054
+3895	mmtovpuh0hhrz20qp	2VZBfKMULKaIJRzCAAAJ	online	2026-03-19 09:56:29.88724	2026-03-19 09:56:29.88724
+4060	mmcek5ivcck8np2xg	ngtX2fY3CY_LBNbFAAAF	online	2026-03-19 12:07:54.04885	2026-03-19 12:07:54.04885
+3952	mmtovpuh0hhrz20qp	bmet2BkjhQ_HBt5wAAAz	online	2026-03-19 10:01:14.306689	2026-03-19 10:01:14.306689
+3953	mmtovpuh0hhrz20qp	t5k5DacKokrFEkQ9AAA1	online	2026-03-19 10:01:14.320056	2026-03-19 10:01:14.320056
+4247	mm9a66x3tqtxja160	nQhcLet1Palskx2dAAA5	online	2026-03-19 12:45:05.319984	2026-03-19 12:45:05.319984
+4513	mmxyjrub7hx690dr8	W5xMsFcGUyH-yRW_AAAj	online	2026-03-20 09:34:32.113446	2026-03-20 09:34:32.113446
+4265	mm9a66x3tqtxja160	6lCCWHjLeJ-fXIE6AABd	online	2026-03-19 12:45:38.482394	2026-03-19 12:45:38.482394
+4267	mm9a66x3tqtxja160	l3il1dxXJ_ddXx-mAABh	online	2026-03-19 12:45:38.772095	2026-03-19 12:45:38.772095
+4278	mmcek5ivcck8np2xg	9AFbBEhUbE9z8FxnAAAT	online	2026-03-19 12:52:49.746094	2026-03-19 12:52:49.746094
+3983	mm3x7j6m4p6s4g2zz	Aki6jTEwNDUEjLVcAAA1	online	2026-03-19 10:24:10.954272	2026-03-19 10:24:10.954272
+3873	mmtovpuh0hhrz20qp	i3hDX8Q6cabhEG5bAAC3	online	2026-03-19 09:05:06.357956	2026-03-19 09:05:06.357956
+4099	mm3x7j6m4p6s4g2zz	sOKUELEHfWnhMZhiAABY	online	2026-03-19 12:10:21.46933	2026-03-19 12:10:21.46933
+3887	mm3x7j6m4p6s4g2zz	Xs0ebYEDSzZ6TX22AADT	online	2026-03-19 09:31:38.319144	2026-03-19 09:31:38.319144
+3896	mmtovpuh0hhrz20qp	7DHLYJ2Vq8OjdD4DAAAH	online	2026-03-19 09:56:29.930957	2026-03-19 09:56:29.930957
+3898	mm3wcdhk7ksjtfh97	oHmV27Sdmp3wEtjZAAAN	online	2026-03-19 09:56:30.174872	2026-03-19 09:56:30.174872
+3901	mm3wcdhk7ksjtfh97	iEaJI3iGCkR4-X-FAAAT	online	2026-03-19 09:56:30.23452	2026-03-19 09:56:30.23452
+4308	mm3x7j6m4p6s4g2zz	CtBs_vpOq5haYOaPAABP	online	2026-03-19 12:54:28.965026	2026-03-19 12:54:28.965026
+4309	mm3x7j6m4p6s4g2zz	Bm2JBCVHAfIyzX4cAABR	online	2026-03-19 12:54:29.175395	2026-03-19 12:54:29.175395
 2790	mm3x7j6m4p6s4g2zz	Bl9hxov-T9BAMdzxAABd	online	2026-03-13 13:50:38.530004	2026-03-13 13:50:38.530004
 2791	mm3x7j6m4p6s4g2zz	9Agt1xZA2hX5aHoAAABf	online	2026-03-13 13:50:38.623787	2026-03-13 13:50:38.623787
-2186	mm3x7j6m4p6s4g2zz	EdbuLjMSZzGoUGrMAAAf	online	2026-03-11 14:43:36.591604	2026-03-11 14:43:36.591604
-2187	mm3x7j6m4p6s4g2zz	MJkBNN_Pj8HfsWBfAAAh	online	2026-03-11 14:43:36.605965	2026-03-11 14:43:36.605965
-2188	mm3x7j6m4p6s4g2zz	7qsNXRa_f8UIytX3AAAj	online	2026-03-11 14:43:36.857911	2026-03-11 14:43:36.857911
-2189	mm3x7j6m4p6s4g2zz	8srcmY-Ac2mrVSTbAAAl	online	2026-03-11 14:43:36.883169	2026-03-11 14:43:36.883169
-2190	mm3x7j6m4p6s4g2zz	jPTYCeM801HMWPYkAAAn	online	2026-03-11 14:43:36.903917	2026-03-11 14:43:36.903917
+4315	mm9a66x3tqtxja160	Yhcgv_KM8SNAxdptAABd	online	2026-03-19 12:54:48.83155	2026-03-19 12:54:48.83155
+4425	mm9a66x3tqtxja160	MfKkuKOIPhcpMkW6AAA4	online	2026-03-19 14:06:28.962149	2026-03-19 14:06:28.962149
 2793	mm3x7j6m4p6s4g2zz	H-bDBFrzICYy9i6xAABj	online	2026-03-13 13:50:38.667577	2026-03-13 13:50:38.667577
 2805	mm3x7j6m4p6s4g2zz	vNnbVDBXkNgePH6pAAAX	online	2026-03-13 14:24:31.466939	2026-03-13 14:24:31.466939
-2198	mm3x7j6m4p6s4g2zz	xPh9WaLFl3ZaBFZ2AAAP	online	2026-03-11 14:50:57.279137	2026-03-11 14:50:57.279137
-2199	mm3x7j6m4p6s4g2zz	VeYd_avF2eKZnNZJAAAR	online	2026-03-11 14:50:57.290733	2026-03-11 14:50:57.290733
-2200	mm3x7j6m4p6s4g2zz	0_VOHvLX1u-JXgUIAAAT	online	2026-03-11 14:50:57.509912	2026-03-11 14:50:57.509912
-2201	mm3x7j6m4p6s4g2zz	umRPGui6UeDR09TmAAAV	online	2026-03-11 14:50:57.528071	2026-03-11 14:50:57.528071
-2202	mm3x7j6m4p6s4g2zz	dzmga2dfgoO6CD-pAAAX	online	2026-03-11 14:50:57.540445	2026-03-11 14:50:57.540445
+4434	mm3x7j6m4p6s4g2zz	uxxqRmnXg9Z4N4H6AAAW	online	2026-03-19 14:15:49.452427	2026-03-19 14:15:49.452427
+4154	mm3x7j6m4p6s4g2zz	6H6_Jnsk_vLqLLxSAABq	online	2026-03-19 12:17:27.373443	2026-03-19 12:17:27.373443
+4163	mmcek5ivcck8np2xg	f3tRxWBW7XpLRCaAAAAL	online	2026-03-19 12:29:29.715815	2026-03-19 12:29:29.715815
+4164	mmcek5ivcck8np2xg	et2DMVPcE-C4oSeeAAAN	online	2026-03-19 12:29:29.812711	2026-03-19 12:29:29.812711
 2806	mm3x7j6m4p6s4g2zz	GepY88RS4xHQHPIMAAAZ	online	2026-03-13 14:24:31.567291	2026-03-13 14:24:31.567291
 2807	mm3x7j6m4p6s4g2zz	WSNInJRLmAlptorTAAAb	online	2026-03-13 14:24:31.603504	2026-03-13 14:24:31.603504
 2808	mm3x7j6m4p6s4g2zz	8g0f_XYKyYQFJf65AAAd	online	2026-03-13 14:24:31.619505	2026-03-13 14:24:31.619505
@@ -4892,6 +5176,15 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 3104	mm3x7j6m4p6s4g2zz	6gJGgo1J_qDsJ4EvAAAN	online	2026-03-16 14:03:17.486014	2026-03-16 14:03:17.486014
 3105	mm3x7j6m4p6s4g2zz	GWVIsES6SgIVaeGYAAAP	online	2026-03-16 14:03:17.630376	2026-03-16 14:03:17.630376
 3106	mm3x7j6m4p6s4g2zz	sTy7qEMRXeXb_DRIAAAR	online	2026-03-16 14:03:17.651949	2026-03-16 14:03:17.651949
+4166	mmcek5ivcck8np2xg	BOgngRzqCaPR7qHcAAAR	online	2026-03-19 12:29:30.328949	2026-03-19 12:29:30.328949
+4453	mm3x7j6m4p6s4g2zz	MApt7iINTuqu5cZYAAAG	online	2026-03-19 15:18:14.180085	2026-03-19 15:18:14.180085
+4471	mm9a66x3tqtxja160	CUMq_W4aQtQI0Qj9AAAz	online	2026-03-19 15:57:32.592905	2026-03-19 15:57:32.592905
+4204	mm9a66x3tqtxja160	Iy3bKUOHcur60So1AABd	online	2026-03-19 12:31:35.5633	2026-03-19 12:31:35.5633
+4205	mm9a66x3tqtxja160	UZN2DwogSPPKxThhAABf	online	2026-03-19 12:31:35.710259	2026-03-19 12:31:35.710259
+4207	mm9a66x3tqtxja160	z7FtOUZefLR0ybzLAABj	online	2026-03-19 12:31:36.109357	2026-03-19 12:31:36.109357
+4208	mm9a66x3tqtxja160	TS0qmdxRDkoj17o3AABl	online	2026-03-19 12:31:36.144512	2026-03-19 12:31:36.144512
+4215	mm3x7j6m4p6s4g2zz	AZJ9F5EUyRVD04tgAABz	online	2026-03-19 12:31:43.492165	2026-03-19 12:31:43.492165
+4384	mm3x7j6m4p6s4g2zz	55ikXReQG1ySxCxRAACF	online	2026-03-19 13:00:06.605679	2026-03-19 13:00:06.605679
 3107	mm3x7j6m4p6s4g2zz	YBtIMELyaK6CY5lyAAAT	online	2026-03-16 14:03:17.664837	2026-03-16 14:03:17.664837
 3118	mm3x7j6m4p6s4g2zz	GzxR1Ypv0ejZLUsKAAAW	online	2026-03-16 14:07:13.955576	2026-03-16 14:07:13.955576
 3119	mm3x7j6m4p6s4g2zz	1E0TGCY1MvTaq1dMAAAX	online	2026-03-16 14:07:13.958246	2026-03-16 14:07:13.958246
@@ -4923,54 +5216,96 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 3307	mm3wcdhk7ksjtfh97	TrLSpQ5Xv8qTnlUOAAAn	online	2026-03-17 09:18:52.010669	2026-03-17 09:18:52.010669
 3308	mm3wcdhk7ksjtfh97	H2ZfzWdj1gcZB8MZAAAp	online	2026-03-17 09:18:52.037993	2026-03-17 09:18:52.037993
 3309	mm3wcdhk7ksjtfh97	05ghPPwciqbd_OJVAAAr	online	2026-03-17 09:18:52.057555	2026-03-17 09:18:52.057555
+3315	mm3wcdhk7ksjtfh97	Hg_rRaz6s9tTxUMEAAAL	online	2026-03-17 09:50:36.272312	2026-03-17 09:50:36.272312
+3316	mm3wcdhk7ksjtfh97	zx3g2zqnRXbYza1NAAAN	online	2026-03-17 09:50:36.287691	2026-03-17 09:50:36.287691
+3317	mm3wcdhk7ksjtfh97	vEkuTNmzb2pmLSgpAAAP	online	2026-03-17 09:50:36.313382	2026-03-17 09:50:36.313382
+3318	mm3wcdhk7ksjtfh97	NbqvJ2YrgbpePvu-AAAR	online	2026-03-17 09:50:36.337819	2026-03-17 09:50:36.337819
+3319	mm3wcdhk7ksjtfh97	CY750BxEuLCwH_2kAAAT	online	2026-03-17 09:50:36.363128	2026-03-17 09:50:36.363128
+3325	mmtovpuh0hhrz20qp	PA-WtC-qG6RYi6XoAAAf	online	2026-03-17 09:50:42.840238	2026-03-17 09:50:42.840238
+3326	mmtovpuh0hhrz20qp	zfxEzQEwQxuxuSg8AAAh	online	2026-03-17 09:50:42.845798	2026-03-17 09:50:42.845798
+3327	mmtovpuh0hhrz20qp	S2s6FzNXGP2EcYQSAAAj	online	2026-03-17 09:50:43.394593	2026-03-17 09:50:43.394593
+3328	mmtovpuh0hhrz20qp	Vw1Z8UjNiRwWzgqeAAAl	online	2026-03-17 09:50:43.530685	2026-03-17 09:50:43.530685
+3329	mmtovpuh0hhrz20qp	CEGxmPplHqEed4JtAAAn	online	2026-03-17 09:50:43.564058	2026-03-17 09:50:43.564058
+3340	mm3x7j6m4p6s4g2zz	CHaTbfn_rVj2c-lfAAA-	online	2026-03-17 09:53:06.348615	2026-03-17 09:53:06.348615
 3203	mm3wcdhk7ksjtfh97	ufTHc_uJnfhjn6hwAABe	online	2026-03-16 16:28:01.375351	2026-03-16 16:28:01.375351
 3204	mm3wcdhk7ksjtfh97	uZf-0oPUeLhNnyxxAABc	online	2026-03-16 16:28:01.375273	2026-03-16 16:28:01.375273
 3205	mm3wcdhk7ksjtfh97	HIKsALpaEzgrUR_3AABg	online	2026-03-16 16:28:01.476643	2026-03-16 16:28:01.476643
 3206	mm3wcdhk7ksjtfh97	J0yiroCvDuAYrklXAABi	online	2026-03-16 16:28:01.504492	2026-03-16 16:28:01.504492
+3341	mm3x7j6m4p6s4g2zz	kzhIp-KXyOZQ5H4vAABA	online	2026-03-17 09:53:06.349727	2026-03-17 09:53:06.349727
 3208	mm3wcdhk7ksjtfh97	GqQ4Uf3x9xSM0IxZAABm	online	2026-03-16 16:28:56.244287	2026-03-16 16:28:56.244287
 3209	mm3wcdhk7ksjtfh97	_-LJ2RN5R2tG81PJAABo	online	2026-03-16 16:28:56.460955	2026-03-16 16:28:56.460955
 3210	mm3wcdhk7ksjtfh97	0dZ8rWgEe7QLqrPTAABq	online	2026-03-16 16:28:56.597991	2026-03-16 16:28:56.597991
 3211	mm3wcdhk7ksjtfh97	vYAltvfulP_VbQ5CAABs	online	2026-03-16 16:28:56.616169	2026-03-16 16:28:56.616169
+3342	mm3x7j6m4p6s4g2zz	dPC6NcgpNOmwCzJNAABC	online	2026-03-17 09:53:06.531858	2026-03-17 09:53:06.531858
+3343	mm3x7j6m4p6s4g2zz	v6UeHXr54wIxJYrQAABE	online	2026-03-17 09:53:06.548491	2026-03-17 09:53:06.548491
+3344	mm3x7j6m4p6s4g2zz	Ni6P1iHD02nfdDT0AABG	online	2026-03-17 09:53:06.574499	2026-03-17 09:53:06.574499
+3349	mmtovpuh0hhrz20qp	cUW2Wnk924yoPqQIAAAJ	online	2026-03-17 10:07:14.492643	2026-03-17 10:07:14.492643
+3350	mmtovpuh0hhrz20qp	_s4nSuxE7OpFM-FzAAAL	online	2026-03-17 10:07:14.518625	2026-03-17 10:07:14.518625
+3351	mmtovpuh0hhrz20qp	ztDAzVC7kV8Rl2lgAAAN	online	2026-03-17 10:07:14.543598	2026-03-17 10:07:14.543598
+3352	mmtovpuh0hhrz20qp	c8Eecvfczh-l7SQ6AAAR	online	2026-03-17 10:07:14.606243	2026-03-17 10:07:14.606243
+3353	mmtovpuh0hhrz20qp	ZhIGDEC8wFak9HEgAAAP	online	2026-03-17 10:07:14.615783	2026-03-17 10:07:14.615783
+3354	mm3wcdhk7ksjtfh97	LDmgh2ROiSizTsZxAAAT	online	2026-03-17 10:07:15.168579	2026-03-17 10:07:15.168579
+3355	mm3wcdhk7ksjtfh97	wqRKLSCDSv8XoAgyAAAV	online	2026-03-17 10:07:15.193784	2026-03-17 10:07:15.193784
+3356	mm3wcdhk7ksjtfh97	24-77rUwGpsk-NCWAAAX	online	2026-03-17 10:07:15.225593	2026-03-17 10:07:15.225593
+3375	mm3x7j6m4p6s4g2zz	VrOrBpbcv7AL3HoyAAA9	online	2026-03-17 10:07:39.495135	2026-03-17 10:07:39.495135
+3376	mm3x7j6m4p6s4g2zz	kPbGESSJzkJPEGP1AAA_	online	2026-03-17 10:07:39.636799	2026-03-17 10:07:39.636799
+3359	mm3wcdhk7ksjtfh97	ihQ0KK0q45vW19QzAAAd	online	2026-03-17 10:07:15.46483	2026-03-17 10:07:15.46483
+3574	mm3x7j6m4p6s4g2zz	HHXGhwGkF5V4YXZnAABf	online	2026-03-18 08:50:15.179794	2026-03-18 08:50:15.179794
+3576	mm3x7j6m4p6s4g2zz	f2fHdWSWOCi26omhAABj	online	2026-03-18 08:50:15.239884	2026-03-18 08:50:15.239884
+3360	mm3wcdhk7ksjtfh97	441z5WLE2bwFKEZgAAAf	online	2026-03-17 10:07:15.471412	2026-03-17 10:07:15.471412
+3563	mm3wcdhk7ksjtfh97	3s88G9EFOCsVDLoYAAAh	online	2026-03-18 08:14:42.292946	2026-03-18 08:14:42.292946
+3566	mm3wcdhk7ksjtfh97	Lh9lkLMahQu3H5_uAAAn	online	2026-03-18 08:14:42.49392	2026-03-18 08:14:42.49392
+3572	mm3x7j6m4p6s4g2zz	66z4IcWxZo5RjmMPAABd	online	2026-03-18 08:50:15.044047	2026-03-18 08:50:15.044047
+3575	mm3x7j6m4p6s4g2zz	IXnQZyGXhWVFmIhMAABh	online	2026-03-18 08:50:15.22437	2026-03-18 08:50:15.22437
+3374	mm3x7j6m4p6s4g2zz	YQYUh8kPq8aH7cieAAA7	online	2026-03-17 10:07:39.494713	2026-03-17 10:07:39.494713
+3377	mm3x7j6m4p6s4g2zz	b_dPLGBLYqM_V9xmAABB	online	2026-03-17 10:07:39.655186	2026-03-17 10:07:39.655186
+3378	mm3x7j6m4p6s4g2zz	T0umX5py9QN1C0vrAABD	online	2026-03-17 10:07:39.677246	2026-03-17 10:07:39.677246
+3942	mm3x7j6m4p6s4g2zz	PUM3j7xtfluYKZHdAAAf	online	2026-03-19 09:59:31.013678	2026-03-19 09:59:31.013678
+3954	mmtovpuh0hhrz20qp	70ZUfLJapWAU9fojAAA4	online	2026-03-19 10:01:14.832938	2026-03-19 10:01:14.832938
+3888	mm3x7j6m4p6s4g2zz	T26ugJB23eRbo7OzAADV	online	2026-03-19 09:31:38.482945	2026-03-19 09:31:38.482945
+3897	mm3wcdhk7ksjtfh97	fitrh726yySRFgosAAAL	online	2026-03-19 09:56:30.148929	2026-03-19 09:56:30.148929
+3899	mm3wcdhk7ksjtfh97	-_DW69LkE0OsJWBzAAAP	online	2026-03-19 09:56:30.19359	2026-03-19 09:56:30.19359
+3900	mm3wcdhk7ksjtfh97	jFfiY64_EgwnHVabAAAR	online	2026-03-19 09:56:30.211809	2026-03-19 09:56:30.211809
 \.
 
 
 --
--- TOC entry 5392 (class 0 OID 18333)
--- Dependencies: 251
+-- TOC entry 5259 (class 0 OID 16763)
+-- Dependencies: 255
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
-1	mlgqup29zlzugg8qk	["orders", "settle", "fichas-costo", "fichas-diseno", "reception", "returnReception", "maletas", "dispatch", "inventory", "salesReport", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-02-24 15:55:37.7692	2026-02-24 16:20:29.657359
-5	mmcek5ivcck8np2xg	["salesReport", "fichas-diseno", "fichas-costo", "reception", "returnReception", "maletas", "dispatch", "inventory", "orders", "settle", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-03-04 14:06:05.724513	2026-03-04 14:06:05.724513
 3	mm3x7j6m4p6s4g2zz	["orders", "fichas-costo", "dispatchControl", "salesReport", "comparativeDashboard", "dispatch", "reports", "settle", "orderHistory", "reception", "returnReception", "fichas-diseno", "maletas", "inventory", "deliveryDates", "compras", "masters"]	2026-02-26 15:44:03.70884	2026-03-12 12:36:01.931213
 6	mmtovpuh0hhrz20qp	["dispatchControl", "reception", "returnReception", "dispatch", "inventory", "orders", "settle", "salesReport", "orderHistory", "deliveryDates", "reports", "masters", "compras", "fichas-diseno", "fichas-costo", "comparativeDashboard"]	2026-03-16 16:22:31.984402	2026-03-16 16:22:31.984402
-4	mm3wcdhk7ksjtfh97	["settle", "orders", "salesReport", "fichas-costo", "dispatchControl", "deliveryDates", "fichas-diseno", "reception", "dispatch", "returnReception", "maletas", "inventory", "reports", "orderHistory", "masters", "compras", "comparativeDashboard"]	2026-02-27 09:08:53.734436	2026-03-17 08:37:11.053978
+5	mmcek5ivcck8np2xg	["salesReport", "comparativeDashboard", "fichas-diseno", "fichas-costo", "reception", "returnReception", "maletas", "dispatch", "inventory", "orders", "settle", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras"]	2026-03-04 14:06:05.724513	2026-03-19 10:43:30.744385
+4	mm3wcdhk7ksjtfh97	["settle", "orders", "salesReport", "fichas-costo", "fichas-diseno", "dispatchControl", "deliveryDates", "reception", "comparativeDashboard", "dispatch", "returnReception", "maletas", "inventory", "reports", "orderHistory", "masters", "compras"]	2026-02-27 09:08:53.734436	2026-03-19 15:43:57.501371
+7	mmxyjrub7hx690dr8	["deliveryDates", "compras", "reception", "returnReception", "dispatch", "inventory", "orders", "settle", "salesReport", "orderHistory", "dispatchControl", "reports", "masters", "fichas-diseno", "fichas-costo", "comparativeDashboard"]	2026-03-19 16:04:26.210248	2026-03-20 09:34:02.809721
+8	mmze56k4iwquqhbul	["fichas-diseno", "reception", "returnReception", "dispatch", "inventory", "orders", "settle", "salesReport", "orderHistory", "dispatchControl", "deliveryDates", "reports", "masters", "compras", "fichas-costo", "comparativeDashboard"]	2026-03-20 16:08:36.992231	2026-03-20 16:08:36.992231
 \.
 
 
 --
--- TOC entry 5394 (class 0 OID 18345)
--- Dependencies: 253
+-- TOC entry 5261 (class 0 OID 16775)
+-- Dependencies: 257
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mlgqup29zlzugg8qk	Admin Principal	ADM	$2b$10$9/LcENOQ.zwF4SD3grFiluKlnqD6sGE3bqr3Pkp.I.5AqWUkUQ8HG	admin	1	2026-02-10 15:16:40	2026-02-26 15:33:24.215444
-mlqz2ojzlx02dlkz1	Prueba Observer	AAA	$2b$10$ub6PCY10zsjpdxxlx04hWuFgjTAysRpTos5SdylkhUnO0keI/JQ8G	observer	1	2026-02-17 19:04:31	2026-02-26 15:38:58.120206
-mmcek5ivcck8np2xg	John Efrain	JEB	$2b$10$VD/JpW2jl4AxXDpYtr3kD.tGlnQxH6VKo7x9a6jckXIbNp5exrfzm	observer	1	\N	2026-03-04 14:02:18.439748
-mm5c36r94emvow7nf	Prueba general	GGG	$2b$10$KiKj2zay9at5581Xu6x5lukCOOoU9PF1HTpbojwfTL8LDS4sQHP/S	general	1	\N	2026-03-12 12:32:01.048171
-mltycdim2me5704rt	PRUEBA	BBB	$2b$10$eiQroKQWt4Lc92nyFIQxfea2TI87SRqVUv2I5K89engIZCepxZJ/a	diseñadora	1	\N	2026-03-12 14:39:22.947099
-mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-03-12 14:47:13.961296
-mmtovpuh0hhrz20qp	Nury	JJJ	$2b$10$wRindhs.7AA2FBO4MY/Zx.sIpnHZd4LK9vG0a7cwxR2tP6YODMXgK	general	1	\N	2026-03-16 16:22:12.685897
-mm3wcdhk7ksjtfh97	Maria Mercedes	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-03-17 08:23:27.830395
-mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-03-17 08:25:16.243862
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-03-20 21:58:56.305118
+mmcek5ivcck8np2xg	John Efrain	JEB	$2b$10$VD/JpW2jl4AxXDpYtr3kD.tGlnQxH6VKo7x9a6jckXIbNp5exrfzm	observer	1	\N	2026-03-19 10:32:28.676641
+mmtovpuh0hhrz20qp	Nury	JJJ	$2b$10$wRindhs.7AA2FBO4MY/Zx.sIpnHZd4LK9vG0a7cwxR2tP6YODMXgK	general	1	\N	2026-03-20 08:43:22.98417
+mm3wcdhk7ksjtfh97	M@R!@ M	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-03-20 09:08:00.630131
+mmxyjrub7hx690dr8	LUISA F 	LFM	$2b$10$SMa6J/n4mZfGMp68mXtRd.JGsZzUIF2v5H72dOCUFBQRXH21Xd9si	general	1	\N	2026-03-20 09:37:41.269107
+mmze56k4iwquqhbul	JHON USME	JFG	$2b$10$8fzGakof84VaCnJowzH3X.K5wM4a8H8NM1VhXPdyIGutdZcKY6wpi	general	1	\N	2026-03-20 16:08:14.258978
+mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-03-20 16:09:32.702862
+mmznzctvojut4aax3	General	GGG	$2b$10$AZLbemyplVmxJ5uq/NNM4eJ1pdsIlOdVYCwCV8a5be4xXBNRMR9/a	general	1	\N	2026-03-20 20:43:39.004646
 \.
 
 
 --
--- TOC entry 5414 (class 0 OID 0)
--- Dependencies: 255
+-- TOC entry 5280 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: correria_novedades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -4978,62 +5313,71 @@ SELECT pg_catalog.setval('public.correria_novedades_id_seq', 1, true);
 
 
 --
--- TOC entry 5415 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 5281 (class 0 OID 0)
+-- Dependencies: 229
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 819, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 862, true);
 
 
 --
--- TOC entry 5416 (class 0 OID 0)
--- Dependencies: 237
+-- TOC entry 5282 (class 0 OID 0)
+-- Dependencies: 239
 -- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.messages_id_seq', 79, true);
+SELECT pg_catalog.setval('public.messages_id_seq', 136, true);
 
 
 --
--- TOC entry 5417 (class 0 OID 0)
--- Dependencies: 243
+-- TOC entry 5283 (class 0 OID 0)
+-- Dependencies: 245
 -- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.reception_items_id_seq', 63, true);
+SELECT pg_catalog.setval('public.reception_items_id_seq', 70, true);
 
 
 --
--- TOC entry 5418 (class 0 OID 0)
--- Dependencies: 246
+-- TOC entry 5284 (class 0 OID 0)
+-- Dependencies: 248
 -- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.return_reception_items_id_seq', 7, true);
+SELECT pg_catalog.setval('public.return_reception_items_id_seq', 10, true);
 
 
 --
--- TOC entry 5419 (class 0 OID 0)
--- Dependencies: 250
+-- TOC entry 5285 (class 0 OID 0)
+-- Dependencies: 251
+-- Name: schema_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.schema_migrations_id_seq', 2, true);
+
+
+--
+-- TOC entry 5286 (class 0 OID 0)
+-- Dependencies: 254
 -- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 3309, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 4580, true);
 
 
 --
--- TOC entry 5420 (class 0 OID 0)
--- Dependencies: 252
+-- TOC entry 5287 (class 0 OID 0)
+-- Dependencies: 256
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 6, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 8, true);
 
 
 --
--- TOC entry 5421 (class 0 OID 0)
--- Dependencies: 254
+-- TOC entry 5288 (class 0 OID 0)
+-- Dependencies: 258
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -5041,7 +5385,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
--- TOC entry 5088 (class 2606 OID 18364)
+-- TOC entry 4946 (class 2606 OID 16796)
 -- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5050,7 +5394,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 5090 (class 2606 OID 18366)
+-- TOC entry 4948 (class 2606 OID 16798)
 -- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5059,7 +5403,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
--- TOC entry 5096 (class 2606 OID 18368)
+-- TOC entry 4954 (class 2606 OID 16800)
 -- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5068,7 +5412,7 @@ ALTER TABLE ONLY public.compras
 
 
 --
--- TOC entry 5102 (class 2606 OID 18370)
+-- TOC entry 4960 (class 2606 OID 16802)
 -- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5077,7 +5421,7 @@ ALTER TABLE ONLY public.confeccionistas
 
 
 --
--- TOC entry 5104 (class 2606 OID 18372)
+-- TOC entry 4962 (class 2606 OID 16804)
 -- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5086,7 +5430,7 @@ ALTER TABLE ONLY public.correria_catalog
 
 
 --
--- TOC entry 5201 (class 2606 OID 19131)
+-- TOC entry 4964 (class 2606 OID 16806)
 -- Name: correria_novedades correria_novedades_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5095,7 +5439,7 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 5106 (class 2606 OID 18374)
+-- TOC entry 4967 (class 2606 OID 16808)
 -- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5104,7 +5448,7 @@ ALTER TABLE ONLY public.correrias
 
 
 --
--- TOC entry 5108 (class 2606 OID 18376)
+-- TOC entry 4969 (class 2606 OID 16810)
 -- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5113,7 +5457,7 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
--- TOC entry 5112 (class 2606 OID 18378)
+-- TOC entry 4973 (class 2606 OID 16812)
 -- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5122,7 +5466,7 @@ ALTER TABLE ONLY public.disenadoras
 
 
 --
--- TOC entry 5114 (class 2606 OID 18380)
+-- TOC entry 4975 (class 2606 OID 16814)
 -- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5131,7 +5475,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5118 (class 2606 OID 18382)
+-- TOC entry 4979 (class 2606 OID 16816)
 -- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5140,7 +5484,7 @@ ALTER TABLE ONLY public.dispatches
 
 
 --
--- TOC entry 5123 (class 2606 OID 18384)
+-- TOC entry 4984 (class 2606 OID 16818)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5149,7 +5493,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5125 (class 2606 OID 18386)
+-- TOC entry 4986 (class 2606 OID 16820)
 -- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5158,7 +5502,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5128 (class 2606 OID 18388)
+-- TOC entry 4989 (class 2606 OID 16822)
 -- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5167,7 +5511,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5130 (class 2606 OID 18390)
+-- TOC entry 4991 (class 2606 OID 16824)
 -- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5176,7 +5520,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5133 (class 2606 OID 18392)
+-- TOC entry 4994 (class 2606 OID 16826)
 -- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5185,7 +5529,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5135 (class 2606 OID 18394)
+-- TOC entry 4996 (class 2606 OID 16828)
 -- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5194,7 +5538,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5143 (class 2606 OID 18396)
+-- TOC entry 5004 (class 2606 OID 16830)
 -- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5203,7 +5547,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5145 (class 2606 OID 18398)
+-- TOC entry 5006 (class 2606 OID 16832)
 -- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5212,7 +5556,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5149 (class 2606 OID 18400)
+-- TOC entry 5010 (class 2606 OID 16834)
 -- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5221,7 +5565,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5151 (class 2606 OID 18402)
+-- TOC entry 5012 (class 2606 OID 16836)
 -- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5230,7 +5574,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5157 (class 2606 OID 18404)
+-- TOC entry 5018 (class 2606 OID 16838)
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5239,7 +5583,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- TOC entry 5166 (class 2606 OID 18406)
+-- TOC entry 5027 (class 2606 OID 16840)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5248,7 +5592,7 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 5168 (class 2606 OID 18408)
+-- TOC entry 5029 (class 2606 OID 16842)
 -- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5257,7 +5601,7 @@ ALTER TABLE ONLY public.product_references
 
 
 --
--- TOC entry 5171 (class 2606 OID 18410)
+-- TOC entry 5032 (class 2606 OID 16844)
 -- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5266,7 +5610,7 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
--- TOC entry 5174 (class 2606 OID 18412)
+-- TOC entry 5035 (class 2606 OID 16846)
 -- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5275,7 +5619,7 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
--- TOC entry 5177 (class 2606 OID 18414)
+-- TOC entry 5039 (class 2606 OID 16848)
 -- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5284,7 +5628,7 @@ ALTER TABLE ONLY public.receptions
 
 
 --
--- TOC entry 5179 (class 2606 OID 18416)
+-- TOC entry 5041 (class 2606 OID 16850)
 -- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5293,7 +5637,7 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
--- TOC entry 5181 (class 2606 OID 18418)
+-- TOC entry 5043 (class 2606 OID 16852)
 -- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5302,7 +5646,25 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
--- TOC entry 5183 (class 2606 OID 18420)
+-- TOC entry 5045 (class 2606 OID 16854)
+-- Name: schema_migrations schema_migrations_migration_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_migration_name_key UNIQUE (migration_name);
+
+
+--
+-- TOC entry 5047 (class 2606 OID 16856)
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5049 (class 2606 OID 16858)
 -- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5311,7 +5673,7 @@ ALTER TABLE ONLY public.sellers
 
 
 --
--- TOC entry 5188 (class 2606 OID 18422)
+-- TOC entry 5054 (class 2606 OID 16860)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5320,7 +5682,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5190 (class 2606 OID 18424)
+-- TOC entry 5056 (class 2606 OID 16862)
 -- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5329,7 +5691,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5193 (class 2606 OID 18426)
+-- TOC entry 5059 (class 2606 OID 16864)
 -- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5338,7 +5700,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5195 (class 2606 OID 18428)
+-- TOC entry 5061 (class 2606 OID 16866)
 -- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5347,7 +5709,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5199 (class 2606 OID 18430)
+-- TOC entry 5065 (class 2606 OID 16868)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5356,7 +5718,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5091 (class 1259 OID 18431)
+-- TOC entry 4949 (class 1259 OID 16869)
 -- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5364,7 +5726,7 @@ CREATE INDEX idx_clients_active ON public.clients USING btree (active);
 
 
 --
--- TOC entry 5092 (class 1259 OID 18432)
+-- TOC entry 4950 (class 1259 OID 16870)
 -- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5372,7 +5734,7 @@ CREATE INDEX idx_clients_name ON public.clients USING btree (name);
 
 
 --
--- TOC entry 5093 (class 1259 OID 18433)
+-- TOC entry 4951 (class 1259 OID 16871)
 -- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5380,7 +5742,7 @@ CREATE INDEX idx_clients_nit ON public.clients USING btree (nit);
 
 
 --
--- TOC entry 5094 (class 1259 OID 18434)
+-- TOC entry 4952 (class 1259 OID 16872)
 -- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5388,7 +5750,7 @@ CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
--- TOC entry 5097 (class 1259 OID 18435)
+-- TOC entry 4955 (class 1259 OID 16873)
 -- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5396,7 +5758,7 @@ CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta
 
 
 --
--- TOC entry 5098 (class 1259 OID 18436)
+-- TOC entry 4956 (class 1259 OID 16874)
 -- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5404,7 +5766,7 @@ CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
 
 
 --
--- TOC entry 5099 (class 1259 OID 18437)
+-- TOC entry 4957 (class 1259 OID 16875)
 -- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5412,7 +5774,7 @@ CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
 
 
 --
--- TOC entry 5100 (class 1259 OID 18438)
+-- TOC entry 4958 (class 1259 OID 16876)
 -- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5420,7 +5782,7 @@ CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
 
 
 --
--- TOC entry 5202 (class 1259 OID 19137)
+-- TOC entry 4965 (class 1259 OID 16877)
 -- Name: idx_correria_novedades_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5428,7 +5790,7 @@ CREATE INDEX idx_correria_novedades_correria_id ON public.correria_novedades USI
 
 
 --
--- TOC entry 5109 (class 1259 OID 18439)
+-- TOC entry 4970 (class 1259 OID 16878)
 -- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5436,7 +5798,7 @@ CREATE INDEX idx_delivery_dates_confeccionista_id ON public.delivery_dates USING
 
 
 --
--- TOC entry 5110 (class 1259 OID 18440)
+-- TOC entry 4971 (class 1259 OID 16879)
 -- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5444,7 +5806,7 @@ CREATE INDEX idx_delivery_dates_reference_id ON public.delivery_dates USING btre
 
 
 --
--- TOC entry 5115 (class 1259 OID 18441)
+-- TOC entry 4976 (class 1259 OID 16880)
 -- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5452,7 +5814,7 @@ CREATE INDEX idx_dispatch_items_dispatch_id ON public.dispatch_items USING btree
 
 
 --
--- TOC entry 5116 (class 1259 OID 18442)
+-- TOC entry 4977 (class 1259 OID 16881)
 -- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5460,7 +5822,7 @@ CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (
 
 
 --
--- TOC entry 5119 (class 1259 OID 18443)
+-- TOC entry 4980 (class 1259 OID 16882)
 -- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5468,7 +5830,7 @@ CREATE INDEX idx_dispatches_client_id ON public.dispatches USING btree (client_i
 
 
 --
--- TOC entry 5120 (class 1259 OID 18444)
+-- TOC entry 4981 (class 1259 OID 16883)
 -- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5476,7 +5838,7 @@ CREATE INDEX idx_dispatches_correria_id ON public.dispatches USING btree (correr
 
 
 --
--- TOC entry 5121 (class 1259 OID 18445)
+-- TOC entry 4982 (class 1259 OID 16884)
 -- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5484,7 +5846,7 @@ CREATE INDEX idx_dispatches_created_at ON public.dispatches USING btree (created
 
 
 --
--- TOC entry 5126 (class 1259 OID 18446)
+-- TOC entry 4987 (class 1259 OID 16885)
 -- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5492,7 +5854,7 @@ CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (
 
 
 --
--- TOC entry 5131 (class 1259 OID 18447)
+-- TOC entry 4992 (class 1259 OID 16886)
 -- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5500,7 +5862,7 @@ CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (ref
 
 
 --
--- TOC entry 5136 (class 1259 OID 18448)
+-- TOC entry 4997 (class 1259 OID 16887)
 -- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5508,7 +5870,7 @@ CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (r
 
 
 --
--- TOC entry 5137 (class 1259 OID 18449)
+-- TOC entry 4998 (class 1259 OID 16888)
 -- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5516,7 +5878,7 @@ CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USI
 
 
 --
--- TOC entry 5138 (class 1259 OID 18450)
+-- TOC entry 4999 (class 1259 OID 16889)
 -- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5524,7 +5886,7 @@ CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements US
 
 
 --
--- TOC entry 5139 (class 1259 OID 18451)
+-- TOC entry 5000 (class 1259 OID 16890)
 -- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5532,7 +5894,7 @@ CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING 
 
 
 --
--- TOC entry 5140 (class 1259 OID 18452)
+-- TOC entry 5001 (class 1259 OID 16891)
 -- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5540,7 +5902,7 @@ CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements US
 
 
 --
--- TOC entry 5141 (class 1259 OID 18453)
+-- TOC entry 5002 (class 1259 OID 16892)
 -- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5548,7 +5910,7 @@ CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements US
 
 
 --
--- TOC entry 5146 (class 1259 OID 18454)
+-- TOC entry 5007 (class 1259 OID 16893)
 -- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5556,7 +5918,7 @@ CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING 
 
 
 --
--- TOC entry 5147 (class 1259 OID 18455)
+-- TOC entry 5008 (class 1259 OID 16894)
 -- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5564,7 +5926,7 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
--- TOC entry 5152 (class 1259 OID 18456)
+-- TOC entry 5013 (class 1259 OID 16895)
 -- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5572,7 +5934,7 @@ CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at)
 
 
 --
--- TOC entry 5153 (class 1259 OID 18457)
+-- TOC entry 5014 (class 1259 OID 16896)
 -- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5580,7 +5942,7 @@ CREATE INDEX idx_messages_read ON public.messages USING btree (read);
 
 
 --
--- TOC entry 5154 (class 1259 OID 18458)
+-- TOC entry 5015 (class 1259 OID 16897)
 -- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5588,7 +5950,7 @@ CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
 
 
 --
--- TOC entry 5155 (class 1259 OID 18459)
+-- TOC entry 5016 (class 1259 OID 16898)
 -- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5596,7 +5958,7 @@ CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender
 
 
 --
--- TOC entry 5158 (class 1259 OID 18460)
+-- TOC entry 5019 (class 1259 OID 16899)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5604,7 +5966,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
--- TOC entry 5159 (class 1259 OID 18461)
+-- TOC entry 5020 (class 1259 OID 16900)
 -- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5612,7 +5974,7 @@ CREATE INDEX idx_orders_client_id ON public.orders USING btree (client_id);
 
 
 --
--- TOC entry 5160 (class 1259 OID 18462)
+-- TOC entry 5021 (class 1259 OID 16901)
 -- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5620,7 +5982,7 @@ CREATE INDEX idx_orders_correria_id ON public.orders USING btree (correria_id);
 
 
 --
--- TOC entry 5161 (class 1259 OID 18463)
+-- TOC entry 5022 (class 1259 OID 16902)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5628,7 +5990,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
--- TOC entry 5162 (class 1259 OID 18535)
+-- TOC entry 5023 (class 1259 OID 16903)
 -- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5636,7 +5998,7 @@ CREATE INDEX idx_orders_end_date ON public.orders USING btree (end_date);
 
 
 --
--- TOC entry 5163 (class 1259 OID 18464)
+-- TOC entry 5024 (class 1259 OID 16904)
 -- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5644,7 +6006,7 @@ CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
--- TOC entry 5164 (class 1259 OID 18534)
+-- TOC entry 5025 (class 1259 OID 16905)
 -- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5652,7 +6014,7 @@ CREATE INDEX idx_orders_start_date ON public.orders USING btree (start_date);
 
 
 --
--- TOC entry 5169 (class 1259 OID 18465)
+-- TOC entry 5030 (class 1259 OID 16906)
 -- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5660,7 +6022,7 @@ CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking U
 
 
 --
--- TOC entry 5172 (class 1259 OID 18466)
+-- TOC entry 5033 (class 1259 OID 16907)
 -- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5668,7 +6030,15 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 
 
 --
--- TOC entry 5175 (class 1259 OID 18467)
+-- TOC entry 5036 (class 1259 OID 16908)
+-- Name: idx_receptions_arrival_date; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_receptions_arrival_date ON public.receptions USING btree (arrival_date);
+
+
+--
+-- TOC entry 5037 (class 1259 OID 16909)
 -- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5676,7 +6046,7 @@ CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created
 
 
 --
--- TOC entry 5184 (class 1259 OID 18468)
+-- TOC entry 5050 (class 1259 OID 16910)
 -- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5684,7 +6054,7 @@ CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree
 
 
 --
--- TOC entry 5185 (class 1259 OID 18469)
+-- TOC entry 5051 (class 1259 OID 16911)
 -- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5692,7 +6062,7 @@ CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (statu
 
 
 --
--- TOC entry 5186 (class 1259 OID 18470)
+-- TOC entry 5052 (class 1259 OID 16912)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5700,7 +6070,7 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
--- TOC entry 5191 (class 1259 OID 18471)
+-- TOC entry 5057 (class 1259 OID 16913)
 -- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5708,7 +6078,7 @@ CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences U
 
 
 --
--- TOC entry 5196 (class 1259 OID 18472)
+-- TOC entry 5062 (class 1259 OID 16914)
 -- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5716,7 +6086,7 @@ CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
--- TOC entry 5197 (class 1259 OID 18473)
+-- TOC entry 5063 (class 1259 OID 16915)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -5724,7 +6094,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
--- TOC entry 5212 (class 2620 OID 18474)
+-- TOC entry 5075 (class 2620 OID 16916)
 -- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -5732,7 +6102,7 @@ CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON p
 
 
 --
--- TOC entry 5211 (class 2606 OID 19132)
+-- TOC entry 5066 (class 2606 OID 16917)
 -- Name: correria_novedades correria_novedades_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5741,7 +6111,7 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 5204 (class 2606 OID 18475)
+-- TOC entry 5068 (class 2606 OID 16922)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5750,7 +6120,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5205 (class 2606 OID 18480)
+-- TOC entry 5069 (class 2606 OID 16927)
 -- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5759,7 +6129,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5206 (class 2606 OID 18485)
+-- TOC entry 5070 (class 2606 OID 16932)
 -- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5768,7 +6138,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5203 (class 2606 OID 18490)
+-- TOC entry 5067 (class 2606 OID 16937)
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5777,7 +6147,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5207 (class 2606 OID 18495)
+-- TOC entry 5071 (class 2606 OID 16942)
 -- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5786,7 +6156,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5208 (class 2606 OID 18500)
+-- TOC entry 5072 (class 2606 OID 16947)
 -- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5795,7 +6165,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5209 (class 2606 OID 18505)
+-- TOC entry 5073 (class 2606 OID 16952)
 -- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5804,7 +6174,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5210 (class 2606 OID 18510)
+-- TOC entry 5074 (class 2606 OID 16957)
 -- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5813,7 +6183,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5405 (class 0 OID 0)
+-- TOC entry 5270 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -5821,11 +6191,11 @@ ALTER TABLE ONLY public.user_view_preferences
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2026-03-17 09:25:01
+-- Completed on 2026-03-20 22:02:09
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qnmr4OGMoAhQpqjkp3rOxHB3a3uJ7dxvbBi62q0hyodhQDXjBwtyNnfFR0Kxwri
+\unrestrict 1ATaNCfJHKlAGIzWdqpZWtGlSWMvWhXbzYvA1fT0yuBj657SsZW81wcpZx07IaY
 

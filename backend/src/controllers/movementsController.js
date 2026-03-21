@@ -421,6 +421,32 @@ const updateReception = async (req, res) => {
     }
 };
 
+/**
+ * ELIMINAR RECEPCIÓN
+ * DELETE /api/receptions/:id
+ */
+const deleteReception = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await ReceptionService.deleteReception(id);
+
+        if (!result) {
+            return res.status(404).json({ success: false, message: 'Recepción no encontrada' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Recepción eliminada exitosamente' });
+
+    } catch (error) {
+        logger.error('❌ Error al eliminar recepción:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al eliminar recepción',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
 // ==================== DESPACHOS ====================
 
 /**
@@ -1119,6 +1145,7 @@ module.exports = {
     getReceptions,
     createReception,
     updateReception,
+    deleteReception,
     
     // Despachos
     getDispatches,

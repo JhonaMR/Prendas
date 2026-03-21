@@ -163,8 +163,8 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         <select value={con.tipo || 'SESGO'} onChange={e => actualizar(i, 'tipo', e.target.value as TipoMaterial)} disabled={readOnly}
                                             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-blue-100">
                                             <option value="TELA">TELA</option>
-                                            <option value="RESORTE">RESORTE</option>
                                             <option value="SESGO">SESGO</option>
+                                            <option value="ELÁSTICO">ELÁSTICO</option>
                                             <option value="OTRO">OTRO</option>
                                         </select>
                                     </td>

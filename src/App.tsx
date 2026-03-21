@@ -755,6 +755,26 @@ const App: React.FC = () => {
     }
   };
 
+  const deleteReception = async (id: string) => {
+    try {
+      const response = await api.deleteReception(id);
+      if (response.success) {
+        setState(prev => ({
+          ...prev,
+          receptions: prev.receptions.filter(r => r.id !== id)
+        }));
+        return { success: true };
+      } else {
+        alert(response.message || 'Error al eliminar recepción');
+        return { success: false };
+      }
+    } catch (error) {
+      console.error('❌ Error eliminando recepción:', error);
+      alert('Error de conexión con el servidor');
+      return { success: false };
+    }
+  };
+
   /**
    * DEVOLUCIONES
    */
@@ -993,6 +1013,7 @@ const App: React.FC = () => {
             updateState={updateState} 
             referencesMaster={state.references}
             onAddReception={addReception}
+            onDeleteReception={deleteReception}
             directToBatch={navigationOptions.directToBatch}
           />
         );
@@ -1169,6 +1190,16 @@ const App: React.FC = () => {
         <div className="flex items-center gap-3">
           <ClockDisplay />
           <button 
+            onClick={() => window.location.reload()}
+            className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
+            aria-label="Refrescar"
+            title="Refrescar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+          </button>
+          <button 
             onClick={() => handleTabChange('home')}
             className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
             aria-label="Ir a Inicio"
@@ -1217,15 +1248,15 @@ const App: React.FC = () => {
             {user.role !== UserRole.DISEÑADORA && (
               <div className="my-2 border-t border-slate-100 pt-2">
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
-                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>} label="Fichas de Diseño" />
-                <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0l.879-.659m-3.172-2.819a3 3 0 112.4 0m-5.007-7.003h0a3 3 0 016 0h0m-6 8.5h0a3 3 0 016 0h0" /></svg>} label="Fichas de Costo" />
+                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
+                <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<Icons.FichasCosto />} label="Fichas de Costo" />
               </div>
             )}
             
             {user.role === UserRole.DISEÑADORA && (
               <div className="my-2 border-t border-slate-100 pt-2">
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
-                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>} label="Fichas de Diseño" />
+                <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
               </div>
             )}
             
@@ -1245,7 +1276,7 @@ const App: React.FC = () => {
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Operaciones</p>
                 <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
                 <NavItem active={activeTab === 'orders'} onClick={() => handleTabChange('orders')} icon={<Icons.Orders />} label="Pedidos" />
-                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas Entrega" />
+                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.DeliveryDates />} label="Fechas Entrega" />
               </div>
             )}
             
@@ -1268,12 +1299,16 @@ const App: React.FC = () => {
                 <NavItem 
                   active={activeTab === 'dispatchControl'} 
                   onClick={() => handleTabChange('dispatchControl')} 
-                  icon={<Icons.Inventory />} 
+                  icon={<Icons.DispatchControl />} 
                   label="Control de Despachos" 
                />
                 <NavItem active={activeTab === 'settle'} onClick={() => handleTabChange('settle')} icon={<Icons.Settle />} label="Asentar Ventas" />
-                <NavItem active={activeTab === 'salesReport'} onClick={() => handleTabChange('salesReport')} icon={<Icons.Reports />} label="Informe de Ventas" />
-                <NavItem active={activeTab === 'comparativeDashboard'} onClick={() => handleTabChange('comparativeDashboard')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 6.75c0-.621.504-1.125 1.125-1.125h2.25C13.496 5.625 14 6.129 14 6.75v13.5c0 .621-.504 1.125-1.125 1.125h-2.25c-.621 0-1.125-.504-1.125-1.125V6.75zm6-6c-.621 0-1.125.504-1.125 1.125v19.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V1.875c0-.621-.504-1.125-1.125-1.125h-2.25z" /></svg>} label="Dashboard Comparativo" />
+                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+                  <NavItem active={activeTab === 'salesReport'} onClick={() => handleTabChange('salesReport')} icon={<Icons.Reports />} label="Informe de Ventas" />
+                )}
+                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+                  <NavItem active={activeTab === 'comparativeDashboard'} onClick={() => handleTabChange('comparativeDashboard')} icon={<Icons.Dashboard />} label="Dashboard Comparativo" />
+                )}
                 <NavItem active={activeTab === 'orderHistory'} onClick={() => handleTabChange('orderHistory')} icon={<Icons.History />} label="Historial Pedidos" />
               </div>
             )}
@@ -1281,14 +1316,16 @@ const App: React.FC = () => {
             {user.role !== UserRole.DISEÑADORA && (
               <div className="my-2 border-t border-slate-100 pt-2">
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Producción</p>
-                <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m6 4.5v2.25m3-6v6m3-6v2.25m-13.5-3h2.25a2.25 2.25 0 012.25 2.25v.894a2.25 2.25 0 01-2.25 2.25H5.25a2.25 2.25 0 01-2.25-2.25V8.25a2.25 2.25 0 012.25-2.25z" /></svg>} label="Maletas" />
-                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.Inventory />} label="Fechas de Entrega" />
+                <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<Icons.Maletas />} label="Maletas" />
+                <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.DeliveryDates />} label="Fechas de Entrega" />
               </div>
             )}
             
             {user.role !== UserRole.DISEÑADORA && (
               <div className="my-2 border-t border-slate-100 pt-2">
-                <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
+                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+                  <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
+                )}
                 <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
                 {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                   <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />

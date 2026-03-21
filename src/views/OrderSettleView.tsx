@@ -390,17 +390,27 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                   )}
                   <table className="w-full text-left text-xs">
                     <thead className="sticky top-0 bg-white">
-                      <tr className="border-b border-slate-100 bg-slate-50/30">
+                      <tr className="border-b border-slate-200 bg-slate-50/30">
                         <th className="px-8 py-4 font-black text-slate-400 uppercase">Referencia</th>
                         <th className="px-8 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
                         <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Precio Venta</th>
                         <th className="px-8 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
+                        <th className="px-4 py-4 font-black text-slate-400 uppercase text-right border-l-2 border-slate-300">Precio Lista</th>
+                        <th className="px-4 py-4 font-black text-slate-400 uppercase text-right">Diferencia</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-200">
                       {tempItems.map((item, idx) => {
                         const ref = state.references.find(r => r.id === item.reference);
                         const subtotal = (item.salePrice || 0) * item.quantity;
+                        const precioLista = ref?.price || 0;
+                        const diferencia = (item.salePrice || 0) - precioLista;
+
+                        let difBg = 'bg-slate-100 text-slate-500'; // = 0
+                        if (diferencia > 0) difBg = 'bg-green-100 text-green-700';
+                        else if (diferencia < 0 && diferencia >= -1900) difBg = 'bg-yellow-100 text-yellow-700';
+                        else if (diferencia < -1900) difBg = 'bg-red-100 text-red-700';
+
                         return (
                           <tr key={idx} className="hover:bg-slate-50/50">
                             <td className="px-8 py-4">
@@ -410,6 +420,14 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                             <td className="px-8 py-4 text-center font-black text-blue-600">{item.quantity}</td>
                             <td className="px-8 py-4 text-right font-bold text-slate-600">${(item.salePrice || 0).toLocaleString()}</td>
                             <td className="px-8 py-4 text-right font-bold text-slate-400">${subtotal.toLocaleString()}</td>
+                            <td className="px-4 py-4 text-right font-bold text-slate-600 border-l-2 border-slate-300">
+                              ${Math.round(precioLista).toLocaleString()}
+                            </td>
+                            <td className="px-4 py-4 text-right">
+                              <span className={`inline-block px-2 py-1 rounded-lg font-black text-xs ${difBg}`}>
+                                {diferencia === 0 ? '—' : `${diferencia > 0 ? '+' : ''}$${diferencia.toLocaleString()}`}
+                              </span>
+                            </td>
                           </tr>
                         );
                       })}
@@ -417,6 +435,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                         <td colSpan={2} className="px-8 py-4 text-right text-slate-700">TOTALES:</td>
                         <td className="px-8 py-4 text-right text-slate-700">{tempItems.length} refs</td>
                         <td className="px-8 py-4 text-right text-blue-600">${tempItems.reduce((acc, item) => acc + (item.salePrice || 0) * item.quantity, 0).toLocaleString()}</td>
+                        <td colSpan={2} className="border-l-2 border-slate-300"></td>
                       </tr>
                     </tbody>
                   </table>

@@ -34,6 +34,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   
   const hasUnsavedChanges = useRef(false);
   const isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.SOPORTE || user?.role === 'admin' || user?.role === 'soporte';
+  const isGeneral = user?.role === 'general' || user?.role === UserRole.GENERAL;
 
   useEffect(() => {
     setInitialData(state.deliveryDates);
@@ -742,7 +743,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                       />
                     </td>
                     <td className="px-3 py-2 text-center">
-                      {true && (
+                      {(isAdmin || isGeneral) && (
                         <button
                           onClick={() => deleteRow(row.id)}
                           className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
