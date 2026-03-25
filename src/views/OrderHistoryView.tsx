@@ -379,8 +379,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                                     <p className="text-[10px] font-bold text-slate-400 uppercase">{ref?.description}</p>
                                   </td>
                                   <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
-                                  <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${displayPrice.toLocaleString()}</td>
-                                  <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${(displayPrice * item.quantity).toLocaleString()}</td>
+                                  <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${Math.round(displayPrice).toLocaleString('es-CO')}</td>
+                                  <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${Math.round(displayPrice * item.quantity).toLocaleString('es-CO')}</td>
                                 </tr>
                               );
                             })}
@@ -390,7 +390,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                               <td className="px-6 py-6 uppercase text-[9px] text-slate-400">Totales Pedido</td>
                               <td className="px-6 py-6 text-center">{o.items.reduce((a, b) => a + b.quantity, 0)}</td>
                               <td></td>
-                              <td className="px-6 py-6 text-right text-blue-600 text-lg">${o.totalValue.toLocaleString()}</td>
+                              <td className="px-6 py-6 text-right text-blue-600 text-lg">${Math.round(o.totalValue).toLocaleString('es-CO')}</td>
                             </tr>
                           </tfoot>
                         </table>

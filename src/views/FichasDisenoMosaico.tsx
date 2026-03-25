@@ -27,6 +27,9 @@ interface Props {
 
 const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [disenadoraFilter, setDisenadoraFilter] = useState('');
+    const [disenadoraInput, setDisenadoraInput] = useState('');
+    const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [nuevaRef, setNuevaRef] = useState('');
     const [disenadoraId, setDisenadoraId] = useState('');
@@ -35,22 +38,40 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const [newDisenadoraNombre, setNewDisenadoraNombre] = useState('');
     const [newDisenadoraCedula, setNewDisenadoraCedula] = useState('');
     const [newDisenadoraTelefono, setNewDisenadoraTelefono] = useState('');
-    const fichasPagination = usePagination(1, 50);
+    const fichasPagination = usePagination(1, 48);
 
     const isDisenadora = user?.role === 'diseñadora';
     const canCreate = isDisenadora || user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte';
     const baseUrl = getBaseUrl();
 
+    const disenadorasUnicas = React.useMemo(() => {
+        const nombres = (state.fichasDiseno || [])
+            .map(f => f.disenadoraNombre)
+            .filter(Boolean) as string[];
+        return [...new Set(nombres)].sort();
+    }, [state.fichasDiseno]);
+
+    const disenadorasSugeridas = disenadoraInput
+        ? disenadorasUnicas.filter(d => d.toLowerCase().includes(disenadoraInput.toLowerCase()))
+        : disenadorasUnicas;
+
     const fichas = (state.fichasDiseno || []).filter(f => {
-        if (!searchTerm) return true;
-        const t = searchTerm.toLowerCase();
-        return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
+        const matchSearch = !searchTerm || (() => {
+            const t = searchTerm.toLowerCase();
+            return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
+        })();
+        const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
+        return matchSearch && matchDisenadora;
     }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
 
+    const pageSize = fichasPagination.pagination.limit;
+    const currentPage = fichasPagination.pagination.page;
+    const totalPages = Math.ceil(fichas.length / pageSize) || 1;
+    const pagedFichas = fichas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
     React.useEffect(() => {
-        fichasPagination.pagination.total = fichas.length;
-        fichasPagination.pagination.totalPages = Math.ceil(fichas.length / fichasPagination.pagination.limit);
-    }, [fichas.length, fichasPagination.pagination.limit]);
+        fichasPagination.goToPage(1);
+    }, [searchTerm, disenadoraFilter, pageSize]);
 
     const handleCrear = () => {
         if (!nuevaRef.trim()) { alert('La referencia es obligatoria'); return; }
@@ -127,6 +148,36 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                     <p className="text-slate-500 font-bold text-xs mt-1">{fichas.length} ficha{fichas.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="flex flex-wrap gap-3 items-center">
+                    {/* Filtro diseñadora */}
+                    <div className="relative min-w-[200px]">
+                        <input
+                            type="text"
+                            value={disenadoraInput}
+                            onChange={e => { setDisenadoraInput(e.target.value); setDisenadoraFilter(''); setShowDisenadoraSuggestions(true); }}
+                            onFocus={() => setShowDisenadoraSuggestions(true)}
+                            onBlur={() => setTimeout(() => setShowDisenadoraSuggestions(false), 150)}
+                            placeholder="Filtrar diseñadora..."
+                            className={`w-full px-6 py-4 bg-white border rounded-2xl focus:ring-4 focus:ring-purple-100 transition-all font-bold text-slate-900 shadow-sm ${disenadoraFilter ? 'border-purple-400 text-purple-700' : 'border-slate-200'}`}
+                        />
+                        {disenadoraFilter && (
+                            <button
+                                onClick={() => { setDisenadoraFilter(''); setDisenadoraInput(''); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 hover:text-purple-600 font-black text-lg leading-none"
+                            >×</button>
+                        )}
+                        {showDisenadoraSuggestions && disenadorasSugeridas.length > 0 && (
+                            <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-60 overflow-y-auto">
+                                {disenadorasSugeridas.map(d => (
+                                    <button
+                                        key={d}
+                                        onMouseDown={() => { setDisenadoraFilter(d); setDisenadoraInput(d); setShowDisenadoraSuggestions(false); }}
+                                        className="w-full text-left px-5 py-3 hover:bg-purple-50 font-bold text-slate-700 text-sm border-b border-slate-50 last:border-0 transition-colors"
+                                    >{d}</button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                    {/* Buscador referencia */}
                     <div className="relative flex-1 min-w-[250px]">
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar referencia, descripción..."
                             className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm" />
@@ -162,7 +213,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
             ) : (
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {fichas.slice((fichasPagination.pagination.page - 1) * fichasPagination.pagination.limit, fichasPagination.pagination.page * fichasPagination.pagination.limit).map(ficha => (
+                    {pagedFichas.map(ficha => (
                         <div key={ficha.id} className="group bg-white rounded-2xl border border-slate-200 hover:border-pink-300 hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer" onClick={() => onNavigate('fichas-diseno-detalle', { referencia: ficha.referencia })}>
                             <div className="aspect-square bg-slate-100 relative overflow-hidden">
                                 {ficha.foto1 ? (
@@ -188,9 +239,9 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 </div>
                 <div className="mt-6">
                   <PaginationComponent 
-                    currentPage={fichasPagination.pagination.page}
-                    totalPages={fichasPagination.pagination.totalPages}
-                    pageSize={fichasPagination.pagination.limit}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    pageSize={pageSize}
                     onPageChange={fichasPagination.goToPage}
                     onPageSizeChange={fichasPagination.setLimit}
                   />

@@ -144,7 +144,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
     // Production tracking
     const production = state.productionTracking.find(
       p => p.refId === selectedReference && p.correriaId === selectedCorreriaId
-    ) || { programmed: 0, cut: 0 };
+    ) || { programmed: 0, cut: 0, inventory: 0 };
 
     const pending = Math.max(0, totalVendidas - production.cut);
     const faltanDespachar = totalVendidas - totalDespachadas;
@@ -156,6 +156,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
         stock,
         cortadas: production.cut,
         programadas: production.programmed,
+        inventario: (production as any).inventory || 0,
         pendiente: pending,
         faltanDespachar,
         totalDespachadas,
@@ -268,7 +269,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
           {/* Cards de métricas */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <MetricCard label="Total Vendidas" value={reportData.totals.totalVendidas} color="slate" />
-            <MetricCard label="Stock" value={reportData.totals.stock} color="blue" />
+            <MetricCard label="Inventario" value={reportData.totals.inventario} color="blue" />
             <MetricCard label="Cortadas" value={reportData.totals.cortadas} color="purple" />
             <MetricCard label="Programadas" value={reportData.totals.programadas} color="indigo" />
             <MetricCard label="Pendiente" value={reportData.totals.pendiente} color="orange" />
@@ -359,8 +360,13 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                         {reportData.totals.totalDespachadas}
                       </td>
                       <td colSpan={4} className="px-2 py-4 text-center">
-                        <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-xl font-black text-xs">
-                          FALTAN: {reportData.totals.faltanDespachar} UNIDADES
+                        <div className="inline-flex gap-2">
+                          <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-xl font-black text-xs">
+                            FALTAN: {reportData.totals.faltanDespachar} UNIDADES
+                          </div>
+                          <div className="inline-block bg-slate-600 text-white px-4 py-2 rounded-xl font-black text-xs">
+                            STOCK: {reportData.totals.stock}
+                          </div>
                         </div>
                       </td>
                     </tr>

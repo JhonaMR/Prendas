@@ -82,7 +82,8 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 receivedBy: r.received_by,
                 createdAt: r.created_at,
                 arrivalDate: r.arrival_date,
-                affectsInventory: r.affects_inventory !== false
+                affectsInventory: r.affects_inventory !== false,
+                observacion: r.observacion || null
             };
         }));
 
@@ -105,8 +106,8 @@ const createReception = async (receptionData, items) => {
         return await transaction(async (client) => {
             // Insert reception
             const receptionResult = await client.query(
-                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, incomplete_units, is_packed, has_muestra, bag_quantity, received_by, created_at, arrival_date, affects_inventory)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, incomplete_units, is_packed, has_muestra, bag_quantity, received_by, created_at, arrival_date, affects_inventory, observacion)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
                 RETURNING *`,
                 [
                     receptionData.id,
@@ -122,7 +123,8 @@ const createReception = async (receptionData, items) => {
                     receptionData.receivedBy,
                     new Date(),
                     receptionData.arrivalDate,
-                    receptionData.affectsInventory !== false ? true : false
+                    receptionData.affectsInventory !== false ? true : false,
+                    receptionData.observacion || null
                 ]
             );
 
@@ -183,31 +185,47 @@ const getReceptionById = async (id) => {
  * @param {Object} data - Updated data
  * @returns {Promise<Object>} Updated reception
  */
-const updateReception = async (id, data) => {
+const updateReception = async (id, data, items) => {
     try {
-        const result = await query(
-            `UPDATE receptions 
-            SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5, affects_inventory = $6,
-                incomplete_units = $7, is_packed = $8, has_muestra = $9, bag_quantity = $10, arrival_date = $11
-            WHERE id = $12
-            RETURNING *`,
-            [
-                data.batchCode, 
-                data.confeccionista, 
-                data.hasSeconds ? 1 : 0, 
-                data.chargeType, 
-                data.chargeUnits || 0, 
-                data.affectsInventory !== false,
-                data.incompleteUnits || 0,
-                data.isPacked ? 1 : 0,
-                data.hasMuestra ? 1 : 0,
-                data.bagQuantity || 0,
-                data.arrivalDate,
-                id
-            ]
-        );
+        return await transaction(async (client) => {
+            const result = await client.query(
+                `UPDATE receptions 
+                SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5, affects_inventory = $6,
+                    incomplete_units = $7, is_packed = $8, has_muestra = $9, bag_quantity = $10, arrival_date = $11, observacion = $12
+                WHERE id = $13
+                RETURNING *`,
+                [
+                    data.batchCode,
+                    data.confeccionista,
+                    data.hasSeconds ? 1 : 0,
+                    data.chargeType,
+                    data.chargeUnits || 0,
+                    data.affectsInventory !== false,
+                    data.incompleteUnits || 0,
+                    data.isPacked ? 1 : 0,
+                    data.hasMuestra ? 1 : 0,
+                    data.bagQuantity || 0,
+                    data.arrivalDate,
+                    data.observacion || null,
+                    id
+                ]
+            );
 
-        return result.rows[0];
+            if (result.rows.length === 0) return null;
+
+            // Si se pasan items, reemplazar los existentes
+            if (items && items.length > 0) {
+                await client.query(`DELETE FROM reception_items WHERE reception_id = $1`, [id]);
+                for (const item of items) {
+                    await client.query(
+                        `INSERT INTO reception_items (reception_id, reference, quantity) VALUES ($1, $2, $3)`,
+                        [id, item.reference, item.quantity]
+                    );
+                }
+            }
+
+            return result.rows[0];
+        });
     } catch (error) {
         logger.error('❌ Error updating reception:', error);
         throw error;

@@ -57,6 +57,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [hasMuestra, setHasMuestra] = useState<boolean | null>(null);
   const [bagQuantity, setBagQuantity] = useState(0);
   const [items, setItems] = useState<ItemEntry[]>([]);
+  const [observacion, setObservacion] = useState('');
 
   const handleStart = () => {
     setReceptionType('batch');
@@ -76,6 +77,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setBagQuantity(0);
     setItems([]);
     setAffectsInventory(true);
+    setObservacion('');
   };
 
   const handleEdit = (lot: BatchReception) => {
@@ -101,6 +103,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setBagQuantity(lot.bagQuantity || 0);
     setItems(lot.items);
     setAffectsInventory(lot.affectsInventory !== false);
+    setObservacion(lot.observacion || '');
   };
 
   const handleDelete = async (lot: BatchReception) => {
@@ -218,7 +221,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
       arrivalDate,
       editLogs: editingLot ? [...(editingLot.editLogs || []), { user: user.name, date: new Date().toISOString() }] : [],
-      affectsInventory
+      affectsInventory,
+      observacion: observacion.trim() || null
     };
 
     // ========== GUARDAR EN BACKEND ==========
@@ -454,7 +458,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
           </div>
 
           {/* Row 3: Special Units Consolidated */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-4">
             {/* Cobros */}
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Cobros</label>
@@ -519,6 +523,18 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                   className="flex-1 bg-transparent border-none focus:ring-0 font-black text-slate-900 text-sm"
                 />
               </div>
+            </div>
+
+            {/* Observación */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-orange-500 tracking-widest px-4">Observación</label>
+              <textarea
+                value={observacion}
+                onChange={e => setObservacion(e.target.value)}
+                placeholder="Novedad o comentario..."
+                rows={2}
+                className="w-full px-4 py-2 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-100 transition-all font-semibold text-slate-900 text-sm resize-none"
+              />
             </div>
           </div>
         </div>
@@ -643,6 +659,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                     <div className="flex items-center justify-end w-full md:w-auto gap-6 flex-shrink-0">
                       {/* Referencias y Cantidades */}
                       <div className="flex flex-wrap items-center justify-end gap-4">
+                        {r.observacion && (
+                          <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-[9px] font-black leading-none">!</span>
+                          </div>
+                        )}
                         {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
                           <div key={ref} className="flex items-center gap-1.5">
                             <span className="text-sm sm:text-base font-black text-blue-600">{ref}</span>
@@ -707,6 +728,15 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                             </div>
                          </div>
                       </div>
+
+                      {r.observacion && (
+                        <div className="flex items-start gap-2 px-1 pb-2">
+                          <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-white text-[9px] font-black leading-none">!</span>
+                          </div>
+                          <p className="text-xs sm:text-sm font-bold text-orange-600">{r.observacion}</p>
+                        </div>
+                      )}
 
                       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
                          <div className="overflow-x-auto">

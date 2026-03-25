@@ -77,8 +77,10 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
-        const costoReal = calc(materiaPrima) + calc(manoObra) + calc(insumosDirectos) + calc(insumosIndirectos) + calc(provisiones);
-        return { costoReal };
+        const totalMP = calc(materiaPrima), totalMO = calc(manoObra);
+        const totalID = calc(insumosDirectos), totalII = calc(insumosIndirectos);
+        const costoReal = totalMP + totalMO + totalID + totalII + calc(provisiones);
+        return { costoReal, totalMP, totalMO, totalID, totalII };
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
     const costoProyectado = fichaData?.costoTotal || 0;
@@ -110,7 +112,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         <div className="space-y-6 pb-20">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { if (hasUnsaved) { if (confirm('¿Salir sin guardar?')) onNavigate('fichas-costo-detalle', { referencia }); } else onNavigate('fichas-costo-detalle', { referencia }); }}
+                    <button onClick={() => { if (hasUnsaved) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-costo-detalle', { referencia }); } else onNavigate('fichas-costo-detalle', { referencia }); }}
                         className="p-3 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     </button>
@@ -171,7 +173,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     <SeccionConceptos titulo="MANO DE OBRA" color="blue" conceptos={manoObra} onChange={mark(setManoObra)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS DIRECTOS" color="slate" conceptos={insumosDirectos} onChange={mark(setInsumosDirectos)} readOnly={!canEdit} />
                     <SeccionConceptos titulo="INSUMOS INDIRECTOS" color="orange" conceptos={insumosIndirectos} onChange={mark(setInsumosIndirectos)} readOnly={!canEdit} />
-                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} />
+                    <SeccionConceptos titulo="PROVISIONES" color="red" conceptos={provisiones} onChange={mark(setProvisiones)} readOnly={!canEdit} totalesOtrosCostos={{ totalMP: totales.totalMP, totalMO: totales.totalMO, totalID: totales.totalID, totalII: totales.totalII }} />
                 </div>
             </div>
 

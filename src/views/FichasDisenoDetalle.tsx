@@ -136,7 +136,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
         <div className="space-y-6 pb-20">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('¿Salir sin guardar?')) onNavigate('fichas-diseno'); } else onNavigate('fichas-diseno'); }}
+                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-diseno'); } else onNavigate('fichas-diseno'); }}
                         className="p-3 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     </button>

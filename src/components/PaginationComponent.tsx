@@ -22,7 +22,7 @@ export const PaginationComponent: React.FC<PaginationProps> = ({
   onPageChange,
   onPageSizeChange,
   isLoading = false,
-  pageSizeOptions = [10, 20, 25, 30, 50, 100]
+  pageSizeOptions = [10, 20, 25, 30, 48, 50, 100]
 }) => {
   const [inputPage, setInputPage] = useState<string>(currentPage.toString());
 

@@ -1116,11 +1116,13 @@ class ApiService {
         chargeUnits: reception.chargeUnits,
         incompleteUnits: reception.incompleteUnits,
         isPacked: reception.isPacked,
+        hasMuestra: reception.hasMuestra,
         bagQuantity: reception.bagQuantity,
         items: reception.items,
         receivedBy: reception.receivedBy,
         arrivalDate: reception.arrivalDate,
-        affectsInventory: reception.affectsInventory
+        affectsInventory: reception.affectsInventory,
+        observacion: reception.observacion || null
       };
 
       const response = await fetch(`${this.getApiUrl()}/receptions`, {
@@ -1157,9 +1159,12 @@ class ApiService {
         chargeUnits: reception.chargeUnits,
         incompleteUnits: reception.incompleteUnits,
         isPacked: reception.isPacked,
+        hasMuestra: reception.hasMuestra,
         bagQuantity: reception.bagQuantity,
         arrivalDate: reception.arrivalDate,
-        affectsInventory: reception.affectsInventory
+        affectsInventory: reception.affectsInventory,
+        items: reception.items,
+        observacion: reception.observacion || null
       };
 
       const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
