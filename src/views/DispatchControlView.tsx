@@ -287,7 +287,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                 </div>
                 <div className="text-right">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Precio</p>
-                  <p className="font-black text-blue-600 text-xl">${reportData.reference.price.toLocaleString()}</p>
+                  <p className="font-black text-blue-600 text-xl">$ {Math.round(reportData.reference.price).toLocaleString('es-CO')}</p>
                 </div>
               </div>
             </div>
@@ -352,14 +352,17 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                   <tfoot className="bg-slate-50 border-t-2 border-slate-200">
                     <tr>
                       <td className="px-4 py-4 font-black text-slate-700 uppercase text-xs">Totales</td>
+                      <td className="px-2 py-4 text-center font-black text-slate-700 text-xs">
+                        TOTAL CLIENTES: <span className="text-blue-800 text-base">{reportData.clients.length}</span>
+                      </td>
                       <td className="px-2 py-4 text-center font-black text-blue-800 text-base">
                         {reportData.totals.totalVendidas}
                       </td>
-                      <td className="px-2 py-4 text-center font-black text-slate-700">Total</td>
+                      <td className="px-2 py-4 text-center font-black text-slate-400">—</td>
                       <td className="px-2 py-4 text-center font-black text-red-600 text-base bg-red-50">
                         {reportData.totals.totalDespachadas}
                       </td>
-                      <td colSpan={4} className="px-2 py-4 text-center">
+                      <td colSpan={3} className="px-2 py-4 text-center">
                         <div className="inline-flex gap-2">
                           <div className="inline-block bg-blue-600 text-white px-4 py-2 rounded-xl font-black text-xs">
                             FALTAN: {reportData.totals.faltanDespachar} UNIDADES

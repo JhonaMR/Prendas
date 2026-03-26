@@ -110,3 +110,11 @@ body {
 .animate-message-pop {
   animation: message-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+
+/* Date input: ocultar placeholder cuando está vacío */
+input[type="date"].date-empty::-webkit-datetime-edit {
+  color: transparent;
+}
+input[type="date"].date-empty:focus::-webkit-datetime-edit {
+  color: inherit;
+}

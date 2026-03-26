@@ -700,10 +700,12 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                     </td>
                     <td className="px-3 py-1 text-center bg-blue-50">
                       <input
-                        type="date"
+                        type={row.deliveryDate ? 'date' : 'text'}
                         value={row.deliveryDate || ''}
                         onChange={e => updateRow(row.id, 'deliveryDate', e.target.value || null)}
-                        readOnly={false}
+                        onFocus={e => (e.target.type = 'date')}
+                        onBlur={e => { if (!e.target.value) e.target.type = 'text'; }}
+                        placeholder=""
                         className="w-full px-2 py-1 bg-white border border-blue-200 rounded-lg font-bold text-center text-blue-700 focus:ring-2 focus:ring-blue-100"
                       />
                     </td>

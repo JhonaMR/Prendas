@@ -122,9 +122,17 @@ CREATE TABLE IF NOT EXISTS public.receptions (
     received_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     affects_inventory boolean DEFAULT true,
+    arrival_date date NOT NULL DEFAULT '2026-01-01',
+    observacion text DEFAULT NULL,
+    has_muestra boolean NOT NULL DEFAULT false,
     CONSTRAINT receptions_pkey PRIMARY KEY (id),
     CONSTRAINT receptions_confeccionista_id_fkey FOREIGN KEY (confeccionista_id) REFERENCES public.confeccionistas(id) ON DELETE SET NULL
 );
+
+-- Columnas agregadas por migraciones (por si la tabla ya existe sin ellas)
+ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS arrival_date date NOT NULL DEFAULT '2026-01-01';
+ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS observacion text DEFAULT NULL;
+ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS has_muestra boolean NOT NULL DEFAULT false;
 
 -- ============================================================================
 -- 9. TABLA: reception_items
@@ -255,11 +263,15 @@ CREATE TABLE IF NOT EXISTS public.production_tracking (
     programmed integer DEFAULT 0,
     cut integer DEFAULT 0,
     inventory integer DEFAULT 0,
+    novedades text,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT production_tracking_pkey PRIMARY KEY (id),
     CONSTRAINT production_tracking_correria_id_fkey FOREIGN KEY (correria_id) REFERENCES public.correrias(id) ON DELETE SET NULL
 );
+
+-- Columna agregada por migración (por si la tabla ya existe sin ella)
+ALTER TABLE public.production_tracking ADD COLUMN IF NOT EXISTS novedades text;
 
 -- ============================================================================
 -- 17. TABLA: inventory_movements (Tabla mejorada)
@@ -546,6 +558,7 @@ CREATE INDEX IF NOT EXISTS idx_clients_active ON public.clients(active);
 -- Índices para receptions
 CREATE INDEX IF NOT EXISTS idx_receptions_confeccionista_id ON public.receptions(confeccionista_id);
 CREATE INDEX IF NOT EXISTS idx_receptions_created_at ON public.receptions(created_at);
+CREATE INDEX IF NOT EXISTS idx_receptions_arrival_date ON public.receptions(arrival_date);
 
 -- Índices para reception_items
 CREATE INDEX IF NOT EXISTS idx_reception_items_reception_id ON public.reception_items(reception_id);
