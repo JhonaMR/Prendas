@@ -397,14 +397,15 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 >
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{d.createdAt}</span>
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{d.createdAt ? d.createdAt.slice(0, 10) + ' T' + d.createdAt.slice(10, 16) : d.createdAt}</span>
+                      {(d.invoiceNo || d.remissionNo) && <span className="text-slate-300 font-bold text-[9px]">|</span>}
                       {d.invoiceNo && <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">F: {d.invoiceNo}</span>}
                       {d.remissionNo && <span className="text-[9px] sm:text-[10px] font-black bg-pink-50 text-pink-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">R: {d.remissionNo}</span>}
-                      {correrias.find(c => c.id === d.correriaId) && <span className="text-[9px] sm:text-[10px] font-black bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full uppercase tracking-tighter">{correrias.find(c => c.id === d.correriaId)?.name} {correrias.find(c => c.id === d.correriaId)?.year}</span>}
+                      {correrias.find(c => c.id === d.correriaId) && <><span className="text-slate-300 font-bold text-[9px]">|</span><span className="text-[9px] sm:text-[10px] font-black bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full uppercase tracking-tighter">{correrias.find(c => c.id === d.correriaId)?.name} {correrias.find(c => c.id === d.correriaId)?.year}</span></>}
                     </div>
                     <div className="flex items-baseline gap-3">
                       <h3 className="text-lg sm:text-xl font-black text-slate-800">{client?.name || 'Cliente Desconocido'}</h3>
-                      <p className="text-xs sm:text-sm font-bold text-slate-400">{client?.address}</p>
+                      <p className="text-xs sm:text-sm font-bold text-slate-400">{client?.address}  -  {client?.city}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between w-full md:w-auto gap-4">
@@ -413,7 +414,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                       <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total Unid: <span className="text-pink-600 font-black">{totalQty}</span></span>
                     </div>
                     <div className="text-left md:text-right hidden sm:block">
-                      <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Leído por</p>
+                      <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Ingresado por</p>
                       <p className="text-xs font-black text-slate-500">{d.dispatchedBy}</p>
                     </div>
                     <div className="flex items-center gap-3 ml-auto md:ml-0">
@@ -462,14 +463,14 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                           <div className="space-y-1">
                              <p className="font-black text-blue-600 text-xs sm:text-sm mb-2">Código: {client?.id}</p>
                              <p className="font-black text-slate-800 text-base sm:text-lg">{client?.name}</p>
-                             <p className="text-xs sm:text-sm font-bold text-slate-500">{client?.address} • {client?.city}</p>
+                             <p className="text-xs sm:text-sm font-bold text-slate-500">{client?.address}  -  {client?.city}</p>
                              <p className="text-[9px] sm:text-[10px] font-black text-pink-600 uppercase tracking-widest mt-2">Vendedor: {sellers.find(s => s.id === client?.sellerId)?.name || client?.sellerId || '-'}</p>
                           </div>
                        </div>
                        <div className="md:text-right">
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
                            <p className="text-xs sm:text-sm font-bold text-slate-600">Ingresado por: <span className="text-slate-900 font-black">{d.dispatchedBy}</span></p>
-                           <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{d.createdAt}</span></p>
+                           <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{d.createdAt ? d.createdAt.slice(0, 10) + ' T' + d.createdAt.slice(11, 16) : d.createdAt}</span></p>
                            <div className="mt-2 pt-2 border-t border-slate-100">
                              <p className="text-xs sm:text-sm font-bold text-slate-600">Revisado por: <span className="text-slate-900 font-black">{d.checkedBy || '0'}</span></p>
                            </div>
@@ -499,11 +500,10 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                                   return (
                                     <tr key={ref}>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4">
-                                          <p className="font-black text-blue-600 text-xs sm:text-sm">{ref}</p>
-                                          <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">{masterRef?.description || 'Sin descripción'}</p>
+                                          <p className="font-black text-blue-600 text-xs sm:text-sm">{ref}  -  <span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{masterRef?.description || 'Sin descripción'}</span></p>
                                       </td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
-                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-slate-500 text-xs sm:text-sm">${price.toLocaleString()}</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-slate-500 text-xs sm:text-sm">$ {Math.round(price).toLocaleString('es-CO')}</td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-slate-800 text-xs sm:text-sm">${subtotal.toLocaleString()}</td>
                                     </tr>
                                   );

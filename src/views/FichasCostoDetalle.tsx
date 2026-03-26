@@ -74,6 +74,22 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         }
     }, [fichaExistente?.referencia]);
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (hasUnsavedChanges) {
+                    if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) {
+                        onNavigate('fichas-costo');
+                    }
+                } else {
+                    onNavigate('fichas-costo');
+                }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [hasUnsavedChanges, onNavigate]);
+
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
         const totalMP = calc(materiaPrima), totalMO = calc(manoObra);
@@ -151,7 +167,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         <h3 className="text-sm font-black text-yellow-700 uppercase tracking-widest">Rentabilidad vs Precio</h3>
                         <div className="grid grid-cols-2 gap-4">
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Total</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.total.toLocaleString()}</p></div></div>
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Contabilizar</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo sin provisiones</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>

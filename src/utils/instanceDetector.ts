@@ -12,7 +12,7 @@ export function detectInstance(): Instance {
   // Intentar obtener del puerto
   const port = window.location.port;
   
-  if (port === '3000' || port === '5173') {
+  if (port === '3000' || port === '5173' || port === '5175') {
     return 'plow';
   } else if (port === '3001' || port === '5174') {
     return 'melas';

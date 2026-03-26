@@ -27,6 +27,9 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [disenadoraFilter, setDisenadoraFilter] = useState('');
     const [disenadoraInput, setDisenadoraInput] = useState('');
     const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
+    const [correriaFilter, setCorreriaFilter] = useState('');
+    const [correriaInput, setCorreriaInput] = useState('');
+    const [showCorreriaSuggestions, setShowCorreriaSuggestions] = useState(false);
     const [showModalImportar, setShowModalImportar] = useState(false);
     const [referenciaImportar, setReferenciaImportar] = useState('');
     const [fichaEncontrada, setFichaEncontrada] = useState<any>(null);
@@ -49,13 +52,25 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
         ? disenadorasUnicas.filter(d => d.toLowerCase().includes(disenadoraInput.toLowerCase()))
         : disenadorasUnicas;
 
+    const correriasUnicas = React.useMemo(() => {
+        return (state.correrias || []).sort((a, b) => b.year.localeCompare(a.year) || b.name.localeCompare(a.name));
+    }, [state.correrias]);
+
+    const correriassugeridas = correriaInput
+        ? correriasUnicas.filter(c => `${c.name} ${c.year}`.toLowerCase().includes(correriaInput.toLowerCase()))
+        : correriasUnicas;
+
     const fichas = (state.fichasCosto || []).filter(f => {
         const matchSearch = !searchTerm || (() => {
             const t = searchTerm.toLowerCase();
             return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
         })();
         const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
-        return matchSearch && matchDisenadora;
+        const matchCorreria = !correriaFilter || (() => {
+            const ref = (state.references || []).find(r => r.id === f.referencia);
+            return ref?.correrias?.includes(correriaFilter);
+        })();
+        return matchSearch && matchDisenadora && matchCorreria;
     }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
 
     const pageSize = fichasPagination.pagination.limit;
@@ -66,7 +81,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     // Reset a página 1 cuando cambia el filtro o el tamaño de página
     React.useEffect(() => {
         fichasPagination.goToPage(1);
-    }, [searchTerm, disenadoraFilter, pageSize]);
+    }, [searchTerm, disenadoraFilter, correriaFilter, pageSize]);
 
     const handleBuscar = () => {
         if (!referenciaImportar.trim()) { alert('Ingrese una referencia'); return; }
@@ -117,6 +132,45 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                     <p className="text-slate-500 font-bold text-xs mt-1">{fichas.length} ficha{fichas.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="flex flex-wrap gap-3 items-center">
+                    {/* Limpiar filtros */}
+                    <button
+                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); }}
+                        title="Limpiar filtros"
+                        className="p-4 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-2xl transition-colors border border-red-200"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    {/* Filtro correría */}
+                    <div className="relative min-w-[200px]">
+                        <input
+                            type="text"
+                            value={correriaInput}
+                            onChange={e => { setCorreriaInput(e.target.value); setCorreriaFilter(''); setShowCorreriaSuggestions(true); }}
+                            onFocus={() => setShowCorreriaSuggestions(true)}
+                            onBlur={() => setTimeout(() => setShowCorreriaSuggestions(false), 150)}
+                            placeholder="Filtrar correría..."
+                            className={`w-full px-6 py-4 bg-white border rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm ${correriaFilter ? 'border-blue-400 text-blue-700' : 'border-slate-200'}`}
+                        />
+                        {correriaFilter && (
+                            <button
+                                onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-600 font-black text-lg leading-none"
+                            >×</button>
+                        )}
+                        {showCorreriaSuggestions && correriassugeridas.length > 0 && (
+                            <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-60 overflow-y-auto">
+                                {correriassugeridas.map(c => (
+                                    <button
+                                        key={c.id}
+                                        onMouseDown={() => { setCorreriaFilter(c.id); setCorreriaInput(`${c.name} ${c.year}`); setShowCorreriaSuggestions(false); }}
+                                        className="w-full text-left px-5 py-3 hover:bg-blue-50 font-bold text-slate-700 text-sm border-b border-slate-50 last:border-0 transition-colors"
+                                    ><span className="text-slate-800">{c.name}</span> <span className="text-slate-400">{c.year}</span></button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     {/* Filtro diseñadora */}
                     <div className="relative min-w-[200px]">
                         <input

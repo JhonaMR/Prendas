@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:local": "NODE_ENV=development vite --port 5175",
+    "develop": "node start-develop.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "jest",

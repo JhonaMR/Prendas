@@ -14,7 +14,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportConfig, setReportConfig] = useState({
-    includeDespachadas: true,
+    includeDespachadas: false,
     sortBy: 'reference', // 'reference' o 'vendidas'
     format: 'pdf', // 'pdf' o 'excel'
     includeZeroSales: true // incluir referencias con 0 vendidas
@@ -26,6 +26,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   const [showEditNovedadesModal, setShowEditNovedadesModal] = useState(false);
   const [editNovedadesLines, setEditNovedadesLines] = useState<string[]>(['']);
   const [savingNovedades, setSavingNovedades] = useState(false);
+  const [hideVentasDisenadora, setHideVentasDisenadora] = useState(false);
 
   const isAdminOrSoporte = user?.role === 'admin' || user?.role === 'soporte';
 
@@ -38,6 +39,14 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   useEffect(() => {
     loadNovedades(selectedCorreriaId);
   }, [selectedCorreriaId, loadNovedades]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowReportModal(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleOpenEditModal = () => {
     setEditNovedadesLines(
@@ -267,11 +276,13 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       };
     }).filter(v => v.pedidos > 0); // Solo vendedores con pedidos
 
-    // Análisis por diseñadora
-    const disenadoras = [...new Set(maletaReferences.map(r => r.designer))].filter(Boolean);
+    // Análisis por diseñadora (case-insensitive, agrupado en mayúsculas)
+    const disenadoras = [...new Map(
+      maletaReferences.filter(r => r.designer).map(r => [r.designer.toUpperCase(), r.designer.toUpperCase()])
+    ).values()];
     
     const disenadorasData = disenadoras.map(designer => {
-      const refsCreadas = maletaReferences.filter(r => r.designer === designer);
+      const refsCreadas = maletaReferences.filter(r => r.designer?.toUpperCase() === designer);
       const refIds = refsCreadas.map(r => r.id);
 
       const refsVendidasDesigner = refIds.filter(refId => {
@@ -1176,10 +1187,26 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
           {/* Tabla: Performance de Diseñadoras */}
           <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-slate-700 to-slate-600 px-8 py-4">
+            <div className="bg-gradient-to-r from-slate-700 to-slate-600 px-8 py-4 flex items-center justify-between">
               <h3 className="text-lg font-black text-white uppercase tracking-wide">
                 Performance de Diseñadoras
               </h3>
+              <button
+                onClick={() => setHideVentasDisenadora(v => !v)}
+                title={hideVentasDisenadora ? 'Mostrar ventas generadas' : 'Ocultar ventas generadas'}
+                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+              >
+                {hideVentasDisenadora ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-white">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 text-white">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  </svg>
+                )}
+              </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-base min-w-[800px]">
@@ -1212,7 +1239,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                         {disenadora.nombre}
                       </td>
                       <td className="px-4 py-4 text-center font-black text-slate-800">
-                        $ {disenadora.ventasGeneradas.toLocaleString()}
+                        {hideVentasDisenadora ? '-' : `$ ${disenadora.ventasGeneradas.toLocaleString()}`}
                       </td>
                       <td className="px-4 py-4 text-center font-black text-slate-800">
                         {disenadora.refsCreadas}
@@ -1238,6 +1265,24 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                       </td>
                     </tr>
                   ))}
+                  {metrics.disenadorasData.length > 0 && (() => {
+                    const totalVentas = metrics.disenadorasData.reduce((acc, d) => acc + d.ventasGeneradas, 0);
+                    const totalCreadas = metrics.disenadorasData.reduce((acc, d) => acc + d.refsCreadas, 0);
+                    const totalVendidas = metrics.disenadorasData.reduce((acc, d) => acc + d.refsVendidas, 0);
+                    const avgExito = metrics.disenadorasData.reduce((acc, d) => acc + d.exitoPedido, 0) / metrics.disenadorasData.length;
+                    const totalEnCero = metrics.disenadorasData.reduce((acc, d) => acc + d.refsEnCero, 0);
+                    const avgEnCero = metrics.disenadorasData.reduce((acc, d) => acc + d.porcentajeEnCero, 0) / metrics.disenadorasData.length;
+                    return (
+                      <tr className="bg-slate-100 border-t-2 border-slate-300 font-black">
+                        <td className="px-6 py-4 font-black text-slate-700 uppercase text-xs">Totales</td>
+                        <td className="px-4 py-4 text-center font-black text-slate-800">{hideVentasDisenadora ? '-' : `$ ${totalVentas.toLocaleString('es-CO')}`}</td>
+                        <td className="px-4 py-4 text-center font-black text-slate-800">{totalCreadas}</td>
+                        <td className="px-4 py-4 text-center font-black text-green-600">{totalVendidas}</td>
+                        <td className="px-4 py-4 text-center font-black text-slate-800">{avgExito.toFixed(0)}%</td>
+                        <td className="px-4 py-4 text-center font-black text-red-600">{totalEnCero} ({avgEnCero.toFixed(0)}%)</td>
+                      </tr>
+                    );
+                  })()}
                 </tbody>
               </table>
             </div>
@@ -1264,16 +1309,6 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                 </label>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
-                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                      reportConfig.includeDespachadas
-                        ? 'bg-blue-300 text-blue-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-                    }`}
-                  >
-                    Sí
-                  </button>
-                  <button
                     onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       !reportConfig.includeDespachadas
@@ -1282,6 +1317,16 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     }`}
                   >
                     No
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.includeDespachadas
+                        ? 'bg-blue-300 text-blue-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Sí
                   </button>
                 </div>
               </div>

@@ -65,7 +65,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setProvisiones(fichaData.provisiones || []);
         } else if (corteExistente) {
             setFichaCorte(corteExistente.fichaCorte || '');
-            setFechaCorte(corteExistente.fechaCorte || new Date().toISOString().split('T')[0]);
+            setFechaCorte(corteExistente.fechaCorte ? corteExistente.fechaCorte.slice(0, 10) : new Date().toISOString().split('T')[0]);
             setCantidadCortada(corteExistente.cantidadCortada || 0);
             setMateriaPrima(corteExistente.materiaPrima || []);
             setManoObra(corteExistente.manoObra || []);
@@ -73,14 +73,32 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setInsumosIndirectos(corteExistente.insumosIndirectos || []);
             setProvisiones(corteExistente.provisiones || []);
         }
+        setHasUnsaved(false);
     }, [fichaData, isNuevo, numeroCorte]);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (hasUnsaved) {
+                    if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) {
+                        onNavigate('fichas-costo-detalle', { referencia });
+                    }
+                } else {
+                    onNavigate('fichas-costo-detalle', { referencia });
+                }
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [hasUnsaved, referencia, onNavigate]);
 
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
         const totalMP = calc(materiaPrima), totalMO = calc(manoObra);
         const totalID = calc(insumosDirectos), totalII = calc(insumosIndirectos);
-        const costoReal = totalMP + totalMO + totalID + totalII + calc(provisiones);
-        return { costoReal, totalMP, totalMO, totalID, totalII };
+        const totalProv = calc(provisiones);
+        const costoReal = totalMP + totalMO + totalID + totalII + totalProv;
+        return { costoReal, totalMP, totalMO, totalID, totalII, totalProv };
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
     const costoProyectado = fichaData?.costoTotal || 0;
@@ -160,6 +178,11 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-yellow-100 to-yellow-200 p-6 rounded-3xl border-2 border-yellow-300 shadow-lg">
+                        <p className="text-sm font-black text-yellow-800 uppercase tracking-widest opacity-90 mb-2">Costo para contabilizar</p>
+                        <p className="text-5xl font-black text-yellow-800">$ {(totales.costoReal - totales.totalProv).toLocaleString()}</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-purple-600 to-purple-500 p-6 rounded-3xl text-white shadow-lg">

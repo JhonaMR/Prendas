@@ -9,6 +9,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Detectar puerto basado en variable de entorno o PM2 process name
 function getVitePort() {
+  // Permite override explícito desde .env.dev o variable de entorno
+  if (process.env.VITE_PORT) {
+    return parseInt(process.env.VITE_PORT, 10);
+  }
+
   const pmId = process.env.pm_id;
   const processName = process.env.pm_exec_path || '';
 
@@ -28,6 +33,11 @@ function getVitePort() {
 
 // Cargar certificados HTTPS
 function getHttpsConfig() {
+  // En desarrollo local (VITE_PORT explícito), no usar HTTPS
+  if (process.env.VITE_PORT) {
+    return false;
+  }
+
   const certPath = path.join(__dirname, 'backend/certs/server.crt');
   const keyPath = path.join(__dirname, 'backend/certs/server.key');
 

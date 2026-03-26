@@ -16,6 +16,9 @@ const processName = process.env.pm_id ? process.env.name : '';
 if (process.env.ENV_FILE) {
   // Permite forzar un .env específico: ENV_FILE=.env.dev node src/server.js
   envFile = process.env.ENV_FILE;
+} else if (process.env.NODE_ENV === 'development' && fs.existsSync(path.join(__dirname, '../.env.dev'))) {
+  // Desarrollo local: usar .env.dev si existe
+  envFile = '.env.dev';
 } else if (processName.includes('melas')) {
   envFile = '.env.melas';
 } else if (processName.includes('plow')) {

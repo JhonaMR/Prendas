@@ -25,6 +25,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
+  const [focusedPriceIdx, setFocusedPriceIdx] = useState<number | null>(null);
   const ordersPagination = usePagination(1, 50);
 
   const isAdmin = currentUser?.role === UserRole.ADMIN || currentUser?.role === UserRole.SOPORTE;
@@ -179,15 +180,6 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
       </div>
 
       <div className="bg-gradient-to-r from-blue-50 to-pink-50 rounded-[32px] shadow-lg border-2 border-blue-200 p-6 md:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.75 7.707 2.122.98.566 1.766 1.423 2.228 2.45.461 1.026.696 2.189.696 3.428 0 3.623-2.343 6.723-5.656 7.972-.9.383-1.97.591-3.075.591-.703 0-1.386-.067-2.042-.2.537.406 1.522 1.064 2.687 1.84 1.165.777 2.527 1.694 3.528 2.848.501.577.978 1.196 1.422 1.858.444.662.852 1.365 1.22 2.105.368.74.694 1.52.973 2.325.279.805.506 1.636.676 2.485.17.849.28 1.723.325 2.607M12 3v18m0 0c-2.755 0-5.455-.75-7.707-2.122-.98-.566-1.766-1.423-2.228-2.45C.604 15.402.369 14.239.369 13c0-3.623 2.343-6.723 5.656-7.972.9-.383 1.97-.591 3.075-.591.703 0 1.386.067 2.042.2-.537-.406-1.522-1.064-2.687-1.84-1.165-.777-2.527-1.694-3.528-2.848-.501-.577-.978-1.196-1.422-1.858-.444-.662-.852-1.365-1.22-2.105-.368-.74-.694-1.52-.973-2.325-.279-.805-.506-1.636-.676-2.485-.17-.849-.28-1.723-.325-2.607" />
-            </svg>
-          </div>
-          <h3 className="text-lg md:text-xl font-black text-slate-800">Filtrar Resultados</h3>
-        </div>
-
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4">
           <div className="flex-1 min-w-[200px] space-y-2">
             <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest px-4 block">👤 Vendedor</label>
@@ -260,7 +252,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
-                        <span className="text-[10px] text-slate-300 font-bold">{o.createdAt}</span>
+                        <span className="text-[10px] text-slate-300 font-bold">{o.createdAt ? o.createdAt.slice(0, 10) + ' T ' + o.createdAt.slice(11, 16) : ''}</span>
                       </div>
                       <div className="flex items-center justify-between gap-4 w-full">
                         <div className="flex items-baseline gap-3 flex-1">
@@ -309,7 +301,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           </div>
                         </div>
                       </div>
-                      <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}</p>
+                      <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}   —   N° Pedido: {o.orderNumber ?? '-'}</p>
                     </div>
                     <div className="flex items-center gap-6">
                       <div className="text-right">
@@ -375,8 +367,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                               return (
                                 <tr key={idx}>
                                   <td className="px-6 py-2">
-                                    <p className="font-black text-slate-800 text-sm">{item.reference}</p>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase">{ref?.description}</p>
+                                    <p className="font-black text-slate-800 text-sm">{item.reference}  -  <span className="font-bold text-slate-400 uppercase text-[10px]">{ref?.description}</span></p>
                                   </td>
                                   <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
                                   <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${Math.round(displayPrice).toLocaleString('es-CO')}</td>
@@ -458,16 +449,26 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           className="w-16 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
                           placeholder="Cant."
                         />
-                        <input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={displayPrice}
-                          onChange={(e) => handleUpdateItemPrice(idx, parseFloat(e.target.value) || 0)}
-                          onFocus={(e) => e.target.select()}
-                          className="w-20 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
-                          placeholder="Precio"
-                        />
+                        {focusedPriceIdx === idx ? (
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={displayPrice}
+                            onChange={(e) => handleUpdateItemPrice(idx, parseFloat(e.target.value) || 0)}
+                            onFocus={(e) => e.target.select()}
+                            onBlur={() => setFocusedPriceIdx(null)}
+                            autoFocus
+                            className="w-24 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
+                          />
+                        ) : (
+                          <span
+                            onClick={() => setFocusedPriceIdx(idx)}
+                            className="w-24 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 cursor-text inline-block text-center"
+                          >
+                            $ {Math.round(displayPrice).toLocaleString('es-CO')}
+                          </span>
+                        )}
                         <span className="text-sm font-bold text-slate-600 min-w-fit">${(displayPrice * item.quantity).toLocaleString()}</span>
                         <button
                           onClick={() => handleRemoveItem(idx)}
@@ -495,7 +496,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Inicio</label>
                   <input
                     type="date"
-                    value={editingOrder.startDate || ''}
+                    value={editingOrder.startDate ? editingOrder.startDate.slice(0, 10) : ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, startDate: e.target.value || null })}
                     className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
                   />
@@ -504,7 +505,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Fin</label>
                   <input
                     type="date"
-                    value={editingOrder.endDate || ''}
+                    value={editingOrder.endDate ? editingOrder.endDate.slice(0, 10) : ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, endDate: e.target.value || null })}
                     className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
                   />
