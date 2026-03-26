@@ -23,8 +23,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
 
   // Filtrar referencias según búsqueda
   const filteredReferences = state.references.filter(r => 
-    r.id.toLowerCase().includes(referenceSearch.toLowerCase()) ||
-    r.description.toLowerCase().includes(referenceSearch.toLowerCase())
+    r.id.toLowerCase().includes(referenceSearch.toLowerCase())
   );
 
   // Función para seleccionar correría
@@ -39,7 +38,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
   // Función para seleccionar referencia
   const selectReference = (reference: any) => {
     setSelectedReference(reference.id);
-    setReferenceSearch(`${reference.id} - ${reference.description}`);
+    setReferenceSearch(reference.id);
     setShowReferenceDropdown(false);
   };
 
@@ -146,7 +145,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
       p => p.refId === selectedReference && p.correriaId === selectedCorreriaId
     ) || { programmed: 0, cut: 0, inventory: 0 };
 
-    const pending = Math.max(0, totalVendidas - production.cut);
+    const pending = totalVendidas - production.cut - ((production as any).inventory || 0) - production.programmed;
     const faltanDespachar = totalVendidas - totalDespachadas;
 
     return {
@@ -238,7 +237,6 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                     className="w-full px-3 py-2 text-left text-xs hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
                   >
                     <span className="font-black text-blue-600">{r.id}</span>
-                    <span className="text-slate-500 ml-2 text-[10px]">{r.description}</span>
                   </button>
                 ))}
               </div>
@@ -272,7 +270,7 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
             <MetricCard label="Inventario" value={reportData.totals.inventario} color="blue" />
             <MetricCard label="Cortadas" value={reportData.totals.cortadas} color="purple" />
             <MetricCard label="Programadas" value={reportData.totals.programadas} color="indigo" />
-            <MetricCard label="Pendiente" value={reportData.totals.pendiente} color="orange" />
+            <MetricCard label="Pendiente" value={reportData.totals.pendiente} color={reportData.totals.pendiente < 0 ? 'green' : 'orange'} />
             <MetricCard label="Faltan Despachar" value={reportData.totals.faltanDespachar} color="red" highlight />
           </div>
 
@@ -398,6 +396,7 @@ const MetricCard: React.FC<{ label: string; value: number; color: string; highli
     indigo: 'text-indigo-600',
     orange: 'text-orange-600',
     red: 'text-red-600',
+    green: 'text-green-600',
   }[color] || 'text-slate-700';
 
   const bgClasses = highlight ? 'bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-200' : 'bg-white';
@@ -407,7 +406,7 @@ const MetricCard: React.FC<{ label: string; value: number; color: string; highli
   return (
     <div className={`${bgClasses} p-4 rounded-2xl border ${highlight ? 'border-blue-400' : 'border-slate-100'} transition-all hover:scale-105`}>
       <p className={`text-[9px] font-black ${labelClasses} uppercase tracking-widest mb-2`}>{label}</p>
-      <p className={`font-black text-2xl ${textClasses || colorClasses}`}>{value}</p>
+      <p className={`font-black text-2xl text-center ${textClasses || colorClasses}`}>{value}</p>
     </div>
   );
 };

@@ -3,7 +3,7 @@
 // Upload y preview de fotos de referencias
 // ============================================
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import apiFichas from '../../services/apiFichas';
 
 declare global {
@@ -27,6 +27,17 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
     const [preview1, setPreview1] = useState<string | null>(null);
     const [preview2, setPreview2] = useState<string | null>(null);
     const [fotoAmpliada, setFotoAmpliada] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && fotoAmpliada) {
+                setFotoAmpliada(null);
+                e.stopImmediatePropagation();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown, true); // capture phase — se ejecuta primero
+        return () => document.removeEventListener('keydown', handleKeyDown, true);
+    }, [fotoAmpliada]);
 
     const input1Ref = useRef<HTMLInputElement>(null);
     const input2Ref = useRef<HTMLInputElement>(null);
@@ -140,7 +151,7 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
             </div>
 
             {fotoAmpliada && (
-                <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFotoAmpliada(null)}>
+                <div data-foto-ampliada="true" className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFotoAmpliada(null)}>
                     <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                         <img src={fotoAmpliada} alt="Foto ampliada" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl" />
                         <button onClick={() => setFotoAmpliada(null)} className="absolute top-4 right-4 p-3 bg-white rounded-full shadow-lg hover:bg-slate-100 transition-colors">

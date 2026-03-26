@@ -206,7 +206,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                   </div>
                   <div className="text-right">
                     <span className="text-[8px] font-black bg-slate-50 px-2 py-0.5 rounded-full uppercase text-slate-400 block mb-1">{r.designer}</span>
-                    <p className="text-[10px] font-black text-orange-600">${r.price || 0}</p>
+                    <p className="text-[10px] font-black text-orange-600">$ {Math.round(r.price || 0).toLocaleString('es-CO')}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-2 mb-2">
@@ -215,7 +215,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                     <p className="font-black text-slate-800 text-base">{stats.in}</p>
                   </div>
                   <div className="p-2 bg-slate-50 rounded-lg text-center">
-                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Salidas</p>
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Despachadas</p>
                     <p className="font-black text-pink-500 text-base">{stats.out}</p>
                   </div>
                   <div className="p-2 bg-slate-50 rounded-lg text-center">
@@ -223,7 +223,13 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                     <p className="font-black text-blue-600 text-base">{stats.lots}</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="p-2 bg-slate-50 rounded-lg text-center">
+                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Vendidas</p>
+                    <p className="font-black text-blue-600 text-base">
+                      {(state.orders || []).reduce((acc, o) => acc + (o.items || []).filter(i => i.reference === r.id).reduce((s, i) => s + i.quantity, 0), 0)}
+                    </p>
+                  </div>
                   <div className="p-2 bg-slate-50 rounded-lg text-center">
                     <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Clientes</p>
                     <p className="font-black text-green-600 text-base">{clientsOrdered}</p>
@@ -421,7 +427,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                     <tr key={order.id} className="hover:bg-slate-50 border-b border-slate-50 last:border-0">
                       <td className="px-10 py-3">
                         <p className="font-black text-slate-800">{client?.name || 'Cliente desconocido'}</p>
-                        <p className="text-[9px] font-bold text-slate-500">{client?.id} - {client?.address || '-'}</p>
+                        <p className="text-[9px] font-bold text-slate-500">{client?.id} - {client?.address}   -   {client?.city}</p>
                       </td>
                       <td className="px-10 py-3 text-center font-bold text-slate-600">{totalUnitsOrdered}</td>
                       <td className="px-10 py-3 text-center font-bold text-blue-600">{totalUnitsDispatched}</td>
@@ -576,7 +582,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
 
                               return (
                                 <tr key={idx} className="border-b border-white last:border-0">
-                                  <td className="px-4 py-3 font-bold text-slate-800">{item.reference}</td>
+                                  <td className="px-4 py-3 font-bold text-slate-800">{item.reference}  -  <span className="font-bold text-slate-400 uppercase text-[9px]">{(state.references || []).find(r => r.id === item.reference)?.description || ''}</span></td>
                                   <td className="px-4 py-3 text-center font-bold text-slate-600">{item.quantity}</td>
                                   <td className={`px-4 py-3 text-center font-black ${getDispatchColor(item.quantity, dispatchedQty)}`}>
                                     <span className={`px-3 py-1 rounded-lg ${getDispatchBgColor(item.quantity, dispatchedQty)}`}>

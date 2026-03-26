@@ -39,6 +39,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [refSearch, setRefSearch] = useState('');
+  const [filterSinProcesar, setFilterSinProcesar] = useState(false);
   const [affectsInventory, setAffectsInventory] = useState(true);
   const receptionsPagination = usePagination(1, 50);
 
@@ -265,6 +266,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   };
 
   const filteredReceptions = receptions.filter(r => {
+    if (filterSinProcesar && !['0', '00', '000', '0000'].includes(r.batchCode?.trim())) return false;
     if (!refSearch.trim()) return true;
     return r.items.some(item => 
       item.reference.toUpperCase().includes(refSearch.toUpperCase())
@@ -596,21 +598,29 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter">Recepción</h2>
             <p className="text-slate-400 font-medium text-sm sm:text-base">Control de lotes e ingresos</p>
           </div>
-          <div className="flex-1 max-w-md">
-            <div className="relative">
-              <input 
-                type="text" 
-                value={refSearch}
-                onChange={(e) => setRefSearch(e.target.value)}
-                placeholder="Número de referencia..."
-                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-[24px] focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900 shadow-sm text-sm"
-              />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
+          <div className="flex flex-wrap items-center gap-3 flex-1">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={refSearch}
+                  onChange={(e) => setRefSearch(e.target.value)}
+                  placeholder="Número de referencia..."
+                  className="w-full px-6 py-4 bg-white border border-slate-200 rounded-[24px] focus:ring-4 focus:ring-blue-100 transition-all font-semibold text-slate-900 shadow-sm text-sm"
+                />
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                </div>
               </div>
             </div>
+            <button
+              onClick={() => setFilterSinProcesar(v => !v)}
+              className={`px-5 py-3 rounded-[20px] font-black text-xs uppercase tracking-wider transition-all border ${filterSinProcesar ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-100 scale-105' : 'bg-white text-red-400 border-red-200 hover:border-red-400 hover:scale-105'}`}
+            >
+              Mostrar lotes sin procesar
+            </button>
           </div>
         </div>
         <button onClick={handleStart} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
@@ -649,8 +659,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                     {/* Izquierda: Confeccionista */}
                     <div className="flex-shrink-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{r.batchCode}</span>
-                        <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{r.createdAt}</span>
+                        <span className={`text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter ${['0', '00', '000', '0000'].includes(r.batchCode?.trim()) ? 'bg-red-100 text-red-600' : 'bg-blue-50 text-blue-500'}`}>{r.batchCode}</span>
+                        <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{formatAuditDate(r.createdAt)}</span>
                       </div>
                       <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
                     </div>
@@ -726,17 +736,16 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                             <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-200">
                               <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha de llegada lote: <span className="text-slate-900 font-black">{formatArrivalDate(r.arrivalDate)}</span></p>
                             </div>
+                            {r.observacion && (
+                              <div className="mt-4 pt-4 border-t border-slate-200 flex items-start gap-2 md:justify-end">
+                                <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                  <span className="text-white text-[9px] font-black leading-none">!</span>
+                                </div>
+                                <p className="text-xs sm:text-sm font-bold text-orange-600">{r.observacion}</p>
+                              </div>
+                            )}
                          </div>
                       </div>
-
-                      {r.observacion && (
-                        <div className="flex items-start gap-2 px-1 pb-2">
-                          <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <span className="text-white text-[9px] font-black leading-none">!</span>
-                          </div>
-                          <p className="text-xs sm:text-sm font-bold text-orange-600">{r.observacion}</p>
-                        </div>
-                      )}
 
                       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
                          <div className="overflow-x-auto">
@@ -750,7 +759,9 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                               <tbody className="divide-y divide-slate-50">
                                   {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
                                     <tr key={ref}>
-                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">{ref}</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">
+                                        {ref}  -  <span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{referencesMaster.find(r => r.id === ref)?.description || ''}</span>
+                                      </td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
                                     </tr>
                                   ))}

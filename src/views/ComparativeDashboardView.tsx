@@ -117,10 +117,15 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
         };
       }).filter(v => v.pedidos > 0);
 
-      // Diseñadoras
-      const disenadorasSet = [...new Set(maletaReferences.map(r => r.designer).filter(Boolean))];
-      const disenadorasList = disenadorasSet.map(designerName => {
-        const refsCreadas = maletaReferences.filter(r => r.designer === designerName);
+      // Diseñadoras (case-insensitive, agrupado en mayúsculas)
+      const disenadorasMap = new Map<string, typeof maletaReferences>();
+      maletaReferences.filter(r => r.designer).forEach(r => {
+        const key = r.designer.toUpperCase();
+        if (!disenadorasMap.has(key)) disenadorasMap.set(key, []);
+        disenadorasMap.get(key)!.push(r);
+      });
+
+      const disenadorasList = Array.from(disenadorasMap.entries()).map(([designerName, refsCreadas]) => {
         const refsCreadasIds = refsCreadas.map(r => r.id);
         const refsVendidasDesigner = refsCreadasIds.filter(refId => correriaOrders.some(order => order.items.some(item => item.reference === refId && item.quantity > 0)));
 
@@ -208,9 +213,12 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
   }, [filteredCorrerias]);
 
   const allDesigners = useMemo(() => {
-    const names = new Set<string>();
-    filteredCorrerias.forEach(c => c.disenadoras.forEach(d => names.add(d.nombre)));
-    return Array.from(names).sort();
+    const names = new Map<string, string>();
+    filteredCorrerias.forEach(c => c.disenadoras.forEach(d => {
+      const key = d.nombre.toUpperCase();
+      if (!names.has(key)) names.set(key, key);
+    }));
+    return Array.from(names.values()).sort();
   }, [filteredCorrerias]);
 
   const getFulfillmentColor = (percentage: number) => {
@@ -545,7 +553,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                               {vData ? (
                                 vendorView === 'units' ? (
                                   <div className="inline-flex flex-col items-center px-5 py-3 rounded-2xl border shadow-sm transition-transform hover:scale-105 bg-blue-100 text-blue-700 border-blue-200">
-                                    <span className="text-lg font-black tracking-tighter leading-none">{vData.undDespachadas} / {vData.undVendidas}</span>
+                                    <span className="text-lg font-black tracking-tighter leading-none">{vData.undVendidas} / {vData.undDespachadas}</span>
                                     <div className="flex items-center gap-1 mt-1.5">
                                       <span className="text-[10px] font-black uppercase tracking-widest">{vData.cumplimientoUnd.toFixed(1)}%</span>
                                       <span className="text-[8px] font-bold uppercase opacity-60 tracking-tighter">Cumpl.</span>
@@ -553,7 +561,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                                   </div>
                                 ) : vendorView === 'value' ? (
                                   <div className="inline-flex flex-col items-center px-5 py-3 rounded-2xl border shadow-sm transition-transform hover:scale-105 bg-emerald-100 text-emerald-700 border-emerald-200">
-                                    <span className="text-[13px] font-black tracking-tighter leading-none whitespace-nowrap">{formatCompactCur(vData.valorDespachado)} / {formatCompactCur(vData.valorVendido)}</span>
+                                    <span className="text-[13px] font-black tracking-tighter leading-none whitespace-nowrap">{formatCompactCur(vData.valorVendido)} / {formatCompactCur(vData.valorDespachado)}</span>
                                     <div className="flex items-center gap-1 mt-1.5">
                                       <span className="text-[10px] font-black uppercase tracking-widest">{vData.cumplimientoVlr.toFixed(1)}%</span>
                                       <span className="text-[8px] font-bold uppercase opacity-60 tracking-tighter">Vlr.</span>
@@ -583,6 +591,34 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                     );
                   })}
                 </tbody>
+                <tfoot className="bg-slate-100 border-t-2 border-slate-300">
+                  <tr>
+                    <td className="px-8 py-4 font-black text-slate-700 uppercase text-xs sticky left-0 bg-slate-100 z-10">Totales</td>
+                    {filteredCorrerias.map(c => {
+                      const totUnd = c.vendedores.reduce((acc, v) => ({ vend: acc.vend + v.undVendidas, desp: acc.desp + v.undDespachadas, vVend: acc.vVend + v.valorVendido, vDesp: acc.vDesp + v.valorDespachado, desc: acc.desc + (v.descuentos || 0) }), { vend: 0, desp: 0, vVend: 0, vDesp: 0, desc: 0 });
+                      return (
+                        <td key={c.id} className="px-8 py-4 text-center">
+                          {vendorView === 'units' ? (
+                            <div className="inline-flex flex-col items-center px-4 py-2 rounded-xl bg-blue-600 text-white shadow-sm">
+                              <span className="text-sm font-black">{formatNum(totUnd.vend)} / {formatNum(totUnd.desp)}</span>
+                              <span className="text-[9px] font-black uppercase opacity-80">{totUnd.vend > 0 ? ((totUnd.desp / totUnd.vend) * 100).toFixed(1) : '0.0'}%</span>
+                            </div>
+                          ) : vendorView === 'value' ? (
+                            <div className="inline-flex flex-col items-center px-4 py-2 rounded-xl bg-emerald-600 text-white shadow-sm">
+                              <span className="text-sm font-black whitespace-nowrap">{formatCompactCur(totUnd.vVend)} / {formatCompactCur(totUnd.vDesp)}</span>
+                              <span className="text-[9px] font-black uppercase opacity-80">{totUnd.vVend > 0 ? ((totUnd.vDesp / totUnd.vVend) * 100).toFixed(1) : '0.0'}%</span>
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center px-4 py-2 rounded-xl bg-rose-600 text-white shadow-sm">
+                              <span className="text-sm font-black">{formatCur(totUnd.desc)}</span>
+                            </div>
+                          )}
+                        </td>
+                      );
+                    })}
+                    <td className="px-8 py-4 text-center bg-indigo-50/10"></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </section>
@@ -623,7 +659,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                           {designerName}
                         </td>
                         {filteredCorrerias.map(c => {
-                          const dData = c.disenadoras.find(d => d.nombre === designerName);
+                          const dData = c.disenadoras.find(d => d.nombre.toUpperCase() === designerName);
                           if (dData) {
                             totalSuccess += dData.porcentajePedidas;
                             count++;
@@ -632,7 +668,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                             <td key={c.id} className="px-4 py-3 text-center">
                               {dData ? (
                                 <div className="inline-flex flex-col items-center px-4 py-2 rounded-2xl border shadow-sm transition-transform hover:scale-105 bg-rose-50 text-rose-500 border-rose-200">
-                                  <span className="text-lg font-black tracking-tighter leading-none">{dData.refVendidas} / {dData.refCreadas}</span>
+                                  <span className="text-lg font-black tracking-tighter leading-none">{dData.refCreadas} / {dData.refVendidas}</span>
                                   <div className="flex items-center gap-1 mt-1.5">
                                     <span className="text-[10px] font-black uppercase tracking-widest">{dData.porcentajePedidas.toFixed(1)}%</span>
                                     <span className="text-[8px] font-bold uppercase opacity-60 tracking-tighter">Éxito</span>
@@ -653,6 +689,25 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                     );
                   })}
                 </tbody>
+                <tfoot className="bg-slate-100 border-t-2 border-slate-300">
+                  <tr>
+                    <td className="px-8 py-4 font-black text-slate-700 uppercase text-xs sticky left-0 bg-slate-100 z-10">Totales</td>
+                    {filteredCorrerias.map(c => {
+                      const totCreadas = c.disenadoras.reduce((acc, d) => acc + d.refCreadas, 0);
+                      const totVendidas = c.disenadoras.reduce((acc, d) => acc + d.refVendidas, 0);
+                      const pct = totCreadas > 0 ? ((totVendidas / totCreadas) * 100).toFixed(1) : '0.0';
+                      return (
+                        <td key={c.id} className="px-8 py-4 text-center">
+                          <div className="inline-flex flex-col items-center px-4 py-2 rounded-xl bg-rose-600 text-white shadow-sm">
+                            <span className="text-sm font-black">{totCreadas} / {totVendidas}</span>
+                            <span className="text-[9px] font-black uppercase opacity-80">{pct}% Éxito</span>
+                          </div>
+                        </td>
+                      );
+                    })}
+                    <td className="px-8 py-4 text-center bg-rose-50/10"></td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
           </section>

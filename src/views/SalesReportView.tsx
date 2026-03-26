@@ -14,7 +14,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportConfig, setReportConfig] = useState({
-    includeDespachadas: true,
+    includeDespachadas: false,
     sortBy: 'reference', // 'reference' o 'vendidas'
     format: 'pdf', // 'pdf' o 'excel'
     includeZeroSales: true // incluir referencias con 0 vendidas
@@ -39,6 +39,14 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   useEffect(() => {
     loadNovedades(selectedCorreriaId);
   }, [selectedCorreriaId, loadNovedades]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowReportModal(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleOpenEditModal = () => {
     setEditNovedadesLines(
@@ -268,11 +276,13 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       };
     }).filter(v => v.pedidos > 0); // Solo vendedores con pedidos
 
-    // Análisis por diseñadora
-    const disenadoras = [...new Set(maletaReferences.map(r => r.designer))].filter(Boolean);
+    // Análisis por diseñadora (case-insensitive, agrupado en mayúsculas)
+    const disenadoras = [...new Map(
+      maletaReferences.filter(r => r.designer).map(r => [r.designer.toUpperCase(), r.designer.toUpperCase()])
+    ).values()];
     
     const disenadorasData = disenadoras.map(designer => {
-      const refsCreadas = maletaReferences.filter(r => r.designer === designer);
+      const refsCreadas = maletaReferences.filter(r => r.designer?.toUpperCase() === designer);
       const refIds = refsCreadas.map(r => r.id);
 
       const refsVendidasDesigner = refIds.filter(refId => {
@@ -1299,16 +1309,6 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                 </label>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
-                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
-                      reportConfig.includeDespachadas
-                        ? 'bg-blue-300 text-blue-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-                    }`}
-                  >
-                    Sí
-                  </button>
-                  <button
                     onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       !reportConfig.includeDespachadas
@@ -1317,6 +1317,16 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     }`}
                   >
                     No
+                  </button>
+                  <button
+                    onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
+                    className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
+                      reportConfig.includeDespachadas
+                        ? 'bg-blue-300 text-blue-900 shadow-sm'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    Sí
                   </button>
                 </div>
               </div>
