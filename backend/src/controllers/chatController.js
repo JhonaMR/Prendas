@@ -225,12 +225,14 @@ const getUnreadMessages = async (req, res) => {
     // Obtener conversaciones con no leídos
     const conversationsResult = await query(`
       SELECT
-        sender_id as "userId",
+        m.sender_id as "userId",
+        u.name as "userName",
         COUNT(*) as "unreadCount"
-      FROM messages
-      WHERE receiver_id = $1 AND read = false AND DATE(created_at) = CURRENT_DATE
-      GROUP BY sender_id
-      ORDER BY MAX(created_at) DESC
+      FROM messages m
+      JOIN users u ON u.id = m.sender_id
+      WHERE m.receiver_id = $1 AND m.read = false AND DATE(m.created_at) = CURRENT_DATE
+      GROUP BY m.sender_id, u.name
+      ORDER BY MAX(m.created_at) DESC
     `, [currentUserId]);
 
     res.json({

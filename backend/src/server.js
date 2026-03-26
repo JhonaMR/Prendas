@@ -8,19 +8,25 @@
 const path = require('path');
 const fs = require('fs');
 
-// Determinar cuál archivo .env cargar basado en el nombre del proceso PM2
+// Determinar cuál archivo .env cargar
+// Prioridad: ENV_FILE variable > nombre proceso PM2 > NODE_ENV > default
 let envFile = '.env';
 const processName = process.env.pm_id ? process.env.name : '';
 
-if (process.env.NODE_ENV === 'development' && fs.existsSync(path.join(__dirname, '../.env.dev'))) {
+if (process.env.ENV_FILE) {
+  // Permite forzar un .env específico: ENV_FILE=.env.dev node src/server.js
+  envFile = process.env.ENV_FILE;
+} else if (process.env.NODE_ENV === 'development' && fs.existsSync(path.join(__dirname, '../.env.dev'))) {
   // Desarrollo local: usar .env.dev si existe
   envFile = '.env.dev';
 } else if (processName.includes('melas')) {
   envFile = '.env.melas';
 } else if (processName.includes('plow')) {
   envFile = '.env.prendas';
+} else if (process.env.NODE_ENV === 'development' && fs.existsSync(path.join(__dirname, '../../.env.dev'))) {
+  // Entorno de desarrollo local
+  envFile = '../../.env.dev';
 } else if (fs.existsSync(path.join(__dirname, '../.env.melas'))) {
-  // Si no hay nombre de proceso, intentar detectar por archivo
   envFile = '.env.melas';
 } else {
   envFile = '.env.prendas';

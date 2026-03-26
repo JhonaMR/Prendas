@@ -5,7 +5,7 @@ echo.
 echo Deteniendo todos los procesos...
 echo.
 
-cd /d "C:\Users\luisf\OneDrive\Desktop\Proyecto\Prendas"
+cd /d "G:\COMPARTIR\Proyecto\Prendas"
 
 pm2 stop all
 pm2 delete all

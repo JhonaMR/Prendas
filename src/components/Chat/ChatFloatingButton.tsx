@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { useChat } from '../../hooks/useChat';
 
 export const ChatFloatingButton: React.FC = () => {
-  const { unreadCount, openContactsModal } = useChat();
+  const { openContactsModal, pendingUserIds } = useChat();
+  const unreadCount = pendingUserIds.size;
 
   return (
     <button

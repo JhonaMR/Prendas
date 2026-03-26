@@ -15,6 +15,7 @@ interface ReceptionViewProps {
   confeccionistasMaster?: Confeccionista[];
   clientsMaster?: any[];  
   onAddReception?: (reception: any) => Promise<any>;
+  onDeleteReception?: (id: string) => Promise<any>;
   ReturnReceptionComponent?: React.ComponentType<any>;
   state?: AppState;
   directToBatch?: boolean;
@@ -28,6 +29,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   confeccionistasMaster = [], 
   clientsMaster = [],
   onAddReception,
+  onDeleteReception,
   ReturnReceptionComponent,
   state,
   directToBatch = false
@@ -52,8 +54,10 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [incompleteUnits, setIncompleteUnits] = useState(0);
   const [hasIncomplete, setHasIncomplete] = useState<boolean | null>(null);
   const [isPacked, setIsPacked] = useState<boolean | null>(null);
+  const [hasMuestra, setHasMuestra] = useState<boolean | null>(null);
   const [bagQuantity, setBagQuantity] = useState(0);
   const [items, setItems] = useState<ItemEntry[]>([]);
+  const [observacion, setObservacion] = useState('');
 
   const handleStart = () => {
     setReceptionType('batch');
@@ -69,9 +73,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setIncompleteUnits(0);
     setHasIncomplete(null);
     setIsPacked(null);
+    setHasMuestra(null);
     setBagQuantity(0);
     setItems([]);
     setAffectsInventory(true);
+    setObservacion('');
   };
 
   const handleEdit = (lot: BatchReception) => {
@@ -93,9 +99,22 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setIncompleteUnits(lot.incompleteUnits || 0);
     setHasIncomplete((lot.incompleteUnits || 0) > 0);
     setIsPacked(lot.isPacked ?? null);
+    setHasMuestra(lot.hasMuestra ?? false);
     setBagQuantity(lot.bagQuantity || 0);
     setItems(lot.items);
     setAffectsInventory(lot.affectsInventory !== false);
+    setObservacion(lot.observacion || '');
+  };
+
+  const handleDelete = async (lot: BatchReception) => {
+    if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+      alert("Acceso administrativo requerido para eliminar.");
+      return;
+    }
+    if (!window.confirm(`¿Eliminar la recepción "${lot.batchCode}" de ${lot.confeccionista}? Esta acción no se puede deshacer.`)) return;
+    if (onDeleteReception) {
+      await onDeleteReception(lot.id);
+    }
   };
 
   const filteredConf = confeccionistasMaster.filter(c => {
@@ -195,13 +214,15 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       chargeUnits,
       incompleteUnits: hasIncomplete ? incompleteUnits : 0,
       isPacked: isPacked ?? false,
+      hasMuestra: hasMuestra ?? false,
       bagQuantity: bagQuantity || 0,
       items,
       receivedBy: editingLot ? editingLot.receivedBy : user.name,
       createdAt: editingLot ? editingLot.createdAt : new Date().toISOString(),
       arrivalDate,
       editLogs: editingLot ? [...(editingLot.editLogs || []), { user: user.name, date: new Date().toISOString() }] : [],
-      affectsInventory
+      affectsInventory,
+      observacion: observacion.trim() || null
     };
 
     // ========== GUARDAR EN BACKEND ==========
@@ -378,8 +399,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </div>
           </div>
 
-          {/* Row 2: Status Toggles (Segundas, Empacado, Inventario) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {/* Row 2: Status Toggles (Segundas, Empacado, Muestra, Inventario) */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Tiene Segundas?</label>
               <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
@@ -409,6 +430,20 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </div>
 
             <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase text-emerald-500 tracking-widest px-4">¿Tiene Muestra?</label>
+              <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
+                <button 
+                  onClick={() => setHasMuestra(true)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasMuestra === true ? 'bg-emerald-500 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >SÍ</button>
+                <button 
+                  onClick={() => setHasMuestra(false)} 
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasMuestra === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                >NO</button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Inventario</label>
               <button 
                 onClick={() => setAffectsInventory(!affectsInventory)} 
@@ -423,7 +458,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
           </div>
 
           {/* Row 3: Special Units Consolidated */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-4">
             {/* Cobros */}
             <div className="space-y-3">
               <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Cobros</label>
@@ -488,6 +523,18 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                   className="flex-1 bg-transparent border-none focus:ring-0 font-black text-slate-900 text-sm"
                 />
               </div>
+            </div>
+
+            {/* Observación */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase text-orange-500 tracking-widest px-4">Observación</label>
+              <textarea
+                value={observacion}
+                onChange={e => setObservacion(e.target.value)}
+                placeholder="Novedad o comentario..."
+                rows={2}
+                className="w-full px-4 py-2 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-100 transition-all font-semibold text-slate-900 text-sm resize-none"
+              />
             </div>
           </div>
         </div>
@@ -596,7 +643,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
               return (
                 <div key={r.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
                   <div 
-                    className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer"
+                    className="p-3 sm:p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 cursor-pointer"
                     onClick={() => setExpandedId(isExpanded ? null : r.id)}
                   >
                     {/* Izquierda: Confeccionista */}
@@ -612,6 +659,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                     <div className="flex items-center justify-end w-full md:w-auto gap-6 flex-shrink-0">
                       {/* Referencias y Cantidades */}
                       <div className="flex flex-wrap items-center justify-end gap-4">
+                        {r.observacion && (
+                          <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-white text-[9px] font-black leading-none">!</span>
+                          </div>
+                        )}
                         {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
                           <div key={ref} className="flex items-center gap-1.5">
                             <span className="text-sm sm:text-base font-black text-blue-600">{ref}</span>
@@ -624,6 +676,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                       <div className="flex flex-wrap gap-2 items-center">
                         <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty}</span></span>
                         {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segundas</span>}
+                        {r.hasMuestra && <span className="text-emerald-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Muestra</span>}
                         {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
                         {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc. {r.incompleteUnits}</span> : null}
                         {r.isPacked && <span className="text-teal-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span> Empacado</span>}
@@ -632,9 +685,14 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                       </div>
 
                       {/* Botones */}
-                      <div className="flex items-center gap-3">
-                        <button onClick={(e) => { e.stopPropagation(); handleEdit(r); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                      <div className="flex flex-row items-center gap-2">
+                        <button onClick={(e) => { e.stopPropagation(); handleEdit(r); }} className="p-2 bg-slate-50 rounded-xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
                           <Icons.Edit />
+                        </button>
+                        <button onClick={(e) => { e.stopPropagation(); handleDelete(r); }} className="p-2 bg-slate-50 rounded-xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 sm:w-5 sm:h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                          </svg>
                         </button>
                         <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
@@ -658,6 +716,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                 {r.incompleteUnits && r.incompleteUnits > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-purple-500 uppercase">INCOMPLETAS: {r.incompleteUnits} unidades</p> : null}
                                 <p className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase">{r.isPacked ? 'LOTE EMPACADO' : 'LOTE NO EMPACADO'}</p>
                                 {r.bagQuantity && r.bagQuantity > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-teal-600 uppercase">TALEGOS: {r.bagQuantity}</p> : null}
+                                <p className="text-[9px] sm:text-[10px] font-black uppercase" style={{ color: r.hasMuestra ? '#10b981' : '#94a3b8' }}>{r.hasMuestra ? 'CON MUESTRA' : 'SIN MUESTRA'}</p>
                              </div>
                          </div>
                          <div className="md:text-right">
@@ -669,6 +728,15 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                             </div>
                          </div>
                       </div>
+
+                      {r.observacion && (
+                        <div className="flex items-start gap-2 px-1 pb-2">
+                          <div className="w-4 h-4 bg-orange-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <span className="text-white text-[9px] font-black leading-none">!</span>
+                          </div>
+                          <p className="text-xs sm:text-sm font-bold text-orange-600">{r.observacion}</p>
+                        </div>
+                      )}
 
                       <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
                          <div className="overflow-x-auto">

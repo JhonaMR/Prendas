@@ -64,6 +64,8 @@ class ApiService {
       backendPort = '3000'; // PLOW
     } else if (port === '5174' || port === '3001') {
       backendPort = '3001'; // MELAS
+    } else if (port === '5175' || port === '5000') {
+      backendPort = '5000'; // DEV
     }
     
     return `${protocol}//${hostname}:${backendPort}/api`;
@@ -170,6 +172,14 @@ class ApiService {
       
       // 3.1 Use response.ok as source of truth
       if (!response.ok) {
+        // Token expirado o no autorizado — cerrar sesión limpiamente
+        if (response.status === 401) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('current_user');
+          window.location.href = '/login';
+          return { success: false, message: 'Sesión expirada' };
+        }
+
         // 1.4 Add error logging with full context
         console.warn(`[${timestamp}] ⚠️ Response not OK:`, {
           status: response.status,
@@ -1106,11 +1116,13 @@ class ApiService {
         chargeUnits: reception.chargeUnits,
         incompleteUnits: reception.incompleteUnits,
         isPacked: reception.isPacked,
+        hasMuestra: reception.hasMuestra,
         bagQuantity: reception.bagQuantity,
         items: reception.items,
         receivedBy: reception.receivedBy,
         arrivalDate: reception.arrivalDate,
-        affectsInventory: reception.affectsInventory
+        affectsInventory: reception.affectsInventory,
+        observacion: reception.observacion || null
       };
 
       const response = await fetch(`${this.getApiUrl()}/receptions`, {
@@ -1147,9 +1159,12 @@ class ApiService {
         chargeUnits: reception.chargeUnits,
         incompleteUnits: reception.incompleteUnits,
         isPacked: reception.isPacked,
+        hasMuestra: reception.hasMuestra,
         bagQuantity: reception.bagQuantity,
         arrivalDate: reception.arrivalDate,
-        affectsInventory: reception.affectsInventory
+        affectsInventory: reception.affectsInventory,
+        items: reception.items,
+        observacion: reception.observacion || null
       };
 
       const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
@@ -1163,6 +1178,21 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al actualizar recepción'
+      };
+    }
+  }
+
+  async deleteReception(id: string): Promise<ApiResponse<void>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/receptions/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse<void>(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al eliminar recepción'
       };
     }
   }

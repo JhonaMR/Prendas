@@ -7,3 +7,4 @@ export { Message } from './Message';
 export { MessagesList } from './MessagesList';
 export { ChatInput } from './ChatInput';
 export { TypingIndicator } from './TypingIndicator';
+export { ChatInitializer } from './ChatInitializer';

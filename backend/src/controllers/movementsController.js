@@ -255,12 +255,14 @@ const getReceptions = async (req, res) => {
                 chargeUnits: reception.charge_units,
                 incompleteUnits: reception.incomplete_units || 0,
                 isPacked: reception.is_packed === true || reception.is_packed === 1,
+                hasMuestra: reception.has_muestra === true || reception.has_muestra === 1,
                 bagQuantity: reception.bag_quantity || 0,
                 items: itemsResult.rows,
                 receivedBy: reception.received_by,
                 createdAt: reception.created_at,
                 arrivalDate: reception.arrival_date,
-                affectsInventory: reception.affects_inventory !== false
+                affectsInventory: reception.affects_inventory !== false,
+                observacion: reception.observacion || null
             };
         }));
 
@@ -285,7 +287,7 @@ const getReceptions = async (req, res) => {
  */
 const createReception = async (req, res) => {
     try {
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, bagQuantity, arrivalDate } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, observacion } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista || !items || !items.length || !receivedBy || !arrivalDate) {
@@ -309,10 +311,12 @@ const createReception = async (req, res) => {
                 chargeUnits: chargeUnits || 0,
                 incompleteUnits: incompleteUnits || 0,
                 isPacked: isPacked || false,
+                hasMuestra: hasMuestra || false,
                 bagQuantity: bagQuantity || 0,
                 receivedBy,
                 arrivalDate,
-                affectsInventory: affectsInventory !== false
+                affectsInventory: affectsInventory !== false,
+                observacion: observacion || null
             },
             items
         );
@@ -329,11 +333,13 @@ const createReception = async (req, res) => {
                 chargeUnits,
                 incompleteUnits: incompleteUnits || 0,
                 isPacked: isPacked || false,
+                hasMuestra: hasMuestra || false,
                 bagQuantity: bagQuantity || 0,
                 items,
                 receivedBy,
                 arrivalDate,
                 affectsInventory: affectsInventory !== false,
+                observacion: observacion || null,
                 createdAt: new Date()
             }
         });
@@ -355,7 +361,7 @@ const createReception = async (req, res) => {
 const updateReception = async (req, res) => {
     try {
         const { id } = req.params;
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory, incompleteUnits, isPacked, bagQuantity, arrivalDate } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, items, observacion } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista) {
@@ -374,10 +380,12 @@ const updateReception = async (req, res) => {
             chargeUnits: chargeUnits || 0,
             incompleteUnits: incompleteUnits || 0,
             isPacked: isPacked || false,
+            hasMuestra: hasMuestra || false,
             bagQuantity: bagQuantity || 0,
             arrivalDate,
-            affectsInventory: affectsInventory !== false
-        });
+            affectsInventory: affectsInventory !== false,
+            observacion: observacion || null
+        }, items);
 
         if (!result) {
             return res.status(404).json({
@@ -398,9 +406,11 @@ const updateReception = async (req, res) => {
                 chargeUnits: result.charge_units,
                 incompleteUnits: result.incomplete_units || 0,
                 isPacked: result.is_packed === true || result.is_packed === 1,
+                hasMuestra: result.has_muestra === true || result.has_muestra === 1,
                 bagQuantity: result.bag_quantity || 0,
                 arrivalDate: result.arrival_date,
                 affectsInventory: result.affects_inventory !== false,
+                observacion: result.observacion || null,
                 receivedBy: result.received_by,
                 createdAt: result.created_at
             }
@@ -411,6 +421,32 @@ const updateReception = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Error al actualizar recepción',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+};
+
+/**
+ * ELIMINAR RECEPCIÓN
+ * DELETE /api/receptions/:id
+ */
+const deleteReception = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await ReceptionService.deleteReception(id);
+
+        if (!result) {
+            return res.status(404).json({ success: false, message: 'Recepción no encontrada' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Recepción eliminada exitosamente' });
+
+    } catch (error) {
+        logger.error('❌ Error al eliminar recepción:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error al eliminar recepción',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
@@ -761,6 +797,24 @@ const createOrder = async (req, res) => {
                     VALUES ($1, $2, $3, $4)`,
                     [id, item.reference, item.quantity, salePrice]
                 );
+
+                // NUEVO: Actualizar production_tracking si vienen los datos (retrocompatible)
+                // Si el item tiene programmed, cut, o inventory, actualizar production_tracking
+                if (item.programmed !== undefined || item.cut !== undefined || item.inventory !== undefined) {
+                    const programmed = item.programmed !== undefined ? item.programmed : 0;
+                    const cut = item.cut !== undefined ? item.cut : 0;
+                    const inventory = item.inventory !== undefined ? item.inventory : 0;
+                    
+                    logger.info(`📊 Creando production_tracking para ${item.reference}:`, { programmed, cut, inventory });
+                    
+                    // UPSERT en production_tracking
+                    await client.query(
+                        `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+                        [item.reference, correriaId, programmed, cut, inventory]
+                    );
+                }
             }
         });
 
@@ -994,6 +1048,24 @@ const updateOrder = async (req, res) => {
                     VALUES ($1, $2, $3, $4)`,
                     [id, item.reference, item.quantity, salePrice]
                 );
+
+                // NUEVO: Actualizar production_tracking si vienen los datos (retrocompatible)
+                // Si el item tiene programmed, cut, o inventory, actualizar production_tracking
+                if (item.programmed !== undefined || item.cut !== undefined || item.inventory !== undefined) {
+                    const programmed = item.programmed !== undefined ? item.programmed : 0;
+                    const cut = item.cut !== undefined ? item.cut : 0;
+                    const inventory = item.inventory !== undefined ? item.inventory : 0;
+                    
+                    logger.info(`📊 Actualizando production_tracking para ${item.reference}:`, { programmed, cut, inventory });
+                    
+                    // UPSERT en production_tracking
+                    await client.query(
+                        `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory)
+                        VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5`,
+                        [item.reference, correriaId, programmed, cut, inventory]
+                    );
+                }
             }
         });
 
@@ -1078,6 +1150,7 @@ module.exports = {
     getReceptions,
     createReception,
     updateReception,
+    deleteReception,
     
     // Despachos
     getDispatches,

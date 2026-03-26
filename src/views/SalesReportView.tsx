@@ -1530,8 +1530,8 @@ const CorreriaAutocomplete: React.FC<{
         onChange={e => setSearch(e.target.value)}
         onFocus={() => { setShowDropdown(true); setSearch(''); }}
         onBlur={handleBlur}
-        placeholder="Buscar..."
-        className="bg-transparent border-none font-black text-sm text-slate-800 focus:ring-0 pr-8 placeholder:text-slate-400"
+        placeholder="Buscar correría..."
+        className="bg-slate-100 border border-slate-300 rounded-xl font-black text-sm text-slate-800 focus:ring-2 focus:ring-slate-400 focus:outline-none px-3 py-1.5 pr-8 placeholder:text-slate-400 min-w-[180px]"
       />
       {showDropdown && (
         <div 

@@ -57,12 +57,6 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       description: 'Registrar ventas realizadas'
     },
     {
-      id: 'salesReport',
-      label: 'Informe de Ventas',
-      icon: <Icons.Reports />,
-      description: 'Ver reporte de ventas'
-    },
-    {
       id: 'orderHistory',
       label: 'Historial de Pedidos',
       icon: <Icons.History />,
@@ -71,26 +65,14 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
     {
       id: 'dispatchControl',
       label: 'Control de Despachos',
-      icon: <Icons.Inventory />,
+      icon: <Icons.DispatchControl />,
       description: 'Controlar despachos realizados'
     },
     {
       id: 'deliveryDates',
       label: 'Fechas de Entrega',
-      icon: <Icons.Inventory />,
+      icon: <Icons.DeliveryDates />,
       description: 'Gestionar fechas de entrega'
-    },
-    {
-      id: 'reports',
-      label: 'Reportes Generales',
-      icon: <Icons.Reports />,
-      description: 'Ver reportes del sistema'
-    },
-    {
-      id: 'masters',
-      label: 'Maestros',
-      icon: <Icons.Masters />,
-      description: 'Gestionar datos maestros'
     },
     {
       id: 'compras',
@@ -101,21 +83,27 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
     {
       id: 'fichas-diseno',
       label: 'Fichas de Diseño',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128A2.25 2.25 0 002.25 18h15.75a2.25 2.25 0 002.247-2.16c.969-2.904-.946-5.514-3.979-5.514-.21 0-.414.014-.614.042a3 3 0 00-5.738-1.128M9.5 16.25v-1.002M15 16.25v-1.002" /></svg>,
+      icon: <Icons.FichasDiseno />,
       description: 'Ver fichas de diseño (solo lectura)'
+    },
+    {
+      id: 'maletas',
+      label: 'Maletas',
+      icon: <Icons.Maletas />,
+      description: 'Gestionar maletas de muestras'
     },
     {
       id: 'fichas-costo',
       label: 'Fichas de Costo',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0l.879-.659m-3.172-2.819a3 3 0 112.4 0m-5.007-7.003h0a3 3 0 016 0h0m-6 8.5h0a3 3 0 016 0h0" /></svg>,
+      icon: <Icons.FichasCosto />,
       description: 'Gestionar precios y costos'
     },
     {
-      id: 'comparativeDashboard',
-      label: 'Dashboard Comparativo',
-      icon: <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 6.75c0-.621.504-1.125 1.125-1.125h2.25C13.496 5.625 14 6.129 14 6.75v13.5c0 .621-.504 1.125-1.125 1.125h-2.25c-.621 0-1.125-.504-1.125-1.125V6.75zm6-6c-.621 0-1.125.504-1.125 1.125v19.5c0 .621.504 1.125 1.125 1.125h2.25c.621 0 1.125-.504 1.125-1.125V1.875c0-.621-.504-1.125-1.125-1.125h-2.25z" /></svg>,
-      description: 'Análisis comparativo'
-    }
+      id: 'reports',
+      label: 'Reportes Generales',
+      icon: <Icons.Reports />,
+      description: 'Consultar reportes del sistema'
+    },
   ];
 
   return (

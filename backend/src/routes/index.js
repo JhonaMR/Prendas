@@ -176,6 +176,7 @@ router.delete('/inventory-movements/:id', verifyToken, preventNonAdminEdit, inve
 router.get('/receptions', verifyToken, movementsController.getReceptions);
 router.post('/receptions', verifyToken, allowReceptionCreate, movementsController.createReception);
 router.put('/receptions/:id', verifyToken, allowAdminOnly, movementsController.updateReception);
+router.delete('/receptions/:id', verifyToken, allowAdminOnly, movementsController.deleteReception);
 
 // ==================== DEVOLUCIONES ====================
 
@@ -208,7 +209,7 @@ router.post('/production/batch', verifyToken, preventNonAdminEdit, movementsCont
 
 router.get('/delivery-dates', verifyToken, getDeliveryDates);
 router.post('/delivery-dates/batch', verifyToken, allowDeliveryDatesCreate, saveDeliveryDatesBatchHandler);
-router.delete('/delivery-dates/:id', verifyToken, allowAdminOnly, deleteDeliveryDateHandler);
+router.delete('/delivery-dates/:id', verifyToken, allowDeliveryDatesCreate, deleteDeliveryDateHandler);
 
 // ==================== IMPORTACIÓN MASIVA ====================
 

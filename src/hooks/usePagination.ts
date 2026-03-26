@@ -31,7 +31,7 @@ export const usePagination = (initialPage = 1, initialLimit = 50): UsePagination
   const goToPage = useCallback((page: number) => {
     setPagination(prev => ({
       ...prev,
-      page: Math.max(1, Math.min(page, prev.totalPages || 1))
+      page: Math.max(1, page)
     }));
   }, []);
 

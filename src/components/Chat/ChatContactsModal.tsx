@@ -6,7 +6,9 @@ export const ChatContactsModal: React.FC = () => {
     isContactsModalOpen,
     closeContactsModal,
     activeUsers,
-    openChat
+    openChat,
+    hasPending,
+    clearPending
   } = useChat();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -89,6 +91,7 @@ export const ChatContactsModal: React.FC = () => {
               <button
                 key={user.id}
                 onClick={() => {
+                  clearPending(user.id);
                   openChat(user.id, user.name);
                   closeContactsModal();
                 }}
@@ -114,7 +117,7 @@ export const ChatContactsModal: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center flex-shrink-0 mr-1">
-                  {user.hasUnreadMessages && (
+                  {hasPending(user.id) && (
                     <span className="flex h-2.5 w-2.5 relative">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>

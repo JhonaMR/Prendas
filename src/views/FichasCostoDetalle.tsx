@@ -110,7 +110,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         <div className="space-y-6 pb-20">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('¿Salir sin guardar?')) onNavigate('fichas-costo'); } else onNavigate('fichas-costo'); }} className="p-3 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
+                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-costo'); } else onNavigate('fichas-costo'); }} className="p-3 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     </button>
                     <div>
@@ -124,7 +124,10 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         <button className="px-4 py-2 bg-yellow-500 text-white font-black rounded-xl uppercase text-xs">Costeo Inicial</button>
                         {[1, 2, 3, 4].map(num => (
                             <button key={num}
-                                onClick={() => num <= numCortes ? onNavigate('fichas-corte-detalle', { referencia, numeroCorte: num }) : (num === numCortes + 1 ? setShowModalCorte(true) : null)}
+                        onClick={() => {
+                                    const navegar = () => num <= numCortes ? onNavigate('fichas-corte-detalle', { referencia, numeroCorte: num }) : (num === numCortes + 1 ? setShowModalCorte(true) : null);
+                                    if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) navegar(); } else navegar();
+                                }}
                                 disabled={num > numCortes + 1}
                                 className={`px-4 py-2 font-black rounded-xl uppercase text-xs transition-all ${num <= numCortes ? 'bg-blue-500 text-white hover:bg-blue-600' : num === numCortes + 1 ? 'bg-slate-200 text-slate-600 hover:bg-slate-300' : 'bg-slate-100 text-slate-300 opacity-50 cursor-not-allowed'}`}>
                                 Corte #{num}
@@ -151,8 +154,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Contabilizar</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(costoTotalGuardado > 0 ? costoTotalGuardado : totales.total, r)); setHasUnsavedChanges(true); }} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(costoTotalGuardado > 0 ? costoTotalGuardado : totales.total, r)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
                         </div>
                         <p className="text-xs text-yellow-700 font-bold italic">Los precios se ajustan automáticamente para terminar en 900</p>
                     </div>

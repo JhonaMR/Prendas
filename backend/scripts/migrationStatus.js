@@ -33,7 +33,7 @@ const dbConfigs = {
     port: process.env.DB_PORT || 5433,
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD,
-    database: 'prendas_dev'
+    database: 'inventory_dev'
   },
   plow: {
     host: process.env.DB_HOST || 'localhost',

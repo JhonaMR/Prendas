@@ -17,6 +17,11 @@ function getVitePort() {
   const pmId = process.env.pm_id;
   const processName = process.env.pm_exec_path || '';
 
+  // Si es entorno de desarrollo local
+  if (process.env.NODE_ENV === 'development' && !pmId) {
+    return 5175;
+  }
+
   // Si es MELAS, usar puerto 5174
   if (pmId === '5' || processName.includes('melas')) {
     return 5174;
@@ -116,10 +121,18 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'import.meta.env.BRAND_NAME': JSON.stringify(vitePort === 5174 ? 'Melas' : 'Plow'),
-      'import.meta.env.BRAND_SHORT': JSON.stringify(vitePort === 5174 ? 'melas' : 'plow'),
-      'import.meta.env.BRAND_COLOR': JSON.stringify(vitePort === 5174 ? '#ef4444' : '#3b82f6'),
-      'import.meta.env.BRAND_DESCRIPTION': JSON.stringify(vitePort === 5174 ? 'Sistema de Gestión - Melas' : 'Sistema de Gestión - Plow')
+      'import.meta.env.BRAND_NAME': JSON.stringify(
+        vitePort === 5174 ? 'Melas' : vitePort === 5175 ? 'Dev' : 'Plow'
+      ),
+      'import.meta.env.BRAND_SHORT': JSON.stringify(
+        vitePort === 5174 ? 'melas' : vitePort === 5175 ? 'dev' : 'plow'
+      ),
+      'import.meta.env.BRAND_COLOR': JSON.stringify(
+        vitePort === 5174 ? '#ef4444' : vitePort === 5175 ? '#8b5cf6' : '#3b82f6'
+      ),
+      'import.meta.env.BRAND_DESCRIPTION': JSON.stringify(
+        vitePort === 5174 ? 'Sistema de Gestión - Melas' : vitePort === 5175 ? 'Sistema de Gestión - DEV' : 'Sistema de Gestión - Plow'
+      )
     },
     resolve: {
       alias: {

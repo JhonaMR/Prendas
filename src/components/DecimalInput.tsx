@@ -11,9 +11,10 @@ interface DecimalInputProps {
     onChange: (value: number) => void;
     readOnly?: boolean;
     className?: string;
+    onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-const DecimalInput: React.FC<DecimalInputProps> = ({ value, onChange, readOnly = false, className = '' }) => {
+const DecimalInput: React.FC<DecimalInputProps> = ({ value, onChange, readOnly = false, className = '', onFocus }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [displayValue, setDisplayValue] = React.useState<string>('');
 
@@ -140,6 +141,7 @@ const DecimalInput: React.FC<DecimalInputProps> = ({ value, onChange, readOnly =
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
             onBlur={handleBlur}
+            onFocus={onFocus}
             readOnly={readOnly}
             className={className}
         />

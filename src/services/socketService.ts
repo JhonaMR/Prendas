@@ -76,6 +76,8 @@ export const socketService = {
    */
   disconnect: () => {
     if (socket) {
+      socket.io.opts.reconnection = false; // Evitar reconexión automática
+      socket.removeAllListeners();
       socket.disconnect();
       socket = null;
       console.log('🔌 Socket desconectado');
