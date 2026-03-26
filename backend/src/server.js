@@ -12,7 +12,10 @@ const fs = require('fs');
 let envFile = '.env';
 const processName = process.env.pm_id ? process.env.name : '';
 
-if (processName.includes('melas')) {
+if (process.env.NODE_ENV === 'development' && fs.existsSync(path.join(__dirname, '../.env.dev'))) {
+  // Desarrollo local: usar .env.dev si existe
+  envFile = '.env.dev';
+} else if (processName.includes('melas')) {
   envFile = '.env.melas';
 } else if (processName.includes('plow')) {
   envFile = '.env.prendas';

@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "develop": "node start-develop.cjs",
     "build": "vite build",
     "preview": "vite preview",
     "test": "jest",

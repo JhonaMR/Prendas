@@ -24,6 +24,9 @@ window.API_CONFIG = {
       return 'https://localhost:3000/api';
     } else if (port === '5174' || port === '3001') {
       return 'https://localhost:3001/api';
+    } else if (port === '5175' || port === '5000') {
+      // Desarrollo local (branch develop)
+      return 'http://localhost:5000/api';
     }
     
     return 'https://localhost:3000/api';
@@ -36,6 +39,8 @@ window.API_CONFIG = {
       return 'plow';
     } else if (port === '5174' || port === '3001') {
       return 'melas';
+    } else if (port === '5175' || port === '5000') {
+      return 'plow';
     } else {
       return 'plow';
     }
