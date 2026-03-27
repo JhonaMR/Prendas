@@ -1,1 +1,165 @@
-if(!self.define){let e,s={};const n=(n,i)=>(n=new URL(n+".js",i).href,s[n]||new Promise(s=>{if("document"in self){const e=document.createElement("script");e.src=n,e.onload=s,document.head.appendChild(e)}else e=n,importScripts(n),s()}).then(()=>{let e=s[n];if(!e)throw new Error(`Module ${n} didn’t register its module`);return e}));self.define=(i,o)=>{const a=e||("document"in self?document.currentScript.src:"")||location.href;if(s[a])return;let r={};const c=e=>n(e,a),l={module:{uri:a},exports:r,require:c};s[a]=Promise.all(i.map(e=>l[e]||c(e))).then(e=>(o(...e),r))}}define(["./workbox-78ef5c9b"],function(e){"use strict";self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"registerSW.js",revision:"1872c500de691dce40960bb85481de07"},{url:"pwa-screenshot-540x720.png",revision:"6ec5c49f05f475a94180de1a5f434d12"},{url:"pwa-screenshot-1280x720.png",revision:"0a8ea40da0de5c8c2d474e0a997e9d72"},{url:"pwa-512x512.png",revision:"b83ab18f1efa09dd7ab6e3355e65a7cb"},{url:"pwa-192x192.png",revision:"83eefe454ea39a58c06be07bb0369afc"},{url:"manifest-generator.js",revision:"1e72b6c64f81f87f0a03454a315248c2"},{url:"index.html",revision:"43234ea5cdfa150719d70263e1128aae"},{url:"icono.ico",revision:"a0b04d76fc0e0e88ccc9c46644b954f9"},{url:"favicon-manager.js",revision:"776cb9dc29cd793d10405b763f03585f"},{url:"config.js",revision:"a02554783dd003e40fb483d5294828ce"},{url:"logos/plow-512x512.png",revision:"b83ab18f1efa09dd7ab6e3355e65a7cb"},{url:"logos/plow-192x192.png",revision:"83eefe454ea39a58c06be07bb0369afc"},{url:"logos/melas-512x512.png",revision:"8d6763832c31e90a08fa48215430ec72"},{url:"logos/melas-192x192.png",revision:"73525b341534c07c7ad8a3fd08828963"},{url:"assets/purify.es-C_uT9hQ1.js",revision:null},{url:"assets/jspdf.es.min-CFOSN8lu.js",revision:null},{url:"assets/index.es-7GKZ1NKS.js",revision:null},{url:"assets/index-BVUtV-wV.js",revision:null},{url:"assets/index-Bnfd_y4M.css",revision:null},{url:"assets/html2canvas.esm-QH1iLAAe.js",revision:null}],{}),e.cleanupOutdatedCaches(),e.registerRoute(new e.NavigationRoute(e.createHandlerBoundToURL("index.html"))),e.registerRoute(/^https:\/\/fonts\.googleapis\.com\/.*/i,new e.CacheFirst({cacheName:"google-fonts-cache",plugins:[new e.ExpirationPlugin({maxEntries:10,maxAgeSeconds:31536e3})]}),"GET"),e.registerRoute(/^https:\/\/fonts\.gstatic\.com\/.*/i,new e.CacheFirst({cacheName:"gstatic-fonts-cache",plugins:[new e.ExpirationPlugin({maxEntries:10,maxAgeSeconds:31536e3})]}),"GET"),e.registerRoute(/\/api\/.*/i,new e.NetworkFirst({cacheName:"api-cache",plugins:[new e.ExpirationPlugin({maxEntries:50,maxAgeSeconds:300})]}),"GET")});
+/**
+ * Copyright 2018 Google Inc. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// If the loader is already loaded, just stop.
+if (!self.define) {
+  let registry = {};
+
+  // Used for `eval` and `importScripts` where we can't get script URL by other means.
+  // In both cases, it's safe to use a global var because those functions are synchronous.
+  let nextDefineUri;
+
+  const singleRequire = (uri, parentUri) => {
+    uri = new URL(uri + ".js", parentUri).href;
+    return registry[uri] || (
+      
+        new Promise(resolve => {
+          if ("document" in self) {
+            const script = document.createElement("script");
+            script.src = uri;
+            script.onload = resolve;
+            document.head.appendChild(script);
+          } else {
+            nextDefineUri = uri;
+            importScripts(uri);
+            resolve();
+          }
+        })
+      
+      .then(() => {
+        let promise = registry[uri];
+        if (!promise) {
+          throw new Error(`Module ${uri} didn’t register its module`);
+        }
+        return promise;
+      })
+    );
+  };
+
+  self.define = (depsNames, factory) => {
+    const uri = nextDefineUri || ("document" in self ? document.currentScript.src : "") || location.href;
+    if (registry[uri]) {
+      // Module is already loading or loaded.
+      return;
+    }
+    let exports = {};
+    const require = depUri => singleRequire(depUri, uri);
+    const specialDeps = {
+      module: { uri },
+      exports,
+      require
+    };
+    registry[uri] = Promise.all(depsNames.map(
+      depName => specialDeps[depName] || require(depName)
+    )).then(deps => {
+      factory(...deps);
+      return exports;
+    });
+  };
+}
+define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
+
+  self.skipWaiting();
+  workbox.clientsClaim();
+
+  /**
+   * The precacheAndRoute() method efficiently caches and responds to
+   * requests for URLs in the manifest.
+   * See https://goo.gl/S9QRab
+   */
+  workbox.precacheAndRoute([{
+    "url": "registerSW.js",
+    "revision": "1872c500de691dce40960bb85481de07"
+  }, {
+    "url": "pwa-screenshot-540x720.png",
+    "revision": "6ec5c49f05f475a94180de1a5f434d12"
+  }, {
+    "url": "pwa-screenshot-1280x720.png",
+    "revision": "0a8ea40da0de5c8c2d474e0a997e9d72"
+  }, {
+    "url": "pwa-512x512.png",
+    "revision": "b83ab18f1efa09dd7ab6e3355e65a7cb"
+  }, {
+    "url": "pwa-192x192.png",
+    "revision": "83eefe454ea39a58c06be07bb0369afc"
+  }, {
+    "url": "manifest-generator.js",
+    "revision": "1e72b6c64f81f87f0a03454a315248c2"
+  }, {
+    "url": "index.html",
+    "revision": "c3af7cecd171f332ba20590fd9113a97"
+  }, {
+    "url": "icono.ico",
+    "revision": "a0b04d76fc0e0e88ccc9c46644b954f9"
+  }, {
+    "url": "favicon-manager.js",
+    "revision": "776cb9dc29cd793d10405b763f03585f"
+  }, {
+    "url": "config.js",
+    "revision": "41b99970bc1614f7fcefc148f9835ec5"
+  }, {
+    "url": "logos/plow-512x512.png",
+    "revision": "b83ab18f1efa09dd7ab6e3355e65a7cb"
+  }, {
+    "url": "logos/plow-192x192.png",
+    "revision": "83eefe454ea39a58c06be07bb0369afc"
+  }, {
+    "url": "logos/melas-512x512.png",
+    "revision": "8d6763832c31e90a08fa48215430ec72"
+  }, {
+    "url": "logos/melas-192x192.png",
+    "revision": "73525b341534c07c7ad8a3fd08828963"
+  }, {
+    "url": "assets/purify.es-C_uT9hQ1.js",
+    "revision": null
+  }, {
+    "url": "assets/jspdf.es.min-DcJEWzB6.js",
+    "revision": null
+  }, {
+    "url": "assets/index.es-CFRJ8Dj9.js",
+    "revision": null
+  }, {
+    "url": "assets/index-_cDNRuYa.css",
+    "revision": null
+  }, {
+    "url": "assets/index-Bqy5XlKL.js",
+    "revision": null
+  }, {
+    "url": "assets/html2canvas.esm-QH1iLAAe.js",
+    "revision": null
+  }], {});
+  workbox.cleanupOutdatedCaches();
+  workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html")));
+  workbox.registerRoute(/^https:\/\/fonts\.googleapis\.com\/.*/i, new workbox.CacheFirst({
+    "cacheName": "google-fonts-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 10,
+      maxAgeSeconds: 31536000
+    })]
+  }), 'GET');
+  workbox.registerRoute(/^https:\/\/fonts\.gstatic\.com\/.*/i, new workbox.CacheFirst({
+    "cacheName": "gstatic-fonts-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 10,
+      maxAgeSeconds: 31536000
+    })]
+  }), 'GET');
+  workbox.registerRoute(/\/api\/.*/i, new workbox.NetworkFirst({
+    "cacheName": "api-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 50,
+      maxAgeSeconds: 300
+    })]
+  }), 'GET');
+
+}));

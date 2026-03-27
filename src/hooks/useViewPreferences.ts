@@ -5,48 +5,38 @@ interface ViewPreferences {
 }
 
 // Obtener URL base de la API dinámicamente
+// Usa window.API_CONFIG como fuente de verdad (igual que api.ts y config.js)
 function getApiUrl(): string {
-  // Primero intentar usar la variable de entorno de Vite
-  const envApiUrl = import.meta.env.VITE_API_URL;
-  if (envApiUrl) {
-    console.log('📍 Usando VITE_API_URL:', envApiUrl);
-    return envApiUrl;
-  }
-  
-  // Fallback: usar window.API_CONFIG si está disponible
+  // Usar window.API_CONFIG si está disponible (fuente de verdad del sistema)
   if (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl) {
     const configUrl = window.API_CONFIG.getApiUrl();
     console.log('📍 Usando window.API_CONFIG:', configUrl);
     return configUrl;
   }
   
-  // Último fallback: construir URL basada en el hostname actual
+  // Fallback: construir URL basada en el hostname/puerto actual
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     const port = window.location.port;
     
-    console.log('🔍 Detectando puerto para API:', { protocol, hostname, port });
-    
-    // Detectar basado en el puerto del frontend
-    let backendPort = '3000'; // Default a Plow
-    
-    if (port === '5174') {
-      backendPort = '3001'; // Melas frontend
-    } else if (port === '5173') {
-      backendPort = '3000'; // Plow frontend
-    } else if (port === '3001') {
-      backendPort = '3001'; // Si está en 3001, es Melas
-    } else if (port === '3000') {
-      backendPort = '3000'; // Si está en 3000, es Plow
+    // IP de red o nombre de equipo (no localhost)
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      const backendPort = (port === '5174' || port === '3001') ? '3001' : '3000';
+      return `${protocol}//${hostname}:${backendPort}/api`;
     }
     
-    const url = `${protocol}//${hostname}:${backendPort}/api`;
-    console.log(`📍 API URL construida (puerto ${port} -> backend ${backendPort}):`, url);
-    return url;
+    // localhost: mapear puerto frontend -> puerto backend
+    if (port === '5173' || port === '3000' || port === '') {
+      return 'https://localhost:3000/api'; // Plow
+    } else if (port === '5174' || port === '3001') {
+      return 'https://localhost:3001/api'; // Melas
+    } else if (port === '5175' || port === '5000') {
+      return 'http://localhost:5000/api';  // Dev local
+    }
   }
   
-  return 'http://localhost:3000/api';
+  return 'https://localhost:3000/api';
 }
 
 export const useViewPreferences = () => {
