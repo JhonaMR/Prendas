@@ -526,6 +526,9 @@ const deleteFichaCosto = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
         }
 
+        // Resetear el estado importada en fichas_diseno
+        await query('UPDATE fichas_diseno SET importada = false WHERE referencia = $1', [referencia]);
+
         return res.json({ success: true, message: 'Ficha eliminada exitosamente' });
     } catch (error) {
         console.error('❌ Error eliminando ficha costo:', error);

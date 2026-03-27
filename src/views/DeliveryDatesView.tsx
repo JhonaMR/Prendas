@@ -30,6 +30,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [usePaginatedView, setUsePaginatedView] = useState(true);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [filterHighPriority, setFilterHighPriority] = useState(false);
+  const [isUndPendientesOpen, setIsUndPendientesOpen] = useState(false);
   const deliveryDatesPagination = usePagination(1, 50);
   
   const hasUnsavedChanges = useRef(false);
@@ -377,6 +378,34 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     return Array.from(seen.values()).sort();
   }, [state.deliveryDates]);
 
+  // Lógica UND pendientes por proceso
+  const undPendientesPorProceso = useMemo(() => {
+    const pending = state.deliveryDates.filter(d => !d.deliveryDate && d.process?.trim());
+
+    // Agrupar por proceso
+    const byProcess = new Map<string, DeliveryDate[]>();
+    pending.forEach(d => {
+      const proc = d.process.trim();
+      if (!byProcess.has(proc)) byProcess.set(proc, []);
+      byProcess.get(proc)!.push(d);
+    });
+
+    return Array.from(byProcess.entries()).map(([proceso, rows]) => {
+      // CANT REF: referencias únicas
+      const uniqueRefs = new Set(rows.map(r => r.referenceId));
+
+      // CANT UND: por cada ref, deduplicar por cantidad y sumar valores únicos
+      const totalUnd = Array.from(uniqueRefs).reduce((total, refId) => {
+        const refRows = rows.filter(r => r.referenceId === refId);
+        const uniqueQtys = new Set(refRows.map(r => r.quantity));
+        const refTotal = Array.from(uniqueQtys).reduce((s, q) => s + q, 0);
+        return total + refTotal;
+      }, 0);
+
+      return { proceso, cantRef: uniqueRefs.size, cantUnd: totalUnd };
+    }).sort((a, b) => a.proceso.localeCompare(b.proceso));
+  }, [state.deliveryDates]);
+
   // Datos paginados
   const paginatedData = useMemo(() => {
     const startIndex = (deliveryDatesPagination.pagination.page - 1) * deliveryDatesPagination.pagination.limit;
@@ -392,6 +421,14 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           <p className="text-slate-500 font-bold text-xs mt-1">Gestión de lotes y cronogramas</p>
         </div>
 
+        <div className="flex items-center gap-3">
+        <button
+          onClick={() => setIsUndPendientesOpen(true)}
+          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all"
+        >
+          Ver UND pendientes
+        </button>
+
         <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
           <button
             onClick={() => {
@@ -406,7 +443,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
               setHideDelivered(false);
             }}
             title="Limpiar todos los filtros"
-            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit mt-5 flex items-center gap-2"
+            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -460,6 +497,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
             </div>
           )}
         </div>
+        </div>
       </div>
 
       {/* CARDS MÉTRICAS */}
@@ -469,26 +507,26 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           className={`bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-3xl border-2 transition-all cursor-pointer ${filterHighPriority ? 'border-red-500 shadow-lg scale-105' : 'border-red-200 hover:border-red-400'}`}
         >
           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2">Lotes de atención prioritaria</p>
-          <p className="text-5xl font-black text-red-700">{metrics.highPriority}</p>
-          <p className="text-[10px] font-bold text-red-500 uppercase mt-1">Lotes con 10 días de retraso</p>
+          <p className="text-5xl font-black text-red-700 text-center">{metrics.highPriority}</p>
+          <p className="text-[10px] font-bold text-red-500 uppercase mt-1 text-center">Lotes con 10 días de retraso</p>
         </button>
 
         <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border border-yellow-200">
           <p className="text-[10px] font-black text-yellow-600 uppercase tracking-widest mb-2">Lotes en proceso</p>
-          <p className="text-5xl font-black text-yellow-700">{metrics.pending}</p>
-          <p className="text-[10px] font-bold text-yellow-500 uppercase mt-1">Pendientes por entregar</p>
+          <p className="text-5xl font-black text-yellow-700 text-center">{metrics.pending}</p>
+          <p className="text-[10px] font-bold text-yellow-500 uppercase mt-1 text-center">Pendientes por entregar</p>
         </div>
 
         <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-3xl border border-pink-200">
           <p className="text-[10px] font-black text-pink-600 uppercase tracking-widest mb-2">Retraso promedio</p>
-          <p className="text-5xl font-black text-pink-700">{metrics.avgDelay}</p>
-          <p className="text-[10px] font-bold text-pink-500 uppercase mt-1">Días respecto a fecha pactada</p>
+          <p className="text-5xl font-black text-pink-700 text-center">{metrics.avgDelay}</p>
+          <p className="text-[10px] font-bold text-pink-500 uppercase mt-1 text-center">Días respecto a fecha pactada</p>
         </div>
 
         <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-3xl border border-green-200">
           <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-2">Eficiencia entrega</p>
-          <p className="text-5xl font-black text-green-700">{metrics.efficiency}%</p>
-          <p className="text-[10px] font-bold text-green-500 uppercase mt-1">Cumplimiento de cronograma</p>
+          <p className="text-5xl font-black text-green-700 text-center">{metrics.efficiency}%</p>
+          <p className="text-[10px] font-bold text-green-500 uppercase mt-1 text-center">Cumplimiento de cronograma</p>
         </div>
       </div>
 
@@ -782,6 +820,89 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         onImport={handleImportData}
         confeccionistas={state.confeccionistas}
       />
+      {/* Modal UND Pendientes */}
+      {isUndPendientesOpen && (
+        <UndPendientesModal
+          data={undPendientesPorProceso}
+          onClose={() => setIsUndPendientesOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+const UndPendientesModal: React.FC<{
+  data: { proceso: string; cantRef: number; cantUnd: number }[];
+  onClose: () => void;
+}> = ({ data, onClose }) => {
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div>
+            <h3 className="font-black text-slate-800 text-lg">UND pendientes por proceso</h3>
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Lotes sin fecha de entrega</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Tabla */}
+        <div className="overflow-y-auto max-h-[70vh]">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 sticky top-0">
+              <tr className="border-b border-slate-200">
+                <th className="px-6 py-3 text-left font-black uppercase text-slate-600 text-xs">Proceso</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-600 text-xs">Cant. Ref</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-600 text-xs">Cant. Und</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan={3} className="px-6 py-10 text-center text-slate-400 font-bold">
+                    No hay lotes pendientes
+                  </td>
+                </tr>
+              ) : (
+                data.map(row => (
+                  <tr key={row.proceso} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-3 font-black text-slate-800">{row.proceso}</td>
+                    <td className="px-4 py-3 text-center font-bold text-blue-600">{row.cantRef}</td>
+                    <td className="px-4 py-3 text-center font-black text-indigo-700 text-base">{row.cantUnd}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+            {data.length > 0 && (
+              <tfoot className="bg-slate-50 border-t-2 border-slate-200">
+                <tr>
+                  <td className="px-6 py-3 font-black text-slate-700 uppercase text-xs">Total</td>
+                  <td className="px-4 py-3 text-center font-black text-blue-700">
+                    {data.reduce((s, r) => s + r.cantRef, 0)}
+                  </td>
+                  <td className="px-4 py-3 text-center font-black text-indigo-700 text-base">
+                    {data.reduce((s, r) => s + r.cantUnd, 0)}
+                  </td>
+                </tr>
+              </tfoot>
+            )}
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

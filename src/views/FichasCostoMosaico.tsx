@@ -27,6 +27,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [disenadoraFilter, setDisenadoraFilter] = useState('');
     const [disenadoraInput, setDisenadoraInput] = useState('');
     const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
+    const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
     const [correriaFilter, setCorreriaFilter] = useState('');
     const [correriaInput, setCorreriaInput] = useState('');
     const [showCorreriaSuggestions, setShowCorreriaSuggestions] = useState(false);
@@ -66,11 +67,12 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
         })();
         const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
+        const matchYear = !yearFilter || (f.createdAt && new Date(f.createdAt).getFullYear().toString() === yearFilter);
         const matchCorreria = !correriaFilter || (() => {
             const ref = (state.references || []).find(r => r.id === f.referencia);
             return ref?.correrias?.includes(correriaFilter);
         })();
-        return matchSearch && matchDisenadora && matchCorreria;
+        return matchSearch && matchDisenadora && matchYear && matchCorreria;
     }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
 
     const pageSize = fichasPagination.pagination.limit;
@@ -118,8 +120,11 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             const data = await response.json();
             if (data.success) {
                 alert('✅ Ficha eliminada exitosamente');
-                const fichasCosto = await apiFichas.getFichasCosto();
-                updateState(prev => ({ ...prev, fichasCosto }));
+                const [fichasCosto, fichasDiseno] = await Promise.all([
+                    apiFichas.getFichasCosto(),
+                    apiFichas.getFichasDiseno()
+                ]);
+                updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
             } else alert('❌ Error: ' + data.message);
         } catch { alert('❌ Error de conexión'); }
     };
@@ -134,7 +139,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="flex flex-wrap gap-3 items-center">
                     {/* Limpiar filtros */}
                     <button
-                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); }}
+                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); }}
                         title="Limpiar filtros"
                         className="p-4 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-2xl transition-colors border border-red-200"
                     >
@@ -142,6 +147,16 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+                    {/* Filtro año */}
+                    <input
+                        type="number"
+                        value={yearFilter}
+                        onChange={e => setYearFilter(e.target.value)}
+                        placeholder="Año..."
+                        min="2000"
+                        max="2099"
+                        className="w-28 px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm"
+                    />
                     {/* Filtro correría */}
                     <div className="relative min-w-[200px]">
                         <input

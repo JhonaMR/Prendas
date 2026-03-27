@@ -870,7 +870,7 @@ const MastersView: React.FC<MastersViewProps> = ({
           }>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
+                <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Ciudad</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredClients.slice((clientsPagination.pagination.page - 1) * clientsPagination.pagination.limit, clientsPagination.pagination.page * clientsPagination.pagination.limit).map(c => {
                     const seller = state.sellers.find(s => s.id === c.sellerId);
@@ -879,6 +879,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                       <td className="px-8 py-4 font-bold text-blue-500">{c.id}</td>
                       <td className="px-8 py-4 font-bold text-slate-500">{c.nit}</td>
                       <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
+                      <td className="px-8 py-4 font-bold text-slate-500">{c.city || '—'}</td>
                       <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{seller?.name || c.sellerId || 'Sin vendedor'}</td>
                       <td className="px-8 py-4 text-right flex justify-end gap-2">
                         <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
@@ -1177,13 +1178,14 @@ const MastersView: React.FC<MastersViewProps> = ({
           }>
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[800px]">
-                <thead><tr className="bg-slate-50/50"><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Ref</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Descripción</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Precio</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Telas / Prom</th><th className="px-6 py-4 text-right">Acción</th></tr></thead>
+                <thead><tr className="bg-slate-50/50"><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Ref</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Descripción</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Precio</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Diseñadora</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Telas / Prom</th><th className="px-6 py-4 text-right">Acción</th></tr></thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredReferences.slice((referencesPagination.pagination.page - 1) * referencesPagination.pagination.limit, referencesPagination.pagination.page * referencesPagination.pagination.limit).map(r => (
                     <tr key={r.id} className="hover:bg-slate-50 transition-colors">
                       <td className="px-6 py-4 font-black text-indigo-600">{r.id}</td>
                       <td className="px-6 py-4 font-black text-slate-900">{r.description}</td>
-                      <td className="px-6 py-4 font-bold text-slate-400">${r.price.toLocaleString()}</td>
+                      <td className="px-6 py-4 font-bold text-slate-400">$ {Math.round(r.price).toLocaleString('es-CO')}</td>
+                      <td className="px-6 py-4 font-bold text-slate-600">{r.designer || <span className="text-slate-300 italic">—</span>}</td>
                       <td className="px-6 py-4 text-[10px] space-y-1">
                         {r.cloth1 ? (
                           <>
@@ -1360,9 +1362,6 @@ const MastersView: React.FC<MastersViewProps> = ({
                const isSoporteUser = u.loginCode === 'SOP' && u.role === UserRole.SOPORTE;
                return (
                <div key={u.id} className={`bg-white p-8 rounded-[40px] border ${isSoporteUser ? 'border-amber-200 bg-amber-50' : 'border-slate-100'} flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden`}>
-                  {isSoporteUser && (
-                    <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded-lg text-[8px] font-black uppercase">Sistema</div>
-                  )}
                   <RoleBadge role={u.role} />
                   <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.SOPORTE ? 'bg-gradient-to-br from-amber-500 to-amber-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}

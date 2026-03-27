@@ -71,8 +71,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
       const referenciasCero = maletaReferences.length - refsVendidas.length;
 
       const ventasTotalesPesos = correriaOrders.reduce((acc, order) => acc + order.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => {
-        const ref = state.references.find(r => r.id === item.reference);
-        return sum + (item.quantity * (ref?.price || 0));
+        return sum + (item.quantity * (item.salePrice || 0));
       }, 0), 0);
 
       const despachosRealesReal = correriaDispatches.reduce((acc, dispatch) => acc + dispatch.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => {
@@ -88,12 +87,14 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
         const undVendidas = sellerOrders.reduce((acc, order) => acc + order.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => sum + item.quantity, 0), 0);
         const undDespachadas = correriaDispatches.filter(d => clientIds.includes(d.clientId)).reduce((acc, dispatch) => acc + dispatch.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => sum + item.quantity, 0), 0);
 
-        const valorVendido = sellerOrders.reduce((acc, order) => acc + order.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => {
+        const valorPrecioLista = sellerOrders.reduce((acc, order) => acc + order.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => {
           const ref = state.references.find(r => r.id === item.reference);
           return sum + (item.quantity * (ref?.price || 0));
         }, 0), 0);
 
-        const valorRealTotal = sellerOrders.filter(order => order.items.some(item => maletaRefIds.includes(item.reference))).reduce((acc, order) => acc + order.totalValue, 0);
+        const valorVendido = sellerOrders.reduce((acc, order) => acc + order.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, item) => {
+          return sum + (item.quantity * (item.salePrice || 0));
+        }, 0), 0);
 
         const valorDespachado = correriaDispatches.filter(d => clientIds.includes(d.clientId)).reduce((acc, dispatch) => acc + dispatch.items.filter(item => maletaRefIds.includes(item.reference)).reduce((sum, dispatchItem) => {
           const salePrice = dispatchItem.salePrice || correriaOrders.find(o => o.clientId === dispatch.clientId)?.items.find(oi => oi.reference === dispatchItem.reference)?.salePrice || 0;
@@ -113,7 +114,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
           cumplimientoUnd: undVendidas > 0 ? (undDespachadas / undVendidas) * 100 : 0,
           cumplimientoVlr: valorVendido > 0 ? (valorDespachado / valorVendido) * 100 : 0,
           vlrDifVentaDesp: valorVendido - valorDespachado,
-          descuentos: valorVendido - valorRealTotal
+          descuentos: valorPrecioLista - valorVendido
         };
       }).filter(v => v.pedidos > 0);
 
@@ -130,8 +131,7 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
         const refsVendidasDesigner = refsCreadasIds.filter(refId => correriaOrders.some(order => order.items.some(item => item.reference === refId && item.quantity > 0)));
 
         const ventasGeneradas = correriaOrders.reduce((acc, order) => acc + order.items.filter(item => refsCreadasIds.includes(item.reference)).reduce((sum, item) => {
-          const ref = state.references.find(r => r.id === item.reference);
-          return sum + (item.quantity * (ref?.price || 0));
+          return sum + (item.quantity * (item.salePrice || 0));
         }, 0), 0);
 
         return {
