@@ -3,7 +3,7 @@
 // Tabla editable de conceptos para fichas
 // ============================================
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { ConceptoFicha, TipoMaterial } from '../../types/typesFichas';
 import DecimalInput from '../DecimalInput';
 
@@ -20,6 +20,21 @@ interface SeccionConceptosProps {
 const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
     titulo, color, conceptos, onChange, readOnly, mostrarTipo = false, totalesOtrosCostos
 }) => {
+    const dragIndex = useRef<number | null>(null);
+    const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+    const handleDragStart = (i: number) => { dragIndex.current = i; };
+    const handleDragOver = (e: React.DragEvent, i: number) => { e.preventDefault(); setDragOverIndex(i); };
+    const handleDrop = (i: number) => {
+        if (dragIndex.current === null || dragIndex.current === i) { setDragOverIndex(null); return; }
+        const arr = [...conceptos];
+        const [moved] = arr.splice(dragIndex.current, 1);
+        arr.splice(i, 0, moved);
+        onChange(arr);
+        dragIndex.current = null;
+        setDragOverIndex(null);
+    };
+    const handleDragEnd = () => { dragIndex.current = null; setDragOverIndex(null); };
     const colorMap = {
         pink: { bg: 'bg-pink-500', text: 'text-pink-700', border: 'border-pink-200', bgLight: 'bg-pink-50' },
         blue: { bg: 'bg-blue-600', text: 'text-blue-700', border: 'border-blue-200', bgLight: 'bg-blue-50' },
@@ -140,6 +155,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                 <table className="w-full text-left text-xs">
                     <thead>
                         <tr className={`${c.bgLight} border-b ${c.border}`}>
+                            {!readOnly && <th className="px-2 py-3 w-8"></th>}
                             <th className="px-4 py-3 font-black text-slate-600 uppercase tracking-widest">Concepto</th>
                             {mostrarTipo && <th className="px-3 py-3 font-black text-slate-600 uppercase tracking-widest w-32">Tipo</th>}
                             <th className="px-3 py-3 font-black text-slate-600 uppercase tracking-widest w-28">U/M</th>
@@ -151,9 +167,20 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                         {conceptos.length === 0 ? (
-                            <tr><td colSpan={mostrarTipo ? 7 : 6} className="px-4 py-8 text-center text-slate-400 italic">No hay conceptos agregados</td></tr>
+                            <tr><td colSpan={mostrarTipo ? (readOnly ? 6 : 7) : (readOnly ? 5 : 6)} className="px-4 py-8 text-center text-slate-400 italic">No hay conceptos agregados</td></tr>
                         ) : conceptos.map((con, i) => (
-                            <tr key={i} className="hover:bg-slate-50 transition-colors">
+                            <tr key={i}
+                                draggable={!readOnly}
+                                onDragStart={() => handleDragStart(i)}
+                                onDragOver={e => handleDragOver(e, i)}
+                                onDrop={() => handleDrop(i)}
+                                onDragEnd={handleDragEnd}
+                                className={`hover:bg-slate-50 transition-colors ${dragOverIndex === i ? `border-t-2 ${c.border}` : ''}`}>
+                                {!readOnly && (
+                                    <td className="px-2 py-3 text-center">
+                                        <span className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing select-none text-base leading-none">⠿</span>
+                                    </td>
+                                )}
                                 <td className="px-4 py-3">
                                     <input type="text" value={con.concepto} onChange={e => actualizar(i, 'concepto', e.target.value)} readOnly={readOnly}
                                         className={`w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold ${c.text} focus:ring-2 focus:ring-blue-100 ${readOnly ? 'cursor-default' : ''}`} />
@@ -207,7 +234,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                     </tbody>
                     <tfoot>
                         <tr className={`${c.bgLight} border-t-2 ${c.border}`}>
-                            <td colSpan={mostrarTipo ? 5 : 4} className="px-4 py-4 font-black text-slate-600 uppercase tracking-widest text-right text-sm">Total {titulo}</td>
+                            <td colSpan={mostrarTipo ? (readOnly ? 4 : 5) : (readOnly ? 3 : 4)} className="px-4 py-4 font-black text-slate-600 uppercase tracking-widest text-right text-sm">Total {titulo}</td>
                             <td className="px-3 py-4 text-right"><span className={`font-black ${c.text} text-xl`}>$ {total.toLocaleString()}</span></td>
                             {!readOnly && <td></td>}
                         </tr>

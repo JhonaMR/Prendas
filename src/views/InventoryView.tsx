@@ -466,11 +466,6 @@ const InventoryView: React.FC<InventoryViewProps> = ({
                       <span className="text-base sm:text-lg font-black text-blue-600 leading-none">{data.available}</span>
                     </div>
 
-                    <div className="px-2 py-1 bg-white rounded-lg shadow-xs border border-slate-100 w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none whitespace-nowrap">Recib:</span>
-                      <span className="text-base sm:text-lg font-black text-slate-800 leading-none">{data.received}</span>
-                    </div>
-
                     <div className="px-2 py-1 bg-purple-50/50 rounded w-24 flex items-center gap-1">
                       <span className="text-[8px] sm:text-[9px] font-black text-purple-400 uppercase leading-none whitespace-nowrap">Ped:</span>
                       <span className="text-base sm:text-lg font-black text-purple-600 leading-none">{data.ordersCount}</span>

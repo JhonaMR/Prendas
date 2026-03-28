@@ -552,19 +552,19 @@ const handleSaveProduction = async () => {
           <p className="text-slate-500 font-bold text-xs mt-1">Campaña: {state.correrias.find(c => c.id === selectedCorreriaId)?.name}</p>
         </div>
         
-        {isAdmin && selectedCorreriaId && (
-          <button 
-            onClick={() => {
-              setSelectedRefsToDepurar([]);
-              setShowDepurarModal(true);
-            }}
-            className="px-6 py-3 bg-red-50 text-red-600 font-black rounded-3xl text-xs uppercase tracking-wider hover:bg-red-100 transition-all shadow-sm border border-red-100 hover:shadow-md"
-          >
-            Depurar maleta
-          </button>
-        )}
-        
-        <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
+        <div className="flex items-center gap-3">
+          {isAdmin && selectedCorreriaId && (
+            <button
+              onClick={() => {
+                setSelectedRefsToDepurar([]);
+                setShowDepurarModal(true);
+              }}
+              className="px-6 py-3 bg-red-50 text-red-600 font-black rounded-3xl text-xs uppercase tracking-wider hover:bg-red-100 transition-all shadow-sm border border-red-100 hover:shadow-md shrink-0"
+            >
+              Depurar maleta
+            </button>
+          )}
+          <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
           <div className="flex flex-col">
             <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Referencia</span>
             <input type="text" value={refFilter} onChange={e => setRefFilter(e.target.value)} placeholder="Ej: 10210" className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-28 border-none focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300" />
@@ -626,6 +626,8 @@ const handleSaveProduction = async () => {
               </button>
             </div>
           )}
+        </div>
+
         </div>
       </div>
       <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 flex flex-col" style={{ height: 'calc(100vh - 220px)' }}>

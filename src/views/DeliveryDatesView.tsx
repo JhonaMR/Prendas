@@ -402,7 +402,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         return total + refTotal;
       }, 0);
 
-      return { proceso, cantRef: uniqueRefs.size, cantUnd: totalUnd };
+      return { proceso, cantEntradas: rows.length, cantRef: uniqueRefs.size, cantUnd: totalUnd, undTotales: rows.reduce((s, d) => s + (d.quantity || 0), 0) };
     }).sort((a, b) => a.proceso.localeCompare(b.proceso));
   }, [state.deliveryDates]);
 
@@ -832,7 +832,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
 };
 
 const UndPendientesModal: React.FC<{
-  data: { proceso: string; cantRef: number; cantUnd: number }[];
+  data: { proceso: string; cantEntradas: number; cantRef: number; cantUnd: number; undTotales: number }[];
   onClose: () => void;
 }> = ({ data, onClose }) => {
   useEffect(() => {
@@ -841,18 +841,26 @@ const UndPendientesModal: React.FC<{
     return () => document.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
+  const totals = {
+    cantEntradas: data.reduce((s, r) => s + r.cantEntradas, 0),
+    cantRef: data.reduce((s, r) => s + r.cantRef, 0),
+    cantUnd: data.reduce((s, r) => s + r.cantUnd, 0),
+    undTotales: data.reduce((s, r) => s + r.undTotales, 0),
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh]">
+
+        {/* Header con gradiente */}
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-5 flex items-center justify-between shrink-0">
           <div>
-            <h3 className="font-black text-slate-800 text-lg">UND pendientes por proceso</h3>
-            <p className="text-[10px] font-bold text-slate-400 uppercase">Lotes sin fecha de entrega</p>
+            <h3 className="font-black text-white text-xl tracking-tight">UND pendientes por proceso</h3>
+            <p className="text-indigo-200 text-xs font-semibold uppercase tracking-widest mt-0.5">Lotes sin fecha de entrega</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors"
+            className="p-2 rounded-xl bg-white/10 hover:bg-white/25 text-white transition-colors"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -860,46 +868,65 @@ const UndPendientesModal: React.FC<{
           </button>
         </div>
 
+        {/* Totales resumen */}
+        {data.length > 0 && (
+          <div className="grid grid-cols-4 divide-x divide-slate-100 bg-slate-50 border-b border-slate-200 shrink-0">
+            {[
+              { label: 'Lotes', value: totals.cantEntradas, color: 'text-slate-700' },
+              { label: 'Cant. Ref', value: totals.cantRef, color: 'text-blue-600' },
+              { label: 'Cant. Und', value: totals.cantUnd, color: 'text-indigo-600' },
+              { label: 'Und. Totales', value: totals.undTotales, color: 'text-emerald-600' },
+            ].map(({ label, value, color }) => (
+              <div key={label} className="flex flex-col items-center py-3 px-2">
+                <span className={`text-2xl font-black ${color}`}>{value.toLocaleString()}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">{label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Tabla */}
-        <div className="overflow-y-auto max-h-[70vh]">
+        <div className="overflow-y-auto flex-1">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 sticky top-0">
-              <tr className="border-b border-slate-200">
-                <th className="px-6 py-3 text-left font-black uppercase text-slate-600 text-xs">Proceso</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-600 text-xs">Cant. Ref</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-600 text-xs">Cant. Und</th>
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-slate-100 border-b border-slate-200">
+                <th className="px-5 py-3 text-left font-black uppercase text-slate-500 text-[11px] tracking-wider">Proceso</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Lotes</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Cant. Ref</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Cant. Und</th>
+                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Und. Totales</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-6 py-10 text-center text-slate-400 font-bold">
+                  <td colSpan={5} className="px-6 py-16 text-center text-slate-400 font-bold">
                     No hay lotes pendientes
                   </td>
                 </tr>
               ) : (
-                data.map(row => (
-                  <tr key={row.proceso} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-3 font-black text-slate-800">{row.proceso}</td>
-                    <td className="px-4 py-3 text-center font-bold text-blue-600">{row.cantRef}</td>
-                    <td className="px-4 py-3 text-center font-black text-indigo-700 text-base">{row.cantUnd}</td>
+                data.map((row, i) => (
+                  <tr
+                    key={row.proceso}
+                    className={`border-b border-slate-100 hover:bg-indigo-50/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                  >
+                    <td className="px-5 py-3.5 font-black text-slate-800">{row.proceso}</td>
+                    <td className="px-4 py-3.5 text-center">
+                      <span className="inline-block bg-slate-100 text-slate-600 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantEntradas}</span>
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      <span className="inline-block bg-blue-50 text-blue-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantRef}</span>
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      <span className="inline-block bg-indigo-50 text-indigo-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantUnd}</span>
+                    </td>
+                    <td className="px-4 py-3.5 text-center">
+                      <span className="inline-block bg-emerald-50 text-emerald-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.undTotales.toLocaleString()}</span>
+                    </td>
                   </tr>
                 ))
               )}
             </tbody>
-            {data.length > 0 && (
-              <tfoot className="bg-slate-50 border-t-2 border-slate-200">
-                <tr>
-                  <td className="px-6 py-3 font-black text-slate-700 uppercase text-xs">Total</td>
-                  <td className="px-4 py-3 text-center font-black text-blue-700">
-                    {data.reduce((s, r) => s + r.cantRef, 0)}
-                  </td>
-                  <td className="px-4 py-3 text-center font-black text-indigo-700 text-base">
-                    {data.reduce((s, r) => s + r.cantUnd, 0)}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
           </table>
         </div>
       </div>

@@ -249,76 +249,76 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
                     onClick={() => setExpandedId(isExpanded ? null : o.id)}
                   >
-                    <div className="flex-1 space-y-1">
+                    {/* Lado izquierdo: info del cliente, truncado */}
+                    <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
                         <span className="text-[10px] text-slate-300 font-bold">{o.createdAt ? o.createdAt.slice(0, 10) + ' T ' + o.createdAt.slice(11, 16) : ''}</span>
                       </div>
-                      <div className="flex items-center justify-between gap-4 w-full">
-                        <div className="flex items-baseline gap-3 flex-1">
-                          <h3 className="text-lg font-black text-slate-800">{client?.name || 'Cliente'}</h3>
-                          <p className="text-xs font-medium text-slate-500">{client?.address}</p>
-                        </div>
-                        <div className="flex gap-4 md:gap-8 items-center">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleGenerateExcel(o, client, seller);
-                            }}
-                            className="px-4 py-2 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-emerald-200 focus:ring-4 focus:ring-emerald-50 transition-all shadow-sm"
-                            title="Generar pedido Excel"
-                          >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                            </svg>
-                            Generar pedido
-                          </button>
-                          <div className="flex gap-2">
-                            <div className="text-center min-w-[60px]">
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">% OF</p>
-                              <p className="text-xs font-black text-blue-600">
-                                {o.porcentajeOficial !== null && o.porcentajeOficial !== undefined ? o.porcentajeOficial.toFixed(2) : '0.00'}
-                              </p>
-                            </div>
-                            <div className="text-center min-w-[60px]">
-                              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">% RM</p>
-                              <p className="text-xs font-black text-pink-600">
-                                {o.porcentajeRemision !== null && o.porcentajeRemision !== undefined ? o.porcentajeRemision.toFixed(2) : '0.00'}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-center min-w-[140px]">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Despacho</p>
-                            <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
-                              {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
-                            </p>
-                          </div>
-                          <div className="text-center min-w-[140px]">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Despacho</p>
-                            <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
-                              {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
-                            </p>
-                          </div>
-                        </div>
+                      <div className="flex items-baseline gap-3 min-w-0">
+                        <h3 className="text-lg font-black text-slate-800 truncate">{client?.name || 'Cliente'}</h3>
+                        <p className="text-xs font-medium text-slate-500 truncate">{client?.address}</p>
                       </div>
-                      <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Vendedor: {seller?.name}   —   N° Pedido: {o.orderNumber ?? '-'}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest">
+                        <span className="text-pink-500">Vendedor: {seller?.name}</span>
+                        <span className="text-slate-300">   —   </span>
+                        <span className="text-blue-500">N° Pedido: {o.orderNumber ?? '-'}</span>
+                      </p>
                     </div>
-                    <div className="flex items-center gap-6">
-                      <div className="text-right">
-                        <p className="text-[9px] font-black text-slate-300 uppercase">Resumen</p>
-                        <p className="text-sm font-black text-slate-700">{o.items.length} Refs • {o.items.reduce((a, b) => a + b.quantity, 0)} Unid.</p>
+
+                    {/* Lado derecho: controles con ancho fijo */}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleGenerateExcel(o, client, seller); }}
+                        className="px-4 py-2 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-emerald-200 focus:ring-4 focus:ring-emerald-50 transition-all shadow-sm whitespace-nowrap"
+                        title="Generar pedido Excel"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                        </svg>
+                        Generar pedido
+                      </button>
+
+                      <div className="w-[60px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">% OF</p>
+                        <p className="text-xs font-black text-blue-600">
+                          {o.porcentajeOficial !== null && o.porcentajeOficial !== undefined ? o.porcentajeOficial.toFixed(2) : '0.00'}
+                        </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-[9px] font-black text-slate-300 uppercase">Valor Total</p>
+                      <div className="w-[60px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">% RM</p>
+                        <p className="text-xs font-black text-pink-600">
+                          {o.porcentajeRemision !== null && o.porcentajeRemision !== undefined ? o.porcentajeRemision.toFixed(2) : '0.00'}
+                        </p>
+                      </div>
+
+                      <div className="w-[110px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Desp.</p>
+                        <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                          {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                        </p>
+                      </div>
+                      <div className="w-[110px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Desp.</p>
+                        <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                          {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
+                        </p>
+                      </div>
+
+                      <div className="w-[90px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Resumen</p>
+                        <p className="text-sm font-black text-slate-700">{o.items.length} Refs</p>
+                        <p className="text-sm font-black text-slate-700">{o.items.reduce((a, b) => a + b.quantity, 0)} Unid.</p>
+                      </div>
+                      <div className="w-[100px] text-center">
+                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total</p>
                         <p className="text-lg font-black text-blue-600">${o.totalValue.toLocaleString()}</p>
                       </div>
+
                       {isAdmin && (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditOrder(o);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); handleEditOrder(o); }}
                             className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600 hover:text-blue-700"
                             title="Editar pedido"
                           >
@@ -327,10 +327,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             </svg>
                           </button>
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteOrder(o.id);
-                            }}
+                            onClick={(e) => { e.stopPropagation(); handleDeleteOrder(o.id); }}
                             className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 hover:text-red-700"
                             title="Eliminar pedido"
                           >
@@ -340,6 +337,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           </button>
                         </div>
                       )}
+
                       <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
                           <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
