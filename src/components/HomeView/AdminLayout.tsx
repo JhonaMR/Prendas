@@ -149,6 +149,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Dashboard Comparativo',
       icon: <Icons.Dashboard />,
       description: 'Análisis comparativo'
+    },
+    {
+      id: 'productoEnProceso',
+      label: 'Producto en Proceso',
+      icon: <Icons.ProductoEnProceso />,
+      description: 'Control de lotes en confección'
     }
   ];
 
