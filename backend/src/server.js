@@ -74,13 +74,13 @@ app.use(cors(corsOptions));
  * Parser de JSON
  * Permite recibir datos JSON en las peticiones
  */
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 /**
  * Parser de URL-encoded
  * Permite recibir datos de formularios
  */
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 /**
  * Logger simple

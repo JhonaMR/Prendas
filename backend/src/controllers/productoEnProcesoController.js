@@ -36,7 +36,7 @@ const getAll = async (req, res) => {
                 created_at,
                 updated_at
             FROM producto_en_proceso
-            ORDER BY created_at DESC
+            ORDER BY remision DESC
         `);
 
         const rows = result.rows.map(mapRow);
@@ -275,24 +275,32 @@ function toDate(v) {
     return v;
 }
 
+function numStr(v) {
+    if (v == null) return '';
+    const n = parseFloat(v);
+    if (isNaN(n)) return '';
+    // Elimina ceros decimales innecesarios: 120.00 → "120", 120.5 → "120.5"
+    return String(parseFloat(n.toFixed(10)));
+}
+
 function mapRow(r) {
     return {
         id:              r.id,
         confeccionista:  r.confeccionista,
         remision:        r.remision,
         ref:             r.ref,
-        salida:          r.salida != null ? String(r.salida) : '',
+        salida:          numStr(r.salida),
         fechaRemision:   r.fecha_remision ? r.fecha_remision.toISOString().split('T')[0] : '',
-        entrega:         r.entrega != null ? String(r.entrega) : '',
-        segundas:        r.segundas != null ? String(r.segundas) : '',
-        vta:             r.vta != null ? String(r.vta) : '',
-        cobrado:         r.cobrado != null ? String(r.cobrado) : '',
-        incompleto:      r.incompleto != null ? String(r.incompleto) : '',
+        entrega:         numStr(r.entrega),
+        segundas:        numStr(r.segundas),
+        vta:             numStr(r.vta),
+        cobrado:         numStr(r.cobrado),
+        incompleto:      numStr(r.incompleto),
         fechaLlegada:    r.fecha_llegada ? r.fecha_llegada.toISOString().split('T')[0] : '',
-        talegosSalida:   r.talegos_salida != null ? String(r.talegos_salida) : '',
-        talegosEntrega:  r.talegos_entrega != null ? String(r.talegos_entrega) : '',
-        muestrasSalida:  r.muestras_salida != null ? String(r.muestras_salida) : '',
-        muestrasEntrega: r.muestras_entrega != null ? String(r.muestras_entrega) : '',
+        talegosSalida:   numStr(r.talegos_salida),
+        talegosEntrega:  numStr(r.talegos_entrega),
+        muestrasSalida:  numStr(r.muestras_salida),
+        muestrasEntrega: numStr(r.muestras_entrega),
         rowHighlight:    r.row_highlight || null,
         cellHighlights:  r.cell_highlights || {},
         cellComments:    r.cell_comments || {},

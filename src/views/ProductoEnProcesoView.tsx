@@ -23,6 +23,7 @@ interface CellComments {
 
 interface LoteRow {
   id: string;
+  isNew?: boolean;
   confeccionista: string;
   remision: string;
   ref: string;
@@ -109,6 +110,7 @@ const cellHighlightClass = (color: HighlightColor): string => {
 
 const newRow = (): LoteRow => ({
   id: crypto.randomUUID(),
+  isNew: true,
   confeccionista: '', remision: '', ref: '', salida: '',
   fechaRemision: '', entrega: '', segundas: '', vta: '',
   cobrado: '', incompleto: '', fechaLlegada: '',
@@ -253,6 +255,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const [loading, setLoading] = useState(true);
   const [deletedIds, setDeletedIds] = useState<string[]>([]);
   const persistedIds = useRef<Set<string>>(new Set());
+  const dirtyIds = useRef<Set<string>>(new Set());
 
   // Filtros
   const [filterConfeccionista, setFilterConfeccionista] = useState('');
@@ -495,10 +498,18 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       await Promise.all(deletedIds.map(id => api.deleteProductoEnProceso(id)));
       deletedIds.forEach(id => persistedIds.current.delete(id));
       setDeletedIds([]);
-      const result = await api.saveProductoEnProcesoBatch(rows, currentUser?.id);
-      if (result.success && result.data) {
-        result.data.forEach((r: LoteRow) => persistedIds.current.add(r.id));
+      // Solo enviar las filas que cambiaron (nuevas o modificadas)
+      const rowsToSave = rows.filter(r => dirtyIds.current.has(r.id));
+      if (rowsToSave.length > 0) {
+        const result = await api.saveProductoEnProcesoBatch(rowsToSave, currentUser?.id);
+        if (result.success && result.data) {
+          result.data.forEach((r: LoteRow) => persistedIds.current.add(r.id));
+          // Quitar isNew de las filas ya guardadas
+          const savedIds = new Set(result.data.map((r: LoteRow) => r.id));
+          setRows(prev => prev.map(r => savedIds.has(r.id) ? { ...r, isNew: false } : r));
+        }
       }
+      dirtyIds.current.clear();
       setHasUnsavedChanges(false);
     } catch {
       alert('Error al guardar. Intenta de nuevo.');
@@ -631,10 +642,8 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   };
 
   const handleImport = (imported: ImportedLoteRow[]) => {
-    const newRows: LoteRow[] = imported.map(r => ({
-      ...newRow(),
-      ...r,
-    }));
+    const newRows: LoteRow[] = imported.map(r => ({ ...newRow(), ...r }));
+    newRows.forEach(r => dirtyIds.current.add(r.id));
     setRows(prev => [...newRows, ...prev]);
     setHasUnsavedChanges(true);
   };
@@ -703,6 +712,10 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       if (row.fechaLlegada.slice(5, 7) !== filterFechaLlegadaMes) return false;
     } else if (filterFechaLlegadaMes && !row.fechaLlegada) return false;
     return true;
+  }).sort((a, b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return b.remision.localeCompare(a.remision, undefined, { numeric: true, sensitivity: 'base' });
   });
 
   const pagination = usePagination(1, 50);
@@ -731,18 +744,28 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
   const updateRow = useCallback((id: string, field: keyof LoteRow, value: string) => {
     setRows(prev => prev.map(r => r.id === id ? { ...r, [field]: value } : r));
+    dirtyIds.current.add(id);
     setHasUnsavedChanges(true);
   }, []);
 
-  const addRow = () => { setRows(prev => [newRow(), ...prev]); setHasUnsavedChanges(true); };
+  const addRow = () => {
+    const r = newRow();
+    dirtyIds.current.add(r.id);
+    setRows(prev => [r, ...prev]);
+    setHasUnsavedChanges(true);
+  };
 
   const deleteRow = (id: string) => {
     if (rows.length === 1) {
-      setRows([newRow()]);
+      const r = newRow();
+      dirtyIds.current.delete(id);
+      dirtyIds.current.add(r.id);
+      setRows([r]);
       if (persistedIds.current.has(id)) setDeletedIds(prev => [...prev, id]);
       setHasUnsavedChanges(true);
       return;
     }
+    dirtyIds.current.delete(id);
     setRows(prev => prev.filter(r => r.id !== id));
     if (persistedIds.current.has(id)) setDeletedIds(prev => [...prev, id]);
     setHasUnsavedChanges(true);
@@ -751,6 +774,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   // ---- Highlight ----
   const setRowHighlight = (rowId: string, color: HighlightColor) => {
     setRows(prev => prev.map(r => r.id === rowId ? { ...r, rowHighlight: color } : r));
+    dirtyIds.current.add(rowId);
     setHasUnsavedChanges(true);
   };
 
@@ -761,6 +785,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       if (color === null) delete ch[fieldKey]; else ch[fieldKey] = color;
       return { ...r, cellHighlights: ch };
     }));
+    dirtyIds.current.add(rowId);
     setHasUnsavedChanges(true);
   };
 
@@ -772,6 +797,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       if (!text.trim()) delete cc[fieldKey]; else cc[fieldKey] = text.trim();
       return { ...r, cellComments: cc };
     }));
+    dirtyIds.current.add(rowId);
     setHasUnsavedChanges(true);
   };
 
