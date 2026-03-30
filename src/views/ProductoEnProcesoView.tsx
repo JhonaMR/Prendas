@@ -251,6 +251,8 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
   const [rows, setRows] = useState<LoteRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  const persistedIds = useRef<Set<string>>(new Set());
 
   // Filtros
   const [filterConfeccionista, setFilterConfeccionista] = useState('');
@@ -336,7 +338,9 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
     setLoading(true);
     api.getProductoEnProceso().then(data => {
       if (!cancelled) {
-        setRows(data.length > 0 ? data : [newRow()]);
+        const loaded = data.length > 0 ? data : [newRow()];
+        setRows(loaded);
+        persistedIds.current = new Set(data.map((r: LoteRow) => r.id));
         setLoading(false);
       }
     }).catch(() => {
@@ -487,7 +491,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const handleSave = async () => {
     try {
       const currentUser = api.getCurrentUser();
-      await api.saveProductoEnProcesoBatch(rows, currentUser?.id);
+      // Eliminar de la BD las filas borradas localmente
+      await Promise.all(deletedIds.map(id => api.deleteProductoEnProceso(id)));
+      deletedIds.forEach(id => persistedIds.current.delete(id));
+      setDeletedIds([]);
+      const result = await api.saveProductoEnProcesoBatch(rows, currentUser?.id);
+      if (result.success && result.data) {
+        result.data.forEach((r: LoteRow) => persistedIds.current.add(r.id));
+      }
       setHasUnsavedChanges(false);
     } catch {
       alert('Error al guardar. Intenta de nuevo.');
@@ -726,8 +737,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const addRow = () => { setRows(prev => [newRow(), ...prev]); setHasUnsavedChanges(true); };
 
   const deleteRow = (id: string) => {
-    if (rows.length === 1) { setRows([newRow()]); setHasUnsavedChanges(true); return; }
+    if (rows.length === 1) {
+      setRows([newRow()]);
+      if (persistedIds.current.has(id)) setDeletedIds(prev => [...prev, id]);
+      setHasUnsavedChanges(true);
+      return;
+    }
     setRows(prev => prev.filter(r => r.id !== id));
+    if (persistedIds.current.has(id)) setDeletedIds(prev => [...prev, id]);
     setHasUnsavedChanges(true);
   };
 
