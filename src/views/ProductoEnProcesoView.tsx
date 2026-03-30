@@ -5,6 +5,7 @@ import usePagination from '../hooks/usePagination';
 import PaginationComponent from '../components/PaginationComponent';
 import ProductoEnProcesoImportModal, { ImportedLoteRow } from '../components/ProductoEnProcesoImportModal';
 import TextAutocomplete from '../components/TextAutocomplete';
+import api from '../services/api';
 
 // ============================================================
 // TIPOS
@@ -248,21 +249,8 @@ const Td: React.FC<TdProps> = ({ rowId, fieldKey, row, className = '', children,
 const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) => {
   const editable = canEdit(user.role);
 
-  const [rows, setRows] = useState<LoteRow[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        // Migrar filas antiguas que no tienen los nuevos campos
-        return (JSON.parse(stored) as LoteRow[]).map(r => ({
-          rowHighlight: null,
-          cellHighlights: {},
-          cellComments: {},
-          ...r,
-        }));
-      }
-    } catch {}
-    return [newRow()];
-  });
+  const [rows, setRows] = useState<LoteRow[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Filtros
   const [filterConfeccionista, setFilterConfeccionista] = useState('');
@@ -341,6 +329,24 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
   // Cambios sin guardar
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Carga inicial desde la BD
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    api.getProductoEnProceso().then(data => {
+      if (!cancelled) {
+        setRows(data.length > 0 ? data : [newRow()]);
+        setLoading(false);
+      }
+    }).catch(() => {
+      if (!cancelled) {
+        setRows([newRow()]);
+        setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const generateEfectividadPDF = async () => {
     setGeneratingReport(true);
@@ -478,9 +484,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
     finally { setGeneratingReport(false); }
   };
 
-  const handleSave = () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
-    setHasUnsavedChanges(false);
+  const handleSave = async () => {
+    try {
+      const currentUser = api.getCurrentUser();
+      await api.saveProductoEnProcesoBatch(rows, currentUser?.id);
+      setHasUnsavedChanges(false);
+    } catch {
+      alert('Error al guardar. Intenta de nuevo.');
+    }
   };
 
   const generatePendientesPDF = async () => {
@@ -652,10 +663,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
     }
   }, [commentModal.visible]);
 
-  useEffect(() => {
-    // No guardamos automáticamente — el usuario debe presionar Guardar
-    // Solo marcamos que hay cambios pendientes si ya se inicializó
-  }, [rows]);
+  // No guardamos automáticamente — el usuario debe presionar Guardar
 
   const clearFilters = () => {
     setFilterConfeccionista(''); setFilterRemision(''); setFilterRef('');
@@ -794,6 +802,13 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
   return (
     <div className="p-4 md:p-6 space-y-4">
+      {loading && (
+        <div className="flex items-center justify-center py-20 text-slate-400 text-sm gap-2">
+          <div className="w-5 h-5 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin"></div>
+          Cargando datos...
+        </div>
+      )}
+      {!loading && (<>
       {/* Tooltip de comentario - portal para no afectar el layout */}
       {tooltip.visible && ReactDOM.createPortal(
         <div
@@ -1306,8 +1321,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
         onImport={handleImport}
       />
 
-      {/* Modal pendientes de entrega */}
-      {pendientesModalOpen && ReactDOM.createPortal(
+      {/* Modal pendientes de entrega */}      {pendientesModalOpen && ReactDOM.createPortal(
         <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center p-4" onMouseDown={() => !generatingReport && setPendientesModalOpen(false)}>
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden" onMouseDown={e => e.stopPropagation()}>
             {/* Header */}
@@ -1481,6 +1495,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
         </div>,
         document.body
       )}
+      </>)}
     </div>
   );
 };

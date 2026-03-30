@@ -1144,9 +1144,8 @@ const App: React.FC = () => {
         }
         return <ComparativeDashboardView state={state} user={user} />;
       case 'productoEnProceso':
-        if (user.role === UserRole.DISEÑADORA) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
           setActiveTab('home');
-          alert('No tienes permiso para acceder a esta sección');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <ProductoEnProcesoView user={user} />;

@@ -104,12 +104,6 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       icon: <Icons.Reports />,
       description: 'Consultar reportes del sistema'
     },
-    {
-      id: 'productoEnProceso',
-      label: 'Producto en Proceso',
-      icon: <Icons.ProductoEnProceso />,
-      description: 'Control de lotes en confección'
-    },
   ];
 
   return (

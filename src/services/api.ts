@@ -1612,6 +1612,72 @@ class ApiService {
     }
   }
 
+  // ==================== PRODUCTO EN PROCESO ====================
+
+  async getProductoEnProceso(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/producto-en-proceso`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo producto en proceso:', error);
+      return [];
+    }
+  }
+
+  async createProductoEnProceso(row: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/producto-en-proceso`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(row)
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al crear fila' };
+    }
+  }
+
+  async updateProductoEnProceso(id: string, row: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/producto-en-proceso/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(row)
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al actualizar fila' };
+    }
+  }
+
+  async deleteProductoEnProceso(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/producto-en-proceso/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al eliminar fila' };
+    }
+  }
+
+  async saveProductoEnProcesoBatch(rows: any[], createdBy?: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/producto-en-proceso/batch`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ rows, createdBy })
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error en importación masiva' };
+    }
+  }
+
   // ==================== BACKUPS ====================
 
   async getBackups(): Promise<ApiResponse> {

@@ -283,6 +283,16 @@ router.post('/maletas', verifyToken, maletasController.createMaleta);
 router.put('/maletas/:id', verifyToken, maletasController.updateMaleta);
 router.delete('/maletas/:id', verifyToken, maletasController.deleteMaleta);
 
+// ==================== PRODUCTO EN PROCESO ====================
+
+const productoEnProcesoController = require('../controllers/productoEnProcesoController');
+
+router.get('/producto-en-proceso', verifyToken, productoEnProcesoController.getAll);
+router.post('/producto-en-proceso/batch', verifyToken, productoEnProcesoController.saveBatch);
+router.post('/producto-en-proceso', verifyToken, productoEnProcesoController.create);
+router.put('/producto-en-proceso/:id', verifyToken, productoEnProcesoController.update);
+router.delete('/producto-en-proceso/:id', verifyToken, productoEnProcesoController.remove);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');
