@@ -541,7 +541,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
           </div>
         </div>
 
-        <ScannerSimulator onScan={handleScan} />
+        <ScannerSimulator onScan={handleScan} label="Agregar referencia" />
 
         {items.length > 0 && (
           <div className="bg-white rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
@@ -563,22 +563,32 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {items.map((item) => (
-                <div key={item.reference} className="p-6 sm:p-8">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{item.reference}</span>
-                    <div className="flex items-center gap-4">
-                      <span className="text-lg sm:text-xl font-black text-slate-800">{item.quantity}</span>
-                      <button 
-                        onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
-                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
-                      >
-                        ×
-                      </button>
+              {items.map((item) => {
+                const refData = referencesMaster.find(r => r.id === item.reference);
+                return (
+                  <div key={item.reference} className="px-6 sm:px-8 py-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center flex-1">
+                        <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{item.reference}</span>
+                        {refData?.description && (
+                          <span className="text-sm font-medium text-slate-400 ml-4">
+                            &nbsp;&nbsp;&nbsp;&nbsp;–&nbsp;&nbsp;&nbsp;&nbsp;{refData.description}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-lg sm:text-xl font-black text-slate-800">{item.quantity}</span>
+                        <button 
+                          onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                          className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                        >
+                          ×
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -660,7 +670,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                     <div className="flex-shrink-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className={`text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter ${['0', '00', '000', '0000'].includes(r.batchCode?.trim()) ? 'bg-red-100 text-red-600' : 'bg-blue-50 text-blue-500'}`}>{r.batchCode}</span>
-                        <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{formatAuditDate(r.createdAt)}</span>
+                        <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">Llegada: {formatArrivalDate(r.arrivalDate)}</span>
                       </div>
                       <h3 className="text-lg sm:text-xl font-black text-slate-800">{getConfeccionistaName(r.confeccionista)}</h3>
                     </div>
@@ -684,11 +694,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
 
                       {/* Total e Indicadores */}
                       <div className="flex flex-wrap gap-2 items-center">
-                        <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty}</span></span>
                         {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segundas</span>}
                         {r.hasMuestra && <span className="text-emerald-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> Muestra</span>}
                         {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
-                        {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc. {r.incompleteUnits}</span> : null}
+                        {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc.</span> : null}
+                        <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty + (r.chargeUnits || 0) + (r.incompleteUnits || 0)}</span></span>
                         {r.isPacked && <span className="text-teal-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-teal-500 rounded-full"></span> Empacado</span>}
                         {r.affectsInventory === false && <span className="text-orange-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-orange-500 rounded-full"></span> No Inv.</span>}
                         {r.affectsInventory !== false && <span className="text-green-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Inv.</span>}
@@ -722,8 +732,6 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                <p className="font-black text-slate-800 text-base sm:text-lg">Confeccionista: {getConfeccionistaName(r.confeccionista)}</p>
                                <p className="text-xs sm:text-sm font-bold text-slate-500">Remisión: {r.batchCode}</p>
                                 {r.hasSeconds && <p className="text-[9px] sm:text-[10px] font-black text-pink-500 uppercase">LOTE CON SEGUNDAS</p>}
-                                {r.chargeType && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase">{r.chargeType}: {r.chargeUnits} unidades</p>}
-                                {r.incompleteUnits && r.incompleteUnits > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-purple-500 uppercase">INCOMPLETAS: {r.incompleteUnits} unidades</p> : null}
                                 <p className="text-[9px] sm:text-[10px] font-black text-slate-500 uppercase">{r.isPacked ? 'LOTE EMPACADO' : 'LOTE NO EMPACADO'}</p>
                                 {r.bagQuantity && r.bagQuantity > 0 ? <p className="text-[9px] sm:text-[10px] font-black text-teal-600 uppercase">TALEGOS: {r.bagQuantity}</p> : null}
                                 <p className="text-[9px] sm:text-[10px] font-black uppercase" style={{ color: r.hasMuestra ? '#10b981' : '#94a3b8' }}>{r.hasMuestra ? 'CON MUESTRA' : 'SIN MUESTRA'}</p>
@@ -752,6 +760,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                           <table className="w-full text-left text-sm min-w-[300px]">
                               <thead>
                                   <tr className="bg-slate-50 border-b border-slate-100">
+                                    <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest w-1/3">Tipo</th>
                                     <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia</th>
                                     <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
                                   </tr>
@@ -759,17 +768,38 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                               <tbody className="divide-y divide-slate-50">
                                   {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => (
                                     <tr key={ref}>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-bold text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Recibido completo</td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">
-                                        {ref}  -  <span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{referencesMaster.find(r => r.id === ref)?.description || ''}</span>
+                                        {ref}&nbsp;&nbsp;–&nbsp;&nbsp;<span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{referencesMaster.find(r => r.id === ref)?.description || ''}</span>
                                       </td>
                                       <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
                                     </tr>
                                   ))}
+                                  {r.chargeType && (
+                                    <tr>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-bold text-blue-500 text-[9px] sm:text-[10px] uppercase tracking-widest">{r.chargeType}</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">
+                                        {Object.keys(itemsByRef)[0]}&nbsp;&nbsp;–&nbsp;&nbsp;<span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{referencesMaster.find(rm => rm.id === Object.keys(itemsByRef)[0])?.description || ''}</span>
+                                      </td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-blue-500 text-xs sm:text-sm">{r.chargeUnits}</td>
+                                    </tr>
+                                  )}
+                                  {r.incompleteUnits && r.incompleteUnits > 0 ? (
+                                    <tr>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-bold text-purple-500 text-[9px] sm:text-[10px] uppercase tracking-widest">Incompletas</td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 font-black text-blue-600 text-xs sm:text-sm">
+                                        {Object.keys(itemsByRef)[0]}&nbsp;&nbsp;–&nbsp;&nbsp;<span className="font-bold text-slate-400 uppercase text-[9px] sm:text-[10px]">{referencesMaster.find(rm => rm.id === Object.keys(itemsByRef)[0])?.description || ''}</span>
+                                      </td>
+                                      <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-purple-500 text-xs sm:text-sm">{r.incompleteUnits}</td>
+                                    </tr>
+                                  ) : null}
                               </tbody>
                               <tfoot>
                                   <tr className="bg-slate-50/80 border-t border-slate-100">
-                                    <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
-                                    <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-blue-600 text-xl sm:text-2xl">{totalQty}</td>
+                                    <td colSpan={2} className="px-4 py-2 sm:px-6 sm:py-3 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
+                                    <td className="px-4 py-2 sm:px-6 sm:py-3 text-center font-black text-blue-600 text-xl sm:text-2xl">
+                                      {totalQty + (r.chargeUnits || 0) + (r.incompleteUnits || 0)}
+                                    </td>
                                   </tr>
                               </tfoot>
                           </table>
