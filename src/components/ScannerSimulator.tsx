@@ -11,12 +11,14 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
   const [ref, setRef] = useState('');
   const [qty, setQty] = useState(1);
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const refInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleTrigger = () => {
     if (ref.trim() && qty > 0) {
       onScan(ref.trim().toUpperCase(), qty);
       setRef('');
       setQty(1);
+      refInputRef.current?.focus();
     }
   };
 
@@ -33,7 +35,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
 
   return (
     <div className="space-y-4">
-      <div className="bg-white/70 backdrop-blur-xl p-5 sm:p-8 rounded-[32px] sm:rounded-[40px] border border-blue-100 shadow-xl shadow-blue-50/50 flex flex-col gap-6">
+      <div className="bg-white/70 backdrop-blur-xl p-4 sm:p-5 rounded-[32px] sm:rounded-[40px] border border-blue-100 shadow-xl shadow-blue-50/50 flex flex-col gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-5 sm:gap-6 items-end">
           
           {/* Reference Input */}
@@ -42,6 +44,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
             <div className="relative">
               <input 
                 type="text" 
+                ref={refInputRef}
                 value={ref}
                 onChange={(e) => setRef(e.target.value)}
                 placeholder="Número de referencia..."
@@ -71,6 +74,7 @@ const ScannerSimulator: React.FC<ScannerSimulatorProps> = ({ onScan, label = "Es
                 value={qty}
                 onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
                 onFocus={(e) => e.target.select()}
+                onKeyDown={(e) => e.key === 'Enter' && handleTrigger()}
                 className="w-full min-w-0 bg-transparent border-none text-center font-black text-lg sm:text-xl focus:ring-0 px-2 text-slate-800"
               />
               <button 

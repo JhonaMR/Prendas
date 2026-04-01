@@ -254,32 +254,23 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 )}
               </div>
             </div>
-            {/* SECCIÓN CORRERÍA Y REVISADO POR */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Correría / Campaña</label>
-                <CorreriaAutocomplete
-                  value={correriaId}
-                  correrias={correrias}
-                  onChange={setCorreriaId}
-                  search={correriaSearch}
-                  setSearch={setCorreriaSearch}
-                  showDropdown={showCorreriaDropdown}
-                  setShowDropdown={setShowCorreriaDropdown}
-                />
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase text-purple-500 tracking-widest px-4">Revisado por</label>
-                <input 
-                  value={checkedBy} 
-                  onChange={e => setCheckedBy(e.target.value)} 
-                  placeholder="Nombre..." 
-                  className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-purple-100 transition-all font-bold text-slate-900" 
-                />
-              </div>
-            </div>
+            {(() => {
+              const selectedClient = clients.find(c => c.id === clientId);
+              return (
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Dirección</label>
+                  <div className="px-6 py-4 bg-slate-50 rounded-2xl min-h-[56px] flex items-center">
+                    {selectedClient ? (
+                      <p className="font-bold text-slate-700 text-sm">{selectedClient.address}&nbsp;&nbsp;–&nbsp;&nbsp;{selectedClient.city}</p>
+                    ) : (
+                      <p className="text-sm font-bold text-slate-300 italic">Selecciona un cliente para ver su dirección</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 content-start">
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Factura</label>
               <input value={invoiceNo} onChange={e => setInvoiceNo(e.target.value)} placeholder="Ej: F-1234" className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-pink-100 transition-all font-bold tracking-widest text-slate-900" />
@@ -288,14 +279,35 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
               <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Remisión</label>
               <input value={remissionNo} onChange={e => setRemissionNo(e.target.value)} placeholder="Ej: R-1234" className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-pink-100 transition-all font-bold tracking-widest text-slate-900" />
             </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-purple-500 uppercase tracking-widest px-4">Correría / Campaña</label>
+              <CorreriaAutocomplete
+                value={correriaId}
+                correrias={correrias}
+                onChange={setCorreriaId}
+                search={correriaSearch}
+                setSearch={setCorreriaSearch}
+                showDropdown={showCorreriaDropdown}
+                setShowDropdown={setShowCorreriaDropdown}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black uppercase text-purple-500 tracking-widest px-4">Revisado por</label>
+              <input 
+                value={checkedBy} 
+                onChange={e => setCheckedBy(e.target.value)} 
+                placeholder="Nombre..." 
+                className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-purple-100 transition-all font-bold text-slate-900" 
+              />
+            </div>
           </div>
         </div>
 
-        <ScannerSimulator onScan={handleScan} label="Escanear Salida" />
+        <ScannerSimulator onScan={handleScan} label="Agregar referencia" />
 
         {items.length > 0 && (
           <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-            <div className="p-6 sm:p-8 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+            <div className="px-6 py-3 sm:px-8 sm:py-4 bg-slate-50 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
               <h3 className="font-black text-slate-700">Mercancía para Despachar</h3>
               <div className="flex gap-4">
                 <div className="px-4 py-1.5 sm:px-6 sm:py-2 bg-pink-100 text-pink-600 rounded-full font-black text-xs sm:text-sm shadow-sm">
@@ -307,22 +319,56 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
               </div>
             </div>
             <div className="divide-y divide-slate-100">
-              {items.map((item) => (
-                <div key={item.reference} className="p-6 sm:p-8">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{item.reference}</span>
-                    <div className="flex items-center gap-4">
-                      <span className="text-lg sm:text-xl font-black text-blue-600">{item.quantity}</span>
-                      <button 
-                        onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
-                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
-                      >
-                        ×
-                      </button>
+              {items.map((item) => {
+                const refData = referencesMaster.find(r => r.id === item.reference);
+                // Buscar la orden del cliente para esta correría
+                const clientOrder = orders.find((o: any) => o.clientId === clientId && o.correriaId === correriaId);
+                const orderItem = clientOrder?.items?.find((i: any) => i.reference === item.reference);
+                const salePrice: number | null = orderItem?.salePrice ?? null;
+                const notOrdered = clientId && correriaId && !orderItem;
+                return (
+                  <div key={item.reference} className="px-6 sm:px-8 py-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center flex-1">
+                        <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">{item.reference}</span>
+                        {refData?.description && (
+                          <span className="text-sm font-medium text-slate-400 ml-4">
+                            &nbsp;&nbsp;&nbsp;&nbsp;–&nbsp;&nbsp;&nbsp;&nbsp;{refData.description}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex-1 flex justify-center">
+                        <input
+                          type="number"
+                          min={1}
+                          value={item.quantity}
+                          onChange={e => {
+                            const val = parseInt(e.target.value);
+                            if (!isNaN(val) && val > 0) {
+                              setItems(prev => prev.map(p => p.reference === item.reference ? { ...p, quantity: val } : p));
+                            }
+                          }}
+                          onFocus={e => e.target.select()}
+                          className="text-lg sm:text-xl font-black text-blue-600 text-center bg-transparent border-none outline-none focus:bg-blue-50 focus:rounded-lg focus:px-2 w-16 cursor-pointer transition-all"
+                        />
+                      </div>
+                      <div className="flex items-center justify-end flex-1 gap-3">
+                        {notOrdered ? (
+                          <span className="text-xs font-black text-amber-500 bg-amber-50 px-3 py-1 rounded-full">Ref no pedida</span>
+                        ) : salePrice !== null ? (
+                          <span className="text-sm font-bold text-emerald-600">$ {Math.round(salePrice).toLocaleString('es-CO')}</span>
+                        ) : null}
+                        <button 
+                          onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                          className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                        >
+                          ×
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -588,7 +634,7 @@ const CorreriaAutocomplete: React.FC<{
         placeholder="Buscar..."
         className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
       />
-      {showDropdown && (
+      {showDropdown && search.length >= 2 && (
         <div 
           className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
           onMouseDown={(e) => e.preventDefault()}
