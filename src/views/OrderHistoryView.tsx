@@ -257,12 +257,14 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       </div>
                       <div className="flex items-baseline gap-3 min-w-0">
                         <h3 className="text-lg font-black text-slate-800 truncate">{client?.name || 'Cliente'}</h3>
+                        <span className="text-slate-300 font-bold text-xs">•</span>
+                        <span className="text-xs font-black text-blue-400">{client?.id}</span>
                         <p className="text-xs font-medium text-slate-500 truncate">{client?.address}</p>
                       </div>
                       <p className="text-[10px] font-black uppercase tracking-widest">
                         <span className="text-pink-500">Vendedor: {seller?.name}</span>
                         <span className="text-slate-300">   —   </span>
-                        <span className="text-blue-500">N° Pedido: {o.orderNumber ?? '-'}</span>
+                        <span className="text-violet-500">N° Pedido: {o.orderNumber ?? '-'}</span>
                       </p>
                     </div>
 
@@ -426,7 +428,28 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
             <div className="flex-1 overflow-y-auto p-8 space-y-6">
               {/* Items */}
               <div>
-                <h3 className="text-lg font-black text-slate-800 mb-4">Items del Pedido</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-black text-slate-800">Items del Pedido</h3>
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] font-black text-violet-500 uppercase tracking-widest">N° Pedido</label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={editingOrder.orderNumber ?? ''}
+                      onChange={(e) => setEditingOrder({ ...editingOrder, orderNumber: e.target.value ? parseInt(e.target.value) : undefined })}
+                      onFocus={(e) => e.target.select()}
+                      placeholder="—"
+                      className="w-20 px-3 py-1.5 bg-violet-50 border border-violet-200 rounded-xl text-sm font-black text-violet-600 focus:ring-2 focus:ring-violet-300 text-center"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-[1fr_64px_96px_80px_32px] gap-2 px-4 mb-1">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Referencia</span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Cantidad</span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Precio venta</span>
+                  <span></span>
+                  <span></span>
+                </div>
                 <div className="space-y-3 mb-4">
                   {editingOrder.items.map((item, idx) => {
                     const ref = state.references.find(r => r.id === item.reference);
@@ -444,7 +467,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           value={item.quantity}
                           onChange={(e) => handleUpdateItemQuantity(idx, parseInt(e.target.value) || 1)}
                           onFocus={(e) => e.target.select()}
-                          className="w-16 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
+                          className="w-16 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400 text-center"
                           placeholder="Cant."
                         />
                         {focusedPriceIdx === idx ? (
@@ -491,7 +514,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               {/* Fechas */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Inicio</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">Fecha de Inicio</label>
                   <input
                     type="date"
                     value={editingOrder.startDate ? editingOrder.startDate.slice(0, 10) : ''}
@@ -500,7 +523,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Fecha de Fin</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">Fecha de Fin</label>
                   <input
                     type="date"
                     value={editingOrder.endDate ? editingOrder.endDate.slice(0, 10) : ''}
@@ -513,25 +536,27 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               {/* Porcentajes de Facturación */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">% Oficial</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">% Oficial</label>
                   <input
                     type="number"
                     step="0.01"
                     value={editingOrder.porcentajeOficial || ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeOficial: e.target.value ? parseFloat(e.target.value) : null })}
+                    onFocus={(e) => e.target.select()}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400 text-center"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">% Remisión</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">% Remisión</label>
                   <input
                     type="number"
                     step="0.01"
                     value={editingOrder.porcentajeRemision || ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeRemision: e.target.value ? parseFloat(e.target.value) : null })}
+                    onFocus={(e) => e.target.select()}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400 text-center"
                   />
                 </div>
               </div>

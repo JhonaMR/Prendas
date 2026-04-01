@@ -990,7 +990,7 @@ const saveProductionBatch = async (req, res) => {
 const updateOrder = async (req, res) => {
     try {
         const { id } = req.params;
-        const { clientId, sellerId, correriaId, items, totalValue, settledBy, startDate, endDate, porcentajeOficial, porcentajeRemision } = req.body;
+        const { clientId, sellerId, correriaId, items, totalValue, settledBy, startDate, endDate, porcentajeOficial, porcentajeRemision, orderNumber } = req.body;
 
         logger.info(`📝 Actualizando pedido ${id}:`, { clientId, sellerId, correriaId, itemsCount: items?.length, totalValue });
 
@@ -1012,11 +1012,12 @@ const updateOrder = async (req, res) => {
         await transaction(async (client) => {
             // Actualizar pedido
             const updateResult = await client.query(
-                `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5, start_date = $6, end_date = $7, porcentaje_oficial = $8, porcentaje_remision = $9
-                WHERE id = $10`,
+                `UPDATE orders SET client_id = $1, seller_id = $2, correria_id = $3, total_value = $4, settled_by = $5, start_date = $6, end_date = $7, porcentaje_oficial = $8, porcentaje_remision = $9, order_number = $10
+                WHERE id = $11`,
                 [clientId, sellerId, correriaId, String(totalValue), settledBy || null, startDate || null, endDate || null, 
                  porcentajeOficial !== undefined && porcentajeOficial !== '' ? porcentajeOficial : null, 
-                 porcentajeRemision !== undefined && porcentajeRemision !== '' ? porcentajeRemision : null, id]
+                 porcentajeRemision !== undefined && porcentajeRemision !== '' ? porcentajeRemision : null,
+                 orderNumber !== undefined && orderNumber !== '' ? orderNumber : null, id]
             );
 
             logger.info(`✏️ Pedido actualizado: ${updateResult.rowCount} filas afectadas`);
@@ -1083,7 +1084,8 @@ const updateOrder = async (req, res) => {
                 startDate: startDate || null,
                 endDate: endDate || null,
                 porcentajeOficial: porcentajeOficial || null,
-                porcentajeRemision: porcentajeRemision || null
+                porcentajeRemision: porcentajeRemision || null,
+                orderNumber: orderNumber || null
             }
         });
 
