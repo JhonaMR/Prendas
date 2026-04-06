@@ -7,6 +7,25 @@ import React, { useRef, useState } from 'react';
 import { ConceptoFicha, TipoMaterial } from '../../types/typesFichas';
 import DecimalInput from '../DecimalInput';
 
+// Input con $ como prefijo visual, type="number" internamente
+const CurrencyInput: React.FC<{ value: number; onChange: (v: number) => void; readOnly: boolean }> = ({ value, onChange, readOnly }) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    return (
+        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-100">
+            <span className="px-2 font-black text-slate-400 select-none">$</span>
+            <input
+                ref={inputRef}
+                type="number"
+                value={value}
+                onChange={e => onChange(Number(e.target.value))}
+                onFocus={() => setTimeout(() => inputRef.current?.select(), 0)}
+                readOnly={readOnly}
+                className="w-full py-2 pr-3 bg-transparent font-black text-right focus:outline-none"
+            />
+        </div>
+    );
+};
+
 interface SeccionConceptosProps {
     titulo: string;
     color: 'pink' | 'blue' | 'slate' | 'orange' | 'red';
@@ -206,9 +225,11 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                     </select>
                                 </td>
                                 <td className="px-3 py-3">
-                                    <input type="number" value={con.vlr_unit} onChange={e => actualizar(i, 'vlr_unit', Number(e.target.value))} readOnly={readOnly}
-                                        onFocus={e => e.target.select()}
-                                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-right focus:ring-2 focus:ring-blue-100" />
+                                    <CurrencyInput
+                                        value={con.vlr_unit}
+                                        onChange={val => actualizar(i, 'vlr_unit', val)}
+                                        readOnly={readOnly}
+                                    />
                                 </td>
                                 <td className="px-3 py-3">
                                     <DecimalInput
@@ -234,9 +255,9 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                     </tbody>
                     <tfoot>
                         <tr className={`${c.bgLight} border-t-2 ${c.border}`}>
-                            <td colSpan={mostrarTipo ? (readOnly ? 4 : 5) : (readOnly ? 3 : 4)} className="px-4 py-4 font-black text-slate-600 uppercase tracking-widest text-right text-sm">Total {titulo}</td>
-                            <td className="px-3 py-4 text-right"><span className={`font-black ${c.text} text-xl`}>$ {total.toLocaleString()}</span></td>
-                            {!readOnly && <td></td>}
+                            <td colSpan={mostrarTipo ? (readOnly ? 5 : 6) : (readOnly ? 4 : 5)} className="px-4 py-4 font-black text-slate-600 uppercase tracking-widest text-right text-sm">Total {titulo}</td>
+                            <td className="px-3 py-4 text-right w-32"><span className={`font-black ${c.text} text-xl`}>$ {total.toLocaleString()}</span></td>
+                            {!readOnly && <td className="w-16"></td>}
                         </tr>
                     </tfoot>
                 </table>

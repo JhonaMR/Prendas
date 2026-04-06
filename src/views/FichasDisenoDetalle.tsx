@@ -68,6 +68,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     useEffect(() => {
         if (isNueva && manoObra.length === 0 && insumosDirectos.length === 0 && provisiones.length === 0) {
             setManoObra([
+                { concepto: 'CONFECCION / ', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
                 { concepto: 'EMPAQUE', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
                 { concepto: 'CORTE', um: 'UNIDAD', vlr_unit: 500, cant: 1, total: 500 }
             ]);

@@ -30,6 +30,7 @@ import BackupManagementView from './views/BackupManagementView';
 import ComprasView from './views/ComprasView';
 import ComparativeDashboardView from './views/ComparativeDashboardView';
 import ProductoEnProcesoView from './views/ProductoEnProcesoView';
+import CalculoPagoLotesView from './views/CalculoPagoLotesView';
 
 // Fichas Views
 import FichasDisenoMosaico from './views/FichasDisenoMosaico';
@@ -1149,6 +1150,12 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <ProductoEnProcesoView user={user} />;
+      case 'calculoPagoLotes':
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <CalculoPagoLotesView user={user} state={state} onNavigate={handleTabChange} />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':
