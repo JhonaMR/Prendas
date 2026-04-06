@@ -6,15 +6,17 @@ interface CalculoPagoLotesViewProps {
   user: User;
   state: AppState;
   onNavigate: (tab: string, params?: any) => void;
+  params?: any;
 }
 
 type ViewType = 'selector' | 'confeccionistas' | 'estampadores';
 
-const CalculoPagoLotesView: React.FC<CalculoPagoLotesViewProps> = ({ user, state, onNavigate }) => {
-  const [view, setView] = useState<ViewType>('selector');
+const CalculoPagoLotesView: React.FC<CalculoPagoLotesViewProps> = ({ user, state, onNavigate, params }) => {
+  const initialView: ViewType = params?.subView === 'confeccionistas' ? 'confeccionistas' : 'selector';
+  const [view, setView] = useState<ViewType>(initialView);
 
   if (view === 'confeccionistas') {
-    return <PagoConfeccionistasView user={user} state={state} onNavigate={onNavigate} onBack={() => setView('selector')} />;
+    return <PagoConfeccionistasView user={user} state={state} onNavigate={onNavigate} onBack={() => setView('selector')} loteData={params?.loteData} />;
   }
 
   if (view === 'selector') {

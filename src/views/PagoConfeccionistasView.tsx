@@ -10,15 +10,16 @@ const KEYWORDS = ['confeccion', 'pegada de placa', 'terminacion', 'manualidad', 
 const matchesKeyword = (c: string) => KEYWORDS.some(kw => c.toLowerCase().includes(kw));
 const fmt = (n: number) => '$ ' + Math.round(n).toLocaleString('es-CO');
 
-interface Props { user: User; state: AppState; onNavigate: (tab: string, params?: any) => void; onBack: () => void; }
+interface Props { user: User; state: AppState; onNavigate: (tab: string, params?: any) => void; onBack: () => void; loteData?: { referencia: string; unidades: number; cantidadCompra: number; cobroSeleccionado: boolean; empaqueSeleccionado: boolean; batchCode: string; } | null; }
 
-const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack }) => {
-  const [referencia, setReferencia] = useState('');
-  const [referenciaInput, setReferenciaInput] = useState('');
-  const [unidades, setUnidades] = useState<number | ''>('');
-  const [cantidadCompra, setCantidadCompra] = useState<number | ''>(1);
+const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, loteData }) => {
+  const [referencia, setReferencia] = useState(loteData?.referencia || '');
+  const [referenciaInput, setReferenciaInput] = useState(loteData?.referencia || '');
+  const [unidades, setUnidades] = useState<number | ''>(loteData?.unidades ?? '');
+  const [cantidadCompra, setCantidadCompra] = useState<number | ''>(loteData?.cantidadCompra ?? 1);
   const [configOpen, setConfigOpen] = useState(false);
-  const [cobroSeleccionado, setCobroSeleccionado] = useState(false);
+  const [cobroSeleccionado, setCobroSeleccionado] = useState(loteData?.cobroSeleccionado ?? false);
+  const [remisionInput, setRemisionInput] = useState(loteData?.batchCode || '');
   const [pctOF, setPctOF] = useState(() => getLS(LS_PCT_OF, 40));
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
@@ -40,7 +41,19 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack })
   }, [ficha]);
 
   const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
-  useEffect(() => { setSelectedIndices(new Set(conceptosFiltrados.map((_, i) => i))); }, [conceptosFiltrados]);
+  useEffect(() => {
+    const allIndices = new Set(conceptosFiltrados.map((_, i) => i));
+    // Si viene de un lote, des-seleccionar empaque según isPacked
+    if (loteData && conceptosFiltrados.length > 0) {
+      if (!loteData.empaqueSeleccionado) {
+        // des-seleccionar los conceptos que contengan 'empaque'
+        conceptosFiltrados.forEach((c, i) => {
+          if (c.concepto.toLowerCase().includes('empaque')) allIndices.delete(i);
+        });
+      }
+    }
+    setSelectedIndices(allIndices);
+  }, [conceptosFiltrados]);
   useEffect(() => { setUnidades(''); }, [referencia]);
 
   const toggleConcepto = (i: number) => setSelectedIndices(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
@@ -57,6 +70,21 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack })
 
   const buscarReferencia = () => setReferencia(referenciaInput.trim().toUpperCase());
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') buscarReferencia(); };
+
+  const buscarPorRemision = () => {
+    const remision = remisionInput.trim();
+    if (!remision) return;
+    const lote = (state.receptions || []).find((r: any) => r.batchCode === remision);
+    if (!lote) { alert(`No se encontró ninguna recepción con remisión "${remision}"`); return; }
+    const ref = lote.items?.[0]?.reference || '';
+    const totalQty = (lote.items || []).reduce((a: number, b: any) => a + b.quantity, 0);
+    const unidadesLote = totalQty + (lote.chargeUnits || 0);
+    setReferenciaInput(ref);
+    setReferencia(ref);
+    setUnidades(unidadesLote);
+    setCantidadCompra(lote.chargeUnits || 0);
+    setCobroSeleccionado((lote.chargeUnits || 0) > 0);
+  };
 
   return (
     <div className="pb-24 space-y-6">
@@ -79,13 +107,21 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack })
               <p className="text-pink-100 text-sm">Liquidación de lote por confección</p>
             </div>
           </div>
-          <button onClick={() => setConfigOpen(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-colors backdrop-blur-sm">
+          <div className="flex items-center gap-2">
+            <button onClick={() => onNavigate('reception', { directToBatch: true })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-colors backdrop-blur-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0110.5 3h6a2.25 2.25 0 012.25 2.25v13.5A2.25 2.25 0 0116.5 21h-6a2.25 2.25 0 01-2.25-2.25V15m-3 0l-3-3m0 0l3-3m-3 3H15" />
+              </svg>
+              Recepción de lotes
+            </button>
+            <button onClick={() => setConfigOpen(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm font-semibold transition-colors backdrop-blur-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             Configurar bases
           </button>
+          </div>
         </div>
       </div>
 
@@ -173,14 +209,34 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack })
               )}
             </div>
 
-            <div>
-              <label className="text-xs font-bold text-slate-500 mb-1.5 block">Unidades del lote</label>
-              <input
-                type="number" min={0} value={unidades}
-                onChange={e => setUnidades(e.target.value === '' ? '' : Number(e.target.value))}
-                placeholder="0" disabled={!ficha}
-                className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 outline-none font-bold text-slate-800 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-              />
+            {/* Unidades + Remisión en la misma fila */}
+            <div className="flex gap-3">
+              <div className="flex-1">
+                <label className="text-xs font-bold text-slate-500 mb-1.5 block">Unidades del lote</label>
+                <input
+                  type="number" min={0} value={unidades}
+                  onChange={e => setUnidades(e.target.value === '' ? '' : Number(e.target.value))}
+                  placeholder="0" disabled={!ficha}
+                  className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 outline-none font-bold text-slate-800 text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                />
+              </div>
+              <div className="flex-1">
+                <label className="text-xs font-bold text-slate-500 mb-1.5 block">
+                  Remisión <span className="text-slate-300 font-normal">(opcional)</span>
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text" value={remisionInput}
+                    onChange={e => setRemisionInput(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') buscarPorRemision(); }}
+                    placeholder="Ej: 001-2026"
+                    className="flex-1 px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-pink-200 focus:border-pink-400 outline-none font-bold text-slate-800 text-sm transition-all"
+                  />
+                  <button onClick={buscarPorRemision} className="px-4 py-3 rounded-2xl bg-slate-600 hover:bg-slate-700 text-white font-bold text-sm transition-colors shadow-sm">
+                    Cargar
+                  </button>
+                </div>
+              </div>
             </div>
             </div>
           </div>

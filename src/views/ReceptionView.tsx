@@ -19,6 +19,7 @@ interface ReceptionViewProps {
   ReturnReceptionComponent?: React.ComponentType<any>;
   state?: AppState;
   directToBatch?: boolean;
+  onNavigate?: (tab: string, params?: any) => void;
 }
 
 const ReceptionView: React.FC<ReceptionViewProps> = ({ 
@@ -32,7 +33,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   onDeleteReception,
   ReturnReceptionComponent,
   state,
-  directToBatch = false
+  directToBatch = false,
+  onNavigate
 }) => {
   const [isCounting, setIsCounting] = useState(false);
   const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return' | 'listing'>('listing');
@@ -796,7 +798,38 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                               </tbody>
                               <tfoot>
                                   <tr className="bg-slate-50/80 border-t border-slate-100">
-                                    <td colSpan={2} className="px-4 py-2 sm:px-6 sm:py-3 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTAL GLOBAL LOTE</td>
+                                    <td className="px-4 py-2 sm:px-6 sm:py-3">
+                                      {onNavigate && (
+                                        <button
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            const ref = Object.keys(itemsByRef)[0] || '';
+                                            const unidades = totalQty + (r.chargeUnits || 0);
+                                            onNavigate('calculoPagoLotes', {
+                                              subView: 'confeccionistas',
+                                              loteData: {
+                                                referencia: ref,
+                                                unidades,
+                                                cantidadCompra: r.chargeUnits || 0,
+                                                cobroSeleccionado: (r.chargeUnits || 0) > 0,
+                                                empaqueSeleccionado: r.isPacked === true,
+                                                batchCode: r.batchCode,
+                                              }
+                                            });
+                                          }}
+                                          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-500 transition-colors"
+                                          title="Liquidar lote"
+                                        >
+                                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V13.5zm0 2.25h.008v.008H8.25v-.008zm0 2.25h.008v.008H8.25V18zm2.498-6.75h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V13.5zm0 2.25h.007v.008h-.007v-.008zm0 2.25h.007v.008h-.007V18zm2.504-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zm0 2.25h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V18zm2.498-6.75h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V13.5zM8.25 6h7.5v2.25h-7.5V6zM12 2.25c-1.892 0-3.758.11-5.593.322C5.307 2.7 4.5 3.65 4.5 4.757V19.5a2.25 2.25 0 002.25 2.25h10.5a2.25 2.25 0 002.25-2.25V4.757c0-1.108-.806-2.057-1.907-2.185A48.507 48.507 0 0012 2.25z" />
+                                          </svg>
+                                          <span className="text-[10px] font-black uppercase tracking-wider">Liquidar lote</span>
+                                        </button>
+                                      )}
+                                    </td>
+                                    <td className="px-4 py-2 sm:px-6 sm:py-3 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">
+                                      TOTAL GLOBAL LOTE
+                                    </td>
                                     <td className="px-4 py-2 sm:px-6 sm:py-3 text-center font-black text-blue-600 text-xl sm:text-2xl">
                                       {totalQty + (r.chargeUnits || 0) + (r.incompleteUnits || 0)}
                                     </td>

@@ -282,7 +282,7 @@ const App: React.FC = () => {
     }
     
     // Si es recepción, mostrar selector de workflow primero
-    if (tab === 'reception') {
+    if (tab === 'reception' && !options?.directToBatch) {
       setSelectedWorkflow(null);
       setActiveTab('receptionSelector');
       setIsNavOpen(false);
@@ -1017,6 +1017,7 @@ const App: React.FC = () => {
             onAddReception={addReception}
             onDeleteReception={deleteReception}
             directToBatch={navigationOptions.directToBatch}
+            onNavigate={handleTabChange}
           />
         );
       case 'returnReception':
@@ -1155,7 +1156,7 @@ const App: React.FC = () => {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
-        return <CalculoPagoLotesView user={user} state={state} onNavigate={handleTabChange} />;
+        return <CalculoPagoLotesView user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':
