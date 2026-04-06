@@ -24,11 +24,25 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
 
+  // Cargar config desde BD al montar
+  useEffect(() => {
+    import('../services/api').then(({ default: api }) => {
+      api.getPagoLotesConfig().then(cfg => {
+        setPctOF(cfg.pct_of);
+        setPctML(cfg.pct_ml);
+        setBaseRte(cfg.base_rte_fte);
+      });
+    });
+  }, []);
+
   const saveConfig = () => {
     if (pctOF + pctML !== 100) return;
     localStorage.setItem(LS_PCT_OF, String(pctOF));
     localStorage.setItem(LS_PCT_ML, String(pctML));
     localStorage.setItem(LS_BASE_RTE, String(baseRte));
+    import('../services/api').then(({ default: api }) => {
+      api.updatePagoLotesConfig({ pct_of: pctOF, pct_ml: pctML, base_rte_fte: baseRte });
+    });
     setConfigOpen(false);
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, AppState } from '../types';
 import PagoConfeccionistasView from './PagoConfeccionistasView';
+import PagoEstampadorasView from './PagoEstampadorasView';
 
 interface CalculoPagoLotesViewProps {
   user: User;
@@ -60,6 +61,10 @@ const CalculoPagoLotesView: React.FC<CalculoPagoLotesViewProps> = ({ user, state
         </div>
       </div>
     );
+  }
+
+  if (view === 'estampadores') {
+    return <PagoEstampadorasView user={user} state={state} onNavigate={onNavigate} onBack={() => setView('selector')} />;
   }
 
   // Estampadores — placeholder

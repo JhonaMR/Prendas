@@ -293,6 +293,13 @@ router.post('/producto-en-proceso', verifyToken, productoEnProcesoController.cre
 router.put('/producto-en-proceso/:id', verifyToken, productoEnProcesoController.update);
 router.delete('/producto-en-proceso/:id', verifyToken, productoEnProcesoController.remove);
 
+// ==================== PAGO LOTES CONFIG ====================
+
+const pagoLotesConfigController = require('../controllers/pagoLotesConfigController');
+
+router.get('/pago-lotes-config', verifyToken, pagoLotesConfigController.getConfig);
+router.put('/pago-lotes-config', verifyToken, verifyAdmin, pagoLotesConfigController.updateConfig);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');

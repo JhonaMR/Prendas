@@ -1745,6 +1745,35 @@ class ApiService {
       };
     }
   }
+
+  // ==================== PAGO LOTES CONFIG ====================
+
+  async getPagoLotesConfig(): Promise<{ pct_of: number; pct_ml: number; base_rte_fte: number }> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pago-lotes-config`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await response.json();
+      if (data.success) return data.data;
+      throw new Error(data.message);
+    } catch (error) {
+      // Fallback a valores por defecto si falla
+      return { pct_of: 40, pct_ml: 60, base_rte_fte: 105000 };
+    }
+  }
+
+  async updatePagoLotesConfig(config: { pct_of?: number; pct_ml?: number; base_rte_fte?: number }): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pago-lotes-config`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(config)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al actualizar configuración' };
+    }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================
