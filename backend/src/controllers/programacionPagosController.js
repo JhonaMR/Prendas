@@ -4,7 +4,8 @@
  * Maneja cuentas_bancarias, pagos_programados y descuentos_pago
  */
 
-const { getPool } = require('../config/database');
+const { getDatabase } = require('../config/database');
+const getPool = getDatabase;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CUENTAS BANCARIAS
