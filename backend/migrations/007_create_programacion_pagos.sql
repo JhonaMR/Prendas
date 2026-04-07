@@ -12,7 +12,7 @@
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.cuentas_bancarias (
     id          serial PRIMARY KEY,
-    cedula      varchar(50)  NOT NULL,
+    cedula      varchar(50),
     nombre      varchar(255) NOT NULL,
     cuenta      varchar(255) NOT NULL,
     created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP,

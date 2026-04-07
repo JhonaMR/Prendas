@@ -39,13 +39,13 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
       const filas: FilaPreview[] = rows.slice(1)
         .filter(r => r.some((c: any) => String(c).trim() !== ''))
         .map(r => {
-          const cedula = String(r[0] ?? '').trim();
+          const cedula = String(r[0] ?? '').trim() || '-';
           const nombre = String(r[1] ?? '').trim();
           const cuenta = String(r[2] ?? '').trim();
-          const valida = !!(cedula && nombre && cuenta);
+          const valida = !!(nombre && cuenta);
           return {
             cedula, nombre, cuenta, valida,
-            error: !valida ? 'Faltan campos obligatorios' : undefined,
+            error: !valida ? 'Faltan campos obligatorios (nombre y cuenta)' : undefined,
           };
         });
 

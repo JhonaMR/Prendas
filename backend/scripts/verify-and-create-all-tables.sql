@@ -669,7 +669,7 @@ EXECUTE FUNCTION public.update_user_view_preferences_timestamp();
 -- ============================================================================
 CREATE TABLE IF NOT EXISTS public.cuentas_bancarias (
     id         serial PRIMARY KEY,
-    cedula     character varying(50)  NOT NULL,
+    cedula     character varying(50),
     nombre     character varying(255) NOT NULL,
     cuenta     character varying(255) NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
