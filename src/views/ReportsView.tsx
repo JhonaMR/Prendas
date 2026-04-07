@@ -23,9 +23,9 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const [correriaSearchProdConf, setCorreriaSearchProdConf] = useState('');
   const [correriaShowDropdownProdConf, setCorreriaShowDropdownProdConf] = useState(false);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-  const ordersReportPagination = usePagination(1, 50);
-  const prodConfReportPagination = usePagination(1, 50);
-  const confReportPagination = usePagination(1, 50);
+  const ordersReportPagination = usePagination(1, 20);
+  const prodConfReportPagination = usePagination(1, 20);
+  const confReportPagination = usePagination(1, 20);
   const correriaTimeoutRef = useRef<NodeJS.Timeout>();
   const correriaTimeoutRefProdConf = useRef<NodeJS.Timeout>();
 
@@ -34,8 +34,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     if (selectedCorreriaForOrders) {
       ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForOrders);
     }
-    ordersReportPagination.pagination.total = ordersToShow.length;
-    ordersReportPagination.pagination.totalPages = Math.ceil(ordersToShow.length / ordersReportPagination.pagination.limit);
+    ordersReportPagination.goToPage(1);
   }, [state.orders, selectedCorreriaForOrders, ordersReportPagination.pagination.limit]);
 
   useEffect(() => {
@@ -43,22 +42,20 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     if (selectedCorreriaForProdConf) {
       ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForProdConf);
     }
-    prodConfReportPagination.pagination.total = ordersToShow.length;
-    prodConfReportPagination.pagination.totalPages = Math.ceil(ordersToShow.length / prodConfReportPagination.pagination.limit);
+    prodConfReportPagination.goToPage(1);
   }, [state.orders, selectedCorreriaForProdConf, prodConfReportPagination.pagination.limit]);
 
   useEffect(() => {
     let list = (state.confeccionistas || []).sort((a, b) => a.name.localeCompare(b.name));
     if (confStatusFilter === 'active') list = list.filter(c => c.active);
     if (confSearchFilter) list = list.filter(c => c.name.toUpperCase().includes(confSearchFilter.toUpperCase()) || c.id.includes(confSearchFilter));
-    confReportPagination.pagination.total = list.length;
-    confReportPagination.pagination.totalPages = Math.ceil(list.length / confReportPagination.pagination.limit);
+    confReportPagination.goToPage(1);
   }, [state.confeccionistas, confStatusFilter, confSearchFilter, confReportPagination.pagination.limit]);
   const [kardexSearch, setKardexSearch] = useState('');
   
-  const kardexPagination = usePagination(1, 50);
-  const refDetailPagination = usePagination(1, 50);
-  const clientDetailPagination = usePagination(1, 50);
+  const kardexPagination = usePagination(1, 20);
+  const refDetailPagination = usePagination(1, 20);
+  const clientDetailPagination = usePagination(1, 20);
 
   const kardexData = useMemo(() => {
     const data: Record<string, { in: number; out: number; av: number; lots: number }> = {};
@@ -94,9 +91,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   }, [state.receptions, state.dispatches]);
 
   useEffect(() => {
-    const sortedLength = Object.keys(kardexData).length;
-    kardexPagination.pagination.total = sortedLength;
-    kardexPagination.pagination.totalPages = Math.ceil(sortedLength / kardexPagination.pagination.limit);
+    kardexPagination.goToPage(1);
   }, [kardexData, kardexPagination.pagination.limit]);
 
   const renderKardex = () => {
@@ -155,17 +150,11 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   };
 
   useEffect(() => {
-    let refsToShow = (state.references || []).sort((a, b) => a.id.localeCompare(b.id));
-    if (refInput) refsToShow = refsToShow.filter(r => r.id.includes(refInput.toUpperCase()));
-    refDetailPagination.pagination.total = refsToShow.length;
-    refDetailPagination.pagination.totalPages = Math.ceil(refsToShow.length / refDetailPagination.pagination.limit);
+    refDetailPagination.goToPage(1);
   }, [state.references, refInput, refDetailPagination.pagination.limit]);
 
   useEffect(() => {
-    let clientsToShow = (state.clients || []).sort((a, b) => a.id.localeCompare(b.id));
-    if (clientInput) clientsToShow = clientsToShow.filter(c => c.id.includes(clientInput.toUpperCase()) || c.name.toUpperCase().includes(clientInput.toUpperCase()));
-    clientDetailPagination.pagination.total = clientsToShow.length;
-    clientDetailPagination.pagination.totalPages = Math.ceil(clientsToShow.length / clientDetailPagination.pagination.limit);
+    clientDetailPagination.goToPage(1);
   }, [state.clients, clientInput, clientDetailPagination.pagination.limit]);
 
   const renderRefDetail = () => {
@@ -246,7 +235,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
 
         <PaginationComponent
           currentPage={refDetailPagination.pagination.page}
-          totalPages={refDetailPagination.pagination.totalPages}
+          totalPages={Math.ceil((state.references || []).filter(r => !refInput || r.id.includes(refInput.toUpperCase())).length / refDetailPagination.pagination.limit) || 1}
           pageSize={refDetailPagination.pagination.limit}
           onPageChange={refDetailPagination.goToPage}
           onPageSizeChange={refDetailPagination.setLimit}
@@ -308,7 +297,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
 
         <PaginationComponent
           currentPage={confReportPagination.pagination.page}
-          totalPages={confReportPagination.pagination.totalPages}
+          totalPages={Math.ceil(list.length / confReportPagination.pagination.limit) || 1}
           pageSize={confReportPagination.pagination.limit}
           onPageChange={confReportPagination.goToPage}
           onPageSizeChange={confReportPagination.setLimit}
@@ -360,7 +349,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
 
         <PaginationComponent
           currentPage={clientDetailPagination.pagination.page}
-          totalPages={clientDetailPagination.pagination.totalPages}
+          totalPages={Math.ceil(clientsToShow.length / clientDetailPagination.pagination.limit) || 1}
           pageSize={clientDetailPagination.pagination.limit}
           onPageChange={clientDetailPagination.goToPage}
           onPageSizeChange={clientDetailPagination.setLimit}
@@ -457,7 +446,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
         {selectedCorreriaForOrders && (
           <PaginationComponent
             currentPage={ordersReportPagination.pagination.page}
-            totalPages={ordersReportPagination.pagination.totalPages}
+            totalPages={Math.ceil(ordersToShow.length / ordersReportPagination.pagination.limit) || 1}
             pageSize={ordersReportPagination.pagination.limit}
             onPageChange={ordersReportPagination.goToPage}
             onPageSizeChange={ordersReportPagination.setLimit}
@@ -615,7 +604,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
         {selectedCorreriaForProdConf && (
           <PaginationComponent
             currentPage={prodConfReportPagination.pagination.page}
-            totalPages={prodConfReportPagination.pagination.totalPages}
+            totalPages={Math.ceil(ordersToShow.length / prodConfReportPagination.pagination.limit) || 1}
             pageSize={prodConfReportPagination.pagination.limit}
             onPageChange={prodConfReportPagination.goToPage}
             onPageSizeChange={prodConfReportPagination.setLimit}

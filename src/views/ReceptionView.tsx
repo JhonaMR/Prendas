@@ -43,7 +43,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [refSearch, setRefSearch] = useState('');
   const [filterSinProcesar, setFilterSinProcesar] = useState(false);
   const [affectsInventory, setAffectsInventory] = useState(true);
-  const receptionsPagination = usePagination(1, 50);
+  const receptionsPagination = usePagination(1, 20);
 
   // Form states
   const [confeccionista, setConfeccionista] = useState('');
@@ -275,9 +275,11 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     );
   });
 
+  const totalPagesReceptions = Math.ceil(filteredReceptions.length / receptionsPagination.pagination.limit) || 1;
+
+  // Reset a página 1 cuando cambian los filtros
   React.useEffect(() => {
-    receptionsPagination.pagination.total = filteredReceptions.length;
-    receptionsPagination.pagination.totalPages = Math.ceil(filteredReceptions.length / receptionsPagination.pagination.limit);
+    receptionsPagination.goToPage(1);
   }, [filteredReceptions.length, receptionsPagination.pagination.limit]);
 
   if (receptionType === 'selector') {
@@ -846,7 +848,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
               <div className="mt-6">
                 <PaginationComponent 
                   currentPage={receptionsPagination.pagination.page}
-                  totalPages={receptionsPagination.pagination.totalPages}
+                  totalPages={totalPagesReceptions}
                   pageSize={receptionsPagination.pagination.limit}
                   onPageChange={receptionsPagination.goToPage}
                   onPageSizeChange={receptionsPagination.setLimit}

@@ -24,7 +24,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   const [isDispatching, setIsDispatching] = useState(false);
   const [editingDisp, setEditingDisp] = useState<Dispatch | null>(null);
   const [historySearch, setHistorySearch] = useState('');
-  const dispatchesPagination = usePagination(1, 50);
+  const dispatchesPagination = usePagination(1, 20);
 
 // Form states
   const [clientId, setClientId] = useState('');
@@ -199,9 +199,10 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     );
   }).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
+  const totalPagesDispatches = Math.ceil(filteredDispatches.length / dispatchesPagination.pagination.limit) || 1;
+
   React.useEffect(() => {
-    dispatchesPagination.pagination.total = filteredDispatches.length;
-    dispatchesPagination.pagination.totalPages = Math.ceil(filteredDispatches.length / dispatchesPagination.pagination.limit);
+    dispatchesPagination.goToPage(1);
   }, [filteredDispatches.length, dispatchesPagination.pagination.limit]);
 
   if (isDispatching) {
@@ -579,7 +580,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
             <div className="mt-6">
               <PaginationComponent 
                 currentPage={dispatchesPagination.pagination.page}
-                totalPages={dispatchesPagination.pagination.totalPages}
+                totalPages={totalPagesDispatches}
                 pageSize={dispatchesPagination.pagination.limit}
                 onPageChange={dispatchesPagination.goToPage}
                 onPageSizeChange={dispatchesPagination.setLimit}

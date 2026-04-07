@@ -1578,7 +1578,7 @@ const CorreriaAutocomplete: React.FC<{
         placeholder="Buscar correría..."
         className="bg-slate-100 border border-slate-300 rounded-xl font-black text-sm text-slate-800 focus:ring-2 focus:ring-slate-400 focus:outline-none px-3 py-1.5 pr-8 placeholder:text-slate-400 min-w-[180px]"
       />
-      {showDropdown && (
+      {showDropdown && search.length >= 2 && (
         <div 
           className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
           style={{ 

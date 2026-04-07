@@ -22,6 +22,7 @@ interface LoteRow {
   cobro: boolean;
   unidadesCobro: number;
   precioVenta: number;
+  manual?: boolean;
 }
 
 interface Props { user: User; state: AppState; onNavigate: (tab: string, params?: any) => void; onBack: () => void; }
@@ -33,6 +34,9 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
   const [lotes, setLotes] = useState<LoteRow[]>([]);
   const [fotoModal, setFotoModal] = useState<{ url: string; ref: string } | null>(null);
   const [configOpen, setConfigOpen] = useState(false);
+  const [modalAsentar, setModalAsentar] = useState(false);
+  const [fechaLlegada, setFechaLlegada] = useState('');
+  const [fechaSugerida, setFechaSugerida] = useState('');
   const [pctOF, setPctOF] = useState(() => getLS(LS_PCT_OF, 40));
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
@@ -85,6 +89,32 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
     }]);
   };
 
+  const agregarLoteManual = () => {
+    setLotes(prev => [...prev, {
+      id: Math.random().toString(36).slice(2),
+      referencia: '',
+      concepto: '',
+      vlrUnit: 0,
+      unidades: 1,
+      total: 0,
+      cobro: false,
+      unidadesCobro: 0,
+      precioVenta: 0,
+      manual: true,
+    }]);
+  };
+
+  const updateCampo = (id: string, campo: keyof LoteRow, val: string | number | boolean) => {
+    setLotes(prev => prev.map(l => {
+      if (l.id !== id) return l;
+      const updated = { ...l, [campo]: val };
+      // Recalcular total si cambia vlrUnit o unidades
+      if (campo === 'vlrUnit' || campo === 'unidades') {
+        updated.total = (campo === 'vlrUnit' ? Number(val) : l.vlrUnit) * (campo === 'unidades' ? Number(val) : l.unidades);
+      }
+      return updated;
+    }));
+  };
   const eliminarLote = (id: string) => setLotes(prev => prev.filter(l => l.id !== id));
 
   const toggleCobro = (id: string) => setLotes(prev => prev.map(l => l.id === id ? { ...l, cobro: !l.cobro, unidadesCobro: !l.cobro ? 1 : 0 } : l));
@@ -104,6 +134,56 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
   const rteFte = valorOF >= baseRte ? valorOF * 0.06 : 0;
   const totalOF = valorOF - rteFte;
   const totalMLNeto = valorML - totalCobro;
+
+  // Fecha sugerida: hoy + 7 días, sábado → lunes
+  const calcFechaSugerida = (base: string): string => {
+    if (!base) return '';
+    const [y, m, d] = base.slice(0, 10).split('-').map(Number);
+    if (!y || !m || !d) return '';
+    const fecha = new Date(y, m - 1, d);
+    fecha.setDate(fecha.getDate() + 7);
+    if (fecha.getDay() === 6) fecha.setDate(fecha.getDate() + 2);
+    const yy = fecha.getFullYear();
+    const mm = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dd = String(fecha.getDate()).padStart(2, '0');
+    return `${yy}-${mm}-${dd}`;
+  };
+
+  const abrirModalAsentar = () => {
+    const hoy = new Date().toISOString().slice(0, 10);
+    setFechaLlegada(hoy);
+    setFechaSugerida(calcFechaSugerida(hoy));
+    setModalAsentar(true);
+  };
+
+  const handleAsentar = () => {
+    if (!fechaSugerida) return;
+    // Construir detalle: REF. 12345 - 12978 - 13036
+    const refs = [...new Set(lotes.map(l => l.referencia))];
+    const detalleInicial = `REF. ${refs.join(' - ')}`;
+
+    const descuentosOF = rteFte > 0
+      ? [{ id: Date.now(), etiqueta: 'RTE FTE', monto: Math.round(rteFte) }]
+      : [];
+
+    // Cobro ML: suma total de cobros con etiqueta COBRO (N und)
+    const totalUnidadesCobro = lotes.filter(l => l.cobro).reduce((a, l) => a + l.unidadesCobro, 0);
+    const descuentosML = totalCobro > 0
+      ? [{ id: Date.now() + 1, etiqueta: `COBRO (${totalUnidadesCobro})`, monto: Math.round(totalCobro) }]
+      : [];
+
+    setModalAsentar(false);
+    onNavigate('programacionPagosDia', {
+      fecha: fechaSugerida,
+      precargar: {
+        detalleInicial,
+        brutOF: Math.round(valorOF),
+        brutML: Math.round(valorML),
+        descuentosOF,
+        descuentosML,
+      }
+    });
+  };
 
   return (
     <div className="pb-24 space-y-6">
@@ -243,12 +323,24 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
       </div>
 
       {/* Lotes a liquidar */}
-      {lotes.length > 0 && (
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          <div className="bg-slate-800 px-6 py-3">
-            <p className="text-sm font-black text-white uppercase tracking-widest text-center">Lotes a liquidar</p>
+      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="bg-slate-800 px-6 py-3 flex items-center justify-between relative">
+          <p className="absolute left-1/2 -translate-x-1/2 text-sm font-black text-white uppercase tracking-widest">Lotes a liquidar</p>
+          <div className="ml-auto">
+            <button onClick={agregarLoteManual}
+              className="flex items-center gap-1.5 text-xs font-bold text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+              Agregar concepto
+            </button>
           </div>
-          <div className="p-6 space-y-2">
+        </div>
+        <div className="p-6 space-y-2">
+          {lotes.length === 0 ? (
+            <p className="text-center text-slate-300 font-medium py-8 italic">Agrega lotes desde los conceptos de la referencia buscada.</p>
+          ) : (
+            <>
             {/* Header columnas */}
             <div className="grid grid-cols-12 gap-2 px-4 pb-3 border-b border-slate-100 items-center">
               <span className="col-span-1 text-xs font-black text-slate-400 uppercase tracking-wider text-center">Cobro</span>
@@ -275,11 +367,29 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
                     </div>
                   </div>
                   {/* Concepto */}
-                  <span className="col-span-3 text-sm font-bold text-slate-700 truncate">{l.concepto}</span>
+                  {l.manual ? (
+                    <input type="text" value={l.concepto} onChange={e => updateCampo(l.id, 'concepto', e.target.value)}
+                      placeholder="Concepto"
+                      className="col-span-3 px-2 py-1.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-200 outline-none font-bold text-slate-700 text-sm bg-white" />
+                  ) : (
+                    <span className="col-span-3 text-sm font-bold text-slate-700 truncate">{l.concepto}</span>
+                  )}
                   {/* Referencia */}
-                  <span className="col-span-1 text-sm font-black text-purple-500 text-center leading-none">{l.referencia}</span>
+                  {l.manual ? (
+                    <input type="text" value={l.referencia} onChange={e => updateCampo(l.id, 'referencia', e.target.value.toUpperCase())}
+                      placeholder="Ref."
+                      className="col-span-1 px-2 py-1.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-200 outline-none font-black text-purple-500 text-sm text-center bg-white" />
+                  ) : (
+                    <span className="col-span-1 text-sm font-black text-purple-500 text-center leading-none">{l.referencia}</span>
+                  )}
                   {/* Vlr Unit */}
-                  <span className="col-span-2 text-[15px] font-semibold text-slate-500 text-right leading-none">{fmt(l.vlrUnit)}</span>
+                  {l.manual ? (
+                    <input type="number" min={0} value={l.vlrUnit || ''} onChange={e => updateCampo(l.id, 'vlrUnit', parseFloat(e.target.value) || 0)}
+                      placeholder="Precio"
+                      className="col-span-2 px-2 py-1.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-200 outline-none font-semibold text-slate-500 text-sm text-right bg-white" />
+                  ) : (
+                    <span className="col-span-2 text-[15px] font-semibold text-slate-500 text-right leading-none">{fmt(l.vlrUnit)}</span>
+                  )}
                   {/* spacer */}
                   <div className="col-span-1" />
                   {/* Unidades */}
@@ -344,16 +454,28 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
               <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Total lotes</span>
               <span className="text-2xl font-black text-slate-800">{fmt(totalLotes)}</span>
             </div>
-          </div>
+            </>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Totales OF / ML */}
       {lotes.length > 0 && (
         <>
-          <div className="bg-gradient-to-r from-purple-500 to-violet-400 rounded-3xl p-6 shadow-lg">
-            <p className="text-purple-100 text-xs font-black uppercase tracking-widest mb-1">Total neto a pagar</p>
-            <p className="text-5xl font-black text-white">{fmt(totalLotes)}</p>
+          <div className="bg-gradient-to-r from-purple-500 to-violet-400 rounded-3xl p-6 shadow-lg flex items-center justify-between gap-4">
+            <div>
+              <p className="text-purple-100 text-xs font-black uppercase tracking-widest mb-1">Total neto a pagar</p>
+              <p className="text-5xl font-black text-white">{fmt(totalLotes)}</p>
+            </div>
+            <button
+              onClick={abrirModalAsentar}
+              className="flex-shrink-0 flex items-center gap-2 bg-violet-400 hover:bg-violet-300 text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              Asentar pago en programación
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -423,6 +545,62 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
             </div>
           </div>
         </>
+      )}
+
+      {/* Modal asentar pago */}
+      {modalAsentar && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-black text-slate-800 text-xl">Asentar pago en programación</h3>
+              <button onClick={() => setModalAsentar(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">Fecha de proceso</label>
+                <input type="date" value={fechaLlegada}
+                  onChange={e => { setFechaLlegada(e.target.value); setFechaSugerida(calcFechaSugerida(e.target.value)); }}
+                  className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-purple-200 focus:border-purple-400 outline-none font-bold text-slate-800 text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1.5">
+                  Fecha sugerida de pago <span className="text-purple-400 font-normal">(+7 días)</span>
+                </label>
+                <input type="date" value={fechaSugerida} onChange={e => setFechaSugerida(e.target.value)}
+                  className="w-full px-4 py-3 rounded-2xl border-2 border-purple-200 focus:ring-2 focus:ring-purple-200 focus:border-purple-400 outline-none font-bold text-purple-700 text-sm" />
+              </div>
+              <div className="bg-purple-50 rounded-2xl p-4 text-xs text-purple-600 space-y-2">
+                <p className="text-center font-bold text-sm">{`REF. ${[...new Set(lotes.map(l => l.referencia))].join(' - ')}`}</p>
+                <div className="flex gap-3">
+                  <div className="flex-1 bg-white rounded-xl p-2 text-center">
+                    <p className="text-purple-400 font-semibold mb-0.5">Bruto OF</p>
+                    <p className="font-black text-purple-700">{fmt(Math.round(valorOF))}</p>
+                    {rteFte > 0 && <p className="text-red-400 text-xs mt-0.5">RTE FTE: -{fmt(Math.round(rteFte))}</p>}
+                  </div>
+                  <div className="flex-1 bg-white rounded-xl p-2 text-center">
+                    <p className="text-purple-400 font-semibold mb-0.5">Bruto ML</p>
+                    <p className="font-black text-purple-700">{fmt(Math.round(valorML))}</p>
+                    {totalCobro > 0 && <p className="text-red-400 text-xs mt-0.5">COBRO: -{fmt(Math.round(totalCobro))}</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setModalAsentar(false)}
+                className="flex-1 border-2 border-slate-200 text-slate-500 font-semibold py-3 rounded-2xl hover:bg-slate-50 transition-colors">
+                Cancelar
+              </button>
+              <button onClick={handleAsentar} disabled={!fechaSugerida}
+                className="flex-1 bg-purple-500 hover:bg-purple-600 disabled:opacity-40 text-white font-black py-3 rounded-2xl transition-colors">
+                Asentar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Modal foto */}

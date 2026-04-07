@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { User, UserRole } from '../types';
 import CuentasBancariasImportModal from '../components/CuentasBancariasImportModal';
+import usePagination from '../hooks/usePagination';
+import PaginationComponent from '../components/PaginationComponent';
 
 interface CuentaBancaria {
   id: number;
@@ -31,6 +33,19 @@ const CuentasBancariasView: React.FC<CuentasBancariasViewProps> = ({ onVolver, u
 
   const esSoporte = user.role === UserRole.SOPORTE;
 
+  const pagination = usePagination(1, 20);
+  const { page, limit } = pagination.pagination;
+
+  const cuentasFiltradas = cuentas
+    .filter(c => c.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+  const totalPages = Math.ceil(cuentasFiltradas.length / limit) || 1;
+  const cuentasPaginadas = cuentasFiltradas.slice((page - 1) * limit, page * limit);
+
+  // Reset a página 1 cuando cambia la búsqueda
+  useEffect(() => { pagination.goToPage(1); }, [busqueda]);
+
   const cargarCuentas = () => {
     api.getCuentasBancarias().then(data => {
       setCuentas(data);
@@ -39,10 +54,6 @@ const CuentasBancariasView: React.FC<CuentasBancariasViewProps> = ({ onVolver, u
   };
 
   useEffect(() => { cargarCuentas(); }, []);
-
-  const cuentasFiltradas = cuentas
-    .filter(c => c.nombre.toLowerCase().includes(busqueda.toLowerCase()))
-    .sort((a, b) => a.nombre.localeCompare(b.nombre));
 
   const cerrarModal = () => {
     setModal(null);
@@ -175,7 +186,7 @@ const CuentasBancariasView: React.FC<CuentasBancariasViewProps> = ({ onVolver, u
                 </td>
               </tr>
             ) : (
-              cuentasFiltradas.map((c, i) => (
+              cuentasPaginadas.map((c, i) => (
                 <tr key={c.id} className={`divide-x divide-slate-100 ${i % 2 === 0 ? 'bg-white' : 'bg-violet-50/40'}`}>
                   <td className="px-6 py-4 text-slate-600 text-sm">{c.cedula}</td>
                   <td className="px-6 py-4 text-slate-900 font-semibold text-sm">{c.nombre}</td>
@@ -210,6 +221,19 @@ const CuentasBancariasView: React.FC<CuentasBancariasViewProps> = ({ onVolver, u
           </tbody>
         </table>
       </div>
+
+      {cuentasFiltradas.length > limit && (
+        <div className="mt-4">
+          <PaginationComponent
+            currentPage={page}
+            totalPages={totalPages}
+            pageSize={limit}
+            onPageChange={pagination.goToPage}
+            onPageSizeChange={pagination.setLimit}
+            pageSizeOptions={[10, 20, 50, 100]}
+          />
+        </div>
+      )}
 
       {/* Modal Crear / Editar */}
       {(modal === 'crear' || modal === 'editar') && (
