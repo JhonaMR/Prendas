@@ -665,6 +665,60 @@ FOR EACH ROW
 EXECUTE FUNCTION public.update_user_view_preferences_timestamp();
 
 -- ============================================================================
+-- 31. TABLA: cuentas_bancarias
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.cuentas_bancarias (
+    id         serial PRIMARY KEY,
+    cedula     character varying(50)  NOT NULL,
+    nombre     character varying(255) NOT NULL,
+    cuenta     character varying(255) NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_cuentas_bancarias_nombre ON public.cuentas_bancarias(LOWER(nombre));
+CREATE INDEX IF NOT EXISTS idx_cuentas_bancarias_cedula ON public.cuentas_bancarias(cedula);
+
+-- ============================================================================
+-- 32. TABLA: pagos_programados
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.pagos_programados (
+    id                 serial PRIMARY KEY,
+    fecha              date          NOT NULL,
+    fecha_original     date,
+    cuenta_bancaria_id integer REFERENCES public.cuentas_bancarias(id) ON DELETE SET NULL,
+    cedula             character varying(50)  NOT NULL,
+    nombre             character varying(255) NOT NULL,
+    cuenta             character varying(255) NOT NULL,
+    detalle_inicial    character varying(500),
+    bruto_of           numeric(15,2) NOT NULL DEFAULT 0,
+    bruto_ml           numeric(15,2) NOT NULL DEFAULT 0,
+    orden              integer       NOT NULL DEFAULT 0,
+    created_at         timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at         timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_pagos_programados_fecha             ON public.pagos_programados(fecha);
+CREATE INDEX IF NOT EXISTS idx_pagos_programados_nombre            ON public.pagos_programados(LOWER(nombre));
+CREATE INDEX IF NOT EXISTS idx_pagos_programados_cuenta_bancaria_id ON public.pagos_programados(cuenta_bancaria_id);
+
+-- ============================================================================
+-- 33. TABLA: descuentos_pago
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.descuentos_pago (
+    id         serial PRIMARY KEY,
+    pago_id    integer NOT NULL REFERENCES public.pagos_programados(id) ON DELETE CASCADE,
+    tipo       character varying(2)   NOT NULL CHECK (tipo IN ('OF', 'ML')),
+    etiqueta   character varying(255) NOT NULL DEFAULT '',
+    monto      numeric(15,2)          NOT NULL DEFAULT 0,
+    orden      integer                NOT NULL DEFAULT 0,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_descuentos_pago_pago_id ON public.descuentos_pago(pago_id);
+CREATE INDEX IF NOT EXISTS idx_descuentos_pago_tipo    ON public.descuentos_pago(tipo);
+
+-- ============================================================================
 -- VERIFICACIÓN FINAL
 -- ============================================================================
 
@@ -675,7 +729,7 @@ SELECT
 FROM information_schema.tables 
 WHERE table_schema = 'public';
 
--- Mostrar todas las tablas (debe haber 29 tablas)
+-- Mostrar todas las tablas (debe haber 32 tablas)
 SELECT table_name 
 FROM information_schema.tables 
 WHERE table_schema = 'public' 

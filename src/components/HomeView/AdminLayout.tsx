@@ -161,6 +161,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Calculo, pago de lotes',
       icon: <Icons.CalculoPago />,
       description: 'Calcular y pagar lotes'
+    },
+    {
+      id: 'programacionPagos',
+      label: 'Programación de Pagos',
+      icon: <Icons.ProgramacionPagos />,
+      description: 'Programar pagos'
     }
   ];
 

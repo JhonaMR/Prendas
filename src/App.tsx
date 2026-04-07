@@ -31,6 +31,8 @@ import ComprasView from './views/ComprasView';
 import ComparativeDashboardView from './views/ComparativeDashboardView';
 import ProductoEnProcesoView from './views/ProductoEnProcesoView';
 import CalculoPagoLotesView from './views/CalculoPagoLotesView';
+import ProgramacionPagosView from './views/ProgramacionPagosView';
+import ProgramacionPagosDiaView from './views/ProgramacionPagosDiaView';
 
 // Fichas Views
 import FichasDisenoMosaico from './views/FichasDisenoMosaico';
@@ -71,7 +73,7 @@ const App: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
-  const [navigationOptions, setNavigationOptions] = useState<{ directToBatch?: boolean }>({});
+  const [navigationOptions, setNavigationOptions] = useState<{ directToBatch?: boolean; [key: string]: any }>({});
   const [selectedWorkflow, setSelectedWorkflow] = useState<'recepcion' | 'devolucion' | null>(null);
 
   // ========== RECUPERAR USUARIO DEL LOCALSTORAGE AL CARGAR ==========
@@ -265,7 +267,7 @@ const App: React.FC = () => {
     setState(prev => updater(prev));
   };
 
-  const handleTabChange = (tab: string, options?: { directToBatch?: boolean }) => {
+  const handleTabChange = (tab: string, options?: { directToBatch?: boolean; [key: string]: any }) => {
     // Si estamos en la vista de pedidos y hay cambios sin guardar
     if (activeTab === 'orders' && hasUnsavedOrderChanges) {
       const confirmLeave = window.confirm(
@@ -1157,6 +1159,22 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <CalculoPagoLotesView user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
+      case 'programacionPagos':
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <ProgramacionPagosView user={user} onNavigate={handleTabChange} />;
+      case 'programacionPagosDia':
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <ProgramacionPagosDiaView
+          fecha={(navigationOptions as any)?.fecha ?? new Date().toISOString().slice(0, 10)}
+          precargar={(navigationOptions as any)?.precargar}
+          onVolver={() => handleTabChange('programacionPagos')}
+        />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':

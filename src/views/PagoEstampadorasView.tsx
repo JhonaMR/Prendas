@@ -7,8 +7,9 @@ const LS_PCT_ML = 'pago_lotes_pct_ml';
 const LS_BASE_RTE = 'pago_lotes_base_rte_fte';
 const getLS = (key: string, def: number) => { const v = localStorage.getItem(key); return v !== null ? Number(v) : def; };
 
-const KEYWORDS_EST = ['estampado', 'aplique', 'sublimado', 'resortado', 'ojal', 'boton', 'teñido'];
-const matchesKeyword = (c: string) => KEYWORDS_EST.some(kw => c.toLowerCase().includes(kw));
+const KEYWORDS_EST = ['estampado', 'aplique', 'sublimado', 'resortado', 'ojal', 'boton', 'tenido', 'pegada'];
+const normalize = (s: string) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const matchesKeyword = (c: string) => KEYWORDS_EST.some(kw => normalize(c).includes(normalize(kw)));
 const fmt = (n: number) => '$ ' + Math.round(n).toLocaleString('es-CO');
 
 interface LoteRow {

@@ -1774,6 +1774,149 @@ class ApiService {
       return { success: false, message: error.message || 'Error al actualizar configuración' };
     }
   }
+
+  // ==================== PROGRAMACIÓN DE PAGOS ====================
+
+  async getCuentasBancarias(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/cuentas-bancarias`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo cuentas bancarias:', error);
+      return [];
+    }
+  }
+
+  async createCuentaBancaria(cuenta: { cedula: string; nombre: string; cuenta: string }): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/cuentas-bancarias`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(cuenta)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al crear cuenta bancaria' };
+    }
+  }
+
+  async updateCuentaBancaria(id: number, cuenta: { cedula: string; nombre: string; cuenta: string }): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/cuentas-bancarias/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(cuenta)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al actualizar cuenta bancaria' };
+    }
+  }
+
+  async deleteCuentaBancaria(id: number): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/cuentas-bancarias/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al eliminar cuenta bancaria' };
+    }
+  }
+
+  async getPagosPorFecha(fecha: string): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados?fecha=${fecha}`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo pagos:', error);
+      return [];
+    }
+  }
+
+  async getConteoPagosPorMes(anio: number, mes: number): Promise<Record<string, number>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/conteo?anio=${anio}&mes=${mes + 1}`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<Record<string, number>>(response);
+      return data.data || {};
+    } catch (error) {
+      console.error('Error obteniendo conteo de pagos:', error);
+      return {};
+    }
+  }
+
+  async createPago(pago: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(pago)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al crear pago' };
+    }
+  }
+
+  async updatePago(id: number, pago: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(pago)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al actualizar pago' };
+    }
+  }
+
+  async deletePago(id: number): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al eliminar pago' };
+    }
+  }
+
+  async reordenarPagos(orden: { id: number; orden: number }[]): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/reordenar`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ orden })
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al reordenar pagos' };
+    }
+  }
+
+  async importarCuentasBancarias(cuentas: { cedula: string; nombre: string; cuenta: string }[]): Promise<ApiResponse<{ ok: number; errores: number }>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/cuentas-bancarias/bulk-import`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ cuentas })
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al importar cuentas' };
+    }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================

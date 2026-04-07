@@ -300,6 +300,25 @@ const pagoLotesConfigController = require('../controllers/pagoLotesConfigControl
 router.get('/pago-lotes-config', verifyToken, pagoLotesConfigController.getConfig);
 router.put('/pago-lotes-config', verifyToken, verifyAdmin, pagoLotesConfigController.updateConfig);
 
+// ==================== PROGRAMACIÓN DE PAGOS ====================
+
+const programacionPagosController = require('../controllers/programacionPagosController');
+
+// Cuentas bancarias
+router.get('/cuentas-bancarias', verifyToken, programacionPagosController.getCuentas);
+router.post('/cuentas-bancarias/bulk-import', verifyToken, verifyAdmin, programacionPagosController.bulkImportCuentas);
+router.post('/cuentas-bancarias', verifyToken, verifyAdmin, programacionPagosController.createCuenta);
+router.put('/cuentas-bancarias/:id', verifyToken, verifyAdmin, programacionPagosController.updateCuenta);
+router.delete('/cuentas-bancarias/:id', verifyToken, verifyAdmin, programacionPagosController.deleteCuenta);
+
+// Pagos programados
+router.get('/pagos-programados/conteo', verifyToken, programacionPagosController.getConteoPorMes);
+router.get('/pagos-programados', verifyToken, programacionPagosController.getPagosPorFecha);
+router.post('/pagos-programados', verifyToken, verifyAdmin, programacionPagosController.createPago);
+router.put('/pagos-programados/reordenar', verifyToken, verifyAdmin, programacionPagosController.reordenarPagos);
+router.put('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.updatePago);
+router.delete('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.deletePago);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');
