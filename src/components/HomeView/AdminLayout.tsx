@@ -7,6 +7,20 @@ import ChartsVisualization from './ChartsVisualization.tsx';
 import ViewOrderModal from './ViewOrderModal.tsx';
 import { useViewPreferences } from '../../hooks/useViewPreferences';
 
+interface NavButton {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  description?: string;
+}
+
+interface NavGroup {
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  items: NavButton[];
+}
+
 interface AdminLayoutProps {
   user: User;
   onNavigate: (tab: string, options?: { directToBatch?: boolean }) => void;
@@ -17,27 +31,13 @@ interface AdminLayoutProps {
   correriasError: any;
 }
 
-interface NavButton {
-  id: string;
-  label: string;
-  icon: React.ReactNode;
-  description?: string;
-}
-
 const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNavigate, state, correrias, correriasLoading, correriasError }) => {
   const [selectedCorreria, setSelectedCorreria] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const { preferences, savePreferences, loading: preferencesLoading } = useViewPreferences();
 
-  // Set default correria on load
-  useEffect(() => {
-    if (correrias && correrias.length > 0 && !selectedCorreria) {
-      setSelectedCorreria(null);
-    }
-  }, [correrias, selectedCorreria]);
-
-  // Handle correria errors
   useEffect(() => {
     if (correriasError) {
       setError('No se pudieron cargar las correrias. Por favor, intente nuevamente.');
@@ -48,188 +48,201 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     }
   }, [correriasError, correrias]);
 
+  // navigationItems se mantiene para compatibilidad con ViewOrderModal
   const navigationItems: NavButton[] = [
-    {
-      id: 'fichas-diseno',
-      label: 'Fichas de Diseño',
-      icon: <Icons.FichasDiseno />,
-      description: 'Gestionar fichas'
-    },
-    {
-      id: 'fichas-costo',
-      label: 'Fichas de Costo',
-      icon: <Icons.FichasCosto />,
-      description: 'Precios y costos'
-    },
-    {
-      id: 'reception',
-      label: 'Recepción de Lotes',
-      icon: <Icons.Reception />,
-      description: 'Recibir lotes'
-    },
-    {
-      id: 'returnReception',
-      label: 'Devolución de Mercancía',
-      icon: <Icons.Dispatch />,
-      description: 'Registrar devoluciones'
-    },
-    {
-      id: 'maletas',
-      label: 'Maletas',
-      icon: <Icons.Maletas />,
-      description: 'Gestionar maletas'
-    },
-    {
-      id: 'dispatch',
-      label: 'Despachos',
-      icon: <Icons.Dispatch />,
-      description: 'Despachar mercancía'
-    },
-    {
-      id: 'inventory',
-      label: 'Inventario',
-      icon: <Icons.Inventory />,
-      description: 'Ver inventario'
-    },
-    {
-      id: 'orders',
-      label: 'Pedidos',
-      icon: <Icons.Orders />,
-      description: 'Gestionar pedidos'
-    },
-    {
-      id: 'settle',
-      label: 'Asentar Ventas',
-      icon: <Icons.Settle />,
-      description: 'Registrar ventas'
-    },
-    {
-      id: 'salesReport',
-      label: 'Informe de Ventas',
-      icon: <Icons.Reports />,
-      description: 'Ver reporte'
-    },
-    {
-      id: 'orderHistory',
-      label: 'Historial de Pedidos',
-      icon: <Icons.History />,
-      description: 'Consultar historial'
-    },
-    {
-      id: 'dispatchControl',
-      label: 'Control de Despachos',
-      icon: <Icons.DispatchControl />,
-    },
-    {
-      id: 'deliveryDates',
-      label: 'Fechas de Entrega',
-      icon: <Icons.DeliveryDates />,
-      description: 'Gestionar fechas'
-    },
-    {
-      id: 'reports',
-      label: 'Reportes Generales',
-      icon: <Icons.Reports />,
-      description: 'Ver reportes'
-    },
-    {
-      id: 'masters',
-      label: 'Maestros',
-      icon: <Icons.Masters />,
-      description: 'Gestionar datos'
-    },
-    {
-      id: 'compras',
-      label: 'Compras',
-      icon: <Icons.Orders />,
-      description: 'Registrar compras'
-    },
-    {
-      id: 'comparativeDashboard',
-      label: 'Dashboard Comparativo',
-      icon: <Icons.Dashboard />,
-      description: 'Análisis comparativo'
-    },
-    {
-      id: 'productoEnProceso',
-      label: 'Producto en Proceso',
-      icon: <Icons.ProductoEnProceso />,
-      description: 'Control de lotes en confección'
-    },
-    {
-      id: 'calculoPagoLotes',
-      label: 'Calculo, pago de lotes',
-      icon: <Icons.CalculoPago />,
-      description: 'Calcular y pagar lotes'
-    },
-    {
-      id: 'programacionPagos',
-      label: 'Programación de Pagos',
-      icon: <Icons.ProgramacionPagos />,
-      description: 'Programar pagos'
-    }
+    { id: 'orders',              label: 'Pedidos',                icon: <Icons.Orders />,          description: 'Gestionar pedidos' },
+    { id: 'settle',              label: 'Asentar Ventas',         icon: <Icons.Settle />,          description: 'Registrar ventas' },
+    { id: 'orderHistory',        label: 'Historial de Pedidos',   icon: <Icons.History />,         description: 'Consultar historial' },
+    { id: 'salesReport',         label: 'Informe de Ventas',      icon: <Icons.Reports />,         description: 'Ver reporte' },
+    { id: 'comparativeDashboard',label: 'Dashboard Comparativo',  icon: <Icons.Dashboard />,       description: 'Análisis comparativo' },
+    { id: 'dispatchControl',     label: 'Control de Despachos',   icon: <Icons.DispatchControl />, description: 'Control de despachos' },
+    { id: 'reports',             label: 'Reportes Generales',     icon: <Icons.Reports />,         description: 'Ver reportes' },
+    { id: 'fichas-costo',        label: 'Fichas de Costo',        icon: <Icons.FichasCosto />,     description: 'Precios y costos' },
+    { id: 'fichas-diseno',       label: 'Fichas de Diseño',       icon: <Icons.FichasDiseno />,    description: 'Gestionar fichas' },
+    { id: 'productoEnProceso',   label: 'Producto en Proceso',    icon: <Icons.ProductoEnProceso />, description: 'Control de lotes en confección' },
+    { id: 'deliveryDates',       label: 'Fechas de Entrega',      icon: <Icons.DeliveryDates />,   description: 'Gestionar fechas' },
+    { id: 'calculoPagoLotes',    label: 'Calculo, pago de lotes', icon: <Icons.CalculoPago />,     description: 'Calcular y pagar lotes' },
+    { id: 'programacionPagos',   label: 'Programación de Pagos',  icon: <Icons.ProgramacionPagos />, description: 'Programar pagos' },
+    { id: 'maletas',             label: 'Maletas',                icon: <Icons.Maletas />,         description: 'Gestionar maletas' },
+    { id: 'reception',           label: 'Recepción de Lotes',     icon: <Icons.Reception />,       description: 'Recibir lotes' },
+    { id: 'dispatch',            label: 'Despachos',              icon: <Icons.Dispatch />,        description: 'Despachar mercancía' },
+    { id: 'returnReception',     label: 'Devolución de Mercancía',icon: <Icons.Dispatch />,        description: 'Registrar devoluciones' },
+    { id: 'compras',             label: 'Compras',                icon: <Icons.Orders />,          description: 'Registrar compras' },
+    { id: 'inventory',           label: 'Inventario',             icon: <Icons.Inventory />,       description: 'Ver inventario' },
+    { id: 'masters',             label: 'Maestros',               icon: <Icons.Masters />,         description: 'Gestionar datos' },
+    { id: 'backups',             label: 'Backups',                icon: <Icons.Backup />,          description: 'Gestionar backups' },
   ];
+
+  const navGroups: NavGroup[] = [
+    {
+      id: 'comercial',
+      label: 'Comercial',
+      icon: <Icons.Orders />,
+      items: [
+        { id: 'orders',       label: 'Pedidos',              icon: <Icons.Orders />,  description: 'Gestionar pedidos' },
+        { id: 'settle',       label: 'Asentar Ventas',       icon: <Icons.Settle />,  description: 'Registrar ventas' },
+        { id: 'orderHistory', label: 'Historial de Pedidos', icon: <Icons.History />, description: 'Consultar historial' },
+      ],
+    },
+    {
+      id: 'informes',
+      label: 'Informes',
+      icon: <Icons.Dashboard />,
+      items: [
+        { id: 'salesReport',          label: 'Informe de Ventas',     icon: <Icons.Reports />,         description: 'Ver reporte' },
+        { id: 'comparativeDashboard', label: 'Dashboard Comparativo', icon: <Icons.Dashboard />,       description: 'Análisis comparativo' },
+        { id: 'dispatchControl',      label: 'Control de Despachos',  icon: <Icons.DispatchControl />, description: 'Control de despachos' },
+        { id: 'reports',              label: 'Reportes Generales',    icon: <Icons.Reports />,         description: 'Ver reportes' },
+      ],
+    },
+    {
+      id: 'fichas',
+      label: 'Fichas',
+      icon: <Icons.FichasCosto />,
+      items: [
+        { id: 'fichas-costo',  label: 'Fichas de Costo',   icon: <Icons.FichasCosto />,  description: 'Precios y costos' },
+        { id: 'fichas-diseno', label: 'Fichas de Diseño',  icon: <Icons.FichasDiseno />, description: 'Gestionar fichas' },
+      ],
+    },
+    {
+      id: 'produccion',
+      label: 'Producción',
+      icon: <Icons.DeliveryDates />,
+      items: [
+        { id: 'productoEnProceso',  label: 'Producto en Proceso',    icon: <Icons.ProductoEnProceso />,  description: 'Control de lotes en confección' },
+        { id: 'deliveryDates',      label: 'Fechas de Entrega',      icon: <Icons.DeliveryDates />,      description: 'Gestionar fechas' },
+        { id: 'maletas',            label: 'Maletas',                icon: <Icons.Maletas />,            description: 'Gestionar maletas' },
+        { id: 'compras',            label: 'Compras',                icon: <Icons.Orders />,             description: 'Registrar compras' },
+      ],
+    },
+    {
+      id: 'tesoreria',
+      label: 'Tesorería',
+      icon: <Icons.Tesoreria />,
+      items: [
+        { id: 'calculoPagoLotes',   label: 'Calculo, pago de lotes', icon: <Icons.CalculoPago />,        description: 'Calcular y pagar lotes' },
+        { id: 'programacionPagos',  label: 'Programación de Pagos',  icon: <Icons.ProgramacionPagos />,  description: 'Programar pagos' },
+      ],
+    },
+    {
+      id: 'inventario',
+      label: 'Inventario',
+      icon: <Icons.ProductoEnProceso />,
+      items: [
+        { id: 'reception',      label: 'Recepción de Lotes',      icon: <Icons.Reception />, description: 'Recibir lotes' },
+        { id: 'dispatch',       label: 'Despachos',               icon: <Icons.Dispatch />,  description: 'Despachar mercancía' },
+        { id: 'returnReception',label: 'Devolución de Mercancía', icon: <Icons.Dispatch />,  description: 'Registrar devoluciones' },
+        { id: 'inventory',      label: 'Inventario',              icon: <Icons.Inventory />, description: 'Ver inventario' },
+      ],
+    },
+    {
+      id: 'admin',
+      label: 'Admin',
+      icon: <Icons.Masters />,
+      items: [
+        { id: 'masters', label: 'Maestros', icon: <Icons.Masters />, description: 'Gestionar datos' },
+    { id: 'backups', label: 'Backups',  icon: <Icons.Backup />,  description: 'Gestionar backups' },
+      ],
+    },
+  ];
+
+  const currentGroup = activeGroup ? navGroups.find(g => g.id === activeGroup) : null;
+
+  const handleItemClick = (id: string) => {
+    if (id === 'reception' && onDirectNavigate) {
+      onDirectNavigate('reception');
+    } else {
+      onNavigate(id);
+    }
+  };
 
   return (
     <div className="h-full w-full flex flex-col bg-transparent p-6 md:p-10">
-      {/* Navigation Grid */}
-      <div className="mb-8 flex items-start justify-between">
+
+      {/* Header */}
+      <div className="mb-8 flex items-center gap-4">
+        {currentGroup && (
+          <button
+            onClick={() => setActiveGroup(null)}
+            className="h-10 w-10 rounded-xl bg-white border-2 border-slate-200 hover:border-pink-400 flex items-center justify-center text-slate-500 hover:text-pink-600 transition-all flex-shrink-0"
+            aria-label="Volver"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+          </button>
+        )}
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-2">Bienvenido, {user.name}</h1>
-          <p className="text-slate-500 text-sm md:text-base">Selecciona una opción para continuar</p>
+          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
+            {currentGroup ? currentGroup.label : `Bienvenido, ${user.name}`}
+          </h1>
+          <p className="text-slate-500 text-sm md:text-base">
+            {currentGroup ? 'Selecciona una opción' : 'Selecciona un grupo para continuar'}
+          </p>
         </div>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="group relative h-12 md:h-14 rounded-2xl bg-pink-600 hover:bg-pink-700 text-white font-semibold px-4 md:px-6 flex items-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.592c.55 0 1.02.398 1.11.94m-9.642 0A9.001 9.001 0 005.422 20.25H18.578a9.001 9.001 0 007.128-16.06m-9.642 0A9 9 0 0012 3.75c-4.457 0-8.268 3.106-9.012 7.25m0 0H.5a9 9 0 0018 0h-.5z" />
-          </svg>
-          <span className="hidden sm:inline">Personalizar</span>
-        </button>
       </div>
 
-      {/* Reordered Navigation Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
-        {navigationItems
-          .sort((a, b) => {
-            const aIndex = preferences.viewOrder.indexOf(a.id);
-            const bIndex = preferences.viewOrder.indexOf(b.id);
-            // Si la vista no está en el orden guardado, ponerla al final
-            const aPos = aIndex === -1 ? navigationItems.length + navigationItems.indexOf(a) : aIndex;
-            const bPos = bIndex === -1 ? navigationItems.length + navigationItems.indexOf(b) : bIndex;
-            return aPos - bPos;
-          })
-          .map((item) => (
+      {/* Grid: grupos o ítems del grupo activo */}
+      {!currentGroup ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
+          {navGroups.map((group) => (
+            <button
+              key={group.id}
+              onClick={() => setActiveGroup(group.id)}
+              className="group relative h-28 md:h-32 rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Línea vertical central */}
+              <div className="absolute inset-y-3 left-1/2 -translate-x-1/2 w-px bg-slate-200" />
+              <div className="relative z-10 flex h-full w-full gap-3">
+                {/* Mitad izquierda: icono y nombre */}
+                <div className="w-1/2 flex flex-col items-start justify-between pr-3">
+                  <div className="w-9 h-9 md:w-11 md:h-11 bg-pink-100 rounded-xl flex items-center justify-center text-pink-600 group-hover:bg-pink-200 transition-colors">
+                    {group.icon}
+                  </div>
+                  <h3 className="font-bold text-slate-900 text-sm md:text-base group-hover:text-pink-600 transition-colors leading-tight">
+                    {group.label}
+                  </h3>
+                </div>
+                {/* Mitad derecha: lista de ítems */}
+                <div className="w-1/2 flex flex-col justify-start gap-1 pl-3 pt-1">
+                  {group.items.map(item => (
+                    <div key={item.id} className="flex items-center gap-1.5">
+                      <span className="w-1 h-1 rounded-full bg-slate-300 flex-shrink-0" />
+                      <span className="text-xs text-slate-400 leading-tight truncate">
+                        {item.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 text-pink-500">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+          {currentGroup.items.map((item) => (
             <button
               key={item.id}
-              onClick={() => {
-                // Para Recepción de Lotes desde HomeView, ir directamente al listado
-                if (item.id === 'reception' && onDirectNavigate) {
-                  onDirectNavigate('reception');
-                } else {
-                  onNavigate(item.id);
-                }
-              }}
+              onClick={() => handleItemClick(item.id)}
               className="group relative h-24 md:h-28 rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
             >
-              {/* Background gradient on hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
-              {/* Content */}
               <div className="relative z-10 flex flex-col items-start justify-between h-full w-full">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-pink-100 rounded-lg flex items-center justify-center text-pink-600 group-hover:bg-pink-200 transition-colors">
                   {item.icon}
                 </div>
-                
                 <div className="text-left">
                   <h3 className="font-bold text-slate-900 text-xs md:text-sm group-hover:text-pink-600 transition-colors leading-tight">
                     {item.label}
                   </h3>
                 </div>
               </div>
-
-              {/* Arrow icon on hover */}
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4 text-pink-600">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -237,56 +250,53 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
               </div>
             </button>
           ))}
-      </div>
+        </div>
+      )}
 
-      {/* Analytics Section */}
-      <div className="flex-1 flex flex-col gap-6">
-        {/* Error State */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-            </svg>
-            <div>
+      {/* Analytics Section — solo visible en la vista de grupos */}
+      {!currentGroup && (
+        <div className="flex-1 flex flex-col gap-6">
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-2xl p-4 flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
               <p className="text-sm font-semibold text-red-900">{error}</p>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Correria Selector */}
-        {!error && (
-          <>
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-              <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3">Seleccionar Correría para Análisis</h3>
-              <CorreriaSelectorDropdown
-                correrias={correrias || []}
-                selectedCorreria={selectedCorreria}
-                onSelect={setSelectedCorreria}
-                loading={correriasLoading}
-              />
-            </div>
-
-            {/* Metrics and Charts */}
-            {selectedCorreria && (
-              <>
-                <MetricsDisplay
+          {!error && (
+            <>
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
+                <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3">Seleccionar Correría para Análisis</h3>
+                <CorreriaSelectorDropdown
+                  correrias={correrias || []}
                   selectedCorreria={selectedCorreria}
-                  state={state}
+                  onSelect={setSelectedCorreria}
                   loading={correriasLoading}
                 />
+              </div>
 
-                <ChartsVisualization
-                  selectedCorreria={selectedCorreria}
-                  state={state}
-                  loading={correriasLoading}
-                />
-              </>
-            )}
-          </>
-        )}
-      </div>
+              {selectedCorreria && (
+                <>
+                  <MetricsDisplay
+                    selectedCorreria={selectedCorreria}
+                    state={state}
+                    loading={correriasLoading}
+                  />
+                  <ChartsVisualization
+                    selectedCorreria={selectedCorreria}
+                    state={state}
+                    loading={correriasLoading}
+                  />
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
-      {/* View Order Modal */}
+      {/* TODO: ViewOrderModal oculto temporalmente mientras se define el sistema de grupos */}
       <ViewOrderModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -70,6 +70,7 @@ const App: React.FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('home');
+  const [homeResetKey, setHomeResetKey] = useState(0);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasUnsavedOrderChanges, setHasUnsavedOrderChanges] = useState(false);
@@ -293,6 +294,7 @@ const App: React.FC = () => {
     
     setNavigationOptions(options || {});
     setActiveTab(tab);
+    if (tab === 'home') setHomeResetKey(k => k + 1);
     setIsNavOpen(false);
   };
 
@@ -1007,7 +1009,7 @@ const App: React.FC = () => {
           </div>
         );
       case 'home':
-        return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        return <HomeView key={homeResetKey} user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
       case 'reception':
         return (
           <ReceptionView 

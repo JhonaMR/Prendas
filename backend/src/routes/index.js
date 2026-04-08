@@ -1,5 +1,5 @@
 /**
- * 🛣️ RUTAS DEL API
+ * RUTAS DEL API
  * 
  * Define todas las rutas (endpoints) del backend
  * Conecta URLs con controladores
