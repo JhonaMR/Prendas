@@ -53,7 +53,7 @@ const calcularValoresFinancieros = (costoTotal, precioVenta = null, rentabilidad
         rent = rentabilidad;
         precio = calcularPrecioVenta(costoTotal, rent);
     } else {
-        rent = 49;
+        rent = 35;
         precio = calcularPrecioVenta(costoTotal, rent);
     }
     const descuentos = calcularDescuentos(precio, costoTotal);

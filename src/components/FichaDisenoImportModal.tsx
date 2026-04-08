@@ -10,7 +10,7 @@ interface Props {
     onClose: () => void;
     state: AppState;
     user: any;
-    onSuccess: () => void;
+    onSuccess: (referencia: string) => void;
 }
 
 const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user, onSuccess }) => {
@@ -150,7 +150,7 @@ const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user,
                     
                     if (response.success) {
                         alert(`✅ Ficha ${fichaData.referencia} importada con éxito.`);
-                        onSuccess();
+                        onSuccess(fichaData.referencia);
                         onClose();
                     } else {
                         alert(`❌ Error al importar: ${response.message}`);

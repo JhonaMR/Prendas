@@ -116,7 +116,8 @@ const importarFichaDiseno = async (req, res) => {
         }
 
         const fd = fichaDiseno.rows[0];
-        const valores = calcularValoresFinancieros(parseFloat(fd.costo_total), null, 49);
+        const precioVentaDiseno = fd.precio_venta ? parseFloat(fd.precio_venta) : null;
+        const valores = calcularValoresFinancieros(parseFloat(fd.costo_total), precioVentaDiseno, null);
 
         let fichaData;
         await transaction(async (client) => {
@@ -221,7 +222,7 @@ const createFichaCosto = async (req, res) => {
             provisiones: provisiones || []
         };
         const totales = calcularTotales(secciones);
-        const valores = calcularValoresFinancieros(totales.costo_total, null, rentabilidad || 49);
+        const valores = calcularValoresFinancieros(totales.costo_total, null, rentabilidad || 35);
 
         let fichaData;
         await transaction(async (client) => {

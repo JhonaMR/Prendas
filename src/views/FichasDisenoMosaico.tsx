@@ -249,12 +249,11 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                                 {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
                             </div>
                             <div className="p-3">
-                                <p className="font-black text-pink-600 text-sm mb-1">{ficha.referencia}</p>
-                                <p className="text-xs font-bold text-slate-600 truncate mb-2">{ficha.descripcion || 'Sin descripción'}</p>
-                                <div className="flex items-center justify-between text-[10px]">
-                                    <span className="text-slate-400 font-bold">{ficha.disenadoraNombre}</span>
-                                    <span className="font-black text-slate-700">${(ficha.costoTotal || 0).toLocaleString()}</span>
+                                <div className="flex items-center justify-between mb-2">
+                                    <p className="font-black text-pink-600 text-sm">{ficha.referencia}</p>
+                                    <span className="text-slate-400 font-bold text-[10px] truncate ml-1 max-w-[60%] text-right">{ficha.disenadoraNombre}</span>
                                 </div>
+                                <p className="text-xs font-bold text-slate-600 truncate">{ficha.descripcion || 'Sin descripción'}</p>
                             </div>
                         </div>
                     ))}
@@ -346,9 +345,10 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 onClose={() => setShowImportModal(false)}
                 state={state}
                 user={user}
-                onSuccess={async () => {
+                onSuccess={async (referencia: string) => {
                     const fichas = await apiFichas.getFichasDiseno();
                     updateState(prev => ({ ...prev, fichasDiseno: fichas }));
+                    onNavigate('fichas-diseno-detalle', { referencia });
                 }}
             />
         </div>

@@ -189,13 +189,13 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                 setCorreriaSearch(e.target.value);
                 setShowCorreriaDropdown(true);
               }}
-              onFocus={() => { setCorreriaSearch(''); setShowCorreriaDropdown(true); }}
-              placeholder="Buscar correría..."
+              onFocus={() => { setCorreriaSearch(''); setShowCorreriaDropdown(false); }}
+              placeholder="Escriba 2 letras..."
               className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-48 border-none focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300"
             />
             
             {/* Dropdown de correrías */}
-            {showCorreriaDropdown && filteredCorrerias.length > 0 && (
+            {showCorreriaDropdown && correriaSearch.length >= 2 && filteredCorrerias.length > 0 && (
               <div className="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
                 {filteredCorrerias.map(c => (
                   <button
@@ -222,13 +222,19 @@ const DispatchControlView: React.FC<DispatchControlViewProps> = ({ state, user }
                 setShowReferenceDropdown(true);
               }}
               onFocus={() => { setReferenceSearch(''); setShowReferenceDropdown(true); }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  const match = state.references.find(r => r.id.toLowerCase() === referenceSearch.toLowerCase().trim());
+                  if (match) selectReference(match);
+                }
+              }}
               placeholder="Buscar referencia..."
               disabled={!selectedCorreriaId}
               className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-48 border-none focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed"
             />
             
             {/* Dropdown de referencias */}
-            {showReferenceDropdown && filteredReferences.length > 0 && selectedCorreriaId && (
+            {showReferenceDropdown && referenceSearch.length >= 3 && filteredReferences.length > 0 && selectedCorreriaId && (
               <div className="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
                 {filteredReferences.map(r => (
                   <button

@@ -64,6 +64,23 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
         }
     }, [fichaExistente?.referencia]);
 
+    // ESC → volver al mosaico
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                if (hasUnsavedChanges) {
+                    if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) {
+                        onNavigate('fichas-diseno');
+                    }
+                } else {
+                    onNavigate('fichas-diseno');
+                }
+            }
+        };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, [hasUnsavedChanges]);
+
     // Cargar valores base cuando se crea una nueva ficha
     useEffect(() => {
         if (isNueva && manoObra.length === 0 && insumosDirectos.length === 0 && provisiones.length === 0) {

@@ -900,11 +900,11 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
               </p>
               <div className="space-y-4">
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.totalVendidas.toLocaleString()}</p>
+                  <p className="text-3xl font-black text-slate-800">{metrics.totalVendidas.toLocaleString('es-CO')}</p>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades vendidas</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.totalDespachadas.toLocaleString()}</p>
+                  <p className="text-3xl font-black text-slate-800">{metrics.totalDespachadas.toLocaleString('es-CO')}</p>
                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades despachadas</p>
                 </div>
                 <div className="pt-2 border-t border-blue-200">
@@ -1016,9 +1016,9 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                         {vendedor.pedidos}
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <span className="font-black text-slate-800">{vendedor.vendidas}</span>
+                        <span className="font-black text-slate-800">{vendedor.vendidas.toLocaleString('es-CO')}</span>
                         <span className="text-slate-400 mx-1">/</span>
-                        <span className="font-black text-blue-600">{vendedor.despachadas}</span>
+                        <span className="font-black text-blue-600">{vendedor.despachadas.toLocaleString('es-CO')}</span>
                       </td>
                       <td className="px-4 py-4 text-center font-black text-slate-800">
                         $ {vendedor.ventas.toLocaleString()}
@@ -1057,9 +1057,9 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                       {metrics.vendedoresData.reduce((acc, v) => acc + v.pedidos, 0)}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="font-black text-slate-800">{metrics.totalVendidas}</span>
+                      <span className="font-black text-slate-800">{metrics.totalVendidas.toLocaleString('es-CO')}</span>
                       <span className="text-slate-400 mx-1">/</span>
-                      <span className="font-black text-blue-600">{metrics.totalDespachadas}</span>
+                      <span className="font-black text-blue-600">{metrics.totalDespachadas.toLocaleString('es-CO')}</span>
                     </td>
                     <td className="px-4 py-4 text-center font-black text-slate-800">
                       $ {metrics.totalVendidoValor.toLocaleString()}
