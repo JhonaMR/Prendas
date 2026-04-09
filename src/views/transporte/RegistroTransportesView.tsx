@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import jsPDF from 'jspdf';
 
 interface Transportista { id: string; nombre: string; colorKey: string; }
 interface ItemRuta { id: string; taller: string; celular: string; direccion: string; sector: string; detalle: string; servicio: string; }
@@ -92,16 +93,91 @@ const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'
 interface TablaProps {
   transportista: Transportista;
   items: ItemRuta[];
+  fecha: string;
   onAdd: (item: ItemRuta) => void;
   onEdit: (item: ItemRuta) => void;
   onDelete: (id: string) => void;
   onMove: (item: ItemRuta) => void;
 }
 
-const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, onEdit, onDelete, onMove}) => {
+const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, onEdit, onDelete, onMove, fecha}) => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Omit<ItemRuta,'id'>>({...VACIO});
   const c = COLORES[transportista.colorKey] || COLORES['red'];
+
+  const exportarRutaPDF = () => {
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+    const pw = doc.internal.pageSize.getWidth();
+
+    // Título
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Ruta de Transporte', pw / 2, 50, { align: 'center' });
+
+    // Transportista y fecha
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text(transportista.nombre, pw / 2, 72, { align: 'center' });
+    doc.text(fecha ? fmt(fecha) : '', pw / 2, 90, { align: 'center' });
+
+    // Tabla
+    const margin = 30;
+    const tableW = pw - margin * 2;
+    // Proporciones relativas a los anchos de la tabla visual
+    const colRatios = [0.18, 0.11, 0.24, 0.11, 0.22, 0.10, 0.04];
+    const colWidths = colRatios.map(r => r * tableW);
+    const headers = ['Taller', 'Celular', 'Dirección', 'Sector', 'Detalle', 'Servicio', '#'];
+    const headerH = 32;
+    const rowH = 24;
+    let y = 110;
+
+    // Cabecera
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    let x = margin;
+    headers.forEach((h, i) => {
+      // fill gris oscuro
+      doc.setFillColor(71, 85, 105);
+      doc.setDrawColor(100, 116, 139);
+      doc.rect(x, y, colWidths[i], headerH, 'FD');
+      // texto blanco encima
+      doc.setTextColor(255, 255, 255);
+      doc.text(h, x + colWidths[i] / 2, y + headerH / 2 + 4, { align: 'center' });
+      x += colWidths[i];
+    });
+    y += headerH;
+
+    // Filas
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.setDrawColor(148, 163, 184); // slate-400
+
+    if (items.length === 0) {
+      doc.setFillColor(248, 250, 252);
+      doc.setTextColor(100, 116, 139);
+      doc.rect(margin, y, tableW, rowH, 'FD');
+      doc.text('Sin registros', pw / 2, y + rowH / 2 + 4, { align: 'center' });
+    } else {
+      items.forEach((item, idx) => {
+        const fill = idx % 2 === 0 ? [255, 255, 255] : [241, 245, 249] as [number,number,number];
+        x = margin;
+        const vals = [item.taller||'—', item.celular||'—', item.direccion||'—', item.sector||'—', item.detalle||'—', item.servicio||'—', String(idx+1)];
+        vals.forEach((v, i) => {
+          doc.setFillColor(fill[0], fill[1], fill[2]);
+          doc.setDrawColor(148, 163, 184);
+          doc.rect(x, y, colWidths[i], rowH, 'FD');
+          doc.setTextColor(30, 41, 59);
+          const maxChars = Math.floor(colWidths[i] / 6.5);
+          const txt = v.length > maxChars ? v.substring(0, maxChars - 1) + '…' : v;
+          doc.text(txt, x + colWidths[i] / 2, y + rowH / 2 + 4, { align: 'center' });
+          x += colWidths[i];
+        });
+        y += rowH;
+      });
+    }
+
+    doc.save(`ruta-${transportista.nombre.replace(/\s+/g,'-')}-${fecha||'sin-fecha'}.pdf`);
+  };
 
   const guardar = () => {
     if (!form.taller.trim()) return;
@@ -114,23 +190,30 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
     <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
       <div className={`px-6 py-3 ${c.bg} ${c.border} border-b flex items-center justify-between`}>
         <span className={`text-base font-black ${c.text}`}>{transportista.nombre}</span>
-        <button onClick={()=>{setForm({...VACIO});setOpen(true);}}
-          className="flex items-center gap-1.5 text-xs font-bold bg-white/70 hover:bg-white px-3 py-1.5 rounded-lg transition-colors text-slate-700">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-          Agregar registro
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={exportarRutaPDF}
+            className="flex items-center gap-1.5 text-xs font-bold bg-white/70 hover:bg-white px-3 py-1.5 rounded-lg transition-colors text-slate-700">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12M12 16.5V3"/></svg>
+            Exportar ruta
+          </button>
+          <button onClick={()=>{setForm({...VACIO});setOpen(true);}}
+            className="flex items-center gap-1.5 text-xs font-bold bg-white/70 hover:bg-white px-3 py-1.5 rounded-lg transition-colors text-slate-700">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Agregar registro
+          </button>
+        </div>
       </div>
       <div className="overflow-x-auto bg-white">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-slate-700 text-white">
-              <th className="text-left px-4 py-3 font-bold w-52">Taller</th>
-              <th className="text-left px-4 py-3 font-bold w-32">Celular</th>
-              <th className="text-left px-4 py-3 font-bold w-64">Dirección</th>
-              <th className="text-left px-4 py-3 font-bold w-32">Sector</th>
-              <th className="text-left px-4 py-3 font-bold">Detalle</th>
-              <th className="text-left px-4 py-3 font-bold w-28">Servicio</th>
-              <th className="text-left px-4 py-3 font-bold w-28">Acciones</th>
+              <th className="text-left px-4 py-3 font-bold w-56 border-r border-slate-600">Taller</th>
+              <th className="text-left px-4 py-3 font-bold w-36 border-r border-slate-600">Celular</th>
+              <th className="text-left px-4 py-3 font-bold w-80 border-r border-slate-600">Dirección</th>
+              <th className="text-left px-4 py-3 font-bold w-36 border-r border-slate-600">Sector</th>
+              <th className="text-left px-4 py-3 font-bold w-72 border-r border-slate-600">Detalle</th>
+              <th className="text-left px-4 py-3 font-bold w-32 border-r border-slate-600">Servicio</th>
+              <th className="text-center px-4 py-3 font-bold w-28">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -138,14 +221,14 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
               ? <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-sm">Sin registros</td></tr>
               : items.map((item, idx) => (
                 <tr key={item.id} className={idx%2===0?'bg-white':'bg-slate-50'}>
-                  <td className="px-4 py-3 font-semibold text-slate-900">{item.taller||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{item.celular||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{item.direccion||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{item.sector||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{item.detalle||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600">{item.servicio||'—'}</td>
+                  <td className="px-4 py-3 font-semibold text-slate-900 border-r border-slate-100">{item.taller||'—'}</td>
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.celular||'—'}</td>
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.direccion||'—'}</td>
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.sector||'—'}</td>
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.detalle||'—'}</td>
+                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.servicio||'—'}</td>
                   <td className="px-4 py-3">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center justify-center gap-1">
                       <button onClick={()=>onEdit(item)} title="Editar" className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
                       </button>
@@ -285,13 +368,13 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead><tr className="bg-slate-700 text-white">
-              <th className="text-left px-4 py-3.5 font-bold w-52">Taller</th>
-              <th className="text-left px-4 py-3.5 font-bold w-32">Celular</th>
-              <th className="text-left px-4 py-3.5 font-bold w-64">Dirección</th>
-              <th className="text-left px-4 py-3.5 font-bold w-32">Sector</th>
-              <th className="text-left px-4 py-3.5 font-bold">Detalle</th>
-              <th className="text-left px-4 py-3.5 font-bold w-28">Servicio</th>
-              <th className="text-left px-4 py-3.5 font-bold w-28">Acciones</th>
+              <th className="text-left px-4 py-3.5 font-bold w-56 border-r border-slate-600">Taller</th>
+              <th className="text-left px-4 py-3.5 font-bold w-36 border-r border-slate-600">Celular</th>
+              <th className="text-left px-4 py-3.5 font-bold w-80 border-r border-slate-600">Dirección</th>
+              <th className="text-left px-4 py-3.5 font-bold w-36 border-r border-slate-600">Sector</th>
+              <th className="text-left px-4 py-3.5 font-bold w-72 border-r border-slate-600">Detalle</th>
+              <th className="text-left px-4 py-3.5 font-bold w-32 border-r border-slate-600">Servicio</th>
+              <th className="text-center px-4 py-3.5 font-bold w-28">Acciones</th>
             </tr></thead>
             <tbody><tr><td colSpan={7} className="px-4 py-12 text-center text-slate-400 text-sm">No hay registros para este día</td></tr></tbody>
           </table>
@@ -301,7 +384,7 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
           {tDelDia.map(t => {
             const ruta = getRuta(t.id);
             return (
-              <TablaTransportista key={t.id} transportista={t} items={ruta?.items||[]}
+              <TablaTransportista key={t.id} transportista={t} items={ruta?.items||[]} fecha={fecha}
                 onAdd={item => addItem(t.id, item)}
                 onEdit={item => startEdit(item, ruta!.id)}
                 onDelete={id => deleteItem(id, ruta!.id)}
