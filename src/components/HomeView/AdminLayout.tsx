@@ -53,7 +53,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'orders',              label: 'Pedidos',                icon: <Icons.Orders />,          description: 'Gestionar pedidos' },
     { id: 'settle',              label: 'Asentar Ventas',         icon: <Icons.Settle />,          description: 'Registrar ventas' },
     { id: 'orderHistory',        label: 'Historial de Pedidos',   icon: <Icons.History />,         description: 'Consultar historial' },
-    { id: 'salesReport',         label: 'Informe de Ventas',      icon: <Icons.Reports />,         description: 'Ver reporte' },
+    { id: 'salesReport',         label: 'Informe de Ventas',      icon: <Icons.SalesReport />,     description: 'Ver reporte' },
     { id: 'comparativeDashboard',label: 'Dashboard Comparativo',  icon: <Icons.Dashboard />,       description: 'Análisis comparativo' },
     { id: 'dispatchControl',     label: 'Control de Despachos',   icon: <Icons.DispatchControl />, description: 'Control de despachos' },
     { id: 'reports',             label: 'Reportes Generales',     icon: <Icons.Reports />,         description: 'Ver reportes' },
@@ -66,11 +66,14 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'maletas',             label: 'Maletas',                icon: <Icons.Maletas />,         description: 'Gestionar maletas' },
     { id: 'reception',           label: 'Recepción de Lotes',     icon: <Icons.Reception />,       description: 'Recibir lotes' },
     { id: 'dispatch',            label: 'Despachos',              icon: <Icons.Dispatch />,        description: 'Despachar mercancía' },
-    { id: 'returnReception',     label: 'Devolución de Mercancía',icon: <Icons.Dispatch />,        description: 'Registrar devoluciones' },
+    { id: 'returnReception',     label: 'Devolución de Mercancía',icon: <Icons.ReturnReception />, description: 'Registrar devoluciones' },
     { id: 'compras',             label: 'Compras',                icon: <Icons.Orders />,          description: 'Registrar compras' },
-    { id: 'inventory',           label: 'Inventario',             icon: <Icons.Inventory />,       description: 'Ver inventario' },
-    { id: 'masters',             label: 'Maestros',               icon: <Icons.Masters />,         description: 'Gestionar datos' },
-    { id: 'backups',             label: 'Backups',                icon: <Icons.Backup />,          description: 'Gestionar backups' },
+    { id: 'inventory',              label: 'Inventario',                icon: <Icons.Inventory />,         description: 'Ver inventario' },
+    { id: 'masters',               label: 'Maestros',                  icon: <Icons.Masters />,           description: 'Gestionar datos' },
+    { id: 'backups',               label: 'Backups',                   icon: <Icons.Backup />,            description: 'Gestionar backups' },
+    { id: 'corte',                 label: 'Corte',                     icon: <Icons.Scissors />,          description: 'Módulo de corte' },
+    { id: 'controlTransporte',     label: 'Control de Transporte',     icon: <Icons.Transporte />,        description: 'Control de transporte' },
+    { id: 'liquidacionTransporte', label: 'Liquidación de Transporte', icon: <Icons.Transporte />,        description: 'Liquidación de transporte' },
   ];
 
   const navGroups: NavGroup[] = [
@@ -89,7 +92,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Informes',
       icon: <Icons.Dashboard />,
       items: [
-        { id: 'salesReport',          label: 'Informe de Ventas',     icon: <Icons.Reports />,         description: 'Ver reporte' },
+        { id: 'salesReport',          label: 'Informe de Ventas',     icon: <Icons.SalesReport />,     description: 'Ver reporte' },
         { id: 'comparativeDashboard', label: 'Dashboard Comparativo', icon: <Icons.Dashboard />,       description: 'Análisis comparativo' },
         { id: 'dispatchControl',      label: 'Control de Despachos',  icon: <Icons.DispatchControl />, description: 'Control de despachos' },
         { id: 'reports',              label: 'Reportes Generales',    icon: <Icons.Reports />,         description: 'Ver reportes' },
@@ -109,10 +112,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Producción',
       icon: <Icons.DeliveryDates />,
       items: [
-        { id: 'productoEnProceso',  label: 'Producto en Proceso',    icon: <Icons.ProductoEnProceso />,  description: 'Control de lotes en confección' },
-        { id: 'deliveryDates',      label: 'Fechas de Entrega',      icon: <Icons.DeliveryDates />,      description: 'Gestionar fechas' },
-        { id: 'maletas',            label: 'Maletas',                icon: <Icons.Maletas />,            description: 'Gestionar maletas' },
-        { id: 'compras',            label: 'Compras',                icon: <Icons.Orders />,             description: 'Registrar compras' },
+        { id: 'productoEnProceso',    label: 'Producto en Proceso',    icon: <Icons.ProductoEnProceso />,  description: 'Control de lotes en confección' },
+        { id: 'deliveryDates',        label: 'Fechas de Entrega',      icon: <Icons.DeliveryDates />,      description: 'Gestionar fechas' },
+        { id: 'maletas',              label: 'Maletas',                icon: <Icons.Maletas />,            description: 'Gestionar maletas' },
+        { id: 'compras',              label: 'Compras',                icon: <Icons.Orders />,             description: 'Registrar compras' },
+        { id: 'controlTransporte',    label: 'Control de Transporte',  icon: <Icons.Transporte />,         description: 'Control de transporte' },
       ],
     },
     {
@@ -120,8 +124,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Tesorería',
       icon: <Icons.Tesoreria />,
       items: [
-        { id: 'calculoPagoLotes',   label: 'Calculo, pago de lotes', icon: <Icons.CalculoPago />,        description: 'Calcular y pagar lotes' },
-        { id: 'programacionPagos',  label: 'Programación de Pagos',  icon: <Icons.ProgramacionPagos />,  description: 'Programar pagos' },
+        { id: 'calculoPagoLotes',      label: 'Calculo, pago de lotes',     icon: <Icons.CalculoPago />,        description: 'Calcular y pagar lotes' },
+        { id: 'programacionPagos',     label: 'Programación de Pagos',      icon: <Icons.ProgramacionPagos />,  description: 'Programar pagos' },
+        { id: 'liquidacionTransporte', label: 'Liquidación de Transporte',  icon: <Icons.Transporte />,        description: 'Liquidación de transporte' },
       ],
     },
     {
@@ -131,7 +136,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       items: [
         { id: 'reception',      label: 'Recepción de Lotes',      icon: <Icons.Reception />, description: 'Recibir lotes' },
         { id: 'dispatch',       label: 'Despachos',               icon: <Icons.Dispatch />,  description: 'Despachar mercancía' },
-        { id: 'returnReception',label: 'Devolución de Mercancía', icon: <Icons.Dispatch />,  description: 'Registrar devoluciones' },
+        { id: 'returnReception',label: 'Devolución de Mercancía', icon: <Icons.ReturnReception />, description: 'Registrar devoluciones' },
         { id: 'inventory',      label: 'Inventario',              icon: <Icons.Inventory />, description: 'Ver inventario' },
       ],
     },
@@ -141,7 +146,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       icon: <Icons.Masters />,
       items: [
         { id: 'masters', label: 'Maestros', icon: <Icons.Masters />, description: 'Gestionar datos' },
-    { id: 'backups', label: 'Backups',  icon: <Icons.Backup />,  description: 'Gestionar backups' },
+        { id: 'backups', label: 'Backups',  icon: <Icons.Backup />,  description: 'Gestionar backups' },
+      ],
+    },
+    {
+      id: 'corte',
+      label: 'Corte',
+      icon: <Icons.Scissors />,
+      items: [
+        { id: 'corte', label: 'Corte', icon: <Icons.Scissors />, description: 'Módulo de corte' },
       ],
     },
   ];
@@ -184,12 +197,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
 
       {/* Grid: grupos o ítems del grupo activo */}
       {!currentGroup ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 mb-8" style={{ gridAutoRows: '8rem' }}>
           {navGroups.map((group) => (
             <button
               key={group.id}
               onClick={() => setActiveGroup(group.id)}
-              className="group relative h-28 md:h-32 rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
+              className="group relative h-full rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {/* Línea vertical central */}
@@ -225,12 +238,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 mb-8" style={{ gridAutoRows: '7rem' }}>
           {currentGroup.items.map((item) => (
             <button
               key={item.id}
               onClick={() => handleItemClick(item.id)}
-              className="group relative h-24 md:h-28 rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
+              className="group relative h-full rounded-2xl bg-white border-2 border-slate-200 hover:border-pink-500 hover:shadow-lg transition-all duration-300 p-4 flex flex-col items-start justify-between overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-pink-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10 flex flex-col items-start justify-between h-full w-full">
@@ -268,7 +281,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
           {!error && (
             <>
               <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
-                <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3">Seleccionar Correría para Análisis</h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wide">Análisis rápido de correrías</h3>
+                  {selectedCorreria && (
+                    <button
+                      onClick={() => setSelectedCorreria(null)}
+                      className="w-7 h-7 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors"
+                      aria-label="Limpiar selección"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-slate-500">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  )}
+                </div>
                 <CorreriaSelectorDropdown
                   correrias={correrias || []}
                   selectedCorreria={selectedCorreria}

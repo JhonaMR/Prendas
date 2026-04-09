@@ -21,11 +21,13 @@ const CorreriaSelectorDropdown: React.FC<CorreriaSelectorDropdownProps> = ({
   // Get selected correria name
   const selectedCorreriaName = correrias.find(c => c.id === selectedCorreria)?.name || 'Seleccionar correría';
 
-  // Filter correrias based on search term
-  const filteredCorrerias = correrias.filter(c =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter correrias based on search term — mínimo 2 caracteres
+  const filteredCorrerias = searchTerm.length >= 2
+    ? correrias.filter(c =>
+        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.id.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -73,7 +75,7 @@ const CorreriaSelectorDropdown: React.FC<CorreriaSelectorDropdownProps> = ({
           <div className="p-3 border-b border-slate-100">
             <input
               type="text"
-              placeholder="Buscar correría..."
+              placeholder="Escribe al menos 2 letras..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
@@ -105,7 +107,7 @@ const CorreriaSelectorDropdown: React.FC<CorreriaSelectorDropdownProps> = ({
               ))
             ) : (
               <div className="px-4 py-6 text-center text-slate-500 text-sm">
-                No se encontraron correrias
+                {searchTerm.length < 2 ? 'Escribe al menos 2 letras para buscar' : 'No se encontraron correrias'}
               </div>
             )}
           </div>

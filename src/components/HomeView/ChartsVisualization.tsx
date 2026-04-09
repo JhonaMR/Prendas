@@ -87,10 +87,10 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
 
   return (
     <div className="space-y-6">
-      {/* Fulfillment by Seller - Split into two halves */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Fulfillment by Seller - oculto temporalmente */}
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Fulfillment by Units */}
-        <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
+        {/* <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
           <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center">Cumplimiento por Unidades</h3>
 
           {sellerFulfillmentData.length > 0 ? (
@@ -103,8 +103,6 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
                       {seller.fulfillmentPercentage}%
                     </p>
                   </div>
-
-                  {/* Progress Bar */}
                   <div className="space-y-2">
                     <div className="h-3 bg-indigo-300 rounded-full overflow-hidden shadow-sm">
                       <div
@@ -127,10 +125,10 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
               <p className="text-sm">No hay datos de vendedores para esta correría</p>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Right: Fulfillment by Value */}
-        <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
+        {/* <div className="bg-violet-50 rounded-3xl shadow-sm border border-violet-200 p-6">
           <h3 className="text-2xl md:text-3xl font-black text-slate-900 mb-6 text-center">Cumplimiento por Valor</h3>
 
           {sellerFulfillmentData.length > 0 ? (
@@ -143,8 +141,6 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
                       {seller.valuePercentage}%
                     </p>
                   </div>
-
-                  {/* Progress Bar */}
                   <div className="space-y-2">
                     <div className="h-3 bg-indigo-300 rounded-full overflow-hidden shadow-sm">
                       <div
@@ -167,8 +163,8 @@ const ChartsVisualization: React.FC<ChartsVisualizationProps> = ({ selectedCorre
               <p className="text-sm">No hay datos de vendedores para esta correría</p>
             </div>
           )}
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 };

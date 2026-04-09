@@ -42,6 +42,9 @@ import FichasCostoDetalle from './views/FichasCostoDetalle';
 import FichasCorteDetalle from './views/FichasCorteDetalle';
 import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
+import CorteView from './views/CorteView';
+import ControlTransporteView from './views/transporte/ControlTransporteView';
+import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
 import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
@@ -1116,6 +1119,12 @@ const App: React.FC = () => {
         );
       case 'reports':
         return <ReportsView state={state} user={user} />;
+      case 'corte':
+        return <CorteView />;
+      case 'controlTransporte':
+        return <ControlTransporteView />;
+      case 'liquidacionTransporte':
+        return <LiquidacionTransporteView />;
       case 'deliveryDates':
         return (
           <DeliveryDatesView

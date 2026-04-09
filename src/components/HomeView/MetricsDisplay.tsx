@@ -97,11 +97,10 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
     };
   }, [selectedCorreria, state]);
 
-  const MetricCard: React.FC<{ label: string; value: string | number; unit?: string; icon: React.ReactNode }> = ({
+  const MetricCard: React.FC<{ label: string; value: string | number; unit?: string }> = ({
     label,
     value,
     unit,
-    icon
   }) => {
     // Asignar colores pastel según el label
     const getBackgroundColor = () => {
@@ -130,9 +129,8 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
 
     return (
       <div className={`${getBackgroundColor()} rounded-2xl border ${getBorderColor()} p-4 md:p-6 hover:shadow-md transition-shadow`}>
-        <div className="flex items-start justify-between mb-3">
+        <div className="mb-3">
           <h4 className="text-xs md:text-sm font-semibold text-slate-600 uppercase tracking-wide">{label}</h4>
-          <div className="text-slate-400">{icon}</div>
         </div>
         <div className="flex items-baseline gap-2 min-h-[2.5rem]">
           <p className="text-xl md:text-2xl font-black text-slate-900 break-words line-clamp-2">{value}</p>
@@ -156,43 +154,41 @@ const MetricsDisplay: React.FC<MetricsDisplayProps> = ({ selectedCorreria, state
   return (
     <div className="space-y-6">
       {/* Sales Metrics */}
-      <div>
-        <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wide mb-3 text-center">Métricas de Ventas</h3>
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-pink-100 px-6 py-3">
+          <h3 className="text-sm font-bold text-pink-700 uppercase tracking-wide text-center">Métricas de Ventas</h3>
+        </div>
+        <div className="p-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <MetricCard
             label="Unidades Vendidas"
             value={metrics.unitsSold}
             unit="unidades"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0A24.226 24.226 0 005.378 3.099M9.6 19.5h4.8M7.575 2.6h8.85m0 0A20.523 20.523 0 006.75 10.5" /></svg>}
           />
           <MetricCard
             label="Unidades Despachadas"
             value={metrics.unitsDispatched}
             unit="unidades"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m0 0H3m16.5 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m0 0H21m-9-12a.75.75 0 00-.75.75v6.75h9V2.25a.75.75 0 00-.75-.75h-3.268a.75.75 0 00-.75.75V9m-15 0a.75.75 0 01.75-.75H9m0 0a.75.75 0 01.75.75v6.75H.75V2.25a.75.75 0 01.75-.75h3.268a.75.75 0 01.75.75V9" /></svg>}
           />
           <MetricCard
             label="Cumplimiento (%)"
             value={metrics.fulfillmentPercentage}
             unit="%"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>}
           />
           <MetricCard
             label="Valor Vendido"
             value={`${metrics.valueSold.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3.75-6.75h7.5M12 3c-4.97 0-9 2.686-9 6v6c0 3.314 4.03 6 9 6s9-2.686 9-6V9c0-3.314-4.03-6-9-6z" /></svg>}
           />
           <MetricCard
             label="Valor Despachado"
             value={`${metrics.valueDispatched.toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5H4.5A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 19.5z" /></svg>}
           />
           <MetricCard
             label="Pedidos Tomados"
             value={metrics.ordersTaken}
             unit="pedidos"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .984.578 1.83 1.414 2.209m-5.314 0a48.882 48.882 0 013.814.051m6.314 0a48.882 48.882 0 013.814-.051m0 0A3.75 3.75 0 0121 12a3.75 3.75 0 01-3.75 3.75m0 0A3.75 3.75 0 0113.5 15.75m0 0A3.75 3.75 0 0110.125 12" /></svg>}
           />
+        </div>
         </div>
       </div>
     </div>
