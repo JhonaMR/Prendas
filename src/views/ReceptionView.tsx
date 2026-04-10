@@ -51,7 +51,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   const [showConfResults, setShowConfResults] = useState(false);
   const [batchCode, setBatchCode] = useState('');
   const [arrivalDate, setArrivalDate] = useState('');
-  const [hasSeconds, setHasSeconds] = useState<boolean | null>(null);
+  const [hasSegundasToggle, setHasSegundasToggle] = useState<boolean | null>(null);
   const [segundasUnits, setSegundasUnits] = useState(0);
   const [chargeType, setChargeType] = useState<ChargeType>(null);
   const [chargeUnits, setChargeUnits] = useState(0);
@@ -71,7 +71,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setConfSearch('');
     setBatchCode('');
     setArrivalDate('');
-    setHasSeconds(null);
+    setHasSegundasToggle(null);
     setSegundasUnits(0);
     setChargeType(null);
     setChargeUnits(0);
@@ -98,7 +98,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     setConfSearch(`${lot.confeccionista} - ${confName}`);
     setBatchCode(lot.batchCode);
     setArrivalDate(lot.arrivalDate);
-    setHasSeconds(lot.hasSeconds);
+    setHasSegundasToggle((lot.segundasUnits || 0) > 0);
     setSegundasUnits(lot.segundasUnits || 0);
     setChargeType(lot.chargeType);
     setChargeUnits(lot.chargeUnits);
@@ -215,8 +215,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
       id: editingLot ? editingLot.id : Math.random().toString(36).substr(2, 9),
       batchCode,
       confeccionista,
-      hasSeconds,
-      segundasUnits: hasSeconds ? segundasUnits : 0,
+      segundasUnits: hasSegundasToggle ? segundasUnits : 0,
       chargeType,
       chargeUnits,
       incompleteUnits: hasIncomplete ? incompleteUnits : 0,
@@ -403,18 +402,18 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
           {/* Row 2: Status Toggles (Segundas, Empacado, Muestra, Inventario) */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">¿Tiene Segundas?</label>
-              <div className="flex gap-2 p-1.5 bg-slate-50 border-none rounded-2xl">
+              <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Segundas</label>
+              <div className="flex gap-1.5 p-1 bg-slate-50 border-none rounded-2xl">
                 <button 
-                  onClick={() => setHasSeconds(true)} 
-                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasSeconds === true ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                  onClick={() => setHasSegundasToggle(true)} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${hasSegundasToggle === true ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-slate-400'}`}
                 >SÍ</button>
                 <button 
-                  onClick={() => setHasSeconds(false)} 
-                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${hasSeconds === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
+                  onClick={() => setHasSegundasToggle(false)} 
+                  className={`flex-1 py-1.5 rounded-xl text-[9px] font-black transition-all ${hasSegundasToggle === false ? 'bg-slate-300 text-white shadow-md' : 'bg-white text-slate-400'}`}
                 >NO</button>
               </div>
-              {hasSeconds === true && (
+              {hasSegundasToggle && (
                 <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-xl animate-in fade-in zoom-in duration-300 border border-slate-100">
                   <div className="flex-1 flex items-center bg-white rounded-lg p-1">
                     <button onClick={() => setSegundasUnits(u => Math.max(0, u - 1))} className="w-6 h-6 flex items-center justify-center bg-slate-50 rounded-md text-slate-500 font-bold text-xs">-</button>
@@ -560,7 +559,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                   Completas: <span className="font-black ml-1 text-sm">{totalCount}</span>
                 </div>
                 <div className="px-4 py-1.5 bg-pink-50 text-pink-700 rounded-full font-bold text-[10px] uppercase tracking-wider">
-                  Segundas: <span className="font-black ml-1 text-sm">{hasSeconds ? segundasUnits : 0}</span>
+                  Segundas: <span className="font-black ml-1 text-sm">{hasSegundasToggle ? segundasUnits : 0}</span>
                 </div>
                 <div className="px-4 py-1.5 bg-purple-50 text-purple-700 rounded-full font-bold text-[10px] uppercase tracking-wider">
                   Incompletas: <span className="font-black ml-1 text-sm">{hasIncomplete ? incompleteUnits : 0}</span>
@@ -569,7 +568,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                   {chargeType || 'Cobros'}: <span className="font-black ml-1 text-sm">{chargeUnits}</span>
                 </div>
                 <div className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full font-black text-sm shadow-lg shadow-blue-100">
-                  TOTAL: {totalCount + (hasIncomplete ? incompleteUnits : 0) + chargeUnits + (hasSeconds ? segundasUnits : 0)}
+                  TOTAL: {totalCount + (hasIncomplete ? incompleteUnits : 0) + chargeUnits + (hasSegundasToggle ? segundasUnits : 0)}
                 </div>
               </div>
             </div>
@@ -714,7 +713,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
 
                       {/* Total e Indicadores */}
                       <div className="flex flex-wrap gap-2 items-center">
-                        {r.hasSeconds && <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segu.</span>}
+                        {r.segundasUnits && r.segundasUnits > 0 ? <span className="text-pink-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-pink-500 rounded-full"></span> Segu.</span> : null}
                         {r.chargeType && <span className="text-blue-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span> {r.chargeType}</span>}
                         {r.incompleteUnits && r.incompleteUnits > 0 ? <span className="text-purple-500 text-[9px] sm:text-[10px] font-black uppercase flex items-center gap-1"><span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span> Inc.</span> : null}
                         <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total: <span className="text-slate-800 font-black">{totalQty + (r.chargeUnits || 0) + (r.incompleteUnits || 0) + (r.segundasUnits || 0)}</span></span>

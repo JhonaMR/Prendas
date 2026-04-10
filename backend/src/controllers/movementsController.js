@@ -237,6 +237,13 @@ const getReceptions = async (req, res) => {
         `);
 
         const receptions = result.rows;
+        
+        // DEBUG TEMPORAL - ver qué trae la BD para segundas_units
+        const withSegundas = receptions.filter(r => r.segundas_units > 0);
+        logger.info(`🔍 DEBUG getReceptions: total=${receptions.length}, con_segundas=${withSegundas.length}`);
+        if (withSegundas.length > 0) {
+            withSegundas.forEach(r => logger.info(`  → id=${r.id} batch=${r.batch_code} segundas_units=${r.segundas_units} has_seconds=${r.has_seconds}`));
+        }
 
         // Para cada recepción, obtener sus items
         const receptionsWithItems = await Promise.all(receptions.map(async (reception) => {
@@ -288,7 +295,7 @@ const getReceptions = async (req, res) => {
  */
 const createReception = async (req, res) => {
     try {
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, observacion, segundasUnits } = req.body;
+        const { batchCode, confeccionista, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, observacion, segundasUnits } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista || !items || !items.length || !receivedBy || !arrivalDate) {
@@ -307,7 +314,6 @@ const createReception = async (req, res) => {
                 id,
                 batchCode,
                 confeccionista,
-                hasSeconds,
                 chargeType: chargeType || null,
                 chargeUnits: chargeUnits || 0,
                 incompleteUnits: incompleteUnits || 0,
@@ -330,7 +336,6 @@ const createReception = async (req, res) => {
                 id,
                 batchCode,
                 confeccionista,
-                hasSeconds,
                 chargeType,
                 chargeUnits,
                 incompleteUnits: incompleteUnits || 0,

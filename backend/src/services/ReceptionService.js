@@ -71,7 +71,6 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 id: r.id,
                 batchCode: r.batch_code,
                 confeccionista: r.confeccionista,
-                hasSeconds: r.has_seconds == null ? null : !!r.has_seconds,
                 chargeType: r.charge_type,
                 chargeUnits: r.charge_units,
                 incompleteUnits: r.incomplete_units || 0,
@@ -107,14 +106,13 @@ const createReception = async (receptionData, items) => {
         return await transaction(async (client) => {
             // Insert reception
             const receptionResult = await client.query(
-                `INSERT INTO receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, incomplete_units, is_packed, has_muestra, bag_quantity, segundas_units, received_by, created_at, arrival_date, affects_inventory, observacion)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+                `INSERT INTO receptions (id, batch_code, confeccionista, charge_type, charge_units, incomplete_units, is_packed, has_muestra, bag_quantity, segundas_units, received_by, created_at, arrival_date, affects_inventory, observacion)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
                 RETURNING *`,
                 [
                     receptionData.id,
                     receptionData.batchCode,
                     receptionData.confeccionista,
-                    receptionData.hasSeconds ? 1 : 0,
                     receptionData.chargeType,
                     receptionData.chargeUnits || 0,
                     receptionData.incompleteUnits || 0,
@@ -192,15 +190,14 @@ const updateReception = async (id, data, items) => {
         return await transaction(async (client) => {
             const result = await client.query(
                 `UPDATE receptions 
-                SET batch_code = $1, confeccionista = $2, has_seconds = $3, charge_type = $4, charge_units = $5, affects_inventory = $6,
-                    incomplete_units = $7, is_packed = $8, has_muestra = $9, bag_quantity = $10, arrival_date = $11, observacion = $12,
-                    segundas_units = $13
-                WHERE id = $14
+                SET batch_code = $1, confeccionista = $2, charge_type = $3, charge_units = $4, affects_inventory = $5,
+                    incomplete_units = $6, is_packed = $7, has_muestra = $8, bag_quantity = $9, arrival_date = $10, observacion = $11,
+                    segundas_units = $12
+                WHERE id = $13
                 RETURNING *`,
                 [
                     data.batchCode,
                     data.confeccionista,
-                    data.hasSeconds ? 1 : 0,
                     data.chargeType,
                     data.chargeUnits || 0,
                     data.affectsInventory !== false,
