@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
+import { User, UserRole } from '../../types';
+import TalleresImportModal from '../../components/TalleresImportModal';
 
 interface Taller {
   id: string;
@@ -37,10 +39,13 @@ const CamposForm: React.FC<{
 
 interface TalleresViewProps {
   onVolver: () => void;
+  user?: User;
 }
 
-const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
+const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
   const [talleres, setTalleres] = useState<Taller[]>([]);
+  const [modalImport, setModalImport] = useState(false);
+  const esSoporte = (user?.role as string)?.trim().toLowerCase() === 'soporte';
 
   useEffect(() => {
     (api as any).getTalleres().then((data: Taller[]) => setTalleres(data));
@@ -100,13 +105,24 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
             <p className="text-slate-400 text-sm mt-1">{talleres.length} taller{talleres.length !== 1 ? 'es' : ''} registrado{talleres.length !== 1 ? 's' : ''}</p>
           </div>
         </div>
-        <button onClick={() => { setFormNuevo({ ...FORM_VACIO }); setModalNuevo(true); }}
-          className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Nuevo taller
-        </button>
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {esSoporte && (
+            <button onClick={() => setModalImport(true)}
+              className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Importar Excel
+            </button>
+          )}
+          <button onClick={() => { setFormNuevo({ ...FORM_VACIO }); setModalNuevo(true); }}
+            className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Nuevo taller
+          </button>
+        </div>
       </div>
 
       {/* Tabla */}
@@ -222,6 +238,16 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {modalImport && (
+        <TalleresImportModal
+          onClose={() => setModalImport(false)}
+          onImportado={() => {
+            (api as any).getTalleres().then((data: Taller[]) => setTalleres(data));
+            setModalImport(false);
+          }}
+        />
       )}
     </div>
   );

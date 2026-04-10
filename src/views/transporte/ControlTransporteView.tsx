@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import RegistroTransportesView from './RegistroTransportesView';
 import TalleresView from './TalleresView';
 import api from '../../services/api';
+import { User } from '../../types';
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
@@ -87,7 +88,7 @@ const ColorSelector: React.FC<{ value: string; onChange: (k: string) => void; us
 
 // ─── Componente principal ────────────────────────────────────────────────────
 
-const ControlTransporteView: React.FC = () => {
+const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   const hoy = new Date();
   const [mes, setMes]   = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
@@ -192,7 +193,7 @@ const ControlTransporteView: React.FC = () => {
   }
 
   if (verTalleres) {
-    return <TalleresView onVolver={() => setVerTalleres(false)} />;
+    return <TalleresView onVolver={() => setVerTalleres(false)} user={user ?? undefined} />;
   }
 
   if (fechaSeleccionada) {

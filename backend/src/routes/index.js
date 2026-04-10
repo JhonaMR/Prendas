@@ -331,6 +331,7 @@ router.put('/transportistas/:id',          verifyToken, preventNonAdminEdit, tra
 router.delete('/transportistas/:id',       verifyToken, preventNonAdminEdit, transportistasController.remove);
 
 router.get('/talleres',                    verifyToken, talleresController.list);
+router.post('/talleres/bulk-import',       verifyToken, verifyAdmin, talleresController.bulkImport);
 router.post('/talleres',                   verifyToken, preventNonAdminEdit, talleresController.create);
 router.put('/talleres/:id',                verifyToken, preventNonAdminEdit, talleresController.update);
 router.delete('/talleres/:id',             verifyToken, preventNonAdminEdit, talleresController.remove);

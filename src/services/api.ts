@@ -1994,6 +1994,19 @@ class ApiService {
     } catch (error: any) { return { success: false, message: error.message }; }
   }
 
+  async importarTalleres(talleres: { nombre: string; celular: string; direccion: string; sector: string; estado: string }[]): Promise<ApiResponse<{ ok: number; errores: number }>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/talleres/bulk-import`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ talleres })
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al importar talleres' };
+    }
+  }
+
   async getRutasTransporte(fecha?: string): Promise<any[]> {
     try {
       const url = fecha

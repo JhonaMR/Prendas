@@ -47,4 +47,36 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { list, create, update, remove };
+const bulkImport = async (req, res) => {
+  try {
+    const { talleres } = req.body;
+    if (!Array.isArray(talleres) || talleres.length === 0) {
+      return res.status(400).json({ success: false, message: 'No se enviaron talleres' });
+    }
+    let ok = 0;
+    let errores = 0;
+    for (const t of talleres) {
+      try {
+        if (!t.nombre?.trim()) { errores++; continue; }
+        const id = `taller_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+        await createTaller({
+          id,
+          nombre: t.nombre.trim(),
+          celular: t.celular || '',
+          direccion: t.direccion || '',
+          sector: t.sector || '',
+          estado: t.estado === 'inactivo' ? 'inactivo' : 'activo',
+        });
+        ok++;
+      } catch (e) {
+        errores++;
+      }
+    }
+    return res.json({ success: true, data: { ok, errores }, message: `${ok} talleres importados` });
+  } catch (error) {
+    logger.error('Error bulk importing talleres', error);
+    return res.status(500).json({ success: false, message: 'Error en importación masiva' });
+  }
+};
+
+module.exports = { list, create, update, remove, bulkImport };

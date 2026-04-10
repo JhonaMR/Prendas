@@ -1122,7 +1122,7 @@ const App: React.FC = () => {
       case 'corte':
         return <CorteView />;
       case 'controlTransporte':
-        return <ControlTransporteView />;
+        return <ControlTransporteView user={user ?? undefined} />;
       case 'liquidacionTransporte':
         return <LiquidacionTransporteView />;
       case 'deliveryDates':
