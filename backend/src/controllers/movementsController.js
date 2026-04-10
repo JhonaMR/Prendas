@@ -257,6 +257,7 @@ const getReceptions = async (req, res) => {
                 isPacked: reception.is_packed === true || reception.is_packed === 1,
                 hasMuestra: reception.has_muestra === true || reception.has_muestra === 1,
                 bagQuantity: reception.bag_quantity || 0,
+                segundasUnits: reception.segundas_units || 0,
                 items: itemsResult.rows,
                 receivedBy: reception.received_by,
                 createdAt: reception.created_at,
@@ -287,7 +288,7 @@ const getReceptions = async (req, res) => {
  */
 const createReception = async (req, res) => {
     try {
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, observacion } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, items, receivedBy, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, observacion, segundasUnits } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista || !items || !items.length || !receivedBy || !arrivalDate) {
@@ -313,6 +314,7 @@ const createReception = async (req, res) => {
                 isPacked: isPacked || false,
                 hasMuestra: hasMuestra || false,
                 bagQuantity: bagQuantity || 0,
+                segundasUnits: segundasUnits || 0,
                 receivedBy,
                 arrivalDate,
                 affectsInventory: affectsInventory !== false,
@@ -335,6 +337,7 @@ const createReception = async (req, res) => {
                 isPacked: isPacked || false,
                 hasMuestra: hasMuestra || false,
                 bagQuantity: bagQuantity || 0,
+                segundasUnits: segundasUnits || 0,
                 items,
                 receivedBy,
                 arrivalDate,
@@ -361,7 +364,7 @@ const createReception = async (req, res) => {
 const updateReception = async (req, res) => {
     try {
         const { id } = req.params;
-        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, items, observacion } = req.body;
+        const { batchCode, confeccionista, hasSeconds, chargeType, chargeUnits, affectsInventory, incompleteUnits, isPacked, hasMuestra, bagQuantity, arrivalDate, items, observacion, segundasUnits } = req.body;
 
         // Validaciones
         if (!batchCode || !confeccionista) {
@@ -382,6 +385,7 @@ const updateReception = async (req, res) => {
             isPacked: isPacked || false,
             hasMuestra: hasMuestra || false,
             bagQuantity: bagQuantity || 0,
+            segundasUnits: segundasUnits || 0,
             arrivalDate,
             affectsInventory: affectsInventory !== false,
             observacion: observacion || null
@@ -408,6 +412,7 @@ const updateReception = async (req, res) => {
                 isPacked: result.is_packed === true || result.is_packed === 1,
                 hasMuestra: result.has_muestra === true || result.has_muestra === 1,
                 bagQuantity: result.bag_quantity || 0,
+                segundasUnits: result.segundas_units || 0,
                 arrivalDate: result.arrival_date,
                 affectsInventory: result.affects_inventory !== false,
                 observacion: result.observacion || null,

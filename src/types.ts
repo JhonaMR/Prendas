@@ -87,6 +87,7 @@ export interface BatchReception {
   batchCode: string;
   confeccionista: string;
   hasSeconds: boolean | null;
+  segundasUnits?: number;
   chargeType: ChargeType;
   chargeUnits: number;
   incompleteUnits?: number;
