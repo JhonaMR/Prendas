@@ -1,5 +1,5 @@
 /**
- * 📦 RECEPTION SERVICE - POSTGRESQL
+ * ðŸ“¦ RECEPTION SERVICE - POSTGRESQL
  * 
  * Handles reception operations with pagination support
  * Implements transactions for data consistency
@@ -90,7 +90,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
 
         return PaginationService.buildPaginatedResponse(mappedReceptions, validPage, validLimit, total, filters);
     } catch (error) {
-        logger.error('❌ Error getting receptions with pagination:', error);
+        logger.error('âŒ Error getting receptions with pagination:', error);
         throw error;
     }
 };
@@ -142,7 +142,7 @@ const createReception = async (receptionData, items) => {
             return receptionResult.rows[0];
         });
     } catch (error) {
-        logger.error('❌ Error creating reception:', error);
+        logger.error('âŒ Error creating reception:', error);
         throw error;
     }
 };
@@ -175,7 +175,7 @@ const getReceptionById = async (id) => {
             items: itemsResult.rows
         };
     } catch (error) {
-        logger.error('❌ Error getting reception:', error);
+        logger.error('âŒ Error getting reception:', error);
         throw error;
     }
 };
@@ -231,7 +231,7 @@ const updateReception = async (id, data, items) => {
             return result.rows[0];
         });
     } catch (error) {
-        logger.error('❌ Error updating reception:', error);
+        logger.error('âŒ Error updating reception:', error);
         throw error;
     }
 };
@@ -251,7 +251,7 @@ const deleteReception = async (id) => {
                 [id]
             );
 
-            // Luego eliminar la recepción
+            // Luego eliminar la recepciÃ³n
             const result = await client.query(
                 `DELETE FROM receptions WHERE id = $1`,
                 [id]
@@ -260,7 +260,7 @@ const deleteReception = async (id) => {
             return result.rowCount > 0;
         });
     } catch (error) {
-        logger.error('❌ Error deleting reception:', error);
+        logger.error('âŒ Error deleting reception:', error);
         throw error;
     }
 };
