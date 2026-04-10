@@ -239,15 +239,6 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
         
         if (result.success) {
           console.log('✅ Recepción guardada en BD');
-          
-          // También actualizar estado local
-          updateState(prev => ({
-            ...prev,
-            receptions: editingLot 
-              ? prev.receptions.map(r => r.id === data.id ? data : r)
-              : [data, ...prev.receptions]
-          }));
-          
           setIsCounting(false);
         } else {
           alert('Error al guardar: ' + (result.message || 'Error desconocido'));
