@@ -319,6 +319,27 @@ router.put('/pagos-programados/reordenar', verifyToken, verifyAdmin, programacio
 router.put('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.updatePago);
 router.delete('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.deletePago);
 
+// ==================== TRANSPORTE ====================
+
+const transportistasController = require('../controllers/entities/transporte/transportistasController');
+const talleresController        = require('../controllers/entities/transporte/talleresController');
+const rutasTransporteController = require('../controllers/entities/transporte/rutasTransporteController');
+
+router.get('/transportistas',              verifyToken, transportistasController.list);
+router.post('/transportistas',             verifyToken, preventNonAdminEdit, transportistasController.create);
+router.put('/transportistas/:id',          verifyToken, preventNonAdminEdit, transportistasController.update);
+router.delete('/transportistas/:id',       verifyToken, preventNonAdminEdit, transportistasController.remove);
+
+router.get('/talleres',                    verifyToken, talleresController.list);
+router.post('/talleres',                   verifyToken, preventNonAdminEdit, talleresController.create);
+router.put('/talleres/:id',                verifyToken, preventNonAdminEdit, talleresController.update);
+router.delete('/talleres/:id',             verifyToken, preventNonAdminEdit, talleresController.remove);
+
+router.get('/rutas-transporte',            verifyToken, rutasTransporteController.list);
+router.post('/rutas-transporte',           verifyToken, rutasTransporteController.create);
+router.post('/rutas-transporte/sync',      verifyToken, rutasTransporteController.sync);
+router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rutasTransporteController.remove);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');

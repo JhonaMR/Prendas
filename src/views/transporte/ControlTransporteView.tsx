@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import RegistroTransportesView from './RegistroTransportesView';
 import TalleresView from './TalleresView';
+import api from '../../services/api';
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
@@ -24,9 +25,6 @@ interface RutaTransporte {
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DIAS_SEMANA_HEADER = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const DIAS_SEMANA_SELECTOR = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-
-const STORAGE_KEY_TRANSPORTISTAS = 'ctrl_transportistas';
-const STORAGE_KEY_RUTAS = 'ctrl_rutas';
 
 const COLORES: Record<string, { bg: string; text: string; dot: string; label: string }> = {
   red:    { bg: 'bg-red-200',    text: 'text-red-700',    dot: 'bg-red-400',    label: 'Rojo'    },
@@ -94,23 +92,34 @@ const ControlTransporteView: React.FC = () => {
   const [mes, setMes]   = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
 
-  const [transportistas, setTransportistas] = useState<Transportista[]>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY_TRANSPORTISTAS);
-      return raw ? JSON.parse(raw) : TRANSPORTISTAS_DEFAULT;
-    } catch { return TRANSPORTISTAS_DEFAULT; }
-  });
+  const [transportistas, setTransportistas] = useState<Transportista[]>([]);
+  const [rutas, setRutas] = useState<RutaTransporte[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [rutas, setRutas] = useState<RutaTransporte[]>(() => {
+  const cargarDatos = useCallback(async () => {
+    setLoading(true);
     try {
-      const raw = localStorage.getItem(STORAGE_KEY_RUTAS);
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
-  });
+      const [ts, rs] = await Promise.all([
+        (api as any).getTransportistas(),
+        (api as any).getRutasTransporte()
+      ]);
+      setTransportistas(ts);
+      setRutas(rs);
+    } catch (e) {
+      console.error('Error cargando datos de transporte:', e);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-  const persistirRutas = (lista: RutaTransporte[]) => {
-    setRutas(lista);
-    localStorage.setItem(STORAGE_KEY_RUTAS, JSON.stringify(lista));
+  useEffect(() => { cargarDatos(); }, [cargarDatos]);
+
+  const persistirRutas = async (lista: RutaTransporte[], fecha: string) => {
+    setRutas(prev => {
+      const sinEstaFecha = prev.filter(r => r.fecha !== fecha);
+      return [...sinEstaFecha, ...lista.filter(r => r.fecha === fecha)];
+    });
+    await (api as any).syncRutasTransporte(fecha, lista.filter(r => r.fecha === fecha));
   };
 
   const [modalTransportistas, setModalTransportistas] = useState(false);
@@ -121,10 +130,6 @@ const ControlTransporteView: React.FC = () => {
   const [confirmEliminarId, setConfirmEliminarId] = useState<string | null>(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string | null>(null);
   const [verTalleres, setVerTalleres] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_TRANSPORTISTAS, JSON.stringify(transportistas));
-  }, [transportistas]);
 
   // ── Calendario ──
   const diasEnMes = getDiasEnMes(anio, mes);
@@ -151,9 +156,11 @@ const ControlTransporteView: React.FC = () => {
   };
 
   // ── CRUD ──
-  const agregarTransportista = () => {
+  const agregarTransportista = async () => {
     if (!formNuevo.nombre.trim()) return;
-    setTransportistas(prev => [...prev, { id: Date.now().toString(), ...formNuevo }]);
+    const nuevo = { id: Date.now().toString(), ...formNuevo };
+    await (api as any).createTransportista(nuevo);
+    setTransportistas(prev => [...prev, nuevo]);
     setFormNuevo({ ...FORM_VACIO });
     setAgregando(false);
   };
@@ -163,20 +170,26 @@ const ControlTransporteView: React.FC = () => {
     setFormEditar({ nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.colorKey || 'red' });
   };
 
-  const guardarEdicion = () => {
-    if (!formEditar.nombre.trim()) return;
+  const guardarEdicion = async () => {
+    if (!formEditar.nombre.trim() || !editandoId) return;
+    await (api as any).updateTransportista(editandoId, formEditar);
     setTransportistas(prev => prev.map((t: Transportista) => t.id === editandoId ? { ...t, ...formEditar } : t));
     setEditandoId(null);
   };
 
   const cancelarEdicion = () => setEditandoId(null);
 
-  const eliminarTransportista = (id: string) => {
+  const eliminarTransportista = async (id: string) => {
+    await (api as any).deleteTransportista(id);
     setTransportistas(prev => prev.filter((t: Transportista) => t.id !== id));
     setConfirmEliminarId(null);
   };
 
   const getColor = (t: Transportista) => COLORES[t.colorKey] || COLORES['red'];
+
+  if (loading) {
+    return <div className="h-full flex items-center justify-center text-slate-400 text-sm">Cargando...</div>;
+  }
 
   if (verTalleres) {
     return <TalleresView onVolver={() => setVerTalleres(false)} />;
@@ -188,8 +201,8 @@ const ControlTransporteView: React.FC = () => {
         fecha={fechaSeleccionada}
         transportistas={transportistas}
         rutas={rutas}
-        onAgregarRuta={(ruta) => persistirRutas([...rutas, ruta])}
-        onActualizarRutas={persistirRutas}
+        onAgregarRuta={(ruta) => persistirRutas([...rutas, ruta], fechaSeleccionada)}
+        onActualizarRutas={(lista) => persistirRutas(lista, fechaSeleccionada)}
         onVolver={() => setFechaSeleccionada(null)}
       />
     );

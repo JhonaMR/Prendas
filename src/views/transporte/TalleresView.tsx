@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '../../services/api';
 
 interface Taller {
   id: string;
@@ -8,8 +9,6 @@ interface Taller {
   sector: string;
   estado: 'activo' | 'inactivo';
 }
-
-const STORAGE_KEY = 'ctrl_talleres';
 
 const FORM_VACIO: Omit<Taller, 'id'> = { nombre: '', celular: '', direccion: '', sector: '', estado: 'activo' };
 
@@ -41,12 +40,11 @@ interface TalleresViewProps {
 }
 
 const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
-  const [talleres, setTalleres] = useState<Taller[]>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
-  });
+  const [talleres, setTalleres] = useState<Taller[]>([]);
+
+  useEffect(() => {
+    (api as any).getTalleres().then((data: Taller[]) => setTalleres(data));
+  }, []);
 
   const [modalNuevo, setModalNuevo] = useState(false);
   const [formNuevo, setFormNuevo] = useState<Omit<Taller, 'id'>>({ ...FORM_VACIO });
@@ -56,14 +54,11 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
 
   const [confirmEliminarId, setConfirmEliminarId] = useState<string | null>(null);
 
-  const persistir = (lista: Taller[]) => {
-    setTalleres(lista);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
-  };
-
-  const agregar = () => {
+  const agregar = async () => {
     if (!formNuevo.nombre.trim()) return;
-    persistir([...talleres, { id: Date.now().toString(), ...formNuevo }]);
+    const nuevo = { id: Date.now().toString(), ...formNuevo };
+    await (api as any).createTaller(nuevo);
+    setTalleres(prev => [...prev, nuevo]);
     setFormNuevo({ ...FORM_VACIO });
     setModalNuevo(false);
   };
@@ -73,14 +68,16 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver }) => {
     setFormEditar({ nombre: t.nombre, celular: t.celular, direccion: t.direccion, sector: t.sector, estado: t.estado });
   };
 
-  const guardarEdicion = () => {
-    if (!formEditar.nombre.trim()) return;
-    persistir(talleres.map((t: Taller) => t.id === editandoId ? { ...t, ...formEditar } : t));
+  const guardarEdicion = async () => {
+    if (!formEditar.nombre.trim() || !editandoId) return;
+    await (api as any).updateTaller(editandoId, formEditar);
+    setTalleres(prev => prev.map((t: Taller) => t.id === editandoId ? { ...t, ...formEditar } : t));
     setEditandoId(null);
   };
 
-  const eliminar = (id: string) => {
-    persistir(talleres.filter(t => t.id !== id));
+  const eliminar = async (id: string) => {
+    await (api as any).deleteTaller(id);
+    setTalleres(prev => prev.filter(t => t.id !== id));
     setConfirmEliminarId(null);
   };
 

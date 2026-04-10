@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
+import api from '../../services/api';
 
 interface Transportista { id: string; nombre: string; colorKey: string; }
 interface ItemRuta { id: string; taller: string; celular: string; direccion: string; sector: string; detalle: string; servicio: string; }
@@ -29,10 +30,6 @@ const ic = "w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:
 
 interface TallerRegistrado { id: string; nombre: string; celular: string; direccion: string; sector: string; }
 
-function cargarTalleres(): TallerRegistrado[] {
-  try { return JSON.parse(localStorage.getItem('ctrl_talleres') || '[]'); } catch { return []; }
-}
-
 function fmt(f: string) {
   const [a,m,d] = f.split('-');
   return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${a}`;
@@ -46,7 +43,11 @@ const CloseBtn: React.FC<{onClick:()=>void}> = ({onClick}) => (
 
 const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'id'>)=>void}> = ({form, onChange}) => {
   const [sugerencias, setSugerencias] = useState<TallerRegistrado[]>([]);
-  const talleres = cargarTalleres();
+  const [talleres, setTalleres] = useState<TallerRegistrado[]>([]);
+
+  useEffect(() => {
+    (api as any).getTalleres().then((data: TallerRegistrado[]) => setTalleres(data));
+  }, []);
 
   const handleTallerChange = (valor: string) => {
     onChange({...form, taller: valor});
@@ -84,7 +85,7 @@ const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'
       <input type="text" placeholder="Celular"   value={form.celular}   onChange={e=>onChange({...form,celular:e.target.value})}   className={ic}/>
       <input type="text" placeholder="Dirección" value={form.direccion} onChange={e=>onChange({...form,direccion:e.target.value})} className={ic}/>
       <input type="text" placeholder="Sector"    value={form.sector}    onChange={e=>onChange({...form,sector:e.target.value})}    className={ic}/>
-      <input type="text" placeholder="Detalle"   value={form.detalle}   onChange={e=>onChange({...form,detalle:e.target.value})}   className={ic}/>
+      <textarea placeholder="Detalle" value={form.detalle} onChange={e=>onChange({...form,detalle:e.target.value})} rows={3} className={ic+' resize-none'}/>
       <input type="text" placeholder="Servicio"  value={form.servicio}  onChange={e=>onChange({...form,servicio:e.target.value})}  className={ic}/>
     </div>
   );
@@ -274,6 +275,18 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
   const [moveState, setMoveState] = useState<{item:ItemRuta;rutaId:string}|null>(null);
   const [formMove, setFormMove] = useState<Omit<ItemRuta,'id'>>({...VACIO});
   const [fechaDest, setFechaDest] = useState('');
+  const [tDestSeleccionado, setTDestSeleccionado] = useState('');
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (modalAgregar) { setModalAgregar(false); return; }
+      if (editState)    { setEditState(null);      return; }
+      if (moveState)    { setMoveState(null);       return; }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [modalAgregar, editState, moveState]);
 
   const rutasDelDia = rutas.filter(r => r.fecha === fecha);
   const tDelDia = transportistas.filter(t => rutasDelDia.some(r => r.transportistaId === t.id));
@@ -319,15 +332,15 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
   };
 
   const startMove = (item: ItemRuta, rutaId: string) => {
+    const origen = rutas.find(r => r.id === rutaId);
     setMoveState({item, rutaId});
     setFormMove({taller:item.taller, celular:item.celular, direccion:item.direccion, sector:item.sector, detalle:item.detalle, servicio:item.servicio});
-    setFechaDest('');
+    setFechaDest(origen?.fecha || fecha); // precarga la fecha actual de la ruta
+    setTDestSeleccionado(origen?.transportistaId || '');
   };
 
   const confirmMove = () => {
-    if (!moveState || !fechaDest) return;
-    const origen = rutas.find(r => r.id === moveState.rutaId);
-    if (!origen) return;
+    if (!moveState || !fechaDest || !tDestSeleccionado) return;
     let updated = rutas.map(r =>
       r.id === moveState.rutaId
         ? {...r, items: (r.items||[]).filter(i => i.id !== moveState.item.id)}
@@ -335,11 +348,11 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
     );
     updated = updated.filter(r => (r.items||[]).length > 0);
     const itemMovido = {...moveState.item, ...formMove, id: Date.now().toString()};
-    const dest = updated.find(r => r.fecha === fechaDest && r.transportistaId === origen.transportistaId);
+    const dest = updated.find(r => r.fecha === fechaDest && r.transportistaId === tDestSeleccionado);
     if (dest) {
       updated = updated.map(r => r.id === dest.id ? {...r, items: [...(r.items||[]), itemMovido]} : r);
     } else {
-      updated = [...updated, {id: Date.now().toString()+'d', fecha: fechaDest, transportistaId: origen.transportistaId, items: [itemMovido]}];
+      updated = [...updated, {id: Date.now().toString()+'d', fecha: fechaDest, transportistaId: tDestSeleccionado, items: [itemMovido]}];
     }
     onActualizarRutas(updated);
     setMoveState(null);
@@ -395,66 +408,242 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
         </div>
       )}
 
-      {modalAgregar && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-slate-900">Agregar ruta</h2>
-              <CloseBtn onClick={()=>setModalAgregar(false)}/>
-            </div>
-            <select value={tSeleccionado} onChange={e=>setTSeleccionado(e.target.value)} className={ic+' bg-white'}>
-              <option value="">Seleccionar transportista</option>
-              {transportistas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
-            </select>
-            <FormItem form={formNuevo} onChange={setFormNuevo}/>
-            <div className="flex gap-2">
-              <button onClick={handleAgregar} disabled={!tSeleccionado || !formNuevo.taller.trim()}
-                className="flex-1 bg-pink-500 hover:bg-pink-600 disabled:opacity-40 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Agregar</button>
-              <button onClick={()=>setModalAgregar(false)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modalAgregar && (() => {
+        const tActual = transportistas.find(t => t.id === tSeleccionado);
+        const c = tActual ? (COLORES[tActual.colorKey] || COLORES['red']) : null;
+        const gradients: Record<string,string> = {
+          red:    'from-red-500 to-rose-600',
+          green:  'from-green-500 to-emerald-600',
+          blue:   'from-blue-500 to-indigo-600',
+          yellow: 'from-yellow-400 to-amber-500',
+          purple: 'from-purple-500 to-violet-600',
+          orange: 'from-orange-400 to-orange-600',
+          pink:   'from-pink-500 to-fuchsia-600',
+        };
+        const grad = tActual ? (gradients[tActual.colorKey] || gradients['pink']) : 'from-pink-500 to-fuchsia-600';
+        return (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+              {/* Header con gradiente */}
+              <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Nueva ruta</p>
+                    <h2 className="text-2xl font-black text-white">Agregar ruta</h2>
+                    {tActual && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="w-2 h-2 rounded-full bg-white/80"/>
+                        <span className="text-white/90 text-sm font-semibold">{tActual.nombre}</span>
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={()=>setModalAgregar(false)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+                {/* Decoración */}
+                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+              </div>
 
-      {editState && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-slate-900">Editar registro</h2>
-              <CloseBtn onClick={()=>setEditState(null)}/>
-            </div>
-            <FormItem form={formEdit} onChange={setFormEdit}/>
-            <div className="flex gap-2">
-              <button onClick={saveEdit} className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Guardar</button>
-              <button onClick={()=>setEditState(null)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
-            </div>
-          </div>
-        </div>
-      )}
+              {/* Contenido */}
+              <div className="px-6 pt-2 pb-6 flex flex-col gap-4">
+                {/* Selector transportista */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Transportista</label>
+                  <div className="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                    </svg>
+                    <select value={tSeleccionado} onChange={e=>setTSeleccionado(e.target.value)}
+                      className={`${ic} pl-9 bg-white ${c ? `border-2 ${c.border} ${c.bg}` : ''}`}>
+                      <option value="">Seleccionar transportista...</option>
+                      {transportistas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                    </select>
+                  </div>
+                </div>
 
-      {moveState && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-slate-900">Mover transporte</h2>
-              <CloseBtn onClick={()=>setMoveState(null)}/>
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-xs text-slate-500 font-semibold">Mover al día</p>
-              <input type="date" value={fechaDest} onChange={e=>setFechaDest(e.target.value)} className={ic}/>
-            </div>
-            <FormItem form={formMove} onChange={setFormMove}/>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={confirmMove}
-                disabled={!fechaDest}
-                className="flex-1 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Mover</button>
-              <button type="button" onClick={()=>setMoveState(null)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
+                {/* Separador */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-100"/>
+                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
+                  <div className="flex-1 h-px bg-slate-100"/>
+                </div>
+
+                <FormItem form={formNuevo} onChange={setFormNuevo}/>
+
+                {/* Botones */}
+                <div className="flex gap-2 pt-1">
+                  <button onClick={handleAgregar} disabled={!tSeleccionado || !formNuevo.taller.trim()}
+                    className={`flex-1 bg-gradient-to-r ${grad} disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]`}>
+                    Agregar ruta
+                  </button>
+                  <button onClick={()=>setModalAgregar(false)}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
+
+      {editState && (() => {
+        const rutaEdit = rutas.find(r => r.id === editState.rutaId);
+        const tEdit = rutaEdit ? transportistas.find(t => t.id === rutaEdit.transportistaId) : null;
+        const gradients: Record<string,string> = {
+          red:    'from-red-500 to-rose-600',
+          green:  'from-green-500 to-emerald-600',
+          blue:   'from-blue-500 to-indigo-600',
+          yellow: 'from-yellow-400 to-amber-500',
+          purple: 'from-purple-500 to-violet-600',
+          orange: 'from-orange-400 to-orange-600',
+          pink:   'from-pink-500 to-fuchsia-600',
+        };
+        const grad = tEdit ? (gradients[tEdit.colorKey] || gradients['pink']) : 'from-pink-500 to-fuchsia-600';
+        const c = tEdit ? (COLORES[tEdit.colorKey] || COLORES['red']) : null;
+        void c;
+        return (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+              <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Modificar registro</p>
+                    <h2 className="text-2xl font-black text-white">Editar registro</h2>
+                    {tEdit && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="w-2 h-2 rounded-full bg-white/80"/>
+                        <span className="text-white/90 text-sm font-semibold">{tEdit.nombre}</span>
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={()=>setEditState(null)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+              </div>
+              <div className="px-6 pt-6 pb-6 flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-100"/>
+                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
+                  <div className="flex-1 h-px bg-slate-100"/>
+                </div>
+                <FormItem form={formEdit} onChange={setFormEdit}/>
+                <div className="flex gap-2 pt-1">
+                  <button onClick={saveEdit}
+                    className={`flex-1 bg-gradient-to-r ${grad} text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]`}>
+                    Guardar
+                  </button>
+                  <button onClick={()=>setEditState(null)}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+      {moveState && (() => {
+        const rutaOrigen = rutas.find(r => r.id === moveState.rutaId);
+        void rutaOrigen; // origen disponible si se necesita en el futuro
+        const gradients: Record<string,string> = {
+          red:    'from-red-500 to-rose-600',
+          green:  'from-green-500 to-emerald-600',
+          blue:   'from-blue-500 to-indigo-600',
+          yellow: 'from-yellow-400 to-amber-500',
+          purple: 'from-purple-500 to-violet-600',
+          orange: 'from-orange-400 to-orange-600',
+          pink:   'from-pink-500 to-fuchsia-600',
+        };
+        // El gradiente y color reaccionan al transportista destino seleccionado
+        const tDest = transportistas.find(t => t.id === tDestSeleccionado);
+        const grad = tDest ? (gradients[tDest.colorKey] || gradients['orange']) : 'from-amber-400 to-orange-500';
+        const c = tDest ? (COLORES[tDest.colorKey] || COLORES['red']) : null;
+        return (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+              {/* Header */}
+              <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative transition-all duration-300`}>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Reasignar registro</p>
+                    <h2 className="text-2xl font-black text-white">Mover transporte</h2>
+                    {tDest && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <span className="w-2 h-2 rounded-full bg-white/80"/>
+                        <span className="text-white/90 text-sm font-semibold">{tDest.nombre}</span>
+                      </div>
+                    )}
+                  </div>
+                  <button onClick={()=>setMoveState(null)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                </div>
+                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+              </div>
+
+              {/* Contenido */}
+              <div className="px-6 pt-2 pb-6 flex flex-col gap-4">
+
+                {/* Fila fecha + transportista */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Mover al día</label>
+                    <div className="relative">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
+                      </svg>
+                      <input type="date" value={fechaDest} onChange={e=>setFechaDest(e.target.value)}
+                        className={`${ic} pl-9 ${c ? `${c.border} ${c.bg}` : ''}`}/>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Transportista</label>
+                    <div className="relative">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                      </svg>
+                      <select value={tDestSeleccionado} onChange={e=>setTDestSeleccionado(e.target.value)}
+                        className={`${ic} pl-9 bg-white ${c ? `${c.border} ${c.bg}` : ''}`}>
+                        <option value="">Seleccionar...</option>
+                        {transportistas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Separador */}
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-slate-100"/>
+                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
+                  <div className="flex-1 h-px bg-slate-100"/>
+                </div>
+
+                <FormItem form={formMove} onChange={setFormMove}/>
+
+                {/* Botones */}
+                <div className="flex gap-2 pt-1">
+                  <button type="button" onClick={confirmMove} disabled={!fechaDest || !tDestSeleccionado}
+                    className={`flex-1 bg-gradient-to-r ${grad} disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]`}>
+                    Mover
+                  </button>
+                  <button type="button" onClick={()=>setMoveState(null)}
+                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };

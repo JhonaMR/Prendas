@@ -1917,6 +1917,100 @@ class ApiService {
       return { success: false, message: error.message || 'Error al importar cuentas' };
     }
   }
+
+  // ==================== TRANSPORTE ====================
+
+  async getTransportistas(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/transportistas`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return (data.data || []).map((t: any) => ({
+        id: t.id, nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.color_key
+      }));
+    } catch (error) { console.error('Error obteniendo transportistas:', error); return []; }
+  }
+
+  async createTransportista(t: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/transportistas`, {
+        method: 'POST', headers: this.getAuthHeaders(), body: JSON.stringify(t)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async updateTransportista(id: string, t: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/transportistas/${id}`, {
+        method: 'PUT', headers: this.getAuthHeaders(), body: JSON.stringify(t)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async deleteTransportista(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/transportistas/${id}`, {
+        method: 'DELETE', headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async getTalleres(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/talleres`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) { console.error('Error obteniendo talleres:', error); return []; }
+  }
+
+  async createTaller(t: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/talleres`, {
+        method: 'POST', headers: this.getAuthHeaders(), body: JSON.stringify(t)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async updateTaller(id: string, t: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/talleres/${id}`, {
+        method: 'PUT', headers: this.getAuthHeaders(), body: JSON.stringify(t)
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async deleteTaller(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/talleres/${id}`, {
+        method: 'DELETE', headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
+
+  async getRutasTransporte(fecha?: string): Promise<any[]> {
+    try {
+      const url = fecha
+        ? `${this.getApiUrl()}/rutas-transporte?fecha=${fecha}`
+        : `${this.getApiUrl()}/rutas-transporte`;
+      const response = await fetch(url, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) { console.error('Error obteniendo rutas:', error); return []; }
+  }
+
+  async syncRutasTransporte(fecha: string, rutas: any[]): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/rutas-transporte/sync`, {
+        method: 'POST', headers: this.getAuthHeaders(), body: JSON.stringify({ fecha, rutas })
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message }; }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================
