@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict 8LUaJhgeP8pO3MSpi2bD3gwFBAgnILgFUZP3WiYUlEfXvymVk32rsKDyS3FaKzv
+\restrict QTbaB6jKFDtUvaSO510hA8HgCAt50qzKcYwUVi8QIzczWyfRDT1kxjxYhe27InZ
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
 
--- Started on 2026-03-26 17:13:58
+-- Started on 2026-04-10 14:51:54
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -21,20 +21,20 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS inventory_plow;
+DROP DATABASE IF EXISTS inventory_dev;
 --
--- TOC entry 5268 (class 1262 OID 16387)
--- Name: inventory_plow; Type: DATABASE; Schema: -; Owner: postgres
+-- TOC entry 5543 (class 1262 OID 29700)
+-- Name: inventory_dev; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE DATABASE inventory_plow WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Spanish_Colombia.1252';
+CREATE DATABASE inventory_dev WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Spanish_Colombia.1252';
 
 
-ALTER DATABASE inventory_plow OWNER TO postgres;
+ALTER DATABASE inventory_dev OWNER TO postgres;
 
-\unrestrict 8LUaJhgeP8pO3MSpi2bD3gwFBAgnILgFUZP3WiYUlEfXvymVk32rsKDyS3FaKzv
-\connect inventory_plow
-\restrict 8LUaJhgeP8pO3MSpi2bD3gwFBAgnILgFUZP3WiYUlEfXvymVk32rsKDyS3FaKzv
+\unrestrict QTbaB6jKFDtUvaSO510hA8HgCAt50qzKcYwUVi8QIzczWyfRDT1kxjxYhe27InZ
+\connect inventory_dev
+\restrict QTbaB6jKFDtUvaSO510hA8HgCAt50qzKcYwUVi8QIzczWyfRDT1kxjxYhe27InZ
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -59,7 +59,7 @@ SET row_security = off;
 ALTER SCHEMA public OWNER TO postgres;
 
 --
--- TOC entry 5269 (class 0 OID 0)
+-- TOC entry 5544 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
@@ -68,17 +68,22 @@ COMMENT ON SCHEMA public IS '';
 
 
 --
--- TOC entry 259 (class 1255 OID 16390)
+-- TOC entry 271 (class 1255 OID 29701)
 -- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.update_user_view_preferences_timestamp() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
+
 BEGIN
+
     NEW.updated_at = CURRENT_TIMESTAMP;
+
     RETURN NEW;
+
 END;
+
 $$;
 
 
@@ -89,7 +94,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 219 (class 1259 OID 16391)
+-- TOC entry 219 (class 1259 OID 29702)
 -- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -111,7 +116,7 @@ CREATE TABLE public.audit_log (
 ALTER TABLE public.audit_log OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 16400)
+-- TOC entry 220 (class 1259 OID 29711)
 -- Name: clients; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -132,7 +137,7 @@ CREATE TABLE public.clients (
 ALTER TABLE public.clients OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 16411)
+-- TOC entry 221 (class 1259 OID 29722)
 -- Name: compras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -160,7 +165,7 @@ CREATE TABLE public.compras (
 ALTER TABLE public.compras OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 16428)
+-- TOC entry 222 (class 1259 OID 29739)
 -- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -179,7 +184,7 @@ CREATE TABLE public.confeccionistas (
 ALTER TABLE public.confeccionistas OWNER TO postgres;
 
 --
--- TOC entry 223 (class 1259 OID 16440)
+-- TOC entry 223 (class 1259 OID 29751)
 -- Name: correria_catalog; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -194,7 +199,7 @@ CREATE TABLE public.correria_catalog (
 ALTER TABLE public.correria_catalog OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 16448)
+-- TOC entry 224 (class 1259 OID 29759)
 -- Name: correria_novedades; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -209,7 +214,7 @@ CREATE TABLE public.correria_novedades (
 ALTER TABLE public.correria_novedades OWNER TO postgres;
 
 --
--- TOC entry 225 (class 1259 OID 16457)
+-- TOC entry 225 (class 1259 OID 29768)
 -- Name: correria_novedades_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -225,7 +230,7 @@ CREATE SEQUENCE public.correria_novedades_id_seq
 ALTER SEQUENCE public.correria_novedades_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5271 (class 0 OID 0)
+-- TOC entry 5546 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: correria_novedades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -234,7 +239,7 @@ ALTER SEQUENCE public.correria_novedades_id_seq OWNED BY public.correria_novedad
 
 
 --
--- TOC entry 226 (class 1259 OID 16458)
+-- TOC entry 226 (class 1259 OID 29769)
 -- Name: correrias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -250,7 +255,49 @@ CREATE TABLE public.correrias (
 ALTER TABLE public.correrias OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 16467)
+-- TOC entry 262 (class 1259 OID 30303)
+-- Name: cuentas_bancarias; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.cuentas_bancarias (
+    id integer NOT NULL,
+    cedula character varying(50),
+    nombre character varying(255) NOT NULL,
+    cuenta character varying(255) NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.cuentas_bancarias OWNER TO postgres;
+
+--
+-- TOC entry 261 (class 1259 OID 30302)
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.cuentas_bancarias_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.cuentas_bancarias_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5547 (class 0 OID 0)
+-- Dependencies: 261
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.cuentas_bancarias_id_seq OWNED BY public.cuentas_bancarias.id;
+
+
+--
+-- TOC entry 227 (class 1259 OID 29778)
 -- Name: delivery_dates; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -273,7 +320,51 @@ CREATE TABLE public.delivery_dates (
 ALTER TABLE public.delivery_dates OWNER TO postgres;
 
 --
--- TOC entry 228 (class 1259 OID 16479)
+-- TOC entry 266 (class 1259 OID 30349)
+-- Name: descuentos_pago; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.descuentos_pago (
+    id integer NOT NULL,
+    pago_id integer NOT NULL,
+    tipo character varying(2) NOT NULL,
+    etiqueta character varying(255) DEFAULT ''::character varying NOT NULL,
+    monto numeric(15,2) DEFAULT 0 NOT NULL,
+    orden integer DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT descuentos_pago_tipo_check CHECK (((tipo)::text = ANY ((ARRAY['OF'::character varying, 'ML'::character varying])::text[])))
+);
+
+
+ALTER TABLE public.descuentos_pago OWNER TO postgres;
+
+--
+-- TOC entry 265 (class 1259 OID 30348)
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.descuentos_pago_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.descuentos_pago_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5548 (class 0 OID 0)
+-- Dependencies: 265
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.descuentos_pago_id_seq OWNED BY public.descuentos_pago.id;
+
+
+--
+-- TOC entry 228 (class 1259 OID 29790)
 -- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -291,7 +382,7 @@ CREATE TABLE public.disenadoras (
 ALTER TABLE public.disenadoras OWNER TO postgres;
 
 --
--- TOC entry 229 (class 1259 OID 16488)
+-- TOC entry 229 (class 1259 OID 29799)
 -- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -306,7 +397,7 @@ CREATE SEQUENCE public.dispatch_items_id_seq
 ALTER SEQUENCE public.dispatch_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 230 (class 1259 OID 16489)
+-- TOC entry 230 (class 1259 OID 29800)
 -- Name: dispatch_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -322,7 +413,7 @@ CREATE TABLE public.dispatch_items (
 ALTER TABLE public.dispatch_items OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 16500)
+-- TOC entry 231 (class 1259 OID 29811)
 -- Name: dispatches; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -341,7 +432,7 @@ CREATE TABLE public.dispatches (
 ALTER TABLE public.dispatches OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 16513)
+-- TOC entry 232 (class 1259 OID 29824)
 -- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -376,7 +467,7 @@ CREATE TABLE public.fichas_cortes (
 ALTER TABLE public.fichas_cortes OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 16540)
+-- TOC entry 233 (class 1259 OID 29851)
 -- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -425,7 +516,7 @@ CREATE TABLE public.fichas_costo (
 ALTER TABLE public.fichas_costo OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1259 OID 16574)
+-- TOC entry 234 (class 1259 OID 29885)
 -- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -462,7 +553,7 @@ CREATE TABLE public.fichas_diseno (
 ALTER TABLE public.fichas_diseno OWNER TO postgres;
 
 --
--- TOC entry 235 (class 1259 OID 16596)
+-- TOC entry 235 (class 1259 OID 29907)
 -- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -487,7 +578,7 @@ CREATE TABLE public.inventory_movements (
 ALTER TABLE public.inventory_movements OWNER TO postgres;
 
 --
--- TOC entry 236 (class 1259 OID 16612)
+-- TOC entry 236 (class 1259 OID 29923)
 -- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -504,7 +595,7 @@ CREATE TABLE public.maletas (
 ALTER TABLE public.maletas OWNER TO postgres;
 
 --
--- TOC entry 237 (class 1259 OID 16622)
+-- TOC entry 237 (class 1259 OID 29933)
 -- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -520,7 +611,7 @@ CREATE TABLE public.maletas_referencias (
 ALTER TABLE public.maletas_referencias OWNER TO postgres;
 
 --
--- TOC entry 238 (class 1259 OID 16631)
+-- TOC entry 238 (class 1259 OID 29942)
 -- Name: messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -538,7 +629,7 @@ CREATE TABLE public.messages (
 ALTER TABLE public.messages OWNER TO postgres;
 
 --
--- TOC entry 239 (class 1259 OID 16643)
+-- TOC entry 239 (class 1259 OID 29954)
 -- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -554,7 +645,7 @@ CREATE SEQUENCE public.messages_id_seq
 ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5272 (class 0 OID 0)
+-- TOC entry 5549 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -563,7 +654,7 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 
 --
--- TOC entry 240 (class 1259 OID 16644)
+-- TOC entry 240 (class 1259 OID 29955)
 -- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -578,7 +669,7 @@ CREATE TABLE public.order_items (
 ALTER TABLE public.order_items OWNER TO postgres;
 
 --
--- TOC entry 241 (class 1259 OID 16654)
+-- TOC entry 241 (class 1259 OID 29965)
 -- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -601,7 +692,98 @@ CREATE TABLE public.orders (
 ALTER TABLE public.orders OWNER TO postgres;
 
 --
--- TOC entry 242 (class 1259 OID 16666)
+-- TOC entry 260 (class 1259 OID 30286)
+-- Name: pago_lotes_config; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pago_lotes_config (
+    id integer NOT NULL,
+    clave character varying(100) NOT NULL,
+    valor numeric(15,2) NOT NULL,
+    descripcion character varying(255),
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_by character varying(255)
+);
+
+
+ALTER TABLE public.pago_lotes_config OWNER TO postgres;
+
+--
+-- TOC entry 259 (class 1259 OID 30285)
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.pago_lotes_config_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.pago_lotes_config_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5550 (class 0 OID 0)
+-- Dependencies: 259
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.pago_lotes_config_id_seq OWNED BY public.pago_lotes_config.id;
+
+
+--
+-- TOC entry 264 (class 1259 OID 30319)
+-- Name: pagos_programados; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pagos_programados (
+    id integer NOT NULL,
+    fecha date NOT NULL,
+    fecha_original date,
+    cuenta_bancaria_id integer,
+    cedula character varying(50) NOT NULL,
+    nombre character varying(255) NOT NULL,
+    cuenta character varying(255) NOT NULL,
+    detalle_inicial character varying(500),
+    bruto_of numeric(15,2) DEFAULT 0 NOT NULL,
+    bruto_ml numeric(15,2) DEFAULT 0 NOT NULL,
+    orden integer DEFAULT 0 NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.pagos_programados OWNER TO postgres;
+
+--
+-- TOC entry 263 (class 1259 OID 30318)
+-- Name: pagos_programados_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.pagos_programados_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.pagos_programados_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 5551 (class 0 OID 0)
+-- Dependencies: 263
+-- Name: pagos_programados_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.pagos_programados_id_seq OWNED BY public.pagos_programados.id;
+
+
+--
+-- TOC entry 242 (class 1259 OID 29977)
 -- Name: product_references; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -622,7 +804,7 @@ CREATE TABLE public.product_references (
 ALTER TABLE public.product_references OWNER TO postgres;
 
 --
--- TOC entry 243 (class 1259 OID 16676)
+-- TOC entry 243 (class 1259 OID 29987)
 -- Name: production_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -639,7 +821,7 @@ CREATE TABLE public.production_tracking (
 ALTER TABLE public.production_tracking OWNER TO postgres;
 
 --
--- TOC entry 244 (class 1259 OID 16686)
+-- TOC entry 244 (class 1259 OID 29997)
 -- Name: reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -654,7 +836,7 @@ CREATE TABLE public.reception_items (
 ALTER TABLE public.reception_items OWNER TO postgres;
 
 --
--- TOC entry 245 (class 1259 OID 16695)
+-- TOC entry 245 (class 1259 OID 30006)
 -- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -669,7 +851,7 @@ CREATE SEQUENCE public.reception_items_id_seq
 ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5273 (class 0 OID 0)
+-- TOC entry 5552 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -678,7 +860,7 @@ ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
 
 
 --
--- TOC entry 246 (class 1259 OID 16696)
+-- TOC entry 246 (class 1259 OID 30007)
 -- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -697,14 +879,15 @@ CREATE TABLE public.receptions (
     bag_quantity integer DEFAULT 0,
     arrival_date date DEFAULT '2026-01-01'::date NOT NULL,
     has_muestra boolean DEFAULT false NOT NULL,
-    observacion text
+    observacion text,
+    segundas_units integer DEFAULT 0
 );
 
 
 ALTER TABLE public.receptions OWNER TO postgres;
 
 --
--- TOC entry 5274 (class 0 OID 0)
+-- TOC entry 5553 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -713,7 +896,7 @@ COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this 
 
 
 --
--- TOC entry 247 (class 1259 OID 16713)
+-- TOC entry 247 (class 1259 OID 30026)
 -- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -729,7 +912,7 @@ CREATE TABLE public.return_reception_items (
 ALTER TABLE public.return_reception_items OWNER TO postgres;
 
 --
--- TOC entry 248 (class 1259 OID 16722)
+-- TOC entry 248 (class 1259 OID 30035)
 -- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -744,7 +927,7 @@ CREATE SEQUENCE public.return_reception_items_id_seq
 ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5275 (class 0 OID 0)
+-- TOC entry 5554 (class 0 OID 0)
 -- Dependencies: 248
 -- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -753,7 +936,7 @@ ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_recep
 
 
 --
--- TOC entry 249 (class 1259 OID 16723)
+-- TOC entry 249 (class 1259 OID 30036)
 -- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -770,7 +953,43 @@ CREATE TABLE public.return_receptions (
 ALTER TABLE public.return_receptions OWNER TO postgres;
 
 --
--- TOC entry 250 (class 1259 OID 16733)
+-- TOC entry 269 (class 1259 OID 30412)
+-- Name: rutas_transporte; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.rutas_transporte (
+    id character varying(50) NOT NULL,
+    fecha date NOT NULL,
+    transportista_id character varying(50) NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.rutas_transporte OWNER TO postgres;
+
+--
+-- TOC entry 270 (class 1259 OID 30430)
+-- Name: rutas_transporte_items; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.rutas_transporte_items (
+    id character varying(50) NOT NULL,
+    ruta_id character varying(50) NOT NULL,
+    taller character varying(255) DEFAULT ''::character varying NOT NULL,
+    celular character varying(50) DEFAULT ''::character varying NOT NULL,
+    direccion character varying(255) DEFAULT ''::character varying NOT NULL,
+    sector character varying(100) DEFAULT ''::character varying NOT NULL,
+    detalle character varying(500) DEFAULT ''::character varying NOT NULL,
+    servicio character varying(255) DEFAULT ''::character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.rutas_transporte_items OWNER TO postgres;
+
+--
+-- TOC entry 250 (class 1259 OID 30046)
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -787,7 +1006,7 @@ CREATE TABLE public.schema_migrations (
 ALTER TABLE public.schema_migrations OWNER TO postgres;
 
 --
--- TOC entry 251 (class 1259 OID 16742)
+-- TOC entry 251 (class 1259 OID 30055)
 -- Name: schema_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -803,7 +1022,7 @@ CREATE SEQUENCE public.schema_migrations_id_seq
 ALTER SEQUENCE public.schema_migrations_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5276 (class 0 OID 0)
+-- TOC entry 5555 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: schema_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -812,7 +1031,7 @@ ALTER SEQUENCE public.schema_migrations_id_seq OWNED BY public.schema_migrations
 
 
 --
--- TOC entry 252 (class 1259 OID 16743)
+-- TOC entry 252 (class 1259 OID 30056)
 -- Name: sellers; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -827,7 +1046,44 @@ CREATE TABLE public.sellers (
 ALTER TABLE public.sellers OWNER TO postgres;
 
 --
--- TOC entry 253 (class 1259 OID 16751)
+-- TOC entry 268 (class 1259 OID 30391)
+-- Name: talleres; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.talleres (
+    id character varying(50) NOT NULL,
+    nombre character varying(255) NOT NULL,
+    celular character varying(50) DEFAULT ''::character varying NOT NULL,
+    direccion character varying(255) DEFAULT ''::character varying NOT NULL,
+    sector character varying(100) DEFAULT ''::character varying NOT NULL,
+    estado character varying(20) DEFAULT 'activo'::character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.talleres OWNER TO postgres;
+
+--
+-- TOC entry 267 (class 1259 OID 30375)
+-- Name: transportistas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.transportistas (
+    id character varying(50) NOT NULL,
+    nombre character varying(255) NOT NULL,
+    celular character varying(50) DEFAULT ''::character varying NOT NULL,
+    picoyplaca character varying(50) DEFAULT ''::character varying NOT NULL,
+    color_key character varying(30) DEFAULT 'red'::character varying NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.transportistas OWNER TO postgres;
+
+--
+-- TOC entry 253 (class 1259 OID 30064)
 -- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -844,7 +1100,7 @@ CREATE TABLE public.user_sessions (
 ALTER TABLE public.user_sessions OWNER TO postgres;
 
 --
--- TOC entry 254 (class 1259 OID 16762)
+-- TOC entry 254 (class 1259 OID 30075)
 -- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -860,7 +1116,7 @@ CREATE SEQUENCE public.user_sessions_id_seq
 ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5277 (class 0 OID 0)
+-- TOC entry 5556 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -869,7 +1125,7 @@ ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
 
 
 --
--- TOC entry 255 (class 1259 OID 16763)
+-- TOC entry 255 (class 1259 OID 30076)
 -- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -885,7 +1141,7 @@ CREATE TABLE public.user_view_preferences (
 ALTER TABLE public.user_view_preferences OWNER TO postgres;
 
 --
--- TOC entry 256 (class 1259 OID 16774)
+-- TOC entry 256 (class 1259 OID 30087)
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -901,7 +1157,7 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5278 (class 0 OID 0)
+-- TOC entry 5557 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -910,7 +1166,7 @@ ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_pre
 
 
 --
--- TOC entry 257 (class 1259 OID 16775)
+-- TOC entry 257 (class 1259 OID 30088)
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -929,7 +1185,7 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO postgres;
 
 --
--- TOC entry 258 (class 1259 OID 16786)
+-- TOC entry 258 (class 1259 OID 30099)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -944,7 +1200,7 @@ CREATE SEQUENCE public.users_id_seq
 ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5279 (class 0 OID 0)
+-- TOC entry 5558 (class 0 OID 0)
 -- Dependencies: 258
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -953,7 +1209,7 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 4838 (class 2604 OID 16787)
+-- TOC entry 5026 (class 2604 OID 30100)
 -- Name: correria_novedades id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -961,7 +1217,23 @@ ALTER TABLE ONLY public.correria_novedades ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 4918 (class 2604 OID 16788)
+-- TOC entry 5134 (class 2604 OID 30306)
+-- Name: cuentas_bancarias id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cuentas_bancarias ALTER COLUMN id SET DEFAULT nextval('public.cuentas_bancarias_id_seq'::regclass);
+
+
+--
+-- TOC entry 5143 (class 2604 OID 30352)
+-- Name: descuentos_pago id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.descuentos_pago ALTER COLUMN id SET DEFAULT nextval('public.descuentos_pago_id_seq'::regclass);
+
+
+--
+-- TOC entry 5106 (class 2604 OID 30101)
 -- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -969,7 +1241,23 @@ ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.mes
 
 
 --
--- TOC entry 4923 (class 2604 OID 16789)
+-- TOC entry 5132 (class 2604 OID 30289)
+-- Name: pago_lotes_config id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pago_lotes_config ALTER COLUMN id SET DEFAULT nextval('public.pago_lotes_config_id_seq'::regclass);
+
+
+--
+-- TOC entry 5137 (class 2604 OID 30322)
+-- Name: pagos_programados id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pagos_programados ALTER COLUMN id SET DEFAULT nextval('public.pagos_programados_id_seq'::regclass);
+
+
+--
+-- TOC entry 5111 (class 2604 OID 30102)
 -- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -977,7 +1265,7 @@ ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 4930 (class 2604 OID 16790)
+-- TOC entry 5119 (class 2604 OID 30103)
 -- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -985,7 +1273,7 @@ ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextv
 
 
 --
--- TOC entry 4931 (class 2604 OID 16791)
+-- TOC entry 5120 (class 2604 OID 30104)
 -- Name: schema_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -993,7 +1281,7 @@ ALTER TABLE ONLY public.schema_migrations ALTER COLUMN id SET DEFAULT nextval('p
 
 
 --
--- TOC entry 4934 (class 2604 OID 16792)
+-- TOC entry 5123 (class 2604 OID 30105)
 -- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1001,7 +1289,7 @@ ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- TOC entry 4938 (class 2604 OID 16793)
+-- TOC entry 5127 (class 2604 OID 30106)
 -- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1009,7 +1297,7 @@ ALTER TABLE ONLY public.user_view_preferences ALTER COLUMN id SET DEFAULT nextva
 
 
 --
--- TOC entry 4942 (class 2604 OID 16794)
+-- TOC entry 5131 (class 2604 OID 30107)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -1017,7 +1305,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 5223 (class 0 OID 16391)
+-- TOC entry 5486 (class 0 OID 29702)
 -- Dependencies: 219
 -- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1027,7 +1315,7 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
--- TOC entry 5224 (class 0 OID 16400)
+-- TOC entry 5487 (class 0 OID 29711)
 -- Dependencies: 220
 -- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1037,47 +1325,47 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 10	SALAS ASOCIADOS S.A.S	900392405	CL 49 9 44 SEC COMERCIAL	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 100	TIENDAS MICROEMPRESARIALES LANFER S.A.S.	900118155	CL 9 6 71 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 101	RAYOTEX S.A.S	1800144409	CLL 12 5 49	CUCUTA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N° 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N° 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N┬░ 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N┬░ 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 104	GALLEGO JOHN JAMIME	5225	AV. SIMON BOLIVAR #38-130  LOCAL 114	DOSQUEBRADAS	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 105	NAVANA MEGATODO S.A.S	2901169855	CRA 17 # 15-22	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-106	INVERSIONES 8A S.A.S N°4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+106	INVERSIONES 8A S.A.S N┬░4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 107	ARISTIZABAL ARISTIBAL DUBIAN DE JESUS	70829130	CL 25 48 71 LC 2 BRR CENTRO	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 108	JIMENEZ MAYORGA MARIA ALEJANDRA	1129574347	CR 50 25 55	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N° 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N┬░ 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 11	SALAS ASOCIADOS S.A.S	1900392405	CL 49 9 44 SEC COMERCIAL PTO BOYACA	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 110	SANCHEZ TORRES LILIANA	1117485254	CR 4 # 2 - 29	EL PAUJIL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 111	REPRESENTACIONES INTERMODA S.A.S	901121571	CLLE 10 # 4-102 ESPINAL TOLIMA	ESPINAL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-112	INTIMOS ALMA S.A.S N°22	2283003804	CL 7 N° 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+112	INTIMOS ALMA S.A.S N┬░22	2283003804	CL 7 N┬░ 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 113	ROJAS FARUK	981	C.C. OROCENTOR LOCAL 1-68	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 114	RAMIREZ CARDENAS FREDY ALBERTO	70698350	CL 16 11 41 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N° 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N┬░ 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 116	PINILLA LESMES DIANA CAROLina Pulgarin	1006512762	CL 22 2 A BIS 06 BRR ATALAY	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 117	INVERSIONES INTERMODA S.A.S	901068621	CLLE 16 #11-33 FLORENCIA	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-118	ORDOÑEZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-119	GONZALES MUÑOZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+118	ORDO├æEZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+119	GONZALES MU├æOZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 12	EL GIGANTE DE LA MODA S.A.S	900646287	CL 49 9 62	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 120	RAMIREZ VALENCIA CESAR	17915	CRA 12 # 15-17	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 121	VALENCIA RAMIREZ OMAR	17137	CRA 12 # 15-31	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 122	RESTREPO JARAMILLO JULIAN ANDRES	379726416	CLLE 9 # 17-24	FLORIDA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 123	COMERCIALIZADORA MGV SAS	1901413624	CL 13 18 33	FONSECA	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-124	PEDROZO LUZ MERY	792	CRA 116 A N° 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+124	PEDROZO LUZ MERY	792	CRA 116 A N┬░ 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 125	DISTRIBUIDORA MUNDO FASHION	900324182	CALLE 4 # 8A -49	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 126	CARLOS MARIO SALAZAR ECHEVERRI	70694755	CALLE 6 NRO. 8A-18	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 127	COMERCIALIZADORA GIRALDO DEL CARIBE	900454797	CL 4 8A 20	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N° 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N┬░ 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 129	DUQUE HOYOS JUAN GONZALO	2104501630	CL 8 N 7 76	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 13	INVERSIONES SOLOMODA BARRANCA S.A.S	900351574	CL 49 9 78	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-130	INVERSIONES 8A S.A.S N°20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+130	INVERSIONES 8A S.A.S N┬░20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 131	DUQUE HOYOS JUAN GONZALO	1104501630	CL 7 10 87	GARZON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 132	INVERSIONES ESTRENATODO S.A.S	900275560	CARRERA 10 #14-47	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 133	PANTYJEANS GIRARDOT CIA LTDA	900284812	CR 10 13 52	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 134	EL UNIVERSO DE LA MODA ACTUAL S.A.S	900468771	CR 10 14 15	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 135	ALMACENES GANE LIMITADA	1890203597	CR 26  37 104	GIRON	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 136	RUSSI CACERES NESTOR LUIS	91296133	CR 26 # 40 - 20 BRR EL POBLADO	GIRON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-137	INTIMOS ALMA S.A.S N° 26	2683003804	CL 17 N° 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+137	INTIMOS ALMA S.A.S N┬░ 26	2683003804	CL 17 N┬░ 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 138	DISTRIBUIDORA DE MODA GRANADA	901619815	CR 15 17 44 BRR CENTRO	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-139	GUTIERREZ FANDIÑO FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+139	GUTIERREZ FANDI├æO FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 14	PALACIO MARIA ALIX	7076	CRA 47 B # 37 A 08	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 140	GUERRA EDILSON DARIO	4536	CR 7 # 8-07	HORMIGA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 141	RAMIREZ BOTERO ADOLFO JESUS	70691066	CL 17 2 92 96 98 P5 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1086,7 +1374,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 144	INNOVACIONES WIN S.A.S	900835285	CRA 51 # 50- 15 ITAGUI	ITAGUI	\N	2026-02-14 06:27:59	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
 145	BOHORQUEZ GALVIS LUTH DARE	49764593	CLL 11 8 78	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 146	CARO CARO ANGELA MARIA	29567740	CR 10 11 53	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-147	COMPAÑIA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+147	COMPA├æIA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 148	ALTA MODA LA DORADA	7507	CLLE 5 # 5-35	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 149	SALAZAR ZULUAGA MAURICIO ANTONIO	1027	CRA 4 #14-49	LA DORADA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 15	HERRERA JOHN FREDY	4065	CALLE 30 #42-04 MEGAMODA	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -1096,7 +1384,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 153	ARBOLEDA VASQUEZ JULIAN ANDRES	16552144	CARRERA 15 #15-42	LA UNION	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 154	BRABO DUARTE LUZ DARIS	63471107	CL 11 9-15 BRR CENTRO	LEBRIJA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 155	CARDOZO AMAYA YOLANDA	65498039	CR 6 # 8 26 BRR CENTRO	LERIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-156	ALIANZA MUÑOZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+156	ALIANZA MU├æOZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 157	G & G RETAIL S.A.S	901234880	CRA 20 # 2 -34	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 158	JIMENEZ MAYORGA MARIA ALEJANDRA	1112957434	CL DE LAS FLORES 12 24	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 159	ALIANZA MABLE SAS	900638635	CRA 3 B # 3-75	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1127,10 +1415,10 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 181	GRUPO COMERCIAL INTERMODA S.A.S	900442422	CALLE 8 #3-33	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 182	GRUPO COMERCIAL INTERMODA S.A.S	3900442422	CLLE 8 # 3-81	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 183	GRUPO COMERCIAL INTERMODA S.A.S	2900442422	CRA 5 # 8-56	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N° 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCAÑA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-186	INVERSIONES 8A S.A.S N°10	1090013702	CL 25 N° 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-187	GUERRERO MUÑOZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N┬░ 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCA├æA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+186	INVERSIONES 8A S.A.S N┬░10	1090013702	CL 25 N┬░ 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+187	GUERRERO MU├æOZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 188	GUITIERREZ RESTREPO LAURA	1730	CLLE 30 # 27-15 CENTRO	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 189	INVERSIONES BANETY SAS	901580883	CALLE 17 #20 64 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 19	JIMENEZ QUINTERO DECIMO ALEXANDER	7606	CARRERA 41 #30-54	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1146,14 +1434,14 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 199	VARIEDADES SJ DEL CARIBE S.A.S	901413205	CRA 10 9 31	PIVIJAY	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 2	INVERSIONES AM ACACIAS S.A.S.	901509626	CL 13 # 19 - 79 BRR CENTRO	ACACIAS	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.268	t
 20	ZULUAGA GOMEZ RIGOBERTO	170827090	CL 34 43 70 LC M 5	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-200	G & G RETAIL S.A.S	3901234880	CLLE 20 N° 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+200	G & G RETAIL S.A.S	3901234880	CLLE 20 N┬░ 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 201	RAMIREZ LLERENA LUZ ADRIANA	700082020	CR 15 11-65	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 202	ALIANZA HERMANOS JGV	16326	CR 15 12 69	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 203	MORCILLO GONZALEZ LEIDY	4000	CALLE 6 #18-48	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 204	ARCILA BEATRIZ HELENA	4957	CARRERA 7 #6-26	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 205	ZULUAGA ORLANDO	1694	CLLE 6 # 6-43	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-206	COMPAÑIA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N° 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+206	COMPA├æIA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N┬░ 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 208	SANCHEZ TORRES NELSY	40091533	CALLE 5 # 7-33	PUERTO RICO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 209	GUERRA EDILSON DARIO	5369	CRA 7 # 8-07	PUTUMAYO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 21	ZULUAGA GOMEZ RIGOBERTO	70827090	CL 35 44 18	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1165,7 +1453,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 215	SUPERMODA SABANALARGA S.A.S	901698678	CR 19 # 20-31	SABANALARGA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 216	MEDINA MERCHAN YESENIA	1052989202	CL 13 CR 10 60 BRR CENTRO LC 2	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 217	G & G RETAIL S.A.S	1901234880	CRA 11 #13-73	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-218	INVERSIONES 8A S.A.S N°16	1690013702	CR 9 N° 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+218	INVERSIONES 8A S.A.S N┬░16	1690013702	CR 9 N┬░ 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 219	G & G RETAIL S.A.S	2901234880	CR 24 15 29	SAN MARCOS	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 22	GH ENTERPRISE S.A.S.	901486883	CL 53 46 192 LC 240 CC PORTAL DEL PRADO	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 220	DISTRIBUIDORA MUNDO FASHION	2900324182	CALLE 22 #5-37 EDIFICIO ANDINA APTO 202	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1181,35 +1469,35 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 23	ALIANZA ESTRENO SAS	1900593525	CLLE 34 # 43-42	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 230	COMERCIALIZADORA MAGOTEX S.A.S #2	1901239802	CALLE 21 #19-12	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 231	MP RETAIL S.A.S	901181807	CALLE 22 #20-68	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N° 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N┬░ 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 233	COMERCIALIZADORA MAGOTEX 1	901239802	CALLE 23 # 20 - 64	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 234	ALIANZA MABLE SAS	1900638635	CL 28 25 B 97 LC 2 318	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 235	INVERSIONES GAFE S.A.S	2900463519	CALLE 36 SUR # 43-31	ENVIGADO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 Nº 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 N┬║ 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 237	NAVANA MEGATODO SOACHA S.A.S	1901169855	CRA 7 # 32-35 LOCAL 207	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-238	ACUÑA MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+238	ACU├æA MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 239	VARIMODA SAS	901729900	CR 11 14 91	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 24	COMERCIALIZADORA MGV SAS	901413624	CR 13 104 45	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-240	INVERSIONES 8A S.A.S N°7	7900137023	CR 11 N° 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-241	ALIANZA VC S.A.S	900225992	CALLE 20 N° 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+240	INVERSIONES 8A S.A.S N┬░7	7900137023	CR 11 N┬░ 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+241	ALIANZA VC S.A.S	900225992	CALLE 20 N┬░ 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 242	INVERSIONES JBARA S.A.S	901462378	CL 63 14 50	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 243	DUQUE HOYOS JUAN GONZALO	3104501630	CR 19 19 41	SOLEDAD	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 244	ZULAGA GIRALDO HECTOR MAURICIO	70690823	CL 27 24 59 BR CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 245	DECADA 10 EN TODO S.A.S	900519038	CR 24 27 30 BRR EL CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 246	QUINTERO ADRIAN ALBERTO	3257	CLL DEL COMERCIO EL PACIFICO DEL BARATON	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-247	NOREÑA MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+247	NORE├æA MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 248	INVERSIONES INTERMODA S.A.S	1901068621	CLLE MOSQUERA DIAG A TELECOM	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 249	VARGAS MONTIEL JACKSON FABIAN	9052	CRA 9 # 8 -99	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 25	ZULUAGA GOMEZ EDGAR ALONSO	8778704	CR 41 32 81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-250	INVERSIONES 8A S.A.S N°19	1990013702	AV UNIVERSITARIA N° 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-251	INVERSIONES 8A S.A.S N°8	8900137023	CL 19 N° 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-252	INVERSIONES 8A S.A.S N°15	1590013702	CR 7 N° 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+250	INVERSIONES 8A S.A.S N┬░19	1990013702	AV UNIVERSITARIA N┬░ 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+251	INVERSIONES 8A S.A.S N┬░8	8900137023	CL 19 N┬░ 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+252	INVERSIONES 8A S.A.S N┬░15	1590013702	CR 7 N┬░ 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 253	SAJIN AREVALO SAMIR	77038476	CL 16 B 8 45	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 254	KHALED BASSAN SAJIN MHANNA	1065629467	CL 16B # 7-39 - Centro	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 255	ALIANZA SURTIDORA SAS	901084883	CR 7 16 A 133	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N° 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N┬░ 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 257	CIELO MODA S.A.S - AMV LLANO 2	901784502	CALLE 39 #30-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-258	BARAKI S.A.S	901712681	CALLE 39 N° 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+258	BARAKI S.A.S	901712681	CALLE 39 N┬░ 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 259	AMV LLANO S.A.S	900469068	CARRERA 30 #36-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 26	ALIANZA VC S.A.S	1900225992	CR 41 37 23	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 260	AMV LLANO S.A.S	2900469068	CL 39 30 A 38 BRR CENTRO	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -1218,22 +1506,22 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 263	JIMENEZ GOMEZ CARLOS ALCIDES	70694674	CALLE 9 # 19-14	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 264	COL MODA YOPAL SAS	901697458	CL 10 19 52	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 265	RAMIREZ ZULUAGA BLANCA AMELIA	43404158	CR 20 14 31	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N° 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N┬░ 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 267	EPICA DE MODAD SAS	901170874	CL 34 43 109 OF 312	BARRANQUILLA	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-268	GUTIERREZ FANDIÑO FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+268	GUTIERREZ FANDI├æO FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 269	VASQUEZ MARIA ORFANIA	29809163	CL 9 11 08	ZARZAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 27	ALMACEN Y DISTRIBUIDORA GONZALEZ S.A.S	800160395	CR 42 32 28	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 270	AL MUSTAKIM	901812038	CLL 9 # 20 - 59	SAN JOSE DEL GUAVIARE	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 271	JHOJAINNE SULVARAN	1006745382	CR 12 # 13 - 22	MAICAO	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N° 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-273	CAÑAVERAL NUÑEZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N┬░ 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+273	CA├æAVERAL NU├æEZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 274	ARBOLEDA NIETO JOSE ALEJANDRO	14978082	CR 5 9 81 BRR GUADALUPE	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 275	GV INFINITE SAS	901523339	CL 12 7 30 LOCAL 1	RIOHACHA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 276	VIDAL MARIN INGRIT MALLERLY	3207003070	CRA 25 # 37 - 29	CALARCA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCAÑA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCA├æA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 278	BAYONA BAYONA JORGE LUIS	1094574518	CR 5 # 13 - 87 BRR CENTRO	ABREGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 279	G & G RETAIL S.A.S	6901234880	CRA 15 # 8 - 64 LOC 1	CIENAGA DE ORO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-28	ALIANZA MUÑOZ GOMEZ SAS	1901079469	CRA 44 N° 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+28	ALIANZA MU├æOZ GOMEZ SAS	1901079469	CRA 44 N┬░ 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 280	EPICA DE MODA SAS	901170874	CALLE 30 # 43-50 LOCAL 296A  CENTRO COMERCIAL ALEGRA	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 281	LA PORFIA AM SAS	901891158	CR 43 # 70-05 SUR PORFIA	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 282	SALANEDA INVERSIONES S.A.S.	901800090	CL 49 9 44 SEC COMERCIAL PUERT	BARRANCABERMEJA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1250,7 +1538,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 292	CLASIC AM S.A.S.	901864953	CR 30 # 36 - 40	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 293	GRUPO EMPRESARIAL EL SURTIDOR SAS	901595448	CLL 8 # 5 - 47 BRR CENTRO	CUCUTA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 294	INVERSIONES DUQUE QUINTERO S.A.S.	901324937	AV PEDRO DE HEREDIA CR 27 30 01	CARTAGENA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-295	GALVIS RODOLFO	4870	CRA 3A Nº 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+295	GALVIS RODOLFO	4870	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 296	PEREZ ACOSTA CANDY SUSANA	32930941	CR 8 10 26	SANTA ANA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 297	RUEDA MIRANDA YERSON OSWALDO	91078808	CR 11 # 12 - 75 P 2	SAN GIL	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 298	INVERSIONES ASH S.A.S.	900469154	CRA 4 # 24 - 70	QUIBDO	\N	2026-02-14 06:28:04	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
@@ -1260,31 +1548,31 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 300	MEDIA NARANJA	-	TODOS LOS ALMACENES	MEDELLIN	\N	2026-02-14 06:28:05	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
 301	HERNANDEZ MONTES ANA MILENA	50929792	CL 20 CR 7 ESQU	PLANETA RICA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 302	RESTREPO LAURA VALENTINA	1192791730	CL 4 # 10 - 59 CRR EL CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-303	LONDOÑO MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+303	LONDO├æO MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 304	YONELBIS ZAMBRANO SUAREZ	6057	CRA 12 # 12 - 27	MAICAO	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 305	G&G RETAIL S.A.S	7901234880	CLL 15 A # 14 A 41	CERETE	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 306	VICTOR ANDRES AROCA	1140896249	CL 34 43 129 BG 434 CC COLOMBIA	BARRANQUILLA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 307	SANTIAGO JARAMILLO JARAMILLO	2700159299	CRA 8 # 9 - 72 LOCAL 5	CHINCHINA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 308	EL SURTIDOR BG SAS NUEVO	2490	AV 5 # 5 - 63 PISO 4	CUCUTA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 309	PANTYJEANS GIRARDOT SAS 2	1900284812	CR 10 # 14 - 47 BRR CENTRO	GIRARDOT	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-31	ALMA BELLA S.A.S	900352713	CL 129 N° 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+31	ALMA BELLA S.A.S	900352713	CL 129 N┬░ 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 32	RESTREPO JARAMILLO JULIAN ANDRES	79726416	CLL 129 B # 91-64 SUBA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-33	INTIMOS ALMA S.A.S N°11	1183003804	CR 13 N° 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-34	INTIMOS ALMA S.A.S N° 14	1483003804	CR 71D N° 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-35	INTIMOS ALMA S.A.S N°24	2483003844	CR 80 N° 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-36	INTIMOS ALMA S.A.S N° 3	3830038044	CR 88C N° 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-37	GUTIERREZ FANDIÑO FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-38	INVERSIONES 8A S.A.S N°6	6900137023	CRA 6 N° 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-39	INTIMOS ALMA S.A.S N°2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+33	INTIMOS ALMA S.A.S N┬░11	1183003804	CR 13 N┬░ 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+34	INTIMOS ALMA S.A.S N┬░ 14	1483003804	CR 71D N┬░ 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+35	INTIMOS ALMA S.A.S N┬░24	2483003844	CR 80 N┬░ 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+36	INTIMOS ALMA S.A.S N┬░ 3	3830038044	CR 88C N┬░ 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+37	GUTIERREZ FANDI├æO FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+38	INVERSIONES 8A S.A.S N┬░6	6900137023	CRA 6 N┬░ 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+39	INTIMOS ALMA S.A.S N┬░2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 4	P & S INVERSIONES ASOCIADOS S.A.S	901195775	CL 5 16 36	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-40	INVERSIONES 8A S.A.S N°17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-41	INTIMOS ALMA S.A.S N°9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-42	INTIMOS ALMA S.A.S N°5	5830038044	TV 4 ESTE N° 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-43	INTIMOS ALMA S.A.S N°1	1830038444	TV 78 L N° 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+40	INVERSIONES 8A S.A.S N┬░17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+41	INTIMOS ALMA S.A.S N┬░9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+42	INTIMOS ALMA S.A.S N┬░5	5830038044	TV 4 ESTE N┬░ 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+43	INTIMOS ALMA S.A.S N┬░1	1830038444	TV 78 L N┬░ 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 44	HEGA G B S.A.S	830091761	CALLE 37 SUR # 78 H 21	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR Nº 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR N┬║ 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 46	HEGA G B S.A.S	1830091761	CALLE 42 A #93 C 17 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR Nº 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR N┬║ 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 48	INVERSIONES GOBOTEX S A S	3830125982	CLL 13 # 5 - 63	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 49	INVERSIONES GOBOTEX S A S	830125982	CR 100 20 45	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 5	SALAZAR ECHEVERRI LUIS ALBERTO	170693888	CL 5 N 12 81	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
@@ -1305,7 +1593,7 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 63	ARBOLEDA MEJIA JANETH	31588477	CL 5 5 14 BRR CENTRO SEC SANANDRESITO	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 64	ALMACENES CRAMAR	1144	CLL 3 # 3-60	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 65	BARRETO HORTUA JOSE IRLEY	16552612	CR 16 10 35 BRR CENTRO	CAICEDONIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-66	INVERSIONES 8A S.A.S N°21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+66	INVERSIONES 8A S.A.S N┬░21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 67	ARISTIZABAL ARISTIZABAL SANDRA LILIANA	3849	CL 14 # 8 - 50	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 68	HOYOS RAMIREZ YULIETH	29509965	CL 47 NORTE # 4 B N - 29	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 69	PARRA SUAREZ ZORAIDA EMILCEN	8528	CLLE 14 CON CRR 7 ESQUINA CC ELITE LOCAL 515	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
@@ -1324,30 +1612,30 @@ COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id
 81	MODATEXTIL DEL CARIBE S.A.S.	901783220	CL 31 6535 LC 1 BRR: CHIPRE	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 82	ENERGY FASHION S.A.S.	900236935	TV 54 94 - 31	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 83	GUITIERREZ RESTREPO LAURA	1192791730	CL 10 # 4 38	CARTAGO	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-84	ALIANZA MUÑOZ GOMEZ SAS	2901079469	CRA 3A Nº 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-85	ELMELAO S.A.S	900663011	CR 11 N° 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-86	INVERSIONES 8A S.A.S N°13	1390013702	CR 10 N° 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+84	ALIANZA MU├æOZ GOMEZ SAS	2901079469	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
+85	ELMELAO S.A.S	900663011	CR 11 N┬░ 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+86	INVERSIONES 8A S.A.S N┬░13	1390013702	CR 10 N┬░ 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 87	DISTRIBUIDORA MUNDO FASHION	1900324182	CALLE 17 # 11-57	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 88	SALAZAR ECHEVERRI LUIS ALBERTO	70693888	CL 17 13 29 BRR CENTRO	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 89	JIMENEZ BERMUDEZ ALBA DE JESUS	3095	CR 57 A 47 56	CIUDAD BOLIVAR	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-9	INVERSIONES 8A S.A.S N°27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+9	INVERSIONES 8A S.A.S N┬░27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 90	G & G RETAIL S.A.S	4901234880	CL 31 25 11 LC 2	COROZAL	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
 91	AMPER GROUP S.A.S.	901341754	AV 8 8 55 LC 21 22 CC SAN ANTONIO BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N° 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
+92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N┬░ 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 93	EL SURTIDOR BG SAS #2	1901342490	CALLE 8 # 4- 35	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 94	EL SURTIDOR BG SAS	901342490	CALLE 8 # 5- 47	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 95	RAYOTEX S.A.S	2800144409	CL 10 NRO. 0-09	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 97	HENRIQUEZ LOPERA MARY LUZ	60367610	CL 8 4 98 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 98	TIENDAS BUV SAS	901400615	CL 8 5 87 BRR EL CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
 99	RAYOTEX S.A.S	800144409	CL 9 4 90 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-test-restore-1	Cliente Restore	NIT-RESTORE	Dirección	Ciudad	\N	\N	seller	\N	t
+test-restore-1	Cliente Restore	NIT-RESTORE	Direcci├│n	Ciudad	\N	\N	seller	\N	t
 310	ALIANZA VC SAS	900225992	CRA 3A # 17 - 61	CAUCASIA	\N	\N	mlia6sxbdfmbvlex0	\N	t
 311	ANTEXTIL S.A.S.	901170873	AV PEDRO HEREDIA 26 - 75	CARTAGENA	\N	\N	mlia6sxbdfmbvlex0	\N	t
 \.
 
 
 --
--- TOC entry 5225 (class 0 OID 16411)
+-- TOC entry 5488 (class 0 OID 29722)
 -- Dependencies: 221
 -- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1370,7 +1658,7 @@ mmapjhr47tbgla71z	2026-02-17	12935	60	ABROCHADURAS	1.00	400.00	60.00	24000.00	BO
 mmapjhqsaeb5fx9b9	2026-02-11	12898	60	FRANJA DE 4CMT	0.76	900.00	45.60	41040.00	GALERIAS DE AYACUCHO	\N	\N	RM	ok	f	2026-03-03 09:33:03.125148	2026-03-03 09:37:05.434091
 mmapjhqrk6xkuz5aa	2026-02-11	12921	60	FRANJA DE 4CMT	0.60	700.00	36.00	25200.00	GALERIAS DE AYACUCHO	\N	\N	RM	ok	f	2026-03-03 09:33:03.124114	2026-03-03 09:37:11.386712
 mmapjhqr9c4n6h31j	2026-02-11	12923	60	FRANJA SOLEDAD	0.80	2000.00	48.00	96000.00	INSUMOS CORSETERO	\N	\N	RM	ok	f	2026-03-03 09:33:03.123237	2026-03-03 09:37:16.047415
-mmapjhqtg0sj22aze	2026-02-11	12922	60	MOÑOS	1.00	250.00	60.00	15000.00	LA CINTERIA	\N	\N	RM	ok	f	2026-03-03 09:33:03.126129	2026-03-03 09:37:23.456773
+mmapjhqtg0sj22aze	2026-02-11	12922	60	MO├æOS	1.00	250.00	60.00	15000.00	LA CINTERIA	\N	\N	RM	ok	f	2026-03-03 09:33:03.126129	2026-03-03 09:37:23.456773
 mmapjhqvdibjqk1z9	2026-02-11	12934	60	FRANJA SOLEDAD	0.64	2000.00	38.40	76800.00	INSUMOS CORSETERO	\N	\N	RM	ok	f	2026-03-03 09:33:03.127702	2026-03-03 09:37:29.827744
 mmapjhqwqqw9tw9zz	2026-02-11	12893	150	FRANJA SAUDY	0.73	2500.00	109.50	273750.00	INSUMOS CORSETERO	\N	\N	RM	ok	f	2026-03-03 09:33:03.128812	2026-03-03 09:37:34.687723
 mmapjhqxoa0ogu4fe	2026-02-11	12920	225	FRANJA ANGELITA	0.60	1200.00	135.00	162000.00	INSUMOS CORSETERO	\N	\N	RM	ok	f	2026-03-03 09:33:03.129728	2026-03-03 09:37:39.451506
@@ -1387,7 +1675,7 @@ mmapjhr3vfzfej7hg	2026-02-17	12970	138	GUIPURE	1.68	2500.00	231.84	579600.00	BOM
 
 
 --
--- TOC entry 5226 (class 0 OID 16428)
+-- TOC entry 5489 (class 0 OID 29739)
 -- Dependencies: 222
 -- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1397,156 +1685,155 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 43923482	Gonzalez Quintero Ruby Liliana	CL 21 # 71 - 50 APT 301	Bello	4648291	A	1	2026-02-14 03:04:08
 43922752	Jaramillo Jaramillo Judy Liliana (Emma Jaramillo)	AV 45 # 68 A 68 CA	Bello	3025644	AA	1	2026-02-14 03:04:08
 8399305	Jaramillo Tabarez Gabriel	AUT 102 # 17 - 82 AP 225	Bello	3144927214	A	1	2026-02-14 03:04:08
-43668259	Londoño Lopez Lida Estella	CR 50 A # 37 - 14	Bello	4514914	AAA	1	2026-02-14 03:04:08
+43668259	Londo├▒o Lopez Lida Estella	CR 50 A # 37 - 14	Bello	4514914	AAA	1	2026-02-14 03:04:08
 700320715	Molero Duran Dorisabet	CL 52 B 62 22	Bello	3042135431	A	1	2026-02-14 03:04:08
 43662225	Perez Vasquez Olga Amparo	CR 62 D 74 - 73	Bello	3116896314	A	1	2026-02-14 03:04:08
-32476344	Ramirez De Patiño Elizabeth	DG 56 44 125 P2	Bello	3207320382	AA	1	2026-02-14 03:04:08
+32476344	Ramirez De Pati├▒o Elizabeth	DG 56 44 125 P2	Bello	3207320382	AA	1	2026-02-14 03:04:08
 1035865876	Rico Perez Astrid Yulieth	CR 62 D 74 - 73	Bello	3137303193	A	1	2026-02-14 03:04:08
 98579701	Rivera Jaramillo Jesus Euclives	AV 47 A 67 135 P2 BRR NIQUIA	Bello	3184587601	A	1	2026-02-14 03:04:08
 39211289	Rojo Gomez Marilu	CL 32 # 57 - 28	Bello	6139046	AA	1	2026-02-14 03:04:08
 43917589	Tamayo Mesa Lina Marcela	CR 53 A CL 48 - 25	Bello	4572783	A	1	2026-02-14 03:04:09
 32310166	Vasquez Sanguino Nubia Estela	CL 43 A 58 13	Bello	2759779	A	1	2026-02-14 03:04:09
 43920964	Zuluaga Arvaez Gloria Patricia	CL 77 CR 66 - 90 AP 101	Bello	322534805	A	1	2026-02-14 03:04:09
-43467697	Alzate Cardona Mery Bernarda	CR 64 CL 25 B 42	Itagüí	3090606	AAA	1	2026-02-14 03:04:09
-28742199	Buitrago Serna Esperanza	CL 47 # 58-36 BRR EL ROSARIO	Itagüí	3144272388	A	1	2026-02-14 03:04:09
-43161076	Estrada Aguirre Angela Yaneth	CR 59 A # 47 A 35	Itagüí	3165098382	A	1	2026-02-14 03:04:09
-71279486	Hoyos Hernandez Juan Camilo	CR 52 D # 73 - 65	Itagüí	2818182	A	1	2026-02-14 03:04:09
-15927569	Llanez Alzate Pedro Proceso	CL 58 CR 65 - 10	Itagüí	3711095	AAA	1	2026-02-14 03:04:09
-1036674143	Lopez Herrera Vanessa	CL 47 # 61 - 81	Itagüí	3147423045	A	1	2026-02-14 03:04:09
-42791387	Muñoz Valle Gloria Nelly	CL 49 # 46 - 09 AP 301- ASTURIAS	Itagüí	3183270148	A	1	2026-02-14 03:04:09
-43189668	Salazar Panesso Aura Milena	CL 67 B # 55 - 12	Itagüí	3017311430	AAA	1	2026-02-14 03:04:09
-17576365	Sierra Salazar Llineska Desiree	CL 13 A SUR # 53 - 112 IN 110	Itagüí	3145128450	A	1	2026-02-14 03:04:09
-1082964637	Vergara Bracamonte Lina Marcela	CR 75 # 94 - 18	Itagüí	3011694242	A	1	2026-02-14 03:04:09
-1036599696	Zapata Rios Claudia Carolina	CL 35 # 39 - 45 INT 302	Itagüí	3104256640	A	1	2026-02-14 03:04:09
+43467697	Alzate Cardona Mery Bernarda	CR 64 CL 25 B 42	Itag├╝├¡	3090606	AAA	1	2026-02-14 03:04:09
+28742199	Buitrago Serna Esperanza	CL 47 # 58-36 BRR EL ROSARIO	Itag├╝├¡	3144272388	A	1	2026-02-14 03:04:09
+43161076	Estrada Aguirre Angela Yaneth	CR 59 A # 47 A 35	Itag├╝├¡	3165098382	A	1	2026-02-14 03:04:09
+71279486	Hoyos Hernandez Juan Camilo	CR 52 D # 73 - 65	Itag├╝├¡	2818182	A	1	2026-02-14 03:04:09
+15927569	Llanez Alzate Pedro Proceso	CL 58 CR 65 - 10	Itag├╝├¡	3711095	AAA	1	2026-02-14 03:04:09
+1036674143	Lopez Herrera Vanessa	CL 47 # 61 - 81	Itag├╝├¡	3147423045	A	1	2026-02-14 03:04:09
+42791387	Mu├▒oz Valle Gloria Nelly	CL 49 # 46 - 09 AP 301- ASTURIAS	Itag├╝├¡	3183270148	A	1	2026-02-14 03:04:09
+43189668	Salazar Panesso Aura Milena	CL 67 B # 55 - 12	Itag├╝├¡	3017311430	AAA	1	2026-02-14 03:04:09
+17576365	Sierra Salazar Llineska Desiree	CL 13 A SUR # 53 - 112 IN 110	Itag├╝├¡	3145128450	A	1	2026-02-14 03:04:09
+1082964637	Vergara Bracamonte Lina Marcela	CR 75 # 94 - 18	Itag├╝├¡	3011694242	A	1	2026-02-14 03:04:09
+1036599696	Zapata Rios Claudia Carolina	CL 35 # 39 - 45 INT 302	Itag├╝├¡	3104256640	A	1	2026-02-14 03:04:09
 1038405870	Montoya Arcila Laura Yubeidy	AC 35 32 32	Marinilla	3105955757	AA	1	2026-02-14 03:04:09
 43796271	Ramirez Restrepo Alba Marleny	CL 31 # 33 - 136	Marinilla	3194979218	AAA	1	2026-02-14 03:04:09
 32391893	Zuluaga Gomez Cruz Elena	CL 30 CR 44 - 20	Marinilla	3144820043	A	1	2026-02-14 03:04:09
-43188279	Amparo Arias Jaqueline	CALLE 97 # 23-52	Medellín	3022204488	A	1	2026-02-14 03:04:09
-43619122	Ardila Cano Yakeline	CR 97 A 48 C 16	Medellín	4913266	A	1	2026-02-14 03:04:09
-32439583	Arenas de Baena Rosa Ines	CL 48 DD # 99 D 95	Medellín	3005232060	A	1	2026-02-14 03:04:09
-42843342	Arismendy Garcia Claudia Sorany	CL 36 # 92 - 27	Medellín	5990211	AAA	1	2026-02-14 03:04:09
-1063366292	Bedoya Paternina Paula Andrea	CR 143 A # 56 - 330	Medellín	300296581	A	1	2026-02-14 03:04:10
-1096244432	Cañaveral Martinez Dayan Yulithza	CR 80 # 6 sur 30 AP 302	Medellín	3102370621	A	1	2026-02-14 03:04:10
-43048297	Castañeda de Ramirez Marleny del Socorro	CR 75 # 94 - 18	Medellín	3147438466	A	1	2026-02-14 03:04:10
-8104549	Castrillon Cardenas Edwin Alberto	CL 77 DD # 94 A 17	Medellín	3012707945	A	1	2026-02-14 03:04:10
-1017140262	Chaverra Medina Julieth Alejandra	CR 50 # 95 - 101	Medellín	6034239	A	1	2026-02-14 03:04:10
-34943965	Cotera Alvarez Aracelis del Carmen	CL 47 A 2 C 65	Medellín	3207042688	A	1	2026-02-14 03:04:10
-1128444889	De Ossa Bolivar Maria Esperanza	CR 79 B 46 SUR 101 IN 0221	Medellín	3017466926	A	1	2026-02-14 03:04:10
-43916205	Florez Estrada Claudia Patricia	CR 45 # 111 - 30	Medellín	3024186626	AAA	1	2026-02-14 03:04:10
-1036600639	Gallego Atehortua Claudia Yaneth	KM 15 CORR SANTA ELEA	Medellín	5380752	A	1	2026-02-14 03:04:10
-43016242	Gallego Heranndez Martha Oliva	CL 57 SUR 62 B 31	Medellín	2868183	A	1	2026-02-14 03:04:10
-24368442	Gallego Loaiza Maria Melva	CRA 77 CLL 23-35	Medellín	3147774833	A	1	2026-02-14 03:04:10
-1128390179	Garcia Castrillon Yuly Paulina	CR 71 # 93 - 57	Medellín	3185700973	A	1	2026-02-14 03:04:12
-1001003896	Garcia Posada Maria Isabel	CR 112 # 13 - 155 IN 103	Medellín	4953405	A	1	2026-02-14 03:04:12
-1045017301	Garcia Vergara Carlos Andrés (Michel Cano y LiliaA Garcia)	CR 44 A 20	Medellín	3234721063	AAA	1	2026-02-14 03:04:12
-1036612879	Garnica Linares Andrea Aurora	CL 48 A SUR D 38 AP 20	Medellín	5065952	A	1	2026-02-14 03:04:12
-39268713	Giraldo Villa Gloria Elena	CL 82 # 72 C 108	Medellín	4874554	A	1	2026-02-14 03:04:12
-21701184	Gonzalez Palacio Doris Amparo	CR 89 B 89 101 IN 246 TO 7	Medellín	3225691506	AA	1	2026-02-14 03:04:12
-1035304202	Guisao Miranda Yefferson Andrei	CL 102 B 84 A 109	Medellín	3235322458	A	1	2026-02-14 03:04:12
-1035414253	Hernandez Rueda Lisceth Tatiana	CR 94 A CL 70 G C 80	Medellín	312520319	A	1	2026-02-14 03:04:12
-1017162806	Hidalgo Cortes Diego Alberto	CL 56 # 32 - 133	Medellín	2168719	A	1	2026-02-14 03:04:12
-43561368	Marulanda Guarin Gloria Patricia	CL 82 # 32-44	Medellín	3117675970	A	1	2026-02-14 03:04:12
-1128430728	Mazo Restrepo Edith Nataly	AC 100 DD # 28 CB - 8 INT 201	Medellín	5166082	A	1	2026-02-14 03:04:12
-43537983	Medina Migdalia del Socorro	CR 39 B 39 C 30	Medellín	6034239	A	1	2026-02-14 03:04:12
-1094366162	Meneses FerAndez Tania Paola	CR 70 B 9 A 32 AP 201	Medellín	3125379229	A	1	2026-02-14 03:04:12
-21896457	Montoya Lopez Dora Liliana	CL 68 # 58-71	Medellín	3113926142	A	1	2026-02-14 03:04:12
-1007538923	Montoya Valderrama Jeniffer Geraldin	CR 118 CL 39 D 123 IN 110	Medellín	31961993	A	1	2026-02-14 03:04:12
-32461771	Muñoz Arredondo Maria Elvia Lucia	CR 96 47 A 176	Medellín	5855705	AAA	1	2026-02-14 03:04:12
-43916106	Muñoz Vargas July Alejandra	CL 110 C 43 A 07	Medellín	5221529	A	1	2026-02-14 03:04:12
-43202750	Ocampo Villada Luz Aida	CR 47 # 92-89	Medellín	3022356712	A	1	2026-02-14 03:04:12
-32297720	Olaya Gonzalez Vianeth Mileidy	CL 89 A # 39 - 46	Medellín	3142418994	A	1	2026-02-14 03:04:12
-1042767669	Perez Waltero Linda Estefany	CR 82 C 104 D D 29	Medellín	3155503959	A	1	2026-02-14 03:04:12
-43589459	Posada Villegas Ruth Yannet	CL 49 C # 5 - 114	Medellín	3024484780	A	1	2026-02-14 03:04:12
-42999087	Pulgarin Mejia Josefina del Socorro	CL 80 C 74 - 188	Medellín	4418640	AAA	1	2026-02-14 03:04:13
-43084268	Quiceno Aguirre Maria Teresa	CR 98 B # 83 B 25	Medellín	3002477189	AAA	1	2026-02-14 03:04:13
-12435671	Quintero Contreras Edward Sadit	CL 34 # 52 - 44	Medellín	2316387	A	1	2026-02-14 03:04:13
-43622970	Rico Bermudez Maria Eugenia	CRA 43 # 118B-21	Medellín	3246434020	A	1	2026-02-14 03:04:13
-27894856	Rivera Chaparro Claudia Liliana	CL 20 B NORTE BRR París	Medellín	4715428	A	1	2026-02-14 03:04:13
-1053798633	Rodas Vinasco Yesid Alexander	CL 110 # 46 - 28 IN 197	Medellín	3017782338	A	1	2026-02-14 03:04:13
-1017157466	Rua Agudelo Cristian Alexis	CR 57 # 42 - 38	Medellín	3223965702	A	1	2026-02-14 03:04:13
-43014769	Sepulveda Henao Dora Luz	CL 91 AB #84-106 INT 201	Medellín	3023695101	A	1	2026-02-14 03:04:13
-43272097	Taborda Rendón Adriana Maria	CL 110 B 43 AA 16	Medellín	5226317	AA	1	2026-02-14 03:04:13
-98587077	Toro Cano Hoiber	CL 92 B 56 A 24	Medellín	5051560	A	1	2026-02-14 03:04:13
-1039079211	Usuga Carmen Yaneth	CR 16 mz 63 BRR LimoAr	Medellín	5705186	AAA	1	2026-02-14 03:04:13
-43638585	Varela Restrepo Alba Mery	CR 118 # 39 A 50	Medellín	3215796407	A	1	2026-02-14 03:04:13
-43865445	Vargas Agudelo Sandra Milena	CL 110 C CR 43 A 7	Medellín	3117313015	A	1	2026-02-14 03:04:13
-1017177916	Vargas Guerra Diana Maria	CL 57 # 19 - 88 AP 204	Medellín	3045951934	A	1	2026-02-14 03:04:13
+43188279	Amparo Arias Jaqueline	CALLE 97 # 23-52	Medell├¡n	3022204488	A	1	2026-02-14 03:04:09
+43619122	Ardila Cano Yakeline	CR 97 A 48 C 16	Medell├¡n	4913266	A	1	2026-02-14 03:04:09
+32439583	Arenas de Baena Rosa Ines	CL 48 DD # 99 D 95	Medell├¡n	3005232060	A	1	2026-02-14 03:04:09
+42843342	Arismendy Garcia Claudia Sorany	CL 36 # 92 - 27	Medell├¡n	5990211	AAA	1	2026-02-14 03:04:09
+1063366292	Bedoya Paternina Paula Andrea	CR 143 A # 56 - 330	Medell├¡n	300296581	A	1	2026-02-14 03:04:10
+1096244432	Ca├▒averal Martinez Dayan Yulithza	CR 80 # 6 sur 30 AP 302	Medell├¡n	3102370621	A	1	2026-02-14 03:04:10
+43048297	Casta├▒eda de Ramirez Marleny del Socorro	CR 75 # 94 - 18	Medell├¡n	3147438466	A	1	2026-02-14 03:04:10
+8104549	Castrillon Cardenas Edwin Alberto	CL 77 DD # 94 A 17	Medell├¡n	3012707945	A	1	2026-02-14 03:04:10
+1017140262	Chaverra Medina Julieth Alejandra	CR 50 # 95 - 101	Medell├¡n	6034239	A	1	2026-02-14 03:04:10
+34943965	Cotera Alvarez Aracelis del Carmen	CL 47 A 2 C 65	Medell├¡n	3207042688	A	1	2026-02-14 03:04:10
+1128444889	De Ossa Bolivar Maria Esperanza	CR 79 B 46 SUR 101 IN 0221	Medell├¡n	3017466926	A	1	2026-02-14 03:04:10
+43916205	Florez Estrada Claudia Patricia	CR 45 # 111 - 30	Medell├¡n	3024186626	AAA	1	2026-02-14 03:04:10
+1036600639	Gallego Atehortua Claudia Yaneth	KM 15 CORR SANTA ELEA	Medell├¡n	5380752	A	1	2026-02-14 03:04:10
+43016242	Gallego Heranndez Martha Oliva	CL 57 SUR 62 B 31	Medell├¡n	2868183	A	1	2026-02-14 03:04:10
+24368442	Gallego Loaiza Maria Melva	CRA 77 CLL 23-35	Medell├¡n	3147774833	A	1	2026-02-14 03:04:10
+1128390179	Garcia Castrillon Yuly Paulina	CR 71 # 93 - 57	Medell├¡n	3185700973	A	1	2026-02-14 03:04:12
+1001003896	Garcia Posada Maria Isabel	CR 112 # 13 - 155 IN 103	Medell├¡n	4953405	A	1	2026-02-14 03:04:12
+1045017301	Garcia Vergara Carlos Andr├®s (Michel Cano y LiliaA Garcia)	CR 44 A 20	Medell├¡n	3234721063	AAA	1	2026-02-14 03:04:12
+1036612879	Garnica Linares Andrea Aurora	CL 48 A SUR D 38 AP 20	Medell├¡n	5065952	A	1	2026-02-14 03:04:12
+39268713	Giraldo Villa Gloria Elena	CL 82 # 72 C 108	Medell├¡n	4874554	A	1	2026-02-14 03:04:12
+21701184	Gonzalez Palacio Doris Amparo	CR 89 B 89 101 IN 246 TO 7	Medell├¡n	3225691506	AA	1	2026-02-14 03:04:12
+1035304202	Guisao Miranda Yefferson Andrei	CL 102 B 84 A 109	Medell├¡n	3235322458	A	1	2026-02-14 03:04:12
+1035414253	Hernandez Rueda Lisceth Tatiana	CR 94 A CL 70 G C 80	Medell├¡n	312520319	A	1	2026-02-14 03:04:12
+1017162806	Hidalgo Cortes Diego Alberto	CL 56 # 32 - 133	Medell├¡n	2168719	A	1	2026-02-14 03:04:12
+43561368	Marulanda Guarin Gloria Patricia	CL 82 # 32-44	Medell├¡n	3117675970	A	1	2026-02-14 03:04:12
+1128430728	Mazo Restrepo Edith Nataly	AC 100 DD # 28 CB - 8 INT 201	Medell├¡n	5166082	A	1	2026-02-14 03:04:12
+43537983	Medina Migdalia del Socorro	CR 39 B 39 C 30	Medell├¡n	6034239	A	1	2026-02-14 03:04:12
+1094366162	Meneses FerAndez Tania Paola	CR 70 B 9 A 32 AP 201	Medell├¡n	3125379229	A	1	2026-02-14 03:04:12
+21896457	Montoya Lopez Dora Liliana	CL 68 # 58-71	Medell├¡n	3113926142	A	1	2026-02-14 03:04:12
+1007538923	Montoya Valderrama Jeniffer Geraldin	CR 118 CL 39 D 123 IN 110	Medell├¡n	31961993	A	1	2026-02-14 03:04:12
+32461771	Mu├▒oz Arredondo Maria Elvia Lucia	CR 96 47 A 176	Medell├¡n	5855705	AAA	1	2026-02-14 03:04:12
+43916106	Mu├▒oz Vargas July Alejandra	CL 110 C 43 A 07	Medell├¡n	5221529	A	1	2026-02-14 03:04:12
+43202750	Ocampo Villada Luz Aida	CR 47 # 92-89	Medell├¡n	3022356712	A	1	2026-02-14 03:04:12
+32297720	Olaya Gonzalez Vianeth Mileidy	CL 89 A # 39 - 46	Medell├¡n	3142418994	A	1	2026-02-14 03:04:12
+1042767669	Perez Waltero Linda Estefany	CR 82 C 104 D D 29	Medell├¡n	3155503959	A	1	2026-02-14 03:04:12
+43589459	Posada Villegas Ruth Yannet	CL 49 C # 5 - 114	Medell├¡n	3024484780	A	1	2026-02-14 03:04:12
+42999087	Pulgarin Mejia Josefina del Socorro	CL 80 C 74 - 188	Medell├¡n	4418640	AAA	1	2026-02-14 03:04:13
+43084268	Quiceno Aguirre Maria Teresa	CR 98 B # 83 B 25	Medell├¡n	3002477189	AAA	1	2026-02-14 03:04:13
+12435671	Quintero Contreras Edward Sadit	CL 34 # 52 - 44	Medell├¡n	2316387	A	1	2026-02-14 03:04:13
+43622970	Rico Bermudez Maria Eugenia	CRA 43 # 118B-21	Medell├¡n	3246434020	A	1	2026-02-14 03:04:13
+27894856	Rivera Chaparro Claudia Liliana	CL 20 B NORTE BRR Par├¡s	Medell├¡n	4715428	A	1	2026-02-14 03:04:13
+1053798633	Rodas Vinasco Yesid Alexander	CL 110 # 46 - 28 IN 197	Medell├¡n	3017782338	A	1	2026-02-14 03:04:13
+1017157466	Rua Agudelo Cristian Alexis	CR 57 # 42 - 38	Medell├¡n	3223965702	A	1	2026-02-14 03:04:13
+43014769	Sepulveda Henao Dora Luz	CL 91 AB #84-106 INT 201	Medell├¡n	3023695101	A	1	2026-02-14 03:04:13
+43272097	Taborda Rend├│n Adriana Maria	CL 110 B 43 AA 16	Medell├¡n	5226317	AA	1	2026-02-14 03:04:13
+98587077	Toro Cano Hoiber	CL 92 B 56 A 24	Medell├¡n	5051560	A	1	2026-02-14 03:04:13
+1039079211	Usuga Carmen Yaneth	CR 16 mz 63 BRR LimoAr	Medell├¡n	5705186	AAA	1	2026-02-14 03:04:13
+43638585	Varela Restrepo Alba Mery	CR 118 # 39 A 50	Medell├¡n	3215796407	A	1	2026-02-14 03:04:13
+43865445	Vargas Agudelo Sandra Milena	CL 110 C CR 43 A 7	Medell├¡n	3117313015	A	1	2026-02-14 03:04:13
+1017177916	Vargas Guerra Diana Maria	CL 57 # 19 - 88 AP 204	Medell├¡n	3045951934	A	1	2026-02-14 03:04:13
 1041205070	Gallego Valencia Astrid Carolina	CR 48 # 49 - 20 AP 302	Santuario	3117920607	AA	1	2026-02-14 03:04:13
-43788596	Jimenez Ramirez Deisy Yohana	CR 53 49 N° 73 AP 402	Santuario	5672730	A	1	2026-02-14 03:04:13
-1045026047	Lopez Morales Ana María	CR 50 CL 45 B 66	Santuario	3172402992	A	1	2026-02-14 03:04:14
+43788596	Jimenez Ramirez Deisy Yohana	CR 53 49 N┬░ 73 AP 402	Santuario	5672730	A	1	2026-02-14 03:04:13
+1045026047	Lopez Morales Ana Mar├¡a	CR 50 CL 45 B 66	Santuario	3172402992	A	1	2026-02-14 03:04:14
 1045019585	Serna Ramirez Angela Maria	CL 82 # 32 - 44	Santuario	3117675970	A	1	2026-02-14 03:04:14
 43118318	Vasquez Margarita Maria	DG 58 # 42 - 116	Bello	6012336	A	1	2026-02-14 03:04:14
-43273110	Correa Zamora Shirley	BRR MANRIQUE CL 83 CR 4331	Medellín	3016112549	A	1	2026-02-14 03:04:14
-1128459691	Loaiza Correa Yennifer	CRA 69 # 36 SUR 157	Medellín	3147080623	A	1	2026-02-14 03:04:14
-1128386891	Vasquez Barrientos Leonardo Fabio (Margarita Vasquez)	CR 69 # 78 B 12 IN 310	Medellín	3128684424	AAA	1	2026-02-14 03:04:14
-43381473	Arcila Valencia Maria Esperanza	CLL 111 F # 64 - 56	Medellín	3213763265	A	1	2026-02-14 03:04:14
+43273110	Correa Zamora Shirley	BRR MANRIQUE CL 83 CR 4331	Medell├¡n	3016112549	A	1	2026-02-14 03:04:14
+1128459691	Loaiza Correa Yennifer	CRA 69 # 36 SUR 157	Medell├¡n	3147080623	A	1	2026-02-14 03:04:14
+1128386891	Vasquez Barrientos Leonardo Fabio (Margarita Vasquez)	CR 69 # 78 B 12 IN 310	Medell├¡n	3128684424	AAA	1	2026-02-14 03:04:14
+43381473	Arcila Valencia Maria Esperanza	CLL 111 F # 64 - 56	Medell├¡n	3213763265	A	1	2026-02-14 03:04:14
 43097913	Olaya Marta Bibiana	DG 62 AV # 48 B 30 IN 201	Bello	3218855166	AAA	1	2026-02-14 03:04:14
 8058195	Araujo Rodriguez Hernan Dario (Aura Rodriguez)	CLL 49 A # 56 A 9 IN 104	Bello	3122821121	AA	1	2026-02-14 03:04:14
-43181466	Gil Saldarriaga Erica Astrid	CL 38 SUR 77 10J LOS ANGELES	Itagüí	3046377165	AAA	1	2026-02-14 03:04:14
-1046667079	Cardona Valencia Camila	CLL 37 B # SUR 82 D 20	Medellín	3017797376	A	1	2026-02-14 03:04:14
-1152190746	Graciano Sepulveda Yira Marcela	VDA AGUAS FRIAS BRR BELEN	Medellín	2385625	AAA	1	2026-02-14 03:04:14
-700469989	Marquez Uribe David Esteban	CRR 58 A 65 # 22 IN 301	Itagüí	3124081795	A	1	2026-02-14 03:04:14
+43181466	Gil Saldarriaga Erica Astrid	CL 38 SUR 77 10J LOS ANGELES	Itag├╝├¡	3046377165	AAA	1	2026-02-14 03:04:14
+1046667079	Cardona Valencia Camila	CLL 37 B # SUR 82 D 20	Medell├¡n	3017797376	A	1	2026-02-14 03:04:14
+1152190746	Graciano Sepulveda Yira Marcela	VDA AGUAS FRIAS BRR BELEN	Medell├¡n	2385625	AAA	1	2026-02-14 03:04:14
+700469989	Marquez Uribe David Esteban	CRR 58 A 65 # 22 IN 301	Itag├╝├¡	3124081795	A	1	2026-02-14 03:04:14
 43283514	Vargas Araque Maria Dolly	DG 30 # 33 A SUR 34	Envigado	3105924202	A	1	2026-02-14 03:04:14
-1152457615	Lopez Gallego Luz Mary	CALLE 31 # 109-42 BELEN	Medellín	3003194787	A	1	2026-02-14 03:04:15
-71223381	Restrepo Olaya Elkin Emilio (Nancy Arboleda)	CALLE 14 SUR # 58 B 05	Itagüí	3116940715	AAA	1	2026-02-14 03:04:15
+1152457615	Lopez Gallego Luz Mary	CALLE 31 # 109-42 BELEN	Medell├¡n	3003194787	A	1	2026-02-14 03:04:15
+71223381	Restrepo Olaya Elkin Emilio (Nancy Arboleda)	CALLE 14 SUR # 58 B 05	Itag├╝├¡	3116940715	AAA	1	2026-02-14 03:04:15
 1037886122	Gomez Arcila Leon david	CL 33 # 33 - 19 AP 301	Marinilla	3116642376	A	1	2026-02-14 03:04:15
-98514920	Loaiza Saldarriaga Johan Adiel	VDA EL SALADO SEC LA CANDELA	Medellín	3136698557	A	1	2026-02-14 03:04:15
-1013617204	Cardenas Hernandez Nestor Julian	DG 31 D # 32 SUR 15 APTO 302	Medellín	3026033654	AAA	1	2026-02-14 03:04:15
+98514920	Loaiza Saldarriaga Johan Adiel	VDA EL SALADO SEC LA CANDELA	Medell├¡n	3136698557	A	1	2026-02-14 03:04:15
+1013617204	Cardenas Hernandez Nestor Julian	DG 31 D # 32 SUR 15 APTO 302	Medell├¡n	3026033654	AAA	1	2026-02-14 03:04:15
 39439040	Arcila Montoya Alba Mirian	CL 33 33 19 AP 301	Marinilla	3104906527	AAA	1	2026-02-14 03:04:15
-1038416826	Muñoz Montoya kevin	CL 24 30 44	Marinilla	3235027832	A	1	2026-02-14 03:04:16
-1018230626	Berrio Jorge Luis	Cr 81 54 51 AP 101	Medellín	3054270414	A	1	2026-02-14 03:04:16
-45769944	Beleño Ariza Ebeth Isabel	Cll 45 d 16 30	Medellín	3205268697	AA	1	2026-02-14 03:04:16
+1038416826	Mu├▒oz Montoya kevin	CL 24 30 44	Marinilla	3235027832	A	1	2026-02-14 03:04:16
+1018230626	Berrio Jorge Luis	Cr 81 54 51 AP 101	Medell├¡n	3054270414	A	1	2026-02-14 03:04:16
+45769944	Bele├▒o Ariza Ebeth Isabel	Cll 45 d 16 30	Medell├¡n	3205268697	AA	1	2026-02-14 03:04:16
 1020436106	Sanchez Sanchez Evelin Yaheni	DG 55 46 48 BRR Niquia	Bello	3116457499	A	1	2026-02-14 03:04:17
-1017159858	Mazo Guerra Jhon Jader	CL 65 Cr 16 DD	Medellín	3015703383	A	1	2026-02-14 03:04:17
+1017159858	Mazo Guerra Jhon Jader	CL 65 Cr 16 DD	Medell├¡n	3015703383	A	1	2026-02-14 03:04:17
 700530400	Cubillan Contreras Mariu Eugenia	Cl 47 29 39 IN 111	Copacabana	3042872273	AAA	1	2026-02-14 03:04:17
 43115930	Amaya Trujillo Adriana Patricia	AV 48 A 65 115	Bello	5979171	AA	1	2026-02-14 03:04:17
-43843857	Muñoz Salazar Luz Yenny	CALL 40A SUR #59-40 INT 201	Medellín	3026221102	A	1	2026-02-14 03:04:17
-1037264064	Correa Piedrahita Diana Andrea	CALL 83 #57-22	Medellín	3104665496	AAA	1	2026-02-14 03:04:17
-1001686689	Garrido Bartolo Karen  (Maria Isabel Bartolo)	Cr 56 46 37 in 201	Itagüí	3044223445	AA	1	2026-02-14 03:04:17
+43843857	Mu├▒oz Salazar Luz Yenny	CALL 40A SUR #59-40 INT 201	Medell├¡n	3026221102	A	1	2026-02-14 03:04:17
+1037264064	Correa Piedrahita Diana Andrea	CALL 83 #57-22	Medell├¡n	3104665496	AAA	1	2026-02-14 03:04:17
+1001686689	Garrido Bartolo Karen  (Maria Isabel Bartolo)	Cr 56 46 37 in 201	Itag├╝├¡	3044223445	AA	1	2026-02-14 03:04:17
 43429023	Lopera Torres Luz Doris	CALL 55 # 46-21	Bello	3017227142	A	1	2026-02-14 03:04:17
 1037325550	Pulgarin Giraldo Didier	Carrera 4 # 2 - 72	Jardin	3217516834	A	1	2026-02-14 03:04:17
-1036608419	Castaño Acevedo Jhon Euliser	CL 35 49 37	Itagüí	3122908488	A	1	2026-02-14 03:04:17
-43989889	Sierra Claudia Marcela	Cr 46 106 A 28 Ap 302	Medellín	3146021287	A	1	2026-02-14 03:04:17
+1036608419	Casta├▒o Acevedo Jhon Euliser	CL 35 49 37	Itag├╝├¡	3122908488	A	1	2026-02-14 03:04:17
+43989889	Sierra Claudia Marcela	Cr 46 106 A 28 Ap 302	Medell├¡n	3146021287	A	1	2026-02-14 03:04:17
 43517753	Cossio Parra Maria Eugenia	Cr 20 A 58 08 MZ 13	Dosquebradas	3015093148	A	1	2026-02-14 03:04:17
-1040871321	Ospina Castañeda Paulina	Cr 45 A 20 39	Marinilla	3208067864	A	1	2026-02-14 03:04:18
-1234991468	Quiroz Garcia Luisa Fernanda	CARR 59D  #41D SUR 23	Medellín	3244399156	A	1	2026-02-14 03:04:18
-21713597	Chavarria Chavarria Maria Bernanda	Cll 76 50 14 Santa Maria	Itagüí	3712520	A	1	2026-02-14 03:04:18
-43400859	Castañeda Alvarez Laura Shirley	Cll 124 a sur cr 50 b 12	Caldas	3006015843	AA	1	2026-02-14 03:04:18
+1040871321	Ospina Casta├▒eda Paulina	Cr 45 A 20 39	Marinilla	3208067864	A	1	2026-02-14 03:04:18
+1234991468	Quiroz Garcia Luisa Fernanda	CARR 59D  #41D SUR 23	Medell├¡n	3244399156	A	1	2026-02-14 03:04:18
+21713597	Chavarria Chavarria Maria Bernanda	Cll 76 50 14 Santa Maria	Itag├╝├¡	3712520	A	1	2026-02-14 03:04:18
+43400859	Casta├▒eda Alvarez Laura Shirley	Cll 124 a sur cr 50 b 12	Caldas	3006015843	AA	1	2026-02-14 03:04:18
 42897491	Gomez Berrio Lorena Maria	Cll 96 b 50 aa 26	La Estrella	3128743193	AA	1	2026-02-14 03:04:18
-71366811	Salazar Blanco Edier Ferley	Cll 118 42 B 54	Medellín	3207420013	AA	1	2026-02-14 03:04:18
-43115719	Sanchez Espinoza Claudia De Jesus	Cll 94 D 79 A 59 in 201	Medellín	3017197220	A	1	2026-02-14 03:04:18
-1152447519	Jaramillo Gallego Angelica Maria	Cr 2102 B 49 b 18	Medellín	3015588007	A	1	2026-02-14 03:04:18
-43818822	Zapata Valencia Eliana Maria	Cr 55 95 A 13 AP 306	Medellín	3012608251	AA	1	2026-02-14 03:04:18
+71366811	Salazar Blanco Edier Ferley	Cll 118 42 B 54	Medell├¡n	3207420013	AA	1	2026-02-14 03:04:18
+43115719	Sanchez Espinoza Claudia De Jesus	Cll 94 D 79 A 59 in 201	Medell├¡n	3017197220	A	1	2026-02-14 03:04:18
+1152447519	Jaramillo Gallego Angelica Maria	Cr 2102 B 49 b 18	Medell├¡n	3015588007	A	1	2026-02-14 03:04:18
+43818822	Zapata Valencia Eliana Maria	Cr 55 95 A 13 AP 306	Medell├¡n	3012608251	AA	1	2026-02-14 03:04:18
 1027881749	Cano Acevedo Mary Luz	Cr 55 54 44	Bello	3213192748	A	1	2026-02-14 03:04:18
-1037599747	Soto Marulanda Leidy Selene	Cl 55 7 165 In 105	Medellín	3108973012	A	1	2026-02-14 03:04:18
-43825606	Alzate Pineda Olga Lucia	Cl 34 A 40 42	Itagüí	3043367407	AA	1	2026-02-14 03:04:19
+1037599747	Soto Marulanda Leidy Selene	Cl 55 7 165 In 105	Medell├¡n	3108973012	A	1	2026-02-14 03:04:18
+43825606	Alzate Pineda Olga Lucia	Cl 34 A 40 42	Itag├╝├¡	3043367407	AA	1	2026-02-14 03:04:19
 1035862169	Zuluaga Cardona Elisa Maria	Av 35 42 EE 102 ATR	Bello	3193310554	AA	1	2026-02-14 03:04:19
-100205983	Tobon Alvarez Laura Micheli	Cl 82 71 a 42	Medellín	3145453566	A	1	2026-02-14 03:04:19
-1065818962	Carolina Gil Arias Yazmin	Cl 56 58 FF 28 in 201	Itagüí	3122746029	A	1	2026-02-14 03:04:19
-1033649051	Montoya Arboleda Ana Isabel	Cl 103 G 64 D 28 101	Medellín	3148470510	AAA	1	2026-02-14 03:04:19
+100205983	Tobon Alvarez Laura Micheli	Cl 82 71 a 42	Medell├¡n	3145453566	A	1	2026-02-14 03:04:19
+1065818962	Carolina Gil Arias Yazmin	Cl 56 58 FF 28 in 201	Itag├╝├¡	3122746029	A	1	2026-02-14 03:04:19
+1033649051	Montoya Arboleda Ana Isabel	Cl 103 G 64 D 28 101	Medell├¡n	3148470510	AAA	1	2026-02-14 03:04:19
 43744055	Rivera Higuita Gladys Elena	Cr 47 76 sur 12	Sabaneta	3233305339	AA	1	2026-02-14 03:04:19
-43727411	Torres Alvarez Marta Cecilia	Cl 31 D 100 B 33	Medellín	3213539701	AA	1	2026-02-14 03:04:19
-1017148861	Amaya Macias Yecenia	Cl 96 82 18	Medellín	3103751591	A	1	2026-02-14 03:04:19
-1128388462	Sierra Garcia Adriana	CR 97 aa 66 55	Medellín	3126941601	AA	1	2026-02-14 03:04:19
-287890791	Usuga Rojas Teresa De Jesus	Cr 43 108 118 AP 130	Medellín	3217035197	AA	1	2026-02-14 03:04:19
-55238173	Silvera Arenilla Eileen Jattin	CL 82 CR 50 A in 201	Itagüí	3146681728	A	1	2026-02-14 03:04:19
+43727411	Torres Alvarez Marta Cecilia	Cl 31 D 100 B 33	Medell├¡n	3213539701	AA	1	2026-02-14 03:04:19
+1017148861	Amaya Macias Yecenia	Cl 96 82 18	Medell├¡n	3103751591	A	1	2026-02-14 03:04:19
+1128388462	Sierra Garcia Adriana	CR 97 aa 66 55	Medell├¡n	3126941601	AA	1	2026-02-14 03:04:19
+287890791	Usuga Rojas Teresa De Jesus	Cr 43 108 118 AP 130	Medell├¡n	3217035197	AA	1	2026-02-14 03:04:19
+55238173	Silvera Arenilla Eileen Jattin	CL 82 CR 50 A in 201	Itag├╝├¡	3146681728	A	1	2026-02-14 03:04:19
 700308111	Medina de Gonzalez Yezenia Lorena	DG 69 B AV B ap 95	Bello	3249653566	A	1	2026-02-14 03:04:19
-1084732805	Fernandez Duran Yalides Maria	CL 62 Cr 109 A 120	Medellín	3002550065	AA	1	2026-02-14 03:04:19
-35855609	Mausa Cordero Ana Olfiria	Cl 84 50 E 53 Cmapo Valdes	Medellín	3145945954	A	1	2026-02-14 03:04:19
-3800154	Hinestroza Valencia Norelvis	CL 30 B 114 73	Medellín	3046111584	A	1	2026-02-14 03:04:19
-1017202088	Muñoz Campiño Natalia Andrea	Cr 38 95 a 33	Medellín	3114311083	A	1	2026-02-14 03:04:20
+1084732805	Fernandez Duran Yalides Maria	CL 62 Cr 109 A 120	Medell├¡n	3002550065	AA	1	2026-02-14 03:04:19
+35855609	Mausa Cordero Ana Olfiria	Cl 84 50 E 53 Cmapo Valdes	Medell├¡n	3145945954	A	1	2026-02-14 03:04:19
+3800154	Hinestroza Valencia Norelvis	CL 30 B 114 73	Medell├¡n	3046111584	A	1	2026-02-14 03:04:19
+1017202088	Mu├▒oz Campi├▒o Natalia Andrea	Cr 38 95 a 33	Medell├¡n	3114311083	A	1	2026-02-14 03:04:20
 1010208134	Useche Posada Gennifer Natali	DG 31 D 32 sur 15 in 302	Envigado	3507046736	A	1	2026-02-14 03:04:20
-70417905	Taborda Garcia Silvio De Jesus	CL 37 aa 40 127 San Jose	Itagüí	3233595147	A	1	2026-02-14 03:04:20
-1039464753	Delgado Ramirez Alejandro (Yamile Valencia)	Cr 41 A 86 A 49	Medellín	3005534084	AA	1	2026-02-14 03:04:20
+70417905	Taborda Garcia Silvio De Jesus	CL 37 aa 40 127 San Jose	Itag├╝├¡	3233595147	A	1	2026-02-14 03:04:20
+1039464753	Delgado Ramirez Alejandro (Yamile Valencia)	Cr 41 A 86 A 49	Medell├¡n	3005534084	AA	1	2026-02-14 03:04:20
 1026279312	Vargas Ruiz Daniela	Cl 93 sur 1 H 22 este	Bogota	3133883095	A	1	2026-02-14 03:04:20
-21450450	Henao Mira Alba Nelly	Cr 51 Cl 95 in 104	Medellín	3233478085	A	1	2026-02-14 03:04:20
-1128482429	Zapata Rua Ana Julieta	Cr 53 A 89 53 Aranjuez	Medellín	3045832657	AA	1	2026-02-14 03:04:20
-43841705	Cano Sanchez Clara Ines	CR 66 29 34 BRR SAN FRANCISCO	ITAGÜÍ	3011481011	NA	1	\N
+21450450	Henao Mira Alba Nelly	Cr 51 Cl 95 in 104	Medell├¡n	3233478085	A	1	2026-02-14 03:04:20
+1128482429	Zapata Rua Ana Julieta	Cr 53 A 89 53 Aranjuez	Medell├¡n	3045832657	AA	1	2026-02-14 03:04:20
 \.
 
 
 --
--- TOC entry 5227 (class 0 OID 16440)
+-- TOC entry 5490 (class 0 OID 29751)
 -- Dependencies: 223
 -- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1763,6 +2050,7 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 13103_mljjrcujmtckild4r_1773440571497	mljjrcujmtckild4r	13103	\N
 13104_mljjrcujmtckild4r_1773440571498	mljjrcujmtckild4r	13104	\N
 13105_mljjrcujmtckild4r_1773440571499	mljjrcujmtckild4r	13105	\N
+13106_mljjrcujmtckild4r_1773440571501	mljjrcujmtckild4r	13106	\N
 13107_mljjrcujmtckild4r_1773440571502	mljjrcujmtckild4r	13107	\N
 13109_mljjrcujmtckild4r_1773440571504	mljjrcujmtckild4r	13109	\N
 13110_mljjrcujmtckild4r_1773440571506	mljjrcujmtckild4r	13110	\N
@@ -1834,62 +2122,450 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 12693_mljjrcujmtckild4r_1773754949477	mljjrcujmtckild4r	12693	\N
 12699_mljjqn48zbxhtg0yw_1774383752734	mljjqn48zbxhtg0yw	12699	\N
 12665_mljjqn48zbxhtg0yw_1774383829438	mljjqn48zbxhtg0yw	12665	\N
-13106_mljjrcujmtckild4r_1774552248176	mljjrcujmtckild4r	13106	\N
 \.
 
 
 --
--- TOC entry 5228 (class 0 OID 16448)
+-- TOC entry 5491 (class 0 OID 29759)
 -- Dependencies: 224
 -- Data for Name: correria_novedades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correria_novedades (id, correria_id, contenido, created_at) FROM stdin;
-1	mljjqn48zbxhtg0yw	Pedido de Yubernei Largacha de Raul no se despacho porque no se autorizó nunca el despacho por parte del vendedor.	2026-03-13 15:18:34.368158
+1	mljjqn48zbxhtg0yw	Pedido de Yubernei Largacha de Raul no se despacho porque no se autoriz├│ nunca el despacho por parte del vendedor.	2026-03-13 15:18:34.368158
 \.
 
 
 --
--- TOC entry 5230 (class 0 OID 16458)
+-- TOC entry 5493 (class 0 OID 29769)
 -- Dependencies: 226
 -- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correrias (id, name, year, active, created_at) FROM stdin;
-mljjqn48zbxhtg0yw	Inicio de año	2026	1	2026-02-12 14:20:52
 mljjrcujmtckild4r	Madres	2026	1	2026-02-12 14:21:25
+mljjqn48zbxhtg0yw	Inicio de año	2026	1	2026-02-12 14:20:52
 \.
 
 
 --
--- TOC entry 5231 (class 0 OID 16467)
+-- TOC entry 5529 (class 0 OID 30303)
+-- Dependencies: 262
+-- Data for Name: cuentas_bancarias; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.cuentas_bancarias (id, cedula, nombre, cuenta, created_at, updated_at) FROM stdin;
+1	-	PUNTOKNIT S.A. S.	297-6512611	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+2	43115930	ADRIANA PATRICIA AMAYA TRUJILLO	366-83837673	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+3	1128388462	ADRIANA SIERRA GARCIA	277-00000710	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+4	43272097	ADRIANA TABORDA	317-2819579 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+5	-	AGROFRES	609-73699875	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+6	-	AGUSTIN MUNERA RAMIREZ	255-31218666	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+7	1007538817	AGUSTO MACHADO CANO	032-333362-60	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+8	42870903	ALBA LUCIA CANO	019-52267856	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+9	39439040	ALBA MIRIAN ARCILA MONTOYA	647-76384893	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+10	1027881419	ALBA YENY GALLEGO VALENCIA	331-78573719	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+11	43638585	ALBAMERY VARELA RESTREPO	418-57092773	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+12	-	ALBERTO ISAZA	101-37450768	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+13	-	ALEIDA GALLEGO	072-16214735	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+14	1017140262	ALEJANDRA CHAVERRA	313-00023633	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+15	1000084903	ALEJANDRA MARIA GARCIA(ANDRES)	616-33694817	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+16	1039287995	ALEJANDRA MILENA MORENO GARCIA	014-00029209	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+17	43916106	ALEJANDRA MUÑOZ	311-47993229	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+18	1036604991	ALEJANDRA RIVERA	292-25299411	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+19	8104433	ALEJANDRO CARMONA GIRALDO	002-19502893	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+20	1039464753	ALEJANDRO DELGADO RAMIREZ (YAMILE VALENCIA)	542-23737342	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+21	-	ALEX MORALES	625-46503815	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+22	7719476	ALEX TRUJILLO	006-33991421	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+23	-	ANA ARANGO	333-38695921	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+24	1033649051	ANA ISABEL MONTOYA ARBOLEDA	001-94103824	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+25	-	ANA MARIA LOPEZ	031-72402992	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+26	25855609	ANA OLFIRIA MAUSA CORDERO	031-45945954	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+27	1036612879	ANDREA AURORA GARNICA LINARES	319-2376666 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+28	-	ANDRES RUA	010-00001541	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+29	-	ANGEL VILLALOBOS	243-00026946	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+30	-	ANGELA CARDONA	008-20797094	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+31	1045019585	ANGELA MARIA SERNA RAMIREZ	325-40044235	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+32	43161076	ANGELA YANETH ESTRADA	279-54984481	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+33	42800596	ANGELICA MARIA DEL CASTILLO VELASQUEZ	310-37464581	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+34	1152447519	ANGELICA MARIA JARAMILLO GALLEGO	613-70479959	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+35	34943965	ARACELIS DEL CARMEN COTERA	3207042688 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+36	34943965	ARACELIS DEL CARMEN COTERA	3207042688 nequi	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+37	1041205070	ASTRID CAROLINA GALLEGO	325-56240620	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+38	1035865876	ASTRID YULIETH RICO	311-00010711	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+39	811004715	ATEX	019-09261934 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+40	43189668	AURA MILENA SALAZAR	912-49829175	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+41	-	BEATRIZ ISAZA	292-12056918	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+42	43097913	BIBIANA OLAYA	311-97258988	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+43	811032109	BOLSAS EL INDIO	542-35450523 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+44	890905695	BOMBAY	010-90569503CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+45	1046667079	CAMILA CARDONA VALENCIA	009-10636774	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+46	-	CAMILO ATEHORTUA	316-1928095 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+47	43841705	CARA INES CANO SANCHEZ	018-32007214	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+48	-	CARLOS ANDRERS GARCIA(LILIANA GARCIA)	102-10841634	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+49	1045017301	CARLOS ANDRES GARCIA (LILIANA)	325-64921121	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+50	1045017301	CARLOS ANDRES GARCIA (MICHEL)	3234721063 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+51	1039079211	CARMEN YANETH USUGA	279-18120047	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+52	-	CAROLINA ARISTIZABAL	298-50247453	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+53	1020423018	CAROLINA DUQUE RODAS(THE FASHION)	499-84931793	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+54	-	CATALINA CASTRO	009-83300189	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+55	43623637	CECILIA CARRILLO	108-25211167	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+56	21543992	CECILIA RESTREPO	1003-2526335	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+57	-	CLARA HERRERA (BOTON)	310-52428940	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+58	-	CLAUDIA ARISMENDY	320-48721957	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+59	1036599696	CLAUDIA CAROLINA ZAPATA RIOS	131-04256640	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+60	43916205	CLAUDIA FLOREZ	3013493275 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+61	1041203899	CLAUDIA GALLEGO (CAROLINA GALLEGO)	325-70484752	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+62	27894856	CLAUDIA LILIANA RIVERA TAMAYO	310-192249-99	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+63	43806885	CLAUDIA PATIÑO	292-47613721	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+64	42778335	CLAUDIA PATRICIA RAMIREZ	021-57307030	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+65	43115719	CLAUDIA SANCHEZ ESPINOSO	313-75511978	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+66	-	CLAUDIA YANETH GALLEGO	912-37647446	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+67	900650054	COMERC.TODO EN CORTE	292-12649200	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+68	890904713	COORDINADORA (convenio 52658)	005-15051627CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+69	890900943-1	CORBETA TEXTILES	-	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+70	1017157466	CRISTIAN ALEXIS RUA (NEQUI)	315-3175508	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+71	1017157466	CRISTIAN ALEXIS RUA AGUDELO	912-37010871	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+72	32391893	CRUZ ELENA ZULUAGA	647-57708971	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+73	-	DANIEL GONZALEZ	311-3478348 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+74	-	DANIELA RINCON	032-09882574	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+75	1026279312	DANIELA VARGAS RUIZ (INGRID RUIZ)	323-2813857 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+76	-	DANNY  (NEQUI)	300-6152431	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+77	7321202	DAVID ESTEBAN MARQUEZ ( YORLADIS)	312-4081795 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+78	-	DAVID QUILINDO	322-8142463	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+79	900712447	DAVID SEGURIDAD	614-00005222	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+80	43788596	DEISY JIMENEZ	132-16970765	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+81	-	DELI ISAZA	311-84585939	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+82	-	DENIS CRISTINA SEPULVEDA	279-30313195	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+83	1037264064	DIANA ANDREA CORREA PIEDRAHITA	310-4665496 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+84	-	DIANA CARDONA	613-73816263	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+85	-	DIANA HOLGUIN	030-08071852	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+86	1002943888	DIANA IDARRAGA	540-17084511	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+87	-	DIANA MARCELA TABORDA	255-77910254	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+88	-	DIANA MONSALVE	097-90320775	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+89	1128438114	DIANA SIRLEY TUBERQUIA MANCO	030-52649580	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+90	33745311	DIANA TABARES	1001-5380194	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+91	1037325550	DIDIER PULGARIN GIRALDO	321-7516834 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+92	78750615	DIEGO CARDONA	085-16485644 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+93	1017162806	DIEGO HIDALGO	006-49738254	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+94	-	DIEGO VALENCIA	1016-3266968	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+95	21701184	DORIS AMPARO GONZALEZ	912-84565831	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+96	5004555503	DORISABET MOLERO DURAN	311-00011376	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+97	-	DYLAN PEREZ	253-26723935	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+98	45769944	EBETH ISABEL BELEÑO ARIZA	320-5268697 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+99	-	EDGAR COLMENARES	019-00005048	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+100	71366811	EDIER SALAZAR	340-41771242	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+101	800089188	EDIVA	100-49042573	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+102	12435671	EDWARD QUINTERO	006-30246610	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+103	8104549	EDWIN CASTRILLON	002-00011167	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+104	55238173	EILEEN JATTIN SILVERA ARENILLA	292-06780442	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+105	90145288	EIM MODA	292-00000994	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+106	43578662	ELEODORA RUIZ OSORIO (TINTORERÍA)	245-75084997	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+107	43818822	ELIANA MARIA ZAPATA VALENCIA	002-00079663	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+108	1035862169	ELISA MARIA ZULUAGA CARDONA	319-3310554 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+109	32476344	ELIZABETH RAMIREZ	245-63102299	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+110	71223381	ELKIN EMILIO RESTREPO (NANCY)	272-64127161	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+111	32461771	ELVIA MUÑOZ	580-34135604	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+112	-	ENDERSON ALVARADO	272-67246624	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+113	43181466	ERICA ASTRID GIL SALDARRIAGA	279-55228583	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+114	-	ERIKA GARCIA	520-15162261	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+115	ESTA INTERES	ERIKA GARCIA	527-37516573 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+116	1039413691	ERIKA YULIETH LLANO MONTOTA	3216433609 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+117	28742199	ESPERANZA BUITRAGO	279-32166513	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+118	1128429392	ESTEBAN BERDUGO SALDARRIAGA	420-00004391	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+119	-	ESTEFANIA BOLIVAR	333-38698271	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+120	98579701	EUCLIDES RIVERA JARAMILLO	101-35905410	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+121	1020436106	EVELIN SANCHEZ (DIANA HERRERA)	253-81614380	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+122	-	EVELIO SOBRADO	527-72504861	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+123	860503159	FACOL Y/O PASS	044-50315900 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+124	900863136	FAMIFLEX	609-44967683	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+125	43487581	FANEIRA ARBOLEDA	641-62311601	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+126	-	FELIPE BEDOYA	310-6015973 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+127	-	FLOR RAMOS SUAREZ	018-28924172	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+128	-	FRAMED OSPINO MACHADO	030-22387218	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+129	-	FRANCISCO MURILLO	100-22187453	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+130	43611730	FRANK NEY VALENCIA	351-65606971	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+131	1128390159	GABRIEL JAIME GOMEZ(ARGATEX)	218-88780235	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+132	8399305	GABRIEL JARAMILLO TABAREZ	542-15722280	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+133	77194976	GAMA ALTA (JHON ALEXANDER TRUJILLO)	006-33991421	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+134	1010208134	GENNIFER USECHE POSADA (JULIAN CARDENAS)	230-00010084	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+135	1007538923	GERALDIN VALDERRAMA	912-14503391	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+136	-	GILBERTO MARIN	321-6327607  NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+137	39268713	GLORIA ELENA GIRALDO VILLA	1036-2978593	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+138	43754118	GLORIA ENID PRECIADO PEREZ	366-73455730	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+139	-	GLORIA GUTIERREZ	1053-0856716	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+140	43908198	GLORIA JANET RESTREPO HOYOS	653-08701063	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+141	43920964	GLORIA PATRICIA ZULUAGA	912-55420769	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+142	-	GLORIA ZAPATA	292-97982301	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+143	890900286	GOBERNACION DE ANTIOQUIA-TASA SEGURIDAD	-	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+144	-	GUSTAVO MONCADA	277-33051430	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+145	8058195	HERNAN DARIO ARAUJO (AURA)	277-17090778	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+146	16680327	HERNAN VALENCIA GIL	543-43374464	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+147	-	HERNIS DAVID BANQUEZ	907-59207873	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+148	98587077	HOIBER TORO CANO	101-33212962	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+149	-	ILIMITADA	005-94190109 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+150	900422468	IMPORTADORA IMATEXCO S.A.S	029-68161088	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+151	1017141710	INES CONTRERAS URIBE	006-92037880	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+152	-	INSUMOS MIAMI	313-00014200 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+153	900924886	INTERNATIONAL I & D SAS	298-53663091	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+154	-	ISABELA BOLIVAR	333-38699021	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+155	98504263	IVAN RICO	317-3608621	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+156	-	JACKELINE PEREA	253-03432721	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+157	-	JAIR MACEA	030-44112782	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+158	-	JANNETH OSPINA	032-43248027	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+159	1128270694	JEHISON AGUDELO	257-47225233	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+160	-	JENIFER RINCON	311-44825899	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+161	901253877	JERSEYTEX	218-00012846 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+162	-	JHON ALVARADO	625-00001586	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+163	1036608419	JHON EULISER CASTAÑO (PATRICIA ROJAS)	614-85879462	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+164	98659169	JHON FREDY QUINCHIA	617-90937065	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+165	1017159858	JHON JADER MAZO GUERRA	002-43713722	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+166	-	JHON MONTOYA	541-00023426	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+167	-	JHONY RESTREPO	319-29510201	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+168	98514920	JOHAN ADIEL LOAIZA (YENIFER LOAIZA)	511-75984503	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+169	71312748	JOHAN CIFUENTES	102-82332021	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+170	-	JOHN ALEJANDRO MACIAS	609-00001404	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+171	98579151	JOHN EFRAIN BOLIVAR	1012-2646574	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+172	-	JOHN EFRAIN BOLIVAR	230-16847399	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+173	-	JOHN JAIRO CARMONA	310-71570625	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+174	-	JORGE ANDRES MORAN	001-60838965	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+175	1018230626	JORGE LUIS BERRIO (CAMILA RAMIREZ)	001-59023478	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+176	-	JORGE PALACIO (CAJAS)	277-00000170	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+177	98544639	JOSE FERNANDO VELEZ(PRONTAMODA)	1027-0125367	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+178	-	JOSE GRAJALES	1004-2370470	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+179	-	JOSE LUIS BOLIVAR	101-22824384	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+180	-	JOSE LUIS BOLIVAR(EUGENIA ARENAS)	3028373053   NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+181	-	JOSE LUIS BOLIVAR(EUGENIA ARENAS)	3105086991  NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+182	42999087	JOSEFINA PULGARIN	420-96213675	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+183	900463182	JTEX S.A.S	313-22676141 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+184	-	JUAN AMAYA INSUMOS MIAMI	001-28752285	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+185	71279486	JUAN CAMILO HOYOS	292-05770702	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+186	-	JUAN FELIPE MUÑOZ	1003-3026285	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+187	-	JUAN INSUMOS MIAMI	253-52447539	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+188	-	JUAN MANUEL FLOREZ	323-2382831 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+189	43922752	JUDY LILIANA JARAMILLO	3046388449 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+190	1039475520	JULIANA CARMONA SANCHEZ	333-82521850	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+191	1036660263	JULIETA CHAVARRIA GONZALEZ	542-43953050	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+192	3672160	JULIO CESAR VILLADIEGO	292-88256339	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+193	-	JULIO RESTREPO	1019-2726995	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+194	1001686689	KAREN GARRIDO BARTOLO (MARIA ISABEL BARTOLO)	912-80507836	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+195	-	KELLY (MODELO FOTOS)	31157419369	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+196	1038416826	KEVIN MUÑOZ MONTOYA	647-13043298	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+197	-	KEVIN STEVE QUINTERO	325-33111296	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+198	-	KEVIN VINAZCO	313-6221086 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+199	1000205983	LAURA MICHELI TOBON ALVAREZ	311-22023578	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+200	-	LAURA RAMIREZ	304-3108138 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+201	43400859	LAURA SHIRLEY CASTAÑEDA ALVAREZ	320-7585487 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+202	1038405870	LAURA YUBEIDY MONTOYA ARCILA	325-23132872	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+203	-	LEIDY GIRALDO	001-89332912	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+204	1020421952	LEIDY MARCELA LOAIZA HOLGUIN	EFECTIVO	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+205	1037599747	LEIDY SELENE SOTO MARULANDA	310-8973012 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+206	-	LEIDY VIVIANA JARAMILLO	313-552723-73	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+207	32352910	LEIDY YASMIN SALAZAE FRANCO	007-14064649	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+208	1037886122	LEON DAVID GOMEZ (ALBA MIRIAM ARCILA)	647-69598276	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+209	1128386891	LEONARDO FABIO VASQUEZ (MARGARITA)	379-48069807	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+210	43668259	LIDA ESTELLA LONDOÑO LOPEZ	3007828445 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+211	-	LIGIA DE LA HOZ	351-00011814	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+212	43429078	LIGIA RESTREPO	311-11719872	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+213	43546790	LINA GONZALEZ	0311-7300190	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+214	1152198814	LINA MARCELA PINO	360-43420709	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+215	-	LINA MARCELA RUIZ (DISEÑADORA)	313-72443262	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+216	43917559	LINA MARCELA TAMAYO MESA	542-00000700	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+217	-	LINA PULGARIN	912-34546398	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+218	1042767669	LINDA STEFANY PEREZ	001-84585995	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+219	-	LUCIA GARCES	0314-8657745	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+220	-	LUIS ALFONSO AMAYA	313-11165405	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+221	-	LUIS EDUARDO QUERUBIN	010-05101100 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+222	1.146.440.562-6	LUIS FELIPE CARO	008-64042929	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+223	-	LUISA FERNANDA MARIN	245-84287221	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+224	1010132775	LUZ ADRIANA DUQUE QUINTERO	255-23790229	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+225	42774218	LUZ DARY SERNA RESTREPO	311-00057649	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+226	-	LUZ DAYANIS SALCEDO	032-32940951	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+227	43429023	LUZ DORIS LOPERA TORRES	301-7227142 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+228	1017218168	LUZ MARIA RESTREPO	912-37888010	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+229	22011300	LUZ MARINA RIVILLAS	008-94331135	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+230	1152457615	LUZ MARY LOPEZ GALLEGO	912-12777957	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+231	25128502	LUZ NIDIA MANRIQUE	527-61591126	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+232	43031389	LUZ STELLA ECHAVARRIA	311-76265194	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+233	43843857	LUZ YENNY MUÑOZ SALAZAR	019-65524483	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+234	43827468	LYDA ARANGO	292-57522936	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+235	900321382	MAICOSER	353-54557331CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+236	860000452	MANUFACTURAS ELIOT	1260-970051-8 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+237	1152190746	MARCELA GRACIANO	360-33497576	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+238	1152190746	MARCELA GRACIANO	360-33497576	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+239	-	MARIA ALEJANDRA ISAZA	912-44942232	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+240	1039048555	MARIA DAMARIS GARCIA AGUDELO	279-17163940	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+241	43283514	MARIA DOLLY VARGAS ARAQUE	131-05924202	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+242	43381473	MARIA ESPERANZA ARCILA	001-33998811	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+243	43517753	MARIA EUGENIA COSSIO PARRA	310-27418174	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+244	-	MARIA EUGENIA RICO	3246434020 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+245	1001003896	MARIA ISABEL GARCIA POSADA	912-10874785	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+246	700291316	MARIA ISEA RAMIREZ	647-00002420	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+247	-	MARIA MERCEDES BALAGUERA	292-57681821	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+248	43084268	MARIA TERESA QUICENO AGUIRRE	313-15802647	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+249	-	MARIANA CASTAÑEDA	314-8816510 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+250	-	MARIANA OCAMPO	021-00001969	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+251	32351275	MARIELANA EUSSE MESA	311-00082651	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+252	39211289	MARILU ROJO GOMEZ	311-57918926	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+253	43838211	MARINELA MUÑOZ MORALES	031-86009910	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+254	700530400	MARIU EUGENIA CUBILLAN CONTRERAS	253-00007419	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+255	-	MARLENY MEDINA	324-30447962	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+256	43796271	MARLENY RAMIREZ	647-50379557	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+257	-	MARLON PEREZ	62523040591	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+258	-	MARLON PEREZ	62523040591	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+259	890900314	MARQUILLAS (convenio 16700)	001-90031401 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+260	43727411	MARTA CECILIA TORRES ALVANEZ	613-92785051	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+261	-	MARTA GALLEGO	310-4196578 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+262	43556171	MARTA ISABEL RAMIREZ	292-70700339	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+263	-	MARTHA EUROINSUMOS	268-11500258	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+264	43067314	MARTHA MONTOYA RECICAJAS	609-54684302	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+265	1027881749	MARY LUZ CANO ACEVEDO	311-97128286	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+266	43572379	MARY SANTAMARIA	1003-2799260	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+267	1152451971	MATEO ANDRES URREA (SOTEXCO)	313-00021347	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+268	-	MAURICIO TOVAR	321-7495531 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+269	-	MAXIMILIANO GOMEZ	0321-6361830	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+270	24368442	MELVA GALLEGO	002-17689295	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+271	1036668192	MERLY BIVIANA SANCHEZ PAJON	316-000323-32	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+272	43467697	MERY BERNARDA ALZATE	230-42661805	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+273	900103567	MIAMI GROUP	222-36734042CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+274	-	MIAMI GROUP	222-98152950CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+275	-	MICRODENIER	012-00090550CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+276	43537983	MIGDALIA DEL SOCORRO MEDINA	540-00002941	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+277	1021922075	MN TEXTIL- MELISSA CANO OQUENDO	-	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+278	-	MONICA SANCHEZ	253-14974533	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+279	-	MONICA TAMAYO	907-32942709	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+280	800152025	MUNDIAL DE HILOS	003-05601461 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+281	890980093	MUNICIPIO DE ITAGUI-IMP. IND Y COMERCIO	-	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+282	43671155	NANCY OCAMPO	032-17013531	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+283	-	NATALY BOLIVAR - PERLAS	3233873619 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+284	1013617204	NESTOR JULIAN CARDENAS	436-22104653	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+285	43781029	NORA ESPINOSA	103-20880623	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+286	35600154	NORELVIS HINESTROZA VALENCIA	310-90890690	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+287	-	NURY LOPEZ	420-36325431	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+288	43662225	OLGA AMPARO PEREZ VAZQUEZ	311-68066280	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+289	43825606	OLGA LUCIA ALZATE PINEDA	007-25797630	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+290	-	OMAIRA VALENCIA	333-45562279	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+291	-	OVIDIO TEJADA	004-00012920	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+292	1038412878	PAOLA ANDREA MARQUEZ	647-48084744	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+293	890985426	PARROQ. San luis gonzaga	097-75859188	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+294	-	PATRICIA MONSALVE	253-42566645	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+295	43569191	PATRICIA RODRIGUEZ	616-27183436	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+296	1063366292	PAULA ANDREA BEDOYA	616-53513517	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+297	1040871321	PAULINA OSPINA CASTAÑEDA (MARIA JIMENEZ)	350-8907902 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+298	-	PEDRO LUIS SOSSA	1013-2456272	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+299	15927569	PEDRO PROCESO LLANEZ	318-6882290 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+300	811040799-9	PLASTICOS UNION	016-14980326 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+301	-	PLISADOS Y BORDADOS	542-86002679	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+302	800150223	PRIMATELA	-	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+303	901453438	PRONTAMODA (OFICIAL)	1083-2621962	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+304	-	PROSALTEX	1023-2600183	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+305	811042166-6	PUNTO MARQUILLA	230-20505630 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+306	-	RAUL GONZALEZ	1012-2638570	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+307	890918444	RETEX	1027-0066486	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+308	32439583	ROSA INES ARENAS	310-00047069	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+309	-	RUBY GONZALEZ	002-35218801	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+310	43606896	SANDRA DUQUE JARAMILLO	031-26589364	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+311	1056300215	SANDRA MARIN	292-69678508	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+312	43842644	SANDRA MESA RAMIREZ (MAJUS APLIQUES)	015-91801305	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+313	-	SANDRA MILENA GIRALDO	919-95728601	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+314	-	SANTIAGO CASTRILLON	322-5002028 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+315	-	SANTIAGO CASTRILLON (MAMA)	007-74313206(CLAUDIA)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+316	-	SANTIAGO LAVERDE	305-3071421 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+317	-	SANTIAGO LAVERDE	625-86370524	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+318	1040570208	SANTIAGO MOLINA GIL (ERICA GIL)	318-3250452 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+319	-	SEBASTIAN MARIN	310-8511626(NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+320	1035442060	SEBASTIAN ROBLEDO	311-96963581	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+321	43273110	SHIRLEY CORREA (HERNAN ESTAMPADOR)	347-93804166	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+322	70417905	SILVIO DE JESUS TABORDA (LEIDY RENDON)	323-3566413 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+323	-	SKY CORD	313-00015738	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+324	-	SOFIA AGUIRRE RAMIREZ	3005458292 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+325	-	SOLUCIONES AUTOMATIZADAS	014-20134131CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+326	901845969	SUPER NOVA	311-00017286	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+327	-	SUPERCENTRO MODA	292-27554663	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+328	890903790	SURAMER.COLECTIVO	006-00877491 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+329	-	SURAMER.GLOBAL	006-00877491 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+330	-	SURAMER.TTE	006-00876431 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+331	-	SURAMERICANA GPS	003-06041631	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+332	-	SURAMERICANA MULTIRIESGO	006-00876431 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+333	-	SUTEX	211-25241916 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+334	-	SUTEXTIL	313-90648192 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+335	-	TALLER AUTOMOTRIZ JOHNOSCAR	015-64507098	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+336	1094366162	TANIA PAOLA MENESES FERNANDEZ	863-327156-84	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+337	-	TEJIDOS RONU	019-02695305 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+338	901469655	TELASCOMPRO	029-00001265 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+339	28789079	TERESA DE JESUS USUGA ROJAS	006-82201231	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+340	800190725-7	TEXTILES EL GATO(BANCOLO)	1011-5351896 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+341	800190725-7	TEXTILES EL GATO(OCC)	420-036287 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+342	-	TEXTILES GAMA COLOR (AURA )	313-00015088	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+343	900519201	TEXTILES LA ESTACION	647-83075828 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+344	-	TEXTILES PRONTAMODA	1083-2621962	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+345	-	TEXTILES PRONTAMODA	1183-86135 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+346	900586732-2	THE FASHION INSUMOS SAS	010-93011489 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+347	-	TODO EN CORTE	292-12649200	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+348	-	TOLL FASHION	292-00000865	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+349	-	TOPTEX S.A.	000-731901 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+350	-	TOPTEX S.A.	456369993906 CTE	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+351	-	TURISMO VIP	511-55311324	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+352	811014752-3	UBERTEX	1082-5241275	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+353	-	VALENTINA ARIAS	316-34658770	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+354	1030658130	VALENTINA CALLE	230-00030589	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+355	1036674143	VANESSA LOPEZ HERRERA	912-93939051	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+356	-	VERONICA BEDOYA(DANIEL RUA)	302-8389068 NEQUI	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+357	1128406513	YAERLYN NARCELLY GIRALDO (RESORTADA)	001-00003828	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+358	43619122	YAKELINE ARDILA CANO	012-52086613	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+359	43589459	YANNET POSADA	316-35093393	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+360	1065818962	YASMIN CAROLINA GIL ARIAS	292-03052152	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+361	1128459691	YENNIFER LOAIZA	432-83208495	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+362	1017148861	YESENIA AMAYA MACIAS	310-3751591 (NEQUI)	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+363	(PAS)5147777414	YESENIA LORENA MEDINA DE GONZALEZ	351-00001897	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+364	1053798633	YESID RODAS (LAURA LEON)	255-94127334	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+365	-	YUDY ANDREA VARGAS	351-88028924	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+366	-	YUDY ISAZA(NATILLERA)	292-63147420	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+367	-	YUDY MARCELA ISAZA	292-50833804	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+368	-	YULI - PERLAS	006-50745795	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+369	1128390179	YULY PAULINA CASTRILLON	311-84970077	2026-04-07 15:59:15.099134	2026-04-07 15:59:15.099134
+\.
+
+
+--
+-- TOC entry 5494 (class 0 OID 29778)
 -- Dependencies: 227
 -- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.delivery_dates (id, confeccionista_id, reference_id, quantity, send_date, expected_date, delivery_date, process, observation, created_at, created_by, rem) FROM stdin;
-import_1773954086631_1	HERNAN LONDOÑO	13068	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
-import_1773954086631_2	HERNAN LONDOÑO	13110	252	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
-import_1773954086631_3	HERNAN LONDOÑO	13117	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086630_0	MARIU CUBILLON	13084	150	2026-03-19	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.63	import	7850
+import_1773954086631_1	HERNAN LONDO├æO	13068	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_2	HERNAN LONDO├æO	13110	252	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_3	HERNAN LONDO├æO	13117	150	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_4	HERNAN LONDO├æO	13118	147	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_5	HERNAN LONDO├æO	12909	162	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_7	HERNAN LONDO├æO	13121	81	2026-03-19	2026-03-21	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
 import_1773954086631_8	MICHEL CANO	13074	120	2026-03-19	2026-03-25	\N	CONFECCION		2026-03-19 21:01:26.631	import	7848
+import_1773954086631_9	CAMILO HOYOS	13118	147	2026-03-19	2026-03-25	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7847
 import_1773954086631_11	MARLENY RAMIREZ	13100	180	2026-03-18	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.631	import	7845
-import_1773954086631_16	LIDA LONDOÑO	12963	120	2026-03-17	2026-03-27	\N	CONFECCION		2026-03-19 21:01:26.631	import	7839
+import_1773954086631_14	MARCELA GRACIANO	13091	252	2026-03-17	2026-03-27	\N	CONFECCION		2026-03-19 21:01:26.631	import	7841
+import_1773954086631_16	LIDA LONDO├æO	12963	120	2026-03-17	2026-03-27	\N	CONFECCION		2026-03-19 21:01:26.631	import	7839
 import_1773954086631_17	DIANA CORREA	13090	252	2026-03-17	2026-03-25	\N	CONFECCION		2026-03-19 21:01:26.631	import	7838
-import_1773954086631_20	HERNAN LONDOÑO	13064	180	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
-import_1773954086631_21	HERNAN LONDOÑO	13074	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
-import_1773954086631_22	HERNAN LONDOÑO	13081	183	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
-import_1773954086631_23	HERNAN LONDOÑO	13083	282	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
-import_1773954086631_24	HERNAN LONDOÑO	13116	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_18	ELIANA ZAPATA	12968	117	2026-03-17	2026-03-26	\N	CONFECCION		2026-03-19 21:01:26.631	import	7837
+import_1773954086631_20	HERNAN LONDO├æO	13064	180	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_21	HERNAN LONDO├æO	13074	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_22	HERNAN LONDO├æO	13081	183	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_23	HERNAN LONDO├æO	13083	282	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
+import_1773954086631_24	HERNAN LONDO├æO	13116	201	2026-03-17	2026-03-18	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7835
 import_1773954086631_28	CAMILO HOYOS	13116	201	2026-03-17	2026-03-24	\N	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
 import_1773954086631_29	MELVA GALLEGO	13096	201	2026-03-16	2026-03-24	\N	CONFECCION		2026-03-19 21:01:26.631	import	7832
+import_1773954086631_30	ELVIA MU├æOZ	12877	192	2026-03-16	2026-03-24	\N	CONFECCION		2026-03-19 21:01:26.631	import	7831
 import_1773954086631_32	CARMEN USUGA	13093	120	2026-03-14	2026-03-19	\N	CONFECCION		2026-03-19 21:01:26.631	import	7829
-import_1773954086631_43	HERNAN LONDOÑO	13002	120	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
-import_1773954086631_44	HERNAN LONDOÑO	13084	150	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
-import_1773954086631_45	HERNAN LONDOÑO	13100	180	2026-03-11	2026-03-13	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_42	NANCY ARBOLEDA	13077	123	2026-03-11	2026-03-19	\N	CONFECCION		2026-03-19 21:01:26.631	import	7817
+import_1773954086631_43	HERNAN LONDO├æO	13002	120	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_44	HERNAN LONDO├æO	13084	150	2026-03-11	2026-03-13	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
+import_1773954086631_45	HERNAN LONDO├æO	13100	180	2026-03-11	2026-03-13	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7816
 import_1773954086631_46	ALEJANDRA CHAVERRA	13036	120	2026-03-11	2026-03-18	2026-03-18	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7815
 import_1773954086631_48	JOSEFINA PULGARIN	13010	90	2026-03-11	2026-03-18	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7813
-import_1773954086631_51	HERNAN LONDOÑO	12877	192	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
-import_1773954086631_52	HERNAN LONDOÑO	13016	120	2026-03-10	2026-03-12	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_49	ADRIANA TABORDA	12869	120	2026-03-10	2026-03-18	\N	CONFECCION		2026-03-19 21:01:26.631	import	7811
+import_1773954086631_51	HERNAN LONDO├æO	12877	192	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_52	HERNAN LONDO├æO	13016	120	2026-03-10	2026-03-12	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
 import_1773954086631_12	CLARA HERRERA	12964	123	2026-03-18	2026-03-20	2026-03-20	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7843
 import_1773954086631_15	CLARA HERRERA	13095	300	2026-03-17	2026-03-19	2026-03-20	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7840
 import_1773954086631_19	PEDRO LLANEZ	12936	39	2026-03-17	2026-03-19	2026-03-20	CONFECCION		2026-03-19 21:01:26.631	import	7836
@@ -1897,70 +2573,61 @@ import_1773954086631_34	PEDRO LLANEZ	13077	123	2026-03-13	2026-03-18	2026-03-20	
 import_1773954086631_25	CAMILO HOYOS	12864	279	2026-03-17	2026-03-24	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
 import_1773954086631_27	CAMILO HOYOS	13081	183	2026-03-17	2026-03-24	2026-03-19	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
 import_1773954086631_33	PEDRO LLANEZ	12973	138	2026-03-13	2026-03-18	2026-03-20	CONFECCION		2026-03-19 21:01:26.631	import	7828
-import_1773954086631_18	ELIANA ZAPATA	12968	117	2026-03-17	2026-03-26	2026-03-25	CONFECCION		2026-03-19 21:01:26.631	import	7837
+import_1773954086631_13	ALEJANDRA CHAVERRA	13086	120	2026-03-17	2026-03-25	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7842
 import_1773954086631_31	JOSEFINA PULGARIN	13002	120	2026-03-16	2026-03-21	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7830
 import_1773954086631_37	MARIA TERESA QUICENO	13086	120	2026-03-13	2026-03-20	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7823
-import_1773954086631_38	EBETH BELEÑO ARIZA	13005	168	2026-03-12	2026-03-20	2026-03-21	CONFECCION		2026-03-19 21:01:26.631	import	7821
+import_1773954086631_38	EBETH BELE├æO ARIZA	13005	168	2026-03-12	2026-03-20	2026-03-21	CONFECCION		2026-03-19 21:01:26.631	import	7821
 import_1773954086631_40	CLAUDIA ARISMENDI	13081	120	2026-03-12	2026-03-20	2026-03-21	CONFECCION		2026-03-19 21:01:26.631	import	7819
 import_1773954086631_39	CLAUDIA ARISMENDI	12782	54	2026-03-12	2026-03-20	2026-03-21	CONFECCION		2026-03-19 21:01:26.631	import	7820
-import_1773954086631_6	HERNAN LONDOÑO	13129	81	2026-03-19	2026-03-21	2026-03-21	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
+import_1773954086631_6	HERNAN LONDO├æO	13129	81	2026-03-19	2026-03-21	2026-03-21	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
 import_1773954086631_10	ALEJANDRA CHAVERRA	13129	81	2026-03-18	2026-03-25	2026-03-25	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7846
 import_1773954086631_26	CAMILO HOYOS	13074	201	2026-03-17	2026-03-24	2026-03-25	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7834
-import_1773954086631_30	ELVIA MUÑOZ	12877	192	2026-03-16	2026-03-24	2026-03-25	CONFECCION		2026-03-19 21:01:26.631	import	7831
-import_1773954086631_4	HERNAN LONDOÑO	13118	147	2026-03-19	2026-03-21	2026-03-21	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
-import_1773954086631_5	HERNAN LONDOÑO	12909	162	2026-03-19	2026-03-21	2026-03-21	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
-import_1773954086631_7	HERNAN LONDOÑO	13121	81	2026-03-19	2026-03-21	2026-03-21	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7850
-import_1773954086631_9	CAMILO HOYOS	13118	147	2026-03-19	2026-03-25	2026-03-25	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7847
-import_1773954086630_0	MARIU CUBILLON	13084	150	2026-03-19	2026-03-26	2026-03-26	CONFECCION		2026-03-19 21:01:26.63	import	7850
-import_1773954086631_14	MARCELA GRACIANO	13091	252	2026-03-17	2026-03-27	2026-03-26	CONFECCION		2026-03-19 21:01:26.631	import	7841
-import_1773954086631_42	NANCY ARBOLEDA	13077	123	2026-03-11	2026-03-19	2026-03-26	CONFECCION		2026-03-19 21:01:26.631	import	7817
-import_1773954086631_49	ADRIANA TABORDA	12869	120	2026-03-10	2026-03-18	2026-03-26	CONFECCION		2026-03-19 21:01:26.631	import	7811
-import_1773954086631_53	HERNAN LONDOÑO	13090	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
-import_1773954086631_54	HERNAN LONDOÑO	13091	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_53	HERNAN LONDO├æO	13090	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
+import_1773954086631_54	HERNAN LONDO├æO	13091	252	2026-03-10	2026-03-12	2026-03-14	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7808
 import_1773954086631_56	MELVA GALLEGO	13095	300	2026-03-09	2026-03-16	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7804
 import_1773954086631_58	ALEJANDRA CHAVERRA	13086	120	2026-03-06	2026-03-12	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7802
 import_1773954086631_60	CAMILO HOYOS	13081	120	2026-03-06	2026-03-13	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
 import_1773954086631_61	CAMILO HOYOS	13096	201	2026-03-06	2026-03-13	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
+import_1773954086631_62	JOSEFINA PULGARIN	13036	120	2026-03-06	2026-03-13	\N	CONFECCION		2026-03-19 21:01:26.631	import	7800
 import_1773954086631_63	PEDRO LLANEZ	12980	195	2026-03-06	2026-03-13	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7799
 import_1773954086631_64	ELIANA ZAPATA	12964	123	2026-03-06	2026-03-16	2026-03-17	CONFECCION		2026-03-19 21:01:26.631	import	7798
 import_1773954086631_65	CLARA HERRERA	12917	126	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
 import_1773954086631_66	CLARA HERRERA	12920	222	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
 import_1773954086631_67	CLARA HERRERA	12935	59	2026-03-06	2026-03-07	2026-03-07	OJAL Y BOTON		2026-03-19 21:01:26.631	import	7797
-import_1773954086631_68	HERNAN LONDOÑO	12931	138	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_69	HERNAN LONDOÑO	13074	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_70	HERNAN LONDOÑO	13081	120	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_71	HERNAN LONDOÑO	13086	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_72	HERNAN LONDOÑO	13093	120	2026-03-06	2026-03-10	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_73	HERNAN LONDOÑO	13094	201	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_74	HERNAN LONDOÑO	13096	201	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
-import_1773954086631_76	ELVIA MUÑOZ	12971	102	2026-03-05	2026-03-16	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7790
+import_1773954086631_68	HERNAN LONDO├æO	12931	138	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_69	HERNAN LONDO├æO	13074	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_70	HERNAN LONDO├æO	13081	120	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_71	HERNAN LONDO├æO	13086	120	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_72	HERNAN LONDO├æO	13093	120	2026-03-06	2026-03-10	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_73	HERNAN LONDO├æO	13094	201	2026-03-06	2026-03-10	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_74	HERNAN LONDO├æO	13096	201	2026-03-06	2026-03-10	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7796
+import_1773954086631_76	ELVIA MU├æOZ	12971	102	2026-03-05	2026-03-16	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7790
 import_1773954086631_77	CLAUDIA ARISMENDI	13011	120	2026-03-05	2026-03-12	2026-03-12	CONFECCION		2026-03-19 21:01:26.631	import	7789
-import_1773954086631_78	LIDA LONDOÑO	13014	123	2026-03-05	2026-03-16	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7788
+import_1773954086631_78	LIDA LONDO├æO	13014	123	2026-03-05	2026-03-16	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7788
 import_1773954086631_79	CLARA CANO	12966	120	2026-03-05	2026-03-16	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7787
+import_1773954086631_80	MERY ALZATE	12990	111	2026-03-05	2026-03-16	\N	CONFECCION		2026-03-19 21:01:26.631	import	7786
 import_1773954086631_81	ALBA MIRIAM ARCILA	12936	60	2026-03-05	2026-03-12	2026-03-16	CONFECCION		2026-03-19 21:01:26.631	import	7784
 import_1773954086631_82	ERIKA GIL	12918	60	2026-03-05	2026-03-10	2026-03-10	CONFECCION		2026-03-19 21:01:26.631	import	7783
 import_1773954086631_84	CAMILO HOYOS	12782	54	2026-03-04	2026-03-10	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7781
-import_1773954086631_85	HERNAN LONDOÑO	12869	120	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
-import_1773954086631_86	HERNAN LONDOÑO	12963	120	2026-03-04	2026-03-06	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
-import_1773954086631_87	HERNAN LONDOÑO	13010	90	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
-import_1773954086631_88	HERNAN LONDOÑO	13095	300	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_85	HERNAN LONDO├æO	12869	120	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_86	HERNAN LONDO├æO	12963	120	2026-03-04	2026-03-06	2026-03-11	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_87	HERNAN LONDO├æO	13010	90	2026-03-04	2026-03-06	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
+import_1773954086631_88	HERNAN LONDO├æO	13095	300	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7780
 import_1773954086631_89	JOSEFINA PULGARIN	12962	117	2026-03-04	2026-03-11	2026-03-11	CONFECCION		2026-03-19 21:01:26.631	import	7779
 import_1773954086631_94	MARIU CUBILLON	13013	195	2026-03-03	2026-03-09	2026-03-13	CONFECCION		2026-03-19 21:01:26.631	import	7770
-import_1773954086631_95	ELVIA MUÑOZ	12908	60	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7769
-import_1773954086631_96	LIDA LONDOÑO	12907	54	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7768
+import_1773954086631_95	ELVIA MU├æOZ	12908	60	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7769
+import_1773954086631_96	LIDA LONDO├æO	12907	54	2026-03-02	2026-03-06	2026-03-06	CONFECCION		2026-03-19 21:01:26.631	import	7768
 import_1773954086631_97	NANCY ARBOLEDA	12892	60	2026-03-02	2026-03-09	2026-03-11	CONFECCION		2026-03-19 21:01:26.631	import	7767
-import_1773954086631_98	HERNAN LONDOÑO	12907	54	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
-import_1773954086631_99	HERNAN LONDOÑO	12908	60	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
-import_1773954086631_100	HERNAN LONDOÑO	12869	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
-import_1773954086631_101	HERNAN LONDOÑO	12962	117	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
-import_1773954086631_102	HERNAN LONDOÑO	12986	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_98	HERNAN LONDO├æO	12907	54	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
+import_1773954086631_99	HERNAN LONDO├æO	12908	60	2026-02-28	2026-03-02	2026-03-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7766
+import_1773954086631_100	HERNAN LONDO├æO	12869	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_101	HERNAN LONDO├æO	12962	117	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
+import_1773954086631_102	HERNAN LONDO├æO	12986	120	2026-02-25	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7764
 import_1773954086631_103	CLAUDIA ARISMENDI	12935	60	2026-02-24	2026-02-28	2026-03-05	CONFECCION		2026-03-19 21:01:26.631	import	7762
 import_1773954086631_104	DIANA CORREA	12923	60	2026-02-24	2026-02-28	2026-02-27	CONFECCION		2026-03-19 21:01:26.631	import	7761
 import_1773954086631_105	MARIU CUBILLON	12969	174	2026-02-24	2026-03-02	2026-02-28	CONFECCION		2026-03-19 21:01:26.631	import	7760
 import_1773954086631_75	MILENA SALAZAR	12965	135	2026-03-06	2026-03-16	2022-03-20	CONFECCION		2026-03-19 21:01:26.631	import	7795
 import_1773954086631_59	CAMILO HOYOS	13074	120	2026-03-06	2026-03-13	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7801
-import_1773954086631_80	MERY ALZATE	12990	111	2026-03-05	2026-03-16	2026-03-25	CONFECCION		2026-03-19 21:01:26.631	import	7786
-import_1773954086631_62	JOSEFINA PULGARIN	13036	120	2026-03-06	2026-03-13	0002-03-26	CONFECCION		2026-03-19 21:01:26.631	import	7800
 import_1773954086631_55	CAROLINA GALLEGO	12931	138	2026-03-09	2026-03-16	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7805
 import_1773954086631_83	AURA RODRIGUEZ	12869	120	2026-03-04	2026-03-13	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7782
 import_1773954086631_93	VIVIANA OLAYA	12986	120	2026-03-03	2026-03-09	2026-03-09	CONFECCION		2026-03-19 21:01:26.631	import	7771
@@ -1971,21 +2638,21 @@ import_1773954086631_109	CAMILO HOYOS	13011	120	2026-02-23	2026-02-28	2026-03-04
 import_1773954086631_110	ALEJANDRA CHAVERRA	12910	60	2026-02-21	2026-02-27	2026-02-28	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
 import_1773954086631_111	ALEJANDRA CHAVERRA	13010	120	2026-02-21	2026-02-27	2026-02-27	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
 import_1773954086631_112	ALEJANDRA CHAVERRA	13010	90	2026-03-05	2026-03-09	2026-03-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7756
-import_1773954086631_113	HERNAN LONDOÑO	12936	60	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
-import_1773954086631_114	HERNAN LONDOÑO	12980	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
-import_1773954086631_115	HERNAN LONDOÑO	13010	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
-import_1773954086631_116	HERNAN LONDOÑO	13011	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
-import_1773954086631_117	HERNAN LONDOÑO	13013	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_113	HERNAN LONDO├æO	12936	60	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_114	HERNAN LONDO├æO	12980	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_115	HERNAN LONDO├æO	13010	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_116	HERNAN LONDO├æO	13011	120	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
+import_1773954086631_117	HERNAN LONDO├æO	13013	195	2026-02-21	2026-02-23	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7755
 import_1773954086631_118	VIVIANA OLAYA	12950	90	2026-02-21	2026-02-27	2026-03-09	CONFECCION		2026-03-19 21:01:26.631	import	7754
-import_1773954086631_119	HERNAN LONDOÑO	12935	60	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
-import_1773954086631_120	HERNAN LONDOÑO	12968	117	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
-import_1773954086631_121	HERNAN LONDOÑO	12969	174	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
-import_1773954086631_122	HERNAN LONDOÑO	13012	120	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_119	HERNAN LONDO├æO	12935	60	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_120	HERNAN LONDO├æO	12968	117	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_121	HERNAN LONDO├æO	12969	174	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
+import_1773954086631_122	HERNAN LONDO├æO	13012	120	2026-02-19	2026-02-21	2026-02-23	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7745
 import_1773954086631_123	PEDRO LLANEZ	12875	90	2026-02-18	2026-02-25	2026-02-26	CONFECCION		2026-03-19 21:01:26.631	import	7744
 import_1773954086631_124	CAMILO HOYOS	12968	117	2026-02-17	2026-02-23	2026-03-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7743
-import_1773954086631_125	LIDA LONDOÑO	12917	126	2026-02-17	2026-02-23	2026-02-27	CONFECCION		2026-03-19 21:01:26.631	import	7742
+import_1773954086631_125	LIDA LONDO├æO	12917	126	2026-02-17	2026-02-23	2026-02-27	CONFECCION		2026-03-19 21:01:26.631	import	7742
 import_1773954086632_126	JOSEFINA PULGARIN	13002	120	2026-02-17	2026-02-24	2026-02-26	CONFECCION		2026-03-19 21:01:26.632	import	7740
-import_1773954086632_127	ELVIA MUÑOZ	12910	60	2026-02-17	2026-02-23	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7739
+import_1773954086632_127	ELVIA MU├æOZ	12910	60	2026-02-17	2026-02-23	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7739
 import_1773954086632_128	MICHEL CANO	12937	180	2026-02-17	2026-02-23	2026-02-25	CONFECCION		2026-03-19 21:01:26.632	import	7737
 import_1773954086632_129	ALEJANDRA CHAVERRA	12921	60	2026-02-16	2026-02-19	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7735
 import_1773954086632_130	MILENA SALAZAR	12920	225	2026-02-14	2026-02-23	2026-03-09	CONFECCION		2026-03-19 21:01:26.632	import	7734
@@ -1995,76 +2662,76 @@ import_1773954086632_133	MARIU CUBILLON	12922	60	2026-02-14	2026-02-20	2026-02-2
 import_1773954086632_134	VIVIANA OLAYA	12898	60	2026-02-14	2026-02-20	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7729
 import_1773954086632_135	VIVIANA OLAYA	12934	60	2026-02-14	2026-02-20	2026-02-23	CONFECCION		2026-03-19 21:01:26.632	import	7728
 import_1773954086632_136	CAMILO HOYOS	12918	60	2026-02-13	2026-02-18	2026-03-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7727
-import_1773954086632_137	HERNAN LONDOÑO	12917	126	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
-import_1773954086632_138	HERNAN LONDOÑO	12918	60	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
-import_1773954086632_139	HERNAN LONDOÑO	13002	120	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
-import_1773954086632_140	HERNAN LONDOÑO	12875	90	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
-import_1773954086632_141	HERNAN LONDOÑO	12920	225	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
-import_1773954086632_142	HERNAN LONDOÑO	12937	180	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_137	HERNAN LONDO├æO	12917	126	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_138	HERNAN LONDO├æO	12918	60	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_139	HERNAN LONDO├æO	13002	120	2026-02-13	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7726
+import_1773954086632_140	HERNAN LONDO├æO	12875	90	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_141	HERNAN LONDO├æO	12920	225	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
+import_1773954086632_142	HERNAN LONDO├æO	12937	180	2026-02-12	2026-02-16	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7724
 import_1773954086632_143	ALEJANDRA CHAVERRA	12960	114	2026-02-12	2026-02-16	2026-02-13	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7723
 import_1773954086632_144	CLAUDIA ARISMENDI	12906	60	2026-02-12	2026-02-17	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7722
 import_1773954086632_145	MARIU CUBILLON	12893	150	2026-02-12	2026-02-19	2026-02-24	CONFECCION		2026-03-19 21:01:26.632	import	7720
 import_1773954086632_146	DIANA CORREA	12926	90	2026-02-11	2026-02-12	2026-02-20	CONFECCION		2026-03-19 21:01:26.632	import	7719
 import_1773954086632_147	MARGARITA VASQUEZ	12952	90	2026-02-11	2026-02-12	2026-02-24	CONFECCION		2026-03-19 21:01:26.632	import	7718
 import_1773954086632_148	JOSEFINA PULGARIN	12951	90	2026-02-11	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7717
-import_1773954086632_149	ELVIA MUÑOZ	12933	60	2026-02-10	2026-02-14	2026-02-16	CONFECCION		2026-03-19 21:01:26.632	import	7716
+import_1773954086632_149	ELVIA MU├æOZ	12933	60	2026-02-10	2026-02-14	2026-02-16	CONFECCION		2026-03-19 21:01:26.632	import	7716
 import_1773954086632_150	CAMILO HOYOS	12892	60	2026-02-10	2026-02-14	2026-02-27	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
 import_1773954086632_151	CAMILO HOYOS	12921	60	2026-02-10	2026-02-14	2026-02-16	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
 import_1773954086632_152	CAMILO HOYOS	12923	60	2026-02-10	2026-02-14	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7715
-import_1773954086632_153	HERNAN LONDOÑO	12892	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
-import_1773954086632_154	HERNAN LONDOÑO	12905	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
-import_1773954086632_155	HERNAN LONDOÑO	12921	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
-import_1773954086632_156	HERNAN LONDOÑO	12922	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
-import_1773954086632_157	HERNAN LONDOÑO	12923	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_153	HERNAN LONDO├æO	12892	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_154	HERNAN LONDO├æO	12905	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_155	HERNAN LONDO├æO	12921	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_156	HERNAN LONDO├æO	12922	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
+import_1773954086632_157	HERNAN LONDO├æO	12923	60	2026-02-10	2026-02-12	2026-02-12	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7714
 import_1773954086632_158	MARIU CUBILLON	12860	132	2026-02-09	2026-02-12	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7711
 import_1773954086632_159	MARLENY RAMIREZ	12943	252	2026-02-09	2026-02-16	2026-02-25	CONFECCION		2026-03-19 21:01:26.632	import	7709
 import_1773954086632_160	HOIBER TORO	12871	150	2026-02-06	2026-02-10	2026-02-16	CONFECCION		2026-03-19 21:01:26.632	import	7707
 import_1773954086632_161	MELVA GALLEGO	12960	114	2026-02-06	2026-02-16	2026-02-19	CONFECCION		2026-03-19 21:01:26.632	import	7706
 import_1773954086632_162	MELVA GALLEGO	12959	114	2026-02-06	2026-02-12	2026-02-19	CONFECCION		2026-03-19 21:01:26.632	import	7705
-import_1773954086632_163	LIDA LONDOÑO	12907	42	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7704
-import_1773954086632_164	LIDA LONDOÑO	12870	60	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7703
+import_1773954086632_163	LIDA LONDO├æO	12907	42	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7704
+import_1773954086632_164	LIDA LONDO├æO	12870	60	2026-02-06	2026-02-12	2026-02-17	CONFECCION		2026-03-19 21:01:26.632	import	7703
 import_1773954086632_165	CLAUDIA ARISMENDI	12908	66	2026-02-06	2026-02-11	2026-02-12	CONFECCION		2026-03-19 21:01:26.632	import	7702
-import_1773954086632_166	ELVIA MUÑOZ	12881	66	2026-02-06	2026-02-11	2026-02-10	CONFECCION		2026-03-19 21:01:26.632	import	7701
+import_1773954086632_166	ELVIA MU├æOZ	12881	66	2026-02-06	2026-02-11	2026-02-10	CONFECCION		2026-03-19 21:01:26.632	import	7701
 import_1773954086632_167	CAMILO HOYOS	12926	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
 import_1773954086632_168	CAMILO HOYOS	12951	90	2026-02-06	2026-02-12	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
 import_1773954086632_169	CAMILO HOYOS	12952	90	2026-02-06	2026-02-06	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7700
-import_1773954086632_170	HERNAN LONDOÑO	12926	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
-import_1773954086632_171	HERNAN LONDOÑO	12943	252	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
-import_1773954086632_172	HERNAN LONDOÑO	12951	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
-import_1773954086632_173	HERNAN LONDOÑO	12952	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_170	HERNAN LONDO├æO	12926	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_171	HERNAN LONDO├æO	12943	252	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_172	HERNAN LONDO├æO	12951	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
+import_1773954086632_173	HERNAN LONDO├æO	12952	90	2026-02-05	2026-02-09	2026-02-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7699
 import_1773954086632_174	CAMILO HOYOS	12950	90	2026-02-04	2026-02-10	2026-02-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7697
 import_1773954086632_175	MILENA SALAZAR	12864	99	2026-02-04	2026-02-09	2026-02-14	CONFECCION		2026-03-19 21:01:26.632	import	7695
 import_1773954086632_176	CLARA HERRERA	12894	317	2026-02-03	2026-02-06	2026-02-07	OJAL Y BOTON		2026-03-19 21:01:26.632	import	7694
-import_1773954086632_177	HERNAN LONDOÑO	12893	132	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
-import_1773954086632_178	HERNAN LONDOÑO	12950	90	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
-import_1773954086632_179	HERNAN LONDOÑO	12959	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
-import_1773954086632_180	HERNAN LONDOÑO	12960	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_177	HERNAN LONDO├æO	12893	132	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_178	HERNAN LONDO├æO	12950	90	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_179	HERNAN LONDO├æO	12959	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
+import_1773954086632_180	HERNAN LONDO├æO	12960	114	2026-02-04	2026-02-06	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7693
 import_1773954086632_181	NANCY ARBOLEDA	12924	90	2026-02-03	2026-02-06	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7690
 import_1773954086632_182	CAMILO HOYOS	12933	60	2026-02-03	2026-02-09	2026-02-10	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7689
 import_1773954086632_183	MICHEL CANO	12919	150	2026-02-03	2026-02-09	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7688
 import_1773954086632_184	DIANA CORREA	CAMISETAS	107	2026-02-03	2026-02-09	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7686
-import_1773954086632_185	HERNAN LONDOÑO	12870	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
-import_1773954086632_186	HERNAN LONDOÑO	12881	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
-import_1773954086632_187	HERNAN LONDOÑO	12907	42	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
-import_1773954086632_188	HERNAN LONDOÑO	12908	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
-import_1773954086632_189	HERNAN LONDOÑO	12933	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
-import_1773954086632_190	LIDA LONDOÑO	12876	150	2026-02-02	2026-02-09	2026-02-06	CONFECCION		2026-03-19 21:01:26.632	import	7684
+import_1773954086632_185	HERNAN LONDO├æO	12870	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_186	HERNAN LONDO├æO	12881	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_187	HERNAN LONDO├æO	12907	42	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_188	HERNAN LONDO├æO	12908	66	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_189	HERNAN LONDO├æO	12933	60	2026-02-02	2026-02-04	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7685
+import_1773954086632_190	LIDA LONDO├æO	12876	150	2026-02-02	2026-02-09	2026-02-06	CONFECCION		2026-03-19 21:01:26.632	import	7684
 import_1773954086632_191	JOSEFINA PULGARIN	12888	150	2026-02-02	2026-02-06	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7683
 import_1773954086632_192	MARIU CUBILLON	12897	198	2026-02-02	2026-02-09	2026-02-09	CONFECCION		2026-03-19 21:01:26.632	import	7682
 import_1773954086632_193	MELVA GALLEGO	5000	130	2026-01-30	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7680
 import_1773954086632_194	MARGARITA VASQUEZ	12913	90	2026-01-30	2026-02-03	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7679
-import_1773954086632_195	ELVIA MUÑOZ	12877	150	2026-01-30	2026-02-05	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7678
+import_1773954086632_195	ELVIA MU├æOZ	12877	150	2026-01-30	2026-02-05	2026-02-04	CONFECCION		2026-03-19 21:01:26.632	import	7678
 import_1773954086632_196	DIANA CORREA	12909	198	2026-01-29	2026-02-04	2026-02-02	CONFECCION		2026-03-19 21:01:26.632	import	7676
 import_1773954086632_197	MELVA GALLEGO	5002	250	2026-01-29	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7675
 import_1773954086632_198	MELVA GALLEGO	5002	332	2026-01-29	2026-02-04	2026-02-07	CONFECCION		2026-03-19 21:01:26.632	import	7675
-import_1773954086632_199	HERNAN LONDOÑO	12860	132	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
-import_1773954086632_200	HERNAN LONDOÑO	12864	99	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
-import_1773954086632_201	HERNAN LONDOÑO	12888	150	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
-import_1773954086632_202	HERNAN LONDOÑO	12897	198	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
-import_1773954086632_203	HERNAN LONDOÑO	12924	90	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_199	HERNAN LONDO├æO	12860	132	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_200	HERNAN LONDO├æO	12864	99	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_201	HERNAN LONDO├æO	12888	150	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_202	HERNAN LONDO├æO	12897	198	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
+import_1773954086632_203	HERNAN LONDO├æO	12924	90	2026-01-27	2026-01-29	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7674
 import_1773954086632_204	VIVIANA OLAYA	12945	264	2026-01-29	2026-02-06	2026-02-11	CONFECCION		2026-03-19 21:01:26.632	import	7673
-import_1773954086632_205	HERNAN LONDOÑO	12871	150	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
-import_1773954086632_206	HERNAN LONDOÑO	12945	264	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
+import_1773954086632_205	HERNAN LONDO├æO	12871	150	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
+import_1773954086632_206	HERNAN LONDO├æO	12945	264	2026-01-27	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7672
 import_1773954086632_207	CAMILO HOYOS	12860	132	2026-01-27	2026-02-02	2026-02-03	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
 import_1773954086632_208	CAMILO HOYOS	12864	99	2026-01-27	2026-02-02	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
 import_1773954086632_209	CAMILO HOYOS	CAMISETAS	107	2026-01-27	2026-02-02	2026-02-04	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7669
@@ -2074,20 +2741,20 @@ import_1773954086632_212	ALEJANDRA CHAVERRA	12888	150	2026-01-27	2026-02-02	2026
 import_1773954086632_213	CAMILO HOYOS	12871	150	2026-01-26	2026-01-30	2026-02-06	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7664
 import_1773954086632_214	CAMILO HOYOS	12876	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7664
 import_1773954086632_215	NANCY ARBOLEDA	12955	48	2026-01-26	2026-01-29	2026-02-03	CONFECCION		2026-03-19 21:01:26.632	import	7663
-import_1773954086632_216	HERNAN LONDOÑO	12877	150	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
-import_1773954086632_217	HERNAN LONDOÑO	12909	198	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
-import_1773954086632_218	HERNAN LONDOÑO	12913	90	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
-import_1773954086632_219	HERNAN LONDOÑO	12919	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_216	HERNAN LONDO├æO	12877	150	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_217	HERNAN LONDO├æO	12909	198	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_218	HERNAN LONDO├æO	12913	90	2026-01-26	2026-01-28	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
+import_1773954086632_219	HERNAN LONDO├æO	12919	150	2026-01-26	2026-01-30	2026-02-02	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7662
 import_1773954086632_220	ALEJANDRA CHAVERRA	12913	90	2026-01-23	2026-01-29	2026-01-29	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7659
 import_1773954086632_221	HOIBER TORO	12871	84	2026-01-21	2026-01-27	2026-01-27	CONFECCION		2026-03-19 21:01:26.632	import	7657
 import_1773954086632_222	ERIKA GIL	5001	102	2026-01-21	2026-01-27	2026-01-31	CONFECCION		2026-03-19 21:01:26.632	import	7656
 import_1773954086632_223	JOSEFINA PULGARIN	12890	105	2026-01-21	2026-01-27	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7655
 import_1773954086632_224	JOSEFINA PULGARIN	12896	60	2026-01-21	2026-01-27	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7655
-import_1773954086632_225	HERNAN LONDOÑO	12911	342	2026-01-20	2026-01-24	2026-01-26	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7654
+import_1773954086632_225	HERNAN LONDO├æO	12911	342	2026-01-20	2026-01-24	2026-01-26	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7654
 import_1773954086632_226	MARIA VICTORIA JARAMILLO	DOTACION	38	2026-01-19	2026-01-24	2026-01-21	CONFECCION		2026-03-19 21:01:26.632	import	7652
 import_1773954086632_227	MARIU CUBILLON	12901	147	2026-01-16	2026-01-23	2026-01-22	CONFECCION		2026-03-19 21:01:26.632	import	7651
 import_1773954086632_228	MARIA TERESA QUICENO	12891	120	2026-01-15	2026-01-21	2026-01-23	CONFECCION		2026-03-19 21:01:26.632	import	7648
-import_1773954086632_229	LIDA LONDOÑO	12894	318	2026-01-15	2026-01-26	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7647
+import_1773954086632_229	LIDA LONDO├æO	12894	318	2026-01-15	2026-01-26	2026-01-29	CONFECCION		2026-03-19 21:01:26.632	import	7647
 import_1773954086632_230	CLARA HERRERA	12754	120	2026-01-13	2026-01-15	2026-01-14	OJAL Y BOTON		2026-03-19 21:01:26.632	import	7644
 import_1773954086632_231	JOSEFINA PULGARIN	12497	173	2026-01-09	2026-01-15	2026-01-15	CONFECCION		2026-03-19 21:01:26.632	import	7643
 import_1773954086632_232	MARGARITA VASQUEZ	12782	120	2026-01-08	2026-01-15	2026-01-16	CONFECCION		2026-03-19 21:01:26.632	import	7642
@@ -2099,16 +2766,16 @@ import_1773954086632_237	MELVA GALLEGO	12889	117	2026-01-07	2026-01-15	2026-01-2
 import_1773954086632_238	MICHEL CANO	12862	147	2026-01-07	2026-01-13	2026-01-20	CONFECCION		2026-03-19 21:01:26.632	import	7636
 import_1773954086632_239	PEDRO LLANEZ	12486	143	2026-01-06	2026-01-13	2026-01-19	CONFECCION		2026-03-19 21:01:26.632	import	7635
 import_1773954086632_240	MARLENY RAMIREZ	12880	120	2026-01-06	2026-01-13	2026-01-16	CONFECCION		2026-03-19 21:01:26.632	import	7633
-import_1773954086632_241	LIDA LONDOÑO	12754	120	2026-01-05	2026-01-09	2026-01-10	CONFECCION		2026-03-19 21:01:26.632	import	7628
-import_1773954086632_242	ELVIA MUÑOZ	12877	120	2026-01-22	2026-01-28	2026-01-27	CONFECCION		2026-03-19 21:01:26.632	import	7624
-import_1773954086632_243	HERNAN LONDOÑO	12782	54	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7623
+import_1773954086632_241	LIDA LONDO├æO	12754	120	2026-01-05	2026-01-09	2026-01-10	CONFECCION		2026-03-19 21:01:26.632	import	7628
+import_1773954086632_242	ELVIA MU├æOZ	12877	120	2026-01-22	2026-01-28	2026-01-27	CONFECCION		2026-03-19 21:01:26.632	import	7624
+import_1773954086632_243	HERNAN LONDO├æO	12782	54	2026-03-04	2026-03-06	2026-03-09	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7623
 import_1773954086632_244	DIANA CORREA	12884	120	2025-12-24	2025-12-30	2026-01-10	CONFECCION		2026-03-19 21:01:26.632	import	7619
 import_1773954086632_245	CAMILO HOYOS	12782	120	2025-12-23	2025-12-24	2026-01-08	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7617
 import_1773954086632_246	CAMILO HOYOS	12871	84	2025-12-15	2025-12-22	2026-01-20	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.632	import	7590
 mmy0dhek5x9w7i2qq	VIVIANA OLAYA	13067	258	2026-03-19	2026-03-31	\N	CONFECCION		2026-03-19 21:53:44.22	HERMOSA	7851
 mmzfuvo58akdm7hbp	MARIA TERESA QUICENO	13058	138	2026-03-20	2026-03-28	\N	CONFECCION		2026-03-20 21:37:24.912	Fernanda Marin	7857
 mmzfuvo5akaj71vzr	PEDRO LLANEZ	12864	279	2026-03-20	2026-03-30	\N	CONFECCION		2026-03-20 21:37:24.648	Fernanda Marin	7856
-mmzfuvo7phvvavn3a	EBETH BELEÑO ARIZA	12973	135	2026-03-20	2026-03-20	\N	CONFECCION		2026-03-20 21:30:16.882	Fernanda Marin	7854
+mmzfuvo7phvvavn3a	EBETH BELE├æO ARIZA	12973	135	2026-03-20	2026-03-20	\N	CONFECCION		2026-03-20 21:30:16.882	Fernanda Marin	7854
 mmzfuvo8o5l5a28pp	CAMILO HOYOS	13117	150	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:16.419	Fernanda Marin	7853
 mmzfuvo94o12v3qe8	CAMILO HOYOS	13110	252	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:15.642	Fernanda Marin	7853
 mmzfuvoagk5dt3avp	CAMILO HOYOS	13068	150	2026-03-19	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-20 21:30:13.899	Fernanda Marin	7853
@@ -2118,30 +2785,32 @@ import_1773954086631_41	MARIU CUBILLON	13016	120	2026-03-12	2026-03-19	2026-03-1
 import_1773954086631_35	CAMILO HOYOS	12864	279	2026-03-13	2026-03-19	2026-03-17	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7824
 mmzfuvo6z7xeh3t77	ALEJANDRA CHAVERRA	13016	120	2026-03-20	2026-03-26	2026-03-24	ESTAMPADO/APLIQUE		2026-03-20 21:37:24.4	Fernanda Marin	7855
 mn0e9y6zs8hrv64xy	ALEJANDRA CHAVERRA	13033	180	2026-03-21	2026-03-26	\N	ESTAMPADO/APLIQUE		2026-03-21 13:58:28.87	LUISA F 	7859
-mmzfuvml8mgvsk35p	HERNAN LONDOÑO	13098	120	2026-03-20	2026-03-24	2026-03-24	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.368	Fernanda Marin	7858
-mmzfuvo3zxbvv0lin	HERNAN LONDOÑO	12975	140	2026-03-20	2026-03-24	2026-03-24	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.139	Fernanda Marin	7858
+mmzfuvml8mgvsk35p	HERNAN LONDO├æO	13098	120	2026-03-20	2026-03-24	2026-03-24	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.368	Fernanda Marin	7858
+mmzfuvo3zxbvv0lin	HERNAN LONDO├æO	12975	140	2026-03-20	2026-03-24	2026-03-24	ESTAMPADO/APLIQUE		2026-03-20 21:37:25.139	Fernanda Marin	7858
+mn55hpvcotphnkzjl	ALEJANDRA CHAVERRA	13083	282	2026-03-17	2026-03-25	\N			2026-03-24 21:51:13.607	LUISA F 	\N
+mn55iyiof30gssr59	ALEJANDRA CHAVERRA	13083	282	2026-03-17	2026-03-25	2026-03-24			2026-03-24 21:51:13.607	LUISA F 	7842
 import_1773954086631_50	MARGARITA VASQUEZ	13094	201	2026-03-10	2026-03-18	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7809
 import_1773954086631_91	ALBA MIRIAM ARCILA	13010	120	2026-03-03	2026-03-09	2026-03-18	CONFECCION		2026-03-19 21:01:26.631	import	7773
 import_1773954086631_92	MARLENY RAMIREZ	12970	138	2026-03-03	2026-03-11	2026-03-24	CONFECCION		2026-03-19 21:01:26.631	import	7772
 mn6jviabnmxid6iqp	MARGARITA VASQUEZ	12909	162	2026-03-21	2026-03-28	\N	CONFECCION		2026-03-25 21:16:07.062	LUISA F 	7862
+mn6jviaf73fil3neg	JOSEFINA PULGARIN	13083	282	2026-03-25	2026-04-10	\N	CONFECCION		2026-03-25 21:16:06.326	LUISA F 	7861
+mn6jviag607fkmyhj	CLAUDIA ARISMENDI	13081	183	2026-03-21	2026-03-26	\N	CONFECCION		2026-03-25 21:16:05.111	LUISA F 	7860
 import_1773954086631_36	CAMILO HOYOS	13109	201	2026-03-13	2026-03-19	2026-03-25	ESTAMPADO/APLIQUE		2026-03-19 21:01:26.631	import	7824
-mn6klja8kunvempze	ALEJANDRA CHAVERRA	13055	204	2026-03-25	2026-03-30	\N	ESTAMPADO/APLIQUE		2026-03-25 21:37:52.92	LUISA F 	7870
-mn6kljacs7lq08r17	HERNAN LONDOÑO	12909	462	2026-03-25	2026-03-27	\N	ESTAMPADO/APLIQUE		2026-03-25 21:33:36.143	LUISA F 	7869
-mn6kljaep67mmfh56	HERNAN LONDOÑO	12972	135	2026-03-25	2026-03-27	\N	ESTAMPADO/APLIQUE		2026-03-25 21:33:35.64	LUISA F 	7869
-mn6kljafaraxz5acy	HERNAN LONDOÑO	13055	204	2026-03-25	2026-03-27	\N	ESTAMPADO/APLIQUE		2026-03-25 21:27:46.023	LUISA F 	7869
-mn6kljagne2mr325u	CAROLINA GALLEGO	13109	201	2026-03-25	2026-04-01	\N	CONFECCION		2026-03-25 21:27:44.711	LUISA F 	7868
-mn6kljah45h3onz68	DORIS GONSALEZ	12975	120	2026-03-25	2026-04-01	\N	CONFECCION		2026-03-25 21:27:41.575	LUISA F 	7867
-mn6kljaiyb1djoobz	MILENA SALAZAR	13121	81	2026-03-24	2026-03-28	\N	CONFECCION		2026-03-25 21:23:11.175	LUISA F 	7865
-mn6kljai5onwin8o8	ELVIA MUÑOZ	12976	111	2026-03-24	2026-03-31	\N	CONFECCION		2026-03-25 21:23:10.399	LUISA F 	7864
-mn6kljajsxeua1tuf	MERY ALZATE	13064	180	2026-03-24	2026-03-31	\N	CONFECCION		2026-03-25 21:23:08.639	LUISA F 	7863
-mn6kljakj60spkxhx	JOSEFINA PULGARIN	13083	282	2026-03-25	2026-04-01	\N	CONFECCION		2026-03-25 21:16:06.326	LUISA F 	7861
-mn55iyiof30gssr59	ALEJANDRA CHAVERRA	13083	282	2026-03-17	2026-03-25	2026-03-24	ESTAMPADO/APLIQUE		2026-03-24 21:51:13.607	LUISA F 	7842
-mn6jviag607fkmyhj	CLAUDIA ARISMENDI	13081	183	2026-03-21	2026-03-26	2026-03-26	CONFECCION		2026-03-25 21:16:05.111	LUISA F 	7860
 \.
 
 
 --
--- TOC entry 5232 (class 0 OID 16479)
+-- TOC entry 5533 (class 0 OID 30349)
+-- Dependencies: 266
+-- Data for Name: descuentos_pago; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.descuentos_pago (id, pago_id, tipo, etiqueta, monto, orden, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5495 (class 0 OID 29790)
 -- Dependencies: 228
 -- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2156,7 +2825,7 @@ ce75694c-000d-4b9a-a5fe-0ff716248e08	Jackeline Perea	43925256	3116142944	t	2026-
 
 
 --
--- TOC entry 5234 (class 0 OID 16489)
+-- TOC entry 5497 (class 0 OID 29800)
 -- Dependencies: 230
 -- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2711,7 +3380,7 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 
 
 --
--- TOC entry 5235 (class 0 OID 16500)
+-- TOC entry 5498 (class 0 OID 29811)
 -- Dependencies: 231
 -- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2822,7 +3491,7 @@ mn6fie3whv7i6zbmi	233	mljjrcujmtckild4r	FE-7297	RM-7773	Jhon Montoya	2026-03-25 
 
 
 --
--- TOC entry 5236 (class 0 OID 16513)
+-- TOC entry 5499 (class 0 OID 29824)
 -- Dependencies: 232
 -- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2833,52 +3502,52 @@ c1f07366-c4aa-4ec6-8c89-d32fd64efd50	cabfb75f-4e2c-42ab-bda2-bcbaba31a0c2	1	2026
 
 
 --
--- TOC entry 5237 (class 0 OID 16540)
+-- TOC entry 5500 (class 0 OID 29851)
 -- Dependencies: 233
 -- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, precio_venta, rentabilidad, margen_ganancia, costo_contabilizar, desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent, cantidad_total_cortada, created_by, created_at, updated_at) FROM stdin;
-65c6bb7e-77eb-4abf-8ea1-98898f7126f3	13254	5c77a70c-3541-42fa-b959-e5d74de9b993	BLU ESTA BOT FRENT	PLOW	MADRE	12100-2		LLEVA 5 BOTONES POR BLUSA ESTAMPAR FRENTE Y COSTADOS OJAL DE 6 CM \n\nDE UNA TIRA CON LARGO 100 ME SALEN 3 BLUSAS \n\nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13254.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 8410, "concepto": "BENGALINA PANA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.035, "total": 507.50000000000006, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 14500}]	[{"um": "UND", "cant": 1, "total": 2400, "concepto": "ESTAMPADO   CAMILO FRENTES Y COSTADO", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 5, "total": 1500, "concepto": "BOTON BPO 2 1194 LINEA 24 DOÑA MARTA  EIM", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3248, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3248}]	8917.50	7350.00	324.00	1500.00	3648.00	21739.50	34900.00	37.71	47900.00	18091.50	34900.00	37.71	33900.00	35.87	31900.00	31.85	29900.00	27.29	0	Jhon Montoya	2026-03-24 16:02:16.066919	2026-03-24 16:02:16.066919
 e36e8284-da20-4b99-a3c5-eccdc5fc7e19	13132	39984bb8-8797-47ba-a2bd-dfb8525bb970	BL APLIE HELLO	PLOW	MADRE			TRACE112 DE UNA TIRA DE SESGO ME SALE EL CUELLO	/images/references/13132.jPG	\N	[{"um": "METRO", "cant": 0.48, "tipo": "TELA", "total": 5568, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 64, "concepto": "SESGO 1 RIB 4CM", "vlr_unit": 1600}]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "APLIQUE Y PEGADA  ALEJANDRA CHAVERRA", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1985, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1985}]	5632.00	5100.00	324.00	0.00	2385.00	13441.00	21900.00	38.63	29900.00	11056.00	21900.00	38.63	20900.00	35.69	19900.00	32.46	18900.00	28.88	0	Jhon Montoya	2026-03-24 16:03:00.679314	2026-03-24 16:03:00.679314
-c5c8c642-1d77-4896-b5c6-6703f84763bc	13131	30f40ec9-4715-42dd-ae8e-488dcf16c48a	BL  EST  EN CENEFA	PLOW	MADRE	12226-1		TRACE 155 \nDE UNA TIRA DE SESGO ME SALEN LA TIRA LIBRE PARA AMARRE \nDE 72 CM CADA UNA	/images/references/13131.jPG	/images/references/13131-2.jPG	[{"um": "METRO", "cant": 0.26, "tipo": "TELA", "total": 3900, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.46, "tipo": "RESORTE", "total": 115, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1807, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1807}]	4540.00	5200.00	324.00	0.00	2207.00	12271.00	19900.00	38.34	26900.00	10064.00	19900.00	38.34	18900.00	35.07	17900.00	31.45	16900.00	27.39	0	Jhon Montoya	2026-03-24 16:03:56.349661	2026-03-24 16:03:56.349661
 cabfb75f-4e2c-42ab-bda2-bcbaba31a0c2	13129	9e8bad3d-527b-4eb2-996c-138b58ccce19	TOP THE BESTIS	PLOW	ECONO	12225		DE 1 TIRA ME SALEN 2 SIZAS ES DECIR 1 BLUSA \nDE 1 TIRA SALEN CUELLO DELANTERO Y POST	/images/references/13129.jpg	\N	[{"um": "METRO", "cant": 0.28, "tipo": "TELA", "total": 5600.000000000001, "concepto": "RAYA VICTORIA #1", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.08, "total": 928, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2092, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2092}]	6528.00	4800.00	324.00	0.00	2492.00	14144.00	22900.00	38.24	30900.00	11652.00	22900.00	38.24	21900.00	35.42	20900.00	32.33	19900.00	28.92	81	Jhon Montoya	2026-03-24 16:05:09.930659	2026-03-24 16:05:09.930659
+65c6bb7e-77eb-4abf-8ea1-98898f7126f3	13254	5c77a70c-3541-42fa-b959-e5d74de9b993	BLU ESTA BOT FRENT	PLOW	MADRE	12100-2		LLEVA 5 BOTONES POR BLUSA ESTAMPAR FRENTE Y COSTADOS OJAL DE 6 CM \n\nDE UNA TIRA CON LARGO 100 ME SALEN 3 BLUSAS \n\nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13254.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 8410, "concepto": "BENGALINA PANA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.035, "total": 507.50000000000006, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 14500}]	[{"um": "UNIDAD", "cant": 1, "total": 500, "concepto": "TERMINACION BOTON PATA", "vlr_unit": 500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 6, "total": 300, "concepto": "MANUALIDAD MOÑOS", "vlr_unit": 50}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCION TOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION CHALECO", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "APLIQUE ALEJANDRA", "vlr_unit": 2800}, {"um": "UND", "cant": 1, "total": 2400, "concepto": "ESTAMPADO   CAMILO FRENTES Y COSTADO", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 5, "total": 1500, "concepto": "BOTON BPO 2 1194 LINEA 24 DO├æA MARTA  EIM", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4775, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4775}]	8917.50	15850.00	324.00	1500.00	5175.00	31766.50	34900.00	8.98	47900.00	26591.50	34900.00	8.98	33900.00	6.29	31900.00	0.42	29900.00	-6.24	0	Jhon Montoya	2026-03-24 16:02:16.066919	2026-03-24 16:02:16.066919
+8457dbb8-6bb3-4abb-ac29-c20f89f7ec2b	13014	6fac52de-e058-4e34-881d-4306db50f547	BL AMARR	PLOW	MADRES				/images/references/13014.jPG	\N	[{"um": "METRO", "cant": 0.85, "tipo": "TELA", "total": 10200, "concepto": "MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.062, "total": 744, "concepto": "SESGO 1 MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.44, "total": 220, "concepto": "ELASTICO (2  ) CMS", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 6, "total": 300, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 50}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3050, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3050}]	11164.00	5500.00	324.00	0.00	3450.00	20438.00	31900.00	35.93	43900.00	16988.00	31900.00	35.93	30900.00	33.86	28900.00	29.28	27900.00	26.75	0	Jhon Montoya	2026-04-06 13:43:14.992022	2026-04-06 13:43:14.992022
+c1dfb76a-c7ef-4247-a0eb-767c021047e3	13098	232173bc-fe01-415f-9470-bf69cac43db7	STRA ESTAP	PLOW	MADRE	12163-1		BURDA FRIA  DE LA QUE TRAJO DON EFRAIN \nCON UNA TIRA DE SESGO ME SALEN LA TIRA DE AMARRE \nDE UNA TIRA DE SESGO ME SALEN PARA 2 BLUSAS CON OJALETES DE 5 CM \n\n\n\nTRACE 155	/images/references/13098.jPG	\N	[{"um": "METRO", "cant": 0.29, "tipo": "TELA", "total": 4785, "concepto": "BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.053, "total": 874.5, "concepto": "SESGO 1 BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.78, "total": 195, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "NUEVO CONCEPTO", "vlr_unit": 0}, {"um": "PRENDA", "cant": 1, "total": 1600, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1600}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 240, "concepto": "FRAMIL├ôN", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2140, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2140}]	5854.50	5500.00	324.00	240.00	2540.00	14458.50	22900.00	36.86	30900.00	11918.50	22900.00	36.86	21900.00	33.98	20900.00	30.82	19900.00	27.34	0	Jhon Montoya	2026-04-07 11:46:05.063217	2026-04-07 11:46:05.063217
+4e12fa9a-c772-4755-b69c-5bc3733c952f	13123	5107bc11-6b24-466f-913e-5b5b20e2c018	CAMISILLA TEXTO TONO ATONO	PLOW	ECONOM MADRAES	12219			/images/references/13123.JPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1900, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1931, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1931}]	6032.00	4400.00	324.00	0.00	2331.00	13087.00	19900.00	49.00	26900.00	10756.00	19900.00	34.24	18900.00	30.76	17900.00	26.89	16900.00	22.56	0	Jhon Montoya	2026-04-08 15:21:56.055402	2026-04-08 15:21:56.055402
+3250bbd0-a184-4d61-b3bc-673214dd0c99	13124	0b85a1b3-b4f8-49e1-a211-0f4a4db857c9	BLUSA RIB DOS COLORES	PLOW	ECONO	12224		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13124.jpg	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 3132, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.097, "tipo": "TELA", "total": 1125.2, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1657, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1657}]	4953.20	3400.00	324.00	550.00	2057.00	11284.20	16900.00	49.00	22900.00	9227.20	16900.00	33.23	16900.00	33.23	15900.00	29.03	14900.00	24.27	0	Jhon Montoya	2026-04-08 15:22:10.491189	2026-04-08 15:22:10.491189
+1eae2cb5-dccc-4d82-9ad6-e1239bf546d5	13125	80c52e4b-1f31-4ecb-9de1-0fd78f48de63	TOP ROMANTIC	PLOW	MADRES/ECONO	12222		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13125.jpG	\N	[{"um": "METRO", "cant": 0.39, "tipo": "TELA", "total": 4524, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.083, "tipo": "TELA", "total": 962.8000000000001, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2012, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2012}]	6182.80	4700.00	324.00	0.00	2412.00	13618.80	18900.00	35.00	25900.00	11206.80	18900.00	27.94	17900.00	23.92	17900.00	23.92	16900.00	19.42	0	Jhon Montoya	2026-04-08 15:27:57.08162	2026-04-08 15:27:57.08162
 \.
 
 
 --
--- TOC entry 5238 (class 0 OID 16574)
+-- TOC entry 5501 (class 0 OID 29885)
 -- Dependencies: 234
 -- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
-5c77a70c-3541-42fa-b959-e5d74de9b993	13254	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU ESTA BOT FRENT	PLOW	MADRE	12100-2		LLEVA 5 BOTONES POR BLUSA ESTAMPAR FRENTE Y COSTADOS OJAL DE 6 CM \n\nDE UNA TIRA CON LARGO 100 ME SALEN 3 BLUSAS \n\nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13254.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 8410, "concepto": "BENGALINA PANA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.035, "total": 507.50000000000006, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 14500}]	[{"um": "UND", "cant": 1, "total": 2400, "concepto": "ESTAMPADO   CAMILO FRENTES Y COSTADO", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 5, "total": 1500, "concepto": "BOTON BPO 2 1194 LINEA 24 DOÑA MARTA  EIM", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3248, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3248}]	8917.50	7350.00	324.00	1500.00	3648.00	21739.50	t	Soporte	2026-03-20 15:44:20.884339	2026-03-20 15:44:20.884339
+5c77a70c-3541-42fa-b959-e5d74de9b993	13254	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU ESTA BOT FRENT	PLOW	MADRE	12100-2		LLEVA 5 BOTONES POR BLUSA ESTAMPAR FRENTE Y COSTADOS OJAL DE 6 CM \n\nDE UNA TIRA CON LARGO 100 ME SALEN 3 BLUSAS \n\nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13254.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 8410, "concepto": "BENGALINA PANA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.035, "total": 507.50000000000006, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 14500}]	[{"um": "UND", "cant": 1, "total": 2400, "concepto": "ESTAMPADO   CAMILO FRENTES Y COSTADO", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 5, "total": 1500, "concepto": "BOTON BPO 2 1194 LINEA 24 DO├æA MARTA  EIM", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3248, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3248}]	8917.50	7350.00	324.00	1500.00	3648.00	21739.50	t	Soporte	2026-03-20 15:44:20.884339	2026-03-20 15:44:20.884339
 39984bb8-8797-47ba-a2bd-dfb8525bb970	13132	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL APLIE HELLO	PLOW	MADRE			TRACE112 DE UNA TIRA DE SESGO ME SALE EL CUELLO	/images/references/13132.jPG	\N	[{"um": "METRO", "cant": 0.48, "tipo": "TELA", "total": 5568, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 64, "concepto": "SESGO 1 RIB 4CM", "vlr_unit": 1600}]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "APLIQUE Y PEGADA  ALEJANDRA CHAVERRA", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1985, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1985}]	5632.00	5100.00	324.00	0.00	2385.00	13441.00	t	Soporte	2026-03-20 15:48:40.58979	2026-03-20 15:48:40.58979
-37b6bedd-4624-4112-a858-d81077fda104	13128	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL CENTO BOTON	PLOW	MADRE	12220-1	12220-2	LLEVA 2 BOTONES POR BLUSA\n Y EN RUEDO MANGA INSUMO \nCUELLO 70 CM	/images/references/13128.jPG	\N	[{"um": "METRO", "cant": 0.53, "tipo": "TELA", "total": 6148, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 464, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 2, "total": 320, "concepto": "BOTONADA", "vlr_unit": 160}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 600, "concepto": "FLECO PONPO PEQUEÑOMP-5 BLANCO BOMBAY", "vlr_unit": 750}, {"um": "UNIDAD", "cant": 2, "total": 1200, "concepto": "BOTON BTH.0187 DM DORADO INSUTEX", "vlr_unit": 600}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2201, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2201}]	6612.00	3520.00	324.00	1800.00	2601.00	14857.00	f	Soporte	2026-03-20 16:14:38.238877	2026-03-20 16:14:38.238877
-30f40ec9-4715-42dd-ae8e-488dcf16c48a	13131	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL  EST  EN CENEFA	PLOW	MADRE	12226-1		TRACE 155 DE UNA TIRA DE SESGO ME SALEN LA TIRA LIBRE PARA AMARRE DE 72 CM CADA UNA	/images/references/13131.jPG	/images/references/13131-2.jPG	[{"um": "METRO", "cant": 0.26, "tipo": "TELA", "total": 3900, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.46, "tipo": "RESORTE", "total": 115, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1807, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1807}]	4540.00	5200.00	324.00	0.00	2207.00	12271.00	t	Soporte	2026-03-20 16:00:00.142158	2026-03-20 16:00:00.142158
+37b6bedd-4624-4112-a858-d81077fda104	13128	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL CENTO BOTON	PLOW	MADRE	12220-1	12220-2	LLEVA 2 BOTONES POR BLUSA\n Y EN RUEDO MANGA INSUMO \nCUELLO 70 CM	/images/references/13128.jPG	\N	[{"um": "METRO", "cant": 0.53, "tipo": "TELA", "total": 6148, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.04, "total": 464, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 2, "total": 320, "concepto": "BOTONADA", "vlr_unit": 160}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 600, "concepto": "FLECO PONPO PEQUE├æOMP-5 BLANCO BOMBAY", "vlr_unit": 750}, {"um": "UNIDAD", "cant": 2, "total": 1200, "concepto": "BOTON BTH.0187 DM DORADO INSUTEX", "vlr_unit": 600}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2201, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2201}]	6612.00	3520.00	324.00	1800.00	2601.00	14857.00	f	Soporte	2026-03-20 16:14:38.238877	2026-03-20 16:14:38.238877
 9e8bad3d-527b-4eb2-996c-138b58ccce19	13129	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP THE BESTIS	PLOW	ECONO	12225		DE 1 TIRA ME SALEN 2 SIZAS ES DECIR 1 BLUSA DE 1 TIRA SALEN CUELLO DELANTERO Y POST	/images/references/13129.jpg	\N	[{"um": "METRO", "cant": 0.28, "tipo": "TELA", "total": 5600.000000000001, "concepto": "RAYA VICTORIA #1", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.08, "total": 928, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2092, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2092}]	6528.00	4800.00	324.00	0.00	2492.00	14144.00	t	Soporte	2026-03-20 16:11:12.489399	2026-03-20 16:11:12.489399
 d3c1e2c1-b0d8-4252-9101-9e1d10e0b543	13127	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL ESTAN ESC	PLOW	MADRE	12223-1		TRACE 112 ESTAMPAR FRENTE  CON TEXTO EN DORADO HERNAN	/images/references/13127.jPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "UND", "cant": 1, "total": 2000, "concepto": "HERNAN ESTAMPAR FRENTE  CON TEXTO EN DORADO", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1949, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1949}]	6032.00	4500.00	324.00	0.00	2349.00	13205.00	f	Soporte	2026-03-20 16:17:07.606815	2026-03-20 16:17:07.606815
 aee44bdc-b7e7-45b8-bd3c-35db3ce383fb	13126	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL D TI ESTASM Y BOT	PLOW	MADRE	12221-1		TRACE 155 32 ESCOTE ESP 52 CM SISA CON TIRA LIBRE  28 CM TALLA M 27 CM S Y TALLA 29 CM PERILLA SESGO 14 CM ESTAMPAR COPA FRENT Y FAJON FRENTE	/images/references/13126.jPG	\N	[{"um": "METRO", "cant": 0.32, "tipo": "TELA", "total": 4800, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}]	[{"um": "UND", "cant": 1, "total": 1800, "concepto": "ESTAMPADO HERNAN ESTAMPAR COPA FRENT Y FAJON FRENTE", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 2, "total": 300, "concepto": "BOTONADA", "vlr_unit": 150}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 400, "concepto": "BOTON 20 LINEA", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2038, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2038}]	5325.00	5300.00	324.00	400.00	2438.00	13787.00	f	Soporte	2026-03-20 16:30:43.475637	2026-03-20 16:30:43.475637
-80c52e4b-1f31-4ecb-9de1-0fd78f48de63	13125	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP ROMANTIC	PLOW	MADRES/ECONO	12222		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13125.jpG	\N	[{"um": "METRO", "cant": 0.39, "tipo": "TELA", "total": 4524, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.083, "tipo": "TELA", "total": 962.8000000000001, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2012, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2012}]	6182.80	4700.00	324.00	0.00	2412.00	13618.80	f	Soporte	2026-03-20 16:34:15.434201	2026-03-20 16:34:15.434201
-5107bc11-6b24-466f-913e-5b5b20e2c018	13123	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA TEXTO TONO ATONO	PLOW	ECONOM MADRAES	12219			/images/references/13123.JPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1900, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1931, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1931}]	6032.00	4400.00	324.00	0.00	2331.00	13087.00	f	Soporte	2026-03-20 16:41:04.900943	2026-03-20 16:41:04.900943
-0b85a1b3-b4f8-49e1-a211-0f4a4db857c9	13124	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA RIB DOS COLORES	PLOW	ECONO	12224		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13124.jpg	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 3132, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.097, "tipo": "TELA", "total": 1125.2, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1657, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1657}]	4953.20	3400.00	324.00	550.00	2057.00	11284.20	f	Soporte	2026-03-20 16:37:19.142961	2026-03-20 16:37:19.142961
 7c2e69c8-6089-4b60-8bc1-e1ad5edcdfef	13122	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA RAYA DOBLE	PLOW	ECONOM MADRES	12218		SESGO DE 4 TIRA LIBRE DE 16 CMS LAGRIMA 24 CMS CUELLO FTE 12 POR 2 CUELLO ESPALDA 14 SISA 64 DE UNA TIRA SALEN 4 LAGRIMAS. DE OTRA TIRA SALE LOS CUELLO FTE Y CUELLO ESPALDA 1Y UNA SISA  Y OTRA 1 SOLA SISA   ANCHO 112	/images/references/13122.JPG	\N	[{"um": "METRO", "cant": 0.35, "tipo": "TELA", "total": 4059.9999999999995, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.09, "total": 1044, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 2000, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 0}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 0, "concepto": "PLACA PLOW", "vlr_unit": 0}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1801, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1801}]	5104.00	4600.00	324.00	0.00	2201.00	12229.00	f	Soporte	2026-03-20 16:44:50.566474	2026-03-20 16:44:50.566474
 d4f6795a-1200-47e2-819d-655dbb2cbfcf	13121	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA RAYA		ECONOMICA MAFRES	12217-1		ANCHO 145 EN UN ANCHO DE 1,20    SISA 0,60	/images/references/13121.jPG	\N	[{"um": "METRO", "cant": 0.34, "tipo": "TELA", "total": 6800.000000000001, "concepto": "RIB VICTORIA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.035, "tipo": "TELA", "total": 406.00000000000006, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.08, "total": 928, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA TRIANGULO", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2120, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2120}]	8134.00	2800.00	324.00	550.00	2520.00	14328.00	f	Soporte	2026-03-20 16:46:22.859636	2026-03-20 16:46:22.859636
+0b85a1b3-b4f8-49e1-a211-0f4a4db857c9	13124	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA RIB DOS COLORES	PLOW	ECONO	12224		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13124.jpg	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 3132, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.097, "tipo": "TELA", "total": 1125.2, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1657, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1657}]	4953.20	3400.00	324.00	550.00	2057.00	11284.20	t	Soporte	2026-03-20 16:37:19.142961	2026-03-20 16:37:19.142961
 2ca47889-e5f2-46d8-b66e-4761c78e3eb8	13120	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	ESTRAPLE BOLERO		MADRE ECONOM	12216			/images/references/13120.jPG	\N	[{"um": "METRO", "cant": 0.37, "tipo": "TELA", "total": 4292, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.38, "total": 83.6, "concepto": "ELASTICO (  1) CMS", "vlr_unit": 220}, {"um": "METRO", "cant": 0.35, "total": 87.5, "concepto": "ELASTICO DE 2 CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA TRIANGULO", "vlr_unit": 550}, {"um": "UNIDAD", "cant": 0.8, "total": 240, "concepto": "FRAMILON", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1702, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1702}]	4463.10	3900.00	324.00	790.00	2102.00	11579.10	f	Soporte	2026-03-20 16:50:20.388111	2026-03-20 16:50:20.388111
 1956dda1-2bde-4b83-ac33-cd3b7ed56e66	13119	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CROP TOP PUNTOS		ECONOM MADRES	12215		DE UNA TIRA SALEN 3 CARGADERAS DE 38 CMS SESGO DE 4	/images/references/13119.JPG	\N	[{"um": "METRO", "cant": 0.37, "total": 4292, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.027, "total": 313.2, "concepto": "SESGO 2 RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.35, "total": 87.5, "concepto": "ELASTICO (2  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 2, "total": 100, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 50}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1852, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1852}]	4692.70	5300.00	324.00	0.00	2252.00	12568.70	f	Soporte	2026-03-20 16:52:04.922156	2026-03-20 16:52:04.922156
 c8a1ac60-c66a-4f09-9c47-198d0facc16c	13109	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA PLUSS MANGA SISA RAYAS	PLOW	MADRES PLUS				/images/references/13109.JPG	\N	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 8550, "concepto": "LYCRA FRIA FRANK", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1", "vlr_unit": 15000}]	[{"um": "PRENDA", "cant": 1, "total": 2700, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2926, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2926}]	9075.00	6900.00	324.00	0.00	3326.00	19625.00	f	Soporte	2026-03-20 16:53:19.387091	2026-03-20 16:53:19.387091
 c3c6ead1-31a7-4527-8675-8b0627dc7cbb	13108	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA CREPE BORADADO	PLOW	DAMA MADRES	12207			/images/references/13108.JPG	\N	[{"um": "METRO", "cant": 0.91, "tipo": "TELA", "total": 19110, "concepto": "CREP BORD", "vlr_unit": 21000}]	[{"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 1000, "concepto": "BOTON EIM", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4728, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4728}]	19110.00	5900.00	324.00	1000.00	5128.00	31462.00	f	Soporte	2026-03-20 16:55:01.065514	2026-03-20 16:55:01.065514
-5d482f86-bc51-4733-af49-b4453fbb5dee	13107	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA NUDO FTE	PLOW	FASHION			ELASTICO 21 POR DOS PARA PUÑOS ERA LA 12741	/images/references/13107.jpg	\N	[{"um": "METRO", "cant": 1.067, "tipo": "TELA", "total": 8536, "concepto": "MOMA", "vlr_unit": 8000}, {"um": "METRO", "cant": 0.45, "total": 99, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 220}]	[{"um": "PRENDA", "cant": 1, "total": 690, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 690}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2756, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2756}]	8635.00	6390.00	324.00	0.00	3156.00	18505.00	f	Soporte	2026-03-24 10:41:22.610269	2026-03-24 10:41:22.610269
+5d482f86-bc51-4733-af49-b4453fbb5dee	13107	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA NUDO FTE	PLOW	FASHION			ELASTICO 21 POR DOS PARA PU├æOS ERA LA 12741	/images/references/13107.jpg	\N	[{"um": "METRO", "cant": 1.067, "tipo": "TELA", "total": 8536, "concepto": "MOMA", "vlr_unit": 8000}, {"um": "METRO", "cant": 0.45, "total": 99, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 220}]	[{"um": "PRENDA", "cant": 1, "total": 690, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 690}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2756, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2756}]	8635.00	6390.00	324.00	0.00	3156.00	18505.00	f	Soporte	2026-03-24 10:41:22.610269	2026-03-24 10:41:22.610269
 1053538d-5529-4e82-8885-a45da37f1392	13106	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA CORTES APLIQUE PIEDRAS	PLOW	FASHION	11523		ERA LA 12717	/images/references/13106.jpg	\N	[{"um": "METRO", "cant": 0.89, "tipo": "TELA", "total": 11570, "concepto": "LINO CREPE", "vlr_unit": 13000}, {"um": "METRO", "cant": 0.16, "total": 35.2, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "APLIQUE Y PEGADA ALEJANDRA", "vlr_unit": 5000}, {"um": "PRENDA", "cant": 1, "total": 821, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 821}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BORDADO", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BOTONADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 1000, "concepto": "BOTON", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4534, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4534}]	11605.20	12321.00	324.00	1000.00	4934.00	30184.20	f	Soporte	2026-03-24 10:44:09.758058	2026-03-24 10:44:09.758058
 b01691af-bf2f-4dbe-9a68-ff6e6d149608	13105	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA  SUBLIMADO RAYAS	PLOW	FASHION	11528		11200 MAS IVA ANCHO 130 ENTRETELA 5000 ERA LA 12736	/images/references/13105.jpg	\N	[{"um": "METRO", "cant": 0.96, "tipo": "TELA", "total": 10560, "concepto": "LINO MILAN", "vlr_unit": 11000}]	[{"um": "PRENDA", "cant": 1, "total": 3200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BOTONADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "OJALADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 4200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 800, "concepto": "BOTON 0527  28L", "vlr_unit": 160}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3696, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3696}]	10560.00	8900.00	324.00	800.00	4096.00	24680.00	f	Soporte	2026-03-24 10:45:43.015658	2026-03-24 10:45:43.015658
-8a6bdedd-f56b-4e20-b2f5-3c1d17c9f9cb	13104	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA BOLSILLOS INCRUSTADOS	PLOW	FASHION	11513		FICHA ORIGINAL MAL COSTEADA, TENÍA DOS VECES EL BOTÓN ERA LA 12720	/images/references/13104.jpg	\N	[{"um": "METRO", "cant": 0.85, "tipo": "TELA", "total": 11050, "concepto": "LINO CREPE", "vlr_unit": 13000}]	[{"um": "PRENDA", "cant": 1, "total": 1600, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1600}, {"um": "PRENDA", "cant": 1, "total": 845, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 845}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BORDADO", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BOTONADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 420, "concepto": "CORTE", "vlr_unit": 420}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 1100, "concepto": "BOTON", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3831, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3831}]	11050.00	8865.00	324.00	1100.00	4231.00	25570.00	f	Soporte	2026-03-24 10:47:02.946108	2026-03-24 10:47:02.946108
+8a6bdedd-f56b-4e20-b2f5-3c1d17c9f9cb	13104	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA BOLSILLOS INCRUSTADOS	PLOW	FASHION	11513		FICHA ORIGINAL MAL COSTEADA, TEN├ìA DOS VECES EL BOT├ôN ERA LA 12720	/images/references/13104.jpg	\N	[{"um": "METRO", "cant": 0.85, "tipo": "TELA", "total": 11050, "concepto": "LINO CREPE", "vlr_unit": 13000}]	[{"um": "PRENDA", "cant": 1, "total": 1600, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1600}, {"um": "PRENDA", "cant": 1, "total": 845, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 845}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BORDADO", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 5, "total": 400, "concepto": "BOTONADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 420, "concepto": "CORTE", "vlr_unit": 420}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 1100, "concepto": "BOTON", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3831, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3831}]	11050.00	8865.00	324.00	1100.00	4231.00	25570.00	f	Soporte	2026-03-24 10:47:02.946108	2026-03-24 10:47:02.946108
 5122256b-b6b6-4483-8115-e07df062196e	13103	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA TAPA PERLAS	PLOW	FASHION	11414		ERA LA 12676	/images/references/13103.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 8140, "concepto": "LINO CREPE", "vlr_unit": 11000}]	[{"um": "PRENDA", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 14, "total": 1120, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 80}, {"um": "PRENDA", "cant": 1, "total": 821, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 821}, {"um": "UNIDAD", "cant": 6, "total": 480, "concepto": "BOTONADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 6, "total": 480, "concepto": "OJALADA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 4800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 6, "total": 1944, "concepto": "BOTONES SOTEXCO 24 LBAH0788", "vlr_unit": 324}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3646, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3646}]	8140.00	9901.00	324.00	1944.00	4046.00	24355.00	f	Soporte	2026-03-24 10:49:01.193882	2026-03-24 10:49:01.193882
 4063bf74-93c7-477a-a335-70677e44885f	13102	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA PLUSS ARGOLLA HOMBRO ASIMETRICA	PLOW	PLUSS MADRES			ELASTICO 5 CMS	/images/references/13102.JPG	\N	[{"um": "METRO", "cant": 0.71, "tipo": "TELA", "total": 8520, "concepto": "LULOLEMON", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.07, "total": 15.400000000000002, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "ARGOLLA INSUTEX H21888", "vlr_unit": 2300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2758, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2758}]	8535.40	4200.00	324.00	2300.00	3158.00	18517.40	f	Soporte	2026-03-24 10:50:29.707193	2026-03-24 10:50:29.707193
-9953a7b4-7ea8-4d60-995a-a82b527236c4	13101	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA PLUSS CORPIÑO BOLERO	PLOW	PLUSS MADRES	12196		BENGALINA PANA 11900 MAS IVA 14200 \nDE UN RETAZO DE 1 METRO SAL SESGO PARA 41 BLUSAS \nELASTICO ESPALDA 34 CMS \nPLACA EN EL CRTE AL LADO DERECHO A 3 CMS DE LA COSTURA HACIA ARRIBA	/images/references/13101.JPG	\N	[{"um": "METRO", "cant": 0.67, "tipo": "TELA", "total": 10720, "concepto": "BENGAL PANA", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.025, "total": 400, "concepto": "SESGO 2 BENGAL PANA", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.37, "total": 92.5, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 4900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 800, "concepto": "PLACA PLOW", "vlr_unit": 800}, {"um": "UNIDAD", "cant": 1, "total": 300, "concepto": "TENSORES 12", "vlr_unit": 300}, {"um": "MTS", "cant": 1, "total": 300, "concepto": "ARGOLLA DE 12", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	11212.50	5800.00	324.00	1400.00	3764.00	22500.50	f	Soporte	2026-03-24 10:57:25.6252	2026-03-24 10:57:25.6252
+9953a7b4-7ea8-4d60-995a-a82b527236c4	13101	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA PLUSS CORPI├æO BOLERO	PLOW	PLUSS MADRES	12196		BENGALINA PANA 11900 MAS IVA 14200 \nDE UN RETAZO DE 1 METRO SAL SESGO PARA 41 BLUSAS \nELASTICO ESPALDA 34 CMS \nPLACA EN EL CRTE AL LADO DERECHO A 3 CMS DE LA COSTURA HACIA ARRIBA	/images/references/13101.JPG	\N	[{"um": "METRO", "cant": 0.67, "tipo": "TELA", "total": 10720, "concepto": "BENGAL PANA", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.025, "total": 400, "concepto": "SESGO 2 BENGAL PANA", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.37, "total": 92.5, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 4900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 800, "concepto": "PLACA PLOW", "vlr_unit": 800}, {"um": "UNIDAD", "cant": 1, "total": 300, "concepto": "TENSORES 12", "vlr_unit": 300}, {"um": "MTS", "cant": 1, "total": 300, "concepto": "ARGOLLA DE 12", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	11212.50	5800.00	324.00	1400.00	3764.00	22500.50	f	Soporte	2026-03-24 10:57:25.6252	2026-03-24 10:57:25.6252
 f4c92273-6fb9-4c97-bb8b-c225b262f845	13100	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL STAM GOOD	PLOW	MADRE	12171-1		TRACE 150	/images/references/13100.jPG	\N	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 8550, "concepto": "LICRA FRIA", "vlr_unit": 15000}]	[{"um": "UND", "cant": 1, "total": 2000, "concepto": "ESTAMPADO HERNAN FRENTE ESTAMPADO", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2473, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2473}]	8550.00	4900.00	324.00	0.00	2873.00	16647.00	f	Soporte	2026-03-24 11:04:09.890722	2026-03-24 11:04:09.890722
 c3a5e71e-04b4-4a3e-8c24-295b35dc5e3a	13099	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLS ESTA CON GRIPIR MANG	PLOW	MADRE	13099-1		MANGA CON GRIPIUR	/images/references/13099.jpg	\N	[{"um": "METRO", "cant": 0.56, "tipo": "TELA", "total": 8400, "concepto": "LICRA PRAGA", "vlr_unit": 15000}]	[{"um": "UND", "cant": 1, "total": 2000, "concepto": "ESTAMPADO HERNAN  SOLO FRENTE", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.6, "total": 1590, "concepto": "GRIPIR DE 2 CM", "vlr_unit": 2650}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2750, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2750}]	8400.00	5000.00	324.00	1590.00	3150.00	18464.00	f	Soporte	2026-03-24 11:05:22.757211	2026-03-24 11:05:22.757211
-232173bc-fe01-415f-9470-bf69cac43db7	13098	ce75694c-000d-4b9a-a5fe-0ff716248e08	STRA ESTAP	PLOW	MADRE	12163-1		BURDA FRIA  DE LA QUE TRAJO DON EFRAIN \nCON UNA TIRA DE SESGO ME SALEN LA TIRA DE AMARRE \nDE UNA TIRA DE SESGO ME SALEN PARA 2 BLUSAS CON OJALETES DE 5 CM \n\n\n\nTRACE 155	/images/references/13098.jPG	\N	[{"um": "METRO", "cant": 0.29, "tipo": "TELA", "total": 4785, "concepto": "BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.053, "total": 874.5, "concepto": "SESGO 1 BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.78, "total": 195, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 1600, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1600}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 240, "concepto": "FRAMILÓN", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2140, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2140}]	5854.50	5500.00	324.00	240.00	2540.00	14458.50	f	Soporte	2026-03-24 11:10:41.004953	2026-03-24 11:10:41.004953
 cfe6a488-fb57-436a-a750-76ef43cdab81	13097	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL ALFO FRENTE Y NGELIA	PLOW	MADRE M	1251-1		DE UNA TIRA DE SESGO ME SALEN 3 CARGADERAS DE 45 CM LA CARGDERA DE 40 CM Y 5 CM PARA LA ARGOLLA	/images/references/13097.jPG	\N	[{"um": "METRO", "cant": 0.35, "tipo": "TELA", "total": 5250, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.024, "total": 360, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.34, "total": 85, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 3, "total": 270, "concepto": "BOTONADA CLARA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "TENSORES", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "ARGOLLA", "vlr_unit": 100}, {"um": "MTS", "cant": 0.85, "total": 1020, "concepto": "FRANJA ELASTICA ANGELITA", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 3, "total": 300, "concepto": "BOTON", "vlr_unit": 100}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2192, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2192}]	5695.00	4470.00	324.00	1720.00	2592.00	14801.00	f	Soporte	2026-03-24 11:12:28.96271	2026-03-24 11:12:28.96271
 927d2a5c-5358-486e-8572-c55073efe4c7	13096	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL EST PUNTOS	PLOW	MADRE	12147-1		TRACE 112 \nTIRA DE TENSOR DE 45 CM 5 CM PARA ARGOLLA Y 40 PARA TIRA LIBRE	/images/references/13096.jPG	/images/references/13096-2.jPG	[{"um": "METRO", "cant": 0.45, "tipo": "TELA", "total": 5175, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.035, "total": 402.50000000000006, "concepto": "SESGO 1 RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.45, "total": 112.5, "concepto": "ELASTICO (  1 ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 2100, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2100}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "TENSOR 10 MM", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "ARGOLLA 10 MM", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2382, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2382}]	5690.00	6000.00	324.00	1250.00	2782.00	16046.00	f	Soporte	2026-03-24 11:20:07.361828	2026-03-24 11:20:07.361828
 e15e63e0-e830-438a-95cc-443147744f88	13095	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL CORT LAT BOTONE	PLOW	MADRE	12148-1			/images/references/13095.jPG	\N	[{"um": "METRO", "cant": 0.5, "tipo": "TELA", "total": 5750, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "BOTONADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 2, "total": 1200, "concepto": "BTH 0187.DM DORADO  INSUTEX 600", "vlr_unit": 600}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1827, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1827}]	5750.00	2900.00	324.00	1200.00	2227.00	12401.00	f	Soporte	2026-03-24 11:21:57.984248	2026-03-24 11:21:57.984248
@@ -2888,29 +3557,28 @@ b3f697b8-bbd2-42e0-bd4e-e6e66493f3f9	13094	ce75694c-000d-4b9a-a5fe-0ff716248e08	
 4f181367-efa6-4be5-b74f-07392938a3db	13091	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP 1981	PLOW	MADRES ECONO			DE 1 TIRA SALE Y CUELLO Y 1 SIZA DE 1 TIRA SALEN 2 SIZAS	/images/references/13091.jPG	\N	[{"um": "METRO", "cant": 0.39, "tipo": "TELA", "total": 4485, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.06, "total": 690, "concepto": "SESGO 1 RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 1900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1777, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1777}]	5175.00	4400.00	324.00	0.00	2177.00	12076.00	f	Soporte	2026-03-24 11:33:34.810605	2026-03-24 11:33:34.810605
 843f8029-eb42-49c8-8eec-3cff37e1fa4d	13090	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA BELIVE	PLOW	MADRES ECONO	12166		DE 1 TIRA SALE 1 BLUSA Y MEDIA	/images/references/13090.jpg	\N	[{"um": "METRO", "cant": 0.56, "tipo": "TELA", "total": 6440.000000000001, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.027, "total": 310.5, "concepto": "SESGO 1 RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2078, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2078}]	6750.50	4500.00	324.00	0.00	2478.00	14052.50	f	Soporte	2026-03-24 11:35:27.607413	2026-03-24 11:35:27.607413
 7662d22e-257b-4a41-b687-711fb3111ddf	13089	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA V	PLOW	ECONO MADRES	13089		ANCHO TELA 148 TELA REF: CALI DE SUPERNOVA	/images/references/13089.jPG	\N	[{"um": "METRO", "cant": 0.43, "tipo": "TELA", "total": 7310, "concepto": "CALI", "vlr_unit": 17000}]	[{"um": "UND", "cant": 1, "total": 2200, "concepto": "ESTAMPADO FONDEADO A TODAS LAS PIEZAS", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 542, "concepto": "PLACA PLOW", "vlr_unit": 542}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2527, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2527}]	7310.00	5900.00	324.00	542.00	2927.00	17003.00	f	Soporte	2026-03-24 11:38:27.137377	2026-03-24 11:38:27.137377
-e94b3436-4d90-400a-af9a-fb6532c07074	13088	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA OVERSAY	PLOW	DAMA MADRES			BURDA FRANK PREGUNTAR PRECIO AL JEFE	/images/references/13088.JPG	\N	[{"um": "METRO", "cant": 0.64, "tipo": "TELA", "total": 9600, "concepto": "TELA FRANK", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "PUÑOS", "vlr_unit": 4000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3434, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3434}]	9600.00	5200.00	324.00	4000.00	3834.00	22958.00	f	Soporte	2026-03-24 11:40:20.90775	2026-03-24 11:40:20.90775
+e94b3436-4d90-400a-af9a-fb6532c07074	13088	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA OVERSAY	PLOW	DAMA MADRES			BURDA FRANK PREGUNTAR PRECIO AL JEFE	/images/references/13088.JPG	\N	[{"um": "METRO", "cant": 0.64, "tipo": "TELA", "total": 9600, "concepto": "TELA FRANK", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "PU├æOS", "vlr_unit": 4000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3434, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3434}]	9600.00	5200.00	324.00	4000.00	3834.00	22958.00	f	Soporte	2026-03-24 11:40:20.90775	2026-03-24 11:40:20.90775
 57d85bdb-d8eb-434d-bbda-cac119e2d2b9	13087	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA HELLO	PLOW	MADRES			TELA DELIRO DE ELIOT ANCHO DE TELA 1,60 PUNTILLA DE MARLLY \n1 TIRA COMPLETA PARA CUELLO CON 50C DE TIRA LIBRE EN CADA LADO \n1 TIRA PARA 1BLUSA Y MEDIO TIRAS RUEDO	/images/references/13087.jPG	/images/references/13087-2.jPG	[{"um": "METRO", "cant": 0.37, "tipo": "TELA", "total": 7400, "concepto": "DELIRIO", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.059, "total": 1180, "concepto": "SESGO 1 DELIRIO", "vlr_unit": 20000}]	[{"um": "PRENDA", "cant": 1, "total": 1500, "concepto": "ESTAMPADO", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 1.65, "total": 2376, "concepto": "PUNTILLA", "vlr_unit": 1440}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3085, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3085}]	8580.00	5900.00	324.00	2376.00	3485.00	20665.00	f	Soporte	2026-03-24 11:57:09.258191	2026-03-24 11:57:09.258191
 8d4a7911-5d3b-427b-8fc0-7b0c0af1f463	13086	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CAMISETA RECOGIDO MANGAS	PLOW	ECONOMICO MADRES	12167		DE 1 TIRA SALE LAS 4 DE LAS MANGAS CADA DE 0,28CM	/images/references/13086.jpg	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 6669.999999999999, "concepto": "ECONOMICO MADRES", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.032, "total": 368, "concepto": "SESGO 1 RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2291, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2291}]	7038.00	5400.00	324.00	0.00	2691.00	15453.00	f	Soporte	2026-03-24 12:01:34.349294	2026-03-24 12:01:34.349294
 d4e5875c-fde2-4c47-91b8-99e588b8e6e2	13085	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CAMISETA COSTADO	PLOW	MADRES ECONO	12125		DE 1 TIRA DE SESGO SALE LAS 2 DE CADA COSTADO POR BLUSA DE 0,63CM	/images/references/13085.jPG	\N	[{"um": "METRO", "cant": 0.5, "tipo": "TELA", "total": 9250, "concepto": "RIB GUADUA", "vlr_unit": 18500}, {"um": "METRO", "cant": 0.032, "total": 592, "concepto": "SESGO 1 RIB GUADUA", "vlr_unit": 18500}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2885, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2885}]	9842.00	5900.00	324.00	0.00	3285.00	19351.00	f	Soporte	2026-03-24 12:04:51.162359	2026-03-24 12:04:51.162359
-16e55bce-9926-42c3-bd92-87ad6156372c	13084	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP BOTONES	PLOW	MADRES			BOTONES DE SUTEXCO ANCHO DE TELA 1,44	/images/references/13084.jPG	/images/references/13084-2.JPG	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 8200, "concepto": "BYRON", "vlr_unit": 20500}]	[{"um": "UNIDAD", "cant": 4, "total": 400, "concepto": "BOTONADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 4, "total": 400, "concepto": "OJALADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 1, "total": 3300, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 3300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 2020, "concepto": "BOTON", "vlr_unit": 505}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2917, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2917}]	8200.00	5000.00	324.00	2720.00	3317.00	19561.00	f	Soporte	2026-03-24 12:07:19.116669	2026-03-24 12:07:19.116669
+16e55bce-9926-42c3-bd92-87ad6156372c	13084	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP BOTONES	PLOW	MADRES			BOTONES DE SUTEXCO ANCHO DE TELA 1,44	/images/references/13084.jPG	/images/references/13084-2.JPG	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 8200, "concepto": "BYRON", "vlr_unit": 20500}]	[{"um": "UNIDAD", "cant": 4, "total": 400, "concepto": "BOTONADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 4, "total": 400, "concepto": "OJALADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 1, "total": 3300, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 3300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 2020, "concepto": "BOTON", "vlr_unit": 505}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2917, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2917}]	8200.00	5000.00	324.00	2720.00	3317.00	19561.00	f	Soporte	2026-03-24 12:07:19.116669	2026-03-24 12:07:19.116669
 6b0ee096-d241-498f-9d45-784a97b74857	13083	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP ALWAIS	PLOW	MADRES ECONO	12194		TELA DUVAL -ELIOT SEBASTIAN PRECIO COLORES CLAROS 10,990 + IVA COLORES OSCUROS 12,990 + IVA	/images/references/13083.jPG	\N	[{"um": "METRO", "cant": 0.33, "tipo": "TELA", "total": 5280, "concepto": "DUVAL", "vlr_unit": 16000}]	[{"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 2100, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2100}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1868, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1868}]	5280.00	4800.00	324.00	0.00	2268.00	12672.00	f	Soporte	2026-03-24 12:08:48.420013	2026-03-24 12:08:48.420013
 a126ddb7-ba3f-483f-8655-6e81a1e37679	13082	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	ESTRAPLE RAYAS	PLOW	MADRES MEDIA	12152		ELASTICO FTE 0,38 ESP 0,35	/images/references/13082.jPG	\N	[{"um": "METRO", "cant": 0.36, "tipo": "TELA", "total": 7200, "concepto": "RIB VICTORIA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.07, "total": 1400.0000000000002, "concepto": "SESGO 2 RIB VICTORIA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.76, "total": 167.2, "concepto": "ELASTICO (  1) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "APLIQUE", "vlr_unit": 1200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2422, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2422}]	8767.20	3200.00	324.00	1200.00	2822.00	16313.20	f	Soporte	2026-03-24 12:10:05.865868	2026-03-24 12:10:05.865868
 971662b3-7df1-4f9a-a644-ec9e356305d7	13081	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA MGA CORTA TEXTO ALTA CON MIRELLA	PLOW	MEDIA MADRES	12193			/images/references/13081.jPG	\N	[{"um": "METRO", "cant": 0.44, "tipo": "TELA", "total": 6600, "concepto": "LYCRA PRAGA", "vlr_unit": 15000}]	[{"um": "PRENDA", "cant": 1, "total": 1300, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 1300}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1961, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1961}]	6600.00	4000.00	324.00	0.00	2361.00	13285.00	f	Soporte	2026-03-24 12:12:54.421634	2026-03-24 12:12:54.421634
 67bf37fd-5f7b-4244-8ba4-7a7802ddacd4	13079	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA PRENDEDOR BABY	PLOW	MEDIAMADRES			POLO RIB SUPER NOVA 175	/images/references/13079.jPG	\N	[{"um": "METRO", "cant": 0.34, "tipo": "TELA", "total": 5780, "concepto": "POLORIB", "vlr_unit": 17000}]	[{"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 3850, "concepto": "PRENDEDOR SOTEXCO", "vlr_unit": 3850}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2236, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2236}]	5780.00	2500.00	324.00	3850.00	2636.00	15090.00	f	Soporte	2026-03-24 12:15:53.824375	2026-03-24 12:15:53.824375
 99fb43fe-049d-4df9-9627-14c471aae080	13078	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL BAND ESTA	PLOW	MADRE	12173-1		TRACE 112	/images/references/13078.jPG	\N	[{"um": "METRO", "cant": 0.44, "tipo": "TELA", "total": 5060, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.74, "total": 185, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UND", "cant": 1, "total": 2200, "concepto": "ESTAMPADO CAMILO  FRENTES Y MANGAS 2400", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.38, "total": 950, "concepto": "GRIPIUR", "vlr_unit": 2500}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2194, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2194}]	5245.00	5700.00	324.00	950.00	2594.00	14813.00	f	Soporte	2026-03-24 12:18:40.832451	2026-03-24 12:18:40.832451
-bd303b9c-de37-4b84-bf7d-213fb449005f	13077	2b241a44-34aa-4493-bfd1-78ad575ecbcc	DUO CHALECO TELA SOPHIA	PLOW	PLUS MADRES			TELA SOPHIA #7 DE PRONTAMODA \nLYCRA FRIA \nSIZA 0,60 1 TIRA PARA 2 SIZAS \nCUELLO 1,35 1 TIRA PARA CUELLOS Y TIRA LIBRE DE  30CM \nRUEDO 0,54 1 TIRA PARA DOS ESPALDAS FRENTE 0,65X2 1 TIRA PARA \nFRENTES \nAMARRES FRENTE 1 TIRA PARA 4 AMARES	/images/references/13077.JPG	/images/references/13077-2.jPG	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 12539.999999999998, "concepto": "SOPHIA #7", "vlr_unit": 22000}, {"um": "METRO", "cant": 0.23, "tipo": "TELA", "total": 1380, "concepto": "LICRAFRIA", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.17, "total": 1870.0000000000002, "concepto": "SESGO 1 LINO MILAN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.035, "total": 210.00000000000003, "concepto": "SESGO 2 LICRAFRIA", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.3, "total": 66, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION CHALECO", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4038, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4038}]	16066.00	6100.00	324.00	0.00	4438.00	26928.00	f	Soporte	2026-03-24 12:20:43.588865	2026-03-24 12:20:43.588865
-3158cc20-d12b-4287-b928-4b8cbef5c0f8	13076	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP EN AMELIA Y MAYATEX	PLOW	MADRES PLUS			1 TIRA DE SESGO PARA 3 CARGADERAS ES DECIR 1 BLUSA Y MEDIA MEDIDA DE CARGADERA 50CM	/images/references/13076.JPG	\N	[{"um": "METRO", "cant": 0.48, "tipo": "TELA", "total": 3360, "concepto": "MALLATEX", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.24, "tipo": "TELA", "total": 1800, "concepto": "AMELIA", "vlr_unit": 7500}, {"um": "METRO", "cant": 0.024, "total": 168, "concepto": "SESGO 1 MALLATEX", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.38, "total": 95, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UND", "cant": 0.51, "total": 3264, "concepto": "ESTAMPADO   SUBLIMACION GLOQUI", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "ARO", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "TENSOR", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2552, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2552}]	5423.00	7964.00	324.00	500.00	2952.00	17163.00	f	Soporte	2026-03-24 12:25:56.051751	2026-03-24 12:25:56.051751
+3158cc20-d12b-4287-b928-4b8cbef5c0f8	13076	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP EN AMELIA Y MAYATEX	PLOW	MADRES PLUS			1 TIRA DE SESGO PARA 3 CARGADERAS ES DECIR 1 BLUSA Y MEDIA MEDIDA DE CARGADERA 50CM	/images/references/13076.JPG	\N	[{"um": "METRO", "cant": 0.48, "tipo": "TELA", "total": 3360, "concepto": "MALLATEX", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.24, "tipo": "TELA", "total": 1800, "concepto": "AMELIA", "vlr_unit": 7500}, {"um": "METRO", "cant": 0.024, "total": 168, "concepto": "SESGO 1 MALLATEX", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.38, "total": 95, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UND", "cant": 0.51, "total": 3264, "concepto": "ESTAMPADO   SUBLIMACION GLOQUI", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "ARO", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "TENSOR", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2552, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2552}]	5423.00	7964.00	324.00	500.00	2952.00	17163.00	f	Soporte	2026-03-24 12:25:56.051751	2026-03-24 12:25:56.051751
 3435227b-c0ce-4506-9554-9ffc5d6f1153	13075	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA ANIMAL PRINT	PLOW	PLUSS MADRES	12155-1			/images/references/13075.JPG	\N	[{"um": "METRO", "cant": 1.02, "tipo": "TELA", "total": 10200, "concepto": "LINO LIMPO", "vlr_unit": 10000}]	[{"um": "PRENDA", "cant": 1.02, "total": 6528, "concepto": "ESTAMPADO   GLOQUI", "vlr_unit": 6400}, {"um": "PRENDA", "cant": 1, "total": 948, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 948}, {"um": "UNIDAD", "cant": 6, "total": 540, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 6, "total": 540, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 5000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 6, "total": 858, "concepto": "BOTON BAC21219 LINEA 24", "vlr_unit": 143}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4603, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4603}]	10200.00	14256.00	324.00	858.00	5003.00	30641.00	f	Soporte	2026-03-24 12:27:36.894671	2026-03-24 12:27:36.894671
 89df3c32-38e8-4c7e-bf95-411410c66c98	13074	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA COMBINADOA BURDA BOLAS TEXTO	PLOW	MEDIA MADRES	12191-1		PRECIO DE TELA	/images/references/13074.jPG	\N	[{"um": "METRO", "cant": 0.34, "tipo": "TELA", "total": 4760, "concepto": "BURDA JEFE", "vlr_unit": 14000}, {"um": "METRO", "cant": 0.067, "total": 938, "concepto": "BURDA JEFE", "vlr_unit": 14000}]	[{"um": "PRENDA", "cant": 1, "total": 2300, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 1700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1925, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1925}]	5698.00	4700.00	324.00	0.00	2325.00	13047.00	f	Soporte	2026-03-24 12:29:33.276204	2026-03-24 12:29:33.276204
 a8ddb1fc-6689-482f-8a69-c62784abbbc6	13073	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA LAGRIMA FTAE CUELLO HALTER	PLOW	MEDIA MADRES	12140-1		CORTEZA MONICA ELIOTH  39990 MAS IVA 48000 RENDIMIENTO 2,5  ANCHI 175\nPEGADA DE PLACA A 7 CMS DEL COSTADO HACIA EL FTE Y A 7 CMS DE EL RUEDO HACIA ARRIBA CON EL RUEADO HECHO \nLAGRIMA 36 CMS \nSISA 65  TIRA LIBRE 40 CMS DE 3 CMS	/images/references/13073.jPG	\N	[{"um": "METRO", "cant": 0.18, "tipo": "TELA", "total": 3690, "concepto": "CORTEZA", "vlr_unit": 20500}, {"um": "METRO", "cant": 0.035, "total": 717.5000000000001, "concepto": "SESGO 2 CORTEZA", "vlr_unit": 20500}, {"um": "METRO", "cant": 0.35, "total": 80.5, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 230}]	[{"um": "UNIDAD", "cant": 1, "total": 1600, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1600}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.8, "total": 240, "concepto": "FRAMILON", "vlr_unit": 300}, {"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1455, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1455}]	4488.00	2500.00	324.00	790.00	1855.00	9957.00	f	Soporte	2026-03-24 12:32:29.828685	2026-03-24 12:32:29.828685
 f649c5d9-47f9-40fc-b7d4-a3467f827b7e	13072	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA CORTE FTE BOLAS COORDINADAS	PLOW	MADRES MEDIA	12172		TIRA LIBRE 22 CMS CUELLO ESPALDA 27 CMS SISA 40 SESGO DE 4 ANCHO 112	/images/references/13072.JPG	\N	[{"um": "METRO", "cant": 0.43, "tipo": "TELA", "total": 4945, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.04, "total": 460, "concepto": "SESGO 2 RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1890, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1890}]	5405.00	4800.00	324.00	0.00	2290.00	12819.00	f	Soporte	2026-03-24 12:44:04.620893	2026-03-24 12:44:04.620893
-c5320de8-d606-4a9e-89df-ffc50ba8b9f7	13071	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CROP TOP MINIPRINST MOÑOS		MEDIA MADRES	12139		CARGADERA0,40 DE UNA TIRA SALEN 3 CARGADERAS PRECIO DE TELA FALTA	/images/references/13071.jPG	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 2700, "concepto": "MINIPRINT FRANK", "vlr_unit": 10000}, {"um": "METRO", "cant": 0.024, "total": 0, "concepto": "SESGO 2 MINIPRINT FRANK", "vlr_unit": 0}, {"um": "METRO", "cant": 0.35, "total": 80.5, "concepto": "ELASTICO (  2) CMS", "vlr_unit": 230}]	[{"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 2, "total": 300, "concepto": "PEGAR DOS MOÑOS", "vlr_unit": 150}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 400, "concepto": "MOÑOS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 280, "concepto": "TENSORES", "vlr_unit": 280}, {"um": "MTS", "cant": 1, "total": 250, "concepto": "ARGOLLAS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1407, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1407}]	2780.50	3800.00	324.00	930.00	1807.00	9641.50	f	Soporte	2026-03-24 12:49:05.737595	2026-03-24 12:49:05.737595
+c5320de8-d606-4a9e-89df-ffc50ba8b9f7	13071	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CROP TOP MINIPRINST MO├æOS		MEDIA MADRES	12139		CARGADERA0,40 DE UNA TIRA SALEN 3 CARGADERAS PRECIO DE TELA FALTA	/images/references/13071.jPG	\N	[{"um": "METRO", "cant": 0.27, "tipo": "TELA", "total": 2700, "concepto": "MINIPRINT FRANK", "vlr_unit": 10000}, {"um": "METRO", "cant": 0.024, "total": 0, "concepto": "SESGO 2 MINIPRINT FRANK", "vlr_unit": 0}, {"um": "METRO", "cant": 0.35, "total": 80.5, "concepto": "ELASTICO (  2) CMS", "vlr_unit": 230}]	[{"um": "UNIDAD", "cant": 1, "total": 2800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 2, "total": 300, "concepto": "PEGAR DOS MO├æOS", "vlr_unit": 150}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 400, "concepto": "MO├æOS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 280, "concepto": "TENSORES", "vlr_unit": 280}, {"um": "MTS", "cant": 1, "total": 250, "concepto": "ARGOLLAS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1407, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1407}]	2780.50	3800.00	324.00	930.00	1807.00	9641.50	f	Soporte	2026-03-24 12:49:05.737595	2026-03-24 12:49:05.737595
 52ec2574-f5da-4782-b0cf-61a34d093cdc	13070	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA CORTE FTE BOTONES	PLOW	MEDIA MADRES	12137		SISA 0,58 CUELLO0,55 DE UNA TIRA SALE LAS SISAS Y DE OTRA TIRA DOS CUELLOS PRECIO DE TELA FALTA	/images/references/13070.jPG	\N	[{"um": "METRO", "cant": 0.33, "tipo": "TELA", "total": 3300, "concepto": "MINIPRINT FRANK", "vlr_unit": 10000}, {"um": "METRO", "cant": 0.053, "total": 530, "concepto": "SESGO 2 MINIPRINT FRANK", "vlr_unit": 10000}]	[{"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 700, "concepto": "BOTON BAH 0636 LINEA 20", "vlr_unit": 140}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1527, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1527}]	3830.00	3650.00	324.00	700.00	1927.00	10431.00	f	Soporte	2026-03-24 12:54:52.245364	2026-03-24 12:54:52.245364
 bfb019d9-000d-430f-938e-f1f79d8c6def	13069	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA SISA ENTRADA PUNTOS ALTA TEXTO	PLOW	MEDIA MADRES	12176-1		SESGO EN UN ANCHO DE 1,12  Y LA SISA ES DE 60 CMS	/images/references/13069.jPG	\N	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 4600, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.08, "total": 920, "concepto": "SESGO 2 RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 1500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1714, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1714}]	5520.00	3700.00	324.00	0.00	2114.00	11658.00	f	Soporte	2026-03-24 14:03:51.797397	2026-03-24 14:03:51.797397
 3815c80b-a66c-4171-9cd0-ef76cd135c48	13068	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA MANGA CORATA FONDEADA FLORES TEXTO	PLOW	MEDIA MADRES	12174			/images/references/13068.jPG	\N	[{"um": "METRO", "cant": 0.42, "tipo": "TELA", "total": 5880, "concepto": "BURDA", "vlr_unit": 14000}]	[{"um": "PRENDA", "cant": 1, "total": 2500, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2048, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2048}]	5880.00	5200.00	324.00	0.00	2448.00	13852.00	f	Soporte	2026-03-24 14:06:35.497018	2026-03-24 14:06:35.497018
-deaf371d-1249-4800-96e2-c3a69cfb7525	13067	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA MALLA	PLOW	MADRES	12104	12104	GITANILLA 5 CORBETA ANCHO 152 \nCUELLO Y PUÑO TEJIDOS \n\nGITANILLA 5 PRECIO 42000 FALTA RENDIMIENTO	/images/references/13067.jpg	\N	[{"um": "METRO", "cant": 0.61, "tipo": "TELA", "total": 11590, "concepto": "GITANILLA 5", "vlr_unit": 19000}]	[{"um": "UNIDAD", "cant": 1, "total": 3200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CUELLO Y PUÑO TEJIDO", "vlr_unit": 4000}, {"um": "MTS", "cant": 0.53, "total": 265, "concepto": "HILADILLA TAPA CUELLO", "vlr_unit": 500}, {"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3776, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3776}]	11590.00	4100.00	324.00	5015.00	4176.00	25205.00	f	Soporte	2026-03-24 14:13:05.945282	2026-03-24 14:13:05.945282
+deaf371d-1249-4800-96e2-c3a69cfb7525	13067	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA MALLA	PLOW	MADRES	12104	12104	GITANILLA 5 CORBETA ANCHO 152 \nCUELLO Y PU├æO TEJIDOS \n\nGITANILLA 5 PRECIO 42000 FALTA RENDIMIENTO	/images/references/13067.jpg	\N	[{"um": "METRO", "cant": 0.61, "tipo": "TELA", "total": 11590, "concepto": "GITANILLA 5", "vlr_unit": 19000}]	[{"um": "UNIDAD", "cant": 1, "total": 3200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CUELLO Y PU├æO TEJIDO", "vlr_unit": 4000}, {"um": "MTS", "cant": 0.53, "total": 265, "concepto": "HILADILLA TAPA CUELLO", "vlr_unit": 500}, {"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3776, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3776}]	11590.00	4100.00	324.00	5015.00	4176.00	25205.00	f	Soporte	2026-03-24 14:13:05.945282	2026-03-24 14:13:05.945282
 a3d5add1-57bc-4049-9287-5d36add75283	13066	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA LINO FLOR PAPEL FULL	PLOW	PLUSS MADRES	12190-1		LINO MILANES ELIOT MONICA 10990 MAS IVA ANCHO 145	/images/references/13066.JPG	\N	[{"um": "METRO", "cant": 1.01, "tipo": "TELA", "total": 13635, "concepto": "LINO MILANES", "vlr_unit": 13500}]	[{"um": "PRENDA", "cant": 1, "total": 2900, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2900}, {"um": "UNIDAD", "cant": 6, "total": 540, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 6, "total": 540, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 6, "total": 960, "concepto": "BOTON PLATEADO", "vlr_unit": 160}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4381, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4381}]	13635.00	9480.00	324.00	960.00	4781.00	29180.00	f	Soporte	2026-03-24 14:16:40.582605	2026-03-24 14:16:40.582605
-11cf6429-a4f4-4425-89b3-050eabf745b4	13065	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA COPAS FRANJA PLUSS	PLOW	PLUSS MADRES			CORTEZA 39990 MAS IVA   48000  RINDE 2,5  19,200 \nANCHO 1,75 ELASTICO ESPALD 0,34 \nTIRA AMARRE 55 CMS	/images/references/13065.JPG	\N	[{"um": "METRO", "cant": 0.5, "tipo": "TELA", "total": 10000, "concepto": "CORTEZA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.027, "total": 0, "concepto": "SESGO 2 CORTEZA", "vlr_unit": 0}, {"um": "METRO", "cant": 0.37, "total": 92.5, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.85, "total": 1487.5, "concepto": "FRANJA ELASTICA 556582BOMB", "vlr_unit": 1750}, {"um": "MTS", "cant": 0.8, "total": 280, "concepto": "FRAMILÓN", "vlr_unit": 350}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2888, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2888}]	10092.50	3900.00	324.00	1767.50	3288.00	19372.00	f	Soporte	2026-03-24 14:17:56.570789	2026-03-24 14:17:56.570789
+11cf6429-a4f4-4425-89b3-050eabf745b4	13065	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA COPAS FRANJA PLUSS	PLOW	PLUSS MADRES			CORTEZA 39990 MAS IVA   48000  RINDE 2,5  19,200 \nANCHO 1,75 ELASTICO ESPALD 0,34 \nTIRA AMARRE 55 CMS	/images/references/13065.JPG	\N	[{"um": "METRO", "cant": 0.5, "tipo": "TELA", "total": 10000, "concepto": "CORTEZA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.027, "total": 0, "concepto": "SESGO 2 CORTEZA", "vlr_unit": 0}, {"um": "METRO", "cant": 0.37, "total": 92.5, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.85, "total": 1487.5, "concepto": "FRANJA ELASTICA 556582BOMB", "vlr_unit": 1750}, {"um": "MTS", "cant": 0.8, "total": 280, "concepto": "FRAMIL├ôN", "vlr_unit": 350}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2888, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2888}]	10092.50	3900.00	324.00	1767.50	3288.00	19372.00	f	Soporte	2026-03-24 14:17:56.570789	2026-03-24 14:17:56.570789
 27395359-fb4f-4c30-b4ce-0bb10ad5940b	13064	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA PLUSS LENCERA		PLUSS MADRES	12188		LORD 7990 MAS IVA   ANCHO 1,45 \nDE UN RETAZO DE 1,3 SALE SESGO PARA 41 BLUSA TIRA LIBRE DE 35CMS SIN CONTAR EL ENCAJE SESGO DE 3	/images/references/13064.JPG	\N	[{"um": "METRO", "cant": 0.91, "tipo": "TELA", "total": 9100, "concepto": "LORD", "vlr_unit": 10000}, {"um": "METRO", "cant": 0.032, "total": 320, "concepto": "SESGO 2 LORD", "vlr_unit": 10000}]	[{"um": "UNIDAD", "cant": 1, "total": 4300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 300, "concepto": "TENSORES DE 12 CMS", "vlr_unit": 300}, {"um": "UNIDAD", "cant": 1, "total": 300, "concepto": "ARGOLLA DE 12 CMS", "vlr_unit": 300}, {"um": "MTS", "cant": 1.26, "total": 1706.04, "concepto": "BLONDA ELASTICA MINUTE 6,5", "vlr_unit": 1354}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3061, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3061}]	9420.00	5000.00	324.00	2306.04	3461.00	20511.04	f	Soporte	2026-03-24 14:19:27.703123	2026-03-24 14:19:27.703123
 a187735c-ea5a-46d1-872a-8070b85a9d45	13063	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSON PLUSS BOLERO FLOR	PLOW	PLUSS MADRES	12123			/images/references/13063.jpg	\N	[{"um": "METRO", "cant": 0.88, "tipo": "TELA", "total": 10560, "concepto": "LULULEMON YOGA", "vlr_unit": 12000}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3014, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3014}]	10560.00	5900.00	324.00	0.00	3414.00	20198.00	f	Soporte	2026-03-24 14:22:52.616229	2026-03-24 14:22:52.616229
 3de126b8-6d4b-4964-8e9e-2c6fd670e328	13059	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CAMISA BOLSILLO	PLOW	MADRES	13059			/images/references/13059.jpg	\N	[{"um": "METRO", "cant": 0.88, "tipo": "TELA", "total": 10560, "concepto": "RULOCO016", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.03, "tipo": "TELA", "total": 480, "concepto": "PICOT094", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.25, "total": 100, "concepto": "ELASTICO ( 4 ) CMS", "vlr_unit": 400}]	[{"um": "PRENDA", "cant": 1, "total": 734, "concepto": "FUSION DE CUELLO (PERILLA)", "vlr_unit": 734}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 5200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 5, "total": 550, "concepto": "BOTON", "vlr_unit": 110}, {"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3680, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3680}]	11140.00	7734.00	324.00	1300.00	4080.00	24578.00	f	Soporte	2026-03-24 14:24:14.175824	2026-03-24 14:24:14.175824
@@ -2918,43 +3586,49 @@ f04c3a0b-8ebc-4046-9947-78ee5f7fec2a	13058	ce75694c-000d-4b9a-a5fe-0ff716248e08	
 99777cde-cbcc-47ca-b267-535ebf31a4c2	13057	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA COPA GUIPIUR	PLOW	DAMA MADRES	12055		ANCHO 170 RINDE 2,2  38990 MAS IVA  46398  RINDE 2,2 \nAMARRE 34 CMS  5 AMARRES ES DECIR 2 BLUSAS Y MEDIA	/images/references/13057.jpg	/images/references/13057-2.jpg	[{"um": "METRO", "cant": 0.32, "tipo": "TELA", "total": 7040, "concepto": "HAWAI", "vlr_unit": 22000}, {"um": "METRO", "cant": 0.016, "total": 352, "concepto": "SESGO 1 HAWAI", "vlr_unit": 22000}, {"um": "METRO", "cant": 0.33, "total": 72.60000000000001, "concepto": "ELASTICO (  2) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 2900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.95, "total": 1286.3, "concepto": "FRANJA ELASTIC MINUATE 6,5", "vlr_unit": 1354}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2276, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2276}]	7464.60	3600.00	324.00	1286.30	2676.00	15350.90	f	Soporte	2026-03-24 14:27:07.249401	2026-03-24 14:27:07.249401
 5aad068d-23f1-4000-9a07-bb9b5648d9a0	13055	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CHALECO LANA	PLOW	MADRES	12068		TELA HAWAI # 1, DE GLORIA LA ESTACION APLIQUE DE ALEJANDRA CHAVERRA \n\nNota: Hawai a 46.400 pendiente de renidimiento	/images/references/13055.jpg	\N	[{"um": "METRO", "cant": 0.31, "tipo": "TELA", "total": 6820, "concepto": "HAWAI # 1", "vlr_unit": 22000}, {"um": "METRO", "cant": 0.19, "total": 2185, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2788, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2788}]	9005.00	6200.00	324.00	0.00	3188.00	18717.00	f	Soporte	2026-03-24 14:30:17.106779	2026-03-24 14:30:17.106779
 d3867304-3eb0-4e14-981b-1a30327ff274	13052	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA ENCAJE SISA ENTRADA PLACA	PLOW	DAMA MADRES	12106-1		CATTLEYA002  ELIOT MONICA 13990 MAS IVA	/images/references/13052.jpg	\N	[{"um": "METRO", "cant": 0.32, "tipo": "TELA", "total": 5376, "concepto": "CATTLEY002", "vlr_unit": 16800}, {"um": "METRO", "cant": 0.16, "tipo": "TELA", "total": 960, "concepto": "PIEL DURASNO", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.35, "total": 87.5, "concepto": "ELASTICO ( 2 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 2900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 300, "concepto": "PEGADA DE PLACA", "vlr_unit": 300}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 550, "concepto": "PLACA PLOW", "vlr_unit": 550}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2011, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2011}]	6423.50	3900.00	324.00	550.00	2411.00	13608.50	f	Soporte	2026-03-24 14:31:47.735578	2026-03-24 14:31:47.735578
-62406db5-d907-42af-9bd6-8abfbc15eb1c	13050	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL APERT FRENTE Y GRIPIUR EN SESG	PLOW	MADRE	12053-1		TRACE 145 BENGALINA BLUZZ ANCHO UTIL DE 150  PRECIO ES DE 9000 MAS IVA PRONTAMODA \nDE UNA TIRA DE SESGO ME SALEN DE UN METRO DE TELA NOS SALE N DE UNA TIRA ME SALNE 3 AMARRES DE 30 CM DE UNA TIRA ME SALEN  LAS CARGADERAS	/images/references/13050.jPG	\N	[{"um": "METRO", "cant": 0.35, "tipo": "TELA", "total": 5250, "concepto": "BENGALINA BLUZZ", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.047, "total": 705, "concepto": "SESGO 1 BENGALINA BLUZZ", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.34, "total": 85, "concepto": "ELASTICO 1(1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 0.85, "total": 1105, "concepto": "TINTORERÍA", "vlr_unit": 1300}, {"um": "UNIDAD", "cant": 1, "total": 3400, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 3400}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 600, "concepto": "PUNTERA", "vlr_unit": 300}, {"um": "UNIDAD", "cant": 0.9, "total": 2250, "concepto": "PUNTILLA DE 1.5 CM", "vlr_unit": 2500}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2625, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2625}]	6040.00	5405.00	324.00	2850.00	3025.00	17644.00	f	Soporte	2026-03-24 14:33:57.370884	2026-03-24 14:33:57.370884
+62406db5-d907-42af-9bd6-8abfbc15eb1c	13050	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL APERT FRENTE Y GRIPIUR EN SESG	PLOW	MADRE	12053-1		TRACE 145 BENGALINA BLUZZ ANCHO UTIL DE 150  PRECIO ES DE 9000 MAS IVA PRONTAMODA \nDE UNA TIRA DE SESGO ME SALEN DE UN METRO DE TELA NOS SALE N DE UNA TIRA ME SALNE 3 AMARRES DE 30 CM DE UNA TIRA ME SALEN  LAS CARGADERAS	/images/references/13050.jPG	\N	[{"um": "METRO", "cant": 0.35, "tipo": "TELA", "total": 5250, "concepto": "BENGALINA BLUZZ", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.047, "total": 705, "concepto": "SESGO 1 BENGALINA BLUZZ", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.34, "total": 85, "concepto": "ELASTICO 1(1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 0.85, "total": 1105, "concepto": "TINTORER├ìA", "vlr_unit": 1300}, {"um": "UNIDAD", "cant": 1, "total": 3400, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 3400}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 600, "concepto": "PUNTERA", "vlr_unit": 300}, {"um": "UNIDAD", "cant": 0.9, "total": 2250, "concepto": "PUNTILLA DE 1.5 CM", "vlr_unit": 2500}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2625, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2625}]	6040.00	5405.00	324.00	2850.00	3025.00	17644.00	f	Soporte	2026-03-24 14:33:57.370884	2026-03-24 14:33:57.370884
 1c64b524-fc44-43d2-9362-eec498a41a10	13048	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL ALFORZ FRENT	PLOW	MADRE	12051-1		ELASTICO DE 1.5 CM PARA LA ESPALDA BENGALINA BLUZZ ANCHO UTIL 150 PRECIO ES DE 9000 MAS IVA \nPRONTAMODA TRACE 145	/images/references/13048.jPG	\N	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BENGALINA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.7, "total": 210, "concepto": "ELASTICO ( 1.5 ) CMS", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "BOTONADA", "vlr_unit": 100}, {"um": "UNIDAD", "cant": 1, "total": 4200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 1000, "concepto": "BOTON 261517-87 25MM", "vlr_unit": 500}, {"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2439, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2439}]	6210.00	5300.00	324.00	1750.00	2839.00	16423.00	f	Soporte	2026-03-24 14:38:42.164763	2026-03-24 14:38:42.164763
-bc10c8fd-3075-4c31-ae56-a238fcda345b	13047	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA COPAS	PLOW	MADRES			DE 1 TIRA DE SESGO ME SALEN 3 CARGADERAS DE 40CM Y DE 1 TIRA DE SESGO COMPLETA ME SALE PARA CONTORNO DE BLUSA ANCHO DE TELA EN 1,48CM	/images/references/13047.jpg	\N	[{"um": "METRO", "cant": 0.36, "tipo": "TELA", "total": 6480, "concepto": "OJALILLO ELIOT", "vlr_unit": 18000}, {"um": "METRO", "cant": 0.11, "tipo": "TELA", "total": 660, "concepto": "PIEL DE DURAZNO", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.059, "total": 1062, "concepto": "SESGO 1 OJALILLO ELIOT", "vlr_unit": 18000}]	[{"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 4, "total": 200, "concepto": "MANUALIDAD NUDOS", "vlr_unit": 50}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "TERMINACION PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2491, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2491}]	8202.00	4600.00	324.00	750.00	2891.00	16767.00	f	Soporte	2026-03-24 14:44:10.907808	2026-03-24 14:44:10.907808
+bc10c8fd-3075-4c31-ae56-a238fcda345b	13047	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA COPAS	PLOW	MADRES			DE 1 TIRA DE SESGO ME SALEN 3 CARGADERAS DE 40CM Y DE 1 TIRA DE SESGO COMPLETA ME SALE PARA CONTORNO DE BLUSA ANCHO DE TELA EN 1,48CM	/images/references/13047.jpg	\N	[{"um": "METRO", "cant": 0.36, "tipo": "TELA", "total": 6480, "concepto": "OJALILLO ELIOT", "vlr_unit": 18000}, {"um": "METRO", "cant": 0.11, "tipo": "TELA", "total": 660, "concepto": "PIEL DE DURAZNO", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.059, "total": 1062, "concepto": "SESGO 1 OJALILLO ELIOT", "vlr_unit": 18000}]	[{"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 4, "total": 200, "concepto": "MANUALIDAD NUDOS", "vlr_unit": 50}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "TERMINACION PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2491, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2491}]	8202.00	4600.00	324.00	750.00	2891.00	16767.00	f	Soporte	2026-03-24 14:44:10.907808	2026-03-24 14:44:10.907808
 bb1c6cb2-ef3c-4415-9a1d-c234c183221c	13046	ce75694c-000d-4b9a-a5fe-0ff716248e08	LENCERA ESTRA	PLOW	MADRE	112058-1		ELSESGO DE LA DESTELLANTE SE CORTA ALTRAVEZ \n\nTRACE 150	/images/references/13046.jPG	\N	[{"um": "METRO", "cant": 0.38, "tipo": "TELA", "total": 6080, "concepto": "DESTELLANTE", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.035, "total": 560, "concepto": "SESGO 1 DESTELLANTE", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.78, "total": 195, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "FRANJA PELO A PELO DE 7 CM", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "TENSOR  10 MM", "vlr_unit": 250}, {"um": "MTS", "cant": 1, "total": 250, "concepto": "ARGOLLA 10 MM", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2578, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2578}]	6835.00	4500.00	324.00	2700.00	2978.00	17337.00	f	Soporte	2026-03-24 14:46:00.25763	2026-03-24 14:46:00.25763
 acc269ea-9a43-45df-b602-7a4d00925cfa	13045	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BLUSA LENCERA DAMA	PLOW	DAMA MADRES			LORD PRONTA MODA 7900 MAS IVA 145 CMS DE UN RETAZO DE 115SALE CARGADERAS PARA 41 BLUSAS TIRA LIOBRE DE 33	/images/references/13045.JPG	\N	[{"um": "METRO", "cant": 0.6, "tipo": "TELA", "total": 6000, "concepto": "LORD", "vlr_unit": 10000}, {"um": "METRO", "cant": 0.027, "total": 270, "concepto": "SESGO 2 LORD", "vlr_unit": 10000}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "TENSORES DE", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 1, "total": 250, "concepto": "ARGOLLA DE", "vlr_unit": 250}, {"um": "MTS", "cant": 1.06, "total": 1435.24, "concepto": "BLONDA ELASTICA MINUTE 6,5 B", "vlr_unit": 1354}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2375, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2375}]	6270.00	4700.00	324.00	1935.24	2775.00	16004.24	f	Soporte	2026-03-24 14:47:57.295472	2026-03-24 14:47:57.295472
-2f9ce7ee-c609-4b02-bfe1-bd32fda40e4b	13044	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CORSER LUZA	PLOW	MADRES	12087		TELA LUZA ARGATEX TRAZO EN 145 El precio de tela lo puso la diseñadora	/images/references/13044.jpg	/images/references/13044-2.jpg	[{"um": "METRO", "cant": 0.42, "tipo": "TELA", "total": 7140, "concepto": "LUZA", "vlr_unit": 17000}]	[{"um": "UNIDAD", "cant": 16, "total": 1760, "concepto": "RESORTADA", "vlr_unit": 110}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCIÓN TOP / CORSET", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.57, "total": 427.49999999999994, "concepto": "VARILLA PLASTICA", "vlr_unit": 750}, {"um": "MTS", "cant": 0.57, "total": 199.49999999999997, "concepto": "SESGO TAPA VARILLA", "vlr_unit": 350}, {"um": "MTS", "cant": 0.68, "total": 136, "concepto": "FRAMILÓN", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2763, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2763}]	7140.00	6460.00	324.00	1463.00	3163.00	18550.00	f	Soporte	2026-03-24 14:59:18.566108	2026-03-24 14:59:18.566108
-0d07867b-1644-4df3-b3c2-25ea89b68512	13043	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL EST BOLA Y CORBATIN	PLOW	MADRE	11999-1		SISAS MIDE 35 CM DE UNA TIRA DE SESGO ME SALEN 2 BLUSAS ES DECIR 2 BLUSAS LINO LIMPO 6200 MAS IVA ARGATES TRACE 145	/images/references/13043.jPG	\N	[{"um": "METRO", "cant": 0.6, "tipo": "TELA", "total": 6600, "concepto": "LINO LIMPO", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.018, "total": 197.99999999999997, "concepto": "SESGO 1 LINO LIMPO", "vlr_unit": 11000}]	[{"um": "PRENDA", "cant": 0.62, "total": 3968, "concepto": "SUBLIMADO  GLOQUI", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCIÓN BODY", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 1600, "concepto": "BOTON", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3252, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3252}]	6798.00	9388.00	324.00	1600.00	3652.00	21762.00	f	Soporte	2026-03-24 15:36:10.414682	2026-03-24 15:36:10.414682
+2f9ce7ee-c609-4b02-bfe1-bd32fda40e4b	13044	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CORSER LUZA	PLOW	MADRES	12087		TELA LUZA ARGATEX TRAZO EN 145 El precio de tela lo puso la dise├▒adora	/images/references/13044.jpg	/images/references/13044-2.jpg	[{"um": "METRO", "cant": 0.42, "tipo": "TELA", "total": 7140, "concepto": "LUZA", "vlr_unit": 17000}]	[{"um": "UNIDAD", "cant": 16, "total": 1760, "concepto": "RESORTADA", "vlr_unit": 110}, {"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCI├ôN TOP / CORSET", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.57, "total": 427.49999999999994, "concepto": "VARILLA PLASTICA", "vlr_unit": 750}, {"um": "MTS", "cant": 0.57, "total": 199.49999999999997, "concepto": "SESGO TAPA VARILLA", "vlr_unit": 350}, {"um": "MTS", "cant": 0.68, "total": 136, "concepto": "FRAMIL├ôN", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2763, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2763}]	7140.00	6460.00	324.00	1463.00	3163.00	18550.00	f	Soporte	2026-03-24 14:59:18.566108	2026-03-24 14:59:18.566108
+0d07867b-1644-4df3-b3c2-25ea89b68512	13043	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL EST BOLA Y CORBATIN	PLOW	MADRE	11999-1		SISAS MIDE 35 CM DE UNA TIRA DE SESGO ME SALEN 2 BLUSAS ES DECIR 2 BLUSAS LINO LIMPO 6200 MAS IVA ARGATES TRACE 145	/images/references/13043.jPG	\N	[{"um": "METRO", "cant": 0.6, "tipo": "TELA", "total": 6600, "concepto": "LINO LIMPO", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.018, "total": 197.99999999999997, "concepto": "SESGO 1 LINO LIMPO", "vlr_unit": 11000}]	[{"um": "PRENDA", "cant": 0.62, "total": 3968, "concepto": "SUBLIMADO  GLOQUI", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 4, "total": 360, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCI├ôN BODY", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 1600, "concepto": "BOTON", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3252, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3252}]	6798.00	9388.00	324.00	1600.00	3652.00	21762.00	f	Soporte	2026-03-24 15:36:10.414682	2026-03-24 15:36:10.414682
 5aa3d178-c80e-4b34-a45e-099104e91c77	13042	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL MANG BOLE ARABEZC	PLOW	MADRES	12089-1		ELASTICO ESP S 28 CM M DE 30 CM L DE 32 DE UNA TIRA DE SESGO ME SALEN 4 ESPALDAS \nTELA PARIS DE ARGATEX PRECIO ES 19900 MAS IVA ANCHO DE 145 \nLINO MILA 145	/images/references/13042.jPG	\N	[{"um": "METRO", "cant": 0.33, "tipo": "TELA", "total": 7920, "concepto": "PARIS", "vlr_unit": 24000}, {"um": "METRO", "cant": 0.26, "tipo": "TELA", "total": 2860, "concepto": "LINO MILAN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.008, "total": 88, "concepto": "SESGO 1 LINO MILAN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.32, "total": 80, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 3800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2832, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2832}]	10948.00	4500.00	324.00	0.00	3232.00	19004.00	f	Soporte	2026-03-24 15:37:31.584445	2026-03-24 15:37:31.584445
 ee63a87c-ae20-422e-afeb-f6216f9c1552	13041	ce75694c-000d-4b9a-a5fe-0ff716248e08	STRAP FLOR MAX	PLOW	MADRE	12113-1		TRACE 170 \nDE UNA TIRA DE SESGO ME SALEN LAS CARGADERAS  MIDEN 80 CM \nTELA CORTEZA DE TEX O ELIOT  PRECIO ES DE 39990 MAS IVA EL KILO \nCOMPOSION ALG 47 % POL 43% SPA 10 % RENDIMIENTO  2.5 CM ANCHO 180	/images/references/13041.jpg	\N	[{"um": "METRO", "cant": 0.28, "tipo": "TELA", "total": 5600.000000000001, "concepto": "CORTEZA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.035, "total": 700.0000000000001, "concepto": "SESGO 1 CORTEZA", "vlr_unit": 20000}, {"um": "METRO", "cant": 0.84, "total": 210, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 250}]	[{"um": "UND", "cant": 1, "total": 3600, "concepto": "ALEJANDRA CHAVERRA", "vlr_unit": 3600}, {"um": "UNIDAD", "cant": 1, "total": 2700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 1000, "concepto": "TENSOR", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 4, "total": 1000, "concepto": "ARGOLLA", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2843, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2843}]	6510.00	7000.00	324.00	2000.00	3243.00	19077.00	f	Soporte	2026-03-24 15:40:18.695605	2026-03-24 15:40:18.695605
 b9724542-035f-4e68-b2da-9dcb26db5ab8	13039	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU PEPLUT	PLOW	MADRE	13039		ANCHO DE 140 BENGALINA PANA 11900 MAS IVA PRONTAMODA	/images/references/13039.jPG	\N	[{"um": "METRO", "cant": 0.72, "tipo": "TELA", "total": 10800, "concepto": "BENGALINA PANA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 3600, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3600}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2940, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2940}]	10800.00	4500.00	324.00	750.00	3340.00	19714.00	f	Soporte	2026-03-24 15:45:53.776181	2026-03-24 15:45:53.776181
 11b00a36-5c78-4305-9703-4982a33c1799	13038	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL RAYA EST FLOR	PLOW	MADRES			VITORIA RAY  39900 MAS IVA RINDE 2.2 VICTORIA 145 RIB 112	/images/references/13038.jPG	\N	[{"um": "METRO", "cant": 0.41, "total": 8897, "concepto": "VICTORIA RAY", "vlr_unit": 21700}, {"um": "METRO", "cant": 0.08, "total": 920, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UND", "cant": 1, "total": 3800, "concepto": "APLIQUE Y PEGADA   ALEJANDRA SOLO FRENTE", "vlr_unit": 3800}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3078, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3078}]	9817.00	7000.00	324.00	0.00	3478.00	20619.00	f	Soporte	2026-03-24 15:47:58.570888	2026-03-24 15:47:58.570888
 e35b02d0-67f6-4301-a74f-fac8ac58fde7	13040	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL STRAP CON HERRAJE	PLOW	MADRES	12090-1		ELASTICO ESP  S DE 30 CM M DE 32 CM L DE 34 CM ELASTICO INTERNO ESCO DELANTERO SDE 38 CM, M DE 40 , L DE 42 CM \nCARGADERA DE 45 CM \nBENGALINA PANA 11900 MAS IVA PRONTA MODA TRACE 140	/images/references/13040.jPG	/images/references/13040-2.jPG	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6000, "concepto": "BENGALINA PANA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.07, "total": 1050, "concepto": "SESGO 1 BENGALINA PANA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.76, "total": 190, "concepto": "ELASTICO ( 1 ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD PASADOR", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 4, "total": 1000, "concepto": "TENSOR 10MM", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 4, "total": 1000, "concepto": "ARGOLLA 10MM", "vlr_unit": 250}, {"um": "UND", "cant": 1, "total": 3150, "concepto": "HERRAGE ZANARA AMORFO DORADO BOMBAY", "vlr_unit": 3150}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3163, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3163}]	7240.00	4900.00	324.00	5150.00	3563.00	21177.00	f	Soporte	2026-03-24 15:43:11.937825	2026-03-24 15:43:11.937825
 7c2cf22f-8333-4f36-a531-3b0eded26161	13036	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA ESPALDA CON APLIQUES YB APLIQUE PUNTO CORAZON	PLOW	DAMA MADRES			APLIQUE PUNTO CORAZON A 14 CMS DE LA PUNTICA DEL HOMBRO HACIA ABAJO Y A 5,5 DEL CENTRO FTE HACIA EL COSTADO	/images/references/13036.jpg	/images/references/13036-2.jpg	[{"um": "METRO", "cant": 0.63, "tipo": "TELA", "total": 9450, "concepto": "LYCRA PRAGA", "vlr_unit": 15000}]	[{"um": "UNIDAD", "cant": 1, "total": 3600, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 3600}, {"um": "UNIDAD", "cant": 1, "total": 2700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3012, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3012}]	9450.00	7000.00	324.00	0.00	3412.00	20186.00	f	Soporte	2026-03-24 15:50:01.862642	2026-03-24 15:50:01.862642
-7223b0c4-cee4-4df7-8206-bb3b891bbbb2	13035	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA  ESPALDA Y PUÑOS BLONDA	PLOW	DAMA MADRES			CATTALEYA  13990 MAS IVA \nEN EL ANCHO DE LA ATELA SALEN 7 APLIQUE Y EN 1 METRO 5 ES DECIR EN 1 METRO DE TELA SALEN 35 APLIQUES	/images/references/13035.jpg	/images/references/13035-2.jpg	[{"um": "METRO", "cant": 0.59, "tipo": "TELA", "total": 8260, "concepto": "BURDA JEFE", "vlr_unit": 14000}, {"um": "METRO", "cant": 0.3, "tipo": "TELA", "total": 5100, "concepto": "CATTLEYA", "vlr_unit": 17000}, {"um": "METRO", "cant": 0.029, "tipo": "TELA", "total": 493, "concepto": "APLIQUE", "vlr_unit": 17000}]	[{"um": "UNIDAD", "cant": 15, "total": 1200, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 1000, "concepto": "APLIQUE", "vlr_unit": 1000}, {"um": "UNIDAD", "cant": 1, "total": 3300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3659, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3659}]	13853.00	6200.00	324.00	0.00	4059.00	24436.00	f	Soporte	2026-03-24 15:52:03.610081	2026-03-24 15:52:03.610081
+7223b0c4-cee4-4df7-8206-bb3b891bbbb2	13035	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA  ESPALDA Y PU├æOS BLONDA	PLOW	DAMA MADRES			CATTALEYA  13990 MAS IVA \nEN EL ANCHO DE LA ATELA SALEN 7 APLIQUE Y EN 1 METRO 5 ES DECIR EN 1 METRO DE TELA SALEN 35 APLIQUES	/images/references/13035.jpg	/images/references/13035-2.jpg	[{"um": "METRO", "cant": 0.59, "tipo": "TELA", "total": 8260, "concepto": "BURDA JEFE", "vlr_unit": 14000}, {"um": "METRO", "cant": 0.3, "tipo": "TELA", "total": 5100, "concepto": "CATTLEYA", "vlr_unit": 17000}, {"um": "METRO", "cant": 0.029, "tipo": "TELA", "total": 493, "concepto": "APLIQUE", "vlr_unit": 17000}]	[{"um": "UNIDAD", "cant": 15, "total": 1200, "concepto": "APLIQUE Y PEGADA  ALEJANDRA", "vlr_unit": 80}, {"um": "UNIDAD", "cant": 1, "total": 1000, "concepto": "APLIQUE", "vlr_unit": 1000}, {"um": "UNIDAD", "cant": 1, "total": 3300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3659, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3659}]	13853.00	6200.00	324.00	0.00	4059.00	24436.00	f	Soporte	2026-03-24 15:52:03.610081	2026-03-24 15:52:03.610081
 c5cd25ec-0e18-4c01-a013-e485b4810884	13033	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CAMISETA MARGARITA	PLOW	MADRES	12073		BURDA FRIIA - DON EFRAIN DTF ALEJANDRA CHAVERRA	/images/references/13033.jpg	/images/references/13033-2.jpg	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 9405, "concepto": "BURDA FRIA", "vlr_unit": 16500}]	[{"um": "UNIDAD", "cant": 1, "total": 4200, "concepto": "DTF Y PEGADA", "vlr_unit": 4200}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3022, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3022}]	9405.00	7100.00	324.00	0.00	3422.00	20251.00	f	Soporte	2026-03-24 16:05:42.683033	2026-03-24 16:05:42.683033
 fac7f343-f317-4164-a782-0ffdec35b60f	13032	ce75694c-000d-4b9a-a5fe-0ff716248e08	BUSO DE CIERRE	PLOW	MADRES			CIERRE  TALLA S 34 TALLA M 34 TALLA L36 TRACE 112	/images/references/13032.jpg	\N	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 8510, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 1500, "concepto": "ESTAMPADO   CAMILO  MANGA", "vlr_unit": 1500}, {"um": "UND", "cant": 1, "total": 1700, "concepto": "PEGADA  ALEJANDRA 10 PERLAS POR MANGA", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 1, "total": 3000, "concepto": "CIERRE  QUERUBIN CON DOBLE CREMALLERA", "vlr_unit": 3000}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3364, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3364}]	8510.00	6900.00	324.00	3000.00	3764.00	22498.00	f	Soporte	2026-03-24 16:07:29.046299	2026-03-24 16:07:29.046299
-682a2249-408c-486f-a9ad-de8624788e7e	13029	ce75694c-000d-4b9a-a5fe-0ff716248e08	BODY COR MAN CASQ	PLOW	MADRE	12094-1		TELA PICOT PRECIO ES DE 12990 MAS IVA \nANCHO DE LA TELA 140 TRACE 135 CM \nESCOTE FRENTE 32 CM ESCOTE ESP 32 CM SISA CON TIRA LIBRE DE 62 CM CON UNA TIRA SESGO LAS SISAS Y TIRA LIBRE Y ESCOTE DE UNA TIRA DE SESGO ME SALEN 4 ESCOTE ES DECIR 2 BLUSAS	/images/references/13029.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 9280, "concepto": "PICOT", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.2, "tipo": "TELA", "total": 1400, "concepto": "POLILICRA", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.053, "total": 371, "concepto": "SESGO 2 POLILICRA", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.06, "total": 15, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCIÓN BODY", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2997, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2997}]	11066.00	4900.00	324.00	400.00	3397.00	20087.00	f	Soporte	2026-03-24 16:09:00.216261	2026-03-24 16:09:00.216261
-67869954-db8f-4fe9-9a82-955bf91b69a2	13028	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BODY RIO	PLOW	MADRES	11988		BOTON TAPA CAZULA DE LA BOMBAY COLOR PLATA TELA RIO, CON ANCHO DE 1,55	/images/references/13028.jpg	\N	[{"um": "METRO", "cant": 0.56, "tipo": "TELA", "total": 10640.000000000002, "concepto": "RIO", "vlr_unit": 19000}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCIÓN BODY", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}, {"um": "UNIDAD", "cant": 2, "total": 1800, "concepto": "BOTON BROCHE TAPA CAZUELA", "vlr_unit": 900}, {"um": "UNIDAD", "cant": 1, "total": 900, "concepto": "PLACA PLOW", "vlr_unit": 900}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3405, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3405}]	10640.00	4900.00	324.00	3100.00	3805.00	22769.00	f	Soporte	2026-03-24 16:17:39.373602	2026-03-24 16:17:39.373602
-2e3a88c2-ce3a-431f-9d1b-018abbf5a20a	13027	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BODY ISLA	PLOW	MADRES	12098	12098	TELA ISLANDIA PRONTAMODA ELIZABETH TRAZO EN 155	/images/references/13027.jpg	\N	[{"um": "METRO", "cant": 0.93, "tipo": "TELA", "total": 11625, "concepto": "ISLANDIA", "vlr_unit": 12500}]	[{"um": "UNIDAD", "cant": 1, "total": 4800, "concepto": "CONFECCIÓN BODY", "vlr_unit": 4800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3205, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3205}]	11625.00	5500.00	324.00	400.00	3605.00	21454.00	f	Soporte	2026-03-24 16:19:53.971804	2026-03-24 16:19:53.971804
+682a2249-408c-486f-a9ad-de8624788e7e	13029	ce75694c-000d-4b9a-a5fe-0ff716248e08	BODY COR MAN CASQ	PLOW	MADRE	12094-1		TELA PICOT PRECIO ES DE 12990 MAS IVA \nANCHO DE LA TELA 140 TRACE 135 CM \nESCOTE FRENTE 32 CM ESCOTE ESP 32 CM SISA CON TIRA LIBRE DE 62 CM CON UNA TIRA SESGO LAS SISAS Y TIRA LIBRE Y ESCOTE DE UNA TIRA DE SESGO ME SALEN 4 ESCOTE ES DECIR 2 BLUSAS	/images/references/13029.jPG	\N	[{"um": "METRO", "cant": 0.58, "tipo": "TELA", "total": 9280, "concepto": "PICOT", "vlr_unit": 16000}, {"um": "METRO", "cant": 0.2, "tipo": "TELA", "total": 1400, "concepto": "POLILICRA", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.053, "total": 371, "concepto": "SESGO 2 POLILICRA", "vlr_unit": 7000}, {"um": "METRO", "cant": 0.06, "total": 15, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCI├ôN BODY", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2997, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2997}]	11066.00	4900.00	324.00	400.00	3397.00	20087.00	f	Soporte	2026-03-24 16:09:00.216261	2026-03-24 16:09:00.216261
+67869954-db8f-4fe9-9a82-955bf91b69a2	13028	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BODY RIO	PLOW	MADRES	11988		BOTON TAPA CAZULA DE LA BOMBAY COLOR PLATA TELA RIO, CON ANCHO DE 1,55	/images/references/13028.jpg	\N	[{"um": "METRO", "cant": 0.56, "tipo": "TELA", "total": 10640.000000000002, "concepto": "RIO", "vlr_unit": 19000}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCI├ôN BODY", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}, {"um": "UNIDAD", "cant": 2, "total": 1800, "concepto": "BOTON BROCHE TAPA CAZUELA", "vlr_unit": 900}, {"um": "UNIDAD", "cant": 1, "total": 900, "concepto": "PLACA PLOW", "vlr_unit": 900}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3405, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3405}]	10640.00	4900.00	324.00	3100.00	3805.00	22769.00	f	Soporte	2026-03-24 16:17:39.373602	2026-03-24 16:17:39.373602
+2e3a88c2-ce3a-431f-9d1b-018abbf5a20a	13027	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BODY ISLA	PLOW	MADRES	12098	12098	TELA ISLANDIA PRONTAMODA ELIZABETH TRAZO EN 155	/images/references/13027.jpg	\N	[{"um": "METRO", "cant": 0.93, "tipo": "TELA", "total": 11625, "concepto": "ISLANDIA", "vlr_unit": 12500}]	[{"um": "UNIDAD", "cant": 1, "total": 4800, "concepto": "CONFECCI├ôN BODY", "vlr_unit": 4800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 400, "concepto": "BROCHE", "vlr_unit": 400}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3205, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3205}]	11625.00	5500.00	324.00	400.00	3605.00	21454.00	f	Soporte	2026-03-24 16:19:53.971804	2026-03-24 16:19:53.971804
 bb4cb11e-6993-4c43-bd0f-87b5fb0e5365	13023	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA PLUS CORTE ESPALDA FLOR	PLOW	PLUSS MADRES	12043		POLO RIB SUPER NOVA  175 TELA 36000 IVA INCLUIDO KL FALTA RENDIMIENTO	/images/references/13023.jpg	/images/references/13023-2.jpg	[{"um": "METRO", "cant": 0.74, "tipo": "TELA", "total": 12580, "concepto": "POLO RIB", "vlr_unit": 17000}]	[{"um": "PRENDA", "cant": 1, "total": 2500, "concepto": "ESTAMPADO HERNAN", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 2900, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2900}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3412, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3412}]	12580.00	6100.00	324.00	0.00	3812.00	22816.00	f	Soporte	2026-03-24 16:26:24.047417	2026-03-24 16:26:24.047417
 c0d1f0a8-cd8c-4720-bbc8-66b17e86de5c	13019	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISERA A RAYAS FONDEO FLORES Y GUIOIUR MGAS	PLOW	PLUSS MARES	12047		CHIPRE GLAMS SEBASTIAN ELIOT 11990 MAS IVA	/images/references/13019.jpg	\N	[{"um": "METRO", "cant": 1.09, "tipo": "TELA", "total": 16350.000000000002, "concepto": "CHIPRE GLAMAS", "vlr_unit": 15000}]	[{"um": "PRENDA", "cant": 1, "total": 2500, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BORDADO", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 5, "total": 450, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 5700, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 5700}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 1.04, "total": 3328, "concepto": "GUIPIUR", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 5, "total": 900, "concepto": "BOTON BPO21194 20L", "vlr_unit": 180}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 5513, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 5513}]	16350.00	9800.00	324.00	4228.00	5913.00	36615.00	f	Soporte	2026-03-24 16:31:15.989955	2026-03-24 16:31:15.989955
 c92732d2-f6dd-4b47-943d-b47a2b98f59a	13016	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA PLUSS PEDRERIA	PLOW	PLUSS MADRES				/images/references/13016.jpg	\N	[{"um": "METRO", "cant": 0.82, "tipo": "TELA", "total": 9430, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3134, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3134}]	9430.00	7700.00	324.00	0.00	3534.00	20988.00	f	Soporte	2026-03-24 16:37:07.56049	2026-03-24 16:37:07.56049
 a9b62ce1-f6d4-4f50-ade3-24d88d47ce65	13012	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLUS CUELL NERU PLUSS	PLOW	MADRE	12111-1		TRACE 140 TIRA LIBRE DE SESGO PARA AMARRE DE 32 CM DE UNA TIRA DE SESGO ME SALEN 2 BLUSAS	/images/references/13012.jPG	\N	[{"um": "METRO", "cant": 1.08, "tipo": "TELA", "total": 15660.000000000002, "concepto": "ARIDA", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.018, "total": 261, "concepto": "SESGO 1 ARIDA", "vlr_unit": 14500}]	[{"um": "PRENDA", "cant": 1, "total": 403, "concepto": "FUSION DE CUELLO ()", "vlr_unit": 403}, {"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "TERMINACION", "vlr_unit": 100}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 600, "concepto": "PUNTERAS", "vlr_unit": 300}, {"um": "UNIDAD", "cant": 1, "total": 700, "concepto": "PLACA PLOW", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4228, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4228}]	15921.00	6003.00	324.00	1300.00	4628.00	28176.00	f	Soporte	2026-03-24 16:44:53.016166	2026-03-24 16:44:53.016166
 a3ff297e-43d4-42cf-bc13-c4e3453beb00	13017	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA RAYAS MGA BOMBA	PLOW	PLUSS MEDIA				/images/references/13017.jpg	\N	[{"um": "METRO", "cant": 0.7, "tipo": "TELA", "total": 10500, "concepto": "LYCRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.17, "tipo": "TELA", "total": 1020.0000000000001, "concepto": "PIEL DURASNO", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.31, "tipo": "TELA", "total": 3410, "concepto": "POPELINA", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.067, "total": 770.5, "concepto": "RIB", "vlr_unit": 11500}]	[{"um": "PRENDA", "cant": 1, "total": 2300, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 700, "concepto": "CORTE", "vlr_unit": 700}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4080, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4080}]	15700.50	6700.00	324.00	0.00	4480.00	27204.50	f	Soporte	2026-03-24 16:34:03.067542	2026-03-24 16:34:03.067542
 91a71349-12dd-47a2-9fa8-d34856d4fc86	13015	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISETA PLUSS COMBINADA CROCHET		PLUSS MADRES	12107-2			/images/references/13015.jpg	/images/references/13015-2.jpg	[{"um": "METRO", "cant": 0.63, "tipo": "TELA", "total": 9765, "concepto": "L.FRIA FRANK", "vlr_unit": 15500}, {"um": "METRO", "cant": 0.33, "tipo": "TELA", "total": 6270, "concepto": "CROCHET", "vlr_unit": 19000}]	[{"um": "UNIDAD", "cant": 1, "total": 3500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3691, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3691}]	16035.00	4200.00	324.00	0.00	4091.00	24650.00	f	Soporte	2026-03-24 16:38:39.26564	2026-03-24 16:38:39.26564
-6fac52de-e058-4e34-881d-4306db50f547	13014	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BL AMARR	PLOW	MADRES				/images/references/13014.jPG	\N	[{"um": "METRO", "cant": 0.85, "tipo": "TELA", "total": 10200, "concepto": "MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.062, "total": 744, "concepto": "SESGO 1 MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.44, "total": 220, "concepto": "ELASTICO (2  ) CMS", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 6, "total": 300, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 50}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3050, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3050}]	11164.00	5500.00	324.00	0.00	3450.00	20438.00	f	Soporte	2026-03-24 16:40:17.323913	2026-03-24 16:40:17.323913
 169386e3-d799-4cbf-8df9-465422b48d47	13013	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL AMARR ANGELIT		MADRES			ANGELITA : SISA 22 CENTRO FRENTE 44 CM RUEDO  22 CM TIRA DE SESGP DE 3 CM PARA CARGADERA DE 40 CM TIRA DE AMARRE DE 30 CM  PARA LA TALLA M DE UNA TIRA DE SESGO ME SALEN TIRA DE CARGADERAS DE UNA TIRA DE SESGO ME SALEN 3 TIRAS DE AMARRE	/images/references/13013.JPG	\N	[{"um": "METRO", "cant": 0.41, "tipo": "TELA", "total": 4715, "concepto": "RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.105, "total": 1207.5, "concepto": "SESGO 1 RIB", "vlr_unit": 11500}, {"um": "METRO", "cant": 0.34, "total": 85, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 500, "concepto": "TENSORES 10 MM", "vlr_unit": 250}, {"um": "UNIDAD", "cant": 2, "total": 500, "concepto": "ARGOLLA 10 MM", "vlr_unit": 250}, {"um": "MTS", "cant": 1.85, "total": 2775, "concepto": "FRANJA ELASTICA  ANGELITA", "vlr_unit": 1500}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2389, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2389}]	6007.50	3200.00	324.00	3775.00	2789.00	16095.50	f	Soporte	2026-03-24 16:42:17.999716	2026-03-24 16:42:17.999716
 d51f9dae-7a25-478b-bc69-0f266e0b9f4f	13011	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLUSA EN GRIPIU	PLOW	MADRES	12095-1		LLEVA 3 FLORES POR BLUSA 25 CM PARA ELCUELLO PARA TODAS LAS TALLAS	/images/references/13011.jPG	\N	[{"um": "METRO", "cant": 0.56, "tipo": "TELA", "total": 9240, "concepto": "BURDA FRIA", "vlr_unit": 16500}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 3, "total": 300, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 100}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.24, "total": 936, "concepto": "GRIPIUR DE FLOR INSUTEX", "vlr_unit": 3900}, {"um": "UNIDAD", "cant": 0.25, "total": 375, "concepto": "GRIPIUR  DE ARO", "vlr_unit": 1500}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2886, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2886}]	9240.00	5200.00	324.00	1311.00	3286.00	19361.00	f	Soporte	2026-03-24 16:52:36.869301	2026-03-24 16:52:36.869301
 4b81d961-49c8-4628-9079-4d86fcc7987f	13008	2b241a44-34aa-4493-bfd1-78ad575ecbcc	CAMISETA 1987	PLOW	MADRES	12093-1		APLIQUE DE ALEJANDRA CHEVERRA TELA BYRON ANCHO 144	/images/references/13008.jpg	\N	[{"um": "METRO", "cant": 0.59, "tipo": "TELA", "total": 11918, "concepto": "BAIRON", "vlr_unit": 20200}]	[{"um": "UNIDAD", "cant": 1, "total": 2900, "concepto": "APLIQUE Y PEGADA", "vlr_unit": 2900}, {"um": "UNIDAD", "cant": 1, "total": 2000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3204, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3204}]	11918.00	5600.00	324.00	0.00	3604.00	21446.00	f	Soporte	2026-03-24 16:58:58.755753	2026-03-24 16:58:58.755753
 bf293ee1-7b48-445e-b0ef-dc136ca94d7a	13010	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU ENCAJE EN CONTRASTE	PLOW	MADRES	12056-1		TRACE155 BLONDA ELASTICA DE 17 CM	/images/references/13010.jPG	\N	[{"um": "METRO", "cant": 0.4, "tipo": "TELA", "total": 6600, "concepto": "BURDA FRIA", "vlr_unit": 16500}]	[{"um": "UNIDAD", "cant": 1, "total": 2400, "concepto": "APLIQUE Y PEGADA  ALEJNADRA CHAVERRA", "vlr_unit": 2400}, {"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 0.85, "total": 2337.5, "concepto": "BLONDA ELASTICA STRA SBURGO 17 CM", "vlr_unit": 2750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2668, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2668}]	6600.00	5600.00	324.00	2337.50	3068.00	17929.50	f	Soporte	2026-03-24 16:54:55.403415	2026-03-24 16:54:55.403415
 c9e6a700-e8ca-46ae-827e-9f776a1a9b66	13009	ce75694c-000d-4b9a-a5fe-0ff716248e08	BLU SUBL RAYA CUELLO	PLOW	MADRE			A 17 CM DEL HOMBRO HACIA ABAJO ESTAMPAR SOUNDER 140 PIEL DURAZNO148	/images/references/13009.jPG	\N	[{"um": "METRO", "cant": 0.5, "tipo": "TELA", "total": 3000, "concepto": "PIEL DURAZNO", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.13, "tipo": "TELA", "total": 1950, "concepto": "BENGALINA", "vlr_unit": 15000}]	[{"um": "PRENDA", "cant": 0.5, "total": 3200, "concepto": "SUBLIMADO GLOQUI", "vlr_unit": 6400}, {"um": "UND", "cant": 1, "total": 1700, "concepto": "ESTAMPADO CAMILO", "vlr_unit": 1700}, {"um": "UNIDAD", "cant": 2, "total": 180, "concepto": "BOTONADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 2, "total": 180, "concepto": "OJALADA", "vlr_unit": 90}, {"um": "UNIDAD", "cant": 1, "total": 3200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 2, "total": 200, "concepto": "BOTON 20 MM - SOTEXCO", "vlr_unit": 100}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2628, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2628}]	4950.00	9160.00	324.00	200.00	3028.00	17662.00	f	Soporte	2026-03-24 16:57:43.297604	2026-03-24 16:57:43.297604
 253d135d-1051-407c-8060-3345b680539c	13007	2b241a44-34aa-4493-bfd1-78ad575ecbcc	BLUSA ROSA	PLOW	MADRES	12116	12116	TRAZO EN 1,58	/images/references/13007.jpg	\N	[{"um": "METRO", "cant": 0.6, "tipo": "TELA", "total": 8700, "concepto": "LYCRA POP", "vlr_unit": 14500}, {"um": "METRO", "cant": 0.12, "total": 26.4, "concepto": "ELASTICO ( 1 ) CMS 0.5 x 2", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 2500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PEGADA DE PLACA", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UNIDAD", "cant": 1, "total": 750, "concepto": "PLACA PLOW", "vlr_unit": 750}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2370, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2370}]	8726.40	3400.00	324.00	750.00	2770.00	15970.40	f	Soporte	2026-03-24 17:00:13.133522	2026-03-24 17:00:13.133522
+30f40ec9-4715-42dd-ae8e-488dcf16c48a	13131	ce75694c-000d-4b9a-a5fe-0ff716248e08	BL  EST  EN CENEFA	PLOW	MADRE	12226-1		TRACE 155 DE UNA TIRA DE SESGO ME SALEN LA TIRA LIBRE PARA AMARRE DE 72 CM CADA UNA	/images/references/13131.jPG	/images/references/13131-2.jPG	[{"um": "METRO", "cant": 0.26, "tipo": "TELA", "total": 3900, "concepto": "LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.035, "total": 525, "concepto": "SESGO 1 LICRA PRAGA", "vlr_unit": 15000}, {"um": "METRO", "cant": 0.46, "tipo": "RESORTE", "total": 115, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 2200, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 2300, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2300}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1807, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1807}]	4540.00	5200.00	324.00	0.00	2207.00	12271.00	f	Soporte	2026-03-20 16:00:00.142158	2026-03-20 16:00:00.142158
+bd303b9c-de37-4b84-bf7d-213fb449005f	13077	2b241a44-34aa-4493-bfd1-78ad575ecbcc	DUO CHALECO TELA SOPHIA	PLOW	PLUS MADRES			TELA SOPHIA #7 DE PRONTAMODA \nLYCRA FRIA \nSIZA 0,60 1 TIRA PARA 2 SIZAS \nCUELLO 1,35 1 TIRA PARA CUELLOS Y TIRA LIBRE DE  30CM \nRUEDO 0,54 1 TIRA PARA DOS ESPALDAS FRENTE 0,65X2 1 TIRA PARA \nFRENTES \nAMARRES FRENTE 1 TIRA PARA 4 AMARES	/images/references/13077.JPG	/images/references/13077-2.jPG	[{"um": "METRO", "cant": 0.57, "tipo": "TELA", "total": 12539.999999999998, "concepto": "SOPHIA #7", "vlr_unit": 22000}, {"um": "METRO", "cant": 0.23, "tipo": "TELA", "total": 1380, "concepto": "LICRAFRIA", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.17, "total": 1870.0000000000002, "concepto": "SESGO 1 LINO MILAN", "vlr_unit": 11000}, {"um": "METRO", "cant": 0.035, "total": 210.00000000000003, "concepto": "SESGO 2 LICRAFRIA", "vlr_unit": 6000}, {"um": "METRO", "cant": 0.3, "total": 66, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 220}]	[{"um": "UNIDAD", "cant": 1, "total": 4000, "concepto": "CONFECCION CHALECO", "vlr_unit": 4000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 4038, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 4038}]	16066.00	6100.00	324.00	0.00	4438.00	26928.00	f	Soporte	2026-03-24 12:20:43.588865	2026-03-24 12:20:43.588865
+6fac52de-e058-4e34-881d-4306db50f547	13014	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	BL AMARR	PLOW	MADRES				/images/references/13014.jPG	\N	[{"um": "METRO", "cant": 0.85, "tipo": "TELA", "total": 10200, "concepto": "MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.062, "total": 744, "concepto": "SESGO 1 MAUI", "vlr_unit": 12000}, {"um": "METRO", "cant": 0.44, "total": 220, "concepto": "ELASTICO (2  ) CMS", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 4500, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 4500}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 6, "total": 300, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 50}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3050, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3050}]	11164.00	5500.00	324.00	0.00	3450.00	20438.00	t	Soporte	2026-03-24 16:40:17.323913	2026-03-24 16:40:17.323913
+232173bc-fe01-415f-9470-bf69cac43db7	13098	ce75694c-000d-4b9a-a5fe-0ff716248e08	STRA ESTAP	PLOW	MADRE	12163-1		BURDA FRIA  DE LA QUE TRAJO DON EFRAIN \nCON UNA TIRA DE SESGO ME SALEN LA TIRA DE AMARRE \nDE UNA TIRA DE SESGO ME SALEN PARA 2 BLUSAS CON OJALETES DE 5 CM \n\n\n\nTRACE 155	/images/references/13098.jPG	\N	[{"um": "METRO", "cant": 0.29, "tipo": "TELA", "total": 4785, "concepto": "BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.053, "total": 874.5, "concepto": "SESGO 1 BURDA FRIA", "vlr_unit": 16500}, {"um": "METRO", "cant": 0.78, "total": 195, "concepto": "ELASTICO (1  ) CMS", "vlr_unit": 250}]	[{"um": "PRENDA", "cant": 1, "total": 1600, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1600}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCI├ôN TOP / CROPTOP", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "MANUALIDAD TERMINACION", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "MTS", "cant": 0.8, "total": 240, "concepto": "FRAMIL├ôN", "vlr_unit": 300}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2140, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2140}]	5854.50	5500.00	324.00	240.00	2540.00	14458.50	t	Soporte	2026-03-24 11:10:41.004953	2026-03-24 11:10:41.004953
+5107bc11-6b24-466f-913e-5b5b20e2c018	13123	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	CAMISILLA TEXTO TONO ATONO	PLOW	ECONOM MADRAES	12219			/images/references/13123.JPG	\N	[{"um": "METRO", "cant": 0.52, "tipo": "TELA", "total": 6032, "concepto": "RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1900, "concepto": "ESTAMPADO   CAMILO", "vlr_unit": 1900}, {"um": "UNIDAD", "cant": 1, "total": 1800, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 1931, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 1931}]	6032.00	4400.00	324.00	0.00	2331.00	13087.00	t	Soporte	2026-03-20 16:41:04.900943	2026-03-20 16:41:04.900943
+80c52e4b-1f31-4ecb-9de1-0fd78f48de63	13125	2b241a44-34aa-4493-bfd1-78ad575ecbcc	TOP ROMANTIC	PLOW	MADRES/ECONO	12222		DE 1 TIRA DE SESGO ME SALEN 2 CUELLO QUE MIDEN 56CM DE 1 TIRA DE SESGO ME SALEN LAS SIZAS SESGO DE 4CM	/images/references/13125.jpG	\N	[{"um": "METRO", "cant": 0.39, "tipo": "TELA", "total": 4524, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.083, "tipo": "TELA", "total": 962.8000000000001, "concepto": "RIB", "vlr_unit": 11600}, {"um": "METRO", "cant": 0.06, "total": 696, "concepto": "SESGO 1 RIB", "vlr_unit": 11600}]	[{"um": "PRENDA", "cant": 1, "total": 1800, "concepto": "ESTAMPADO   HERNAN", "vlr_unit": 1800}, {"um": "UNIDAD", "cant": 1, "total": 2200, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 2200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 500, "concepto": "CORTE", "vlr_unit": 500}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 2012, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 2012}]	6182.80	4700.00	324.00	0.00	2412.00	13618.80	t	Soporte	2026-03-20 16:34:15.434201	2026-03-20 16:34:15.434201
+669b6e57-9e71-4045-be34-cbdac867a5b6	12976	ce75694c-000d-4b9a-a5fe-0ff716248e08	BUS SUB EN PUNT	PLOW	MADRES	12003-1		SESGO 4 CM TRACE 145 TIRA DE SISAS CON GARDERA LIBRE 60 CM  DE UNA TIRA LIBRE ME SALE LA S SISAS COMPLETA Y CUELLO SESGO ESCOTE FRENTE 32 CM SESGO ESCOTE ESPALDA 32 CM Y DE UNA TIRA ME SALEN 4 ESCOTE ES DECIR 2 BLUSAS ELASTICO DE 1 CM  PARA LAS MANGA TALLA SY M DE 18 CM  Y PARA L DE 19 CM MANGAS EN CENTRO PARA RECOGIDO	\N	\N	[{"um": "METRO", "cant": 0.72, "total": 4680, "concepto": "MAYATEX", "vlr_unit": 6500}, {"um": "METRO", "cant": 0.24, "total": 1872, "concepto": "POLILICRA", "vlr_unit": 7800}, {"um": "METRO", "cant": 0.046, "total": 358.8, "concepto": "SESGO 1 POLILICRA", "vlr_unit": 7800}, {"um": "METRO", "cant": 0.4, "total": 100, "concepto": "ELASTICO ( 1 ) CM", "vlr_unit": 250}]	[{"um": "SUBLIMACION", "cant": 0.72, "total": 4608, "concepto": "ESTAMPADO   GLOQUI", "vlr_unit": 6400}, {"um": "UNIDAD", "cant": 1, "total": 3000, "concepto": "CONFECCION BLUSA / CAMISETA", "vlr_unit": 3000}, {"um": "UNIDAD", "cant": 1, "total": 1200, "concepto": "CONFECCIÓN TOP / CROPTOP", "vlr_unit": 1200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "EMPAQUE", "vlr_unit": 200}, {"um": "PRENDA", "cant": 1, "total": 780, "concepto": "CORTE", "vlr_unit": 780}]	[{"um": "UNIDAD", "cant": 1, "total": 70, "concepto": "MARQUILLA", "vlr_unit": 70}, {"um": "UNIDAD", "cant": 1, "total": 10, "concepto": "MARQUILLA TECNICA", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 130, "concepto": "ETIQUETA", "vlr_unit": 130}, {"um": "UNIDAD", "cant": 2, "total": 20, "concepto": "CODIGO BARRAS/STIKERS", "vlr_unit": 10}, {"um": "UNIDAD", "cant": 1, "total": 94, "concepto": "BOLSA 20 * 30", "vlr_unit": 94}]	[{"um": "UND", "cant": 1, "total": 2800, "concepto": "COLLAR YAQUELINE MANUALIDAD CON BOLSA Y PICO LORO", "vlr_unit": 2800}, {"um": "MTS", "cant": 0.08, "total": 16, "concepto": "FRAMILÓN", "vlr_unit": 200}]	[{"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "PROV. CARTERA", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 200, "concepto": "SERVICIOS CONFECCIONISTAS", "vlr_unit": 200}, {"um": "UNIDAD", "cant": 1, "total": 3580, "concepto": "PROV. DSCTO CCIAL", "vlr_unit": 3580}]	7010.80	9788.00	324.00	2816.00	3980.00	23918.80	f	Soporte	2026-04-08 15:33:30.137428	2026-04-08 15:33:30.137428
 \.
 
 
 --
--- TOC entry 5239 (class 0 OID 16596)
+-- TOC entry 5502 (class 0 OID 29907)
 -- Dependencies: 235
 -- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2966,7 +3640,7 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
--- TOC entry 5240 (class 0 OID 16612)
+-- TOC entry 5503 (class 0 OID 29923)
 -- Dependencies: 236
 -- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2976,7 +3650,7 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
--- TOC entry 5241 (class 0 OID 16622)
+-- TOC entry 5504 (class 0 OID 29933)
 -- Dependencies: 237
 -- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2986,7 +3660,7 @@ COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) F
 
 
 --
--- TOC entry 5242 (class 0 OID 16631)
+-- TOC entry 5505 (class 0 OID 29942)
 -- Dependencies: 238
 -- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2996,7 +3670,7 @@ COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FRO
 
 
 --
--- TOC entry 5244 (class 0 OID 16644)
+-- TOC entry 5507 (class 0 OID 29955)
 -- Dependencies: 240
 -- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -3699,6 +4373,27 @@ mmt9gf24g1f0g2km0	13079	15	19900.00
 mmt9gf24g1f0g2km0	12909	18	19900.00
 mmt9gf24g1f0g2km0	12972	6	48900.00
 mmt9gf24g1f0g2km0	13067	12	39900.00
+mmt9hjj6xd4mpipig	13122	18	18900.00
+mmt9hjj6xd4mpipig	13078	18	22900.00
+mmt9hjj6xd4mpipig	13096	18	24900.00
+mmt9hjj6xd4mpipig	13047	18	27900.00
+mmt9hjj6xd4mpipig	12965	18	27900.00
+mmt9hjj6xd4mpipig	13119	18	19900.00
+mmt9hjj6xd4mpipig	13013	18	23900.00
+mmt9hjj6xd4mpipig	13036	18	29900.00
+mmt9hjj6xd4mpipig	13033	18	29900.00
+mmt9hjj6xd4mpipig	13010	18	29900.00
+mmt9hjj6xd4mpipig	13100	18	25900.00
+mmt9hjj6xd4mpipig	13116	18	21900.00
+mmt9hjj6xd4mpipig	13117	18	24900.00
+mmt9hjj6xd4mpipig	13091	18	18900.00
+mmt9hjj6xd4mpipig	13121	18	22900.00
+mmt9hjj6xd4mpipig	13110	18	19900.00
+mmt9hjj6xd4mpipig	13129	18	22900.00
+mmt9hjj6xd4mpipig	13079	18	19900.00
+mmt9hjj6xd4mpipig	12884	18	21900.00
+mmt9hjj6xd4mpipig	13094	18	21900.00
+mmt9hjj6xd4mpipig	12895	18	30900.00
 mmt9ijwvjz21wl7nq	13074	18	19900.00
 mmt9ijwvjz21wl7nq	13091	18	19900.00
 mmt9ijwvjz21wl7nq	13121	18	19900.00
@@ -4096,39 +4791,6 @@ mmuz3v4f45k1zx63o	13122	18	18900.00
 mmuz3v4f45k1zx63o	12943	18	19900.00
 mmuz3v4f45k1zx63o	12895	18	30900.00
 mmuz3v4f45k1zx63o	13084	18	29900.00
-mmz6ste278jak610v	12984	12	24000.00
-mmz6ste278jak610v	12744	12	19000.00
-mmz6ste278jak610v	12975	6	34000.00
-mmz6ste278jak610v	12617	12	35000.00
-mmz6ste278jak610v	13081	24	19000.00
-mmz6ste278jak610v	12909	24	19000.00
-mmz6ste278jak610v	13011	12	29000.00
-mmz6ste278jak610v	13036	12	29000.00
-mmz6ste278jak610v	12747	12	31000.00
-mmz6ste278jak610v	13068	24	21000.00
-mmz6ste278jak610v	13100	24	25000.00
-mmz6ste278jak610v	13128	12	23000.00
-mmz6ste278jak610v	13090	24	21000.00
-mmz6ste278jak610v	13116	24	21000.00
-mmz6ste278jak610v	13094	24	21000.00
-mmz6ste278jak610v	13129	24	22000.00
-mmz6ste278jak610v	13079	24	19000.00
-mmz6ste278jak610v	13095	24	17000.00
-mmz6ste278jak610v	12692	24	21000.00
-mmz6ste278jak610v	12640	12	24000.00
-mmz6ste278jak610v	13083	24	19000.00
-mmz6ste278jak610v	13074	24	19000.00
-mmz6ste278jak610v	13121	24	22000.00
-mmz6ste278jak610v	13110	24	19000.00
-mmz6ste278jak610v	13091	24	18000.00
-mmz6ste278jak610v	13118	24	21000.00
-mmz6ste278jak610v	13122	24	18000.00
-mmz6ste278jak610v	12943	24	19000.00
-mmz6ste278jak610v	13119	24	19000.00
-mmz6ste278jak610v	13013	24	23000.00
-mmz6ste278jak610v	12920	24	21000.00
-mmz6ste278jak610v	13097	24	24000.00
-mmz6ste278jak610v	13120	24	17000.00
 mn4oik827frvi7oiz	13115	5	49900.00
 mn4oik827frvi7oiz	13113	5	49900.00
 mn4oik827frvi7oiz	12963	5	35900.00
@@ -4202,38 +4864,6 @@ mmwi2xc7yi4fpkkkm	12877	12	19900.00
 mmwi2xc7yi4fpkkkm	13097	12	22900.00
 mmwi2xc7yi4fpkkkm	12881	12	29900.00
 mmwi2xc7yi4fpkkkm	12907	12	28900.00
-mn4koe8esfolub6mf	13028	6	35900.00
-mn4koe8esfolub6mf	13029	6	32900.00
-mn4koe8esfolub6mf	12881	6	33900.00
-mn4koe8esfolub6mf	12744	6	19900.00
-mn4koe8esfolub6mf	12986	6	34900.00
-mn4koe8esfolub6mf	12908	6	28900.00
-mn4koe8esfolub6mf	12935	6	35900.00
-mn4koe8esfolub6mf	12907	6	28900.00
-mn4koe8esfolub6mf	12984	6	24900.00
-mn4koe8esfolub6mf	12975	6	34900.00
-mn4koe8esfolub6mf	12987	6	27900.00
-mn4koe8esfolub6mf	12976	6	37900.00
-mn4koe8esfolub6mf	12617	6	35900.00
-mn4koe8esfolub6mf	13045	6	25900.00
-mn4koe8esfolub6mf	13041	6	29900.00
-mn4koe8esfolub6mf	13084	6	29900.00
-mn4koe8esfolub6mf	13040	6	32900.00
-mn4koe8esfolub6mf	12973	6	42900.00
-mn4koe8esfolub6mf	12970	6	34900.00
-mn4koe8esfolub6mf	13055	6	29900.00
-mn4koe8esfolub6mf	12971	6	36900.00
-mn4koe8esfolub6mf	13013	6	23900.00
-mn4koe8esfolub6mf	13131	6	19900.00
-mn4koe8esfolub6mf	13128	6	23900.00
-mn4koe8esfolub6mf	13010	6	29900.00
-mn4koe8esfolub6mf	13067	6	39900.00
-mn4koe8esfolub6mf	13116	6	21900.00
-mn4koe8esfolub6mf	13036	6	29900.00
-mn4koe8esfolub6mf	12962	6	44900.00
-mn4koe8esfolub6mf	13015	6	37900.00
-mn4koe8esfolub6mf	13077	6	42900.00
-mn4koe8esfolub6mf	13115	6	49900.00
 mn0aqu2v5u1mcja3f	12895	5	30900.00
 mn0aqu2v5u1mcja3f	12971	4	36900.00
 mn0aqu2v5u1mcja3f	12931	4	29900.00
@@ -4241,49 +4871,6 @@ mn0aqu2v5u1mcja3f	13055	6	29900.00
 mn0aqu2v5u1mcja3f	12744	6	19900.00
 mn0aqu2v5u1mcja3f	12986	6	34900.00
 mn0aqu2v5u1mcja3f	12908	6	28900.00
-mn7giycyxyobgvhp2	12963	12	35900.00
-mn7giycyxyobgvhp2	13016	12	32900.00
-mn7giycyxyobgvhp2	13012	12	39900.00
-mn7giycyxyobgvhp2	13015	12	37900.00
-mmt9hjj6xd4mpipig	13122	18	18900.00
-mmt9hjj6xd4mpipig	13078	18	22900.00
-mmt9hjj6xd4mpipig	13096	18	24900.00
-mmt9hjj6xd4mpipig	13047	18	27900.00
-mmt9hjj6xd4mpipig	12965	18	27900.00
-mmt9hjj6xd4mpipig	13119	18	19900.00
-mmt9hjj6xd4mpipig	13013	18	21900.00
-mmt9hjj6xd4mpipig	13036	18	27900.00
-mmt9hjj6xd4mpipig	13033	18	27900.00
-mmt9hjj6xd4mpipig	13010	18	27900.00
-mmt9hjj6xd4mpipig	13100	18	24900.00
-mmt9hjj6xd4mpipig	13116	18	21900.00
-mmt9hjj6xd4mpipig	13117	18	21900.00
-mmt9hjj6xd4mpipig	13091	18	19900.00
-mmt9hjj6xd4mpipig	13121	18	19900.00
-mmt9hjj6xd4mpipig	13110	18	19900.00
-mmt9hjj6xd4mpipig	13129	18	19900.00
-mmt9hjj6xd4mpipig	13079	18	19900.00
-mmt9hjj6xd4mpipig	12884	18	19900.00
-mmt9hjj6xd4mpipig	13094	18	19900.00
-mmt9hjj6xd4mpipig	12895	18	30900.00
-mn7ulw128xqmshwb1	13120	12	17900.00
-mn7ulw128xqmshwb1	13122	12	18900.00
-mn7ulw128xqmshwb1	13079	12	19900.00
-mn7ulw128xqmshwb1	13095	12	17900.00
-mn7ulw128xqmshwb1	13003	12	32900.00
-mn7ulw128xqmshwb1	12907	12	28900.00
-mn7ulw128xqmshwb1	12984	12	24900.00
-mn7ulw128xqmshwb1	12986	12	34900.00
-mn7ulw128xqmshwb1	13117	12	23900.00
-mn7ulw128xqmshwb1	13106	12	41900.00
-mn7ulw128xqmshwb1	13102	12	29900.00
-mn7ulw128xqmshwb1	12920	12	21900.00
-mn7ulw128xqmshwb1	13131	12	19900.00
-mn7ulw128xqmshwb1	13094	12	21900.00
-mn7ulw128xqmshwb1	13064	12	32900.00
-mn7ulw128xqmshwb1	13033	12	29900.00
-mn7ulw128xqmshwb1	13081	12	19900.00
-mn7ulw128xqmshwb1	13036	12	29900.00
 mmxfucvhrv09phu8u	13104	12	35900.00
 mmxfucvhrv09phu8u	13100	12	25900.00
 mmxfucvhrv09phu8u	13011	12	29900.00
@@ -4376,34 +4963,6 @@ mn51a0p5j06q8ekab	13047	12	25900.00
 mn51a0p5j06q8ekab	12712	12	27900.00
 mn51a0p5j06q8ekab	13118	12	21900.00
 mn51a0p5j06q8ekab	13120	12	17900.00
-mn7gi3p0t232fsqsv	12969	12	21900.00
-mn7gi3p0t232fsqsv	12965	12	27900.00
-mn7gi3p0t232fsqsv	12931	10	29900.00
-mn7gi3p0t232fsqsv	13047	8	25900.00
-mn7gi3p0t232fsqsv	13131	12	19900.00
-mn7gi3p0t232fsqsv	13036	12	29900.00
-mn7gi3p0t232fsqsv	13081	12	19900.00
-mn7gi3p0t232fsqsv	13091	12	19900.00
-mn7gi3p0t232fsqsv	13094	12	21900.00
-mn7gi3p0t232fsqsv	13013	12	23900.00
-mn7gi3p0t232fsqsv	13120	12	17900.00
-mn7gi3p0t232fsqsv	12907	12	28900.00
-mn7gi3p0t232fsqsv	12975	12	34900.00
-mn7gi3p0t232fsqsv	13112	6	37900.00
-mn7gi3p0t232fsqsv	12869	12	31900.00
-mn7gi3p0t232fsqsv	13101	12	35900.00
-mn7gi3p0t232fsqsv	13076	12	27900.00
-mn7gi3p0t232fsqsv	13113	12	49900.00
-mn7gi3p0t232fsqsv	13065	12	32900.00
-mn7gi3p0t232fsqsv	13102	12	29900.00
-mn7gi3p0t232fsqsv	12963	12	35900.00
-mn7gi3p0t232fsqsv	13015	12	37900.00
-mn7giycyxyobgvhp2	13094	12	21900.00
-mn7giycyxyobgvhp2	13131	12	19900.00
-mn7giycyxyobgvhp2	12965	12	27900.00
-mn7giycyxyobgvhp2	12895	12	30900.00
-mn7giycyxyobgvhp2	13048	12	25900.00
-mn7giycyxyobgvhp2	13041	12	28900.00
 mmyzdhro97mizxlhk	13116	18	21900.00
 mmyzdhro97mizxlhk	13117	18	24900.00
 mmyzdhro97mizxlhk	13068	18	21900.00
@@ -4497,41 +5056,76 @@ gfrmg3vvb	12881	6	33900.00
 gfrmg3vvb	13028	12	35900.00
 gfrmg3vvb	13029	6	32900.00
 gfrmg3vvb	13012	6	39900.00
-mn7giycyxyobgvhp2	13001	12	32900.00
-mn7giycyxyobgvhp2	12984	12	24900.00
-mn7giycyxyobgvhp2	12943	12	19900.00
-mn7giycyxyobgvhp2	12920	12	21900.00
-mn7giycyxyobgvhp2	13110	12	19900.00
-mn7giycyxyobgvhp2	13095	12	17900.00
-mn7giycyxyobgvhp2	13074	12	19900.00
-mn7giycyxyobgvhp2	13121	12	22900.00
-mn7giycyxyobgvhp2	12975	12	34900.00
-mn7giycyxyobgvhp2	12744	12	19900.00
-mn7giycyxyobgvhp2	12908	12	28900.00
-mn7giycyxyobgvhp2	13120	12	17900.00
-mn7giycyxyobgvhp2	13013	12	23900.00
-mn7giycyxyobgvhp2	13097	12	24900.00
-mn7giycyxyobgvhp2	12973	12	42900.00
-mn7giycyxyobgvhp2	12967	12	24900.00
-mn7giycyxyobgvhp2	12970	12	34900.00
-mn7giycyxyobgvhp2	13254	12	34900.00
-mn7giycyxyobgvhp2	12712	12	27900.00
-mn7giycyxyobgvhp2	13045	12	25900.00
-mn7giycyxyobgvhp2	13042	12	29900.00
-mn7giycyxyobgvhp2	13055	12	29900.00
-mn7giycyxyobgvhp2	13078	12	22900.00
-mn7giycyxyobgvhp2	12971	12	36900.00
-mn7giycyxyobgvhp2	12969	12	21900.00
-mn7giycyxyobgvhp2	12931	12	29900.00
-mn7giycyxyobgvhp2	12869	12	31900.00
-mn7giycyxyobgvhp2	13102	12	29900.00
-mn7giycyxyobgvhp2	13065	12	32900.00
-mn7giycyxyobgvhp2	13076	12	27900.00
+mmz6ste278jak610v	12984	12	24000.00
+mmz6ste278jak610v	12744	12	19000.00
+mmz6ste278jak610v	12975	6	34000.00
+mmz6ste278jak610v	12617	12	35000.00
+mmz6ste278jak610v	13081	24	19000.00
+mmz6ste278jak610v	12909	24	19000.00
+mmz6ste278jak610v	13011	12	29000.00
+mmz6ste278jak610v	13036	12	29000.00
+mmz6ste278jak610v	12747	12	31000.00
+mmz6ste278jak610v	13068	24	21000.00
+mmz6ste278jak610v	13100	24	25000.00
+mmz6ste278jak610v	13128	12	23000.00
+mmz6ste278jak610v	13090	24	21000.00
+mmz6ste278jak610v	13116	24	21000.00
+mmz6ste278jak610v	13094	24	21000.00
+mmz6ste278jak610v	13129	24	22000.00
+mmz6ste278jak610v	13079	24	19000.00
+mmz6ste278jak610v	13095	24	17000.00
+mmz6ste278jak610v	12692	24	21000.00
+mmz6ste278jak610v	12640	12	24000.00
+mmz6ste278jak610v	13083	24	19000.00
+mmz6ste278jak610v	13074	24	19000.00
+mmz6ste278jak610v	13121	24	22000.00
+mmz6ste278jak610v	13110	24	19000.00
+mmz6ste278jak610v	13091	24	18000.00
+mmz6ste278jak610v	13118	24	21000.00
+mmz6ste278jak610v	13122	24	18000.00
+mmz6ste278jak610v	12943	24	19000.00
+mmz6ste278jak610v	13119	24	19000.00
+mmz6ste278jak610v	13013	24	23000.00
+mmz6ste278jak610v	12920	24	21000.00
+mmz6ste278jak610v	13097	24	24000.00
+mmz6ste278jak610v	13120	24	17000.00
+mn4koe8esfolub6mf	13028	6	35900.00
+mn4koe8esfolub6mf	13029	6	32900.00
+mn4koe8esfolub6mf	12881	6	33900.00
+mn4koe8esfolub6mf	12744	6	19900.00
+mn4koe8esfolub6mf	12986	6	34900.00
+mn4koe8esfolub6mf	12908	6	28900.00
+mn4koe8esfolub6mf	12935	6	35900.00
+mn4koe8esfolub6mf	12907	6	28900.00
+mn4koe8esfolub6mf	12984	6	24900.00
+mn4koe8esfolub6mf	12975	6	34900.00
+mn4koe8esfolub6mf	12987	6	27900.00
+mn4koe8esfolub6mf	12976	6	37900.00
+mn4koe8esfolub6mf	12617	6	35900.00
+mn4koe8esfolub6mf	13045	6	25900.00
+mn4koe8esfolub6mf	13041	6	29900.00
+mn4koe8esfolub6mf	13084	6	29900.00
+mn4koe8esfolub6mf	13040	6	32900.00
+mn4koe8esfolub6mf	12973	6	42900.00
+mn4koe8esfolub6mf	12970	6	34900.00
+mn4koe8esfolub6mf	13055	6	29900.00
+mn4koe8esfolub6mf	12971	6	36900.00
+mn4koe8esfolub6mf	13013	6	23900.00
+mn4koe8esfolub6mf	13131	6	19900.00
+mn4koe8esfolub6mf	13128	6	23900.00
+mn4koe8esfolub6mf	13010	6	29900.00
+mn4koe8esfolub6mf	13067	6	39900.00
+mn4koe8esfolub6mf	13116	6	21900.00
+mn4koe8esfolub6mf	13036	6	29900.00
+mn4koe8esfolub6mf	12962	6	44900.00
+mn4koe8esfolub6mf	13015	6	37900.00
+mn4koe8esfolub6mf	13077	6	42900.00
+mn4koe8esfolub6mf	13115	6	49900.00
 \.
 
 
 --
--- TOC entry 5245 (class 0 OID 16654)
+-- TOC entry 5508 (class 0 OID 29965)
 -- Dependencies: 241
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -4566,6 +5160,7 @@ mmph2vwqtgig74spi	193	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	981600.00	2026-03-13T2
 mmt9cg4gbu5dnloup	310	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7104000.00	2026-03-16T14:07:17.920Z	Jhon Montoya	6	2026-03-10	\N	50.00	50.00
 mmt9f0zv75r8qf1g9	283	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5434500.00	2026-03-16T14:09:18.283Z	Jhon Montoya	7	2026-03-11	\N	100.00	0.00
 mmt9gf24g1f0g2km0	114	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	9314700.00	2026-03-16T14:10:23.164Z	Jhon Montoya	8	2026-03-11	2026-04-30	100.00	0.00
+mmt9hjj6xd4mpipig	179	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	9142200.00	2026-03-16T14:11:15.618Z	Jhon Montoya	9	2026-03-11	\N	50.00	50.00
 mmt9ijwvjz21wl7nq	177	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	11741400.00	2026-03-16T14:12:02.767Z	Jhon Montoya	10	2026-03-11	\N	50.00	50.00
 mmt9ka1qt9uumiqoj	115	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	7312000.00	2026-03-16T14:13:23.294Z	Jhon Montoya	11	2026-04-10	\N	50.00	50.00
 mmt9nlw0bj2eouw27	216	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7336500.00	2026-03-16T14:15:58.609Z	Jhon Montoya	12	2026-03-20	\N	20.00	80.00
@@ -4586,21 +5181,40 @@ mmwi2xc7yi4fpkkkm	310	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	1995600.00	2026-03-18T
 mmwi4lq7py8arrw07	17	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	13302000.00	2026-03-18T20:36:27.007Z	Jhon Montoya	27	2026-03-18	\N	50.00	50.00
 mmxfucvhrv09phu8u	21	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	7256400.00	2026-03-19T12:20:15.917Z	M@R!@ M	28	2026-03-18	\N	50.00	50.00
 mmyzdhro97mizxlhk	29	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	23790000.00	2026-03-20T14:14:47.604Z	M@R!@ M	29	2026-03-19	\N	50.00	50.00
-mmz6ste278jak610v	277	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	14412000.00	2026-03-20T17:42:39.818Z	Jhon Montoya	30	2026-03-20	\N	50.00	50.00
-mn4koe8esfolub6mf	161	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	6244800.00	2026-03-24T12:09:59.054Z	M@R!@ M	30	2026-03-21	\N	50.00	50.00
 mn4nmkwyia7f4pjvh	162	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	8238600.00	2026-03-24T13:32:33.250Z	M@R!@ M	33	2026-03-21	\N	50.00	50.00
 mn4oik827frvi7oiz	55	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	5746000.00	2026-03-24T13:57:25.346Z	Jhon Montoya	34	2026-04-01	\N	50.00	50.00
 mn0aqu2v5u1mcja3f	291	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	1981100.00	2026-03-21T12:20:52.039Z	M@R!@ M	31	2026-04-01	\N	50.00	50.00
 mn51a0p5j06q8ekab	258	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	4137600.00	2026-03-24T19:54:41.801Z	Jhon Montoya	35	2026-03-24	\N	100.00	0.00
-mn7gi3p0t232fsqsv	292	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	7322800.00	2026-03-26T12:36:25.524Z	Jhon Montoya	36	2026-04-15	\N	50.00	50.00
-mn7giycyxyobgvhp2	257	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	13416000.00	2026-03-26T12:37:05.266Z	Jhon Montoya	37	2026-04-05	\N	50.00	50.00
-mmt9hjj6xd4mpipig	179	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	8764200.00	2026-03-16T14:11:15.618Z	Jhon Montoya	9	2026-03-11	\N	50.00	50.00
-mn7ulw128xqmshwb1	281	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	5618400.00	2026-03-26T19:11:16.838Z	Jhon Montoya	38	2026-04-10	\N	50.00	50.00
+mmz6ste278jak610v	277	mlia7rpjfmtwhg66q	mljjrcujmtckild4r	14412000.00	2026-03-20T17:42:39.818Z	Jhon Montoya	32	2026-03-20	\N	50.00	50.00
+mn4koe8esfolub6mf	161	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	6244800.00	2026-03-24T12:09:59.054Z	M@R!@ M	32	2026-03-21	\N	50.00	50.00
 \.
 
 
 --
--- TOC entry 5246 (class 0 OID 16666)
+-- TOC entry 5527 (class 0 OID 30286)
+-- Dependencies: 260
+-- Data for Name: pago_lotes_config; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pago_lotes_config (id, clave, valor, descripcion, updated_at, updated_by) FROM stdin;
+1	pct_of	40.00	Porcentaje del pago que va al banco OF	2026-04-07 07:26:33.427555	\N
+2	pct_ml	60.00	Porcentaje del pago que va al banco ML	2026-04-07 07:26:33.427555	\N
+3	base_rte_fte	105000.00	Base mÃ­nima para aplicar retenciÃ³n en la fuente (6%)	2026-04-07 07:26:33.427555	\N
+\.
+
+
+--
+-- TOC entry 5531 (class 0 OID 30319)
+-- Dependencies: 264
+-- Data for Name: pagos_programados; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pagos_programados (id, fecha, fecha_original, cuenta_bancaria_id, cedula, nombre, cuenta, detalle_inicial, bruto_of, bruto_ml, orden, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5509 (class 0 OID 29977)
 -- Dependencies: 242
 -- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -4610,7 +5224,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12366	CROP TOP SRL	19900.00	CATALINA CASTRO	RUSTIQUE	0.83		0.00	1	2026-02-13 15:45:42
 12617	BODY CON CORTES FORRADO	35900.00	JENNIFER QUINTERO	LYCRAMATE	0.95		0.00	1	2026-02-13 15:45:42
 12640	CAMISILLA APLIQUE PIEDRAS FTE	24900.00	MARTHA RAMIREZ	RIB	0.48		0.00	1	2026-02-13 15:45:42
-12644	CAMISETA CORPIÑO PEIDRAS	37900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.67		0.00	1	2026-02-13 15:45:43
+12644	CAMISETA CORPI├æO PEIDRAS	37900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.67		0.00	1	2026-02-13 15:45:43
 12692	BASICA CON BRILLO NEGRO	22900.00	MARIANA OCAMPO	PUNTO ROMA	0.39		0.00	1	2026-02-13 15:45:43
 12704	CHALECO CUELLO HALTER	29900.00	MARIANA OCAMPO	BENGALINA PANA	0.56		0.00	1	2026-02-13 15:45:43
 12708	CAMISETA CON MANGA EN OJALILLO	24900.00	MARIANA OCAMPO	LYCRA PRGA	0.51	OJALILLO	0.21	1	2026-02-13 15:45:43
@@ -4625,7 +5239,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12865	TOP CARGADERA GRUESA BOTONES	16900.00	MARTHA RAMIREZ	FLATY	0.33		0.00	1	2026-02-13 15:45:44
 12877	CAMISILLA PUNTILLA CUELLO	19900.00	MARTHA RAMIREZ	RIB	0.45		0.00	1	2026-02-13 15:45:44
 12866	CAMISILLA ACANALADA ESTRELLA	19900.00	MARTHA RAMIREZ	SUPER JACK	0.44		0.00	1	2026-02-13 15:45:44
-12878	DUO CON TOP	64900.00	JACKELINE PEREA	ARIDA	0.23	LYCRA ALGODÓN	0.25	1	2026-02-13 15:45:44
+12878	DUO CON TOP	64900.00	JACKELINE PEREA	ARIDA	0.23	LYCRA ALGOD├ôN	0.25	1	2026-02-13 15:45:44
 12882	BLMAMC FONDE CORAZO	23900.00	JACKELINE PEREA	RIB	0.55	RIB	0.07	1	2026-02-13 15:45:44
 12693	BUSTIER EN RIB	25900.00	MARIANA OCAMPO	RIB	0.15	\N	\N	1	2026-02-13 15:45:43
 12431	TUBULAR APLIQUE FASHION	14900.00	JENNIFER QUINTERO	TH	0.56		0.00	1	2026-02-13 15:45:42
@@ -4646,7 +5260,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12820	BLUSON RECOGIDO A RAYAS MULTICOLOR	23900.00	MARTHA RAMIREZ	POLYLYCRA S	0.40		0.00	1	2026-02-13 15:45:43
 12821	CAMISERA BOLERO FLORES SOMBREROS	34900.00	MARTHA RAMIREZ	NEW COQUET S	0.15		0.00	1	2026-02-13 15:45:43
 12823	BLUSA  SOMBREROS Y FLORES CON CARGDERAS RECOGIDAS	22900.00	MARTHA RAMIREZ	MATAYEX S	0.50	MAYATEX	0.23	1	2026-02-13 15:45:43
-12825	DUO CARNAVAL	22900.00	MARIANA OCAMPO	CAPRIATI	0.51	LYCRA ALGODÓN	0.18	1	2026-02-13 15:45:43
+12825	DUO CARNAVAL	22900.00	MARIANA OCAMPO	CAPRIATI	0.51	LYCRA ALGOD├ôN	0.18	1	2026-02-13 15:45:43
 12828	ESQUELETO COLORES	14900.00	MARIANA OCAMPO	AMELIA	0.50		0.00	1	2026-02-13 15:45:44
 12831	CROP TOP GEOMETRICO RESORTADO	24900.00	MARTHA RAMIREZ	NEW COQUET S	0.53		0.00	1	2026-02-13 15:45:44
 12834	CAMISETA CON MARIMONDA	17900.00	MARIANA OCAMPO	AMELIA	0.33		0.00	1	2026-02-13 15:45:44
@@ -4655,7 +5269,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12837	CAMISETA RECOGIDA	27900.00	MARIANA OCAMPO	VALIANA	0.98		0.00	1	2026-02-13 15:45:44
 12840	BLUSON GANADERIA	36900.00	MARTHA RAMIREZ	LINO LIMPO S	0.48		0.00	1	2026-02-13 15:45:44
 12841	TOP AMARRE	20900.00	MARIANA OCAMPO	AMELIA SUBLIMADA	0.50		0.00	1	2026-02-13 15:45:44
-12855	CORPIÑO MASCARAS ESTRELLAS	24900.00	MARTHA RAMIREZ	BENGALINA S	0.48	BENGALINA	0.12	1	2026-02-13 15:45:44
+12855	CORPI├æO MASCARAS ESTRELLAS	24900.00	MARTHA RAMIREZ	BENGALINA S	0.48	BENGALINA	0.12	1	2026-02-13 15:45:44
 12860	BLUSA MGA SISA CORAZON	16900.00	MARTHA RAMIREZ	MINIWAFER	0.61		0.00	1	2026-02-13 15:45:44
 12861	CAMISETA MGA CORTA	19900.00	MARTHA RAMIREZ	MINIWAFER	0.49		0.00	1	2026-02-13 15:45:44
 12864	CAMISILLA SISA ENTRADA	19900.00	MARTHA RAMIREZ	FLATY	0.53		0.00	1	2026-02-13 15:45:44
@@ -4713,7 +5327,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12918	TOP ESTAMPAT PL	19900.00	JACKELINE PEREA	RIB	0.40	RIB	0.07	1	2026-02-13 15:45:45
 12919	CAM FOND ALT FLOR	25900.00	JACKELINE PEREA	BURDA	0.56		0.00	1	2026-02-13 15:45:45
 12931	BLUSA DOBLE BOLERO AMARRE ESPALDA	29900.00	MARTHA RAMIREZ	BOUTIPUNTI	0.59		0.00	1	2026-02-13 15:45:46
-12922	BLUSA DAMA FRANJA Y MOÑO	21900.00	MARTHA RAMIREZ	LYCRA FRIA	0.91		0.00	1	2026-02-13 15:45:46
+12922	BLUSA DAMA FRANJA Y MO├æO	21900.00	MARTHA RAMIREZ	LYCRA FRIA	0.91		0.00	1	2026-02-13 15:45:46
 12923	CAMISETA MGAS BLONDA	24900.00	MARTHA RAMIREZ	LYCRA FRIA	0.63		0.00	1	2026-02-13 15:45:46
 12924	CAMISILLA GUIPIUR	21900.00	MARTHA RAMIREZ	RIB	0.82		0.00	1	2026-02-13 15:45:46
 12926	CAMISETA DOBLE FLOR ALTA	27900.00	MARTHA RAMIREZ	LYC PRAGA O F	0.74		0.00	1	2026-02-13 15:45:46
@@ -4730,7 +5344,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12950	CROPT EST CIER	27900.00	JACKELINE PEREA	LICRA PRAGA	0.63		0.00	1	2026-02-13 15:45:46
 12951	CAMISE LATERA EN ENCAJE	27900.00	JACKELINE PEREA	LCRA FRIA	0.42		0.00	1	2026-02-13 15:45:46
 12952	CAMISERTA PICO ENCAJE	26900.00	MARTHA RAMIREZ	LYCRA FRIA	0.42	MAYA CHOCHE	0.26	1	2026-02-13 15:45:46
-12953	BLUSA MGA MUÑECA PUNTOS	24900.00	MARTHA RAMIREZ	FLATY	0.40		0.00	1	2026-02-13 15:45:46
+12953	BLUSA MGA MU├æECA PUNTOS	24900.00	MARTHA RAMIREZ	FLATY	0.40		0.00	1	2026-02-13 15:45:46
 12955	BUSO ASIMETRICO TRANSPARENCIA	22900.00	MARTHA RAMIREZ	MAYA GRABAD	0.40	PIELDE DURAS	0.12	1	2026-02-13 15:45:46
 12956	CAMISILLA ENCAJE	24900.00	MARTHA RAMIREZ	RIB	0.32		0.00	1	2026-02-13 15:45:46
 12957	BLUSA CUELLO BANDEJA ASIMETRICO	35900.00	MARTHA RAMIREZ	LYCRA FRIA	0.31		0.00	1	2026-02-13 15:45:46
@@ -4753,7 +5367,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 12969	BLUSA STRAPLE	21900.00	ISABEL MONTOYA	ISLANDIA	0.55		0.00	1	\N
 12970	BLS CON GRIP EN FRNT	34900.00	JACKELINE PEREA	MAUI	0.57		0.00	1	\N
 12971	BL DE AMARRE ESP	36900.00	JACKELINE PEREA	LIANGEN	0.73		0.00	1	\N
-12972	CAMISE BOL FLOR GRIPIUR	48900.00	JACKELINE PEREA	LOOJSTYLE PRETEÑIDO	0.94		0.00	1	\N
+12972	CAMISE BOL FLOR GRIPIUR	48900.00	JACKELINE PEREA	LOOJSTYLE PRETE├æIDO	0.94		0.00	1	\N
 12973	DUO CHALECO	42900.00	ISABEL MONTOYA	VERONA	0.51	PIEL DE DURAZNO	0.16	1	\N
 12974	BODY CONCHAS	35900.00	ISABEL MONTOYA	DESTELLANTE	0.82		0.00	1	\N
 12975	BODY CUELL BANDEJ Y MANG APART	34900.00	JACKELINE PEREA	DESTELLANTE	0.80		0.00	1	\N
@@ -4776,7 +5390,6 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 13011	BLUSA EN GRIPIU	29900.00	JACKELINE PEREA	BURDA FRIA	0.56		0.00	1	\N
 13012	BLUS CUELL NERU PLUSS	39900.00	JACKELINE PEREA	ARIDA	1.10		0.00	1	\N
 13013	BL AMARR ANGELIT	23900.00	JACKELINE PEREA	RIB	0.52		0.00	1	\N
-13014	BL AMARR	29900.00	MARTHA RAMIREZ	MAUI	0.91		0.00	1	\N
 13015	CAMISETA PLUSS COMBINADA CROCHET	37900.00	MARTHA RAMIREZ	L.FRIA FRANK	0.63	CROCHET	0.33	1	\N
 13016	CAMISILLA PLUSS PEDRERIA	32900.00	MARTHA RAMIREZ	RIB	0.82		0.00	1	\N
 13023	CAMISETA PLUS CORTE ESPALDA FLOR	34900.00	MARTHA RAMIREZ	POLO RIB	0.74		0.00	1	\N
@@ -4784,7 +5397,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 13028	BODY RIO	35900.00	ISABEL MONTOYA	RIO	0.56		0.00	1	\N
 13029	BODY COR MAN CASQ	32900.00	JACKELINE PEREA	PICOT	0.58	POLILICRA	0.25	1	\N
 13033	CAMISETA MARGARITA	29900.00	ISABEL MONTOYA	BURDA FRIA	0.57		0.00	1	\N
-13035	CAMISETA  ESPALDA Y PUÑOS BLONDA	38900.00	MARTHA RAMIREZ	BURDA	0.59	CATTLEYA	0.30	1	\N
+13035	CAMISETA  ESPALDA Y PU├æOS BLONDA	38900.00	MARTHA RAMIREZ	BURDA	0.59	CATTLEYA	0.30	1	\N
 13039	BLU PEPLUT	30900.00	JACKELINE PEREA	BENGALINA PANA	0.72		0.00	1	\N
 13040	BL STRAP CON HERRAJE	32900.00	JACKELINE PEREA	BENGALINA PANA	0.47		0.00	1	\N
 13041	STRAP FLOR MAX	29900.00	JACKELINE PEREA	CORTEZA	0.32		0.00	1	\N
@@ -4806,7 +5419,7 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 13065	BLUSA COPAS FRANJA PLUSS	32900.00	MARTHA RAMIREZ	CORTEZA	0.53		0.00	1	\N
 13066	CAMISERA LINO FLOR PAPEL FULL	45900.00	MARTHA RAMIREZ	LINO MILANES	1.01		0.00	1	\N
 13067	BLUSA MALLA	39900.00	ISABEL MONTOYA	GITANILLA 5	0.61		0.00	1	\N
-12895	CORPIÑO A RAYAS BOLERO	30900.00	MARTHA RAMIREZ	SUCKY SUIZA	0.49		0.00	1	\N
+12895	CORPI├æO A RAYAS BOLERO	30900.00	MARTHA RAMIREZ	SUCKY SUIZA	0.49		0.00	1	\N
 13069	CAMISILLA SISA ENTRADA PUNTOS ALTA TEXTO	17900.00	MARTHA RAMIREZ	RIB	0.48		0.00	1	\N
 13076	TOP EN AMELIA Y MAYATEX	27900.00	ISABEL MONTOYA	MALLATEX	0.50	AMELIA	0.24	1	\N
 13077	DUO CHALECO TELA SOPHIA	42900.00	ISABEL MONTOYA	SOPHIA #7	0.57	LICRAFRIA	0.27	1	\N
@@ -4825,13 +5438,13 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 13095	BL CORT LAT BOTONE	17900.00	JACKELINE PEREA	RIB	0.50		0.00	1	\N
 13096	BL EST PUNTOS	24900.00	JACKELINE PEREA	RIB	0.49		0.00	1	\N
 13097	BL ALFO FRENTE Y NGELIA	24900.00	JACKELINE PEREA	LICRA PRAGA	0.37		0.00	1	\N
-13098	STRA ESTAP	22900.00	JACKELINE PEREA	BURDA FRIA	0.34		0.00	1	\N
 13100	BL STAM GOOD	25900.00	JACKELINE PEREA	LICRA FRIA	0.57		0.00	1	\N
-13101	BLUSA PLUSS CORPIÑO BOLERO	35900.00	MARTHA RAMIREZ	BENGAL PANA	0.70		0.00	1	\N
+13101	BLUSA PLUSS CORPI├æO BOLERO	35900.00	MARTHA RAMIREZ	BENGAL PANA	0.70		0.00	1	\N
 13102	BLUSA PLUSS ARGOLLA HOMBRO ASIMETRICA	29900.00	MARTHA RAMIREZ	LULOLEMON	0.71		0.00	1	\N
 13103	CAMISERA TAPA PERLAS	43900.00	MARTHA RAMIREZ	LINO CREPE	0.74		0.00	1	\N
 13104	CAMISERA BOLSILLOS INCRUSTADOS	39900.00	MARTHA RAMIREZ	LINO CREPE	0.85		0.00	1	\N
 13105	CAMISERA  SUBLIMADO RAYAS	38900.00	MARTHA RAMIREZ	LINO MILAN	0.96		0.00	1	\N
+13106	CAMISERA CORTES APLIQUE PIEDRAS	45900.00	MARTHA RAMIREZ	LINO CREPE	0.89		0.00	1	\N
 13107	CAMISERA NUDO FTE	29900.00	MARTHA RAMIREZ	MOMA	1.07		0.00	1	\N
 13108	CAMISERA CREPE BORADADO	49900.00	MARTHA RAMIREZ	CREP BORD	0.91		0.00	1	\N
 13109	BLUSA PLUSS MANGA SISA RAYAS	30900.00	ISABEL MONTOYA	LYCRA FRIA FRANK	0.57		0.00	1	\N
@@ -4847,32 +5460,33 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 13120	ESTRAPLE BOLERO	17900.00	MARTHA RAMIREZ	RIB	0.37		0.00	1	\N
 13121	CAMISILLA RAYA	22900.00	MARTHA RAMIREZ	RIB VICTORIA	0.34	RIB	0.12	1	\N
 13122	CAMISILLA RAYA DOBLE	18900.00	MARTHA RAMIREZ	RIB	0.44		0.00	1	\N
-13123	CAMISILLA TEXTO TONO ATONO	19900.00	MARTHA RAMIREZ	RIB	0.52		0.00	1	\N
-13124	BLUSA RIB DOS COLORES	17900.00	ISABEL MONTOYA	RIB	0.33	RIB	0.10	1	\N
-13125	TOP ROMANTIC	21900.00	ISABEL MONTOYA	RIB	0.45	RIB	0.08	1	\N
 13126	BL D TI ESTASM Y BOT	21900.00	JACKELINE PEREA	LICRA PRAGA	0.36		0.00	1	\N
 13127	BL ESTAN ESC	19900.00	JACKELINE PEREA	RIB	0.52		0.00	1	\N
 13128	BL CENTO BOTON	23900.00	JACKELINE PEREA	RIB	0.57		0.00	1	\N
 13006	BLUSA FLOR HERRAGE	23900.00	ISABEL MONTOYA	LYCRA POP	0.31		0.00	1	\N
 12671	CHALECO FLORES TONO A TONO	29900.00	MARTHA RAMIREZ	LINO CREPE	0.69		0.00	1	\N
 12909	CAMISETA MGA CORTA A RAYAS	19900.00	MARTHA RAMIREZ	VICTIRIA RAYA 1	0.44		0.00	1	2026-02-13 15:45:45
-12965	CORPIÑO AMARRE ESPALDA	27900.00	MARTHA RAMIREZ	VERONA	0.23	LINO CREPE	0.37	1	\N
+12965	CORPI├æO AMARRE ESPALDA	27900.00	MARTHA RAMIREZ	VERONA	0.23	LINO CREPE	0.37	1	\N
 12966	BLUSA AMARRES MILAN VERAMIENTNIC	43900.00	MARTHA RAMIREZ	L.MILAN VERA	1.01		0.00	1	\N
 13036	CAMISETA ESPALDA CON APLIQUES YB APLIQUE PUNTO CORAZON	29900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.63		0.00	1	\N
 13068	CAMISETA MANGA CORATA FONDEADA FLORES TEXTO	21900.00	MARTHA RAMIREZ	BURDA	0.42		0.00	1	\N
 13073	BLUSA LAGRIMA FTAE CUELLO HALTER	15900.00	MARTHA RAMIREZ	CORTEZA	0.22		0.00	1	\N
 13074	CAMISILLA COMBINADOA BURDA BOLAS TEXTO	19900.00	MARTHA RAMIREZ	BURDA JEFE	0.34	BURDA JEFE	0.07	1	\N
 12699	CAMISETA SOBREPUESTOCORSET	24900.00	MARTHA RAMIREZ	LYCRA PRAGA	0.75	BLONDA	0.17	1	2026-02-13 15:45:43
-13254	BLU ESTA BOT FRENT	34900.00	Jackeline Perea	BENGALINA PANA	0.58	\N	\N	1	\N
 13132	BL APLIE HELLO	21900.00	Jackeline Perea	RIB	0.48	\N	\N	1	\N
-13131	BL  EST  EN CENEFA	19900.00	Jackeline Perea	LICRA PRAGA	0.26	\N	\N	1	\N
 13129	TOP THE BESTIS	22900.00	Isabel Montoya	RAYA VICTORIA #1	0.28	\N	\N	1	\N
-13106	CAMISERA CORTES APLIQUE PIEDRAS	41900.00	MARTHA RAMIREZ	LINO CREPE	0.89	\N	\N	1	\N
+13131	BL  EST  EN CENEFA	18900.00	Jackeline Perea	LICRA PRAGA	0.26	\N	\N	1	\N
+13014	BL AMARR	31900.00	Martha Ramirez	MAUI	0.85	\N	\N	1	\N
+13254	BLU ESTA BOT FRENT	34900.00	Jackeline Perea	BENGALINA PANA	0.58	\N	\N	1	\N
+13098	STRA ESTAP	22900.00	Jackeline Perea	BURDA FRIA	0.29	\N	\N	1	\N
+13123	CAMISILLA TEXTO TONO ATONO	19900.00	Martha Ramirez	RIB	0.52	\N	\N	1	\N
+13124	BLUSA RIB DOS COLORES	16900.00	Isabel Montoya	RIB	0.37	\N	\N	1	\N
+13125	TOP ROMANTIC	18900.00	Isabel Montoya	RIB	0.47	\N	\N	1	\N
 \.
 
 
 --
--- TOC entry 5247 (class 0 OID 16676)
+-- TOC entry 5510 (class 0 OID 29987)
 -- Dependencies: 243
 -- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -4998,7 +5612,9 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 12640	mljjrcujmtckild4r	0	0	159	\N
 12644	mljjrcujmtckild4r	0	0	188	\N
 12652	mljjrcujmtckild4r	0	0	70	\N
+12671	mljjrcujmtckild4r	0	0	29	\N
 12683	mljjrcujmtckild4r	0	0	36	\N
+12692	mljjrcujmtckild4r	0	0	103	\N
 12694	mljjrcujmtckild4r	0	0	173	\N
 12698	mljjrcujmtckild4r	0	0	30	\N
 12704	mljjrcujmtckild4r	0	0	90	\N
@@ -5033,6 +5649,7 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 13014	mljjrcujmtckild4r	0	123	0	\N
 13015	mljjrcujmtckild4r	0	201	0	\N
 13028	mljjrcujmtckild4r	120	0	0	\N
+13036	mljjrcujmtckild4r	0	120	0	\N
 13055	mljjrcujmtckild4r	120	0	0	\N
 13058	mljjrcujmtckild4r	0	138	0	\N
 13067	mljjrcujmtckild4r	0	258	0	\N
@@ -5043,6 +5660,7 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 13096	mljjrcujmtckild4r	0	201	0	\N
 13101	mljjrcujmtckild4r	120	0	0	\N
 13109	mljjrcujmtckild4r	0	201	0	\N
+13131	mljjrcujmtckild4r	90	0	0	\N
 12971	mljjrcujmtckild4r	0	102	0	\N
 12973	mljjrcujmtckild4r	0	135	0	\N
 13016	mljjrcujmtckild4r	0	120	0	\N
@@ -5060,15 +5678,19 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 12771	mljjrcujmtckild4r	0	0	80	Sale de maleta agotada
 12905	mljjrcujmtckild4r	0	0	26	Sale de maleta agotada
 12962	mljjrcujmtckild4r	0	117	0	Sale de maleta agotada
+12972	mljjrcujmtckild4r	99	0	0	Tela pedida
+12686	mljjrcujmtckild4r	180	0	38	Ok tela
 12885	mljjrcujmtckild4r	0	0	22	Salio de maleta media
 12888	mljjrcujmtckild4r	0	0	23	\N
 12889	mljjrcujmtckild4r	0	0	24	Salio de maleta media
-12976	mljjrcujmtckild4r	0	111	0	Tela en sublimación
+12976	mljjrcujmtckild4r	0	111	0	Tela en sublimaci├│n
 13002	mljjrcujmtckild4r	0	240	0	OK tela
 13005	mljjrcujmtckild4r	0	168	0	Salio de la maleta
 13029	mljjrcujmtckild4r	180	0	0	Reemplazar tela
 13064	mljjrcujmtckild4r	0	180	0	Tela pedida
+13076	mljjrcujmtckild4r	120	0	0	Tela en sublimaci├│n
 13077	mljjrcujmtckild4r	0	123	0	OK corte
+13079	mljjrcujmtckild4r	400	0	0	X definir tela
 13084	mljjrcujmtckild4r	0	150	0	OK
 12693	mljjrcujmtckild4r	0	0	28	\N
 13074	mljjrcujmtckild4r	0	321	0	Tela pedida
@@ -5077,28 +5699,20 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 12990	mljjrcujmtckild4r	0	111	0	\N
 13123	mljjrcujmtckild4r	0	0	0	Sale de maleta
 13073	mljjrcujmtckild4r	0	0	0	Sale de maleta
-12972	mljjrcujmtckild4r	0	135	0	Tela pedida
 12907	mljjrcujmtckild4r	250	0	16	\N
+13013	mljjrcujmtckild4r	200	195	0	\N
 12895	mljjrcujmtckild4r	180	0	0	\N
 12975	mljjrcujmtckild4r	0	120	0	\N
 13068	mljjrcujmtckild4r	0	150	0	\N
 13110	mljjrcujmtckild4r	0	252	0	\N
+12965	mljjrcujmtckild4r	90	135	0	Sale de maleta agotada
 13117	mljjrcujmtckild4r	150	150	0	\N
-13079	mljjrcujmtckild4r	0	384	0	X definir tela
+13118	mljjrcujmtckild4r	0	147	0	Tela pedida
 13098	mljjrcujmtckild4r	0	120	0	\N
 13033	mljjrcujmtckild4r	0	180	0	X definir tela
+12908	mljjrcujmtckild4r	90	0	7	\N
+13120	mljjrcujmtckild4r	200	0	0	\N
 12744	mljjrcujmtckild4r	200	0	24	\N
-12686	mljjrcujmtckild4r	0	180	38	Ok tela
-13076	mljjrcujmtckild4r	0	99	0	Tela en sublimación
-12671	mljjrcujmtckild4r	0	0	29	Sale de la maleta agotada
-12692	mljjrcujmtckild4r	0	0	103	\N
-13036	mljjrcujmtckild4r	120	120	0	\N
-13118	mljjrcujmtckild4r	120	147	0	Tela pedida
-13131	mljjrcujmtckild4r	150	0	0	\N
-13013	mljjrcujmtckild4r	250	195	0	\N
-12965	mljjrcujmtckild4r	120	135	0	Sale de maleta agotada
-12908	mljjrcujmtckild4r	120	0	7	\N
-13120	mljjrcujmtckild4r	250	0	0	\N
 13066	mljjrcujmtckild4r	0	0	0	Sale de maleta
 13057	mljjrcujmtckild4r	0	0	0	Sale de maleta
 13035	mljjrcujmtckild4r	0	0	0	Sale de maleta
@@ -5106,41 +5720,39 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 13004	mljjrcujmtckild4r	0	0	0	Sale de maleta
 13008	mljjrcujmtckild4r	0	0	0	Sale de maleta
 12974	mljjrcujmtckild4r	0	0	0	Sale de maleta
+13121	mljjrcujmtckild4r	0	81	0	\N
+13129	mljjrcujmtckild4r	0	81	0	\N
 12969	mljjrcujmtckild4r	0	0	111	SALE DE LA MALETA
 13094	mljjrcujmtckild4r	250	201	0	\N
+12984	mljjrcujmtckild4r	150	0	0	\N
 12881	mljjrcujmtckild4r	200	0	0	\N
 12943	mljjrcujmtckild4r	300	0	0	\N
 12987	mljjrcujmtckild4r	120	0	0	\N
+13003	mljjrcujmtckild4r	90	0	0	\N
 13039	mljjrcujmtckild4r	120	0	0	\N
+13040	mljjrcujmtckild4r	120	0	0	\N
 13102	mljjrcujmtckild4r	120	0	0	\N
 13115	mljjrcujmtckild4r	120	0	0	\N
 12877	mljjrcujmtckild4r	200	192	25	Sale de maleta agotada
+12909	mljjrcujmtckild4r	200	162	63	OK tela
 13043	mljjrcujmtckild4r	0	0	0	Sale de la maleta
 13100	mljjrcujmtckild4r	180	180	0	OK
 13078	mljjrcujmtckild4r	120	0	0	\N
 13097	mljjrcujmtckild4r	280	0	0	\N
 13122	mljjrcujmtckild4r	150	0	0	\N
+13023	mljjrcujmtckild4r	90	0	0	\N
+13113	mljjrcujmtckild4r	60	0	0	\N
 13128	mljjrcujmtckild4r	120	0	0	\N
+13254	mljjrcujmtckild4r	60	0	0	\N
 13065	mljjrcujmtckild4r	120	0	0	\N
 13041	mljjrcujmtckild4r	90	0	0	\N
 13091	mljjrcujmtckild4r	150	252	0	\N
 13042	mljjrcujmtckild4r	150	0	0	\N
-12909	mljjrcujmtckild4r	0	624	63	OK tela
-13129	mljjrcujmtckild4r	150	81	0	\N
-13113	mljjrcujmtckild4r	90	0	0	\N
-13045	mljjrcujmtckild4r	0	0	0	Sale de la maleta
-13112	mljjrcujmtckild4r	90	0	0	\N
-13023	mljjrcujmtckild4r	0	90	0	\N
-12984	mljjrcujmtckild4r	180	0	0	\N
-13003	mljjrcujmtckild4r	120	0	0	\N
-13040	mljjrcujmtckild4r	150	0	0	\N
-13254	mljjrcujmtckild4r	90	0	0	\N
-13121	mljjrcujmtckild4r	120	81	0	\N
 \.
 
 
 --
--- TOC entry 5248 (class 0 OID 16686)
+-- TOC entry 5511 (class 0 OID 29997)
 -- Dependencies: 244
 -- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5209,14 +5821,12 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 61	mmtkx8pcpn0utjkhp	13013	195
 62	mmtp19eox7u0he5w4	13010	90
 63	mmuo4hmspea34ibjf	13095	300
-65	mmw7x9dnktu9qpyh9	13014	123
+64	mmv33njzk0f3az1dt	12964	122
 66	mmxhzrpimjrptkjgm	13010	118
 68	mmz0iaoqywa17o8q6	13016	120
 69	mmz1tjsluudsjcs88	13015	201
 70	mmz3sfl42ox4fpr21	13012	119
 71	mn0iny66ldymtw2tm	12782	54
-72	mn0iq7gddh4pfqmpo	13081	120
-74	mn0iz0i0dbdnsbhhj	13005	168
 81	mn0iu251s3pdthwd1	12965	135
 85	mn4wo3dxxm5aog5lw	13002	120
 86	mn4wmogwx6e4nbeur	13094	201
@@ -5224,115 +5834,109 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 88	mn4wkhscdsyd44ue4	12869	120
 89	mn4mqpi0lb2e3g9xa	12936	39
 90	mn4mzx0dl9e8efyih	12973	138
-93	mmv33njzk0f3az1dt	12964	123
-94	mn6ajvocnrdug9yxh	12931	138
-95	mn6aos69t038dy65n	12970	136
-96	mn7qxjt00atmjplc8	12990	111
-97	mn7r0wu2gv9vbh2qx	12968	116
-98	mn7r2slu9bb699en8	13077	123
-99	mn7r4xvd7f1niq5dq	12877	198
-100	mn7tzrs20maj3ysmc	12966	120
+91	mn6ajvocnrdug9yxh	12931	138
+92	mn6aos69t038dy65n	12970	136
+93	mmw7x9dnktu9qpyh9	13014	123
+94	mnouslu9oip8vouyr	13098	119
+97	mn0iq7gddh4pfqmpo	13081	119
+98	mn0iz0i0dbdnsbhhj	13005	167
 \.
 
 
 --
--- TOC entry 5250 (class 0 OID 16696)
+-- TOC entry 5513 (class 0 OID 30007)
 -- Dependencies: 246
 -- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory, incomplete_units, is_packed, bag_quantity, arrival_date, has_muestra, observacion) FROM stdin;
-mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z	t	0	t	1	2026-01-01	f	\N
-mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z	t	0	t	1	2026-01-01	f	\N
-mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z	t	0	t	1	2026-01-01	f	\N
-mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z	t	0	t	1	2026-01-01	f	\N
-mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z	t	0	t	1	2026-01-01	f	\N
-mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z	t	0	t	1	2026-01-01	f	\N
-mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z	t	0	t	1	2026-01-01	f	\N
-mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z	t	0	t	1	2026-01-01	f	\N
-mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z	t	0	t	1	2026-01-01	f	\N
-mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z	t	0	t	1	2026-01-01	f	\N
-mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z	t	0	t	1	2026-01-01	f	\N
-mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z	t	0	t	1	2026-01-01	f	\N
-mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z	t	0	t	1	2026-01-01	f	\N
-mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t	0	t	1	2026-01-01	f	\N
-mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t	0	t	1	2026-01-01	f	\N
-mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f	0	t	1	2026-01-01	f	\N
-mmao4q01lxfht7ff2	7760	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:53:34.370-05:00	t	0	t	1	2026-01-01	f	\N
-mmao5su5kugcx7xv7	7758	71223381	1	\N	0	Jhon Montoya	2026-03-03T08:54:24.702-05:00	t	0	t	1	2026-01-01	f	\N
-mmao6whwa2xbw9p4p	7761	1037264064	0	\N	0	Jhon Montoya	2026-03-03T08:55:16.100-05:00	t	0	t	1	2026-01-01	f	\N
-mmao79naem9n1qbe9	7742	43668259	0	\N	0	Jhon Montoya	2026-03-03T08:55:33.143-05:00	t	0	t	1	2026-01-01	f	\N
-mmao8x1be6xx3btxl	7740	42999087	0	\N	0	Jhon Montoya	2026-03-03T08:56:50.112-05:00	t	0	t	1	2026-01-01	f	\N
-mmao9do8m0lg17fr6	7744	15927569	0	\N	0	Jhon Montoya	2026-03-03T08:57:11.672-05:00	t	0	t	1	2026-01-01	f	\N
-mmao9p3nebiokex9t	7737	1045017301	0	\N	0	Jhon Montoya	2026-03-03T08:57:26.484-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoa0azmws6s54a	7709	43048297	0	\N	0	Jhon Montoya	2026-03-03T08:57:41.003-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoajr4ipuno6hl8	7720	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:58:06.210-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoayvt347s1m4kf	7718	1128386891	0	\N	0	Jhon Montoya	2026-03-03T08:58:25.818-05:00	t	0	t	1	2026-01-01	f	\N
-mmaob8i7q5d7katdw	7728	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:58:38.288-05:00	t	0	t	1	2026-01-01	f	\N
-mmaobjlpzuoylcaag	7732	71223381	0	\N	0	Jhon Montoya	2026-03-03T08:58:52.670-05:00	t	0	t	1	2026-01-01	f	\N
-mmaocgw2h81nskfgj	7729	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:59:35.810-05:00	t	0	t	1	2026-01-01	f	\N
-mmaocta0d700oicjj	7731	700530400	0	\N	0	Jhon Montoya	2026-03-03T08:59:51.865-05:00	t	0	t	1	2026-01-01	f	\N
-mmaod67lqfxnpyn4d	7719	1037264064	1	\N	0	Jhon Montoya	2026-03-03T09:00:08.626-05:00	t	0	t	1	2026-01-01	f	\N
-mmaodgh2kf28twwgc	7739	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:00:21.926-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoeh09ca7gtrvca	7667	43048297	0	\N	0	Jhon Montoya	2026-03-03T09:01:09.274-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoeq2wmo7gj6j6p	7682	700530400	0	\N	0	Jhon Montoya	2026-03-03T09:01:21.033-05:00	t	0	t	1	2026-01-01	f	\N
-mmaof79qqdg6kd5pj	7684	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:01:43.311-05:00	t	0	t	1	2026-01-01	f	\N
-mmaofh4i892efv0o1	7679	1128386891	0	\N	0	Jhon Montoya	2026-03-03T09:01:56.083-05:00	t	0	t	1	2026-01-01	f	\N
-mmaofx1h06n1546ur	7678	32461771	1	\N	0	Jhon Montoya	2026-03-03T09:02:16.710-05:00	t	0	t	1	2026-01-01	f	\N
-mmaogbltgoe8rv8ri	7683	42999087	0	Compra	1	Jhon Montoya	2026-03-03T09:02:35.586-05:00	t	0	t	1	2026-01-01	f	\N
-mmaohu58qvu5328vx	7663	71223381	0	\N	0	Jhon Montoya	2026-03-03T09:03:46.268-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoi9xpijfoza3p6	7676	1037264064	0	Compra	1	Jhon Montoya	2026-03-03T09:04:06.734-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoipiizi4ze0tjc	7655	42999087	1	\N	0	Jhon Montoya	2026-03-03T09:04:26.922-05:00	t	0	t	1	2026-01-01	f	\N
-mmaok0r0kw9pb5szb	7655	42999087	0	\N	0	Jhon Montoya	2026-03-03T09:05:28.140-05:00	t	0	t	1	2026-01-01	f	\N
-mmaokbqe7lbt1eszq	7647	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:05:42.374-05:00	t	0	t	1	2026-01-01	f	\N
-mmaon9lzzmjumgs7e	7584	39439040	0	Cobro	2	Jhon Montoya	2026-03-03T09:07:59.591-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoo6u5e2m5f4e7b	7658	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:08:42.654-05:00	t	0	t	1	2026-01-01	f	\N
-mmaootlnq6jt4ayyb	7657	98587077	0	\N	0	Jhon Montoya	2026-03-03T09:09:12.155-05:00	t	0	t	1	2026-01-01	f	\N
-mmaoprvdbmx0vuvoc	7570	15927569	0	\N	0	Jhon Montoya	2026-03-03T09:09:56.569-05:00	t	0	t	1	2026-01-01	f	\N
-mmaor9v5w9x81d2uf	7624	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:11:06.546-05:00	t	0	t	1	2026-01-01	f	\N
-mmtkw7eh639ljr8uh	7799	15927569	0	\N	0	Jhon Montoya	2026-03-16T14:30:35.514-05:00	t	0	t	1	2026-03-13	f	\N
-mmtkvmpihcbzv09lu	7789	42843342	1	\N	0	Jhon Montoya	2026-03-16T14:30:08.694-05:00	t	0	t	1	2026-03-12	f	\N
-mmtkulxysfu621goy	7779	42999087	1	\N	0	Jhon Montoya	2026-03-16T14:29:21.046-05:00	t	0	t	3	2026-03-11	f	\N
-mmtkv4mz2ig8vt28w	7767	71223381	0	\N	0	Jhon Montoya	2026-03-16T14:29:45.275-05:00	t	0	t	1	2026-03-11	f	\N
-mmatdii6pijgxundn	7754	43097913	0	Compra	1	Jhon Montoya	2026-03-03T11:20:22.640-05:00	t	0	f	0	2026-01-01	f	\N
-mmtkptc0epwlcqmxv	7762	42843342	0	\N	0	Jhon Montoya	2026-03-16T14:25:37.345-05:00	t	0	f	1	2026-01-01	f	\N
-mmtkqhp1d1x0k0vz4	7769	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:26:08.917-05:00	t	0	t	1	2026-01-01	f	\N
-mmtkrqo8uztc861vm	7734	43189668	0	Compra	1	Jhon Montoya	2026-03-16T14:27:07.209-05:00	t	0	f	2	2026-01-01	f	\N
-mmtksjkyneo9y28m9	7768	43668259	0	\N	0	Jhon Montoya	2026-03-16T14:27:44.675-05:00	t	0	t	1	2026-01-01	f	\N
-mmtkt91os8d9s4699	7771	43097913	0	Compra	1	Jhon Montoya	2026-03-16T14:28:17.677-05:00	t	0	t	1	2026-01-01	f	\N
-mmtktv9awnd5r5fr4	7783	43181466	0	\N	0	Jhon Montoya	2026-03-16T14:28:46.462-05:00	t	0	t	1	2026-01-01	f	\N
-mmtkx8pcpn0utjkhp	7770	700530400	0	\N	0	Jhon Montoya	2026-03-16T14:31:23.857-05:00	t	0	t	2	2026-03-13	f	\N
-mmtkwoxetz288gyck	7790	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:30:58.227-05:00	t	0	t	1	2026-03-13	f	\N
-mmuo4hmspea34ibjf	7804	24368442	0	\N	0	Nury	2026-03-17T08:48:47.045-05:00	t	0	f	1	2026-03-16	f	\N
-mmtp19eox7u0he5w4	7813	42999087	0	\N	0	Nury	2026-03-16T16:26:29.857-05:00	t	0	t	2	2026-03-16	f	\N
-mmw7x9dnktu9qpyh9	7788	43668259	0	\N	0	Nury	2026-03-18T10:50:48.254-05:00	t	0	t	2	2026-03-18	f	\N
-mmxhzrpimjrptkjgm	7773	39439040	0	Compra	1	Nury	2026-03-19T08:20:27.655-05:00	t	1	t	1	2026-03-18	f	\N
-mmz0iaoqywa17o8q6	7818	700530400	0	\N	0	Fernanda Marin	2026-03-20T09:46:31.323-05:00	t	0	f	1	2026-03-19	f	\N
-mmz1tjsluudsjcs88	7803	43097913	0	\N	0	Nury	2026-03-20T10:23:15.958-05:00	t	0	t	2	2026-03-19	f	\N
-mmz3sfl42ox4fpr21	7778	1037264064	0	\N	0	Nury	2026-03-20T11:18:23.081-05:00	t	0	t	2	2026-03-20	f	\N
-mn0iny66ldymtw2tm	7820	42843342	0	\N	0	Nury	2026-03-21T11:02:34.303-05:00	t	0	t	0	2026-03-21	f	\N
-mn0iq7gddh4pfqmpo	7819	42843342	1	\N	0	Nury	2026-03-21T11:04:19.646-05:00	t	0	t	1	2026-03-21	f	\N
-mn0iz0i0dbdnsbhhj	7821	45769944	1	\N	0	Nury	2026-03-21T11:11:10.537-05:00	t	0	t	1	2026-03-21	f	\N
-mn7tzrs20maj3ysmc	7787	43841705	0	\N	0	Jhon Montoya	2026-03-26T13:54:04.898-05:00	t	0	t	1	2026-03-18	f	\N
-mn0iu251s3pdthwd1	7795	43189668	0	\N	0	Nury	2026-03-21T11:07:19.382-05:00	t	0	t	1	2026-03-20	f	\N
-mn4wo3dxxm5aog5lw	7830	42999087	0	\N	0	Nury	2026-03-24T12:45:40.390-05:00	t	0	t	2	2026-03-24	f	\N
-mn4wmogwx6e4nbeur	7809	43118318	0	\N	0	Nury	2026-03-24T12:44:34.401-05:00	t	0	t	3	2026-03-24	f	\N
-mn4wi06alyeuqiu7v	7823	43084268	0	\N	0	Nury	2026-03-24T12:40:56.291-05:00	t	0	t	1	2026-03-24	f	\N
-mn4wkhscdsyd44ue4	7782	8058195	0	\N	0	Nury	2026-03-24T12:42:52.429-05:00	t	0	t	1	2026-03-24	f	\N
-mn4mqpi0lb2e3g9xa	7836	15927569	0	\N	0	Nury	2026-03-24T08:07:46.201-05:00	t	0	t	0	2026-03-20	f	\N
-mn4mzx0dl9e8efyih	7828	15927569	0	\N	0	Nury	2026-03-24T08:14:55.837-05:00	t	0	f	1	2026-03-20	f	Solo top
-mmv33njzk0f3az1dt	7798	43818822	0	\N	0	Nury	2026-03-17T15:48:02.305-05:00	t	0	f	1	2026-03-17	f	\N
-mn6ajvocnrdug9yxh	7805	1041205070	0	\N	0	Nury	2026-03-25T12:02:04.573-05:00	t	0	t	1	2026-03-25	f	\N
-mn6aos69t038dy65n	7772	43048297	0	Cobro	1	Nury	2026-03-25T12:05:53.314-05:00	t	1	t	1	2026-03-24	f	1 unidad pendiente por entregar
-mn7qxjt00atmjplc8	000	43467697	0	\N	0	Nury	2026-03-26T12:28:22.405-05:00	t	0	f	1	2026-03-25	t	\N
-mn7r0wu2gv9vbh2qx	000	43818822	0	Cobro	1	Nury	2026-03-26T12:30:59.258-05:00	t	0	f	2	2026-03-25	f	cobra 1 unidad que mando dañada
-mn7r2slu9bb699en8	000	15927569	0	\N	0	Nury	2026-03-26T12:32:27.091-05:00	t	0	f	1	2026-03-25	f	solo top
-mn7r4xvd7f1niq5dq	000	32461771	1	\N	0	Nury	2026-03-26T12:34:07.226-05:00	t	0	t	1	2026-03-25	t	\N
+COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory, incomplete_units, is_packed, bag_quantity, arrival_date, has_muestra, observacion, segundas_units) FROM stdin;
+mlpq1t8tghc8ho5zk	7707	98587077	\N	\N	0	Admin Principal	2026-02-16T22:04:08.141Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq28wsw17qn7i96	7701	32461771	\N	\N	0	Admin Principal	2026-02-16T22:04:28.444Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq2jikm4ktl92mu	7702	42843342	\N	\N	0	Admin Principal	2026-02-16T22:04:42.188Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq36ok0o0reoka8	7668	39439040	\N	\N	0	Admin Principal	2026-02-16T22:05:12.213Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq3opu4aqypg2fi	7688	1045017301	\N	\N	0	Admin Principal	2026-02-16T22:05:35.586Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq4a58vzx56uhl4	7673	43097913	\N	\N	0	Admin Principal	2026-02-16T22:06:03.356Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq4k9klzrr8aie5	7690	71223381	\N	\N	0	Admin Principal	2026-02-16T22:06:16.472Z	t	0	t	1	2026-01-01	f	\N	0
+mlpq57f0zjzbhjfnv	7711	700530400	1	\N	0	Admin Principal	2026-02-16T22:06:46.476Z	t	0	t	1	2026-01-01	f	\N	0
+mlqzzgck5ph970165	7717	42999087	\N	\N	0	Admin Principal	2026-02-17T19:30:00.452Z	t	0	t	1	2026-01-01	f	\N	0
+mlr00c6d4f6tfcc5q	7716	32461771	\N	\N	0	Admin Principal	2026-02-17T19:30:41.701Z	t	0	t	1	2026-01-01	f	\N	0
+mlr00pbqb05frdbp6	7703	43668259	\N	\N	0	Admin Principal	2026-02-17T19:30:58.742Z	t	0	t	1	2026-01-01	f	\N	0
+mlr017j7mypl7s326	7704	43668259	\N	\N	0	Admin Principal	2026-02-17T19:31:22.339Z	t	0	t	1	2026-01-01	f	\N	0
+mlr01i6d0g5qluf2h	7722	42843342	\N	\N	0	Admin Principal	2026-02-17T19:31:36.133Z	t	0	t	1	2026-01-01	f	\N	0
+mlttcu00vutreommn	7705	24368442	0	\N	0	Admin Principal	2026-02-19T13:47:45.889-05:00	t	0	t	1	2026-01-01	f	\N	0
+mlty1yl4a6ry302z0	7706	24368442	1	\N	0	Admin Principal	2026-02-19T15:59:16.697-05:00	t	0	t	1	2026-01-01	f	\N	0
+mlppazj3deng1o52k	7695	43189668	0	\N	0	Admin Principal	2026-02-16T21:43:16.575Z	f	0	t	1	2026-01-01	f	\N	0
+mmao4q01lxfht7ff2	7760	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:53:34.370-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao5su5kugcx7xv7	7758	71223381	1	\N	0	Jhon Montoya	2026-03-03T08:54:24.702-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao6whwa2xbw9p4p	7761	1037264064	0	\N	0	Jhon Montoya	2026-03-03T08:55:16.100-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao79naem9n1qbe9	7742	43668259	0	\N	0	Jhon Montoya	2026-03-03T08:55:33.143-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao8x1be6xx3btxl	7740	42999087	0	\N	0	Jhon Montoya	2026-03-03T08:56:50.112-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao9do8m0lg17fr6	7744	15927569	0	\N	0	Jhon Montoya	2026-03-03T08:57:11.672-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmao9p3nebiokex9t	7737	1045017301	0	\N	0	Jhon Montoya	2026-03-03T08:57:26.484-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoa0azmws6s54a	7709	43048297	0	\N	0	Jhon Montoya	2026-03-03T08:57:41.003-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoajr4ipuno6hl8	7720	700530400	1	\N	0	Jhon Montoya	2026-03-03T08:58:06.210-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoayvt347s1m4kf	7718	1128386891	0	\N	0	Jhon Montoya	2026-03-03T08:58:25.818-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaob8i7q5d7katdw	7728	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:58:38.288-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaobjlpzuoylcaag	7732	71223381	0	\N	0	Jhon Montoya	2026-03-03T08:58:52.670-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaocgw2h81nskfgj	7729	43097913	0	\N	0	Jhon Montoya	2026-03-03T08:59:35.810-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaocta0d700oicjj	7731	700530400	0	\N	0	Jhon Montoya	2026-03-03T08:59:51.865-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaod67lqfxnpyn4d	7719	1037264064	1	\N	0	Jhon Montoya	2026-03-03T09:00:08.626-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaodgh2kf28twwgc	7739	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:00:21.926-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoeh09ca7gtrvca	7667	43048297	0	\N	0	Jhon Montoya	2026-03-03T09:01:09.274-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoeq2wmo7gj6j6p	7682	700530400	0	\N	0	Jhon Montoya	2026-03-03T09:01:21.033-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaof79qqdg6kd5pj	7684	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:01:43.311-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaofh4i892efv0o1	7679	1128386891	0	\N	0	Jhon Montoya	2026-03-03T09:01:56.083-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaofx1h06n1546ur	7678	32461771	1	\N	0	Jhon Montoya	2026-03-03T09:02:16.710-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaogbltgoe8rv8ri	7683	42999087	0	Compra	1	Jhon Montoya	2026-03-03T09:02:35.586-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaohu58qvu5328vx	7663	71223381	0	\N	0	Jhon Montoya	2026-03-03T09:03:46.268-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoi9xpijfoza3p6	7676	1037264064	0	Compra	1	Jhon Montoya	2026-03-03T09:04:06.734-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoipiizi4ze0tjc	7655	42999087	1	\N	0	Jhon Montoya	2026-03-03T09:04:26.922-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaok0r0kw9pb5szb	7655	42999087	0	\N	0	Jhon Montoya	2026-03-03T09:05:28.140-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaokbqe7lbt1eszq	7647	43668259	0	\N	0	Jhon Montoya	2026-03-03T09:05:42.374-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaon9lzzmjumgs7e	7584	39439040	0	Cobro	2	Jhon Montoya	2026-03-03T09:07:59.591-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoo6u5e2m5f4e7b	7658	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:08:42.654-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaootlnq6jt4ayyb	7657	98587077	0	\N	0	Jhon Montoya	2026-03-03T09:09:12.155-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaoprvdbmx0vuvoc	7570	15927569	0	\N	0	Jhon Montoya	2026-03-03T09:09:56.569-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmaor9v5w9x81d2uf	7624	32461771	0	\N	0	Jhon Montoya	2026-03-03T09:11:06.546-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmtkw7eh639ljr8uh	7799	15927569	0	\N	0	Jhon Montoya	2026-03-16T14:30:35.514-05:00	t	0	t	1	2026-03-13	f	\N	0
+mmtkvmpihcbzv09lu	7789	42843342	1	\N	0	Jhon Montoya	2026-03-16T14:30:08.694-05:00	t	0	t	1	2026-03-12	f	\N	0
+mmtkulxysfu621goy	7779	42999087	1	\N	0	Jhon Montoya	2026-03-16T14:29:21.046-05:00	t	0	t	3	2026-03-11	f	\N	0
+mmtkv4mz2ig8vt28w	7767	71223381	0	\N	0	Jhon Montoya	2026-03-16T14:29:45.275-05:00	t	0	t	1	2026-03-11	f	\N	0
+mmatdii6pijgxundn	7754	43097913	0	Compra	1	Jhon Montoya	2026-03-03T11:20:22.640-05:00	t	0	f	0	2026-01-01	f	\N	0
+mmtkptc0epwlcqmxv	7762	42843342	0	\N	0	Jhon Montoya	2026-03-16T14:25:37.345-05:00	t	0	f	1	2026-01-01	f	\N	0
+mmtkqhp1d1x0k0vz4	7769	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:26:08.917-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmtkrqo8uztc861vm	7734	43189668	0	Compra	1	Jhon Montoya	2026-03-16T14:27:07.209-05:00	t	0	f	2	2026-01-01	f	\N	0
+mmtksjkyneo9y28m9	7768	43668259	0	\N	0	Jhon Montoya	2026-03-16T14:27:44.675-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmtkt91os8d9s4699	7771	43097913	0	Compra	1	Jhon Montoya	2026-03-16T14:28:17.677-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmtktv9awnd5r5fr4	7783	43181466	0	\N	0	Jhon Montoya	2026-03-16T14:28:46.462-05:00	t	0	t	1	2026-01-01	f	\N	0
+mmtkx8pcpn0utjkhp	7770	700530400	0	\N	0	Jhon Montoya	2026-03-16T14:31:23.857-05:00	t	0	t	2	2026-03-13	f	\N	0
+mmtkwoxetz288gyck	7790	32461771	0	\N	0	Jhon Montoya	2026-03-16T14:30:58.227-05:00	t	0	t	1	2026-03-13	f	\N	0
+mmuo4hmspea34ibjf	7804	24368442	0	\N	0	Nury	2026-03-17T08:48:47.045-05:00	t	0	f	1	2026-03-16	f	\N	0
+mmtp19eox7u0he5w4	7813	42999087	0	\N	0	Nury	2026-03-16T16:26:29.857-05:00	t	0	t	2	2026-03-16	f	\N	0
+mmv33njzk0f3az1dt	7798	43818822	0	\N	0	Nury	2026-03-17T15:48:02.305-05:00	t	1	f	1	2026-03-17	f	\N	0
+mmxhzrpimjrptkjgm	7773	39439040	0	Compra	1	Nury	2026-03-19T08:20:27.655-05:00	t	1	t	1	2026-03-18	f	\N	0
+mmz0iaoqywa17o8q6	7818	700530400	0	\N	0	Fernanda Marin	2026-03-20T09:46:31.323-05:00	t	0	f	1	2026-03-19	f	\N	0
+mmz1tjsluudsjcs88	7803	43097913	0	\N	0	Nury	2026-03-20T10:23:15.958-05:00	t	0	t	2	2026-03-19	f	\N	0
+mmz3sfl42ox4fpr21	7778	1037264064	0	\N	0	Nury	2026-03-20T11:18:23.081-05:00	t	0	t	2	2026-03-20	f	\N	0
+mn0iny66ldymtw2tm	7820	42843342	0	\N	0	Nury	2026-03-21T11:02:34.303-05:00	t	0	t	0	2026-03-21	f	\N	0
+mn0iu251s3pdthwd1	7795	43189668	0	\N	0	Nury	2026-03-21T11:07:19.382-05:00	t	0	t	1	2026-03-20	f	\N	0
+mn4wo3dxxm5aog5lw	7830	42999087	0	\N	0	Nury	2026-03-24T12:45:40.390-05:00	t	0	t	2	2026-03-24	f	\N	0
+mn4wmogwx6e4nbeur	7809	43118318	0	\N	0	Nury	2026-03-24T12:44:34.401-05:00	t	0	t	3	2026-03-24	f	\N	0
+mn4wi06alyeuqiu7v	7823	43084268	0	\N	0	Nury	2026-03-24T12:40:56.291-05:00	t	0	t	1	2026-03-24	f	\N	0
+mn4wkhscdsyd44ue4	7782	8058195	0	\N	0	Nury	2026-03-24T12:42:52.429-05:00	t	0	t	1	2026-03-24	f	\N	0
+mn4mqpi0lb2e3g9xa	7836	15927569	0	\N	0	Nury	2026-03-24T08:07:46.201-05:00	t	0	t	0	2026-03-20	f	\N	0
+mn4mzx0dl9e8efyih	7828	15927569	0	\N	0	Nury	2026-03-24T08:14:55.837-05:00	t	0	f	1	2026-03-20	f	Solo top	0
+mn6ajvocnrdug9yxh	000	1041205070	0	\N	0	Nury	2026-03-25T12:02:04.573-05:00	t	0	t	1	2026-03-25	f	\N	0
+mn6aos69t038dy65n	000	43048297	0	Cobro	1	Nury	2026-03-25T12:05:53.314-05:00	t	1	t	1	2026-03-24	f	1 unidad pendiente por entregar	0
+mmw7x9dnktu9qpyh9	7788	43668259	0	Compra	2	Nury	2026-03-18T10:50:48.254-05:00	t	0	t	2	2026-03-18	f	\N	0
+mnouslu9oip8vouyr	7873	42843342	0	\N	0	Jhon Montoya	2026-04-07T11:48:35.220-05:00	t	1	t	0	2026-04-06	t	\N	0
+mn0iq7gddh4pfqmpo	7819	42843342	1	\N	0	Nury	2026-03-21T11:04:19.646-05:00	t	0	t	1	2026-03-21	f	\N	1
+mn0iz0i0dbdnsbhhj	7821	45769944	1	\N	0	Nury	2026-03-21T11:11:10.537-05:00	t	0	t	1	2026-03-21	f	\N	1
 \.
 
 
 --
--- TOC entry 5251 (class 0 OID 16713)
+-- TOC entry 5514 (class 0 OID 30026)
 -- Dependencies: 247
 -- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5347,7 +5951,7 @@ COPY public.return_reception_items (id, return_reception_id, reference, quantity
 
 
 --
--- TOC entry 5253 (class 0 OID 16723)
+-- TOC entry 5516 (class 0 OID 30036)
 -- Dependencies: 249
 -- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5359,19 +5963,45 @@ mmus2t8njmqmbax7y	231	000	872400.00	Jhon Montoya	2026-03-17T10:39:27.245-05:00
 
 
 --
--- TOC entry 5254 (class 0 OID 16733)
+-- TOC entry 5536 (class 0 OID 30412)
+-- Dependencies: 269
+-- Data for Name: rutas_transporte; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rutas_transporte (id, fecha, transportista_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5537 (class 0 OID 30430)
+-- Dependencies: 270
+-- Data for Name: rutas_transporte_items; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.rutas_transporte_items (id, ruta_id, taller, celular, direccion, sector, detalle, servicio, created_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5517 (class 0 OID 30046)
 -- Dependencies: 250
 -- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.schema_migrations (id, migration_name, applied_at, success, error_message, execution_time_ms) FROM stdin;
-1	001_example_migration.sql	2026-03-17 09:40:27.007668	f	La sección UP está vacía	\N
+1	001_example_migration.sql	2026-03-17 09:40:27.007668	f	La secci├│n UP est├í vac├¡a	\N
 2	001_add_arrival_date_to_receptions.sql	2026-03-17 09:40:44.221754	t	\N	15
+3	006_create_pago_lotes_config.sql	2026-04-07 07:26:40.987207	t	\N	0
+4	002_add_checked_by_column_to_dispatches_melas.sql	2026-04-07 07:27:25.608822	t	\N	0
+5	003_add_novedades_column_to_production_tracking_melas.sql	2026-04-07 07:27:25.608822	t	\N	0
+6	004_add_observacion_to_receptions.sql	2026-04-07 07:27:25.608822	t	\N	0
+7	005_create_producto_en_proceso.sql	2026-04-07 07:27:25.608822	t	\N	0
+8	add_has_muestra_to_receptions.sql	2026-04-07 07:27:25.608822	t	\N	0
 \.
 
 
 --
--- TOC entry 5256 (class 0 OID 16743)
+-- TOC entry 5519 (class 0 OID 30056)
 -- Dependencies: 252
 -- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5385,7 +6015,29 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
--- TOC entry 5257 (class 0 OID 16751)
+-- TOC entry 5535 (class 0 OID 30391)
+-- Dependencies: 268
+-- Data for Name: talleres; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.talleres (id, nombre, celular, direccion, sector, estado, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- TOC entry 5534 (class 0 OID 30375)
+-- Dependencies: 267
+-- Data for Name: transportistas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.transportistas (id, nombre, celular, picoyplaca, color_key, created_at, updated_at) FROM stdin;
+1775831586590	Jose Luis Bolivar	3113345979	Jueves	purple	2026-04-10 09:33:06.606994	2026-04-10 09:33:06.606994
+1775831540780	Gilberto Marin	3216327607	Martes	green	2026-04-10 09:32:20.840341	2026-04-10 09:48:54.528597
+\.
+
+
+--
+-- TOC entry 5520 (class 0 OID 30064)
 -- Dependencies: 253
 -- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5506,12 +6158,16 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 4393	mm9a66x3tqtxja160	RmW67GyixhFmrp0YAACX	online	2026-03-19 13:00:18.317905	2026-03-19 13:00:18.317905
 4394	mm9a66x3tqtxja160	2OgT1mxEH0BaaBmeAACZ	online	2026-03-19 13:00:18.481541	2026-03-19 13:00:18.481541
 4218	mm3x7j6m4p6s4g2zz	3vEoAxFG74bTJWVdAAB5	online	2026-03-19 12:31:43.75984	2026-03-19 12:31:43.75984
+3562	mm3wcdhk7ksjtfh97	42j4pcSeYEdN8WdiAAAf	online	2026-03-18 08:14:41.82424	2026-03-18 08:14:41.82424
+3564	mm3wcdhk7ksjtfh97	xIqqIyLWCRUigNXYAAAj	online	2026-03-18 08:14:42.460404	2026-03-18 08:14:42.460404
 4498	mm3x7j6m4p6s4g2zz	jOrYFbfKL3jfiBj9AAA7	online	2026-03-20 08:06:15.202434	2026-03-20 08:06:15.202434
 4518	mmcek5ivcck8np2xg	Oha_JdnQwWoRm7saAAAw	online	2026-03-20 10:02:49.072306	2026-03-20 10:02:49.072306
 4519	mmtovpuh0hhrz20qp	1ybQ5KPoa9Ci9MAXAAAy	online	2026-03-20 10:14:27.155709	2026-03-20 10:14:27.155709
 4540	mm9a66x3tqtxja160	PB6bknpt5bm4HSYjAAAJ	online	2026-03-20 14:56:14.188172	2026-03-20 14:56:14.188172
 4560	mmznzctvojut4aax3	mIMWmQmte3LzUX4UAAA2	online	2026-03-20 20:43:41.199715	2026-03-20 20:43:41.199715
 4573	mmznzctvojut4aax3	gghmm6YafE_fVSvSAAAc	online	2026-03-20 21:36:17.927241	2026-03-20 21:36:17.927241
+3565	mm3wcdhk7ksjtfh97	SnvbHNmenf_PM76oAAAl	online	2026-03-18 08:14:42.47403	2026-03-18 08:14:42.47403
+3573	mm3x7j6m4p6s4g2zz	uGdcDk1ZX-X19kNOAABb	online	2026-03-18 08:50:15.076988	2026-03-18 08:50:15.076988
 4058	mmcek5ivcck8np2xg	qgXG7rI2QhDGw8B0AAAD	online	2026-03-19 12:07:53.974371	2026-03-19 12:07:53.974371
 3885	mm3wcdhk7ksjtfh97	uqvcwT4Ky132Ql4XAADP	online	2026-03-19 09:20:02.974168	2026-03-19 09:20:02.974168
 3886	mm3wcdhk7ksjtfh97	uWB8tFyafhA9FP5OAADR	online	2026-03-19 09:20:02.992729	2026-03-19 09:20:02.992729
@@ -5551,18 +6207,45 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 4208	mm9a66x3tqtxja160	TS0qmdxRDkoj17o3AABl	online	2026-03-19 12:31:36.144512	2026-03-19 12:31:36.144512
 4215	mm3x7j6m4p6s4g2zz	AZJ9F5EUyRVD04tgAABz	online	2026-03-19 12:31:43.492165	2026-03-19 12:31:43.492165
 4384	mm3x7j6m4p6s4g2zz	55ikXReQG1ySxCxRAACF	online	2026-03-19 13:00:06.605679	2026-03-19 13:00:06.605679
-4794	mm3x7j6m4p6s4g2zz	xZh5jXdddQhNMFeNAACC	online	2026-03-26 17:13:52.766514	2026-03-26 17:13:52.766514
+4725	mmxyjrub7hx690dr8	Cl6AXZoRfhjam4KnAACA	online	2026-03-25 16:15:34.538299	2026-03-25 16:15:34.538299
+3574	mm3x7j6m4p6s4g2zz	HHXGhwGkF5V4YXZnAABf	online	2026-03-18 08:50:15.179794	2026-03-18 08:50:15.179794
+3576	mm3x7j6m4p6s4g2zz	f2fHdWSWOCi26omhAABj	online	2026-03-18 08:50:15.239884	2026-03-18 08:50:15.239884
+3563	mm3wcdhk7ksjtfh97	3s88G9EFOCsVDLoYAAAh	online	2026-03-18 08:14:42.292946	2026-03-18 08:14:42.292946
+3566	mm3wcdhk7ksjtfh97	Lh9lkLMahQu3H5_uAAAn	online	2026-03-18 08:14:42.49392	2026-03-18 08:14:42.49392
+3572	mm3x7j6m4p6s4g2zz	66z4IcWxZo5RjmMPAABd	online	2026-03-18 08:50:15.044047	2026-03-18 08:50:15.044047
+3575	mm3x7j6m4p6s4g2zz	IXnQZyGXhWVFmIhMAABh	online	2026-03-18 08:50:15.22437	2026-03-18 08:50:15.22437
 3942	mm3x7j6m4p6s4g2zz	PUM3j7xtfluYKZHdAAAf	online	2026-03-19 09:59:31.013678	2026-03-19 09:59:31.013678
 3954	mmtovpuh0hhrz20qp	70ZUfLJapWAU9fojAAA4	online	2026-03-19 10:01:14.832938	2026-03-19 10:01:14.832938
 3888	mm3x7j6m4p6s4g2zz	T26ugJB23eRbo7OzAADV	online	2026-03-19 09:31:38.482945	2026-03-19 09:31:38.482945
 3897	mm3wcdhk7ksjtfh97	fitrh726yySRFgosAAAL	online	2026-03-19 09:56:30.148929	2026-03-19 09:56:30.148929
 3899	mm3wcdhk7ksjtfh97	-_DW69LkE0OsJWBzAAAP	online	2026-03-19 09:56:30.19359	2026-03-19 09:56:30.19359
 3900	mm3wcdhk7ksjtfh97	jFfiY64_EgwnHVabAAAR	online	2026-03-19 09:56:30.211809	2026-03-19 09:56:30.211809
+4834	mm9a66x3tqtxja160	6oKbSTvZUVjsHpnZAAAj	online	2026-04-09 16:21:53.549581	2026-04-09 16:21:53.549581
+4733	mm3x7j6m4p6s4g2zz	GKQ5ktOs8PwY-dzrAAAP	online	2026-03-26 10:33:43.192143	2026-03-26 10:33:43.192143
+4836	mm9a66x3tqtxja160	qFNoinEQEZAdV24fAAAJ	online	2026-04-09 16:40:29.780666	2026-04-09 16:40:29.780666
+4841	mm3x7j6m4p6s4g2zz	irYK6jEyJC-w5q1kAAAT	online	2026-04-10 09:31:15.847953	2026-04-10 09:31:15.847953
+4745	mm3x7j6m4p6s4g2zz	blVE0LpnHM4Nh5WSAAAu	online	2026-03-26 17:02:49.084899	2026-03-26 17:02:49.084899
+4848	mm3x7j6m4p6s4g2zz	VWB1-YdMtwBbTpBJAAAd	online	2026-04-10 10:00:45.759815	2026-04-10 10:00:45.759815
+4853	mm3x7j6m4p6s4g2zz	0PKqUQ6-8bon-ONqAAAU	online	2026-04-10 10:15:08.138664	2026-04-10 10:15:08.138664
+4854	mm3x7j6m4p6s4g2zz	ow6eVRZ_vzQQtzcYAAAD	online	2026-04-10 12:58:51.927878	2026-04-10 12:58:51.927878
+4855	mm3x7j6m4p6s4g2zz	pZSWh2fuZ_OG-nqbAAAB	online	2026-04-10 13:03:39.157424	2026-04-10 13:03:39.157424
+4757	mm3x7j6m4p6s4g2zz	oblDUIl7FE7CRs97AAAu	online	2026-03-27 10:31:15.342697	2026-03-27 10:31:15.342697
+4760	mm3x7j6m4p6s4g2zz	QMXxoM-EIWZhj8K3AAAL	online	2026-03-27 10:35:21.997428	2026-03-27 10:35:21.997428
+4761	mm3x7j6m4p6s4g2zz	kQuK1_fdYRUbPxvEAAAD	online	2026-03-28 09:20:13.681549	2026-03-28 09:20:13.681549
+4859	mm3x7j6m4p6s4g2zz	wvgJ97TF1kE6lmfNAAAS	online	2026-04-10 13:04:27.059235	2026-04-10 13:04:27.059235
+4769	mm3x7j6m4p6s4g2zz	YeWH-XTy_EqhA5oIAAAb	online	2026-03-30 12:40:52.891918	2026-03-30 12:40:52.891918
+4773	mm3x7j6m4p6s4g2zz	hunRwotEGuxEuZJEAAAO	online	2026-04-01 15:50:32.815333	2026-04-01 15:50:32.815333
+4777	mm3x7j6m4p6s4g2zz	mu3GNltyfbIZjYreAAAN	online	2026-04-01 16:27:42.809278	2026-04-01 16:27:42.809278
+4789	mm3x7j6m4p6s4g2zz	_Nn6MlgZwlT-CK--AAAt	online	2026-04-06 14:16:03.851481	2026-04-06 14:16:03.851481
+4799	mm9a66x3tqtxja160	VivLIUfF8ohSKLoyAAAm	online	2026-04-07 11:41:40.841792	2026-04-07 11:41:40.841792
+4803	mm3x7j6m4p6s4g2zz	2BqmbLkLw3KAlfPsAAAM	online	2026-04-07 12:09:28.190429	2026-04-07 12:09:28.190429
+4813	mm3x7j6m4p6s4g2zz	2Ktrd9tG1bfao1ZYAAAj	online	2026-04-07 16:18:13.417034	2026-04-07 16:18:13.417034
+4818	mm3x7j6m4p6s4g2zz	SDJtmrlDPpHMKCB3AAAS	online	2026-04-08 15:22:03.511365	2026-04-08 15:22:03.511365
 \.
 
 
 --
--- TOC entry 5259 (class 0 OID 16763)
+-- TOC entry 5522 (class 0 OID 30076)
 -- Dependencies: 255
 -- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -5578,25 +6261,26 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 
 
 --
--- TOC entry 5261 (class 0 OID 16775)
+-- TOC entry 5524 (class 0 OID 30088)
 -- Dependencies: 257
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
-mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-03-24 10:37:54.119829
-mmtovpuh0hhrz20qp	Nury	JJJ	$2b$10$wRindhs.7AA2FBO4MY/Zx.sIpnHZd4LK9vG0a7cwxR2tP6YODMXgK	general	1	\N	2026-03-26 08:08:30.755437
-mmcek5ivcck8np2xg	John Efrain	JEB	$2b$10$VD/JpW2jl4AxXDpYtr3kD.tGlnQxH6VKo7x9a6jckXIbNp5exrfzm	observer	1	\N	2026-03-26 11:44:43.227864
-mm3wcdhk7ksjtfh97	M@R!@ M	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-03-26 11:45:17.054485
-mmxyjrub7hx690dr8	LUISA F 	LFM	$2b$10$SMa6J/n4mZfGMp68mXtRd.JGsZzUIF2v5H72dOCUFBQRXH21Xd9si	general	1	\N	2026-03-26 14:04:29.091184
-mmznzctvojut4aax3	General	GGG	$2b$10$AZLbemyplVmxJ5uq/NNM4eJ1pdsIlOdVYCwCV8a5be4xXBNRMR9/a	general	1	\N	2026-03-26 16:11:37.386151
+mm3wcdhk7ksjtfh97	M@R!@ M	MMB	$2b$10$uWg1bxblm.Wtuox2ndVMXeFml5TrMymRp/GH19r8H/jwuSC0MbIMi	admin	1	\N	2026-03-25 11:02:12.797301
+mmtovpuh0hhrz20qp	Nury	JJJ	$2b$10$wRindhs.7AA2FBO4MY/Zx.sIpnHZd4LK9vG0a7cwxR2tP6YODMXgK	general	1	\N	2026-03-25 11:03:37.956533
+mmcek5ivcck8np2xg	John Efrain	JEB	$2b$10$VD/JpW2jl4AxXDpYtr3kD.tGlnQxH6VKo7x9a6jckXIbNp5exrfzm	observer	1	\N	2026-03-25 12:01:34.139864
+mmxyjrub7hx690dr8	LUISA F 	LFM	$2b$10$SMa6J/n4mZfGMp68mXtRd.JGsZzUIF2v5H72dOCUFBQRXH21Xd9si	general	1	\N	2026-03-25 16:15:33.465352
 mmze56k4iwquqhbul	JHON USME	JFG	$2b$10$8fzGakof84VaCnJowzH3X.K5wM4a8H8NM1VhXPdyIGutdZcKY6wpi	general	1	\N	2026-03-20 16:08:14.258978
-mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-03-26 16:41:53.150439
+mmznzctvojut4aax3	General	GGG	$2b$10$AZLbemyplVmxJ5uq/NNM4eJ1pdsIlOdVYCwCV8a5be4xXBNRMR9/a	general	1	\N	2026-03-20 20:43:39.004646
+mnqljykxkrdnn8ip4	asasas	AAA	$2b$10$yfughZOCIkXkCOQbAmQ1h.PiGpYZ.hYKYEYKeocVRUgOyAeZSLAOi	general	1	\N	2026-04-08 17:05:27.744535
+mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-04-09 15:46:17.164036
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-04-10 09:02:51.677737
 \.
 
 
 --
--- TOC entry 5280 (class 0 OID 0)
+-- TOC entry 5559 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: correria_novedades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -5605,7 +6289,25 @@ SELECT pg_catalog.setval('public.correria_novedades_id_seq', 1, true);
 
 
 --
--- TOC entry 5281 (class 0 OID 0)
+-- TOC entry 5560 (class 0 OID 0)
+-- Dependencies: 261
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.cuentas_bancarias_id_seq', 369, true);
+
+
+--
+-- TOC entry 5561 (class 0 OID 0)
+-- Dependencies: 265
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.descuentos_pago_id_seq', 2, true);
+
+
+--
+-- TOC entry 5562 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -5614,7 +6316,7 @@ SELECT pg_catalog.setval('public.dispatch_items_id_seq', 915, true);
 
 
 --
--- TOC entry 5282 (class 0 OID 0)
+-- TOC entry 5563 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -5623,16 +6325,34 @@ SELECT pg_catalog.setval('public.messages_id_seq', 136, true);
 
 
 --
--- TOC entry 5283 (class 0 OID 0)
+-- TOC entry 5564 (class 0 OID 0)
+-- Dependencies: 259
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pago_lotes_config_id_seq', 3, true);
+
+
+--
+-- TOC entry 5565 (class 0 OID 0)
+-- Dependencies: 263
+-- Name: pagos_programados_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pagos_programados_id_seq', 2, true);
+
+
+--
+-- TOC entry 5566 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.reception_items_id_seq', 100, true);
+SELECT pg_catalog.setval('public.reception_items_id_seq', 98, true);
 
 
 --
--- TOC entry 5284 (class 0 OID 0)
+-- TOC entry 5567 (class 0 OID 0)
 -- Dependencies: 248
 -- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -5641,34 +6361,34 @@ SELECT pg_catalog.setval('public.return_reception_items_id_seq', 10, true);
 
 
 --
--- TOC entry 5285 (class 0 OID 0)
+-- TOC entry 5568 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: schema_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.schema_migrations_id_seq', 2, true);
+SELECT pg_catalog.setval('public.schema_migrations_id_seq', 8, true);
 
 
 --
--- TOC entry 5286 (class 0 OID 0)
+-- TOC entry 5569 (class 0 OID 0)
 -- Dependencies: 254
 -- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 4794, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 4859, true);
 
 
 --
--- TOC entry 5287 (class 0 OID 0)
+-- TOC entry 5570 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 8, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 34, true);
 
 
 --
--- TOC entry 5288 (class 0 OID 0)
+-- TOC entry 5571 (class 0 OID 0)
 -- Dependencies: 258
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -5677,7 +6397,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
--- TOC entry 4946 (class 2606 OID 16796)
+-- TOC entry 5172 (class 2606 OID 30109)
 -- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5686,7 +6406,7 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 4948 (class 2606 OID 16798)
+-- TOC entry 5174 (class 2606 OID 30111)
 -- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5695,7 +6415,7 @@ ALTER TABLE ONLY public.clients
 
 
 --
--- TOC entry 4954 (class 2606 OID 16800)
+-- TOC entry 5180 (class 2606 OID 30113)
 -- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5704,7 +6424,7 @@ ALTER TABLE ONLY public.compras
 
 
 --
--- TOC entry 4960 (class 2606 OID 16802)
+-- TOC entry 5186 (class 2606 OID 30115)
 -- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5713,7 +6433,7 @@ ALTER TABLE ONLY public.confeccionistas
 
 
 --
--- TOC entry 4962 (class 2606 OID 16804)
+-- TOC entry 5188 (class 2606 OID 30117)
 -- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5722,7 +6442,7 @@ ALTER TABLE ONLY public.correria_catalog
 
 
 --
--- TOC entry 4964 (class 2606 OID 16806)
+-- TOC entry 5190 (class 2606 OID 30119)
 -- Name: correria_novedades correria_novedades_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5731,7 +6451,7 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 4967 (class 2606 OID 16808)
+-- TOC entry 5193 (class 2606 OID 30121)
 -- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5740,7 +6460,16 @@ ALTER TABLE ONLY public.correrias
 
 
 --
--- TOC entry 4969 (class 2606 OID 16810)
+-- TOC entry 5298 (class 2606 OID 30315)
+-- Name: cuentas_bancarias cuentas_bancarias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cuentas_bancarias
+    ADD CONSTRAINT cuentas_bancarias_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5195 (class 2606 OID 30123)
 -- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5749,7 +6478,16 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
--- TOC entry 4973 (class 2606 OID 16812)
+-- TOC entry 5307 (class 2606 OID 30365)
+-- Name: descuentos_pago descuentos_pago_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.descuentos_pago
+    ADD CONSTRAINT descuentos_pago_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5199 (class 2606 OID 30125)
 -- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5758,7 +6496,7 @@ ALTER TABLE ONLY public.disenadoras
 
 
 --
--- TOC entry 4975 (class 2606 OID 16814)
+-- TOC entry 5201 (class 2606 OID 30127)
 -- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5767,7 +6505,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 4979 (class 2606 OID 16816)
+-- TOC entry 5205 (class 2606 OID 30129)
 -- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5776,7 +6514,7 @@ ALTER TABLE ONLY public.dispatches
 
 
 --
--- TOC entry 4984 (class 2606 OID 16818)
+-- TOC entry 5210 (class 2606 OID 30131)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5785,7 +6523,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 4986 (class 2606 OID 16820)
+-- TOC entry 5212 (class 2606 OID 30133)
 -- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5794,7 +6532,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 4989 (class 2606 OID 16822)
+-- TOC entry 5215 (class 2606 OID 30135)
 -- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5803,7 +6541,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 4991 (class 2606 OID 16824)
+-- TOC entry 5217 (class 2606 OID 30137)
 -- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5812,7 +6550,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 4994 (class 2606 OID 16826)
+-- TOC entry 5220 (class 2606 OID 30139)
 -- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5821,7 +6559,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 4996 (class 2606 OID 16828)
+-- TOC entry 5222 (class 2606 OID 30141)
 -- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5830,7 +6568,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5004 (class 2606 OID 16830)
+-- TOC entry 5230 (class 2606 OID 30143)
 -- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5839,7 +6577,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5006 (class 2606 OID 16832)
+-- TOC entry 5232 (class 2606 OID 30145)
 -- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5848,7 +6586,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5010 (class 2606 OID 16834)
+-- TOC entry 5236 (class 2606 OID 30147)
 -- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5857,7 +6595,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5012 (class 2606 OID 16836)
+-- TOC entry 5238 (class 2606 OID 30149)
 -- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5866,7 +6604,7 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5018 (class 2606 OID 16838)
+-- TOC entry 5244 (class 2606 OID 30151)
 -- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5875,7 +6613,7 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- TOC entry 5027 (class 2606 OID 16840)
+-- TOC entry 5253 (class 2606 OID 30153)
 -- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5884,7 +6622,34 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 5029 (class 2606 OID 16842)
+-- TOC entry 5294 (class 2606 OID 30299)
+-- Name: pago_lotes_config pago_lotes_config_clave_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pago_lotes_config
+    ADD CONSTRAINT pago_lotes_config_clave_key UNIQUE (clave);
+
+
+--
+-- TOC entry 5296 (class 2606 OID 30297)
+-- Name: pago_lotes_config pago_lotes_config_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pago_lotes_config
+    ADD CONSTRAINT pago_lotes_config_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5305 (class 2606 OID 30339)
+-- Name: pagos_programados pagos_programados_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pagos_programados
+    ADD CONSTRAINT pagos_programados_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5255 (class 2606 OID 30155)
 -- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5893,7 +6658,7 @@ ALTER TABLE ONLY public.product_references
 
 
 --
--- TOC entry 5032 (class 2606 OID 16844)
+-- TOC entry 5258 (class 2606 OID 30157)
 -- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5902,7 +6667,7 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
--- TOC entry 5035 (class 2606 OID 16846)
+-- TOC entry 5261 (class 2606 OID 30159)
 -- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5911,7 +6676,7 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
--- TOC entry 5039 (class 2606 OID 16848)
+-- TOC entry 5265 (class 2606 OID 30161)
 -- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5920,7 +6685,7 @@ ALTER TABLE ONLY public.receptions
 
 
 --
--- TOC entry 5041 (class 2606 OID 16850)
+-- TOC entry 5267 (class 2606 OID 30163)
 -- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5929,7 +6694,7 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
--- TOC entry 5043 (class 2606 OID 16852)
+-- TOC entry 5269 (class 2606 OID 30165)
 -- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5938,7 +6703,25 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
--- TOC entry 5045 (class 2606 OID 16854)
+-- TOC entry 5324 (class 2606 OID 30451)
+-- Name: rutas_transporte_items rutas_transporte_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rutas_transporte_items
+    ADD CONSTRAINT rutas_transporte_items_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5321 (class 2606 OID 30421)
+-- Name: rutas_transporte rutas_transporte_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rutas_transporte
+    ADD CONSTRAINT rutas_transporte_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5271 (class 2606 OID 30167)
 -- Name: schema_migrations schema_migrations_migration_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5947,7 +6730,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- TOC entry 5047 (class 2606 OID 16856)
+-- TOC entry 5273 (class 2606 OID 30169)
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5956,7 +6739,7 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- TOC entry 5049 (class 2606 OID 16858)
+-- TOC entry 5275 (class 2606 OID 30171)
 -- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5965,7 +6748,25 @@ ALTER TABLE ONLY public.sellers
 
 
 --
--- TOC entry 5054 (class 2606 OID 16860)
+-- TOC entry 5316 (class 2606 OID 30409)
+-- Name: talleres talleres_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.talleres
+    ADD CONSTRAINT talleres_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5312 (class 2606 OID 30389)
+-- Name: transportistas transportistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.transportistas
+    ADD CONSTRAINT transportistas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 5280 (class 2606 OID 30173)
 -- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5974,7 +6775,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5056 (class 2606 OID 16862)
+-- TOC entry 5282 (class 2606 OID 30175)
 -- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5983,7 +6784,7 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5059 (class 2606 OID 16864)
+-- TOC entry 5285 (class 2606 OID 30177)
 -- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -5992,7 +6793,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5061 (class 2606 OID 16866)
+-- TOC entry 5287 (class 2606 OID 30179)
 -- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6001,7 +6802,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5065 (class 2606 OID 16868)
+-- TOC entry 5291 (class 2606 OID 30181)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6010,7 +6811,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 4949 (class 1259 OID 16869)
+-- TOC entry 5175 (class 1259 OID 30182)
 -- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6018,7 +6819,7 @@ CREATE INDEX idx_clients_active ON public.clients USING btree (active);
 
 
 --
--- TOC entry 4950 (class 1259 OID 16870)
+-- TOC entry 5176 (class 1259 OID 30183)
 -- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6026,7 +6827,7 @@ CREATE INDEX idx_clients_name ON public.clients USING btree (name);
 
 
 --
--- TOC entry 4951 (class 1259 OID 16871)
+-- TOC entry 5177 (class 1259 OID 30184)
 -- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6034,7 +6835,7 @@ CREATE INDEX idx_clients_nit ON public.clients USING btree (nit);
 
 
 --
--- TOC entry 4952 (class 1259 OID 16872)
+-- TOC entry 5178 (class 1259 OID 30185)
 -- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6042,7 +6843,7 @@ CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
--- TOC entry 4955 (class 1259 OID 16873)
+-- TOC entry 5181 (class 1259 OID 30186)
 -- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6050,7 +6851,7 @@ CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta
 
 
 --
--- TOC entry 4956 (class 1259 OID 16874)
+-- TOC entry 5182 (class 1259 OID 30187)
 -- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6058,7 +6859,7 @@ CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
 
 
 --
--- TOC entry 4957 (class 1259 OID 16875)
+-- TOC entry 5183 (class 1259 OID 30188)
 -- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6066,7 +6867,7 @@ CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
 
 
 --
--- TOC entry 4958 (class 1259 OID 16876)
+-- TOC entry 5184 (class 1259 OID 30189)
 -- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6074,7 +6875,7 @@ CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
 
 
 --
--- TOC entry 4965 (class 1259 OID 16877)
+-- TOC entry 5191 (class 1259 OID 30190)
 -- Name: idx_correria_novedades_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6082,7 +6883,23 @@ CREATE INDEX idx_correria_novedades_correria_id ON public.correria_novedades USI
 
 
 --
--- TOC entry 4970 (class 1259 OID 16878)
+-- TOC entry 5299 (class 1259 OID 30317)
+-- Name: idx_cuentas_bancarias_cedula; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_cuentas_bancarias_cedula ON public.cuentas_bancarias USING btree (cedula);
+
+
+--
+-- TOC entry 5300 (class 1259 OID 30316)
+-- Name: idx_cuentas_bancarias_nombre; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_cuentas_bancarias_nombre ON public.cuentas_bancarias USING btree (lower((nombre)::text));
+
+
+--
+-- TOC entry 5196 (class 1259 OID 30191)
 -- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6090,7 +6907,7 @@ CREATE INDEX idx_delivery_dates_confeccionista_id ON public.delivery_dates USING
 
 
 --
--- TOC entry 4971 (class 1259 OID 16879)
+-- TOC entry 5197 (class 1259 OID 30192)
 -- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6098,7 +6915,23 @@ CREATE INDEX idx_delivery_dates_reference_id ON public.delivery_dates USING btre
 
 
 --
--- TOC entry 4976 (class 1259 OID 16880)
+-- TOC entry 5308 (class 1259 OID 30371)
+-- Name: idx_descuentos_pago_pago_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_descuentos_pago_pago_id ON public.descuentos_pago USING btree (pago_id);
+
+
+--
+-- TOC entry 5309 (class 1259 OID 30372)
+-- Name: idx_descuentos_pago_tipo; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_descuentos_pago_tipo ON public.descuentos_pago USING btree (tipo);
+
+
+--
+-- TOC entry 5202 (class 1259 OID 30193)
 -- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6106,7 +6939,7 @@ CREATE INDEX idx_dispatch_items_dispatch_id ON public.dispatch_items USING btree
 
 
 --
--- TOC entry 4977 (class 1259 OID 16881)
+-- TOC entry 5203 (class 1259 OID 30194)
 -- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6114,7 +6947,7 @@ CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (
 
 
 --
--- TOC entry 4980 (class 1259 OID 16882)
+-- TOC entry 5206 (class 1259 OID 30195)
 -- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6122,7 +6955,7 @@ CREATE INDEX idx_dispatches_client_id ON public.dispatches USING btree (client_i
 
 
 --
--- TOC entry 4981 (class 1259 OID 16883)
+-- TOC entry 5207 (class 1259 OID 30196)
 -- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6130,7 +6963,7 @@ CREATE INDEX idx_dispatches_correria_id ON public.dispatches USING btree (correr
 
 
 --
--- TOC entry 4982 (class 1259 OID 16884)
+-- TOC entry 5208 (class 1259 OID 30197)
 -- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6138,7 +6971,7 @@ CREATE INDEX idx_dispatches_created_at ON public.dispatches USING btree (created
 
 
 --
--- TOC entry 4987 (class 1259 OID 16885)
+-- TOC entry 5213 (class 1259 OID 30198)
 -- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6146,7 +6979,7 @@ CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (
 
 
 --
--- TOC entry 4992 (class 1259 OID 16886)
+-- TOC entry 5218 (class 1259 OID 30199)
 -- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6154,7 +6987,7 @@ CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (ref
 
 
 --
--- TOC entry 4997 (class 1259 OID 16887)
+-- TOC entry 5223 (class 1259 OID 30200)
 -- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6162,7 +6995,7 @@ CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (r
 
 
 --
--- TOC entry 4998 (class 1259 OID 16888)
+-- TOC entry 5224 (class 1259 OID 30201)
 -- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6170,7 +7003,7 @@ CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USI
 
 
 --
--- TOC entry 4999 (class 1259 OID 16889)
+-- TOC entry 5225 (class 1259 OID 30202)
 -- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6178,7 +7011,7 @@ CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements US
 
 
 --
--- TOC entry 5000 (class 1259 OID 16890)
+-- TOC entry 5226 (class 1259 OID 30203)
 -- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6186,7 +7019,7 @@ CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING 
 
 
 --
--- TOC entry 5001 (class 1259 OID 16891)
+-- TOC entry 5227 (class 1259 OID 30204)
 -- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6194,7 +7027,7 @@ CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements US
 
 
 --
--- TOC entry 5002 (class 1259 OID 16892)
+-- TOC entry 5228 (class 1259 OID 30205)
 -- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6202,7 +7035,7 @@ CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements US
 
 
 --
--- TOC entry 5007 (class 1259 OID 16893)
+-- TOC entry 5233 (class 1259 OID 30206)
 -- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6210,7 +7043,7 @@ CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING 
 
 
 --
--- TOC entry 5008 (class 1259 OID 16894)
+-- TOC entry 5234 (class 1259 OID 30207)
 -- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6218,7 +7051,7 @@ CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USI
 
 
 --
--- TOC entry 5013 (class 1259 OID 16895)
+-- TOC entry 5239 (class 1259 OID 30208)
 -- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6226,7 +7059,7 @@ CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at)
 
 
 --
--- TOC entry 5014 (class 1259 OID 16896)
+-- TOC entry 5240 (class 1259 OID 30209)
 -- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6234,7 +7067,7 @@ CREATE INDEX idx_messages_read ON public.messages USING btree (read);
 
 
 --
--- TOC entry 5015 (class 1259 OID 16897)
+-- TOC entry 5241 (class 1259 OID 30210)
 -- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6242,7 +7075,7 @@ CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
 
 
 --
--- TOC entry 5016 (class 1259 OID 16898)
+-- TOC entry 5242 (class 1259 OID 30211)
 -- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6250,7 +7083,7 @@ CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender
 
 
 --
--- TOC entry 5019 (class 1259 OID 16899)
+-- TOC entry 5245 (class 1259 OID 30212)
 -- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6258,7 +7091,7 @@ CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_i
 
 
 --
--- TOC entry 5020 (class 1259 OID 16900)
+-- TOC entry 5246 (class 1259 OID 30213)
 -- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6266,7 +7099,7 @@ CREATE INDEX idx_orders_client_id ON public.orders USING btree (client_id);
 
 
 --
--- TOC entry 5021 (class 1259 OID 16901)
+-- TOC entry 5247 (class 1259 OID 30214)
 -- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6274,7 +7107,7 @@ CREATE INDEX idx_orders_correria_id ON public.orders USING btree (correria_id);
 
 
 --
--- TOC entry 5022 (class 1259 OID 16902)
+-- TOC entry 5248 (class 1259 OID 30215)
 -- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6282,7 +7115,7 @@ CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
--- TOC entry 5023 (class 1259 OID 16903)
+-- TOC entry 5249 (class 1259 OID 30216)
 -- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6290,7 +7123,7 @@ CREATE INDEX idx_orders_end_date ON public.orders USING btree (end_date);
 
 
 --
--- TOC entry 5024 (class 1259 OID 16904)
+-- TOC entry 5250 (class 1259 OID 30217)
 -- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6298,7 +7131,7 @@ CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
--- TOC entry 5025 (class 1259 OID 16905)
+-- TOC entry 5251 (class 1259 OID 30218)
 -- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6306,7 +7139,39 @@ CREATE INDEX idx_orders_start_date ON public.orders USING btree (start_date);
 
 
 --
--- TOC entry 5030 (class 1259 OID 16906)
+-- TOC entry 5292 (class 1259 OID 30300)
+-- Name: idx_pago_lotes_config_clave; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_pago_lotes_config_clave ON public.pago_lotes_config USING btree (clave);
+
+
+--
+-- TOC entry 5301 (class 1259 OID 30347)
+-- Name: idx_pagos_programados_cuenta_bancaria_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_pagos_programados_cuenta_bancaria_id ON public.pagos_programados USING btree (cuenta_bancaria_id);
+
+
+--
+-- TOC entry 5302 (class 1259 OID 30345)
+-- Name: idx_pagos_programados_fecha; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_pagos_programados_fecha ON public.pagos_programados USING btree (fecha);
+
+
+--
+-- TOC entry 5303 (class 1259 OID 30346)
+-- Name: idx_pagos_programados_nombre; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_pagos_programados_nombre ON public.pagos_programados USING btree (lower((nombre)::text));
+
+
+--
+-- TOC entry 5256 (class 1259 OID 30219)
 -- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6314,7 +7179,7 @@ CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking U
 
 
 --
--- TOC entry 5033 (class 1259 OID 16907)
+-- TOC entry 5259 (class 1259 OID 30220)
 -- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6322,7 +7187,7 @@ CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING bt
 
 
 --
--- TOC entry 5036 (class 1259 OID 16908)
+-- TOC entry 5262 (class 1259 OID 30221)
 -- Name: idx_receptions_arrival_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6330,7 +7195,7 @@ CREATE INDEX idx_receptions_arrival_date ON public.receptions USING btree (arriv
 
 
 --
--- TOC entry 5037 (class 1259 OID 16909)
+-- TOC entry 5263 (class 1259 OID 30222)
 -- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6338,7 +7203,63 @@ CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created
 
 
 --
--- TOC entry 5050 (class 1259 OID 16910)
+-- TOC entry 5317 (class 1259 OID 30427)
+-- Name: idx_rutas_transporte_fecha; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_rutas_transporte_fecha ON public.rutas_transporte USING btree (fecha);
+
+
+--
+-- TOC entry 5322 (class 1259 OID 30457)
+-- Name: idx_rutas_transporte_items_ruta; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_rutas_transporte_items_ruta ON public.rutas_transporte_items USING btree (ruta_id);
+
+
+--
+-- TOC entry 5318 (class 1259 OID 30428)
+-- Name: idx_rutas_transporte_transportista; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_rutas_transporte_transportista ON public.rutas_transporte USING btree (transportista_id);
+
+
+--
+-- TOC entry 5319 (class 1259 OID 30429)
+-- Name: idx_rutas_transporte_unique; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE UNIQUE INDEX idx_rutas_transporte_unique ON public.rutas_transporte USING btree (fecha, transportista_id);
+
+
+--
+-- TOC entry 5313 (class 1259 OID 30411)
+-- Name: idx_talleres_estado; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_talleres_estado ON public.talleres USING btree (estado);
+
+
+--
+-- TOC entry 5314 (class 1259 OID 30410)
+-- Name: idx_talleres_nombre; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_talleres_nombre ON public.talleres USING btree (lower((nombre)::text));
+
+
+--
+-- TOC entry 5310 (class 1259 OID 30390)
+-- Name: idx_transportistas_nombre; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_transportistas_nombre ON public.transportistas USING btree (lower((nombre)::text));
+
+
+--
+-- TOC entry 5276 (class 1259 OID 30223)
 -- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6346,7 +7267,7 @@ CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree
 
 
 --
--- TOC entry 5051 (class 1259 OID 16911)
+-- TOC entry 5277 (class 1259 OID 30224)
 -- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6354,7 +7275,7 @@ CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (statu
 
 
 --
--- TOC entry 5052 (class 1259 OID 16912)
+-- TOC entry 5278 (class 1259 OID 30225)
 -- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6362,7 +7283,7 @@ CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user
 
 
 --
--- TOC entry 5057 (class 1259 OID 16913)
+-- TOC entry 5283 (class 1259 OID 30226)
 -- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6370,7 +7291,7 @@ CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences U
 
 
 --
--- TOC entry 5062 (class 1259 OID 16914)
+-- TOC entry 5288 (class 1259 OID 30227)
 -- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6378,7 +7299,7 @@ CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
--- TOC entry 5063 (class 1259 OID 16915)
+-- TOC entry 5289 (class 1259 OID 30228)
 -- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
@@ -6386,7 +7307,7 @@ CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
--- TOC entry 5075 (class 2620 OID 16916)
+-- TOC entry 5338 (class 2620 OID 30229)
 -- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -6394,7 +7315,7 @@ CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON p
 
 
 --
--- TOC entry 5066 (class 2606 OID 16917)
+-- TOC entry 5325 (class 2606 OID 30230)
 -- Name: correria_novedades correria_novedades_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6403,7 +7324,16 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 5068 (class 2606 OID 16922)
+-- TOC entry 5335 (class 2606 OID 30366)
+-- Name: descuentos_pago descuentos_pago_pago_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.descuentos_pago
+    ADD CONSTRAINT descuentos_pago_pago_id_fkey FOREIGN KEY (pago_id) REFERENCES public.pagos_programados(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5327 (class 2606 OID 30235)
 -- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6412,7 +7342,7 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5069 (class 2606 OID 16927)
+-- TOC entry 5328 (class 2606 OID 30240)
 -- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6421,7 +7351,7 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5070 (class 2606 OID 16932)
+-- TOC entry 5329 (class 2606 OID 30245)
 -- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6430,7 +7360,7 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5067 (class 2606 OID 16937)
+-- TOC entry 5326 (class 2606 OID 30250)
 -- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6439,7 +7369,7 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5071 (class 2606 OID 16942)
+-- TOC entry 5330 (class 2606 OID 30255)
 -- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6448,7 +7378,7 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5072 (class 2606 OID 16947)
+-- TOC entry 5331 (class 2606 OID 30260)
 -- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6457,7 +7387,7 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5073 (class 2606 OID 16952)
+-- TOC entry 5332 (class 2606 OID 30265)
 -- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6466,7 +7396,34 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5074 (class 2606 OID 16957)
+-- TOC entry 5334 (class 2606 OID 30340)
+-- Name: pagos_programados pagos_programados_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pagos_programados
+    ADD CONSTRAINT pagos_programados_cuenta_bancaria_id_fkey FOREIGN KEY (cuenta_bancaria_id) REFERENCES public.cuentas_bancarias(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 5337 (class 2606 OID 30452)
+-- Name: rutas_transporte_items rutas_transporte_items_ruta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rutas_transporte_items
+    ADD CONSTRAINT rutas_transporte_items_ruta_id_fkey FOREIGN KEY (ruta_id) REFERENCES public.rutas_transporte(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5336 (class 2606 OID 30422)
+-- Name: rutas_transporte rutas_transporte_transportista_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rutas_transporte
+    ADD CONSTRAINT rutas_transporte_transportista_id_fkey FOREIGN KEY (transportista_id) REFERENCES public.transportistas(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5333 (class 2606 OID 30270)
 -- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -6475,7 +7432,7 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5270 (class 0 OID 0)
+-- TOC entry 5545 (class 0 OID 0)
 -- Dependencies: 5
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -6483,11 +7440,11 @@ ALTER TABLE ONLY public.user_view_preferences
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2026-03-26 17:14:00
+-- Completed on 2026-04-10 14:51:55
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict 8LUaJhgeP8pO3MSpi2bD3gwFBAgnILgFUZP3WiYUlEfXvymVk32rsKDyS3FaKzv
+\unrestrict QTbaB6jKFDtUvaSO510hA8HgCAt50qzKcYwUVi8QIzczWyfRDT1kxjxYhe27InZ
 

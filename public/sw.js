@@ -1,7 +1,7 @@
 // Service Worker para Plow - PWA
-const CACHE_NAME = 'plow-v3';
-const RUNTIME_CACHE = 'plow-runtime-v3';
-const API_CACHE = 'plow-api-v3';
+const CACHE_NAME = 'plow-v4';
+const RUNTIME_CACHE = 'plow-runtime-v4';
+const API_CACHE = 'plow-api-v4';
 
 const urlsToCache = [
   '/',
@@ -53,22 +53,9 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // API requests: Network first, fallback to cache
+  // API requests: Network only, never cache dynamic data
   if (url.pathname.includes('/api/')) {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          if (response.ok) {
-            const cache = caches.open(API_CACHE);
-            cache.then(c => c.put(request, response.clone()));
-          }
-          return response;
-        })
-        .catch(() => {
-          return caches.match(request)
-            .then(cached => cached || caches.match('/index.html'));
-        })
-    );
+    event.respondWith(fetch(request));
     return;
   }
 
