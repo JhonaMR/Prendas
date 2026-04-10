@@ -71,7 +71,7 @@ const getAllWithPagination = async (page = 1, limit = 20, filters = {}) => {
                 id: r.id,
                 batchCode: r.batch_code,
                 confeccionista: r.confeccionista,
-                hasSeconds: r.has_seconds === 1 ? true : r.has_seconds === 0 ? false : null,
+                hasSeconds: r.has_seconds == null ? null : !!r.has_seconds,
                 chargeType: r.charge_type,
                 chargeUnits: r.charge_units,
                 incompleteUnits: r.incomplete_units || 0,
