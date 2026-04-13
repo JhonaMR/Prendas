@@ -832,7 +832,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             const ref = Object.keys(itemsByRef)[0] || '';
-                                            const unidades = totalQty + (r.chargeUnits || 0);
+                                            const unidades = totalQty + (r.chargeUnits || 0) + (r.segundasUnits || 0);
                                             onNavigate('calculoPagoLotes', {
                                               subView: 'confeccionistas',
                                               loteData: {

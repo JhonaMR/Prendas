@@ -403,6 +403,12 @@ const updateReception = async (req, res) => {
             });
         }
 
+        // Obtener los items actualizados para devolverlos completos al frontend
+        const itemsResult = await query(
+            `SELECT reference, quantity FROM reception_items WHERE reception_id = $1`,
+            [id]
+        );
+
         return res.json({
             success: true,
             message: 'Recepción actualizada exitosamente',
@@ -422,7 +428,9 @@ const updateReception = async (req, res) => {
                 affectsInventory: result.affects_inventory !== false,
                 observacion: result.observacion || null,
                 receivedBy: result.received_by,
-                createdAt: result.created_at
+                createdAt: result.created_at,
+                items: itemsResult.rows,
+                editLogs: []
             }
         });
 

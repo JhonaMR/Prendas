@@ -144,7 +144,7 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
     if (!lote) { alert(`No se encontró ninguna recepción con remisión "${remision}"`); return; }
     const ref = lote.items?.[0]?.reference || '';
     const totalQty = (lote.items || []).reduce((a: number, b: any) => a + b.quantity, 0);
-    const unidadesLote = totalQty + (lote.chargeUnits || 0);
+    const unidadesLote = totalQty + (lote.chargeUnits || 0) + (lote.segundasUnits || 0);
     setReferenciaInput(ref);
     setReferencia(ref);
     setUnidades(unidadesLote);
