@@ -25,6 +25,11 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
   const [modalAsentar, setModalAsentar] = useState(false);
   const [fechaLlegada, setFechaLlegada] = useState('');
   const [fechaSugerida, setFechaSugerida] = useState('');
+  const [modalTransportes, setModalTransportes] = useState(false);
+  const [transportesData, setTransportesData] = useState<any[]>([]);
+  const [transportesLoading, setTransportesLoading] = useState(false);
+  const [transpValor, setTranspValor] = useState<number | ''>('');
+  const [transpCant, setTranspCant] = useState<number | ''>('');
   const [pctOF, setPctOF] = useState(() => getLS(LS_PCT_OF, 40));
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
@@ -90,6 +95,18 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
   const buscarReferencia = () => setReferencia(referenciaInput.trim().toUpperCase());
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === 'Enter') buscarReferencia(); };
 
+  const abrirModalTransportes = async () => {
+    setModalTransportes(true);
+    setTransportesLoading(true);
+    const api = (await import('../services/api')).default;
+    const data = await api.getTransportesPorReferencia(referencia);
+    setTransportesData(data);
+    setTransportesLoading(false);
+  };
+
+  const transpDescuento = typeof transpValor === 'number' && transpValor > 0 ? transpValor : 0;
+  const transpCantNum = typeof transpCant === 'number' && transpCant > 0 ? transpCant : 0;
+
   // Calcula fecha sugerida: base + 7 días (misma semana siguiente), si cae sábado → lunes
   const calcFechaSugerida = (base: string): string => {
     if (!base) return '';
@@ -120,9 +137,11 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
     const descuentosOF = rteFte > 0
       ? [{ id: Date.now(), etiqueta: 'RTE FTE', monto: Math.round(rteFte) }]
       : [];
-    const descuentosML = cobroSeleccionado && totalCompra > 0
-      ? [{ id: Date.now() + 1, etiqueta: `COBRO (${cantC})`, monto: Math.round(totalCompra) }]
-      : [];
+    const descuentosML: { id: number; etiqueta: string; monto: number }[] = [];
+    if (cobroSeleccionado && totalCompra > 0)
+      descuentosML.push({ id: Date.now() + 1, etiqueta: `COBRO (${cantC})`, monto: Math.round(totalCompra) });
+    if (transpDescuento > 0 && transpCantNum > 0)
+      descuentosML.push({ id: Date.now() + 2, etiqueta: `Transp ${transpCantNum}`, monto: Math.round(transpDescuento) });
 
     setModalAsentar(false);
     onNavigate('programacionPagosDia', {
@@ -360,15 +379,26 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
               <p className="text-pink-100 text-xs font-black uppercase tracking-widest mb-1">Total neto a pagar</p>
               <p className="text-5xl font-black text-white">{fmt(totalPago)}</p>
             </div>
-            <button
-              onClick={abrirModalAsentar}
-              className="flex-shrink-0 flex items-center gap-2 bg-violet-400 hover:bg-violet-300 text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
-              </svg>
-              Asentar pago en programación
-            </button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={abrirModalTransportes}
+                className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors backdrop-blur-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                </svg>
+                Buscar transportes
+              </button>
+              <button
+                onClick={abrirModalAsentar}
+                className="flex items-center gap-2 bg-violet-400 hover:bg-violet-300 text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+                </svg>
+                Asentar pago en programación
+              </button>
+            </div>
           </div>
 
           {/* OF, ML, Compra/Cobros y Total lote en grid 2x2 */}
@@ -412,9 +442,13 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
                   <span className="text-xs text-slate-400 font-semibold">Cobro ({cantC} und)</span>
                   <span className="text-sm text-red-400 font-black">− {fmt(totalCompra)}</span>
                 </div>
+                <div className="flex justify-between items-center" style={{visibility: transpDescuento > 0 && transpCantNum > 0 ? 'visible' : 'hidden'}}>
+                  <span className="text-xs text-slate-400 font-semibold">Transp. ({transpCantNum})</span>
+                  <span className="text-sm text-red-400 font-black">− {fmt(transpDescuento)}</span>
+                </div>
                 <div className="flex justify-between items-center bg-emerald-50 rounded-xl px-3 py-2">
                   <span className="text-xs text-emerald-600 font-black uppercase tracking-wide">Total a pagar</span>
-                  <span className="text-base text-emerald-700 font-black">{fmt(cobroSeleccionado ? valorML - totalCompra : valorML)}</span>
+                  <span className="text-base text-emerald-700 font-black">{fmt(valorML - (cobroSeleccionado ? totalCompra : 0) - (transpDescuento > 0 && transpCantNum > 0 ? transpDescuento : 0))}</span>
                 </div>
               </div>
               </div>
@@ -482,7 +516,7 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
                     </div>
                     <span className="text-xs font-black text-slate-500">Total pago remisión</span>
                   </div>
-                  <span className="text-base font-black text-emerald-700">{fmt(cobroSeleccionado ? valorML - totalCompra : valorML)}</span>
+                  <span className="text-base font-black text-emerald-700">{fmt(valorML - (cobroSeleccionado ? totalCompra : 0) - (transpDescuento > 0 && transpCantNum > 0 ? transpDescuento : 0))}</span>
                 </div>
               </div>
             </div>
@@ -540,6 +574,7 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
                     <p className="text-violet-400 font-semibold mb-0.5">Bruto ML</p>
                     <p className="font-black text-violet-700">{fmt(Math.round(valorML))}</p>
                     {cobroSeleccionado && totalCompra > 0 && <p className="text-red-400 text-xs mt-0.5">COBRO ({cantC}): -{fmt(Math.round(totalCompra))}</p>}
+                    {transpDescuento > 0 && transpCantNum > 0 && <p className="text-red-400 text-xs mt-0.5">Transp {transpCantNum}: -{fmt(Math.round(transpDescuento))}</p>}
                   </div>
                 </div>
               </div>
@@ -555,6 +590,93 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
                 Asentar
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal transportes ── */}
+      {modalTransportes && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-6 flex flex-col gap-4 max-h-[90vh]">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-slate-800 text-xl">Transportes — REF. {referencia}</h3>
+              <button onClick={() => setModalTransportes(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Tabla */}
+            <div className="overflow-auto flex-1 rounded-2xl border border-slate-100">
+              {transportesLoading ? (
+                <div className="flex items-center justify-center py-12 text-slate-400 text-sm font-semibold">Buscando...</div>
+              ) : transportesData.length === 0 ? (
+                <div className="flex items-center justify-center py-12 text-slate-400 text-sm font-semibold">No se encontraron transportes para esta referencia.</div>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-100">
+                      <th className="text-left px-4 py-3 text-xs font-black text-slate-400 uppercase tracking-wider">Taller</th>
+                      <th className="text-left px-4 py-3 text-xs font-black text-slate-400 uppercase tracking-wider">Detalle</th>
+                      <th className="text-left px-4 py-3 text-xs font-black text-slate-400 uppercase tracking-wider">Fecha</th>
+                      <th className="text-left px-4 py-3 text-xs font-black text-slate-400 uppercase tracking-wider">Transportista</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {transportesData.map((t: any, i: number) => (
+                      <tr key={i} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 font-semibold text-slate-700">{t.taller}</td>
+                        <td className="px-4 py-3 text-slate-600">{t.detalle}</td>
+                        <td className="px-4 py-3 text-slate-500">{t.fecha}</td>
+                        <td className="px-4 py-3 font-semibold text-slate-700">{t.transportista}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Inputs descuento */}
+            <div className="bg-emerald-50 rounded-2xl p-4 flex gap-3 items-end">
+              <div className="flex-1">
+                <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1.5">Valor a descontar</label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">$</span>
+                  <input
+                    type="number" min={0} value={transpValor}
+                    onChange={e => setTranspValor(e.target.value === '' ? '' : Number(e.target.value))}
+                    onFocus={e => e.target.select()}
+                    placeholder="0"
+                    className="w-full pl-7 pr-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none font-bold text-slate-800 text-sm"
+                  />
+                </div>
+              </div>
+              <div className="w-32">
+                <label className="text-xs font-black text-slate-500 uppercase tracking-wider block mb-1.5">Cant. transp</label>
+                <input
+                  type="number" min={0} value={transpCant}
+                  onChange={e => setTranspCant(e.target.value === '' ? '' : Number(e.target.value))}
+                  onFocus={e => e.target.select()}
+                  placeholder="0"
+                  className="w-full px-4 py-3 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none font-bold text-slate-800 text-sm text-center"
+                />
+              </div>
+              <button
+                onClick={() => setModalTransportes(false)}
+                disabled={!transpValor || !transpCant}
+                className="px-5 py-3 rounded-2xl bg-emerald-500 hover:bg-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black text-sm transition-colors"
+              >
+                Aplicar
+              </button>
+            </div>
+
+            {transpDescuento > 0 && transpCantNum > 0 && (
+              <div className="flex justify-between items-center bg-red-50 rounded-2xl px-4 py-3">
+                <span className="text-sm font-black text-slate-600">Transp. ({transpCantNum}) — descuento aplicado en ML</span>
+                <span className="text-sm font-black text-red-500">− {fmt(transpDescuento)}</span>
+              </div>
+            )}
           </div>
         </div>
       )}

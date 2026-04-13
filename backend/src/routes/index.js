@@ -337,6 +337,7 @@ router.put('/talleres/:id',                verifyToken, preventNonAdminEdit, tal
 router.delete('/talleres/:id',             verifyToken, preventNonAdminEdit, talleresController.remove);
 
 router.get('/rutas-transporte',            verifyToken, rutasTransporteController.list);
+router.get('/rutas-transporte/por-referencia', verifyToken, rutasTransporteController.buscarPorReferencia);
 router.post('/rutas-transporte',           verifyToken, rutasTransporteController.create);
 router.post('/rutas-transporte/sync',      verifyToken, rutasTransporteController.sync);
 router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rutasTransporteController.remove);

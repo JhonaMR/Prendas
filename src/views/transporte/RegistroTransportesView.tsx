@@ -109,70 +109,110 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
   const exportarRutaPDF = () => {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
     const pw = doc.internal.pageSize.getWidth();
+    const ph = doc.internal.pageSize.getHeight();
 
-    // Título
-    doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Ruta de Transporte', pw / 2, 50, { align: 'center' });
-
-    // Transportista y fecha
-    doc.setFontSize(14);
-    doc.setFont('helvetica', 'normal');
-    doc.text(transportista.nombre, pw / 2, 72, { align: 'center' });
-    doc.text(fecha ? fmt(fecha) : '', pw / 2, 90, { align: 'center' });
-
-    // Tabla
     const margin = 30;
     const tableW = pw - margin * 2;
-    // Proporciones relativas a los anchos de la tabla visual
     const colRatios = [0.18, 0.11, 0.24, 0.11, 0.22, 0.10, 0.04];
     const colWidths = colRatios.map(r => r * tableW);
     const headers = ['Taller', 'Celular', 'Dirección', 'Sector', 'Detalle', 'Servicio', '#'];
     const headerH = 32;
-    const rowH = 24;
-    let y = 110;
+    const cellPadX = 6;
+    const cellPadY = 6;
+    const lineH = 13; // altura por línea de texto a fontSize 11
+    const titleBlockH = 110; // espacio que ocupa título + transportista + fecha
+    const bottomMargin = 30;
 
-    // Cabecera
-    doc.setFontSize(12);
-    doc.setFont('helvetica', 'bold');
-    let x = margin;
-    headers.forEach((h, i) => {
-      // fill gris oscuro
-      doc.setFillColor(71, 85, 105);
-      doc.setDrawColor(100, 116, 139);
-      doc.rect(x, y, colWidths[i], headerH, 'FD');
-      // texto blanco encima
-      doc.setTextColor(255, 255, 255);
-      doc.text(h, x + colWidths[i] / 2, y + headerH / 2 + 4, { align: 'center' });
-      x += colWidths[i];
-    });
-    y += headerH;
+    // Dibuja el bloque de título en la página actual
+    const drawTitle = () => {
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(30, 41, 59);
+      doc.text('Ruta de Transporte', pw / 2, 50, { align: 'center' });
+      doc.setFontSize(14);
+      doc.setFont('helvetica', 'normal');
+      doc.text(transportista.nombre, pw / 2, 72, { align: 'center' });
+      doc.text(fecha ? fmt(fecha) : '', pw / 2, 90, { align: 'center' });
+    };
 
-    // Filas
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.setDrawColor(148, 163, 184); // slate-400
+    // Dibuja la cabecera de la tabla y retorna la y después de la cabecera
+    const drawTableHeader = (startY: number): number => {
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      let x = margin;
+      headers.forEach((h, i) => {
+        doc.setFillColor(71, 85, 105);
+        doc.setDrawColor(100, 116, 139);
+        doc.rect(x, startY, colWidths[i], headerH, 'FD');
+        doc.setTextColor(255, 255, 255);
+        doc.text(h, x + colWidths[i] / 2, startY + headerH / 2 + 4, { align: 'center' });
+        x += colWidths[i];
+      });
+      return startY + headerH;
+    };
+
+    // Calcula las líneas de wrap para cada celda de una fila
+    const getWrappedLines = (vals: string[]): string[][] => {
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      return vals.map((v, i) => {
+        const maxW = colWidths[i] - cellPadX * 2;
+        return doc.splitTextToSize(v, maxW) as string[];
+      });
+    };
+
+    // Calcula la altura necesaria para una fila dado su contenido
+    const calcRowH = (wrappedLines: string[][]): number => {
+      const maxLines = Math.max(...wrappedLines.map(l => l.length));
+      return Math.max(24, maxLines * lineH + cellPadY * 2);
+    };
+
+    drawTitle();
+    let y = drawTableHeader(titleBlockH);
 
     if (items.length === 0) {
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
       doc.setFillColor(248, 250, 252);
       doc.setTextColor(100, 116, 139);
-      doc.rect(margin, y, tableW, rowH, 'FD');
-      doc.text('Sin registros', pw / 2, y + rowH / 2 + 4, { align: 'center' });
+      doc.setDrawColor(148, 163, 184);
+      doc.rect(margin, y, tableW, 24, 'FD');
+      doc.text('Sin registros', pw / 2, y + 16, { align: 'center' });
     } else {
       items.forEach((item, idx) => {
-        const fill = idx % 2 === 0 ? [255, 255, 255] : [241, 245, 249] as [number,number,number];
-        x = margin;
-        const vals = [item.taller||'—', item.celular||'—', item.direccion||'—', item.sector||'—', item.detalle||'—', item.servicio||'—', String(idx+1)];
-        vals.forEach((v, i) => {
+        const vals = [
+          item.taller||'—', item.celular||'—', item.direccion||'—',
+          item.sector||'—', item.detalle||'—', item.servicio||'—', String(idx+1)
+        ];
+        const wrappedLines = getWrappedLines(vals);
+        const rowH = calcRowH(wrappedLines);
+        const fill: [number,number,number] = idx % 2 === 0 ? [255,255,255] : [241,245,249];
+
+        // Si la fila no cabe en la página actual, nueva página
+        if (y + rowH > ph - bottomMargin) {
+          doc.addPage();
+          drawTitle();
+          y = drawTableHeader(titleBlockH);
+        }
+
+        // Dibuja celdas
+        let x = margin;
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.setDrawColor(148, 163, 184);
+        wrappedLines.forEach((lines, i) => {
           doc.setFillColor(fill[0], fill[1], fill[2]);
-          doc.setDrawColor(148, 163, 184);
           doc.rect(x, y, colWidths[i], rowH, 'FD');
           doc.setTextColor(30, 41, 59);
-          const maxChars = Math.floor(colWidths[i] / 6.5);
-          const txt = v.length > maxChars ? v.substring(0, maxChars - 1) + '…' : v;
-          doc.text(txt, x + colWidths[i] / 2, y + rowH / 2 + 4, { align: 'center' });
+          // Centrar verticalmente el bloque de texto
+          const textBlockH = lines.length * lineH;
+          const textStartY = y + (rowH - textBlockH) / 2 + lineH - 3;
+          lines.forEach((line, li) => {
+            doc.text(line, x + colWidths[i] / 2, textStartY + li * lineH, { align: 'center' });
+          });
           x += colWidths[i];
         });
+
         y += rowH;
       });
     }

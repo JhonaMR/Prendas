@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import api from '../../services/api';
 import { User, UserRole } from '../../types';
 import TalleresImportModal from '../../components/TalleresImportModal';
+import PaginationComponent from '../../components/PaginationComponent';
+import usePagination from '../../hooks/usePagination';
 
 interface Taller {
   id: string;
@@ -45,11 +47,34 @@ interface TalleresViewProps {
 const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
   const [talleres, setTalleres] = useState<Taller[]>([]);
   const [modalImport, setModalImport] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
   const esSoporte = (user?.role as string)?.trim().toLowerCase() === 'soporte';
+  const paginacion = usePagination(1, 30);
 
   useEffect(() => {
     (api as any).getTalleres().then((data: Taller[]) => setTalleres(data));
   }, []);
+
+  const talleresFiltrados = useMemo(() => {
+    if (!busqueda.trim()) return talleres;
+    const q = busqueda.toLowerCase();
+    return talleres.filter(t =>
+      t.nombre.toLowerCase().includes(q) ||
+      t.sector.toLowerCase().includes(q) ||
+      t.direccion.toLowerCase().includes(q) ||
+      t.celular.toLowerCase().includes(q)
+    );
+  }, [talleres, busqueda]);
+
+  useEffect(() => {
+    paginacion.goToPage(1);
+  }, [busqueda, paginacion.pagination.limit]);
+
+  const totalPages = Math.ceil(talleresFiltrados.length / paginacion.pagination.limit);
+  const talleresPagina = talleresFiltrados.slice(
+    (paginacion.pagination.page - 1) * paginacion.pagination.limit,
+    paginacion.pagination.page * paginacion.pagination.limit
+  );
 
   const [modalNuevo, setModalNuevo] = useState(false);
   const [formNuevo, setFormNuevo] = useState<Omit<Taller, 'id'>>({ ...FORM_VACIO });
@@ -115,6 +140,19 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
               Importar Excel
             </button>
           )}
+          <div className="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor"
+              className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar taller..."
+              value={busqueda}
+              onChange={e => setBusqueda(e.target.value)}
+              className="pl-9 pr-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 w-56"
+            />
+          </div>
           <button onClick={() => { setFormNuevo({ ...FORM_VACIO }); setModalNuevo(true); }}
             className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -146,7 +184,7 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
                     No hay talleres registrados
                   </td>
                 </tr>
-              ) : talleres.map((t: Taller, idx: number) => (
+              ) : talleresPagina.map((t: Taller, idx: number) => (
                 <tr key={t.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
                   <td className="px-5 py-3.5 font-semibold text-slate-900">{t.nombre}</td>
                   <td className="px-5 py-3.5 text-slate-600">{t.celular || '—'}</td>
@@ -178,6 +216,15 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
             </tbody>
           </table>
         </div>
+        {totalPages > 1 && (
+          <PaginationComponent
+            currentPage={paginacion.pagination.page}
+            totalPages={totalPages}
+            pageSize={paginacion.pagination.limit}
+            onPageChange={paginacion.goToPage}
+            onPageSizeChange={paginacion.setLimit}
+          />
+        )}
       </div>
 
       {/* Modal nuevo taller */}

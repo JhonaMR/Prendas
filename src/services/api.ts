@@ -2026,6 +2026,14 @@ class ApiService {
       return this.handleResponse(response);
     } catch (error: any) { return { success: false, message: error.message }; }
   }
+
+  async getTransportesPorReferencia(ref: string): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/rutas-transporte/por-referencia?ref=${encodeURIComponent(ref)}`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) { console.error('Error buscando transportes por referencia:', error); return []; }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================
