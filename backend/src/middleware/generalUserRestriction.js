@@ -5,7 +5,7 @@
  * pero solo admin puede editar/eliminar
  */
 
-const { isAdmin, isGeneral, isSoporte } = require('../utils/permissions');
+const { isAdmin, isGeneral, isSoporte, isOperador } = require('../utils/permissions');
 
 /**
  * Middleware para permitir crear recepciones a admin y general
@@ -117,5 +117,19 @@ module.exports = {
     allowComprasCreate,
     allowOrdersCreate,
     allowDeliveryDatesCreate,
-    allowAdminOnly
+    allowAdminOnly,
+    allowOperadorOrAdmin
 };
+
+/**
+ * Middleware para permitir operaciones de transporte a admin, soporte y operador
+ */
+function allowOperadorOrAdmin(req, res, next) {
+    if (!req.user) {
+        return res.status(401).json({ success: false, message: 'No autenticado' });
+    }
+    if (!isAdmin(req.user) && !isSoporte(req.user) && !isOperador(req.user)) {
+        return res.status(403).json({ success: false, message: 'No tienes permiso para esta operación' });
+    }
+    next();
+}

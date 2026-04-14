@@ -51,12 +51,6 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       description: 'Gestionar pedidos de clientes'
     },
     {
-      id: 'settle',
-      label: 'Asentar Ventas',
-      icon: <Icons.Settle />,
-      description: 'Registrar ventas realizadas'
-    },
-    {
       id: 'orderHistory',
       label: 'Historial de Pedidos',
       icon: <Icons.History />,
@@ -97,12 +91,6 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       label: 'Fichas de Costo',
       icon: <Icons.FichasCosto />,
       description: 'Gestionar precios y costos'
-    },
-    {
-      id: 'reports',
-      label: 'Reportes Generales',
-      icon: <Icons.Reports />,
-      description: 'Consultar reportes del sistema'
     },
   ];
 

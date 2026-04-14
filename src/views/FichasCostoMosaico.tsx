@@ -39,7 +39,8 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
 
     const isAdmin = user?.role === 'admin' || user?.role === 'soporte';
     const isGeneral = user?.role === 'general';
-    const canEdit = isAdmin || isGeneral;
+    const canEdit = isAdmin || isGeneral || user?.role === 'operador';
+    const canImportar = isAdmin || isGeneral; // operador no puede importar desde fichas de diseño
     const baseUrl = getBaseUrl();
 
     const disenadorasUnicas = React.useMemo(() => {
@@ -220,7 +221,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar referencia, descripción..."
                             className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm" />
                     </div>
-                    {canEdit && (
+                    {canImportar && (
                         <button onClick={() => setShowModalImportar(true)} className="px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
                             Importar Ficha
@@ -232,7 +233,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             {fichas.length === 0 ? (
                 <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
                     <p className="text-slate-400 font-bold text-lg">{searchTerm ? `No se encontraron fichas con "${searchTerm}"` : 'No hay fichas de costo'}</p>
-                    {canEdit && !searchTerm && <button onClick={() => setShowModalImportar(true)} className="mt-6 px-6 py-3 bg-green-500 text-white font-black rounded-xl hover:bg-green-600 transition-colors">Importar Primera Ficha</button>}
+                    {canImportar && !searchTerm && <button onClick={() => setShowModalImportar(true)} className="mt-6 px-6 py-3 bg-green-500 text-white font-black rounded-xl hover:bg-green-600 transition-colors">Importar Primera Ficha</button>}
                 </div>
             ) : (
                 <>

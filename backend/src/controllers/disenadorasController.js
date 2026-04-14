@@ -13,6 +13,7 @@ const getDisenadoras = async (req, res) => {
         const result = await query(`
             SELECT id, nombre, cedula, telefono, activa, created_at, updated_at
             FROM disenadoras
+            WHERE activa = true
             ORDER BY nombre ASC
         `);
 
@@ -132,9 +133,68 @@ const deleteDisenadora = async (req, res) => {
     }
 };
 
+/**
+ * GET /api/disenadoras/all  (solo soporte/admin)
+ */
+const getAllDisenadoras = async (req, res) => {
+    try {
+        const result = await query(`
+            SELECT id, nombre, cedula, telefono, activa, created_at, updated_at
+            FROM disenadoras
+            ORDER BY nombre ASC
+        `);
+
+        const disenadoras = result.rows.map(d => ({
+            id: d.id,
+            nombre: d.nombre,
+            cedula: d.cedula,
+            telefono: d.telefono,
+            activa: d.activa,
+            createdAt: d.created_at,
+            updatedAt: d.updated_at
+        }));
+
+        return res.json({ success: true, data: disenadoras });
+    } catch (error) {
+        console.error('❌ Error obteniendo todas las diseñadoras:', error);
+        return res.status(500).json({ success: false, message: 'Error al obtener diseñadoras' });
+    }
+};
+
+/**
+ * PATCH /api/disenadoras/:id/toggle-activa  (solo soporte/admin)
+ */
+const toggleActivaDisenadora = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const result = await query(`
+            UPDATE disenadoras
+            SET activa = NOT activa, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $1
+            RETURNING id, nombre, activa
+        `, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Diseñadora no encontrada' });
+        }
+
+        const d = result.rows[0];
+        return res.json({
+            success: true,
+            data: { id: d.id, nombre: d.nombre, activa: d.activa }
+        });
+    } catch (error) {
+        console.error('❌ Error toggling diseñadora:', error);
+        return res.status(500).json({ success: false, message: 'Error al actualizar diseñadora' });
+    }
+};
+
 module.exports = {
     getDisenadoras,
+    getAllDisenadoras,
     createDisenadora,
     updateDisenadora,
-    deleteDisenadora
+    deleteDisenadora,
+    toggleActivaDisenadora
 };

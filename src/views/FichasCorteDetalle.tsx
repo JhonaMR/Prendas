@@ -17,7 +17,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const referencia = params?.referencia || '';
     const numeroCorte = params?.numeroCorte || 1;
     const isNuevo = params?.nuevo || false;
-    const canEdit = user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte';
+    const canEdit = user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte' || user?.role === 'operador';
 
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsaved, setHasUnsaved] = useState(false);

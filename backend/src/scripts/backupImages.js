@@ -16,8 +16,10 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 const googleDriveService = require('../services/GoogleDriveService');
 
 // Configuración
+const dbName = process.env.DB_NAME || 'inventory';
+const instanceName = dbName.includes('melas') ? 'melas' : 'plow';
 const IMAGES_DIR = path.join(__dirname, '../../../public/images/references');
-const BACKUPS_DIR = path.join(__dirname, '../../backups/images');
+const BACKUPS_DIR = path.join(__dirname, `../../backups/${instanceName}/images`);
 const MAX_BACKUPS = 30; // Mantener últimos 30 backups
 
 /**
@@ -134,8 +136,6 @@ function cleanOldBackups() {
  */
 async function uploadToDrive(backupPath, filename) {
   try {
-    const dbName = process.env.DB_NAME || 'inventory';
-    const instanceName = dbName.includes('melas') ? 'melas' : 'plow';
     const mainFolderId = process.env[`GOOGLE_DRIVE_FOLDER_ID_${instanceName.toUpperCase()}`];
 
     if (!mainFolderId) {

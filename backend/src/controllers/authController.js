@@ -413,10 +413,10 @@ const updateUser = async (req, res) => {
         // Normalizar rol a minúsculas
         const normalizedRole = role.toLowerCase();
 
-        if (!['admin', 'observer', 'general', 'diseñadora', 'soporte'].includes(normalizedRole)) {
+        if (!['admin', 'observer', 'general', 'diseñadora', 'soporte', 'operador'].includes(normalizedRole)) {
             return res.status(400).json({
                 success: false,
-                message: 'El rol debe ser "admin", "observer", "general", "diseñadora" o "soporte"'
+                message: 'El rol debe ser "admin", "observer", "general", "diseñadora", "soporte" u "operador"'
             });
         }
 

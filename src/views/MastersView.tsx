@@ -1335,6 +1335,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                     <option value={UserRole.GENERAL}>General</option>
                     <option value={UserRole.OBSERVER}>Observador</option>
                     <option value={UserRole.DISEÑADORA}>Diseñadora</option>
+                    <option value={UserRole.OPERADOR}>Operador</option>
                     <option value={UserRole.ADMIN}>Administrador</option>
                   </select>
                 </div>
@@ -1363,7 +1364,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                return (
                <div key={u.id} className={`bg-white p-8 rounded-[40px] border ${isSoporteUser ? 'border-amber-200 bg-amber-50' : 'border-slate-100'} flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden`}>
                   <RoleBadge role={u.role} />
-                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.SOPORTE ? 'bg-gradient-to-br from-amber-500 to-amber-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
+                  <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.SOPORTE ? 'bg-gradient-to-br from-amber-500 to-amber-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : u.role === UserRole.OPERADOR ? 'bg-gradient-to-br from-teal-500 to-teal-400' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}
                   </div>
                   <div>

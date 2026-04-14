@@ -56,6 +56,16 @@ function isSoporte(user) {
 }
 
 /**
+ * Verificar si un usuario es operador
+ * @param {Object} user - Objeto de usuario con propiedad 'role'
+ * @returns {boolean} true si el usuario es operador
+ */
+function isOperador(user) {
+    if (!user || !user.role) return false;
+    return user.role.toLowerCase().trim() === 'operador';
+}
+
+/**
  * Verificar si un usuario puede acceder a una sección
  * @param {Object} user - Objeto de usuario
  * @param {string} section - Nombre de la sección (ej: 'dashboard', 'maestras', 'users')
@@ -179,6 +189,7 @@ function getPermissionLevel(user) {
     if (role === 'observer') return 'READ_ONLY';
     if (role === 'general') return 'LIMITED';
     if (role === 'diseñadora') return 'LIMITED';
+    if (role === 'operador') return 'LIMITED';
     
     return 'NONE';
 }
@@ -199,6 +210,7 @@ module.exports = {
     isGeneral,
     isDiseñadora,
     isSoporte,
+    isOperador,
     canAccessSection,
     canEdit,
     canCreate,

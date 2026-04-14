@@ -3,6 +3,7 @@ import { User, UserRole } from '../types';
 import GeneralUserLayout from '../components/HomeView/GeneralUserLayout';
 import AdminLayout from '../components/HomeView/AdminLayout';
 import DiseñadoraLayout from '../components/HomeView/DiseñadoraLayout';
+import OperadorLayout from '../components/HomeView/OperadorLayout';
 
 interface HomeViewProps {
   user: User;
@@ -24,6 +25,11 @@ const HomeView: React.FC<HomeViewProps> = ({ user, onNavigate, onDirectNavigate,
   // Diseñadora has limited access
   if (user.role === UserRole.DISEÑADORA) {
     return <DiseñadoraLayout user={user} onNavigate={onNavigate} />;
+  }
+
+  // Operador has its own grouped layout
+  if (user.role === UserRole.OPERADOR) {
+    return <OperadorLayout user={user} onNavigate={onNavigate} onDirectNavigate={onDirectNavigate} />;
   }
 
   return <GeneralUserLayout user={user} onNavigate={onNavigate} />;

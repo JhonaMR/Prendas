@@ -11,7 +11,6 @@ class BackupValidationService {
   constructor(backupDir = path.join(__dirname, '../../backups')) {
     this.backupDir = backupDir;
     this.CORRUPTION_PATTERNS = [
-      /\\restrict/,
       /[\x00-\x08\x0B-\x0C\x0E-\x1F]/g,
     ];
     this.alertsDir = path.join(__dirname, '../../logs/backup-alerts');

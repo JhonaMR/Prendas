@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS public.receptions (
 ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS arrival_date date NOT NULL DEFAULT '2026-01-01';
 ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS observacion text DEFAULT NULL;
 ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS has_muestra boolean NOT NULL DEFAULT false;
+ALTER TABLE public.receptions ADD COLUMN IF NOT EXISTS segundas_units integer DEFAULT 0;
 
 -- ============================================================================
 -- 9. TABLA: reception_items
@@ -719,6 +720,128 @@ CREATE INDEX IF NOT EXISTS idx_descuentos_pago_pago_id ON public.descuentos_pago
 CREATE INDEX IF NOT EXISTS idx_descuentos_pago_tipo    ON public.descuentos_pago(tipo);
 
 -- ============================================================================
+-- 34. TABLA: pago_lotes_config
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.pago_lotes_config (
+    id          serial PRIMARY KEY,
+    clave       character varying(100) NOT NULL UNIQUE,
+    valor       numeric(15,2) NOT NULL,
+    descripcion character varying(255),
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_by  character varying(255)
+);
+
+INSERT INTO public.pago_lotes_config (clave, valor, descripcion) VALUES
+    ('pct_of',       40,      'Porcentaje del pago que va al banco OF'),
+    ('pct_ml',       60,      'Porcentaje del pago que va al banco ML'),
+    ('base_rte_fte', 105000,  'Base mínima para aplicar retención en la fuente (6%)')
+ON CONFLICT (clave) DO NOTHING;
+
+CREATE INDEX IF NOT EXISTS idx_pago_lotes_config_clave ON public.pago_lotes_config(clave);
+
+-- ============================================================================
+-- 35. TABLA: producto_en_proceso
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.producto_en_proceso (
+    id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    confeccionista   character varying(255) NOT NULL DEFAULT '',
+    remision         character varying(100) NOT NULL DEFAULT '',
+    ref              character varying(100) NOT NULL DEFAULT '',
+    salida           numeric(10,2),
+    fecha_remision   date,
+    entrega          numeric(10,2),
+    segundas         numeric(10,2),
+    vta              numeric(10,2),
+    cobrado          numeric(10,2),
+    incompleto       numeric(10,2),
+    fecha_llegada    date,
+    talegos_salida   numeric(10,2),
+    talegos_entrega  numeric(10,2),
+    muestras_salida  numeric(10,2),
+    muestras_entrega numeric(10,2),
+    row_highlight    character varying(10),
+    cell_highlights  jsonb NOT NULL DEFAULT '{}'::jsonb,
+    cell_comments    jsonb NOT NULL DEFAULT '{}'::jsonb,
+    created_by       character varying(255),
+    created_at       timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at       timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT producto_en_proceso_row_highlight_check
+        CHECK (row_highlight IN ('yellow', 'red') OR row_highlight IS NULL)
+);
+
+CREATE INDEX IF NOT EXISTS idx_pep_confeccionista ON public.producto_en_proceso(LOWER(confeccionista));
+CREATE INDEX IF NOT EXISTS idx_pep_ref            ON public.producto_en_proceso(ref);
+CREATE INDEX IF NOT EXISTS idx_pep_remision       ON public.producto_en_proceso(remision);
+CREATE INDEX IF NOT EXISTS idx_pep_fecha_remision ON public.producto_en_proceso(fecha_remision);
+CREATE INDEX IF NOT EXISTS idx_pep_fecha_llegada  ON public.producto_en_proceso(fecha_llegada);
+CREATE INDEX IF NOT EXISTS idx_pep_pendientes     ON public.producto_en_proceso(fecha_llegada) WHERE fecha_llegada IS NULL;
+CREATE INDEX IF NOT EXISTS idx_pep_conf_llegada   ON public.producto_en_proceso(confeccionista, fecha_llegada);
+
+-- ============================================================================
+-- 36. TABLA: transportistas
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.transportistas (
+    id          character varying(50)  PRIMARY KEY,
+    nombre      character varying(255) NOT NULL,
+    celular     character varying(50)  NOT NULL DEFAULT '',
+    picoyplaca  character varying(50)  NOT NULL DEFAULT '',
+    color_key   character varying(30)  NOT NULL DEFAULT 'red',
+    created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_transportistas_nombre ON public.transportistas(LOWER(nombre));
+
+-- ============================================================================
+-- 37. TABLA: talleres
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.talleres (
+    id          character varying(50)  PRIMARY KEY,
+    nombre      character varying(255) NOT NULL,
+    celular     character varying(50)  NOT NULL DEFAULT '',
+    direccion   character varying(255) NOT NULL DEFAULT '',
+    sector      character varying(100) NOT NULL DEFAULT '',
+    estado      character varying(20)  NOT NULL DEFAULT 'activo',
+    created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_talleres_nombre ON public.talleres(LOWER(nombre));
+CREATE INDEX IF NOT EXISTS idx_talleres_estado ON public.talleres(estado);
+
+-- ============================================================================
+-- 38. TABLA: rutas_transporte
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.rutas_transporte (
+    id               character varying(50) PRIMARY KEY,
+    fecha            date        NOT NULL,
+    transportista_id character varying(50) NOT NULL REFERENCES public.transportistas(id) ON DELETE CASCADE,
+    created_at       timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at       timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_rutas_transporte_fecha         ON public.rutas_transporte(fecha);
+CREATE INDEX IF NOT EXISTS idx_rutas_transporte_transportista ON public.rutas_transporte(transportista_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rutas_transporte_unique ON public.rutas_transporte(fecha, transportista_id);
+
+-- ============================================================================
+-- 39. TABLA: rutas_transporte_items
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.rutas_transporte_items (
+    id          character varying(50)  PRIMARY KEY,
+    ruta_id     character varying(50)  NOT NULL REFERENCES public.rutas_transporte(id) ON DELETE CASCADE,
+    taller      character varying(255) NOT NULL DEFAULT '',
+    celular     character varying(50)  NOT NULL DEFAULT '',
+    direccion   character varying(255) NOT NULL DEFAULT '',
+    sector      character varying(100) NOT NULL DEFAULT '',
+    detalle     character varying(500) NOT NULL DEFAULT '',
+    servicio    character varying(255) NOT NULL DEFAULT '',
+    created_at  timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_rutas_transporte_items_ruta ON public.rutas_transporte_items(ruta_id);
+
+-- ============================================================================
 -- VERIFICACIÓN FINAL
 -- ============================================================================
 
@@ -729,7 +852,7 @@ SELECT
 FROM information_schema.tables 
 WHERE table_schema = 'public';
 
--- Mostrar todas las tablas (debe haber 32 tablas)
+-- Mostrar todas las tablas (debe haber 39 tablas)
 SELECT table_name 
 FROM information_schema.tables 
 WHERE table_schema = 'public' 

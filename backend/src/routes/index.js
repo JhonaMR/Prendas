@@ -24,7 +24,7 @@ const { verifyToken, verifyAdmin, verifyAdminOrObserver } = require('../middlewa
 const { preventNonAdminEdit } = require('../middleware/editRestriction');
 const { allowDispatchCreate, allowDispatchEditDelete } = require('../middleware/dispatchRestriction');
 const { allowReturnCreate, allowReturnEditDelete } = require('../middleware/returnRestriction');
-const { allowReceptionCreate, allowComprasCreate, allowOrdersCreate, allowDeliveryDatesCreate, allowAdminOnly } = require('../middleware/generalUserRestriction');
+const { allowReceptionCreate, allowComprasCreate, allowOrdersCreate, allowDeliveryDatesCreate, allowAdminOnly, allowOperadorOrAdmin } = require('../middleware/generalUserRestriction');
 
 // ==================== RUTAS PÚBLICAS (No requieren autenticación) ====================
 
@@ -251,8 +251,10 @@ const maletasController = require('../controllers/maletasController');
 
 // Diseñadoras
 router.get('/disenadoras', verifyToken, disenadorasController.getDisenadoras);
+router.get('/disenadoras/all', verifyToken, disenadorasController.getAllDisenadoras);
 router.post('/disenadoras', verifyToken, disenadorasController.createDisenadora);
 router.put('/disenadoras/:id', verifyToken, disenadorasController.updateDisenadora);
+router.patch('/disenadoras/:id/toggle-activa', verifyToken, disenadorasController.toggleActivaDisenadora);
 router.delete('/disenadoras/:id', verifyToken, disenadorasController.deleteDisenadora);
 
 // Fichas de Diseño - IMPORTANTE: upload-foto ANTES de /:referencia
@@ -264,12 +266,12 @@ router.put('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.upd
 router.delete('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.deleteFichaDiseno);
 
 // Fichas de Costo - IMPORTANTE: rutas fijas ANTES de /:referencia
-router.post('/fichas-costo/importar', verifyToken, fichasCostoController2.importarFichaDiseno);
+router.post('/fichas-costo/importar', verifyToken, allowAdminOnly, fichasCostoController2.importarFichaDiseno);
 router.get('/fichas-costo', verifyToken, fichasCostoController1.getFichasCosto);
 router.get('/fichas-costo/:referencia', verifyToken, fichasCostoController1.getFichaCosto);
 router.post('/fichas-costo', verifyToken, fichasCostoController2.createFichaCosto);
 router.put('/fichas-costo/:referencia', verifyToken, fichasCostoController2.updateFichaCosto);
-router.delete('/fichas-costo/:referencia', verifyToken, verifyAdmin, fichasCostoController2.deleteFichaCosto);
+router.delete('/fichas-costo/:referencia', verifyToken, allowOperadorOrAdmin, fichasCostoController2.deleteFichaCosto);
 
 // Cortes
 router.post('/fichas-costo/:referencia/cortes', verifyToken, fichasCostoController2.crearCorte);
@@ -306,18 +308,18 @@ const programacionPagosController = require('../controllers/programacionPagosCon
 
 // Cuentas bancarias
 router.get('/cuentas-bancarias', verifyToken, programacionPagosController.getCuentas);
-router.post('/cuentas-bancarias/bulk-import', verifyToken, verifyAdmin, programacionPagosController.bulkImportCuentas);
-router.post('/cuentas-bancarias', verifyToken, verifyAdmin, programacionPagosController.createCuenta);
-router.put('/cuentas-bancarias/:id', verifyToken, verifyAdmin, programacionPagosController.updateCuenta);
-router.delete('/cuentas-bancarias/:id', verifyToken, verifyAdmin, programacionPagosController.deleteCuenta);
+router.post('/cuentas-bancarias/bulk-import', verifyToken, allowOperadorOrAdmin, programacionPagosController.bulkImportCuentas);
+router.post('/cuentas-bancarias', verifyToken, allowOperadorOrAdmin, programacionPagosController.createCuenta);
+router.put('/cuentas-bancarias/:id', verifyToken, allowOperadorOrAdmin, programacionPagosController.updateCuenta);
+router.delete('/cuentas-bancarias/:id', verifyToken, allowOperadorOrAdmin, programacionPagosController.deleteCuenta);
 
 // Pagos programados
 router.get('/pagos-programados/conteo', verifyToken, programacionPagosController.getConteoPorMes);
 router.get('/pagos-programados', verifyToken, programacionPagosController.getPagosPorFecha);
-router.post('/pagos-programados', verifyToken, verifyAdmin, programacionPagosController.createPago);
-router.put('/pagos-programados/reordenar', verifyToken, verifyAdmin, programacionPagosController.reordenarPagos);
-router.put('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.updatePago);
-router.delete('/pagos-programados/:id', verifyToken, verifyAdmin, programacionPagosController.deletePago);
+router.post('/pagos-programados', verifyToken, allowOperadorOrAdmin, programacionPagosController.createPago);
+router.put('/pagos-programados/reordenar', verifyToken, allowOperadorOrAdmin, programacionPagosController.reordenarPagos);
+router.put('/pagos-programados/:id', verifyToken, allowOperadorOrAdmin, programacionPagosController.updatePago);
+router.delete('/pagos-programados/:id', verifyToken, allowOperadorOrAdmin, programacionPagosController.deletePago);
 
 // ==================== TRANSPORTE ====================
 
@@ -326,15 +328,15 @@ const talleresController        = require('../controllers/entities/transporte/ta
 const rutasTransporteController = require('../controllers/entities/transporte/rutasTransporteController');
 
 router.get('/transportistas',              verifyToken, transportistasController.list);
-router.post('/transportistas',             verifyToken, preventNonAdminEdit, transportistasController.create);
-router.put('/transportistas/:id',          verifyToken, preventNonAdminEdit, transportistasController.update);
-router.delete('/transportistas/:id',       verifyToken, preventNonAdminEdit, transportistasController.remove);
+router.post('/transportistas',             verifyToken, allowOperadorOrAdmin, transportistasController.create);
+router.put('/transportistas/:id',          verifyToken, allowOperadorOrAdmin, transportistasController.update);
+router.delete('/transportistas/:id',       verifyToken, allowOperadorOrAdmin, transportistasController.remove);
 
 router.get('/talleres',                    verifyToken, talleresController.list);
-router.post('/talleres/bulk-import',       verifyToken, verifyAdmin, talleresController.bulkImport);
-router.post('/talleres',                   verifyToken, preventNonAdminEdit, talleresController.create);
-router.put('/talleres/:id',                verifyToken, preventNonAdminEdit, talleresController.update);
-router.delete('/talleres/:id',             verifyToken, preventNonAdminEdit, talleresController.remove);
+router.post('/talleres/bulk-import',       verifyToken, allowOperadorOrAdmin, talleresController.bulkImport);
+router.post('/talleres',                   verifyToken, allowOperadorOrAdmin, talleresController.create);
+router.put('/talleres/:id',                verifyToken, allowOperadorOrAdmin, talleresController.update);
+router.delete('/talleres/:id',             verifyToken, allowOperadorOrAdmin, talleresController.remove);
 
 router.get('/rutas-transporte',            verifyToken, rutasTransporteController.list);
 router.get('/rutas-transporte/por-referencia', verifyToken, rutasTransporteController.buscarPorReferencia);

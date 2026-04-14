@@ -39,11 +39,53 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const [newDisenadoraNombre, setNewDisenadoraNombre] = useState('');
     const [newDisenadoraCedula, setNewDisenadoraCedula] = useState('');
     const [newDisenadoraTelefono, setNewDisenadoraTelefono] = useState('');
+    const [showGestionDisenadora, setShowGestionDisenadora] = useState(false);
+    const [todasDisenadoras, setTodasDisenadoras] = useState<Disenadora[]>([]);
+    const [loadingGestion, setLoadingGestion] = useState(false);
+    const [togglingId, setTogglingId] = useState<string | null>(null);
     const fichasPagination = usePagination(1, 48);
+
+    const isSoporte = user?.role === 'soporte';
 
     const isDisenadora = user?.role === 'diseñadora';
     const canCreate = isDisenadora || user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte';
     const baseUrl = getBaseUrl();
+
+    const handleAbrirGestion = async () => {
+        if (!showGestionDisenadora) {
+            setLoadingGestion(true);
+            try {
+                const r = await fetch(`${getBaseUrl()}/api/disenadoras/all`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+                });
+                const d = await r.json();
+                setTodasDisenadoras(d.data || []);
+            } catch { alert('Error al cargar diseñadoras'); }
+            finally { setLoadingGestion(false); }
+        }
+        setShowGestionDisenadora(v => !v);
+    };
+
+    const handleToggleActiva = async (id: string) => {
+        setTogglingId(id);
+        try {
+            const r = await fetch(`${getBaseUrl()}/api/disenadoras/${id}/toggle-activa`, {
+                method: 'PATCH',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+            });
+            const d = await r.json();
+            if (d.success) {
+                setTodasDisenadoras(prev => prev.map(dis => dis.id === id ? { ...dis, activa: d.data.activa } : dis));
+                updateState(prev => ({
+                    ...prev,
+                    disenadoras: d.data.activa
+                        ? [...(prev.disenadoras || []), todasDisenadoras.find(x => x.id === id)!].filter(Boolean)
+                        : (prev.disenadoras || []).filter(x => x.id !== id)
+                }));
+            } else { alert(d.message || 'Error al actualizar'); }
+        } catch { alert('Error de conexión'); }
+        finally { setTogglingId(null); }
+    };
 
     const disenadorasUnicas = React.useMemo(() => {
         const nombres = (state.fichasDiseno || [])
@@ -219,11 +261,53 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                             Excel Soporte
                         </button>
                     )}
-                </div>
+                    {isSoporte && (
+                        <button onClick={handleAbrirGestion} className={`px-8 py-4 font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-sm ${showGestionDisenadora ? 'bg-gradient-to-r from-violet-700 to-violet-600 text-white' : 'bg-gradient-to-r from-violet-600 to-violet-500 text-white'}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" /></svg>
+                            Diseñadoras
+                        </button>
+                    )}                </div>
             </div>
 
-            {fichas.length === 0 ? (
-                <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
+            {/* Panel gestión diseñadoras — solo soporte */}
+            {isSoporte && showGestionDisenadora && (
+                <div className="bg-white rounded-3xl border border-violet-200 shadow-sm overflow-hidden">
+                    <div className="px-6 py-4 bg-gradient-to-r from-violet-600 to-violet-500 flex items-center justify-between">
+                        <h3 className="text-white font-black uppercase tracking-widest text-sm">Gestionar Diseñadoras</h3>
+                        {loadingGestion && <span className="text-violet-200 text-xs font-bold animate-pulse">Cargando...</span>}
+                    </div>
+                    <div className="divide-y divide-slate-100">
+                        {todasDisenadoras.length === 0 && !loadingGestion && (
+                            <p className="px-6 py-8 text-slate-400 font-bold text-sm text-center">No hay diseñadoras registradas</p>
+                        )}
+                        {todasDisenadoras.map(d => (
+                            <div key={d.id} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors">
+                                <div>
+                                    <p className={`font-black text-sm ${d.activa ? 'text-slate-800' : 'text-slate-400 line-through'}`}>{d.nombre}</p>
+                                    <p className="text-xs text-slate-400 font-bold mt-0.5">
+                                        {d.cedula && <span className="mr-3">CC {d.cedula}</span>}
+                                        {d.telefono && <span>{d.telefono}</span>}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className={`text-xs font-black uppercase tracking-widest ${d.activa ? 'text-green-600' : 'text-slate-400'}`}>
+                                        {d.activa ? 'Activa' : 'Inactiva'}
+                                    </span>
+                                    <button
+                                        onClick={() => handleToggleActiva(d.id)}
+                                        disabled={togglingId === d.id}
+                                        className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${d.activa ? 'bg-green-500' : 'bg-slate-300'} ${togglingId === d.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                    >
+                                        <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${d.activa ? 'translate-x-6' : 'translate-x-0'}`} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {fichas.length === 0 ? (                <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
                     <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-300 mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                     </div>

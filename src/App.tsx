@@ -1056,7 +1056,7 @@ const App: React.FC = () => {
           />
         );
       case 'inventory':
-        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} user={user} />;
+        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} orders={state.orders} correrias={state.correrias} user={user} />;
         case 'orders':
           return (
             <OrdersView 
@@ -1159,7 +1159,7 @@ const App: React.FC = () => {
         }
         return <ComparativeDashboardView state={state} user={user} />;
       case 'productoEnProceso':
-        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR) {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
@@ -1171,13 +1171,13 @@ const App: React.FC = () => {
         }
         return <CalculoPagoLotesView user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'programacionPagos':
-        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR) {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <ProgramacionPagosView user={user} onNavigate={handleTabChange} />;
       case 'programacionPagosDia':
-        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR) {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }

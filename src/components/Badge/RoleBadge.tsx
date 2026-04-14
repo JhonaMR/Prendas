@@ -32,6 +32,11 @@ const roleConfig = {
     backgroundColor: 'bg-amber-500',
     label: 'Soporte',
     show: true
+  },
+  [UserRole.OPERADOR]: {
+    backgroundColor: 'bg-teal-500',
+    label: 'Operador',
+    show: true
   }
 };
 
