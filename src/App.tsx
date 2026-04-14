@@ -1159,7 +1159,7 @@ const App: React.FC = () => {
         }
         return <ComparativeDashboardView state={state} user={user} />;
       case 'productoEnProceso':
-        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR && user.role !== UserRole.OBSERVER) {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }

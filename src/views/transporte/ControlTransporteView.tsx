@@ -116,11 +116,24 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   useEffect(() => { cargarDatos(); }, [cargarDatos]);
 
   const persistirRutas = async (lista: RutaTransporte[], fecha: string) => {
+    // Detectar todas las fechas afectadas (puede haber más de una al mover registros entre días)
+    const fechasAfectadas = Array.from(new Set([fecha, ...lista.map(r => r.fecha)]));
+
     setRutas(prev => {
-      const sinEstaFecha = prev.filter(r => r.fecha !== fecha);
-      return [...sinEstaFecha, ...lista.filter(r => r.fecha === fecha)];
+      let nuevo = [...prev];
+      for (const f of fechasAfectadas) {
+        nuevo = nuevo.filter(r => r.fecha !== f);
+        nuevo = [...nuevo, ...lista.filter(r => r.fecha === f)];
+      }
+      return nuevo;
     });
-    await (api as any).syncRutasTransporte(fecha, lista.filter(r => r.fecha === fecha));
+
+    // Sincronizar cada fecha afectada con el backend
+    await Promise.all(
+      fechasAfectadas.map(f =>
+        (api as any).syncRutasTransporte(f, lista.filter(r => r.fecha === f))
+      )
+    );
   };
 
   const [modalTransportistas, setModalTransportistas] = useState(false);

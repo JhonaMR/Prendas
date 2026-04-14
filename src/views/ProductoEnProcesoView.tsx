@@ -124,7 +124,7 @@ const newRow = (): LoteRow => ({
 const STORAGE_KEY = 'producto_en_proceso_rows';
 
 const canEdit = (role: UserRole) =>
-  role === UserRole.ADMIN || role === UserRole.GENERAL || role === UserRole.SOPORTE;
+  role === UserRole.ADMIN || role === UserRole.GENERAL || role === UserRole.SOPORTE || role === UserRole.OPERADOR;
 
 // ============================================================
 // NAVEGACIÓN CON TECLADO
@@ -965,17 +965,18 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
           <h2 className="text-2xl font-black text-slate-800">Producto en Proceso</h2>
           <p className="text-slate-400 text-sm">Control de lotes enviados a confeccionistas y demás procesos</p>
         </div>
-        {editable && (
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setReportModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-xs font-semibold rounded-xl transition-colors shadow"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-              </svg>
-              Generar informe
-            </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setReportModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-xs font-semibold rounded-xl transition-colors shadow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+            </svg>
+            Generar informe
+          </button>
+          {editable && (
+            <>
             <button
               onClick={() => setHideEntregados(h => !h)}
               className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl transition-colors border ${hideEntregados ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'}`}
@@ -1020,8 +1021,9 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
               </svg>
               Guardar
             </button>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Tabla */}
