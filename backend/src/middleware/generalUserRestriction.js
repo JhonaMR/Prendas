@@ -71,7 +71,7 @@ const allowOrdersCreate = (req, res, next) => {
 };
 
 /**
- * Middleware para permitir crear fechas de entrega a admin, general y soporte
+ * Middleware para permitir crear fechas de entrega a admin, general, soporte y operador
  */
 const allowDeliveryDatesCreate = (req, res, next) => {
     if (!req.user) {
@@ -81,7 +81,7 @@ const allowDeliveryDatesCreate = (req, res, next) => {
         });
     }
 
-    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user)) {
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user) && !isOperador(req.user)) {
         return res.status(403).json({
             success: false,
             message: 'No tienes permiso para crear fechas de entrega'

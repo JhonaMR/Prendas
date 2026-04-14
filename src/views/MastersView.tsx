@@ -6,6 +6,7 @@ import { canEdit, canDelete } from '../utils/permissions';
 import RoleBadge from '../components/Badge/RoleBadge';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
+import { api } from '../services/api';
 
 // Helper Components
 const TabBtn = ({ active, onClick, label }: any) => (
@@ -162,6 +163,14 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Estado modal cambio de PIN (solo soporte)
+  const [changePinModal, setChangePinModal] = useState<{ loginCode: string; name: string } | null>(null);
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [changePinLoading, setChangePinLoading] = useState(false);
+  const [changePinError, setChangePinError] = useState('');
+
   // Estados para búsqueda
   const [clientSearchTerm, setClientSearchTerm] = useState('');
   const [referenceSearchTerm, setReferenceSearchTerm] = useState('');
@@ -256,6 +265,36 @@ const MastersView: React.FC<MastersViewProps> = ({
     setShowCorreriaDropdown(false);
     setSellerSearch('');
     setShowSellerDropdown(false);
+  };
+
+  const handleChangePin = async () => {
+    if (!changePinModal) return;
+    if (!currentPin) { setChangePinError('Ingresa el PIN actual'); return; }
+    if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+      setChangePinError('El nuevo PIN debe tener exactamente 4 dígitos numéricos');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setChangePinError('Los PINs no coinciden');
+      return;
+    }
+    setChangePinLoading(true);
+    setChangePinError('');
+    try {
+      const result = await api.changePin(changePinModal.loginCode, currentPin, newPin);
+      if (result.success) {
+        setChangePinModal(null);
+        setCurrentPin('');
+        setNewPin('');
+        setConfirmPin('');
+      } else {
+        setChangePinError(result.message || 'Error al cambiar PIN');
+      }
+    } catch {
+      setChangePinError('Error al cambiar PIN');
+    } finally {
+      setChangePinLoading(false);
+    }
   };
 
   // Cerrar dropdown al hacer clic fuera
@@ -1386,6 +1425,17 @@ const MastersView: React.FC<MastersViewProps> = ({
                       >
                         Editar
                       </button>
+                      {user.role === UserRole.SOPORTE && (
+                        <button
+                          onClick={() => { setChangePinModal({ loginCode: u.loginCode, name: u.name }); setCurrentPin(''); setNewPin(''); setConfirmPin(''); setChangePinError(''); }}
+                          className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors"
+                          title="Cambiar PIN"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 0 1 21.75 8.25Z" />
+                          </svg>
+                        </button>
+                      )}
                       {u.id !== user.id && !isSoporteUser && (
                         <button 
                           onClick={() => handleDelete('user', u.id)} 
@@ -1409,6 +1459,69 @@ const MastersView: React.FC<MastersViewProps> = ({
           />
         </div>
       )}
+
+      {/* Modal cambio de PIN - solo soporte */}
+      {changePinModal && (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+          <div className="bg-gradient-to-br from-amber-500 to-amber-400 px-6 pt-6 pb-8 relative">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-white/70 text-xs font-semibold uppercase tracking-widest mb-1">Cambiar PIN</p>
+                <h2 className="text-2xl font-black text-white">{changePinModal.name}</h2>
+                <p className="text-white/80 text-sm mt-1">{changePinModal.loginCode}</p>
+              </div>
+              <button onClick={() => setChangePinModal(null)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+          </div>
+          <div className="px-6 pt-2 pb-6 flex flex-col gap-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">PIN Actual</label>
+              <input
+                type="password" maxLength={4} value={currentPin}
+                onChange={e => setCurrentPin(e.target.value.replace(/\D/g, ''))}
+                placeholder="••••"
+                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">PIN Nuevo</label>
+              <input
+                type="password" maxLength={4} value={newPin}
+                onChange={e => setNewPin(e.target.value.replace(/\D/g, ''))}
+                placeholder="••••"
+                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Confirmar PIN Nuevo</label>
+              <input
+                type="password" maxLength={4} value={confirmPin}
+                onChange={e => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                placeholder="••••"
+                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+              />
+            </div>
+            {changePinError && (
+              <p className="text-red-500 text-xs font-bold text-center">{changePinError}</p>
+            )}
+            <div className="flex gap-3 pt-2">
+              <button onClick={handleChangePin} disabled={changePinLoading}
+                className="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-black py-3 rounded-2xl text-sm transition-colors disabled:opacity-50">
+                {changePinLoading ? 'Guardando...' : 'Cambiar PIN'}
+              </button>
+              <button onClick={() => setChangePinModal(null)}
+                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
     </div>
   );
 };
