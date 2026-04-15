@@ -116,8 +116,8 @@ const importarFichaDiseno = async (req, res) => {
         }
 
         const fd = fichaDiseno.rows[0];
-        const precioVentaDiseno = fd.precio_venta ? parseFloat(fd.precio_venta) : null;
-        const valores = calcularValoresFinancieros(parseFloat(fd.costo_total), precioVentaDiseno, null);
+        // Al importar siempre calcular precio al 35% de rentabilidad, ignorando precio de diseño
+        const valores = calcularValoresFinancieros(parseFloat(fd.costo_total), null, 35);
 
         let fichaData;
         await transaction(async (client) => {

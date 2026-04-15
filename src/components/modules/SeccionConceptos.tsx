@@ -110,7 +110,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                 nuevosConceptos = [
                     { concepto: 'MARQUILLA', um: 'UNIDAD', vlr_unit: 70, cant: 1, total: 70 },
                     { concepto: 'MARQUILLA TECNICA', um: 'UNIDAD', vlr_unit: 10, cant: 1, total: 10 },
-                    { concepto: 'ETIQUETA', um: 'UNIDAD', vlr_unit: 90, cant: 1, total: 90 },
+                    { concepto: 'ETIQUETA', um: 'UNIDAD', vlr_unit: 130, cant: 1, total: 130 },
                     { concepto: 'CODIGO BARRAS', um: 'UNIDAD', vlr_unit: 10, cant: 2, total: 20 },
                     { concepto: 'BOLSA', um: 'UNIDAD', vlr_unit: 94, cant: 1, total: 94 }
                 ];
@@ -151,12 +151,12 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
         const arr = [...conceptos];
         arr[i] = { ...arr[i], [campo]: valor };
         if (campo === 'vlr_unit' || campo === 'cant') {
-            arr[i].total = (arr[i].vlr_unit || 0) * (arr[i].cant || 0);
+            arr[i].total = Math.ceil((arr[i].vlr_unit || 0) * (arr[i].cant || 0));
         }
         onChange(arr);
     };
 
-    const total = conceptos.reduce((acc, c) => acc + (c.total || 0), 0);
+    const total = Math.ceil(conceptos.reduce((acc, c) => acc + (c.total || 0), 0));
 
     return (
         <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
@@ -194,19 +194,19 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                 onDragEnd={handleDragEnd}
                                 className={`hover:bg-slate-50 transition-colors ${dragOverIndex === i ? `border-t-2 ${c.border}` : ''}`}>
                                 {!readOnly && (
-                                    <td className="px-2 py-3 text-center">
+                                    <td className="px-2 py-1 text-center">
                                         <span
                                             draggable
                                             onDragStart={() => handleDragStart(i)}
                                             className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing select-none text-base leading-none">⠿</span>
                                     </td>
                                 )}
-                                <td className="px-4 py-3">
+                                <td className="px-4 py-1">
                                     <input type="text" value={con.concepto} onChange={e => actualizar(i, 'concepto', e.target.value)} readOnly={readOnly}
                                         className={`w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold ${c.text} focus:ring-2 focus:ring-blue-100 ${readOnly ? 'cursor-default' : ''}`} />
                                 </td>
                                 {mostrarTipo && (
-                                    <td className="px-3 py-3">
+                                    <td className="px-3 py-1">
                                         <select value={con.tipo || 'SESGO'} onChange={e => actualizar(i, 'tipo', e.target.value as TipoMaterial)} disabled={readOnly}
                                             className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-blue-100">
                                             <option value="TELA">TELA</option>
@@ -216,7 +216,7 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         </select>
                                     </td>
                                 )}
-                                <td className="px-3 py-3">
+                                <td className="px-3 py-1">
                                     <select value={con.um} onChange={e => actualizar(i, 'um', e.target.value)} disabled={readOnly}
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 text-xs focus:ring-2 focus:ring-blue-100">
                                         <option value="METRO">METRO</option>
@@ -225,14 +225,14 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         <option value="KILOGRAMO">KG</option>
                                     </select>
                                 </td>
-                                <td className="px-3 py-3">
+                                <td className="px-3 py-1">
                                     <CurrencyInput
                                         value={con.vlr_unit}
                                         onChange={val => actualizar(i, 'vlr_unit', val)}
                                         readOnly={readOnly}
                                     />
                                 </td>
-                                <td className="px-3 py-3">
+                                <td className="px-3 py-1">
                                     <DecimalInput
                                         value={con.cant}
                                         onChange={val => actualizar(i, 'cant', val)}
@@ -241,11 +241,11 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100"
                                     />
                                 </td>
-                                <td className="px-3 py-3 text-right">
-                                    <span className={`font-black ${c.text} text-base`}>$ {con.total.toLocaleString()}</span>
+                                <td className="px-3 py-1 text-right">
+                                    <span className={`font-black ${c.text} text-base`}>$ {Math.ceil(con.total).toLocaleString()}</span>
                                 </td>
                                 {!readOnly && (
-                                    <td className="px-3 py-3 text-center">
+                                    <td className="px-3 py-1 text-center">
                                         <button onClick={() => eliminar(i)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                         </button>

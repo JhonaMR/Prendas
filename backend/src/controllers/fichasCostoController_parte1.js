@@ -24,7 +24,7 @@ const calcularTotales = (secciones) => {
 };
 
 const calcularPrecioVenta = (costoTotal, rentabilidad) =>
-    ajustarA900(costoTotal * (1 + rentabilidad / 100));
+    ajustarA900(costoTotal / (1 - rentabilidad / 100));
 
 const calcularRentabilidad = (precioVenta, costoTotal) => {
     if (costoTotal === 0) return 0;

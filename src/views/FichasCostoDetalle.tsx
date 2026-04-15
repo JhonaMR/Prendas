@@ -67,10 +67,18 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setInsumosDirectos(fichaExistente.insumosDirectos || []);
             setInsumosIndirectos(fichaExistente.insumosIndirectos || []);
             setProvisiones(fichaExistente.provisiones || []);
-            setPrecioVenta(fichaExistente.precioVenta || 0);
-            // IMPORTANTE: Cargar rentabilidad tal como viene guardada, sin recalcular
-            setRentabilidad(fichaExistente.rentabilidad || 35);
-            setCostoTotalGuardado(fichaExistente.costoTotal || 0);
+            const costoGuardado = fichaExistente.costoTotal || 0;
+            const precioGuardado = fichaExistente.precioVenta || 0;
+            // Si no tiene precio guardado, calcular automáticamente al 35%
+            if (precioGuardado > 0) {
+                setPrecioVenta(precioGuardado);
+                setRentabilidad(fichaExistente.rentabilidad || 35);
+            } else {
+                const precioCalculado = ajustarA900(costoGuardado / (1 - 35 / 100));
+                setPrecioVenta(precioCalculado);
+                setRentabilidad(35);
+            }
+            setCostoTotalGuardado(costoGuardado);
         }
     }, [fichaExistente?.referencia]);
 
@@ -91,17 +99,22 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     }, [hasUnsavedChanges, onNavigate]);
 
     const totales = useMemo(() => {
-        const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
+        const calc = (items: ConceptoFicha[]) => Math.ceil(items.reduce((acc, i) => acc + (i.total || 0), 0));
         const totalMP = calc(materiaPrima), totalMO = calc(manoObra);
         const totalID = calc(insumosDirectos), totalII = calc(insumosIndirectos), totalProv = calc(provisiones);
         const total = totalMP + totalMO + totalID + totalII + totalProv;
         return { totalMP, totalMO, totalID, totalII, totalProv, total, costoContabilizar: total - totalProv };
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
+    // Costo de referencia: usa el guardado en BD si existe, si no el calculado en vivo
+    const costoRef = (fichaExistente?.costoTotal || costoTotalGuardado) > 0
+        ? (fichaExistente?.costoTotal || costoTotalGuardado)
+        : totales.total;
+
     const descuentos = useMemo(() => {
-        const calc = (desc: number) => { const p = ajustarA900(precioVenta * (1 - desc / 100)); return { precio: p, rent: calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total) }; };
+        const calc = (desc: number) => { const p = ajustarA900(precioVenta * (1 - desc / 100)); return { precio: p, rent: calcRent(p, costoRef) }; };
         return { desc0: { precio: precioVenta, rent: rentabilidad }, desc5: calc(5), desc10: calc(10), desc15: calc(15) };
-    }, [precioVenta, rentabilidad, totales.total, costoTotalGuardado]);
+    }, [precioVenta, rentabilidad, costoRef]);
 
     const margenGanancia = useMemo(() => ajustarA900(precioVenta + (precioVenta * 0.30)), [precioVenta]);
 
@@ -164,14 +177,14 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     </div>
 
                     <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border-2 border-yellow-200 space-y-4">
-                        <h3 className="text-sm font-black text-yellow-700 uppercase tracking-widest">Rentabilidad vs Precio</h3>
+                        <h3 className="text-sm font-black text-yellow-700 uppercase tracking-widest text-center">Rentabilidad vs Precio</h3>
                         <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo Total</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.total.toLocaleString()}</p></div></div>
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Costo sin provisiones</label><div className="px-4 py-3 bg-white rounded-xl"><p className="font-black text-2xl text-slate-800">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
+                            <div><label className="text-[10px] font-black text-orange-400 uppercase tracking-widest block mb-2 text-center">Precio de Venta</label><div className="px-4 py-3 bg-orange-100 rounded-xl border-2 border-orange-200 flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-orange-700">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoRef)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-orange-700 bg-transparent text-center border-0 focus:ring-0 w-32" /></div></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2 text-center">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(costoRef, r)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Precio de Venta</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><div className="flex items-center gap-2"><span className="font-black text-lg text-yellow-600">$</span><input type="number" value={precioVenta} onChange={e => { const p = Number(e.target.value); setPrecioVenta(p); setRentabilidad(calcRent(p, costoTotalGuardado > 0 ? costoTotalGuardado : totales.total)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-32" /></div></div></div>
-                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2">Rentabilidad %</label><div className="px-4 py-3 bg-white rounded-xl flex items-center justify-center"><input type="number" value={Math.round(rentabilidad)} onChange={e => { const r = Number(e.target.value); setRentabilidad(r); setPrecioVenta(calcPrecio(costoTotalGuardado > 0 ? costoTotalGuardado : totales.total, r)); setHasUnsavedChanges(true); }} onFocus={e => e.target.select()} readOnly={!canEdit} className="font-black text-2xl text-slate-800 bg-white text-center border-0 focus:ring-0 w-16" /><span className="font-black text-lg text-yellow-600 ml-2">%</span></div></div>
+                            <div><label className="text-[10px] font-black text-orange-400 uppercase tracking-widest block mb-2 text-center">Costo sin provisiones</label><div className="px-4 py-3 bg-orange-100 rounded-xl border-2 border-orange-200 text-center"><p className="font-black text-2xl text-orange-700">$ {totales.costoContabilizar.toLocaleString()}</p></div></div>
+                            <div><label className="text-[10px] font-black text-yellow-600 uppercase tracking-widest block mb-2 text-center">Costo Total</label><div className="px-4 py-3 bg-white rounded-xl text-center"><p className="font-black text-2xl text-slate-800">$ {totales.total.toLocaleString()}</p></div></div>
                         </div>
                         <p className="text-xs text-yellow-700 font-bold italic">Los precios se ajustan automáticamente para terminar en 900</p>
                     </div>
@@ -186,14 +199,14 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
                     <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-2xl border-2 border-pink-200 flex items-center justify-between">
                         <div>
-                            <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Ganancia Cliente</h3>
+                            <h3 className="text-xs font-black text-pink-700 uppercase tracking-widest">Margen Venta Cliente</h3>
                             <p className="text-sm font-black text-pink-600">30%</p>
                         </div>
                         <p className="text-3xl font-black text-pink-700">$ {margenGanancia.toLocaleString()}</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-3xl border-2 border-orange-200">
-                        <h3 className="text-sm font-black text-orange-700 uppercase tracking-widest mb-4">Posibles Descuentos</h3>
+                        <h3 className="text-sm font-black text-orange-700 uppercase tracking-widest mb-4 text-center">Posibles Descuentos</h3>
                         <table className="w-full text-sm">
                             <thead><tr className="border-b-2 border-orange-300"><th className="py-2 text-left font-black text-orange-600 uppercase text-xs">Desc</th><th className="py-2 text-right font-black text-orange-600 uppercase text-xs">Precio</th><th className="py-2 text-right font-black text-orange-600 uppercase text-xs">Rent %</th></tr></thead>
                             <tbody className="divide-y divide-orange-200">
