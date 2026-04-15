@@ -158,8 +158,8 @@ router.get('/compras', verifyToken, comprasController.list);
 router.post('/compras/batch', verifyToken, allowComprasCreate, comprasController.createBatch);
 router.post('/compras', verifyToken, allowComprasCreate, comprasController.create);
 router.get('/compras/:id', verifyToken, comprasController.read);
-router.put('/compras/:id', verifyToken, allowAdminOnly, comprasController.update);
-router.delete('/compras/:id', verifyToken, allowAdminOnly, comprasController.delete);
+router.put('/compras/:id', verifyToken, allowOperadorOrAdmin, comprasController.update);
+router.delete('/compras/:id', verifyToken, allowOperadorOrAdmin, comprasController.delete);
 
 // ==================== INVENTORY MOVEMENTS ====================
 

@@ -1176,13 +1176,10 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
                   <Td {...tdHandlers} rowId={row.id} fieldKey="fechaLlegada" row={row} baseHighlight="bg-green-50">
                     {editable ? (
                       <input
-                        type={row.fechaLlegada ? 'date' : 'text'}
+                        type="date"
                         value={row.fechaLlegada}
                         onChange={e => updateRow(row.id, 'fechaLlegada', e.target.value)}
-                        onFocus={e => { e.target.select(); (e.target as HTMLInputElement).type = 'date'; }}
-                        onBlur={e => { if (!e.target.value) (e.target as HTMLInputElement).type = 'text'; }}
                         onKeyDown={handleKeyDown}
-                        placeholder=""
                         className="w-full px-1 text-xs border border-transparent hover:border-slate-300 focus:border-blue-400 focus:outline-none rounded bg-transparent focus:bg-white text-center"
                         style={{ minWidth: '120px', height: '22px', boxSizing: 'border-box' }}
                       />

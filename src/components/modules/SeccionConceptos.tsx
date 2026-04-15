@@ -189,15 +189,16 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
                             <tr><td colSpan={mostrarTipo ? (readOnly ? 6 : 7) : (readOnly ? 5 : 6)} className="px-4 py-8 text-center text-slate-400 italic">No hay conceptos agregados</td></tr>
                         ) : conceptos.map((con, i) => (
                             <tr key={i}
-                                draggable={!readOnly}
-                                onDragStart={() => handleDragStart(i)}
                                 onDragOver={e => handleDragOver(e, i)}
                                 onDrop={() => handleDrop(i)}
                                 onDragEnd={handleDragEnd}
                                 className={`hover:bg-slate-50 transition-colors ${dragOverIndex === i ? `border-t-2 ${c.border}` : ''}`}>
                                 {!readOnly && (
                                     <td className="px-2 py-3 text-center">
-                                        <span className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing select-none text-base leading-none">⠿</span>
+                                        <span
+                                            draggable
+                                            onDragStart={() => handleDragStart(i)}
+                                            className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing select-none text-base leading-none">⠿</span>
                                     </td>
                                 )}
                                 <td className="px-4 py-3">

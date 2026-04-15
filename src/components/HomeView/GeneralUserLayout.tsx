@@ -69,12 +69,6 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       description: 'Gestionar fechas de entrega'
     },
     {
-      id: 'compras',
-      label: 'Compras',
-      icon: <Icons.Orders />,
-      description: 'Registrar compras de insumos'
-    },
-    {
       id: 'fichas-diseno',
       label: 'Fichas de Diseño',
       icon: <Icons.FichasDiseno />,
