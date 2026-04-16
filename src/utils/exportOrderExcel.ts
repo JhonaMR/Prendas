@@ -26,7 +26,7 @@ export const exportOrderToExcel = async (
 
         // CABECERA
         worksheet.getCell('M4').value = order.orderNumber != null ? order.orderNumber : ''; // número del pedido
-        worksheet.getCell('M7').value = seller?.name || ''; // vendedor
+        worksheet.getCell('M7').value = (seller?.name || '').split(' ')[0].toUpperCase();
         worksheet.getCell('N9').value = client?.id || ''; // codigo cliente
         worksheet.getCell('C9').value = client?.name || ''; // nombre cliente
         worksheet.getCell('C11').value = client?.address || ''; // direccion 
@@ -82,7 +82,7 @@ export const exportOrderToExcel = async (
         }
 
         // Rellenamos
-        items.forEach((item, index) => {
+        items.forEach((item: any, index: number) => {
             const rowNum = ITEMS_START_ROW + index;
             const refDetail = referencesContext.find(r => r.id === item.reference);
 
@@ -94,7 +94,18 @@ export const exportOrderToExcel = async (
             row.getCell('C').value = refDetail?.description || '';
             const quantity = Number(item.quantity) || 0;
             const salePrice = Number(item.salePrice !== undefined ? item.salePrice : refDetail?.price || 0);
-            
+
+            // Tallas (D=S, E=M, F=L, G=XL) si existen
+            if (item.sizes) {
+                row.getCell('D').value = item.sizes.S || 0;
+                row.getCell('E').value = item.sizes.M || 0;
+                row.getCell('F').value = item.sizes.L || 0;
+                row.getCell('G').value = item.sizes.XL || 0;
+            }
+
+            // Novedad (col J)
+            if (item.novedad) row.getCell('J').value = item.novedad;
+
             row.getCell('L').value = quantity;
 
             const priceCell = row.getCell('M');
@@ -111,10 +122,38 @@ export const exportOrderToExcel = async (
 
         // FILA DE TOTALES
         // Después del spliceRows, las filas de footer quedaron en:
-        // penúltima: ITEMS_START_ROW + items.length
+        // penúltima: ITEMS_START_ROW + items.length  ← fila combinada (observaciones)
         // última (totales): ITEMS_START_ROW + items.length + 1
         const lastRecRow = ITEMS_START_ROW + items.length - 1;
-        const finalTotalsRowNum = ITEMS_START_ROW + items.length + 1;
+        const obsBaseRow = ITEMS_START_ROW + items.length;
+        const observaciones: string[] = (order as any).observaciones || [];
+        const extraObsRows = Math.max(0, observaciones.length - 1);
+
+        // Si hay más de una observación, duplicar la fila combinada
+        if (extraObsRows > 0) {
+            worksheet.spliceRows(obsBaseRow + 1, 0, ...Array(extraObsRows).fill([]));
+            const templateRow = worksheet.getRow(obsBaseRow);
+            for (let i = 0; i < extraObsRows; i++) {
+                const newRow = worksheet.getRow(obsBaseRow + 1 + i);
+                newRow.height = templateRow.height;
+                templateRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+                    const newCell = newRow.getCell(colNumber);
+                    newCell.style = Object.assign({}, cell.style);
+                });
+                try { worksheet.mergeCells(`B${obsBaseRow + 1 + i}:N${obsBaseRow + 1 + i}`); } catch (e) { /* ignorar */ }
+                newRow.commit();
+            }
+        }
+
+        // Escribir observaciones en las filas combinadas
+        observaciones.forEach((obs, i) => {
+            const obsRow = worksheet.getRow(obsBaseRow + i);
+            const cell = obsRow.getCell('B');
+            cell.value = obs;
+            obsRow.commit();
+        });
+
+        const finalTotalsRowNum = obsBaseRow + Math.max(observaciones.length, 1);
         const finalTotalsRow = worksheet.getRow(finalTotalsRowNum);
 
         finalTotalsRow.getCell('L').value = { formula: `SUM(L${ITEMS_START_ROW}:L${lastRecRow})` };
