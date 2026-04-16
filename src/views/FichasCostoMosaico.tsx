@@ -27,6 +27,8 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [disenadoraFilter, setDisenadoraFilter] = useState('');
     const [disenadoraInput, setDisenadoraInput] = useState('');
     const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
+    const [revisionFilter, setRevisionFilter] = useState<'rojo' | 'verde' | 'morado' | 'sin-estado' | null>(null);
+    const [showRevisionFilter, setShowRevisionFilter] = useState(false);
     const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
     const [correriaFilter, setCorreriaFilter] = useState('');
     const [correriaInput, setCorreriaInput] = useState('');
@@ -58,9 +60,9 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
         return (state.correrias || []).sort((a, b) => b.year.localeCompare(a.year) || b.name.localeCompare(a.name));
     }, [state.correrias]);
 
-    const correriassugeridas = correriaInput
+    const correriassugeridas = correriaInput.length >= 2
         ? correriasUnicas.filter(c => `${c.name} ${c.year}`.toLowerCase().includes(correriaInput.toLowerCase()))
-        : correriasUnicas;
+        : [];
 
     const fichas = (state.fichasCosto || []).filter(f => {
         const matchSearch = !searchTerm || (() => {
@@ -73,7 +75,8 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             const ref = (state.references || []).find(r => r.id === f.referencia);
             return ref?.correrias?.includes(correriaFilter);
         })();
-        return matchSearch && matchDisenadora && matchYear && matchCorreria;
+        const matchRevision = !revisionFilter || (revisionFilter === 'sin-estado' ? !f.estadoRevision : f.estadoRevision === revisionFilter);
+        return matchSearch && matchDisenadora && matchYear && matchCorreria && matchRevision;
     }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
 
     const pageSize = fichasPagination.pagination.limit;
@@ -140,7 +143,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="flex flex-wrap gap-3 items-center">
                     {/* Limpiar filtros */}
                     <button
-                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); }}
+                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); setRevisionFilter(null); }}
                         title="Limpiar filtros"
                         className="p-4 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-2xl transition-colors border border-red-200"
                     >
@@ -148,6 +151,48 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+                    {/* Filtro revisión */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setShowRevisionFilter(v => !v)}
+                            className="w-12 h-12 rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-center hover:border-slate-300 transition-colors"
+                            title="Filtrar por revisión"
+                        >
+                            {revisionFilter ? (
+                                <div className="w-5 h-5 rounded-full border-2 border-white shadow"
+                                    style={{ backgroundColor: revisionFilter === 'rojo' ? '#fca5a5' : revisionFilter === 'verde' ? '#86efac' : revisionFilter === 'morado' ? '#c4b5fd' : '#e2e8f0' }}
+                                />
+                            ) : (
+                                <div className="w-5 h-5 rounded-full border-2 border-white shadow"
+                                    style={{ background: 'conic-gradient(#c4b5fd 0% 25%, #86efac 25% 50%, #e2e8f0 50% 75%, #fca5a5 75% 100%)' }}
+                                />
+                            )}
+                        </button>
+                        {showRevisionFilter && (
+                            <div className="absolute top-14 left-0 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 flex flex-col gap-2 z-50">
+                                <button
+                                    key="none"
+                                    onClick={() => { setRevisionFilter(null); setShowRevisionFilter(false); }}
+                                    className="w-8 h-8 rounded-full border-4 transition-transform hover:scale-110"
+                                    style={{
+                                        background: 'conic-gradient(#c4b5fd 0% 25%, #86efac 25% 50%, #e2e8f0 50% 75%, #fca5a5 75% 100%)',
+                                        borderColor: revisionFilter === null ? '#64748b' : '#e2e8f0'
+                                    }}
+                                />
+                                {(['sin-estado', 'rojo', 'verde', 'morado'] as const).map(color => (
+                                    <button
+                                        key={color}
+                                        onClick={() => { setRevisionFilter(color); setShowRevisionFilter(false); }}
+                                        className="w-8 h-8 rounded-full border-4 transition-transform hover:scale-110"
+                                        style={{
+                                            backgroundColor: color === 'rojo' ? '#fca5a5' : color === 'verde' ? '#86efac' : color === 'morado' ? '#c4b5fd' : '#e2e8f0',
+                                            borderColor: revisionFilter === color ? '#64748b' : '#e2e8f0'
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     {/* Filtro año */}
                     <input
                         type="number"
@@ -249,7 +294,21 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                     </div>
                                 )}
                                 {(ficha.numCortes || 0) > 0 && <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-500 text-white rounded-lg text-[9px] font-black uppercase">{ficha.numCortes} Corte{ficha.numCortes !== 1 ? 's' : ''}</div>}
+                                {(ficha.cortesResumen || []).length > 0 && (
+                                    <div className="absolute top-9 right-2 flex flex-col gap-1">
+                                        {(ficha.cortesResumen || []).map((c: any) => (
+                                            <div key={c.numeroCorte} className={`w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black shadow ${c.margenUtilidad >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                {c.cantidadCortada}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                                 {isAdmin && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                {ficha.estadoRevision && (
+                                    <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full border-2 border-white shadow"
+                                        style={{ backgroundColor: ficha.estadoRevision === 'rojo' ? '#fca5a5' : ficha.estadoRevision === 'verde' ? '#86efac' : '#c4b5fd' }}
+                                    />
+                                )}
                             </div>
                             <div className="p-3">
                                 <div className="flex items-center justify-between mb-1">
@@ -258,9 +317,13 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                 </div>
                                 <div className="flex items-center justify-between mb-2">
                                     <p className="text-xs font-bold text-slate-600 truncate">{ficha.descripcion || 'Sin descripción'}</p>
-                                    <span className="font-black text-blue-600 text-[10px] ml-1 shrink-0">{(ficha.rentabilidad || 0).toFixed(1)}%</span>
+                                    <span className="font-black text-blue-600 text-[10px] ml-1 shrink-0">R. {(ficha.rentabilidad || 0).toFixed(1)}%</span>
                                 </div>
-                                <div className="flex items-center justify-between text-[10px]"><span className="text-slate-400 font-bold">Precio</span><span className="font-black text-green-600">${(ficha.precioVenta || 0).toLocaleString()}</span></div>
+                                <div className="flex items-center text-[10px]">
+                                    <div className="flex-1 flex items-center gap-1"><span className="text-slate-400 font-bold">Cant. cort:</span><span className="font-black text-slate-700">{ficha.cantidadTotalCortada || 0}</span></div>
+                                    <div className="w-px h-4 bg-slate-200 mx-2"></div>
+                                    <div className="flex items-center gap-1"><span className="text-slate-400 font-bold">Precio</span><span className="font-black text-green-600">${(ficha.precioVenta || 0).toLocaleString()}</span></div>
+                                </div>
                             </div>
                         </div>
                     ))}

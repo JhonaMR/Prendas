@@ -73,7 +73,8 @@ const getFichasCosto = async (req, res) => {
                 fc.*,
                 fd.disenadora_id,
                 d.nombre as disenadora_nombre,
-                (SELECT COUNT(*) FROM fichas_cortes WHERE ficha_costo_id = fc.id) as num_cortes
+                (SELECT COUNT(*) FROM fichas_cortes WHERE ficha_costo_id = fc.id) as num_cortes,
+                (SELECT json_agg(json_build_object('numeroCorte', numero_corte, 'cantidadCortada', cantidad_cortada, 'margenUtilidad', margen_utilidad) ORDER BY numero_corte ASC) FROM fichas_cortes WHERE ficha_costo_id = fc.id) as cortes_resumen
             FROM fichas_costo fc
             LEFT JOIN fichas_diseno fd ON fc.ficha_diseno_id = fd.id
             LEFT JOIN disenadoras d ON fd.disenadora_id = d.id
@@ -119,6 +120,8 @@ const getFichasCosto = async (req, res) => {
             desc15Rent: parseFloat(f.desc_15_rent),
             cantidadTotalCortada: parseInt(f.cantidad_total_cortada),
             numCortes: parseInt(f.num_cortes),
+            cortesResumen: f.cortes_resumen || [],
+            estadoRevision: f.estado_revision || null,
             createdBy: f.created_by,
             createdAt: f.created_at,
             updatedAt: f.updated_at
@@ -224,6 +227,7 @@ const getFichaCosto = async (req, res) => {
             desc15Rent: parseFloat(f.desc_15_rent),
             cantidadTotalCortada: parseInt(f.cantidad_total_cortada),
             cortes,
+            estadoRevision: f.estado_revision || null,
             createdBy: f.created_by,
             createdAt: f.created_at,
             updatedAt: f.updated_at

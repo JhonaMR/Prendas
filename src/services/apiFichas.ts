@@ -166,7 +166,14 @@ export const updateCorte = async (referencia: string, numeroCorte: number, corte
     return r.json();
 };
 
-// ===== MALETAS =====
+export const deleteCorte = async (referencia: string, numeroCorte: number): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-costo/${referencia}/cortes/${numeroCorte}`, {
+        method: 'DELETE', headers: getHeaders()
+    });
+    return r.json();
+};
+
+
 
 export const getMaletas = async (): Promise<Maleta[]> => {
     const r = await fetch(`${getApiUrl()}/maletas`, { headers: getHeaders() });
@@ -209,7 +216,7 @@ const apiFichas = {
     getDisenadoras, createDisenadora, updateDisenadora, deleteDisenadora,
     getFichasDiseno, getFichaDiseno, createFichaDiseno, updateFichaDiseno, deleteFichaDiseno, uploadFotoFicha,
     getFichasCosto, getFichaCosto, importarFichaDiseno, createFichaCosto, updateFichaCosto,
-    crearCorte, updateCorte,
+    crearCorte, updateCorte, deleteCorte,
     getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria
 };
 

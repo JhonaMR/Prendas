@@ -652,10 +652,17 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             </button>
           </div>
         </div>
-        <button onClick={handleStart} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
-          <Icons.Reception />
-          INICIAR CONTEO
-        </button>
+        <div className="flex items-center gap-3">
+          {[UserRole.OBSERVER, UserRole.OPERADOR, UserRole.ADMIN, UserRole.SOPORTE, UserRole.GENERAL].includes(user.role) && (
+            <button onClick={() => onNavigate?.('productoEnProceso')} className="px-4 py-2 bg-violet-100 text-violet-600 font-black rounded-xl hover:bg-violet-200 transition-colors text-sm">
+              PP
+            </button>
+          )}
+          <button onClick={handleStart} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+            <Icons.Reception />
+            INICIAR CONTEO
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4">

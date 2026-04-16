@@ -276,6 +276,7 @@ router.delete('/fichas-costo/:referencia', verifyToken, allowOperadorOrAdmin, fi
 // Cortes
 router.post('/fichas-costo/:referencia/cortes', verifyToken, fichasCostoController2.crearCorte);
 router.put('/fichas-costo/:referencia/cortes/:numeroCorte', verifyToken, fichasCostoController2.updateCorte);
+router.delete('/fichas-costo/:referencia/cortes/:numeroCorte', verifyToken, fichasCostoController2.deleteCorte);
 
 // Maletas - IMPORTANTE: referencias-sin-correria ANTES de /:id
 router.get('/maletas/referencias-sin-correria', verifyToken, maletasController.getReferenciasSinCorreria);

@@ -24,6 +24,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const isGeneral = user?.role === 'general';
     const canEdit = isAdmin || isGeneral || user?.role === 'operador';
 
+    const [estadoRevision, setEstadoRevision] = useState<'rojo' | 'verde' | 'morado' | null>(null);
+    const [showRevisionPicker, setShowRevisionPicker] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [showModalCorte, setShowModalCorte] = useState(false);
@@ -79,6 +81,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 setRentabilidad(35);
             }
             setCostoTotalGuardado(costoGuardado);
+            setEstadoRevision(fichaExistente.estadoRevision || null);
         }
     }, [fichaExistente?.referencia]);
 
@@ -122,7 +125,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }
         setIsLoading(true);
         try {
-            const result = await apiFichas.updateFichaCosto(referencia, { referencia, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones }, precioVenta, rentabilidad);
+            const result = await apiFichas.updateFichaCosto(referencia, { referencia, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones, estadoRevision }, precioVenta, rentabilidad);
             if (result.success) {
                 setHasUnsavedChanges(false); alert('✅ Ficha guardada exitosamente');
                 const fichas = await apiFichas.getFichasCosto();
@@ -220,7 +223,35 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
                 <div className="space-y-6 lg:col-span-2">
                     <div className="bg-slate-100 p-6 rounded-3xl space-y-4">
-                        <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información Básica</h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Información Básica</h3>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Revisión:</span>
+                            <div className="relative">
+                                <button
+                                    onClick={() => isAdmin && setShowRevisionPicker(v => !v)}
+                                    className={`w-7 h-7 rounded-full border-2 border-white shadow transition-transform ${isAdmin ? 'hover:scale-110 cursor-pointer' : 'cursor-default'}`}
+                                    style={{ backgroundColor: estadoRevision === 'rojo' ? '#fca5a5' : estadoRevision === 'verde' ? '#86efac' : estadoRevision === 'morado' ? '#c4b5fd' : '#e2e8f0' }}
+                                    title="Estado de revisión"
+                                />
+                                {showRevisionPicker && (
+                                    <div className="absolute right-0 top-9 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 flex gap-2 z-50">
+                                        {(['rojo', 'verde', 'morado'] as const).map(color => (
+                                            <button
+                                                key={color}
+                                                onClick={() => { setEstadoRevision(estadoRevision === color ? null : color); setShowRevisionPicker(false); }}
+                                                className="w-8 h-8 rounded-full border-4 transition-transform hover:scale-110"
+                                                style={{
+                                                    backgroundColor: color === 'rojo' ? '#fca5a5' : color === 'verde' ? '#86efac' : '#c4b5fd',
+                                                    borderColor: estadoRevision === color ? (color === 'rojo' ? '#ef4444' : color === 'verde' ? '#22c55e' : '#8b5cf6') : 'transparent'
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-2">Descripción</label>

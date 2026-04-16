@@ -93,7 +93,7 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     }, [hasUnsaved, referencia, onNavigate]);
 
     const totales = useMemo(() => {
-        const calc = (items: ConceptoFicha[]) => items.reduce((acc, i) => acc + (i.total || 0), 0);
+        const calc = (items: ConceptoFicha[]) => Math.ceil(items.reduce((acc, i) => acc + (i.total || 0), 0));
         const totalMP = calc(materiaPrima), totalMO = calc(manoObra);
         const totalID = calc(insumosDirectos), totalII = calc(insumosIndirectos);
         const totalProv = calc(provisiones);
@@ -101,8 +101,8 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         return { costoReal, totalMP, totalMO, totalID, totalII, totalProv };
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
-    const costoProyectado = fichaData?.costoTotal || 0;
-    const diferencia = costoProyectado - totales.costoReal;
+    const costoProyectado = Math.ceil(fichaData?.costoTotal || 0);
+    const diferencia = Math.ceil(costoProyectado - totales.costoReal);
     const margenUtilidad = totales.costoReal !== 0 ? (diferencia / totales.costoReal) * 100 : 0;
 
     const handleGuardar = async () => {
@@ -116,6 +116,21 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 : await apiFichas.updateCorte(referencia, Number(numeroCorte), corteData);
             if (result.success) {
                 setHasUnsaved(false); alert('✅ Corte guardado');
+                const fichas = await apiFichas.getFichasCosto();
+                updateState(prev => ({ ...prev, fichasCosto: fichas }));
+                onNavigate('fichas-costo-detalle', { referencia });
+            } else alert('❌ ' + result.message);
+        } catch { alert('❌ Error de conexión'); }
+        finally { setIsLoading(false); }
+    };
+
+    const handleEliminar = async () => {
+        if (!canEdit) { alert('No tienes permisos'); return; }
+        if (!window.confirm(`¿Eliminar el Corte #${numeroCorte}? Esta acción no se puede deshacer.`)) return;
+        setIsLoading(true);
+        try {
+            const result = await apiFichas.deleteCorte(referencia, Number(numeroCorte));
+            if (result.success) {
                 const fichas = await apiFichas.getFichasCosto();
                 updateState(prev => ({ ...prev, fichasCosto: fichas }));
                 onNavigate('fichas-costo-detalle', { referencia });
@@ -140,6 +155,12 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     </div>
                 </div>
                 {hasUnsaved && <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
+                {canEdit && !isNuevo && (
+                    <button onClick={handleEliminar} disabled={isLoading}
+                        className="px-5 py-2 bg-red-50 text-red-600 font-black rounded-xl hover:bg-red-100 border border-red-200 transition-colors text-sm uppercase tracking-wide">
+                        Eliminar Corte
+                    </button>
+                )}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

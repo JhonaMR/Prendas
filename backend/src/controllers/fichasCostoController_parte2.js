@@ -290,7 +290,7 @@ const updateFichaCosto = async (req, res) => {
         const {
             descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones,
-            precioVenta, rentabilidad
+            precioVenta, rentabilidad, estadoRevision
         } = req.body;
 
         const existe = await query('SELECT id FROM fichas_costo WHERE referencia = $1', [referencia]);
@@ -318,8 +318,9 @@ const updateFichaCosto = async (req, res) => {
                     total_insumos_indirectos=$17, total_provisiones=$18, costo_total=$19,
                     precio_venta=$20, rentabilidad=$21, margen_ganancia=$22, costo_contabilizar=$23,
                     desc_0_precio=$24, desc_0_rent=$25, desc_5_precio=$26, desc_5_rent=$27,
-                    desc_10_precio=$28, desc_10_rent=$29, desc_15_precio=$30, desc_15_rent=$31
-                WHERE referencia=$32
+                    desc_10_precio=$28, desc_10_rent=$29, desc_15_precio=$30, desc_15_rent=$31,
+                    estado_revision=$32
+                WHERE referencia=$33
             `, [
                 descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
@@ -330,6 +331,7 @@ const updateFichaCosto = async (req, res) => {
                 valores.precio_venta, valores.rentabilidad, valores.margen_ganancia, totales.costo_contabilizar,
                 valores.desc_0_precio, valores.desc_0_rent, valores.desc_5_precio, valores.desc_5_rent,
                 valores.desc_10_precio, valores.desc_10_rent, valores.desc_15_precio, valores.desc_15_rent,
+                estadoRevision || null,
                 referencia
             ]);
         });
@@ -511,8 +513,37 @@ const updateCorte = async (req, res) => {
 };
 
 /**
- * DELETE /api/fichas-costo/:referencia
+ * DELETE /api/fichas-costo/:referencia/cortes/:numeroCorte
  */
+const deleteCorte = async (req, res) => {
+    try {
+        const { referencia, numeroCorte } = req.params;
+
+        const fichaResult = await query('SELECT id, cantidad_total_cortada FROM fichas_costo WHERE referencia = $1', [referencia]);
+        if (fichaResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
+        }
+        const ficha = fichaResult.rows[0];
+
+        const corteResult = await query('SELECT id, cantidad_cortada FROM fichas_cortes WHERE ficha_costo_id = $1 AND numero_corte = $2', [ficha.id, numeroCorte]);
+        if (corteResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Corte no encontrado' });
+        }
+        const cantidadCortada = parseInt(corteResult.rows[0].cantidad_cortada);
+
+        await transaction(async (client) => {
+            await client.query('DELETE FROM fichas_cortes WHERE ficha_costo_id = $1 AND numero_corte = $2', [ficha.id, numeroCorte]);
+            await client.query('UPDATE fichas_costo SET cantidad_total_cortada = cantidad_total_cortada - $1 WHERE id = $2', [cantidadCortada, ficha.id]);
+        });
+
+        return res.json({ success: true, message: `Corte #${numeroCorte} eliminado exitosamente` });
+    } catch (error) {
+        console.error('❌ Error eliminando corte:', error);
+        return res.status(500).json({ success: false, message: 'Error al eliminar corte' });
+    }
+};
+
+
 const deleteFichaCosto = async (req, res) => {
     try {
         const { referencia } = req.params;
@@ -543,6 +574,7 @@ module.exports = {
     updateFichaCosto,
     crearCorte,
     updateCorte,
+    deleteCorte,
     deleteFichaCosto,
     sincronizarProductReference
 };
