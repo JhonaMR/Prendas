@@ -28,10 +28,12 @@ const CorreriaAutocomplete: React.FC<CorreriaAutocompleteProps> = ({
   const correria = correrias.find(c => c.id === value);
   const displayValue = correria ? `${correria.name} ${correria.year}` : value;
 
-  const filtered = correrias.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.year.toString().includes(search)
-  );
+  const filtered = search.length >= 2
+    ? correrias.filter(c =>
+        c.name.toLowerCase().includes(search.toLowerCase()) ||
+        c.year.toString().includes(search)
+      )
+    : [];
 
   const handleBlur = () => {
     timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
@@ -55,25 +57,21 @@ const CorreriaAutocomplete: React.FC<CorreriaAutocompleteProps> = ({
         placeholder={placeholder}
         className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-purple-100 focus:border-purple-500"
       />
-      {showDropdown && (
+      {showDropdown && search.length >= 2 && filtered.length > 0 && (
         <div 
           className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
           onMouseDown={(e) => e.preventDefault()}
         >
-          {filtered.length === 0 ? (
-            <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
-          ) : (
-            filtered.map(c => (
-              <button
-                key={c.id}
-                onMouseDown={() => handleSelect(c.id)}
-                className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
-              >
-                <p className="font-black text-slate-800 text-xs">{c.name}</p>
-                <p className="text-[9px] text-slate-400">{c.year}</p>
-              </button>
-            ))
-          )}
+          {filtered.map(c => (
+            <button
+              key={c.id}
+              onMouseDown={() => handleSelect(c.id)}
+              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+            >
+              <p className="font-black text-slate-800 text-xs">{c.name}</p>
+              <p className="text-[9px] text-slate-400">{c.year}</p>
+            </button>
+          ))}
         </div>
       )}
     </div>

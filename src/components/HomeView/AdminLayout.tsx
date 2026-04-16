@@ -82,9 +82,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Comercial',
       icon: <Icons.Orders />,
       items: [
-        { id: 'orders',       label: 'Pedidos',              icon: <Icons.Orders />,  description: 'Gestionar pedidos' },
-        { id: 'settle',       label: 'Asentar Ventas',       icon: <Icons.Settle />,  description: 'Registrar ventas' },
-        { id: 'orderHistory', label: 'Historial de Pedidos', icon: <Icons.History />, description: 'Consultar historial' },
+        { id: 'orders',            label: 'Pedidos',                icon: <Icons.Orders />,       description: 'Gestionar pedidos' },
+        { id: 'settle',            label: 'Asentar Ventas',         icon: <Icons.Settle />,       description: 'Registrar ventas' },
+        { id: 'orderHistory',      label: 'Historial de Pedidos',   icon: <Icons.History />,      description: 'Consultar historial' },
+        { id: 'listaPrecios',      label: 'Generar Lista de Precios', icon: <Icons.ListaPrecios />, description: 'Generar lista de precios' },
       ],
     },
     {

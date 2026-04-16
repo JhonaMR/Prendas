@@ -204,7 +204,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                         className="w-28 px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm"
                     />
                     {/* Filtro correría */}
-                    <div className="relative min-w-[200px]">
+                    <div className="relative min-w-[100px]">
                         <input
                             type="text"
                             value={correriaInput}
@@ -233,7 +233,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                         )}
                     </div>
                     {/* Filtro diseñadora */}
-                    <div className="relative min-w-[200px]">
+                    <div className="relative min-w-[100px]">
                         <input
                             type="text"
                             value={disenadoraInput}
@@ -262,12 +262,12 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                         )}
                     </div>
                     {/* Buscador referencia */}
-                    <div className="relative flex-1 min-w-[250px]">
+                    <div className="relative flex-1 min-w-[100px]">
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar referencia, descripción..."
                             className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm" />
                     </div>
                     {canImportar && (
-                        <button onClick={() => setShowModalImportar(true)} className="px-8 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-sm">
+                        <button onClick={() => setShowModalImportar(true)} className="px-5 py-4 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V2.25" /></svg>
                             Importar Ficha
                         </button>
@@ -382,3 +382,4 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
 };
 
 export default FichasCostoMosaico;
+

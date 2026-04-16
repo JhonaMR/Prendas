@@ -74,11 +74,11 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             // Si no tiene precio guardado, calcular automáticamente al 35%
             if (precioGuardado > 0) {
                 setPrecioVenta(precioGuardado);
-                setRentabilidad(fichaExistente.rentabilidad || 35);
+                setRentabilidad(fichaExistente.rentabilidad || calcRent(precioGuardado, costoGuardado));
             } else {
                 const precioCalculado = ajustarA900(costoGuardado / (1 - 35 / 100));
                 setPrecioVenta(precioCalculado);
-                setRentabilidad(35);
+                setRentabilidad(calcRent(precioCalculado, costoGuardado));
             }
             setCostoTotalGuardado(costoGuardado);
             setEstadoRevision(fichaExistente.estadoRevision || null);

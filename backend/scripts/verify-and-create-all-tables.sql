@@ -401,11 +401,15 @@ CREATE TABLE IF NOT EXISTS public.fichas_costo (
     desc_15_precio numeric(12,2) DEFAULT 0,
     desc_15_rent numeric(5,2) DEFAULT 0,
     cantidad_total_cortada integer DEFAULT 0,
+    estado_revision character varying(10) DEFAULT NULL,
     created_by character varying(255),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fichas_costo_ficha_diseno_id_fkey FOREIGN KEY (ficha_diseno_id) REFERENCES public.fichas_diseno(id) ON DELETE SET NULL
 );
+
+-- Columna agregada por migración (por si la tabla ya existe sin ella)
+ALTER TABLE public.fichas_costo ADD COLUMN IF NOT EXISTS estado_revision character varying(10) DEFAULT NULL;
 
 -- ============================================================================
 -- 22. TABLA: fichas_cortes

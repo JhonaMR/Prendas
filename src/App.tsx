@@ -43,6 +43,7 @@ import FichasCorteDetalle from './views/FichasCorteDetalle';
 import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
 import CorteView from './views/CorteView';
+import GenerarListaPreciosView from './views/GenerarListaPreciosView';
 import ControlTransporteView from './views/transporte/ControlTransporteView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
 import { DottedBackground } from './components/DottedBackground';
@@ -1121,6 +1122,8 @@ const App: React.FC = () => {
         return <ReportsView state={state} user={user} />;
       case 'corte':
         return <CorteView />;
+      case 'listaPrecios':
+        return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':
         return <ControlTransporteView user={user ?? undefined} />;
       case 'liquidacionTransporte':

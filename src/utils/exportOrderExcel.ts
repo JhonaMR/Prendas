@@ -25,7 +25,7 @@ export const exportOrderToExcel = async (
         const worksheet = workbook.worksheets[0];
 
         // CABECERA
-        worksheet.getCell('M4').value = order.orderNumber || order.id?.slice(0, 6) || ''; // número del pedido
+        worksheet.getCell('M4').value = order.orderNumber != null ? order.orderNumber : ''; // número del pedido
         worksheet.getCell('M7').value = seller?.name || ''; // vendedor
         worksheet.getCell('N9').value = client?.id || ''; // codigo cliente
         worksheet.getCell('C9').value = client?.name || ''; // nombre cliente
@@ -56,15 +56,16 @@ export const exportOrderToExcel = async (
         // REFERENCIAS
         const ITEMS_START_ROW = 20;
         const TOTAL_FORMAT_ROWS = 18;
+        const FORMAT_FOOTER_ROWS = 2; // 1 fila subtotal + 1 fila totales al pie
         const items = order.items || [];
 
-        // Si tenemos más de 18 ítems, clonamos la última fila del rango (la 37) para hacer espacio
-        // exceljs spliceRows inserta filas vacías, y podemos llenarlas.
+        // Número real de filas del formato original (para saber cuánto limpiar al final)
+        const originalTotalRows = worksheet.rowCount;
+
         if (items.length > TOTAL_FORMAT_ROWS) {
+            // Insertar filas extra copiando estilo de la última fila de items
             const extraRows = items.length - TOTAL_FORMAT_ROWS;
             worksheet.spliceRows(ITEMS_START_ROW + TOTAL_FORMAT_ROWS, 0, ...Array(extraRows).fill([]));
-
-            // Aplicar el mismo estilo/altura de la última fila (37)
             const templateRow = worksheet.getRow(ITEMS_START_ROW + TOTAL_FORMAT_ROWS - 1);
             for (let i = 0; i < extraRows; i++) {
                 const newRow = worksheet.getRow(ITEMS_START_ROW + TOTAL_FORMAT_ROWS + i);
@@ -75,11 +76,9 @@ export const exportOrderToExcel = async (
                 });
             }
         } else if (items.length < TOTAL_FORMAT_ROWS) {
-            // Necesitamos remover filas para no dejar espacios en blanco vacíos antes de los totales
+            // Eliminar filas sobrantes del rango de items
             const rowsToRemove = TOTAL_FORMAT_ROWS - items.length;
-            if (rowsToRemove > 0) {
-                worksheet.spliceRows(ITEMS_START_ROW + items.length, rowsToRemove);
-            }
+            worksheet.spliceRows(ITEMS_START_ROW + items.length, rowsToRemove);
         }
 
         // Rellenamos
@@ -110,32 +109,39 @@ export const exportOrderToExcel = async (
             row.commit();
         });
 
-        // FILA DE TOTALES FINAL (La última fila de las dos del fondo)
-        // La penúltima está en (ITEMS_START_ROW + items.length)
-        // La última está en (ITEMS_START_ROW + items.length + 1)
-        const lastRecRow = ITEMS_START_ROW + items.length > ITEMS_START_ROW ? ITEMS_START_ROW + items.length - 1 : ITEMS_START_ROW;
-        const finalTotalsRow = worksheet.getRow(ITEMS_START_ROW + items.length + 1);
+        // FILA DE TOTALES
+        // Después del spliceRows, las filas de footer quedaron en:
+        // penúltima: ITEMS_START_ROW + items.length
+        // última (totales): ITEMS_START_ROW + items.length + 1
+        const lastRecRow = ITEMS_START_ROW + items.length - 1;
+        const finalTotalsRowNum = ITEMS_START_ROW + items.length + 1;
+        const finalTotalsRow = worksheet.getRow(finalTotalsRowNum);
 
-        // Sumatoria de unidades en L
-        const totalUnitsCell = finalTotalsRow.getCell('L');
-        totalUnitsCell.value = { formula: `SUM(L20:L${lastRecRow})` };
-
-        // Sumatoria de valores totales en N
+        finalTotalsRow.getCell('L').value = { formula: `SUM(L${ITEMS_START_ROW}:L${lastRecRow})` };
         const totalValueCell = finalTotalsRow.getCell('N');
-        totalValueCell.value = { formula: `SUM(N20:N${lastRecRow})` };
+        totalValueCell.value = { formula: `SUM(N${ITEMS_START_ROW}:N${lastRecRow})` };
         totalValueCell.numFmt = '"$"#,##0';
 
-        // Fix merge issue para Totales (B a K) cuando se eliminan filas
-        const finalTotalsRowNum = ITEMS_START_ROW + items.length + 1;
-        try {
-            // Asegurarnos de que no esté merged antes de mergear para evitar errores
-            worksheet.unMergeCells(`B${finalTotalsRowNum}:K${finalTotalsRowNum}`);
-        } catch (e) {
-            // Si no estaba merged, ignoramos
-        }
+        try { worksheet.unMergeCells(`B${finalTotalsRowNum}:K${finalTotalsRowNum}`); } catch (e) { /* ignorar */ }
         worksheet.mergeCells(`B${finalTotalsRowNum}:K${finalTotalsRowNum}`);
-
         finalTotalsRow.commit();
+
+        // Limpiar todas las filas después de la fila de totales
+        // spliceRows no es confiable en ExcelJS para esto — limpiamos celda por celda
+        for (let r = finalTotalsRowNum + 1; r <= 200; r++) {
+            const row = worksheet.getRow(r);
+            let hasContent = false;
+            row.eachCell({ includeEmpty: false }, () => { hasContent = true; });
+            if (!hasContent) {
+                // Verificar si tiene altura o estilo definido
+                if (!row.height && !row.hasValues) continue;
+            }
+            row.eachCell({ includeEmpty: true }, (cell) => {
+                cell.value = null;
+                cell.style = {};
+            });
+            row.height = undefined as any;
+        }
 
         // Exportar blob
         const buffer = await workbook.xlsx.writeBuffer();
@@ -143,7 +149,7 @@ export const exportOrderToExcel = async (
 
         // Generar URL y forzar descarga
         const orderRef = order.orderNumber || order.id.slice(0, 6);
-        const fileName = `Pedido_${orderRef}_${client?.name || 'Cliente'}.xlsx`;
+        const fileName = `${client?.name || 'Cliente'}.xlsx`;
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;

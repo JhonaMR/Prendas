@@ -45,17 +45,16 @@ const calcularDescuentos = (precioVenta, costoTotal) => {
 const calcularMargenGanancia = (precioVenta) => ajustarA900(precioVenta + (precioVenta * 0.35));
 
 const calcularValoresFinancieros = (costoTotal, precioVenta = null, rentabilidad = null) => {
-    let precio, rent;
+    let precio;
     if (precioVenta) {
         precio = precioVenta;
-        rent = calcularRentabilidad(precio, costoTotal);
     } else if (rentabilidad) {
-        rent = rentabilidad;
-        precio = calcularPrecioVenta(costoTotal, rent);
+        precio = calcularPrecioVenta(costoTotal, rentabilidad);
     } else {
-        rent = 35;
-        precio = calcularPrecioVenta(costoTotal, rent);
+        precio = calcularPrecioVenta(costoTotal, 35);
     }
+    // Siempre recalcular la rentabilidad real a partir del precio ajustado
+    const rent = calcularRentabilidad(precio, costoTotal);
     const descuentos = calcularDescuentos(precio, costoTotal);
     const margen = calcularMargenGanancia(precio);
     return { precio_venta: precio, rentabilidad: rent, margen_ganancia: margen, ...descuentos };
