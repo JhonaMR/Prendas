@@ -140,15 +140,19 @@ export const exportOrderToExcel = async (
                     const newCell = newRow.getCell(colNumber);
                     newCell.style = Object.assign({}, cell.style);
                 });
-                try { worksheet.mergeCells(`B${obsBaseRow + 1 + i}:N${obsBaseRow + 1 + i}`); } catch (e) { /* ignorar */ }
+                try { worksheet.unMergeCells(`C${obsBaseRow + 1 + i}:L${obsBaseRow + 1 + i}`); } catch (e) { /* ignorar */ }
+                worksheet.mergeCells(`C${obsBaseRow + 1 + i}:L${obsBaseRow + 1 + i}`);
                 newRow.commit();
             }
         }
 
-        // Escribir observaciones en las filas combinadas
+        // Escribir observaciones en las filas combinadas (celda C, que es el inicio del merge C:L)
         observaciones.forEach((obs, i) => {
             const obsRow = worksheet.getRow(obsBaseRow + i);
-            const cell = obsRow.getCell('B');
+            // Desmerger y remerger para asegurar que la celda combinada esté limpia
+            try { worksheet.unMergeCells(`C${obsBaseRow + i}:L${obsBaseRow + i}`); } catch (e) { /* ignorar */ }
+            worksheet.mergeCells(`C${obsBaseRow + i}:L${obsBaseRow + i}`);
+            const cell = obsRow.getCell('C');
             cell.value = obs;
             obsRow.commit();
         });

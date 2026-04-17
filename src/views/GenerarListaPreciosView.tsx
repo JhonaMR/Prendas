@@ -61,6 +61,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
     const [endDate, setEndDate] = useState('');
     const [porcentajeOficial, setPorcentajeOficial] = useState<number | ''>('');
     const [porcentajeRemision, setPorcentajeRemision] = useState<number | ''>('');
+    const [splitFacturacion, setSplitFacturacion] = useState(false);
 
     const [items, setItems] = useState<ItemRow[]>(Array.from({ length: 10 }, emptyRow));
     const [guardando, setGuardando] = useState(false);
@@ -81,9 +82,9 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
         setSelectedClientId(c.id);
         setClientSearch(`${c.id} - ${c.name}`);
         setSelectedClientInfo({ address: c.address || '', city: c.city || '' });
-        // Auto-seleccionar vendedor del cliente
         if (c.sellerId) setSelectedSellerId(c.sellerId);
         setShowClientResults(false);
+        if (!splitFacturacion) { setPorcentajeOficial(100); setPorcentajeRemision(0); }
     };
 
     // ── Manejo de filas ──
@@ -144,11 +145,18 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
             alert('Agrega al menos una referencia con cantidad y precio');
             return;
         }
-        if (porcentajeOficial === '' || porcentajeRemision === '') {
-            alert('Ingresa los porcentajes de facturación (Oficial y Remisión)');
+        if (porcentajeOficial === '') {
+            alert('Ingresa el porcentaje de facturación');
             return;
         }
-
+        if (!splitFacturacion && Number(porcentajeOficial) !== 100) {
+            alert('El porcentaje de facturación debe ser 100');
+            return;
+        }
+        if (splitFacturacion && (porcentajeRemision === '' || Number(porcentajeOficial) + Number(porcentajeRemision) !== 100)) {
+            alert('Los porcentajes de facturación deben sumar 100');
+            return;
+        }
         setGuardando(true);
         try {
             const newOrder: any = {
@@ -198,7 +206,9 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
     const handleGenerarPedido = async () => {
         if (!selectedClientId) { alert('Selecciona un cliente para generar el pedido'); return; }
         if (filledItems.length === 0) { alert('Agrega al menos una referencia con cantidad y precio'); return; }
-        if (porcentajeOficial === '' || porcentajeRemision === '') { alert('Ingresa los porcentajes de facturación (Oficial y Remisión) antes de generar el Excel'); return; }
+        if (porcentajeOficial === '' || (splitFacturacion && porcentajeRemision === '')) { alert('Ingresa los porcentajes de facturación (Oficial y Remisión) antes de generar el Excel'); return; }
+        if (!splitFacturacion && Number(porcentajeOficial) !== 100) { alert('El porcentaje de facturación debe ser 100'); return; }
+        if (splitFacturacion && Number(porcentajeOficial) + Number(porcentajeRemision) !== 100) { alert('Los porcentajes deben sumar 100'); return; }
 
         const client = state.clients.find(c => c.id === selectedClientId);
         const seller = state.sellers.find(s => s.id === selectedSellerId);
@@ -464,20 +474,69 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                                 <input type="number" value={orderNumber} onChange={e => setOrderNumber(e.target.value === '' ? '' : parseInt(e.target.value))}
                                     placeholder="Opcional"
                                     className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-center" />
-                            </div>                            {/* % Oficial */}
-                            <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">% Facturación Oficial</label>
-                                <input type="number" step="0.01" value={porcentajeOficial} onChange={e => setPorcentajeOficial(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                    placeholder="0.00"
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-center" />
-                            </div>
+                            </div>                            {/* % Facturación — botón fijo en esquina superior derecha del bloque */}
+                            <div className={`relative ${splitFacturacion ? 'col-span-2' : 'col-span-2'}`}>
+                                {/* Toggle siempre en esquina superior derecha */}
+                                <button
+                                    onClick={() => {
+                                        if (splitFacturacion) {
+                                            setSplitFacturacion(false);
+                                            setPorcentajeOficial(selectedClientId ? 100 : '');
+                                            setPorcentajeRemision(0);
+                                        } else {
+                                            setSplitFacturacion(true);
+                                            setPorcentajeOficial('');
+                                            setPorcentajeRemision('');
+                                        }
+                                    }}
+                                    className={`absolute top-0 right-0 px-3 py-1 font-black rounded-lg text-[9px] transition-colors shadow-sm z-10 ${
+                                        splitFacturacion
+                                            ? 'bg-indigo-500 text-white hover:bg-indigo-600'
+                                            : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                                    }`}>
+                                    {splitFacturacion ? '÷ Split ON' : '÷ Split'}
+                                </button>
 
-                            {/* % Remisión */}
-                            <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">% Facturación Remisión</label>
-                                <input type="number" step="0.01" value={porcentajeRemision} onChange={e => setPorcentajeRemision(e.target.value === '' ? '' : parseFloat(e.target.value))}
-                                    placeholder="0.00"
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-center" />
+                                {splitFacturacion ? (
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">% Of.</label>
+                                            <input type="number" step="0.01" value={porcentajeOficial}
+                                                onChange={e => setPorcentajeOficial(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                                                placeholder="0.00"
+                                                className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all text-center" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">% Rm.</label>
+                                            <input type="number" step="0.01" value={porcentajeRemision}
+                                                onChange={e => setPorcentajeRemision(e.target.value === '' ? '' : parseFloat(e.target.value))}
+                                                placeholder="0.00"
+                                                className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl font-bold focus:ring-4 transition-all text-center ${
+                                                    porcentajeOficial !== '' && porcentajeRemision !== '' && Number(porcentajeOficial) + Number(porcentajeRemision) !== 100
+                                                        ? 'border-red-400 focus:ring-red-100 focus:border-red-500'
+                                                        : 'border-slate-200 focus:ring-blue-100 focus:border-blue-500'
+                                                }`} />
+                                            {porcentajeOficial !== '' && porcentajeRemision !== '' && Number(porcentajeOficial) + Number(porcentajeRemision) !== 100 && (
+                                                <p className="text-[9px] text-red-500 font-bold text-center mt-1">Deben sumar 100</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 text-center">Facturación</label>
+                                        <input type="number" step="1" value={porcentajeOficial}
+                                            onChange={e => { const v = e.target.value === '' ? '' : parseFloat(e.target.value); setPorcentajeOficial(v); setPorcentajeRemision(0); }}
+                                            placeholder="100"
+                                            className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl font-bold focus:ring-4 transition-all text-center ${
+                                                porcentajeOficial !== '' && Number(porcentajeOficial) !== 100
+                                                    ? 'border-red-400 focus:ring-red-100 focus:border-red-500'
+                                                    : 'border-slate-200 focus:ring-blue-100 focus:border-blue-500'
+                                            }`} />
+                                        {porcentajeOficial !== '' && Number(porcentajeOficial) !== 100 && (
+                                            <p className="text-[9px] text-red-500 font-bold text-center mt-1">Debe ser 100</p>
+                                        )}
+                                    </div>
+                                )}
                             </div>
 
                             {/* Fecha inicio */}
@@ -531,11 +590,23 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                                 style={{ opacity: tableVisible ? 1 : 0 }}>
                                 {/* Encabezados */}
                                 {sizesMode ? (
-                                    <div className="grid grid-cols-[2fr_3fr_1fr_1fr_1fr_1fr_1fr_1.5fr_2fr_auto] bg-slate-50 border-b-2 border-slate-100">
-                                        {['Referencia', 'Descripción', 'S', 'M', 'L', 'XL', 'Total', 'Novedad', 'Precio Venta', ''].map((h, i) => (
-                                            <div key={i} className={`px-2 py-3 text-[10px] font-black uppercase tracking-widest text-center ${['S','M','L','XL'].includes(h) ? 'text-violet-400' : 'text-slate-400'}`}>{h}</div>
-                                        ))}
+                                    <>
+                                    <div className="grid grid-cols-[2fr_3fr_1fr_1fr_1fr_1fr_1fr_1.5fr_2fr_40px] bg-slate-50 border-b-2 border-slate-100">
+                                        {['Referencia','Descripción','','','','','Total','Novedad','Precio Venta',''].map((label, i) => {
+                                            const isTalla = i >= 2 && i <= 5;
+                                            const tallas = ['S','M','L','XL'];
+                                            const subs = ['2-4','6-8','10-12','14-16'];
+                                            return (
+                                                <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:'6px 0',minWidth:0}}>
+                                                    <span style={{fontSize:'10px',fontWeight:900,color:isTalla?'#8b5cf6':'#94a3b8',textTransform:'uppercase',letterSpacing:'0.05em',lineHeight:1.2,textAlign:'center',width:'100%',display:'block'}}>
+                                                        {isTalla ? tallas[i-2] : label}
+                                                    </span>
+                                                    {isTalla && <span style={{fontSize:'8px',fontWeight:700,color:'#a78bfa',lineHeight:1.2,textAlign:'center',width:'100%',display:'block'}}>{subs[i-2]}</span>}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
+                                    </>
                                 ) : (
                                     <div className="grid grid-cols-[2fr_3fr_2fr_1.5fr_2fr_auto] bg-slate-50 border-b-2 border-slate-100">
                                         {['Referencia', 'Descripción', 'Cantidad', 'Novedad', 'Precio Venta', ''].map((h, i) => (
@@ -547,7 +618,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                                 {/* Filas */}
                                 <div className="divide-y divide-slate-100">
                                     {items.map((item, idx) => sizesMode ? (
-                                        <div key={idx} className={`grid grid-cols-[2fr_3fr_1fr_1fr_1fr_1fr_1fr_1.5fr_2fr_auto] items-center transition-colors ${item.reference ? 'bg-white' : 'bg-slate-50/50'}`}>
+                                        <div key={idx} className={`grid grid-cols-[2fr_3fr_1fr_1fr_1fr_1fr_1fr_1.5fr_2fr_40px] items-center transition-colors ${item.reference ? 'bg-white' : 'bg-slate-50/50'}`}>
                                             {/* Referencia */}
                                             <div className="px-3 py-2">
                                                 <input type="text" value={item.reference}
