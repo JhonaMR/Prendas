@@ -7,6 +7,7 @@ import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { useBrand } from '../hooks/useBrand';
 import { exportOrderToExcel } from '../utils/exportOrderExcel';
+import { exportOrderToPdf } from '../utils/exportOrderPdf';
 
 interface OrderHistoryViewProps {
   state: AppState;
@@ -22,6 +23,9 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const [filterCorreria, setFilterCorreria] = useState('');
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
+  const [filterClient, setFilterClient] = useState('');
+  const [clientSearch, setClientSearch] = useState('');
+  const [showClientDropdown, setShowClientDropdown] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
@@ -31,10 +35,12 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const isAdmin = currentUser?.role === UserRole.ADMIN || currentUser?.role === UserRole.SOPORTE;
   const brand = useBrand();
 
-  const years = useMemo(() => Array.from(new Set(state.correrias.map(c => c.year))).sort(), [state.correrias]);
-
   const handleGenerateExcel = async (order: Order, client: Client | undefined, seller: Seller | undefined) => {
     await exportOrderToExcel(order, client, seller, state.references, brand.isMelas);
+  };
+
+  const handleGeneratePdf = async (order: Order, client: Client | undefined, seller: Seller | undefined) => {
+    await exportOrderToPdf(order, client, seller, state.references, brand.isMelas);
   };
 
   const handleEditOrder = (order: Order) => {
@@ -166,9 +172,10 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
       if (filterSeller && o.sellerId !== filterSeller) return false;
       if (filterYear && correria?.year !== filterYear) return false;
       if (filterCorreria && correria?.id !== filterCorreria) return false;
+      if (filterClient && o.clientId !== filterClient) return false;
       return true;
     });
-  }, [state.orders, state.correrias, filterSeller, filterYear, filterCorreria]);
+  }, [state.orders, state.correrias, filterSeller, filterYear, filterCorreria, filterClient]);
 
   return (
     <div className="space-y-8 pb-20">
@@ -195,14 +202,13 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
 
           <div className="flex-1 min-w-[150px] space-y-2">
             <label className="text-[10px] font-black text-pink-600 uppercase tracking-widest px-4 block">📅 Año</label>
-            <select
+            <input
+              type="number"
               value={filterYear}
               onChange={e => setFilterYear(e.target.value)}
+              placeholder="Ej: 2025"
               className="w-full px-4 py-3 bg-white border-2 border-pink-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-pink-100 focus:border-pink-400 transition-all shadow-sm hover:border-pink-300"
-            >
-              <option value="">Cualquier año</option>
-              {years.map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
+            />
           </div>
 
           <div className="flex-1 min-w-[200px] space-y-2">
@@ -218,8 +224,21 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
             />
           </div>
 
+          <div className="flex-1 min-w-[200px] space-y-2">
+            <label className="text-[10px] font-black text-orange-600 uppercase tracking-widest px-4 block">🏪 Cliente</label>
+            <ClientAutocomplete
+              value={filterClient}
+              clients={state.clients}
+              onChange={setFilterClient}
+              search={clientSearch}
+              setSearch={setClientSearch}
+              showDropdown={showClientDropdown}
+              setShowDropdown={setShowClientDropdown}
+            />
+          </div>
+
           <button
-            onClick={() => { setFilterSeller(''); setFilterYear(''); setFilterCorreria(''); }}
+            onClick={() => { setFilterSeller(''); setFilterYear(''); setFilterCorreria(''); setFilterClient(''); setClientSearch(''); setCorreriaSearch(''); }}
             className="px-8 py-3 bg-white text-slate-600 font-black rounded-2xl text-sm uppercase border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap"
           >
             ✕ Limpiar
@@ -278,7 +297,17 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                         </svg>
-                        Generar pedido
+                        Excel
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleGeneratePdf(o, client, seller); }}
+                        className="px-4 py-2 bg-red-100 text-red-700 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-red-200 focus:ring-4 focus:ring-red-50 transition-all shadow-sm whitespace-nowrap"
+                        title="Generar pedido PDF"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                        </svg>
+                        PDF
                       </button>
 
                       <div className="w-[60px] text-center">
@@ -677,10 +706,10 @@ const CorreriaAutocomplete: React.FC<{
   const correria = correrias.find(c => c.id === value);
   const displayValue = correria ? `${correria.name} ${correria.year}` : value;
 
-  const filtered = correrias.filter(c =>
+  const filtered = search.length >= 2 ? correrias.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
     c.year.toString().includes(search)
-  );
+  ) : [];
 
   const handleBlur = () => {
     timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
@@ -719,7 +748,8 @@ const CorreriaAutocomplete: React.FC<{
               <p className="text-[10px] text-slate-400 font-bold">{c.year}</p>
             </button>
           ))}
-          {filtered.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron correrias</p>}
+          {filtered.length === 0 && search.length >= 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron correrias</p>}
+          {filtered.length === 0 && search.length < 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">Escribe al menos 2 letras...</p>}
         </div>
       )}
     </div>
@@ -727,3 +757,67 @@ const CorreriaAutocomplete: React.FC<{
 };
 
 export default OrderHistoryView;
+
+const ClientAutocomplete: React.FC<{
+  value: string;
+  clients: Client[];
+  onChange: (id: string) => void;
+  search: string;
+  setSearch: (search: string) => void;
+  showDropdown: boolean;
+  setShowDropdown: (show: boolean) => void;
+}> = ({ value, clients, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
+
+  const client = clients.find(c => c.id === value);
+  const displayValue = client ? client.name : value;
+
+  const filtered = search.length >= 2 ? clients.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.id.toLowerCase().includes(search.toLowerCase())
+  ).slice(0, 30) : [];
+
+  const handleBlur = () => {
+    timeoutRef.current = setTimeout(() => setShowDropdown(false), 300);
+  };
+
+  const handleSelect = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    onChange(id);
+    setShowDropdown(false);
+    setSearch('');
+  };
+
+  return (
+    <div className="relative">
+      <input
+        type="text"
+        value={showDropdown ? search : displayValue}
+        onChange={e => setSearch(e.target.value)}
+        onFocus={() => { setShowDropdown(true); setSearch(''); }}
+        onBlur={handleBlur}
+        placeholder="Buscar cliente..."
+        className="w-full px-4 py-3 bg-white border-2 border-orange-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all shadow-sm hover:border-orange-300"
+      />
+      {showDropdown && (
+        <div
+          className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {filtered.map(c => (
+            <button
+              key={c.id}
+              onMouseDown={() => handleSelect(c.id)}
+              className="w-full px-6 py-4 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+            >
+              <p className="font-black text-slate-800">{c.name}</p>
+              <p className="text-[10px] text-slate-400 font-bold">{c.id}</p>
+            </button>
+          ))}
+          {filtered.length === 0 && search.length >= 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>}
+          {filtered.length === 0 && search.length < 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">Escribe al menos 2 letras...</p>}
+        </div>
+      )}
+    </div>
+  );
+};

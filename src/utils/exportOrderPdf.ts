@@ -80,14 +80,14 @@ export const exportOrderToPdf = async (
                 <tr><td style="color:#64748b;padding:3px 0">FECHA PEDIDO</td><td>${formatDate(order.createdAt)}</td></tr>
                 <tr><td style="color:#64748b;padding:3px 0">% Fact.</td><td>${order.porcentajeOficial ?? '—'} / ${order.porcentajeRemision ?? '—'}</td></tr>
             </table>
-            <div style="margin-top:5px;background:${isMelas ? '#fee2e2' : '#dbeafe'};border-radius:6px;padding:5px 8px;min-width:100%;box-sizing:border-box">
-                <div style="display:flex;justify-content:space-between;align-items:center">
-                    <div>
+            <div style="margin-top:5px;background:${isMelas ? '#fee2e2' : '#dbeafe'};border-radius:6px;padding:8px;min-width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center">
+                <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
+                    <div style="text-align:center">
                         <div style="color:${isMelas ? '#991b1b' : '#1e40af'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Inicio despacho</div>
                         <div style="color:${isMelas ? '#7f1d1d' : '#1e3a8a'};font-weight:700;font-size:11px">${formatDate(order.startDate)}</div>
                     </div>
                     <div style="color:${isMelas ? '#f87171' : '#60a5fa'};font-size:14px;padding:0 8px">→</div>
-                    <div>
+                    <div style="text-align:center">
                         <div style="color:${isMelas ? '#991b1b' : '#1e40af'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Fin despacho</div>
                         <div style="color:${isMelas ? '#7f1d1d' : '#1e3a8a'};font-weight:700;font-size:11px">${formatDate(order.endDate)}</div>
                     </div>
@@ -166,71 +166,86 @@ export const exportOrderToPdf = async (
         pdf.setFont('helvetica', bold ? 'bold' : 'normal');
         pdf.setFontSize(FS);
         pdf.setTextColor(30, 41, 59);
-        // En jsPDF Y es la baseline. Para centrar: rowTop + rowHeight/2 + fontSize_mm/2
-        // 1pt = 0.3528mm, así que 8pt = 2.82mm. La mitad = 1.41mm
         const textY = y + ROW_H / 2 + (FS * 0.3528) / 2;
         const pad = 1.5;
         cols.forEach((col, i) => {
             const raw = cells[i] ?? '';
             const text = truncate(raw, col.w - pad * 2);
-            if (col.align === 'center') {
+            // Subtotal: alinear a la derecha con margen interno
+            if (col.align === 'right') {
+                pdf.text(text, margin + col.x + col.w - pad * 3, textY, { align: 'right' });
+            } else if (col.align === 'center') {
                 pdf.text(text, margin + col.x + col.w / 2, textY, { align: 'center' });
-            } else if (col.align === 'right') {
-                pdf.text(text, margin + col.x + col.w - pad, textY, { align: 'right' });
             } else {
                 pdf.text(text, margin + col.x + pad, textY, { align: 'left' });
             }
         });
         pdf.setDrawColor(226, 232, 240);
         pdf.line(margin, y + ROW_H, PW - margin, y + ROW_H);
-        // líneas verticales entre columnas
         pdf.setDrawColor(226, 232, 240);
         cols.slice(1).forEach(col => {
             pdf.line(margin + col.x, y, margin + col.x, y + ROW_H);
         });
     };
 
+    // Dibuja el header de la tabla (fila de columnas)
+    const drawTableHeader = (y: number) => {
+        const [hr, hg, hb] = [226, 232, 240];
+        pdf.setFillColor(hr, hg, hb);
+        pdf.rect(margin, y, PW - margin * 2, HEADER_H, 'F');
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(FS - 0.5);
+        pdf.setTextColor(71, 85, 105);
+        const hTextY = y + HEADER_H / 2 + ((FS - 0.5) * 0.3528) / 2;
+        cols.forEach(col => {
+            const pad = 1.5;
+            // Novedad y Subtotal siempre centrados en el header
+            const isCenter = col.label === 'Novedad' || col.label === 'Subtotal' || col.label === 'Descripción';
+            const ha: 'left' | 'center' | 'right' = isCenter ? 'center' : (col.headerAlign || col.align);
+            const cx = margin + col.x + (ha === 'center' ? col.w / 2 : ha === 'right' ? col.w - pad : pad);
+            if (col.subLabel) {
+                const lineH = (FS - 0.5) * 0.3528;
+                const y1 = y + HEADER_H / 2 - lineH * 0.3;
+                const y2 = y + HEADER_H / 2 + lineH * 1.1;
+                pdf.text(col.label.toUpperCase(), cx, y1, { align: ha });
+                pdf.setFontSize(FS - 2);
+                pdf.text(col.subLabel, cx, y2, { align: ha });
+                pdf.setFontSize(FS - 0.5);
+            } else {
+                pdf.text(col.label.toUpperCase(), cx, hTextY, { align: ha });
+            }
+        });
+        pdf.setDrawColor(203, 213, 225);
+        pdf.line(margin, y + HEADER_H, PW - margin, y + HEADER_H);
+        pdf.setDrawColor(203, 213, 225);
+        cols.slice(1).forEach(col => {
+            pdf.line(margin + col.x, y, margin + col.x, y + HEADER_H);
+        });
+        return y + HEADER_H;
+    };
+
+    let currentPage = 1;
     const checkPage = (y: number): number => {
-        if (y + ROW_H > PH - 8) {
+        if (y + ROW_H > PH - 10) {
+            // Número de hoja al pie antes de cambiar
+            pdf.setFont('helvetica', 'italic');
+            pdf.setFontSize(7);
+            pdf.setTextColor(148, 163, 184);
+            pdf.text(`Hoja ${currentPage}`, PW / 2, PH - 4, { align: 'center' });
+
             pdf.addPage();
-            return 4;
+            currentPage++;
+
+            // Repetir header de marca en la nueva página
+            pdf.addImage(headerImgData, 'PNG', margin, 0, headerW, headerH);
+            let newY = headerH + 2;
+            newY = drawTableHeader(newY);
+            return newY;
         }
         return y;
     };
 
-    // Header de tabla
-    const [hr, hg, hb] = [226, 232, 240];
-    pdf.setFillColor(hr, hg, hb);
-    pdf.rect(margin, curY, PW - margin * 2, HEADER_H, 'F');
-    pdf.setFont('helvetica', 'bold');
-    pdf.setFontSize(FS - 0.5);
-    pdf.setTextColor(71, 85, 105);
-    const hTextY = curY + HEADER_H / 2 + ((FS - 0.5) * 0.3528) / 2;
-    cols.forEach(col => {
-        const pad = 1.5;
-        const ha = col.headerAlign || col.align;
-        const cx = margin + col.x + (ha === 'center' ? col.w / 2 : ha === 'right' ? col.w - pad : pad);
-        if (col.subLabel) {
-            // Dos líneas: label arriba, subLabel abajo
-            const lineH = (FS - 0.5) * 0.3528;
-            const y1 = curY + HEADER_H / 2 - lineH * 0.3;
-            const y2 = curY + HEADER_H / 2 + lineH * 1.1;
-            pdf.text(col.label.toUpperCase(), cx, y1, { align: ha });
-            pdf.setFontSize(FS - 2);
-            pdf.text(col.subLabel, cx, y2, { align: ha });
-            pdf.setFontSize(FS - 0.5);
-        } else {
-            pdf.text(col.label.toUpperCase(), cx, hTextY, { align: ha });
-        }
-    });
-    pdf.setDrawColor(203, 213, 225);
-    pdf.line(margin, curY + HEADER_H, PW - margin, curY + HEADER_H);
-    // líneas verticales header
-    pdf.setDrawColor(203, 213, 225);
-    cols.slice(1).forEach(col => {
-        pdf.line(margin + col.x, curY, margin + col.x, curY + HEADER_H);
-    });
-    curY += HEADER_H;
+    curY = drawTableHeader(curY);
 
     // Filas de datos
     itemRows.forEach((item, i) => {
@@ -289,11 +304,12 @@ export const exportOrderToPdf = async (
         curY += 6 + obs.length * 5;
     }
 
-    // Footer
+    // Footer con número de hoja final
     curY += 3;
     pdf.setFont('helvetica', 'italic');
     pdf.setFontSize(7);
     pdf.setTextColor(148, 163, 184);
+    pdf.text(`Hoja ${currentPage}`, PW / 2, PH - 4, { align: 'center' });
     pdf.text(`Generado por: ${(order as any).settledBy || '—'}`, margin + 4, curY);
     pdf.text(new Date().toLocaleString('es-CO'), PW - margin - 4, curY, { align: 'right' });
 
