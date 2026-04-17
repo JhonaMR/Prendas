@@ -142,20 +142,28 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       ],
     },
     {
+      id: 'corte',
+      label: 'Corte',
+      icon: <Icons.Scissors />,
+      items: [
+        { id: 'corte', label: 'Corte', icon: <Icons.Scissors />, description: 'Módulo de corte' },
+      ],
+    },
+    {
+      id: 'herramientas',
+      label: 'Herramientas',
+      icon: <Icons.Edit />,
+      items: [
+        { id: 'cuentasCobro', label: 'Cuentas de Cobro', icon: <Icons.Edit />, description: 'Gestionar cuentas de cobro' },
+      ],
+    },
+    {
       id: 'admin',
       label: 'Admin',
       icon: <Icons.Masters />,
       items: [
         { id: 'masters', label: 'Maestros', icon: <Icons.Masters />, description: 'Gestionar datos' },
         { id: 'backups', label: 'Backups',  icon: <Icons.Backup />,  description: 'Gestionar backups' },
-      ],
-    },
-    {
-      id: 'corte',
-      label: 'Corte',
-      icon: <Icons.Scissors />,
-      items: [
-        { id: 'corte', label: 'Corte', icon: <Icons.Scissors />, description: 'Módulo de corte' },
       ],
     },
   ];

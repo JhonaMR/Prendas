@@ -45,6 +45,7 @@ import MaletasAsignar from './views/MaletasAsignar';
 import CorteView from './views/CorteView';
 import GenerarListaPreciosView from './views/GenerarListaPreciosView';
 import ControlTransporteView from './views/transporte/ControlTransporteView';
+import CuentasCobroView from './views/CuentasCobroView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
 import { DottedBackground } from './components/DottedBackground';
 
@@ -1122,6 +1123,8 @@ const App: React.FC = () => {
         return <ReportsView state={state} user={user} />;
       case 'corte':
         return <CorteView />;
+      case 'cuentasCobro':
+        return <CuentasCobroView />;
       case 'listaPrecios':
         return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':
