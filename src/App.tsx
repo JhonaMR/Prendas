@@ -1124,7 +1124,7 @@ const App: React.FC = () => {
       case 'corte':
         return <CorteView />;
       case 'cuentasCobro':
-        return <CuentasCobroView />;
+        return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
       case 'listaPrecios':
         return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':

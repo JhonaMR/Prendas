@@ -19,9 +19,11 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const [selectedCorreriaForOrders, setSelectedCorreriaForOrders] = useState('');
   const [correriaSearchOrders, setCorreriaSearchOrders] = useState('');
   const [correriaShowDropdownOrders, setCorreriaShowDropdownOrders] = useState(false);
+  const [clientSearchOrders, setClientSearchOrders] = useState('');
   const [selectedCorreriaForProdConf, setSelectedCorreriaForProdConf] = useState('');
   const [correriaSearchProdConf, setCorreriaSearchProdConf] = useState('');
   const [correriaShowDropdownProdConf, setCorreriaShowDropdownProdConf] = useState(false);
+  const [clientSearchProdConf, setClientSearchProdConf] = useState('');
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const ordersReportPagination = usePagination(1, 20);
   const prodConfReportPagination = usePagination(1, 20);
@@ -364,6 +366,14 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
       ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForOrders);
     }
 
+    if (clientSearchOrders) {
+      const search = clientSearchOrders.toUpperCase();
+      ordersToShow = ordersToShow.filter(o => {
+        const client = (state.clients || []).find(c => c.id === o.clientId);
+        return client?.name.toUpperCase().includes(search) || client?.id.toUpperCase().includes(search);
+      });
+    }
+
     const paginatedOrders = ordersToShow.slice(
       (ordersReportPagination.pagination.page - 1) * ordersReportPagination.pagination.limit,
       ordersReportPagination.pagination.page * ordersReportPagination.pagination.limit
@@ -460,6 +470,14 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
     let ordersToShow: any[] = [];
     if (selectedCorreriaForProdConf) {
       ordersToShow = (state.orders || []).filter(o => o.correriaId === selectedCorreriaForProdConf);
+    }
+
+    if (clientSearchProdConf) {
+      const search = clientSearchProdConf.toUpperCase();
+      ordersToShow = ordersToShow.filter(o => {
+        const client = (state.clients || []).find(c => c.id === o.clientId);
+        return client?.name.toUpperCase().includes(search) || client?.id.toUpperCase().includes(search);
+      });
     }
 
     const paginatedOrders = ordersToShow.slice(
@@ -634,6 +652,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
         {reportType === 'client' && <input value={clientInput} onChange={e => setClientInput(e.target.value)} placeholder="Cliente ID/Nombre..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
         {reportType === 'kardex' && <input value={kardexSearch} onChange={e => setKardexSearch(e.target.value)} placeholder="Ref..." className="px-4 py-2 bg-white border rounded-xl text-xs font-bold" />}
         {reportType === 'prod_conf' && (
+          <>
           <div className="relative bg-white p-2 rounded-xl border">
             <input
               type="text"
@@ -644,15 +663,15 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
               placeholder="Buscar correría..."
               className="px-4 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 w-48"
             />
-            {correriaShowDropdownProdConf && (
+            {correriaShowDropdownProdConf && correriaSearchProdConf.length >= 2 && (
               <div 
                 className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
                 onMouseDown={(e) => e.preventDefault()}
               >
-                {((state.correrias || []).filter(c => !correriaSearchProdConf || c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf))).length === 0 ? (
+                {((state.correrias || []).filter(c => c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf))).length === 0 ? (
                   <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
                 ) : (
-                  (state.correrias || []).filter(c => !correriaSearchProdConf || c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf)).map(c => (
+                  (state.correrias || []).filter(c => c.name.toLowerCase().includes(correriaSearchProdConf.toLowerCase()) || c.year.toString().includes(correriaSearchProdConf)).map(c => (
                     <button
                       key={c.id}
                       onMouseDown={() => {
@@ -669,8 +688,19 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
               </div>
             )}
           </div>
+          {selectedCorreriaForProdConf && (
+            <input
+              type="text"
+              value={clientSearchProdConf}
+              onChange={e => setClientSearchProdConf(e.target.value)}
+              placeholder="Buscar cliente..."
+              className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 text-xs w-48"
+            />
+          )}
+          </>
         )}
         {reportType === 'seller' && (
+          <>
           <div className="relative bg-white p-2 rounded-xl border">
             <input
               type="text"
@@ -681,21 +711,22 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
               placeholder="Buscar correría..."
               className="px-4 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 w-48"
             />
-            {correriaShowDropdownOrders && (
+            {correriaShowDropdownOrders && correriaSearchOrders.length >= 2 && (
               <div 
                 className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto z-50 w-full"
                 onMouseDown={(e) => e.preventDefault()}
               >
-                {((state.correrias || []).filter(c => !correriaSearchOrders || c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders))).length === 0 ? (
+                {((state.correrias || []).filter(c => c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders))).length === 0 ? (
                   <div className="px-3 py-2 text-slate-400 text-sm font-bold">Sin resultados</div>
                 ) : (
-                  (state.correrias || []).filter(c => !correriaSearchOrders || c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders)).map(c => (
+                  (state.correrias || []).filter(c => c.name.toLowerCase().includes(correriaSearchOrders.toLowerCase()) || c.year.toString().includes(correriaSearchOrders)).map(c => (
                     <button
                       key={c.id}
                       onMouseDown={() => {
                         setSelectedCorreriaForOrders(c.id);
                         setCorreriaShowDropdownOrders(false);
                         setCorreriaSearchOrders('');
+                        setClientSearchOrders('');
                       }}
                       className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
                     >
@@ -706,6 +737,16 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
               </div>
             )}
           </div>
+          {selectedCorreriaForOrders && (
+            <input
+              type="text"
+              value={clientSearchOrders}
+              onChange={e => setClientSearchOrders(e.target.value)}
+              placeholder="Buscar cliente..."
+              className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500 text-xs w-48"
+            />
+          )}
+          </>
         )}
         {reportType === 'conf' && (
           <div className="flex gap-2 items-center">

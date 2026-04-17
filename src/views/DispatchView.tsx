@@ -37,6 +37,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   const [remissionNo, setRemissionNo] = useState('');
   const [checkedBy, setCheckedBy] = useState('');
   const [items, setItems] = useState<ItemEntry[]>([]);
+  const [duplicateRefWarnings, setDuplicateRefWarnings] = useState<Set<string>>(new Set());
 
   // History detail toggle
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -51,6 +52,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     setRemissionNo('');
     setCheckedBy('');
     setItems([]);
+    setDuplicateRefWarnings(new Set());
   };
 
   const handleEdit = (disp: Dispatch) => {
@@ -85,6 +87,19 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
     const refExists = referencesMaster.some(r => r.id === ref);
     if (!refExists) {
       alert(`AVISO: La referencia "${ref}" no existe en el maestro de referencias. Recuerde crearla en el apartado de Maestros.`);
+    }
+
+    // Verificar si ya existe un despacho previo para este cliente + correría con esta referencia
+    if (clientId && correriaId) {
+      const alreadyDispatched = dispatches.some(d =>
+        d.clientId === clientId &&
+        d.correriaId === correriaId &&
+        d.id !== editingDisp?.id &&
+        d.items.some(i => i.reference === ref)
+      );
+      if (alreadyDispatched) {
+        setDuplicateRefWarnings(prev => new Set(prev).add(ref));
+      }
     }
 
     setItems(prev => {
@@ -353,14 +368,20 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                           className="text-lg sm:text-xl font-black text-blue-600 text-center bg-transparent border-none outline-none focus:bg-blue-50 focus:rounded-lg focus:px-2 w-16 cursor-pointer transition-all"
                         />
                       </div>
-                      <div className="flex items-center justify-end flex-1 gap-3">
+                      <div className="flex items-center justify-end flex-1 gap-3 flex-wrap">
+                        {duplicateRefWarnings.has(item.reference) && (
+                          <span className="text-xs font-black text-orange-600 bg-orange-50 border border-orange-200 px-3 py-1 rounded-full">⚠ Ya despachada en esta correría</span>
+                        )}
                         {notOrdered ? (
                           <span className="text-xs font-black text-amber-500 bg-amber-50 px-3 py-1 rounded-full">Ref no pedida</span>
                         ) : salePrice !== null ? (
                           <span className="text-sm font-bold text-emerald-600">$ {Math.round(salePrice).toLocaleString('es-CO')}</span>
                         ) : null}
                         <button 
-                          onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
+                          onClick={() => {
+                            setItems(prev => prev.filter(p => p.reference !== item.reference));
+                            setDuplicateRefWarnings(prev => { const next = new Set(prev); next.delete(item.reference); return next; });
+                          }}
                           className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
                         >
                           ×

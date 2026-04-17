@@ -247,6 +247,18 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                                                 }}
                                             />
                                         ))}
+                                        <button
+                                            key="gris"
+                                            onClick={() => { setEstadoRevision(null); setShowRevisionPicker(false); }}
+                                            className="w-8 h-8 rounded-full border-4 transition-transform hover:scale-110 flex items-center justify-center"
+                                            style={{
+                                                backgroundColor: '#94a3b8',
+                                                borderColor: estadoRevision === null ? '#64748b' : 'transparent'
+                                            }}
+                                            title="Sin estado"
+                                        >
+                                            <span className="text-white font-bold text-lg leading-none">−</span>
+                                        </button>
                                     </div>
                                 )}
                             </div>

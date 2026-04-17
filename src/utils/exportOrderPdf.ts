@@ -20,8 +20,8 @@ export const exportOrderToPdf = async (
     referencesContext: Reference[],
     isMelas: boolean
 ) => {
-    const brandColor = isMelas ? '#fce7f3' : '#2563eb';
-    const brandTextColor = isMelas ? '#9d174d' : '#ffffff';
+    const brandColor = isMelas ? '#fce7f3' : '#f2bfbe';
+    const brandTextColor = isMelas ? '#9d174d' : '#6b2a35';
     const brandName = isMelas ? 'MELAS' : 'PLOW';
     const logoSrc = isMelas ? '/logos/melas-192x192.png' : '/logos/plow-192x192.png';
     const sellerFull = (seller?.name || '').toUpperCase();
@@ -80,16 +80,16 @@ export const exportOrderToPdf = async (
                 <tr><td style="color:#64748b;padding:3px 0">FECHA PEDIDO</td><td>${formatDate(order.createdAt)}</td></tr>
                 <tr><td style="color:#64748b;padding:3px 0">% Fact.</td><td>${order.porcentajeOficial ?? '—'} / ${order.porcentajeRemision ?? '—'}</td></tr>
             </table>
-            <div style="margin-top:5px;background:${isMelas ? '#fee2e2' : '#dbeafe'};border-radius:6px;padding:8px;min-width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center">
+            <div style="margin-top:5px;background:${isMelas ? '#fee2e2' : '#f9d8d8'};border-radius:6px;padding:8px;min-width:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center">
                 <div style="display:flex;justify-content:space-between;align-items:center;width:100%">
                     <div style="text-align:center">
-                        <div style="color:${isMelas ? '#991b1b' : '#1e40af'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Inicio despacho</div>
-                        <div style="color:${isMelas ? '#7f1d1d' : '#1e3a8a'};font-weight:700;font-size:11px">${formatDate(order.startDate)}</div>
+                        <div style="color:${isMelas ? '#991b1b' : '#7c2230'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Inicio despacho</div>
+                        <div style="color:${isMelas ? '#7f1d1d' : '#5c1a24'};font-weight:700;font-size:11px">${formatDate(order.startDate)}</div>
                     </div>
-                    <div style="color:${isMelas ? '#f87171' : '#60a5fa'};font-size:14px;padding:0 8px">→</div>
+                    <div style="color:${isMelas ? '#f87171' : '#c45a6a'};font-size:14px;padding:0 8px">→</div>
                     <div style="text-align:center">
-                        <div style="color:${isMelas ? '#991b1b' : '#1e40af'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Fin despacho</div>
-                        <div style="color:${isMelas ? '#7f1d1d' : '#1e3a8a'};font-weight:700;font-size:11px">${formatDate(order.endDate)}</div>
+                        <div style="color:${isMelas ? '#991b1b' : '#7c2230'};font-size:8px;text-transform:uppercase;letter-spacing:0.5px;font-weight:600">Fin despacho</div>
+                        <div style="color:${isMelas ? '#7f1d1d' : '#5c1a24'};font-weight:700;font-size:11px">${formatDate(order.endDate)}</div>
                     </div>
                 </div>
             </div>

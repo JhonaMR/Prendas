@@ -849,6 +849,8 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                                 cobroSeleccionado: (r.chargeUnits || 0) > 0,
                                                 empaqueSeleccionado: r.isPacked === true,
                                                 batchCode: r.batchCode,
+                                                confeccionistaId: r.confeccionista || '',
+                                                arrivalDate: r.arrivalDate || '',
                                               }
                                             });
                                           }}
