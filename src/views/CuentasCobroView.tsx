@@ -193,7 +193,7 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-black text-slate-900 tracking-tighter">Cuentas de Cobro</h1>
-            <p className="text-xs font-bold text-slate-400 uppercase mt-0.5">Plow — Formato oficial</p>
+            <p className="text-xs font-bold text-slate-400 uppercase mt-0.5">Formato oficial</p>
           </div>
           <div className="flex items-center gap-2">
             <button

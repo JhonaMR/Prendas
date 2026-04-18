@@ -44,6 +44,7 @@ import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
 import CorteView from './views/CorteView';
 import GenerarListaPreciosView from './views/GenerarListaPreciosView';
+import ControlTelasView from './views/ControlTelasView';
 import ControlTransporteView from './views/transporte/ControlTransporteView';
 import CuentasCobroView from './views/CuentasCobroView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
@@ -1192,6 +1193,8 @@ const App: React.FC = () => {
           precargar={(navigationOptions as any)?.precargar}
           onVolver={() => handleTabChange('programacionPagos')}
         />;
+      case 'control-telas':
+        return <ControlTelasView />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':
@@ -1300,6 +1303,7 @@ const App: React.FC = () => {
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
                 <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
                 <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<Icons.FichasCosto />} label="Fichas de Costo" />
+                <NavItem active={activeTab === 'control-telas'} onClick={() => handleTabChange('control-telas')} icon={<Icons.FichasCosto />} label="Control de Telas" />
               </div>
             )}
             

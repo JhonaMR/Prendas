@@ -107,9 +107,9 @@ export const exportOrderToPdf = async (
     document.body.removeChild(container);
 
     // ── 2. Construir PDF con jsPDF ──
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const PW = 210; // ancho A4 portrait
-    const PH = 297;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+    const PW = 215.9; // ancho carta portrait
+    const PH = 279.4;
     const margin = 0;
 
     // Pegar header capturado

@@ -32,6 +32,17 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
 
   // Verificar si el usuario es admin
   const isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.SOPORTE || user?.role === 'admin' || user?.role === 'soporte';
+
+  const parseExpression = (value: string): number => {
+    if (/^[\d\s\+\-\*\/\.]+$/.test(value)) {
+      try {
+        return Math.round(Function('"use strict"; return (' + value + ')')());
+      } catch {
+        return 0;
+      }
+    }
+    return Number(value) || 0;
+  };
 // Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
 useEffect(() => {
   const currentCorreriaData = state.productionTracking.filter(
@@ -706,30 +717,48 @@ const handleSaveProduction = async () => {
                   </td>
                   <td className="px-2 py-2 text-center">
                     <input 
-                      type="number" 
-                      value={prod.inventory || 0} 
-                      onChange={e => updateProduction(row.id, 'inventory', Number(e.target.value))} 
+                      type="text"
+                      defaultValue={prod.inventory || 0} 
+                      key={`inv-${row.id}-${prod.inventory}`}
                       onFocus={(e) => e.target.select()}
+                      onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                      onBlur={e => {
+                        const result = parseExpression(e.target.value);
+                        e.target.value = String(result);
+                        updateProduction(row.id, 'inventory', result);
+                      }}
                       readOnly={!isAdmin}
                       className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-orange-700 text-sm focus:ring-2 focus:ring-orange-100 ${!isAdmin ? 'cursor-default' : ''}`}
                     />
                   </td>
                     <td className="px-2 py-2 text-center">
                       <input 
-                        type="number" 
-                        value={row.programmed} 
-                        onChange={e => updateProduction(row.id, 'programmed', Number(e.target.value))} 
+                        type="text"
+                        defaultValue={row.programmed}
+                        key={`prog-${row.id}-${row.programmed}`}
                         onFocus={(e) => e.target.select()}
+                        onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                        onBlur={e => {
+                          const result = parseExpression(e.target.value);
+                          e.target.value = String(result);
+                          updateProduction(row.id, 'programmed', result);
+                        }}
                         readOnly={!isAdmin}
                         className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-indigo-700 text-sm focus:ring-2 focus:ring-indigo-100 ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
                       <input 
-                        type="number" 
-                        value={row.cut} 
-                        onChange={e => updateProduction(row.id, 'cut', Number(e.target.value))} 
+                        type="text"
+                        defaultValue={row.cut}
+                        key={`cut-${row.id}-${row.cut}`}
                         onFocus={(e) => e.target.select()}
+                        onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                        onBlur={e => {
+                          const result = parseExpression(e.target.value);
+                          e.target.value = String(result);
+                          updateProduction(row.id, 'cut', result);
+                        }}
                         readOnly={!isAdmin}
                         className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-pink-700 text-sm focus:ring-2 focus:ring-pink-100 ${!isAdmin ? 'cursor-default' : ''}`}
                       />
