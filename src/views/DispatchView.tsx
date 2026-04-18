@@ -223,6 +223,11 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   if (isDispatching) {
     const totalCount = items.reduce((a, b) => a + b.quantity, 0);
     const totalRefs = new Set(items.map(i => i.reference)).size;
+    const clientOrder = orders.find((o: any) => o.clientId === clientId && o.correriaId === correriaId);
+    const totalValue = items.reduce((acc, item) => {
+      const salePrice = clientOrder?.items?.find((i: any) => i.reference === item.reference)?.salePrice ?? 0;
+      return acc + item.quantity * salePrice;
+    }, 0);
 
     return (
       <div className="space-y-8 animate-in slide-in-from-bottom-6 duration-500 pb-20">
@@ -331,6 +336,9 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 </div>
                 <div className="px-4 py-1.5 sm:px-6 sm:py-2 bg-blue-600 text-white rounded-full font-black text-xs sm:text-sm shadow-lg shadow-blue-100">
                   Total Unidades: {totalCount}
+                </div>
+                <div className="px-4 py-1.5 sm:px-6 sm:py-2 bg-emerald-600 text-white rounded-full font-black text-xs sm:text-sm shadow-lg shadow-emerald-100">
+                  Total: $ {Math.round(totalValue).toLocaleString('es-CO')}
                 </div>
               </div>
             </div>

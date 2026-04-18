@@ -1194,7 +1194,7 @@ const App: React.FC = () => {
           onVolver={() => handleTabChange('programacionPagos')}
         />;
       case 'control-telas':
-        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE && user.role !== UserRole.OPERADOR) {
           setActiveTab('home');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }

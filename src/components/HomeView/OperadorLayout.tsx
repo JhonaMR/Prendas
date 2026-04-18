@@ -30,6 +30,7 @@ const navGroups: NavGroup[] = [
     items: [
       { id: 'fichas-costo',  label: 'Fichas de Costo',  icon: <Icons.FichasCosto />,  description: 'Precios y costos' },
       { id: 'fichas-diseno', label: 'Fichas de Diseño', icon: <Icons.FichasDiseno />, description: 'Gestionar fichas' },
+      { id: 'control-telas', label: 'Control de Telas', icon: <Icons.FichasCosto />,  description: 'Control de telas' },
     ],
   },
   {
