@@ -1614,6 +1614,62 @@ class ApiService {
     }
   }
 
+  // ==================== CONTROL DE TELAS ====================
+
+  async getControlTelasProduccion(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/produccion`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (e) { return []; }
+  }
+
+  async saveControlTelasProduccionBatch(rows: any[], createdBy?: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/produccion/batch`, {
+        method: 'POST', headers: this.getAuthHeaders(),
+        body: JSON.stringify({ rows, createdBy }),
+      });
+      return this.handleResponse<any>(response);
+    } catch (e: any) { return { success: false, message: e.message }; }
+  }
+
+  async deleteControlTelaProduccion(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/produccion/${id}`, {
+        method: 'DELETE', headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } catch (e: any) { return { success: false, message: e.message }; }
+  }
+
+  async getControlTelasMuestras(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/muestras`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (e) { return []; }
+  }
+
+  async saveControlTelasMuestrasBatch(rows: any[], createdBy?: string): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/muestras/batch`, {
+        method: 'POST', headers: this.getAuthHeaders(),
+        body: JSON.stringify({ rows, createdBy }),
+      });
+      return this.handleResponse<any>(response);
+    } catch (e: any) { return { success: false, message: e.message }; }
+  }
+
+  async deleteControlTelaMuestra(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/control-telas/muestras/${id}`, {
+        method: 'DELETE', headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } catch (e: any) { return { success: false, message: e.message }; }
+  }
+
   // ==================== PRODUCTO EN PROCESO ====================
 
   async getProductoEnProceso(): Promise<any[]> {

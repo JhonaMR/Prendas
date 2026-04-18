@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Correria, AppState } from '../../types';
+import { User, UserRole, Correria, AppState } from '../../types';
 import { Icons } from '../../constants';
 import CorreriaSelectorDropdown from './CorreriaSelectorDropdown.tsx';
 import MetricsDisplay from './MetricsDisplay.tsx';
@@ -59,6 +59,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'reports',             label: 'Reportes Generales',     icon: <Icons.Reports />,         description: 'Ver reportes' },
     { id: 'fichas-costo',        label: 'Fichas de Costo',        icon: <Icons.FichasCosto />,     description: 'Precios y costos' },
     { id: 'fichas-diseno',       label: 'Fichas de Diseño',       icon: <Icons.FichasDiseno />,    description: 'Gestionar fichas' },
+    { id: 'control-telas',       label: 'Control de Telas',       icon: <Icons.ControlTelas />,    description: 'Control de telas' },
     { id: 'productoEnProceso',   label: 'Producto en Proceso',    icon: <Icons.ProductoEnProceso />, description: 'Control de lotes en confección' },
     { id: 'deliveryDates',       label: 'Fechas de Entrega',      icon: <Icons.DeliveryDates />,   description: 'Gestionar fechas' },
     { id: 'calculoPagoLotes',    label: 'Calculo, pago de lotes', icon: <Icons.CalculoPago />,     description: 'Calcular y pagar lotes' },
@@ -104,8 +105,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       label: 'Fichas',
       icon: <Icons.FichasCosto />,
       items: [
-        { id: 'fichas-costo',  label: 'Fichas de Costo',   icon: <Icons.FichasCosto />,  description: 'Precios y costos' },
-        { id: 'fichas-diseno', label: 'Fichas de Diseño',  icon: <Icons.FichasDiseno />, description: 'Gestionar fichas' },
+        { id: 'fichas-costo',    label: 'Fichas de Costo',   icon: <Icons.FichasCosto />,  description: 'Precios y costos' },
+        { id: 'fichas-diseno',   label: 'Fichas de Diseño',  icon: <Icons.FichasDiseno />, description: 'Gestionar fichas' },
+        ...(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE ? [{ id: 'control-telas', label: 'Control de Telas', icon: <Icons.ControlTelas />, description: 'Control de telas' }] : []),
       ],
     },
     {

@@ -118,3 +118,8 @@ input[type="date"].date-empty::-webkit-datetime-edit {
 input[type="date"].date-empty:focus::-webkit-datetime-edit {
   color: inherit;
 }
+
+/* Ocultar icono de calendario en inputs de fecha */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+}

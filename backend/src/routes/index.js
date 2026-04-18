@@ -345,6 +345,18 @@ router.post('/rutas-transporte',           verifyToken, rutasTransporteControlle
 router.post('/rutas-transporte/sync',      verifyToken, rutasTransporteController.sync);
 router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rutasTransporteController.remove);
 
+// ==================== CONTROL DE TELAS ====================
+
+const controlTelasController = require('../controllers/controlTelasController');
+
+router.get('/control-telas/produccion',         verifyToken, verifyAdmin, controlTelasController.getAllProduccion);
+router.post('/control-telas/produccion/batch',  verifyToken, verifyAdmin, controlTelasController.saveBatchProduccion);
+router.delete('/control-telas/produccion/:id',  verifyToken, verifyAdmin, controlTelasController.deleteProduccion);
+
+router.get('/control-telas/muestras',           verifyToken, verifyAdmin, controlTelasController.getAllMuestras);
+router.post('/control-telas/muestras/batch',    verifyToken, verifyAdmin, controlTelasController.saveBatchMuestras);
+router.delete('/control-telas/muestras/:id',    verifyToken, verifyAdmin, controlTelasController.deleteMuestra);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');

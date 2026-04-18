@@ -1194,7 +1194,11 @@ const App: React.FC = () => {
           onVolver={() => handleTabChange('programacionPagos')}
         />;
       case 'control-telas':
-        return <ControlTelasView />;
+        if (user.role !== UserRole.ADMIN && user.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <ControlTelasView user={user} />;
       case 'fichas-diseno':
         return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'fichas-diseno-detalle':
@@ -1303,7 +1307,6 @@ const App: React.FC = () => {
                 <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
                 <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
                 <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<Icons.FichasCosto />} label="Fichas de Costo" />
-                <NavItem active={activeTab === 'control-telas'} onClick={() => handleTabChange('control-telas')} icon={<Icons.FichasCosto />} label="Control de Telas" />
               </div>
             )}
             
