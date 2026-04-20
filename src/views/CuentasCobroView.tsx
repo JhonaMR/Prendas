@@ -4,6 +4,26 @@ import jsPDF from 'jspdf';
 import { User, AppState, Confeccionista } from '../types';
 import { useBrand } from '../hooks/useBrand';
 
+// ── Helpers de API (mismo patrón que apiFichas.ts) ──────────────────────────
+function getApiUrl(): string {
+  if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl();
+  const { protocol, hostname, port } = window.location;
+  const backendPort = (port === '5174' || port === '3001') ? '3001' : '3000';
+  return `${protocol}//${hostname}:${backendPort}/api`;
+}
+function getHeaders(): HeadersInit {
+  const token = localStorage.getItem('auth_token');
+  return { 'Content-Type': 'application/json', ...(token && { Authorization: `Bearer ${token}` }) };
+}
+async function incrementarConsecRem(confeccionistaId: string, nuevoConsec: number): Promise<void> {
+  await fetch(`${getApiUrl()}/confeccionistas/${confeccionistaId}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({ ConsecRem: nuevoConsec }),
+  });
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 const BRAND_INFO = {
   plow: {
     nombre: 'ARARE S.A.S.',
@@ -81,10 +101,18 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
   const [ciudad, setCiudad] = useState(confFromParams?.city || '');
   const [telefono, setTelefono] = useState(confFromParams?.phone || '');
 
+  // Consecutivo de remisión: el próximo es ConsecRem + 1
+  const consecActual = confFromParams?.ConsecRem ?? 0;
+  const proximoConsec = consecActual + 1;
+
   // Documento
   const [fecha, setFecha] = useState(() => params?.fecha || new Date().toISOString().split('T')[0]);
-  const [numeroCuenta, setNumeroCuenta] = useState('');
+  const [numeroCuenta, setNumeroCuenta] = useState(() =>
+    confFromParams ? String(proximoConsec) : ''
+  );
   const [concepto, setConcepto] = useState('');
+  // Controla si ya se guardó el consecutivo en esta sesión (evita doble incremento)
+  const consecGuardadoRef = useRef(false);
 
   // Líneas de detalle — pre-rellenar desde params si vienen
   const [lines, setLines] = useState<LineItem[]>(() => {
@@ -246,6 +274,18 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 win.document.close();
                 win.focus();
                 setTimeout(() => { win.print(); }, 600);
+
+                // Actualizar ConsecRem en la BD solo si viene de liquidación y no se ha guardado aún
+                if (params?.confeccionistaId && !consecGuardadoRef.current) {
+                  consecGuardadoRef.current = true;
+                  try {
+                    await incrementarConsecRem(params.confeccionistaId, proximoConsec);
+                    alert(`✅ Consecutivo de remisión actualizado a ${proximoConsec} para ${nombre || params.confeccionistaId}`);
+                  } catch {
+                    consecGuardadoRef.current = false;
+                    alert('⚠️ No se pudo actualizar el consecutivo de remisión. Intenta de nuevo.');
+                  }
+                }
               }}
               className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors"
             >
@@ -466,30 +506,30 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                   <p className="font-black text-[11px] text-center uppercase pb-0.5 mb-1" style={{ borderBottom: `1px solid ${empresa.textColor}`, color: empresa.textColor }}>Debe a</p>
                   <div className="text-[10px]">
                     {/* Nombre — fila completa */}
-                    <div className="flex gap-1 mb-0.5">
-                      <span className="font-black shrink-0">Nombre:</span>
-                      <span className="border-b border-slate-300 flex-1">{nombre || ' '}</span>
+                    <div className="flex gap-1 mb-1.5">
+                      <span className="font-black shrink-0 pb-1">Nombre:</span>
+                      <span className="border-b border-slate-300 flex-1 pb-1">{nombre || ' '}</span>
                     </div>
                     {/* Dos columnas */}
                     <div className="grid grid-cols-2 gap-x-4">
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-1.5">
                         <div className="flex gap-1">
-                          <span className="font-black shrink-0">Cédula:</span>
-                          <span className="border-b border-slate-300 flex-1">{cedula || ' '}</span>
+                          <span className="font-black shrink-0 pb-1">Cédula:</span>
+                          <span className="border-b border-slate-300 flex-1 pb-1">{cedula || ' '}</span>
                         </div>
                         <div className="flex gap-1">
-                          <span className="font-black shrink-0">Teléfono:</span>
-                          <span className="border-b border-slate-300 flex-1">{telefono || ' '}</span>
+                          <span className="font-black shrink-0 pb-1">Teléfono:</span>
+                          <span className="border-b border-slate-300 flex-1 pb-1">{telefono || ' '}</span>
                         </div>
                       </div>
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-1.5">
                         <div className="flex gap-1">
-                          <span className="font-black shrink-0">Dirección:</span>
-                          <span className="border-b border-slate-300 flex-1">{direccion || ' '}</span>
+                          <span className="font-black shrink-0 pb-1">Dirección:</span>
+                          <span className="border-b border-slate-300 flex-1 pb-1">{direccion || ' '}</span>
                         </div>
                         <div className="flex gap-1">
-                          <span className="font-black shrink-0">Ciudad:</span>
-                          <span className="border-b border-slate-300 flex-1">{ciudad || ' '}</span>
+                          <span className="font-black shrink-0 pb-1">Ciudad:</span>
+                          <span className="border-b border-slate-300 flex-1 pb-1">{ciudad || ' '}</span>
                         </div>
                       </div>
                     </div>

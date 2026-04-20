@@ -47,6 +47,7 @@ export interface Confeccionista {
   phone: string;
   score: string; // A, AA, AAA
   active: boolean;
+  ConsecRem: number;
 }
 
 export interface Reference {

@@ -157,6 +157,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [userRole, setUserRole] = useState<UserRole>(UserRole.GENERAL);
 
   const [score, setScore] = useState('NA');
+  const [consecRem, setConsecRem] = useState(0);
   const [phone, setPhone] = useState('');
   const [isActive, setIsActive] = useState(true);
   
@@ -257,6 +258,7 @@ const MastersView: React.FC<MastersViewProps> = ({
     setPin('');
     setUserRole(UserRole.GENERAL);
     setScore('NA');
+    setConsecRem(0);
     setPhone('');
     setIsActive(true);
     setSelectedCorrerias([]);
@@ -501,7 +503,7 @@ const MastersView: React.FC<MastersViewProps> = ({
 
   const handleSaveConfeccionista = async () => {
     if (!id || !name) return alert("Cédula y Nombre son obligatorios");
-    const newItem: Confeccionista = { id, name, address, city, phone, score, active: isActive };
+    const newItem: Confeccionista = { id, name, address, city, phone, score, active: isActive, ConsecRem: consecRem };
     
     setIsLoading(true);
     try {
@@ -952,18 +954,31 @@ const MastersView: React.FC<MastersViewProps> = ({
                   <Input label="Dirección" value={address} onChange={setAddress} />
                   <Input label="Ciudad" value={city} onChange={setCity} />
                   <Input label="Celular" value={phone} onChange={setPhone} />
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Puntaje</label>
-                    <select 
-                      value={score} 
-                      onChange={(e) => setScore(e.target.value)}
-                      className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
-                    >
-                      <option value="NA">NA</option>
-                      <option value="A">A</option>
-                      <option value="AA">AA</option>
-                      <option value="AAA">AAA</option>
-                    </select>
+                  <div className="flex gap-3">
+                    <div className="space-y-1.5 flex-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Puntaje</label>
+                      <select
+                        value={score}
+                        onChange={(e) => setScore(e.target.value)}
+                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                      >
+                        <option value="NA">NA</option>
+                        <option value="A">A</option>
+                        <option value="AA">AA</option>
+                        <option value="AAA">AAA</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5 flex-1">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Consec. Rem</label>
+                      <input
+                        type="number"
+                        min={0}
+                        value={consecRem}
+                        onChange={(e) => setConsecRem(Number(e.target.value))}
+                        onFocus={(e) => e.target.select()}
+                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-1.5 md:col-span-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Estado Activo</label>
@@ -1023,7 +1038,7 @@ const MastersView: React.FC<MastersViewProps> = ({
             </div>
           }>
             <table className="w-full text-left">
-              <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cédula</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Nombre</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Celular</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Score</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Estado</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
+              <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cédula</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Nombre</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Celular</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Score</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Estado</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Consec. Rem</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredConfeccionistas.slice((confeccionistasPagination.pagination.page - 1) * confeccionistasPagination.pagination.limit, confeccionistasPagination.pagination.page * confeccionistasPagination.pagination.limit).map(c => (
                   <tr key={c.id} className="hover:bg-slate-50 transition-colors">
@@ -1036,9 +1051,10 @@ const MastersView: React.FC<MastersViewProps> = ({
                         {c.active ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
+                    <td className="px-8 py-4 text-center font-bold text-slate-600">{c.ConsecRem ?? 0}</td>
                     <td className="px-8 py-4 text-right flex justify-end gap-2">
                       <button disabled={!canEdit(user)} onClick={() => { 
-                        setEditingId(c.id); setId(c.id); setName(c.name); setAddress(c.address); setCity(c.city); setPhone(c.phone); setScore(c.score); setIsActive(c.active);
+                        setEditingId(c.id); setId(c.id); setName(c.name); setAddress(c.address); setCity(c.city); setPhone(c.phone); setScore(c.score); setIsActive(c.active); setConsecRem(c.ConsecRem ?? 0);
                       }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
                       <button disabled={!canDelete(user)} onClick={() => handleDelete('confeccionista', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
                     </td>

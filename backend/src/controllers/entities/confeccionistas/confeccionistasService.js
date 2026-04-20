@@ -14,7 +14,7 @@ const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('
 async function getAllConfeccionistas() {
   try {
     const result = await query(`
-      SELECT id, name, address, city, phone, score, active
+      SELECT id, name, address, city, phone, score, active, "ConsecRem"
       FROM confeccionistas
       ORDER BY id
     `);
@@ -34,7 +34,7 @@ async function getAllConfeccionistas() {
 async function getConfeccionistaById(id) {
   try {
     const result = await query(`
-      SELECT id, name, address, city, phone, score, active
+      SELECT id, name, address, city, phone, score, active, "ConsecRem"
       FROM confeccionistas
       WHERE id = $1
     `, [id]);
@@ -59,8 +59,8 @@ async function getConfeccionistaById(id) {
 async function createConfeccionista(data) {
   try {
     await query(`
-      INSERT INTO confeccionistas (id, name, address, city, phone, score, active)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO confeccionistas (id, name, address, city, phone, score, active, "ConsecRem")
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `, [
       data.id,
       data.name,
@@ -68,7 +68,8 @@ async function createConfeccionista(data) {
       data.city,
       data.phone,
       data.score,
-      1
+      1,
+      data.ConsecRem !== undefined ? Number(data.ConsecRem) : 0,
     ]);
 
     // Invalidate cache after creation
@@ -97,31 +98,17 @@ async function updateConfeccionista(id, data) {
     const values = [];
     let paramIndex = 1;
 
-    if (data.name !== undefined) {
-      updates.push(`name = $${paramIndex++}`);
-      values.push(data.name);
-    }
-    if (data.address !== undefined) {
-      updates.push(`address = $${paramIndex++}`);
-      values.push(data.address);
-    }
-    if (data.city !== undefined) {
-      updates.push(`city = $${paramIndex++}`);
-      values.push(data.city);
-    }
-    if (data.phone !== undefined) {
-      updates.push(`phone = $${paramIndex++}`);
-      values.push(data.phone);
-    }
-    if (data.score !== undefined) {
-      updates.push(`score = $${paramIndex++}`);
-      values.push(data.score);
-    }
+    if (data.name      !== undefined) { updates.push('name = $'      + paramIndex++); values.push(data.name); }
+    if (data.address   !== undefined) { updates.push('address = $'   + paramIndex++); values.push(data.address); }
+    if (data.city      !== undefined) { updates.push('city = $'      + paramIndex++); values.push(data.city); }
+    if (data.phone     !== undefined) { updates.push('phone = $'     + paramIndex++); values.push(data.phone); }
+    if (data.score     !== undefined) { updates.push('score = $'     + paramIndex++); values.push(data.score); }
+    if (data.active    !== undefined) { updates.push('active = $'    + paramIndex++); values.push(data.active); }
+    if (data.ConsecRem !== undefined) { updates.push('"ConsecRem" = $' + paramIndex++); values.push(Number(data.ConsecRem)); }
 
     if (updates.length > 0) {
       values.push(id);
-      const query_str = `UPDATE confeccionistas SET ${updates.join(', ')} WHERE id = $${paramIndex}`;
-      await query(query_str, values);
+      await query('UPDATE confeccionistas SET ' + updates.join(', ') + ' WHERE id = $' + paramIndex, values);
     }
 
     // Invalidate cache after update

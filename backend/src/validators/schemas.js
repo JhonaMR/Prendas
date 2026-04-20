@@ -52,7 +52,8 @@ const confeccionistaSchemas = {
     city: Joi.string().optional().max(100),
     phone: Joi.string().optional().max(20),
     score: Joi.string().optional().valid('NA', 'A', 'AA', 'AAA'),
-    active: Joi.number().optional().valid(0, 1)
+    active: Joi.number().optional().valid(0, 1),
+    ConsecRem: Joi.number().optional().integer().min(0)
   }),
 
   update: Joi.object({
@@ -61,7 +62,8 @@ const confeccionistaSchemas = {
     city: Joi.string().optional().max(100),
     phone: Joi.string().optional().max(20),
     score: Joi.string().optional().valid('NA', 'A', 'AA', 'AAA'),
-    active: Joi.number().optional().valid(0, 1)
+    active: Joi.number().optional().valid(0, 1),
+    ConsecRem: Joi.number().optional().integer().min(0)
   })
 };
 

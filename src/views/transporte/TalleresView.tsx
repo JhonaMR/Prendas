@@ -12,9 +12,11 @@ interface Taller {
   direccion: string;
   sector: string;
   estado: 'activo' | 'inactivo';
+  PrecioCarro: string;
+  PrecioMoto: string;
 }
 
-const FORM_VACIO: Omit<Taller, 'id'> = { nombre: '', celular: '', direccion: '', sector: '', estado: 'activo' };
+const FORM_VACIO: Omit<Taller, 'id'> = { nombre: '', celular: '', direccion: '', sector: '', estado: 'activo', PrecioCarro: '', PrecioMoto: '' };
 
 const inputCls = "w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400";
 
@@ -36,6 +38,12 @@ const CamposForm: React.FC<{
       <option value="activo">Activo</option>
       <option value="inactivo">Inactivo</option>
     </select>
+    <div className="flex gap-3">
+      <input type="text" placeholder="Precio carro" value={form.PrecioCarro}
+        onChange={e => onChange({ ...form, PrecioCarro: e.target.value })} className={inputCls} />
+      <input type="text" placeholder="Precio moto" value={form.PrecioMoto}
+        onChange={e => onChange({ ...form, PrecioMoto: e.target.value })} className={inputCls} />
+    </div>
   </div>
 );
 
@@ -95,7 +103,7 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
 
   const iniciarEdicion = (t: Taller) => {
     setEditandoId(t.id);
-    setFormEditar({ nombre: t.nombre, celular: t.celular, direccion: t.direccion, sector: t.sector, estado: t.estado });
+    setFormEditar({ nombre: t.nombre, celular: t.celular, direccion: t.direccion, sector: t.sector, estado: t.estado, PrecioCarro: t.PrecioCarro, PrecioMoto: t.PrecioMoto });
   };
 
   const guardarEdicion = async () => {
@@ -174,13 +182,15 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
                 <th className="text-left px-5 py-3.5 font-bold tracking-wide w-72">Dirección</th>
                 <th className="text-left px-5 py-3.5 font-bold tracking-wide w-36">Sector</th>
                 <th className="text-left px-5 py-3.5 font-bold tracking-wide w-28">Estado</th>
+                <th className="text-left px-5 py-3.5 font-bold tracking-wide w-24">P. Carro</th>
+                <th className="text-left px-5 py-3.5 font-bold tracking-wide w-24">P. Moto</th>
                 <th className="px-5 py-3.5 w-20" />
               </tr>
             </thead>
             <tbody>
               {talleres.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-slate-400 text-sm">
+                  <td colSpan={8} className="px-5 py-12 text-center text-slate-400 text-sm">
                     No hay talleres registrados
                   </td>
                 </tr>
@@ -195,6 +205,8 @@ const TalleresView: React.FC<TalleresViewProps> = ({ onVolver, user }) => {
                       {t.estado === 'activo' ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
+                  <td className="px-5 py-3.5 text-slate-600 text-center">{t.PrecioCarro ? `$ ${Number(t.PrecioCarro).toLocaleString('es-CO')}` : '—'}</td>
+                  <td className="px-5 py-3.5 text-slate-600 text-center">{t.PrecioMoto ? `$ ${Number(t.PrecioMoto).toLocaleString('es-CO')}` : '—'}</td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center justify-end gap-1">
                       <button onClick={() => iniciarEdicion(t)}

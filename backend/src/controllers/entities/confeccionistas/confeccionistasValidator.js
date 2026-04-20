@@ -35,6 +35,11 @@ function validateCreateConfeccionista(data) {
   const scoreValidation = validateEnum(data.score, VALID_SCORES, 'Score');
   if (!scoreValidation.valid) errors.score = scoreValidation.error;
 
+  if (data.ConsecRem !== undefined) {
+    const val = Number(data.ConsecRem);
+    if (!Number.isInteger(val) || val < 0) errors.ConsecRem = 'ConsecRem debe ser un entero mayor o igual a 0';
+  }
+
   if (Object.keys(errors).length > 0) {
     throw new ValidationError(errors);
   }
@@ -69,6 +74,11 @@ function validateUpdateConfeccionista(data) {
   if (data.score !== undefined) {
     const scoreValidation = validateEnum(data.score, VALID_SCORES, 'Score');
     if (!scoreValidation.valid) errors.score = scoreValidation.error;
+  }
+
+  if (data.ConsecRem !== undefined) {
+    const val = Number(data.ConsecRem);
+    if (!Number.isInteger(val) || val < 0) errors.ConsecRem = 'ConsecRem debe ser un entero mayor o igual a 0';
   }
 
   if (Object.keys(errors).length > 0) {
