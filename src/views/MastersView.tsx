@@ -1414,7 +1414,7 @@ const MastersView: React.FC<MastersViewProps> = ({
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-             {state.users.slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => {
+             {[...state.users].sort((a, b) => a.role.localeCompare(b.role)).slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => {
                const isSoporteUser = u.loginCode === 'SOP' && u.role === UserRole.SOPORTE;
                return (
                <div key={u.id} className={`bg-white p-8 rounded-[40px] border ${isSoporteUser ? 'border-amber-200 bg-amber-50' : 'border-slate-100'} flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden`}>
