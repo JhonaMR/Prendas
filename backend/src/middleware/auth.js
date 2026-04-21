@@ -100,6 +100,31 @@ const verifyAdmin = (req, res, next) => {
 };
 
 /**
+ * Verificar que el usuario sea Admin, Soporte u Operador
+ * Se usa después de verifyToken para permitir acceso a control de telas
+ */
+const verifyAdminOrOperador = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({
+            success: false,
+            message: 'No autenticado'
+        });
+    }
+
+    const userRole = (req.user.role || '').trim().toLowerCase();
+    console.log('🔍 Verificando admin/operador - Usuario:', req.user.loginCode, 'Rol:', userRole);
+
+    if (userRole !== 'admin' && userRole !== 'soporte' && userRole !== 'operador') {
+        return res.status(403).json({
+            success: false,
+            message: 'No tienes permisos para acceder a esta sección'
+        });
+    }
+
+    next();
+};
+
+/**
  * Verificar que el usuario sea Admin o Observer
  * Se usa después de verifyToken para permitir acceso a dashboard
  */
@@ -127,5 +152,6 @@ const verifyAdminOrObserver = (req, res, next) => {
 module.exports = {
     verifyToken,
     verifyAdmin,
-    verifyAdminOrObserver
+    verifyAdminOrObserver,
+    verifyAdminOrOperador
 };

@@ -20,7 +20,7 @@ const movementsController = require('../controllers/movementsController');
 const { getDeliveryDates, saveDeliveryDatesBatchHandler, deleteDeliveryDateHandler } = require('../controllers/entities/deliveryDates/deliveryDatesController');
 
 // Importar middleware
-const { verifyToken, verifyAdmin, verifyAdminOrObserver } = require('../middleware/auth');
+const { verifyToken, verifyAdmin, verifyAdminOrObserver, verifyAdminOrOperador } = require('../middleware/auth');
 const { preventNonAdminEdit } = require('../middleware/editRestriction');
 const { allowDispatchCreate, allowDispatchEditDelete } = require('../middleware/dispatchRestriction');
 const { allowReturnCreate, allowReturnEditDelete } = require('../middleware/returnRestriction');
@@ -349,13 +349,13 @@ router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rut
 
 const controlTelasController = require('../controllers/controlTelasController');
 
-router.get('/control-telas/produccion',         verifyToken, verifyAdmin, controlTelasController.getAllProduccion);
-router.post('/control-telas/produccion/batch',  verifyToken, verifyAdmin, controlTelasController.saveBatchProduccion);
-router.delete('/control-telas/produccion/:id',  verifyToken, verifyAdmin, controlTelasController.deleteProduccion);
+router.get('/control-telas/produccion',         verifyToken, verifyAdminOrOperador, controlTelasController.getAllProduccion);
+router.post('/control-telas/produccion/batch',  verifyToken, verifyAdminOrOperador, controlTelasController.saveBatchProduccion);
+router.delete('/control-telas/produccion/:id',  verifyToken, verifyAdminOrOperador, controlTelasController.deleteProduccion);
 
-router.get('/control-telas/muestras',           verifyToken, verifyAdmin, controlTelasController.getAllMuestras);
-router.post('/control-telas/muestras/batch',    verifyToken, verifyAdmin, controlTelasController.saveBatchMuestras);
-router.delete('/control-telas/muestras/:id',    verifyToken, verifyAdmin, controlTelasController.deleteMuestra);
+router.get('/control-telas/muestras',           verifyToken, verifyAdminOrOperador, controlTelasController.getAllMuestras);
+router.post('/control-telas/muestras/batch',    verifyToken, verifyAdminOrOperador, controlTelasController.saveBatchMuestras);
+router.delete('/control-telas/muestras/:id',    verifyToken, verifyAdminOrOperador, controlTelasController.deleteMuestra);
 
 // ==================== CHAT ====================
 

@@ -22,7 +22,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const referencia = params?.referencia || '';
     const isAdmin = user?.role === 'admin' || user?.role === 'soporte';
     const isGeneral = user?.role === 'general';
-    const canEdit = isAdmin || isGeneral || user?.role === 'operador';
+    const canEdit = isAdmin || user?.role === 'operador';
 
     const [estadoRevision, setEstadoRevision] = useState<'rojo' | 'verde' | 'morado' | null>(null);
     const [showRevisionPicker, setShowRevisionPicker] = useState(false);

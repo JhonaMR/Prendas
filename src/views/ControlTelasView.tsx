@@ -175,9 +175,16 @@ const TelaProduccionTable: React.FC<{ onBack: () => void; user: User }> = ({ onB
   const [filterProveedor, setFilterProveedor] = useState('');
   const { pagination, goToPage, setLimit } = usePagination(1, 30);
 
+  const canEdit = user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === UserRole.OPERADOR;
+
   useEffect(() => {
     api.getControlTelasProduccion().then(data => {
-      setRows(data.length > 0 ? data : []);
+      const sorted = (data.length > 0 ? data : []).sort((a: TelaProduccion, b: TelaProduccion) => {
+        const da = a.fechaCompra ? new Date(a.fechaCompra).getTime() : 0;
+        const db = b.fechaCompra ? new Date(b.fechaCompra).getTime() : 0;
+        return db - da;
+      });
+      setRows(sorted);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -277,18 +284,20 @@ const TelaProduccionTable: React.FC<{ onBack: () => void; user: User }> = ({ onB
         </div>
         <div className="flex items-center gap-3">
           <FilterBar filterTela={filterTela} setFilterTela={setFilterTela} filterProveedor={filterProveedor} setFilterProveedor={setFilterProveedor} onClear={() => { setFilterTela(''); setFilterProveedor(''); }} />
+          {canEdit && (
           <button onClick={addRow} className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-pink-500 text-white font-bold text-sm hover:bg-pink-600 transition-all shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             Agregar tela
           </button>
+          )}
           {user.role === UserRole.SOPORTE && (
             <button onClick={() => setImportOpen(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 transition-all shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
               Importar Excel
             </button>
           )}
-          <button onClick={handleSave} disabled={!hasUnsaved || saving}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-sm ${hasUnsaved ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+          <button onClick={handleSave} disabled={!hasUnsaved || saving || !canEdit}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-sm ${hasUnsaved && canEdit ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
             {saving ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </div>
@@ -313,11 +322,11 @@ const TelaProduccionTable: React.FC<{ onBack: () => void; user: User }> = ({ onB
                 <col style={{width:'100px'}} />{/* Fecha */}
                 <col style={{width:'75px'}}  />{/* IVA Inc */}
                 <col style={{width:'100px'}}  />{/* FE/RM */}
-                <col style={{width:'36px'}}  />{/* Eliminar */}
+                {canEdit && <col style={{width:'36px'}} />}{/* Eliminar */}
               </colgroup>
               <thead>
                 <tr className="bg-pink-50 border-b border-pink-200 divide-x divide-pink-200">
-                  {['Tela','Color','Und.','Rdmto','Neto','IVA 19%','Vlr Kilos','Vlr Metros','Proveedor','Fecha Compra','IVA Inc.','FE / RM',''].map(h => (
+                  {['Tela','Color','Und.','Rdmto','Neto','IVA 19%','Vlr Kilos','Vlr Metros','Proveedor','Fecha Compra','IVA Inc.','FE / RM', ...(canEdit ? [''] : [])].map(h => (
                     <th key={h} className={thCls}>{h}</th>
                   ))}
                 </tr>
@@ -325,31 +334,33 @@ const TelaProduccionTable: React.FC<{ onBack: () => void; user: User }> = ({ onB
               <tbody>
                 {paged.map((row, i) => (
                   <tr key={row.id} className={`border-b border-slate-100 divide-x divide-slate-300 hover:bg-pink-50/40 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-pink-50/30'}`}>
-                    <td className={tdCls}><TextAutocomplete value={row.tela} onChange={v => updateRow(row.id, 'tela', v)} suggestions={telaSuggestions} placeholder="" className="text-[13px] border-none outline-none bg-transparent focus:ring-1 focus:ring-inset focus:ring-pink-300 rounded-sm font-normal" /></td>
-                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.color} onChange={e => updateRow(row.id, 'color', e.target.value)} /></td>
+                    <td className={tdCls}><TextAutocomplete value={row.tela} onChange={v => canEdit && updateRow(row.id, 'tela', v)} suggestions={telaSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-pink-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
+                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.color} onChange={e => updateRow(row.id, 'color', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={`${tdCls} text-center`}>
-                      <UndToggle value={row.undMedida} onChange={v => updateRow(row.id, 'undMedida', v)} />
+                      {canEdit ? <UndToggle value={row.undMedida} onChange={v => updateRow(row.id, 'undMedida', v)} /> : <UndBadge u={row.undMedida} />}
                     </td>
-                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} /></td>
-                    <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => updateRow(row.id, 'subtotal', v)} cls={inputCls} /></td>
+                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} readOnly={!canEdit} /></td>
+                    <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => canEdit && updateRow(row.id, 'subtotal', v)} cls={inputCls + (!canEdit ? ' pointer-events-none' : '')} /></td>
                     <td className={`${tdCls} text-right text-slate-500 whitespace-nowrap`}>{fmt(row.iva)}</td>
                     <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalKilos)}</td>
                     <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalMetros)}</td>
-                    <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className="text-[13px] border-none outline-none bg-transparent focus:ring-1 focus:ring-inset focus:ring-pink-300 rounded-sm font-normal" /></td>
-                    <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} /></td>
+                    <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => canEdit && updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-pink-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
+                    <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={`${tdCls} text-center`}>
-                      <IvaToggle value={row.ivaIncluido} onChange={v => updateRow(row.id, 'ivaIncluido', v)} />
+                      {canEdit ? <IvaToggle value={row.ivaIncluido} onChange={v => updateRow(row.id, 'ivaIncluido', v)} /> : <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${row.ivaIncluido === 'S' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}>{row.ivaIncluido === 'S' ? 'SI' : 'NO'}</span>}
                     </td>
-                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.feOrRm} onChange={e => updateRow(row.id, 'feOrRm', e.target.value)} /></td>
+                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.feOrRm} onChange={e => updateRow(row.id, 'feOrRm', e.target.value)} readOnly={!canEdit} /></td>
+                    {canEdit && (
                     <td className="px-2 py-2 text-center">
                       <button onClick={() => deleteRow(row.id)} className="text-slate-300 hover:text-red-500 transition-colors" title="Eliminar">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                       </button>
                     </td>
+                    )}
                   </tr>
                 ))}
                 {paged.length === 0 && (
-                  <tr><td colSpan={13} className="px-4 py-10 text-center text-slate-400 font-medium">Sin resultados</td></tr>
+                  <tr><td colSpan={canEdit ? 13 : 12} className="px-4 py-10 text-center text-slate-400 font-medium">Sin resultados</td></tr>
                 )}
               </tbody>
             </table>
@@ -383,9 +394,16 @@ const TelaMuestrasTable: React.FC<{ onBack: () => void; user: User }> = ({ onBac
   const [filterProveedor, setFilterProveedor] = useState('');
   const { pagination, goToPage, setLimit } = usePagination(1, 30);
 
+  const canEdit = user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === UserRole.OPERADOR;
+
   useEffect(() => {
     api.getControlTelasMuestras().then(data => {
-      setRows(data.length > 0 ? data : []);
+      const sorted = (data.length > 0 ? data : []).sort((a: TelaMuestra, b: TelaMuestra) => {
+        const da = a.fechaCompra ? new Date(a.fechaCompra).getTime() : 0;
+        const db = b.fechaCompra ? new Date(b.fechaCompra).getTime() : 0;
+        return db - da;
+      });
+      setRows(sorted);
       setLoading(false);
     }).catch(() => setLoading(false));
   }, []);
@@ -484,18 +502,20 @@ const TelaMuestrasTable: React.FC<{ onBack: () => void; user: User }> = ({ onBac
         </div>
         <div className="flex items-center gap-3">
           <FilterBar filterTela={filterTela} setFilterTela={setFilterTela} filterProveedor={filterProveedor} setFilterProveedor={setFilterProveedor} onClear={() => { setFilterTela(''); setFilterProveedor(''); }} />
+          {canEdit && (
           <button onClick={addRow} className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-purple-500 text-white font-bold text-sm hover:bg-purple-600 transition-all shadow-sm">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
             Agregar tela
           </button>
+          )}
           {user.role === UserRole.SOPORTE && (
             <button onClick={() => setImportOpen(true)} className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
               Importar Excel
             </button>
           )}
-          <button onClick={handleSave} disabled={!hasUnsaved || saving}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-sm ${hasUnsaved ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
+          <button onClick={handleSave} disabled={!hasUnsaved || saving || !canEdit}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-bold text-sm transition-all shadow-sm ${hasUnsaved && canEdit ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}>
             {saving ? 'Guardando...' : 'Guardar cambios'}
           </button>
         </div>
@@ -521,11 +541,11 @@ const TelaMuestrasTable: React.FC<{ onBack: () => void; user: User }> = ({ onBac
                 <col style={{width:'90px'}}  />{/* Factura */}
                 <col style={{width:'120px'}} />{/* Solicita */}
                 <col style={{width:'80px'}}  />{/* Usada */}
-                <col style={{width:'36px'}}  />{/* Eliminar */}
+                {canEdit && <col style={{width:'36px'}} />}{/* Eliminar */}
               </colgroup>
               <thead>
                 <tr className="bg-purple-50 border-b border-purple-200 divide-x divide-purple-200">
-                  {['Tela','Color','Und.','Rdmto','Neto','IVA 19%','Vlr Kilos','Vlr Metros','Proveedor','Fecha Compra','Factura No','Solicita / Recibe','Usa en Ref',''].map(h => (
+                  {['Tela','Color','Und.','Rdmto','Neto','IVA 19%','Vlr Kilos','Vlr Metros','Proveedor','Fecha Compra','Factura No','Solicita / Recibe','Usa en Ref', ...(canEdit ? [''] : [])].map(h => (
                     <th key={h} className={thCls}>{h}</th>
                   ))}
                 </tr>
@@ -533,30 +553,32 @@ const TelaMuestrasTable: React.FC<{ onBack: () => void; user: User }> = ({ onBac
               <tbody>
                 {paged.map((row, i) => (
                   <tr key={row.id} className={`border-b border-slate-100 divide-x divide-slate-300 hover:bg-purple-50/40 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-purple-50/30'}`}>
-                    <td className={tdCls}><TextAutocomplete value={row.tela} onChange={v => updateRow(row.id, 'tela', v)} suggestions={telaSuggestions} placeholder="" className="text-[13px] border-none outline-none bg-transparent focus:ring-1 focus:ring-inset focus:ring-purple-300 rounded-sm font-normal" /></td>
-                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.color} onChange={e => updateRow(row.id, 'color', e.target.value)} /></td>
+                    <td className={tdCls}><TextAutocomplete value={row.tela} onChange={v => canEdit && updateRow(row.id, 'tela', v)} suggestions={telaSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-purple-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
+                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.color} onChange={e => updateRow(row.id, 'color', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={`${tdCls} text-center`}>
-                      <UndToggle value={row.undMedida} onChange={v => updateRow(row.id, 'undMedida', v)} />
+                      {canEdit ? <UndToggle value={row.undMedida} onChange={v => updateRow(row.id, 'undMedida', v)} /> : <UndBadge u={row.undMedida} />}
                     </td>
-                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} /></td>
-                    <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => updateRow(row.id, 'subtotal', v)} cls={inputCls} /></td>
+                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} readOnly={!canEdit} /></td>
+                    <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => canEdit && updateRow(row.id, 'subtotal', v)} cls={inputCls + (!canEdit ? ' pointer-events-none' : '')} /></td>
                     <td className={`${tdCls} text-right text-slate-500 whitespace-nowrap`}>{fmt(row.iva)}</td>
                     <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioKilos)}</td>
                     <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioMetros)}</td>
-                    <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className="text-[13px] border-none outline-none bg-transparent focus:ring-1 focus:ring-inset focus:ring-purple-300 rounded-sm font-normal" /></td>
-                    <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} /></td>
-                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.facturaNo} onChange={e => updateRow(row.id, 'facturaNo', e.target.value)} /></td>
-                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.solicitaRecibe} onChange={e => updateRow(row.id, 'solicitaRecibe', e.target.value)} /></td>
-                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} value={row.usadaEnProduccion} onChange={e => updateRow(row.id, 'usadaEnProduccion', e.target.value)} /></td>
+                    <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => canEdit && updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-purple-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
+                    <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} readOnly={!canEdit} /></td>
+                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.facturaNo} onChange={e => updateRow(row.id, 'facturaNo', e.target.value)} readOnly={!canEdit} /></td>
+                    <td className={tdCls}><input className={inputCls + ' text-left'} value={row.solicitaRecibe} onChange={e => updateRow(row.id, 'solicitaRecibe', e.target.value)} readOnly={!canEdit} /></td>
+                    <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} value={row.usadaEnProduccion} onChange={e => updateRow(row.id, 'usadaEnProduccion', e.target.value)} readOnly={!canEdit} /></td>
+                    {canEdit && (
                     <td className="px-2 py-2 text-center">
                       <button onClick={() => deleteRow(row.id)} className="text-slate-300 hover:text-red-500 transition-colors" title="Eliminar">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                       </button>
                     </td>
+                    )}
                   </tr>
                 ))}
                 {paged.length === 0 && (
-                  <tr><td colSpan={14} className="px-4 py-10 text-center text-slate-400 font-medium">Sin resultados</td></tr>
+                  <tr><td colSpan={canEdit ? 14 : 13} className="px-4 py-10 text-center text-slate-400 font-medium">Sin resultados</td></tr>
                 )}
               </tbody>
             </table>
