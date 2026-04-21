@@ -22,9 +22,14 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const referencia = params?.referencia || '';
     const isNueva = params?.nueva || false;
 
+    const fichaExistente = (state.fichasDiseno || []).find(f => f.referencia === referencia);
+
     const isDisenadora = user?.role === 'diseñadora';
     const isGeneral = user?.role === 'general';
-    const canEdit = (isDisenadora || user?.role === 'admin' || user?.role === 'soporte') && !isGeneral;
+    const isAdminOrSoporte = user?.role === 'admin' || user?.role === 'soporte';
+    const isImportada = fichaExistente?.importada === true;
+    // Si la ficha está importada, solo admin y soporte pueden editar
+    const canEdit = !isGeneral && (isAdminOrSoporte || (!isImportada && isDisenadora));
     const [isLoading, setIsLoading] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -42,8 +47,6 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const [insumosDirectos, setInsumosDirectos] = useState<ConceptoFicha[]>([]);
     const [insumosIndirectos, setInsumosIndirectos] = useState<ConceptoFicha[]>([]);
     const [provisiones, setProvisiones] = useState<ConceptoFicha[]>([]);
-
-    const fichaExistente = (state.fichasDiseno || []).find(f => f.referencia === referencia);
 
     useEffect(() => {
         if (fichaExistente && !isNueva) {
@@ -165,6 +168,13 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 </div>
                 {hasUnsavedChanges && (<div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>)}
             </div>
+
+            {isImportada && !isAdminOrSoporte && (
+                <div className="flex items-center gap-3 px-5 py-4 bg-blue-50 border border-blue-200 rounded-2xl text-blue-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 shrink-0"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                    <span className="font-bold text-sm">Esta ficha fue importada a costos y no puede ser editada.</span>
+                </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="space-y-6">
