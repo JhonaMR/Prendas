@@ -18,6 +18,17 @@ export interface AuthContextType {
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Hook para usar el contexto de autenticación
+ */
+export const useAuth = (): AuthContextType => {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth debe ser usado dentro de AuthProvider');
+  }
+  return context;
+};
+
 interface AuthProviderProps {
   children: ReactNode;
 }

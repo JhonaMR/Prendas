@@ -6,6 +6,35 @@ import { Icons } from '../constants';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 
+// Función para formatear la fecha para visualización
+const formatDateDisplay = (dateString: string): string => {
+  if (!dateString) return '';
+  // Si viene en formato ISO, extraer la parte de fecha y hora
+  if (dateString.includes('T') && dateString.includes('Z')) {
+    const date = new Date(dateString);
+    const formatter = new Intl.DateTimeFormat('es-CO', {
+      timeZone: 'America/Bogota',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    const parts = formatter.formatToParts(date);
+    const year = parts.find(p => p.type === 'year')?.value;
+    const month = parts.find(p => p.type === 'month')?.value;
+    const day = parts.find(p => p.type === 'day')?.value;
+    const hour = parts.find(p => p.type === 'hour')?.value;
+    const minute = parts.find(p => p.type === 'minute')?.value;
+    
+    return `${year}-${month}-${day} T${hour}:${minute}`;
+  }
+  // Si ya está en nuestro formato, devolverlo tal cual
+  return dateString;
+};
+
 interface DispatchViewProps {
   user: User;
   clients: Client[];
@@ -185,8 +214,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
           items: itemsConPrecio,
           dispatchedBy: user.name,
           checkedBy,
-          createdAt: new Date().toLocaleString(),
-          editLogs: [{ user: user.name, date: new Date().toLocaleString() }]
+          createdAt: '', // El backend proporciona la fecha
+          editLogs: [{ user: user.name, date: '' }]
         };
 
         const result = await onAddDispatch(newData);
@@ -473,7 +502,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                 >
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{d.createdAt ? d.createdAt.slice(0, 10) + ' T' + d.createdAt.slice(10, 16) : d.createdAt}</span>
+                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{formatDateDisplay(d.createdAt)}</span>
                       {(d.invoiceNo || d.remissionNo) && <span className="text-slate-300 font-bold text-[9px]">|</span>}
                       {d.invoiceNo && <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">F: {d.invoiceNo}</span>}
                       {d.remissionNo && <span className="text-[9px] sm:text-[10px] font-black bg-pink-50 text-pink-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">R: {d.remissionNo}</span>}
@@ -546,7 +575,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                        <div className="md:text-right">
                           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
                            <p className="text-xs sm:text-sm font-bold text-slate-600">Ingresado por: <span className="text-slate-900 font-black">{d.dispatchedBy}</span></p>
-                           <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{d.createdAt ? d.createdAt.slice(0, 10) + ' T' + d.createdAt.slice(11, 16) : d.createdAt}</span></p>
+                           <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{formatDateDisplay(d.createdAt)}</span></p>
                            <div className="mt-2 pt-2 border-t border-slate-100">
                              <p className="text-xs sm:text-sm font-bold text-slate-600">Revisado por: <span className="text-slate-900 font-black">{d.checkedBy || '0'}</span></p>
                            </div>

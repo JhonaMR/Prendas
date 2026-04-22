@@ -7,6 +7,12 @@ function validateCreateTransportista(data) {
   if (!idV.valid) errors.id = idV.error;
   const nameV = validateString(data.nombre, 'Nombre', 1, 255);
   if (!nameV.valid) errors.nombre = nameV.error;
+  
+  // Validar tipo de vehículo
+  if (data.tipoVehiculo && !['moto', 'carro'].includes(data.tipoVehiculo)) {
+    errors.tipoVehiculo = 'Tipo de vehículo debe ser "moto" o "carro"';
+  }
+  
   if (Object.keys(errors).length > 0) throw new ValidationError(errors);
 }
 
@@ -16,6 +22,12 @@ function validateUpdateTransportista(data) {
     const v = validateString(data.nombre, 'Nombre', 1, 255);
     if (!v.valid) errors.nombre = v.error;
   }
+  
+  // Validar tipo de vehículo si se proporciona
+  if (data.tipoVehiculo !== undefined && !['moto', 'carro'].includes(data.tipoVehiculo)) {
+    errors.tipoVehiculo = 'Tipo de vehículo debe ser "moto" o "carro"';
+  }
+  
   if (Object.keys(errors).length > 0) throw new ValidationError(errors);
 }
 

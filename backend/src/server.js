@@ -5,6 +5,9 @@
  * Configura Express, middlewares, rutas, inicializa PostgreSQL y arranca el servidor
  */
 
+// Establecer la zona horaria del servidor a Bogotá
+process.env.TZ = 'America/Bogota';
+
 const path = require('path');
 const fs = require('fs');
 

@@ -97,7 +97,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
     const confName = confeccionistasMaster.find(c => c.id === lot.confeccionista)?.name || lot.confeccionista;
     setConfSearch(`${lot.confeccionista} - ${confName}`);
     setBatchCode(lot.batchCode);
-    setArrivalDate(lot.arrivalDate);
+    setArrivalDate(formatArrivalDate(lot.arrivalDate));
     setHasSegundasToggle((lot.segundasUnits || 0) > 0);
     setSegundasUnits(lot.segundasUnits || 0);
     setChargeType(lot.chargeType);

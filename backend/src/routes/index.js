@@ -221,6 +221,11 @@ router.post('/bulk-import/orders', verifyToken, verifyAdmin, bulkImportControlle
 router.post('/bulk-import/dispatches', verifyToken, verifyAdmin, bulkImportController.importDispatches);
 router.post('/bulk-import/receptions', verifyToken, verifyAdmin, bulkImportController.importReceptions);
 
+// ==================== CORTE REGISTROS ====================
+
+const corteRoutes = require('./corte');
+router.use('/corte', corteRoutes);
+
 // ==================== BACKUPS ====================
 
 const backupRoutes = require('./backupRoutes');

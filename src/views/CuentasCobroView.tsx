@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { User, AppState, Confeccionista } from '../types';
@@ -100,15 +100,36 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
   const [direccion, setDireccion] = useState(confFromParams?.address || '');
   const [ciudad, setCiudad] = useState(confFromParams?.city || '');
   const [telefono, setTelefono] = useState(confFromParams?.phone || '');
+  const [confeccionistaSeleccionado, setConfeccionistaSeleccionado] = useState<string | null>(confFromParams?.id || null);
+  
+  // Obtener el consecutivo del sessionStorage o del confeccionista
+  const getConsecRemInicial = (): number => {
+    const confId = confFromParams?.id || confeccionistaSeleccionado;
+    if (!confId) return 0;
+    
+    // Primero intentar obtener del sessionStorage (si ya se actualizó en esta sesión)
+    const stored = sessionStorage.getItem(`consecRem_${confId}`);
+    if (stored) return parseInt(stored, 10);
+    
+    // Si no, usar el del confeccionista
+    return confFromParams?.ConsecRem ?? 0;
+  };
+  
+  const [consecRemLocal, setConsecRemLocal] = useState<number>(getConsecRemInicial());
 
   // Consecutivo de remisión: el próximo es ConsecRem + 1
-  const consecActual = confFromParams?.ConsecRem ?? 0;
+  const confeccionistaActual = confeccionistaSeleccionado
+    ? (state.confeccionistas || []).find(c => c.id === confeccionistaSeleccionado)
+    : confFromParams;
+  
+  // Usar el consecutivo local que se actualiza cuando se imprime
+  const consecActual = consecRemLocal;
   const proximoConsec = consecActual + 1;
 
   // Documento
   const [fecha, setFecha] = useState(() => params?.fecha || new Date().toISOString().split('T')[0]);
   const [numeroCuenta, setNumeroCuenta] = useState(() =>
-    confFromParams ? String(proximoConsec) : ''
+    confeccionistaSeleccionado || confFromParams ? String(proximoConsec) : ''
   );
   const [concepto, setConcepto] = useState('');
   // Controla si ya se guardó el consecutivo en esta sesión (evita doble incremento)
@@ -138,6 +159,20 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  // Actualizar número de cuenta cuando se selecciona confeccionista
+  useEffect(() => {
+    if (confeccionistaSeleccionado || confFromParams) {
+      setNumeroCuenta(String(proximoConsec));
+    }
+  }, [confeccionistaSeleccionado, proximoConsec, confFromParams]);
+
+  // Resetear el flag de consecutivo guardado cuando se selecciona un nuevo confeccionista
+  useEffect(() => {
+    if (confeccionistaSeleccionado) {
+      consecGuardadoRef.current = false;
+    }
+  }, [confeccionistaSeleccionado]);
+
   const selectConf = (c: Confeccionista) => {
     setNombre(c.name);
     setCedula(c.id);
@@ -145,6 +180,12 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
     setCiudad(c.city || '');
     setTelefono(c.phone || '');
     setConfSearch(c.name);
+    setConfeccionistaSeleccionado(c.id);
+    const consecActual = c.ConsecRem ?? 0;
+    setConsecRemLocal(consecActual);
+    sessionStorage.setItem(`consecRem_${c.id}`, String(consecActual));
+    // Resetear el flag para permitir incrementar el consecutivo de este nuevo confeccionista
+    consecGuardadoRef.current = false;
     setShowConfDropdown(false);
   };
 
@@ -275,12 +316,23 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 win.focus();
                 setTimeout(() => { win.print(); }, 600);
 
-                // Actualizar ConsecRem en la BD solo si viene de liquidación y no se ha guardado aún
-                if (params?.confeccionistaId && !consecGuardadoRef.current) {
+                // Actualizar ConsecRem en la BD si se seleccionó confeccionista o viene de liquidación
+                const confIdParaActualizar = confeccionistaSeleccionado || params?.confeccionistaId;
+                if (confIdParaActualizar && !consecGuardadoRef.current) {
                   consecGuardadoRef.current = true;
                   try {
-                    await incrementarConsecRem(params.confeccionistaId, proximoConsec);
-                    alert(`✅ Consecutivo de remisión actualizado a ${proximoConsec} para ${nombre || params.confeccionistaId}`);
+                    await incrementarConsecRem(confIdParaActualizar, proximoConsec);
+                    
+                    // Actualizar el estado local del consecutivo
+                    setConsecRemLocal(proximoConsec);
+                    
+                    // Guardar en sessionStorage para persistir durante la sesión
+                    sessionStorage.setItem(`consecRem_${confIdParaActualizar}`, String(proximoConsec));
+                    
+                    // Actualizar el número de cuenta para la siguiente
+                    setNumeroCuenta(String(proximoConsec + 1));
+                    
+                    alert(`✅ Consecutivo de remisión actualizado a ${proximoConsec} para ${nombre || confIdParaActualizar}`);
                   } catch {
                     consecGuardadoRef.current = false;
                     alert('⚠️ No se pudo actualizar el consecutivo de remisión. Intenta de nuevo.');
@@ -547,12 +599,12 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 {/* Tabla */}
                 <table className="w-full border-collapse text-[10px]">
                   <thead>
-                    <tr style={{ background: empresa.textColor, color: '#fff' }}>
-                      <th className="px-2 py-1.5 text-left font-black">Concepto</th>
-                      <th className="px-2 py-1.5 text-left font-black">Referencia</th>
-                      <th className="px-2 py-1.5 text-right font-black">Precio</th>
-                      <th className="px-2 py-1.5 text-right font-black">Cant.</th>
-                      <th className="px-2 py-1.5 text-right font-black">Total</th>
+                    <tr style={{ background: '#f5f5f5', border: `1px solid ${empresa.textColor}44` }}>
+                      <th className="px-2 py-1.5 text-left font-black" style={{ color: empresa.textColor, borderRight: `1px solid ${empresa.textColor}44` }}>Concepto</th>
+                      <th className="px-2 py-1.5 text-left font-black" style={{ color: empresa.textColor, borderRight: `1px solid ${empresa.textColor}44` }}>Referencia</th>
+                      <th className="px-2 py-1.5 text-right font-black" style={{ color: empresa.textColor, borderRight: `1px solid ${empresa.textColor}44` }}>Precio</th>
+                      <th className="px-2 py-1.5 text-right font-black" style={{ color: empresa.textColor, borderRight: `1px solid ${empresa.textColor}44` }}>Cant.</th>
+                      <th className="px-2 py-1.5 text-right font-black" style={{ color: empresa.textColor }}>Total</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -571,9 +623,11 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                         </tr>
                       );
                     })}
-                    <tr style={{ background: empresa.textColor, color: '#fff' }}>
-                      <td colSpan={4} className="px-2 py-2 font-black text-right uppercase text-[11px]">Total</td>
-                      <td className="px-2 py-2 font-black text-right text-[12px]">{fmt(total)}</td>
+                    <tr style={{ background: '#f5f5f5', border: `1px solid ${empresa.textColor}44` }}>
+                      <td colSpan={4} className="px-2 py-2 font-black text-right uppercase text-[11px]" style={{ color: empresa.textColor, borderRight: `1px solid ${empresa.textColor}44` }}>Total</td>
+                      <td className="px-2 py-2 font-black text-right text-[12px]" style={{ color: empresa.textColor }}>
+                        {fmt(total)}
+                      </td>
                     </tr>
                   </tbody>
                 </table>

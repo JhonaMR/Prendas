@@ -18,7 +18,8 @@ const googleDriveService = require('../services/GoogleDriveService');
 // Configuración
 const dbName = process.env.DB_NAME || 'inventory';
 const instanceName = dbName.includes('melas') ? 'melas' : 'plow';
-const IMAGES_DIR = path.join(__dirname, '../../../public/images/references');
+const instanceFolder = dbName.includes('melas') ? 'Melas' : 'Plow';
+const IMAGES_DIR = path.join(__dirname, '../../../public/images/references', instanceFolder);
 const BACKUPS_DIR = path.join(__dirname, `../../backups/${instanceName}/images`);
 const MAX_BACKUPS = 30; // Mantener últimos 30 backups
 
@@ -31,9 +32,14 @@ function ensureDirectories() {
     console.log('✓ Creada carpeta: public/images');
   }
 
+  if (!fs.existsSync(path.join(__dirname, '../../../public/images/references'))) {
+    fs.mkdirSync(path.join(__dirname, '../../../public/images/references'), { recursive: true });
+    console.log('✓ Creada carpeta: public/images/references');
+  }
+
   if (!fs.existsSync(IMAGES_DIR)) {
     fs.mkdirSync(IMAGES_DIR, { recursive: true });
-    console.log('✓ Creada carpeta: public/images/references');
+    console.log(`✓ Creada carpeta: public/images/references/${instanceFolder}`);
   }
 
   if (!fs.existsSync(BACKUPS_DIR)) {
@@ -80,6 +86,7 @@ function createBackup() {
     console.log(`📦 Creando backup: ${backupName}`);
     
     // Comando para comprimir (compatible con Windows y Linux)
+    // Comprime desde la carpeta de instancia
     const command = process.platform === 'win32'
       ? `cd "${IMAGES_DIR}" && tar -czf "${backupPath}" .`
       : `tar -czf "${backupPath}" -C "${IMAGES_DIR}" .`;
@@ -89,7 +96,7 @@ function createBackup() {
     const stats = fs.statSync(backupPath);
     const sizeInMB = (stats.size / 1024 / 1024).toFixed(2);
 
-    console.log(`✓ Backup completado: ${backupName} (${sizeInMB} MB)`);
+    console.log(`✓ Backup completado: ${backupName} (${sizeInMB} MB) [${instanceName.toUpperCase()}]`);
 
     // Limpiar backups antiguos
     cleanOldBackups();

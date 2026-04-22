@@ -42,7 +42,7 @@ import FichasCostoDetalle from './views/FichasCostoDetalle';
 import FichasCorteDetalle from './views/FichasCorteDetalle';
 import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
-import CorteView from './views/CorteView';
+import RegistroCorteView from './views/Corte/RegistroCorteView';
 import GenerarListaPreciosView from './views/GenerarListaPreciosView';
 import ControlTelasView from './views/ControlTelasView';
 import ControlTransporteView from './views/transporte/ControlTransporteView';
@@ -1123,7 +1123,7 @@ const App: React.FC = () => {
       case 'reports':
         return <ReportsView state={state} user={user} />;
       case 'corte':
-        return <CorteView />;
+        return <RegistroCorteView user={user} />;
       case 'cuentasCobro':
         return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
       case 'listaPrecios':

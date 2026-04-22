@@ -264,6 +264,10 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const [filterSalida, setFilterSalida] = useState('');
   const [filterFechaRemisionMes, setFilterFechaRemisionMes] = useState('');
   const [filterFechaLlegadaMes, setFilterFechaLlegadaMes] = useState('');
+  const [filterFechaRemisionEspecifica, setFilterFechaRemisionEspecifica] = useState('');
+  const [filterFechaLlegadaEspecifica, setFilterFechaLlegadaEspecifica] = useState('');
+  const [showFechaRemisionPicker, setShowFechaRemisionPicker] = useState(false);
+  const [showFechaLlegadaPicker, setShowFechaLlegadaPicker] = useState(false);
   const [hideEntregados, setHideEntregados] = useState(false);
   const [filterOnlyVta, setFilterOnlyVta] = useState(false);
   const [filterOnlyCobrado, setFilterOnlyCobrado] = useState(false);
@@ -667,6 +671,11 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       const target = e.target as HTMLElement;
       if (target.closest('[data-comment-modal]') || target.closest('[data-ctx-menu]')) return;
       setCtxMenu(m => ({ ...m, visible: false }));
+      // Cerrar calendarios si se hace click fuera
+      if (!target.closest('[data-fecha-remision-picker]') && !target.closest('[data-fecha-llegada-picker]')) {
+        setShowFechaRemisionPicker(false);
+        setShowFechaLlegadaPicker(false);
+      }
     };
     window.addEventListener('mousedown', close);
     return () => window.removeEventListener('mousedown', close);
@@ -688,13 +697,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const clearFilters = () => {
     setFilterConfeccionista(''); setFilterRemision(''); setFilterRef('');
     setFilterSalida(''); setFilterFechaRemisionMes(''); setFilterFechaLlegadaMes('');
+    setFilterFechaRemisionEspecifica(''); setFilterFechaLlegadaEspecifica('');
     setHideEntregados(false);
     setFilterOnlyVta(false);
     setFilterOnlyCobrado(false);
     setFilterTotalDiferente(false);
   };
 
-  const hasFilters = filterConfeccionista || filterRemision || filterRef || filterSalida || filterFechaRemisionMes || filterFechaLlegadaMes || hideEntregados;
+  const hasFilters = filterConfeccionista || filterRemision || filterRef || filterSalida || filterFechaRemisionMes || filterFechaLlegadaMes || filterFechaRemisionEspecifica || filterFechaLlegadaEspecifica || hideEntregados;
 
   const filteredRows = rows.filter(row => {
     if (hideEntregados && row.fechaLlegada) return false;
@@ -711,6 +721,8 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
     if (filterFechaLlegadaMes && row.fechaLlegada) {
       if (row.fechaLlegada.slice(5, 7) !== filterFechaLlegadaMes) return false;
     } else if (filterFechaLlegadaMes && !row.fechaLlegada) return false;
+    if (filterFechaRemisionEspecifica && row.fechaRemision !== filterFechaRemisionEspecifica) return false;
+    if (filterFechaLlegadaEspecifica && row.fechaLlegada !== filterFechaLlegadaEspecifica) return false;
     return true;
   }).sort((a, b) => {
     if (a.isNew && !b.isNew) return -1;
@@ -725,7 +737,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
     pagination.pagination.totalPages = Math.ceil(filteredRows.length / pagination.pagination.limit);
   }, [filteredRows.length, pagination.pagination.limit]);
 
-  useEffect(() => { pagination.goToPage(1); }, [filterConfeccionista, filterRemision, filterRef, filterSalida, filterFechaRemisionMes, filterFechaLlegadaMes]);
+  useEffect(() => { pagination.goToPage(1); }, [filterConfeccionista, filterRemision, filterRef, filterSalida, filterFechaRemisionMes, filterFechaLlegadaMes, filterFechaRemisionEspecifica, filterFechaLlegadaEspecifica]);
 
   const paginatedRows = useMemo(() => {
     const start = (pagination.pagination.page - 1) * pagination.pagination.limit;
@@ -965,7 +977,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
           <h2 className="text-2xl font-black text-slate-800">Producto en Proceso</h2>
           <p className="text-slate-400 text-sm">Control de lotes enviados a confeccionistas y demás procesos</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={() => setReportModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-600 text-white text-xs font-semibold rounded-xl transition-colors shadow"
@@ -975,6 +987,57 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
             </svg>
             Generar informe
           </button>
+
+          {/* Filtro Fecha Remisión */}
+          <div className="relative" data-fecha-remision-picker>
+            <button
+              onClick={() => setShowFechaRemisionPicker(!showFechaRemisionPicker)}
+              className={`flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl transition-colors border ${filterFechaRemisionEspecifica ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-300 hover:border-blue-400'}`}
+              title="Filtrar por fecha de remisión específica"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              {filterFechaRemisionEspecifica ? filterFechaRemisionEspecifica : 'Fecha remisión'}
+            </button>
+            {showFechaRemisionPicker && (
+              <div className="absolute top-full mt-1 left-0 z-50 bg-white border border-slate-200 rounded-lg shadow-lg p-2">
+                <input
+                  type="date"
+                  value={filterFechaRemisionEspecifica}
+                  onChange={e => setFilterFechaRemisionEspecifica(e.target.value)}
+                  className="px-2 py-1 text-xs border border-slate-300 rounded focus:outline-none focus:border-blue-400"
+                  autoFocus
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Filtro Fecha Llegada */}
+          <div className="relative" data-fecha-llegada-picker>
+            <button
+              onClick={() => setShowFechaLlegadaPicker(!showFechaLlegadaPicker)}
+              className={`flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl transition-colors border ${filterFechaLlegadaEspecifica ? 'bg-green-600 text-white border-green-600' : 'bg-white text-slate-600 border-slate-300 hover:border-green-400'}`}
+              title="Filtrar por fecha de llegada específica"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0121 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+              </svg>
+              {filterFechaLlegadaEspecifica ? filterFechaLlegadaEspecifica : 'Fecha llegada'}
+            </button>
+            {showFechaLlegadaPicker && (
+              <div className="absolute top-full mt-1 left-0 z-50 bg-white border border-slate-200 rounded-lg shadow-lg p-2">
+                <input
+                  type="date"
+                  value={filterFechaLlegadaEspecifica}
+                  onChange={e => setFilterFechaLlegadaEspecifica(e.target.value)}
+                  className="px-2 py-1 text-xs border border-slate-300 rounded focus:outline-none focus:border-green-400"
+                  autoFocus
+                />
+              </div>
+            )}
+          </div>
+
           {editable && (
             <>
             <button

@@ -1736,6 +1736,93 @@ class ApiService {
     }
   }
 
+  // ==================== CORTE REGISTROS ====================
+
+  async getCorteRegistros(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/corte?limit=1000`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any>(response);
+      const rows = data.data ?? [];
+      // Mapear snake_case → camelCase
+      return rows.map((r: any) => ({
+        id:               r.id,
+        numeroFicha:      r.numero_ficha    ?? r.numeroFicha    ?? '',
+        fechaCorte:       (r.fecha_corte    ?? r.fechaCorte     ?? '').toString().split('T')[0],
+        referencia:       r.referencia      ?? '',
+        descripcion:      r.descripcion     ?? '',
+        cantidadCortada:  r.cantidad_cortada ?? r.cantidadCortada ?? 0,
+      }));
+    } catch (error) {
+      console.error('Error fetching corte registros:', error);
+      return [];
+    }
+  }
+
+  async createCorteRegistro(registro: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/corte`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          numeroFicha:     registro.numeroFicha,
+          fechaCorte:      registro.fechaCorte,
+          referencia:      registro.referencia,
+          descripcion:     registro.descripcion,
+          cantidadCortada: registro.cantidadCortada,
+        })
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al crear registro de corte' };
+    }
+  }
+
+  async updateCorteRegistro(id: string, registro: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/corte/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          numeroFicha:     registro.numeroFicha,
+          fechaCorte:      registro.fechaCorte,
+          referencia:      registro.referencia,
+          descripcion:     registro.descripcion,
+          cantidadCortada: registro.cantidadCortada,
+        })
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al actualizar registro de corte' };
+    }
+  }
+
+  async deleteCorteRegistro(id: string): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/corte/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al eliminar registro de corte' };
+    }
+  }
+
+  async importCorteRegistros(registros: any[]): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/corte/import/excel`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ registros })
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al importar registros de corte' };
+    }
+  }
+
   // ==================== BACKUPS ====================
 
   async getBackups(): Promise<ApiResponse> {
@@ -1983,7 +2070,7 @@ class ApiService {
       const response = await fetch(`${this.getApiUrl()}/transportistas`, { headers: this.getAuthHeaders() });
       const data = await this.handleResponse<any[]>(response);
       return (data.data || []).map((t: any) => ({
-        id: t.id, nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.color_key
+        id: t.id, nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.color_key, tipoVehiculo: t.tipo_vehiculo
       }));
     } catch (error) { console.error('Error obteniendo transportistas:', error); return []; }
   }

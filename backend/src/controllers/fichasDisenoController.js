@@ -9,10 +9,20 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 
+// ============ FUNCIÓN AUXILIAR: Detectar Instancia ============
+const getInstanceFolder = () => {
+    const dbName = process.env.DB_NAME || '';
+    if (dbName.includes('melas')) {
+        return 'Melas';
+    }
+    return 'Plow';
+};
+
 // ============ CONFIGURACIÓN MULTER ============
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const uploadDir = path.join(__dirname, '../../../public/images/references');
+        const instanceFolder = getInstanceFolder();
+        const uploadDir = path.join(__dirname, '../../../public/images/references', instanceFolder);
         if (!fs.existsSync(uploadDir)) {
             fs.mkdirSync(uploadDir, { recursive: true });
         }
@@ -336,8 +346,9 @@ const uploadFoto = (req, res) => {
             const filePath = req.file.path;
             await compressImage(filePath);
             
-            // Ruta relativa al frontend public folder
-            const fotoPath = `/images/references/${req.file.filename}`;
+            // Ruta relativa al frontend public folder con carpeta de instancia
+            const instanceFolder = getInstanceFolder();
+            const fotoPath = `/images/references/${instanceFolder}/${req.file.filename}`;
             return res.json({ 
                 success: true, 
                 data: { path: fotoPath }, 

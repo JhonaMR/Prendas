@@ -9,7 +9,7 @@ const logger = require('../../shared/logger');
 async function getAllTransportistas() {
   try {
     const result = await query(
-      `SELECT id, nombre, celular, picoyplaca, color_key FROM transportistas ORDER BY nombre`
+      `SELECT id, nombre, celular, picoyplaca, color_key, tipo_vehiculo FROM transportistas ORDER BY nombre`
     );
     return result.rows;
   } catch (error) {
@@ -21,7 +21,7 @@ async function getAllTransportistas() {
 async function getTransportistaById(id) {
   try {
     const result = await query(
-      `SELECT id, nombre, celular, picoyplaca, color_key FROM transportistas WHERE id = $1`, [id]
+      `SELECT id, nombre, celular, picoyplaca, color_key, tipo_vehiculo FROM transportistas WHERE id = $1`, [id]
     );
     if (result.rows.length === 0) throw new NotFoundError('Transportista', id);
     return result.rows[0];
@@ -34,9 +34,9 @@ async function getTransportistaById(id) {
 async function createTransportista(data) {
   try {
     await query(
-      `INSERT INTO transportistas (id, nombre, celular, picoyplaca, color_key)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [data.id, data.nombre, data.celular || '', data.picoyplaca || '', data.colorKey || data.color_key || 'red']
+      `INSERT INTO transportistas (id, nombre, celular, picoyplaca, color_key, tipo_vehiculo)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
+      [data.id, data.nombre, data.celular || '', data.picoyplaca || '', data.colorKey || data.color_key || 'red', data.tipoVehiculo || 'carro']
     );
     logger.info('Created transportista', { id: data.id });
     return getTransportistaById(data.id);
@@ -60,6 +60,7 @@ async function updateTransportista(id, data) {
     if (data.picoyplaca !== undefined) { updates.push(`picoyplaca = $${i++}`); values.push(data.picoyplaca); }
     const colorKey = data.colorKey || data.color_key;
     if (colorKey !== undefined) { updates.push(`color_key = $${i++}`); values.push(colorKey); }
+    if (data.tipoVehiculo !== undefined) { updates.push(`tipo_vehiculo = $${i++}`); values.push(data.tipoVehiculo); }
 
     if (updates.length > 0) {
       updates.push(`updated_at = CURRENT_TIMESTAMP`);

@@ -12,6 +12,7 @@ interface Transportista {
   celular: string;
   picoyplaca: string;
   colorKey: string;
+  tipoVehiculo: string;
 }
 
 interface RutaTransporte {
@@ -27,6 +28,11 @@ const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto'
 const DIAS_SEMANA_HEADER = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const DIAS_SEMANA_SELECTOR = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
+const TIPOS_VEHICULO = [
+  { value: 'moto', label: 'Moto' },
+  { value: 'carro', label: 'Carro' }
+];
+
 const COLORES: Record<string, { bg: string; text: string; dot: string; label: string }> = {
   red:    { bg: 'bg-red-200',    text: 'text-red-700',    dot: 'bg-red-400',    label: 'Rojo'    },
   green:  { bg: 'bg-green-200',  text: 'text-green-700',  dot: 'bg-green-400',  label: 'Verde'   },
@@ -40,8 +46,8 @@ const COLORES: Record<string, { bg: string; text: string; dot: string; label: st
 const COLOR_KEYS = Object.keys(COLORES);
 
 const TRANSPORTISTAS_DEFAULT: Transportista[] = [
-  { id: '1', nombre: 'Jose Luis',      celular: '', picoyplaca: '', colorKey: 'red'   },
-  { id: '2', nombre: 'Gilberto Marin', celular: '', picoyplaca: '', colorKey: 'green' },
+  { id: '1', nombre: 'Jose Luis',      celular: '', picoyplaca: '', colorKey: 'red',   tipoVehiculo: 'carro' },
+  { id: '2', nombre: 'Gilberto Marin', celular: '', picoyplaca: '', colorKey: 'green', tipoVehiculo: 'moto' },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -52,7 +58,7 @@ function toKey(year: number, month: number, day: number) {
   return `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
 }
 
-const FORM_VACIO: Omit<Transportista,'id'> = { nombre:'', celular:'', picoyplaca:'', colorKey: 'red' };
+const FORM_VACIO: Omit<Transportista,'id'> = { nombre:'', celular:'', picoyplaca:'', colorKey: 'red', tipoVehiculo: 'carro' };
 
 // ─── Selector de color ────────────────────────────────────────────────────────
 
@@ -181,7 +187,7 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
 
   const iniciarEdicion = (t: Transportista) => {
     setEditandoId(t.id);
-    setFormEditar({ nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.colorKey || 'red' });
+    setFormEditar({ nombre: t.nombre, celular: t.celular, picoyplaca: t.picoyplaca, colorKey: t.colorKey || 'red', tipoVehiculo: t.tipoVehiculo || 'carro' });
   };
 
   const guardarEdicion = async () => {
@@ -344,6 +350,11 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                           <option value="">Día de pico y placa</option>
                           {DIAS_SEMANA_SELECTOR.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
+                        <select value={formEditar.tipoVehiculo} onChange={e => setFormEditar(p => ({ ...p, tipoVehiculo: e.target.value }))}
+                          className="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                          <option value="">Tipo de vehículo</option>
+                          {TIPOS_VEHICULO.map(tv => <option key={tv.value} value={tv.value}>{tv.label}</option>)}
+                        </select>
                         <ColorSelector value={formEditar.colorKey} onChange={k => setFormEditar(p => ({ ...p, colorKey: k }))}
                           usedKeys={transportistas.filter((x: Transportista) => x.id !== editandoId).map((x: Transportista) => x.colorKey)} />
                         <div className="flex gap-2 pt-1">
@@ -357,7 +368,7 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                           <span className={`w-3 h-3 rounded-full flex-shrink-0 ${c.dot}`} />
                           <div>
                             <p className="font-bold text-slate-900 text-sm">{t.nombre}</p>
-                            <p className="text-xs text-slate-400">{t.celular || 'Sin celular'} · Pico y placa: {t.picoyplaca || '—'}</p>
+                            <p className="text-xs text-slate-400">{t.celular || 'Sin celular'} · Pico y placa: {t.picoyplaca || '—'} · {TIPOS_VEHICULO.find(tv => tv.value === t.tipoVehiculo)?.label || 'Sin tipo'}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
@@ -394,6 +405,11 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                   className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
                   <option value="">Día de pico y placa</option>
                   {DIAS_SEMANA_SELECTOR.map(d => <option key={d} value={d}>{d}</option>)}
+                </select>
+                <select value={formNuevo.tipoVehiculo} onChange={e => setFormNuevo(p => ({ ...p, tipoVehiculo: e.target.value }))}
+                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                  <option value="">Tipo de vehículo</option>
+                  {TIPOS_VEHICULO.map(tv => <option key={tv.value} value={tv.value}>{tv.label}</option>)}
                 </select>
                 <ColorSelector value={formNuevo.colorKey} onChange={k => setFormNuevo(p => ({ ...p, colorKey: k }))}
                   usedKeys={transportistas.map((x: Transportista) => x.colorKey)} excludeSelf={false} />

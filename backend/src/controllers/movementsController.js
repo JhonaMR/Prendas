@@ -13,6 +13,7 @@ const DispatchService = require('../services/DispatchService');
 const ReceptionService = require('../services/ReceptionService');
 const ReturnService = require('../services/ReturnService');
 const logger = require('../utils/logger');
+const { getBogotaDateTime } = require('../utils/dateUtils');
 
 // ==================== DEVOLUCIONES ====================
 
@@ -584,7 +585,7 @@ const createDispatch = async (req, res) => {
                 items,
                 dispatchedBy,
                 checkedBy,
-                createdAt: new Date()
+                createdAt: getBogotaDateTime()
             }
         });
 
