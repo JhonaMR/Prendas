@@ -75,6 +75,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'corte',                 label: 'Corte',                     icon: <Icons.Scissors />,          description: 'Módulo de corte' },
     { id: 'controlTransporte',     label: 'Control de Transporte',     icon: <Icons.Transporte />,        description: 'Control de transporte' },
     { id: 'liquidacionTransporte', label: 'Liquidación de Transporte', icon: <Icons.Transporte />,        description: 'Liquidación de transporte' },
+    { id: 'historicoReferencia',   label: 'Histórico de Referencia',   icon: <Icons.History />,           description: 'Consultar historial de referencias' },
   ];
 
   const navGroups: NavGroup[] = [
@@ -157,6 +158,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       icon: <Icons.Edit />,
       items: [
         { id: 'cuentasCobro', label: 'Cuentas de Cobro', icon: <Icons.Edit />, description: 'Gestionar cuentas de cobro' },
+        { id: 'historicoReferencia', label: 'Histórico de Referencia', icon: <Icons.History />, description: 'Consultar historial de referencias' },
       ],
     },
     {

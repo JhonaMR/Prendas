@@ -47,6 +47,7 @@ import GenerarListaPreciosView from './views/GenerarListaPreciosView';
 import ControlTelasView from './views/ControlTelasView';
 import ControlTransporteView from './views/transporte/ControlTransporteView';
 import CuentasCobroView from './views/CuentasCobroView';
+import HistoricoReferenciaView from './views/HistoricoReferenciaView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
 import { DottedBackground } from './components/DottedBackground';
 
@@ -1123,9 +1124,11 @@ const App: React.FC = () => {
       case 'reports':
         return <ReportsView state={state} user={user} />;
       case 'corte':
-        return <RegistroCorteView user={user} />;
+        return <RegistroCorteView user={user} referencesMaster={state.references} />;
       case 'cuentasCobro':
         return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
+      case 'historicoReferencia':
+        return <HistoricoReferenciaView user={user} onNavigate={handleTabChange} state={state} />;
       case 'listaPrecios':
         return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':

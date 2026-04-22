@@ -4,7 +4,7 @@ import PaginationComponent from '../../components/PaginationComponent';
 import usePagination from '../../hooks/usePagination';
 import api from '../../services/api';
 import CorteImportModal, { ImportedCorteRow } from '../../components/CorteImportModal';
-import { User, UserRole } from '../../types';
+import { User, UserRole, Reference } from '../../types';
 
 interface RegistroCorte {
   id: string;
@@ -18,21 +18,12 @@ interface RegistroCorte {
 
 interface Props {
   user: User;
+  referencesMaster: Reference[];
 }
 
-// Datos de referencia (simulados - luego vendrán de la BD)
-const referenciasData: Record<string, string> = {
-  '13101': 'BLUSA DAMA', '13039': 'BLUSA DAMA', '12895': 'BLUSA DAMA',
-  '13040': 'BLUSA DAMA', '13131': 'BLUSA DAMA', '13097': 'BLUSA DAMA',
-  '12943': 'BLUSA DAMA', '13036': 'BLUSA DAMA', '12975': 'BODY DAMA',
-  '12986': 'BODY DAMA', '12907': 'BODY DAMA', '12881': 'BODY DAMA',
-  '12908': 'BODY DAMA', '13117': 'BLUSA DAMA', '13041': 'BLUSA DAMA',
-  '13065': 'BLUSA DAMA', '12877': 'BLUSA DAMA', '13091': 'BLUSA DAMA',
-  '13042': 'BLUSA DAMA', '12744': 'BODY DAMA', '12984': 'BODY DAMA',
-  '12965': 'BLUSA DAMA',
-};
 
-const RegistroCorteView: React.FC<Props> = ({ user }) => {
+
+const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   const [registros, setRegistros] = useState<RegistroCorte[]>([]);
   const [searchReferencia, setSearchReferencia] = useState('');
   const [searchNumeroFicha, setSearchNumeroFicha] = useState('');
@@ -44,13 +35,34 @@ const RegistroCorteView: React.FC<Props> = ({ user }) => {
 
   const isSoporte = user.role === UserRole.SOPORTE;
 
+  // Actualizar descripciones cuando cambien las referencias
+  useEffect(() => {
+    if (referencesMaster.length > 0 && registros.length > 0) {
+      setRegistros(prev => prev.map(r => {
+        const referenceData = referencesMaster.find(ref => ref.id === r.referencia);
+        return {
+          ...r,
+          descripcion: referenceData?.description || r.descripcion
+        };
+      }));
+    }
+  }, [referencesMaster]);
+
   // Carga inicial desde la BD
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
     api.getCorteRegistros().then(data => {
       if (!cancelled) {
-        const loaded = data.map((r: any) => ({ ...r, saved: true }));
+        const loaded = data.map((r: any) => {
+          // Obtener la descripción actualizada desde referencesMaster
+          const referenceData = referencesMaster.find(ref => ref.id === r.referencia);
+          return {
+            ...r,
+            descripcion: referenceData?.description || r.descripcion,
+            saved: true
+          };
+        });
         setRegistros(loaded);
         setLoading(false);
       }
@@ -58,7 +70,7 @@ const RegistroCorteView: React.FC<Props> = ({ user }) => {
       if (!cancelled) setLoading(false);
     });
     return () => { cancelled = true; };
-  }, []);
+  }, [referencesMaster]);
 
   // Alerta de cambios sin guardar
   useEffect(() => {
@@ -93,9 +105,10 @@ const RegistroCorteView: React.FC<Props> = ({ user }) => {
   };
 
   const handleEditReferencia = (id: string, value: string) => {
+    const referenceData = referencesMaster.find(ref => ref.id === value);
     setRegistros(prev => prev.map(r =>
       r.id === id
-        ? { ...r, referencia: value, descripcion: referenciasData[value] ?? r.descripcion }
+        ? { ...r, referencia: value, descripcion: referenceData?.description || r.descripcion }
         : r
     ));
     setHasUnsavedChanges(true);
@@ -153,15 +166,18 @@ const RegistroCorteView: React.FC<Props> = ({ user }) => {
   };
 
   const handleImportFromExcel = async (rows: ImportedCorteRow[]) => {
-    const newRegistros: RegistroCorte[] = rows.map((row, idx) => ({
-      id: `temp_import_${Date.now()}_${idx}`,
-      numeroFicha: row.numeroFicha,
-      fechaCorte: row.fechaCorte,
-      referencia: row.referencia,
-      descripcion: row.descripcion || referenciasData[row.referencia] || '',
-      cantidadCortada: parseInt(row.cantidadCortada) || 0,
-      saved: false,
-    }));
+    const newRegistros: RegistroCorte[] = rows.map((row, idx) => {
+      const referenceData = referencesMaster.find(ref => ref.id === row.referencia);
+      return {
+        id: `temp_import_${Date.now()}_${idx}`,
+        numeroFicha: row.numeroFicha,
+        fechaCorte: row.fechaCorte,
+        referencia: row.referencia,
+        descripcion: row.descripcion || referenceData?.description || '',
+        cantidadCortada: parseInt(row.cantidadCortada) || 0,
+        saved: false,
+      };
+    });
     setRegistros(prev => [...newRegistros, ...prev]);
     setHasUnsavedChanges(true);
     alert(`${rows.length} registros importados. Revisa y guarda cuando estés listo.`);
@@ -362,7 +378,7 @@ const RegistroCorteView: React.FC<Props> = ({ user }) => {
           </table>
         )}
         <datalist id="referencias-list">
-          {Object.keys(referenciasData).map(ref => <option key={ref} value={ref} />)}
+          {referencesMaster.map(ref => <option key={ref.id} value={ref.id} />)}
         </datalist>
       </div>
 
