@@ -36,13 +36,20 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
 
   const isSoporte = user.role === UserRole.SOPORTE;
 
-  // Función para ordenar registros por número de ficha (mayor a menor)
+  // Función para ordenar registros: no guardados primero, luego guardados por número de ficha (mayor a menor)
   const sortRegistrosByFicha = (registros: RegistroCorte[]) => {
-    return [...registros].sort((a, b) => {
+    const unsaved = registros.filter(r => !r.saved);
+    const saved = registros.filter(r => r.saved);
+    
+    // Ordenar solo los guardados por número de ficha (mayor a menor)
+    const sortedSaved = saved.sort((a, b) => {
       const fichaA = parseInt(a.numeroFicha) || 0;
       const fichaB = parseInt(b.numeroFicha) || 0;
       return fichaB - fichaA; // Orden descendente (mayor a menor)
     });
+    
+    // Retornar: no guardados primero, luego guardados ordenados
+    return [...unsaved, ...sortedSaved];
   };
 
   // Actualizar descripciones cuando cambien las referencias maestras
@@ -112,21 +119,18 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       cantidadCortada: 0,
       saved: false,
     };
-    setRegistros(prev => sortRegistrosByFicha([newRegistro, ...prev]));
+    // Agregar al inicio sin reordenar (las filas no guardadas van primero)
+    setRegistros(prev => [newRegistro, ...prev]);
     setEditingId(newRegistro.id);
     setHasUnsavedChanges(true);
   };
 
   const handleFieldChange = (id: string, field: string, value: any) => {
-    setRegistros(prev => {
-      const updated = prev.map(r => 
-        r.id === id 
-          ? { ...r, [field]: value, saved: false } // Marcar como no guardado cuando se edita
-          : r
-      );
-      // Si se cambió el número de ficha, reordenar
-      return field === 'numeroFicha' ? sortRegistrosByFicha(updated) : updated;
-    });
+    setRegistros(prev => prev.map(r => 
+      r.id === id 
+        ? { ...r, [field]: value, saved: false } // Marcar como no guardado cuando se edita
+        : r
+    ));
     setHasUnsavedChanges(true);
   };
 
@@ -185,11 +189,11 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
           }
           
           // Actualizar el registro local con el ID real de la BD
-          setRegistros(prev => sortRegistrosByFicha(prev.map(reg => 
+          setRegistros(prev => prev.map(reg => 
             reg.id === id 
               ? { ...reg, id: response.data?.id || id, saved: true }
               : reg
-          )));
+          ));
         } else {
           const response = await api.updateCorteRegistro(id, data);
           
@@ -199,16 +203,19 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
           }
           
           // Marcar como guardado
-          setRegistros(prev => sortRegistrosByFicha(prev.map(reg => 
+          setRegistros(prev => prev.map(reg => 
             reg.id === id 
               ? { ...reg, saved: true }
               : reg
-          )));
+          ));
         }
       }
       
       setEditingId(null);
       setHasUnsavedChanges(false);
+      
+      // Aplicar ordenamiento después de guardar exitosamente
+      setRegistros(prev => sortRegistrosByFicha(prev));
       
       alert(`${unsaved.length} registro(s) guardado(s) exitosamente.`);
     } catch (error) {
@@ -261,7 +268,8 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         saved: false,
       };
     });
-    setRegistros(prev => sortRegistrosByFicha([...newRegistros, ...prev]));
+    // Agregar al inicio sin reordenar (las filas no guardadas van primero)
+    setRegistros(prev => [...newRegistros, ...prev]);
     setHasUnsavedChanges(true);
     alert(`${rows.length} registros importados. Revisa y guarda cuando estés listo.`);
   };
