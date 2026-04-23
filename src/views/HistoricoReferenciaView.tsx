@@ -39,8 +39,9 @@ interface ProcesoRecord {
 
 interface TransporteRecord {
   fecha: string;
-  transportista: string;
+  taller: string;
   detalle: string;
+  transportista: string;
 }
 
 interface FichaCosto {
@@ -55,12 +56,14 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const [loading, setLoading] = useState(false);
   const [showCorreriaModal, setShowCorreriaModal] = useState(false);
   const [selectedCorreriaDetail, setSelectedCorreriaDetail] = useState<CorreriaDetail | null>(null);
+  const [showCortesModal, setShowCortesModal] = useState(false);
   
   // Datos reales de la base de datos
   const [corteRecords, setCorteRecords] = useState<CorteRecord[]>([]);
   const [procesoRecords, setProcesoRecords] = useState<ProcesoRecord[]>([]);
   const [transporteRecords, setTransporteRecords] = useState<TransporteRecord[]>([]);
   const [fichasCosto, setFichasCosto] = useState<FichaCosto[]>([]);
+  const [cortesData, setCortesData] = useState<any[]>([]);
 
   // Obtener URL base para las fotos
   const getBaseUrl = (): string => {
@@ -122,24 +125,39 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
 
       // Cargar producto en proceso
       const procesoResponse = await api.getProductoEnProceso();
-      const procesoFiltered = procesoResponse.filter((record: any) => record.referencia === referenceId);
+      const procesoFiltered = procesoResponse.filter((record: any) => record.ref === referenceId);
       setProcesoRecords(procesoFiltered.map((record: any) => ({
         id: record.id,
         remision: record.remision || record.numeroRemision || 'N/A',
         fechaRemision: record.fechaRemision || record.fechaSalida || '',
-        cantidadSalida: record.cantidadSalida || record.cantidad || 0,
+        cantidadSalida: record.salida || record.cantidadSalida || record.cantidad || 0,
         confeccionista: record.confeccionista || record.nombreConfeccionista || 'N/A',
         fechaLlegada: record.fechaLlegada || record.fechaRecepcion,
-        cantidadLlegada: record.cantidadLlegada || record.cantidadRecibida
+        cantidadLlegada: record.entrega || record.cantidadLlegada || record.cantidadRecibida
       })));
 
       // Cargar transportes
       const transporteResponse = await api.getTransportesPorReferencia(referenceId);
       setTransporteRecords(transporteResponse.map((record: any) => ({
         fecha: record.fecha || '',
-        transportista: record.transportista || record.nombreTransportista || 'N/A',
-        detalle: record.detalle || record.descripcion || 'Sin detalles'
+        taller: record.taller || 'N/A',
+        detalle: record.detalle || record.descripcion || 'Sin detalles',
+        transportista: record.transportista || record.nombreTransportista || 'N/A'
       })));
+
+      // Cargar datos completos de la ficha de costo (incluyendo cortes)
+      try {
+        const response = await fetch(`${baseUrl}/api/fichas-costo/${referenceId}`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+        });
+        const fichaData = await response.json();
+        if (fichaData.success && fichaData.data) {
+          setCortesData(fichaData.data.cortes || []);
+        }
+      } catch (error) {
+        console.error('Error cargando datos de cortes:', error);
+        setCortesData([]);
+      }
 
     } catch (error) {
       console.error('Error cargando datos de referencia:', error);
@@ -156,8 +174,9 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
 
   // Calcular estadísticas reales para una referencia
   const calculateReferenceStats = (reference: Reference) => {
-    // Cantidad cortada real de los registros de corte
-    const cantidadCortada = corteRecords.reduce((total, record) => total + (record.cantidadCortada || 0), 0);
+    // Cantidad cortada real de la ficha de costo
+    const fichaCorrespondiente = fichasCosto.find(f => f.referencia === reference.id);
+    const cantidadCortada = fichaCorrespondiente?.cantidadTotalCortada || 0;
     
     // Pedidos que incluyen esta referencia
     const pedidosConReferencia = state.orders.filter(order =>
@@ -222,6 +241,10 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const handleCorreriaClick = (correria: CorreriaDetail) => {
     setSelectedCorreriaDetail(correria);
     setShowCorreriaModal(true);
+  };
+
+  const handleCortesClick = () => {
+    setShowCortesModal(true);
   };
 
   const handleGoToFichaCosto = () => {
@@ -331,7 +354,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
             {/* Cantidad por Correría */}
             {selectedReference ? (
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-gray-700 text-lg mb-4">Cantidad por Correría</h3>
+                <h3 className="font-bold text-gray-700 text-lg mb-4 text-center">Cantidad por Correría</h3>
                 <div className="space-y-3">
                   {calculateReferenceStats(selectedReference).cantidadPorCorreria.map((correria, index) => (
                     <button
@@ -339,12 +362,24 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                       onClick={() => handleCorreriaClick(correria)}
                       className="w-full bg-blue-50 rounded-xl p-4 border border-blue-200 hover:border-blue-300 transition-all hover:shadow-md text-left"
                     >
-                      <div className="font-semibold text-blue-700">{correria.correria}</div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Vendido: <span className="font-semibold text-green-600">{correria.cantidadVendida}</span>
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Despachado: <span className="font-semibold text-blue-600">{correria.cantidadDespachada}</span>
+                      <div className="font-semibold text-blue-700 text-center mb-3">{correria.correria}</div>
+                      <div className="flex items-center">
+                        <div className="flex-1">
+                          <div className="text-sm text-gray-600 mb-1">
+                            Vendido: <span className="font-semibold text-green-600">{correria.cantidadVendida}</span>
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Despachado: <span className="font-semibold text-blue-600">{correria.cantidadDespachada}</span>
+                          </div>
+                        </div>
+                        <div className="border-l border-gray-300 pl-4 ml-4">
+                          <div className="text-center">
+                            <div className="text-lg font-bold text-purple-700">
+                              {correria.cantidadVendida > 0 ? Math.round((correria.cantidadDespachada / correria.cantidadVendida) * 100) : 0}%
+                            </div>
+                            <div className="text-xs text-gray-500">Despachado</div>
+                          </div>
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -357,7 +392,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
               </div>
             ) : (
               <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-gray-700 text-lg mb-4">Cantidad por Correría</h3>
+                <h3 className="font-bold text-gray-700 text-lg mb-4 text-center">Cantidad por Correría</h3>
                 <div className="text-center py-8 text-gray-500">
                   <p className="text-sm">Digite referencia para buscar información</p>
                 </div>
@@ -401,7 +436,10 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                               Rentabilidad
                             </div>
                             <p className="text-lg font-semibold text-emerald-700">
-                              {Math.round(((selectedReference.price - Math.floor(selectedReference.price * 0.6)) / selectedReference.price) * 100)}%
+                              {(() => {
+                                const fichaCorrespondiente = fichasCosto.find(f => f.referencia === selectedReference.id);
+                                return Math.round(fichaCorrespondiente?.rentabilidad || 0);
+                              })()}%
                             </p>
                           </div>
                         </div>
@@ -424,7 +462,12 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <div className="inline-flex items-center px-2 py-1 rounded-full bg-orange-100 text-orange-800 text-xs font-semibold uppercase tracking-wide mb-1">
                             Costo Producción
                           </div>
-                          <p className="text-3xl font-black text-orange-700">{formatPrice(Math.floor(selectedReference.price * 0.6))}</p>
+                          <p className="text-3xl font-black text-orange-700">
+                            {(() => {
+                              const fichaCorrespondiente = fichasCosto.find(f => f.referencia === selectedReference.id);
+                              return formatPrice(fichaCorrespondiente?.costoTotal || 0);
+                            })()}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -437,9 +480,19 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
                               <div className="text-center">
-                                <div className="bg-blue-50 rounded-xl p-3 border border-blue-200">
-                                  <p className="text-2xl font-black text-blue-700 mb-1">{stats.cantidadCortada}</p>
-                                  <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Cortada</span>
+                                <div className="bg-blue-50 rounded-xl p-3 border-2 border-blue-300 hover:border-blue-400 hover:bg-blue-100 transition-all duration-200 shadow-lg hover:shadow-xl">
+                                  <button 
+                                    onClick={handleCortesClick}
+                                    className="w-full rounded-lg transition-colors cursor-pointer group"
+                                  >
+                                    <div className="flex items-center justify-center">
+                                      <p className="text-2xl font-black text-blue-700 group-hover:text-blue-800">{stats.cantidadCortada}</p>
+                                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 ml-2 text-blue-500 group-hover:text-blue-700 opacity-70 group-hover:opacity-100 transition-all">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                                      </svg>
+                                    </div>
+                                    <span className="text-xs font-semibold text-blue-600 group-hover:text-blue-700 uppercase tracking-wide">Cortada</span>
+                                  </button>
                                 </div>
                               </div>
                               <div className="text-center">
@@ -491,16 +544,16 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <table className="w-full">
                             <thead className="bg-orange-50">
                               <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Número Ficha</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Fecha Corte</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">Cantidad Cortada</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-orange-700 uppercase tracking-wider border-r border-gray-200">Número Ficha</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-orange-700 uppercase tracking-wider border-r border-gray-200">Fecha Corte</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-orange-700 uppercase tracking-wider">Cantidad Cortada</th>
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                               {corteRecords.map((record, index) => (
                                 <tr key={record.id || index} className="hover:bg-orange-50">
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-700">{record.numeroFicha}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{record.fechaCorte}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-orange-700 border-r border-gray-100">{record.numeroFicha}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.fechaCorte}</td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-orange-600">{record.cantidadCortada}</td>
                                 </tr>
                               ))}
@@ -537,22 +590,22 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <table className="w-full">
                             <thead className="bg-blue-50">
                               <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Remisión</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Fecha Remisión</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Cantidad Salida</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Confeccionista</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Fecha Llegada</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">Cantidad Llegada</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider border-r border-gray-200">Remisión</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider border-r border-gray-200">Fecha Remisión</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider border-r border-gray-200">Cantidad Salida</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider border-r border-gray-200">Confeccionista</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider border-r border-gray-200">Fecha Llegada</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-blue-700 uppercase tracking-wider">Cantidad Llegada</th>
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                               {procesoRecords.map((record, index) => (
                                 <tr key={record.id || index} className="hover:bg-blue-50">
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-700">{record.remision}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{record.fechaRemision}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{record.cantidadSalida}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{record.confeccionista}</td>
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600">{record.fechaLlegada || '-'}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-700 border-r border-gray-100">{record.remision}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.fechaRemision}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.cantidadSalida}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.confeccionista}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 border-r border-gray-100">{record.fechaLlegada || '-'}</td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">{record.cantidadLlegada || '-'}</td>
                                 </tr>
                               ))}
@@ -589,17 +642,19 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <table className="w-full">
                             <thead className="bg-green-50">
                               <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">Fecha</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">Transportista</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-green-700 uppercase tracking-wider">Detalle</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-green-700 uppercase tracking-wider border-r border-gray-200">Fecha</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-green-700 uppercase tracking-wider border-r border-gray-200">Taller</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-green-700 uppercase tracking-wider border-r border-gray-200">Detalle</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-center text-green-700 uppercase tracking-wider">Transportista</th>
                               </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                               {transporteRecords.map((record, index) => (
                                 <tr key={index} className="hover:bg-green-50">
-                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{record.fecha}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.fecha}</td>
+                                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 border-r border-gray-100">{record.taller}</td>
+                                  <td className="px-6 py-4 text-sm text-gray-600 border-r border-gray-100">{record.detalle}</td>
                                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-700">{record.transportista}</td>
-                                  <td className="px-6 py-4 text-sm text-gray-600">{record.detalle}</td>
                                 </tr>
                               ))}
                             </tbody>
@@ -635,10 +690,140 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
         </div>
       </div>
 
+      {/* Modal de Cortes */}
+      {showCortesModal && selectedReference && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-6xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <div></div>
+              <h3 className="text-2xl font-bold text-gray-700">
+                Cortes Asentados - {selectedReference.id}
+              </h3>
+              <button
+                onClick={() => setShowCortesModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6">
+              {(() => {
+                if (cortesData.length === 0) {
+                  return (
+                    <div className="col-span-3 text-center py-12 text-gray-500">
+                      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-gray-400">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+                        </svg>
+                      </div>
+                      <p className="text-xl font-semibold text-gray-600 mb-2">No hay cortes asentados</p>
+                      <p className="text-sm text-gray-500">Esta referencia no tiene cortes registrados</p>
+                    </div>
+                  );
+                }
+
+                return cortesData.map((corte: any, index: number) => {
+                  // Calcular totales del corte
+                  const calc = (items: any[]) => Math.ceil((items || []).reduce((acc: number, i: any) => acc + (i.total || 0), 0));
+                  const totalMP = calc(corte.materiaPrima);
+                  const totalMO = calc(corte.manoObra);
+                  const totalID = calc(corte.insumosDirectos);
+                  const totalII = calc(corte.insumosIndirectos);
+                  const totalProv = calc(corte.provisiones);
+                  const costoReal = totalMP + totalMO + totalID + totalII + totalProv;
+                  
+                  // Obtener costo inicial de la ficha
+                  const fichaCorrespondiente = fichasCosto.find(f => f.referencia === selectedReference.id);
+                  const costoInicial = fichaCorrespondiente?.costoTotal || 0;
+                  const diferencia = costoReal - costoInicial;
+                  const margenUtilidad = costoReal > 0 ? ((selectedReference.price - costoReal) / selectedReference.price * 100) : 0;
+                  const esUtilidad = diferencia <= 0; // Verde si la diferencia es negativa o cero
+
+                  return (
+                    <div 
+                      key={index} 
+                      className={`group relative rounded-3xl p-4 border-2 shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 ${
+                        esUtilidad 
+                          ? 'bg-gradient-to-br from-green-50 via-emerald-50 to-green-100 border-green-200 hover:border-green-300' 
+                          : 'bg-gradient-to-br from-red-50 via-rose-50 to-red-100 border-red-200 hover:border-red-300'
+                      }`}
+                    >
+                      {/* Decoración superior */}
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white to-transparent opacity-50 rounded-t-3xl"></div>
+                      
+                      {/* Header con badge y indicador */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className={`px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wide shadow-sm ${
+                          esUtilidad ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'
+                        }`}>
+                          Corte #{corte.numeroCorte || index + 1}
+                        </div>
+                        <div className={`w-4 h-4 rounded-full shadow-inner ${esUtilidad ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                      </div>
+
+                      {/* Información principal */}
+                      <div className="space-y-3">
+                        <div className="bg-white/60 rounded-2xl p-3 backdrop-blur-sm border-b border-gray-200">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Fecha</span>
+                            <span className="text-sm font-bold text-gray-800">
+                              {corte.fechaCorte ? new Date(corte.fechaCorte).toLocaleDateString('es-CO') : 'N/A'}
+                            </span>
+                          </div>
+                          <div className="border-t border-gray-200 pt-2 mt-2">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Ficha</span>
+                              <span className="text-sm font-bold text-gray-800">{corte.fichaCorte || 'N/A'}</span>
+                            </div>
+                          </div>
+                          <div className="border-t border-gray-200 pt-2 mt-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Cantidad</span>
+                              <span className="text-xl font-black text-blue-700">{corte.cantidadCortada || 0}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Métricas financieras */}
+                        <div className="bg-white/60 rounded-2xl p-3 backdrop-blur-sm">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Costo Real</span>
+                            <span className="text-sm font-bold text-gray-800">{formatPrice(costoReal)}</span>
+                          </div>
+                          <div className="border-t border-gray-200 pt-2 mt-2">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Diferencia</span>
+                              <span className={`text-sm font-bold ${diferencia <= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                                {diferencia > 0 ? '+' : ''}{formatPrice(diferencia)}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="border-t border-gray-200 pt-2 mt-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">M.R Utilidad</span>
+                              <span className={`text-2xl font-black ${margenUtilidad > 0 ? 'text-green-700' : 'text-red-700'}`}>
+                                {margenUtilidad.toFixed(1)}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Detalle de Correría */}
       {showCorreriaModal && selectedCorreriaDetail && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+          <div className="bg-white rounded-2xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-2xl font-bold text-gray-700">
                 Detalle - {selectedCorreriaDetail.correria}
@@ -654,33 +839,20 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-700">{selectedCorreriaDetail.cantidadCortada}</div>
-                  <div className="text-sm text-blue-600">Cortada</div>
-                </div>
-                <div className="bg-green-50 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-green-700">{selectedCorreriaDetail.cantidadVendida}</div>
-                  <div className="text-sm text-green-600">Vendida</div>
-                </div>
-                <div className="bg-purple-50 rounded-xl p-4 text-center">
-                  <div className="text-2xl font-bold text-purple-700">{selectedCorreriaDetail.cantidadDespachada}</div>
-                  <div className="text-sm text-purple-600">Despachada</div>
-                </div>
-              </div>
-
-              <h4 className="font-semibold text-gray-800 mb-3">Clientes que pidieron esta referencia:</h4>
+              <h4 className="font-semibold text-center text-gray-800 mb-3">Clientes que pidieron esta referencia: {selectedCorreriaDetail.clientes.length}</h4>
               <div className="space-y-2">
                 {selectedCorreriaDetail.clientes.map((cliente, index) => (
-                  <div key={index} className="bg-gray-50 rounded-xl p-4 flex justify-between items-center">
-                    <div className="font-medium text-gray-800">{cliente.cliente}</div>
-                    <div className="flex gap-4 text-sm">
-                      <span className="text-green-600">
-                        Pedida: <strong>{cliente.cantidadPedida}</strong>
-                      </span>
-                      <span className="text-blue-600">
-                        Despachada: <strong>{cliente.cantidadDespachada}</strong>
-                      </span>
+                  <div key={index} className="bg-gray-50 rounded-xl p-4 flex items-center">
+                    <div className="flex-1 font-medium text-gray-800">{cliente.cliente}</div>
+                    <div className="border-l border-gray-300 pl-6 ml-6 flex gap-8">
+                      <div className="text-center min-w-[80px]">
+                        <div className="text-lg font-bold text-green-600">{cliente.cantidadPedida}</div>
+                        <div className="text-xs text-gray-500">Pedida</div>
+                      </div>
+                      <div className="text-center min-w-[80px]">
+                        <div className="text-lg font-bold text-blue-600">{cliente.cantidadDespachada}</div>
+                        <div className="text-xs text-gray-500">Despachada</div>
+                      </div>
                     </div>
                   </div>
                 ))}

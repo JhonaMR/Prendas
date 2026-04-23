@@ -30,23 +30,32 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false); // Nuevo estado para guardado
   const [showImportModal, setShowImportModal] = useState(false);
   const cortesPagination = usePagination(1, 20);
 
   const isSoporte = user.role === UserRole.SOPORTE;
 
-  // Actualizar descripciones cuando cambien las referencias
+  // Función para ordenar registros por número de ficha (mayor a menor)
+  const sortRegistrosByFicha = (registros: RegistroCorte[]) => {
+    return [...registros].sort((a, b) => {
+      const fichaA = parseInt(a.numeroFicha) || 0;
+      const fichaB = parseInt(b.numeroFicha) || 0;
+      return fichaB - fichaA; // Orden descendente (mayor a menor)
+    });
+  };
+
+  // Actualizar descripciones cuando cambien las referencias maestras
   useEffect(() => {
     if (referencesMaster.length > 0 && registros.length > 0) {
-      setRegistros(prev => prev.map(r => {
+      setRegistros(prev => sortRegistrosByFicha(prev.map(r => {
         const referenceData = referencesMaster.find(ref => ref.id === r.referencia);
-        return {
-          ...r,
-          descripcion: referenceData?.description || r.descripcion
-        };
-      }));
+        const newDescription = referenceData?.description || '';
+        // Solo actualizar si la descripción realmente cambió
+        return r.descripcion !== newDescription ? { ...r, descripcion: newDescription } : r;
+      })));
     }
-  }, [referencesMaster]);
+  }, [referencesMaster]); // Solo cuando cambien las referencias maestras
 
   // Carga inicial desde la BD
   useEffect(() => {
@@ -63,7 +72,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
             saved: true
           };
         });
-        setRegistros(loaded);
+        setRegistros(sortRegistrosByFicha(loaded));
         setLoading(false);
       }
     }).catch(() => {
@@ -85,6 +94,15 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   }, [hasUnsavedChanges]);
 
   const handleAddNew = () => {
+    // Si hay una fila en edición, completar la edición primero
+    if (editingId) {
+      const editingRow = registros.find(r => r.id === editingId);
+      if (editingRow && (!editingRow.numeroFicha.trim() || !editingRow.referencia.trim() || !editingRow.cantidadCortada || editingRow.cantidadCortada <= 0)) {
+        alert('Por favor completa todos los campos de la fila en edición antes de agregar una nueva.');
+        return;
+      }
+    }
+
     const newRegistro: RegistroCorte = {
       id: `temp_${Date.now()}`,
       numeroFicha: '',
@@ -94,13 +112,21 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       cantidadCortada: 0,
       saved: false,
     };
-    setRegistros(prev => [newRegistro, ...prev]);
+    setRegistros(prev => sortRegistrosByFicha([newRegistro, ...prev]));
     setEditingId(newRegistro.id);
     setHasUnsavedChanges(true);
   };
 
   const handleFieldChange = (id: string, field: string, value: any) => {
-    setRegistros(prev => prev.map(r => r.id === id ? { ...r, [field]: value } : r));
+    setRegistros(prev => {
+      const updated = prev.map(r => 
+        r.id === id 
+          ? { ...r, [field]: value, saved: false } // Marcar como no guardado cuando se edita
+          : r
+      );
+      // Si se cambió el número de ficha, reordenar
+      return field === 'numeroFicha' ? sortRegistrosByFicha(updated) : updated;
+    });
     setHasUnsavedChanges(true);
   };
 
@@ -108,7 +134,12 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
     const referenceData = referencesMaster.find(ref => ref.id === value);
     setRegistros(prev => prev.map(r =>
       r.id === id
-        ? { ...r, referencia: value, descripcion: referenceData?.description || r.descripcion }
+        ? { 
+            ...r, 
+            referencia: value, 
+            descripcion: referenceData?.description || '', // Limpiar descripción si no existe la referencia
+            saved: false // Marcar como no guardado cuando se edita
+          }
         : r
     ));
     setHasUnsavedChanges(true);
@@ -117,32 +148,84 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   const handleSaveAll = async () => {
     const unsaved = registros.filter(r => !r.saved);
 
+    // Validación mejorada con mensajes específicos
     for (const r of unsaved) {
-      if (!r.numeroFicha || !r.referencia || !r.cantidadCortada) {
-        alert('Por favor completa todos los campos requeridos antes de guardar');
+      if (!r.numeroFicha.trim()) {
+        alert(`Error: El campo "N° DE FICHA" es requerido en una de las filas.`);
+        return;
+      }
+      if (!r.referencia.trim()) {
+        alert(`Error: El campo "REF" es requerido en la fila con ficha "${r.numeroFicha}".`);
+        return;
+      }
+      if (!r.cantidadCortada || r.cantidadCortada <= 0) {
+        alert(`Error: El campo "CANT. CORTADA" debe ser mayor a 0 en la fila con ficha "${r.numeroFicha}".`);
+        return;
+      }
+      // Validar que la referencia exista en referencesMaster
+      const referenceExists = referencesMaster.find(ref => ref.id === r.referencia);
+      if (!referenceExists) {
+        alert(`Error: La referencia "${r.referencia}" no existe en el catálogo de productos (fila con ficha "${r.numeroFicha}").`);
         return;
       }
     }
 
-    setLoading(true);
+    setSaving(true);
     try {
+      // Guardar cada registro y actualizar el estado local
       for (const r of unsaved) {
         const { id, saved, ...data } = r;
+        
         if (id.startsWith('temp_')) {
-          await api.createCorteRegistro(data);
+          const response = await api.createCorteRegistro(data);
+          
+          // Verificar si hubo error
+          if (!response.success) {
+            throw new Error(response.message || 'Error al crear el registro');
+          }
+          
+          // Actualizar el registro local con el ID real de la BD
+          setRegistros(prev => sortRegistrosByFicha(prev.map(reg => 
+            reg.id === id 
+              ? { ...reg, id: response.data?.id || id, saved: true }
+              : reg
+          )));
         } else {
-          await api.updateCorteRegistro(id, data);
+          const response = await api.updateCorteRegistro(id, data);
+          
+          // Verificar si hubo error
+          if (!response.success) {
+            throw new Error(response.message || 'Error al actualizar el registro');
+          }
+          
+          // Marcar como guardado
+          setRegistros(prev => sortRegistrosByFicha(prev.map(reg => 
+            reg.id === id 
+              ? { ...reg, saved: true }
+              : reg
+          )));
         }
       }
-      // Recargar
-      const data = await api.getCorteRegistros();
-      setRegistros(data.map((r: any) => ({ ...r, saved: true })));
+      
       setEditingId(null);
       setHasUnsavedChanges(false);
-    } catch {
-      alert('Error al guardar los registros');
+      
+      alert(`${unsaved.length} registro(s) guardado(s) exitosamente.`);
+    } catch (error) {
+      console.error('❌ Error completo al guardar:', error);
+      console.error('❌ Stack trace:', error.stack);
+      
+      // Mostrar error más específico
+      let errorMessage = 'Error al guardar los registros. ';
+      if (error.message) {
+        errorMessage += `Detalle: ${error.message}`;
+      } else {
+        errorMessage += 'Por favor intenta nuevamente.';
+      }
+      
+      alert(errorMessage);
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -153,7 +236,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       if (editingId === id) setEditingId(null);
       return;
     }
-    setLoading(true);
+    setSaving(true);
     try {
       await api.deleteCorteRegistro(id);
       setRegistros(prev => prev.filter(r => r.id !== id));
@@ -161,7 +244,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
     } catch {
       alert('Error al eliminar el registro');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
@@ -178,7 +261,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         saved: false,
       };
     });
-    setRegistros(prev => [...newRegistros, ...prev]);
+    setRegistros(prev => sortRegistrosByFicha([...newRegistros, ...prev]));
     setHasUnsavedChanges(true);
     alert(`${rows.length} registros importados. Revisa y guarda cuando estés listo.`);
   };
@@ -188,9 +271,14 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
     r.numeroFicha.toLowerCase().includes(searchNumeroFicha.toLowerCase())
   );
 
+  // Solo resetear paginación cuando cambian los filtros, no cuando se agregan filas
   useEffect(() => {
-    cortesPagination.goToPage(1);
-  }, [filteredRegistros.length]);
+    // Solo ir a página 1 si realmente cambió el filtro (no por agregar filas)
+    const hasActiveFilters = searchReferencia.trim() !== '' || searchNumeroFicha.trim() !== '';
+    if (hasActiveFilters) {
+      cortesPagination.goToPage(1);
+    }
+  }, [searchReferencia, searchNumeroFicha]);
 
   const totalPages = Math.ceil(filteredRegistros.length / cortesPagination.pagination.limit) || 1;
   const paginatedRegistros = filteredRegistros.slice(
@@ -269,15 +357,15 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
             {/* Botón Guardar */}
             <button
               onClick={handleSaveAll}
-              disabled={!hasUnsavedChanges}
+              disabled={!hasUnsavedChanges || saving}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md ${
-                hasUnsavedChanges
+                hasUnsavedChanges && !saving
                   ? 'bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
               <Save className="w-4 h-4" />
-              Guardar
+              {saving ? 'Guardando...' : 'Guardar'}
             </button>
           </div>
         </div>

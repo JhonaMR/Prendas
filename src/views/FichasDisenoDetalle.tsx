@@ -166,7 +166,18 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                         <p className="text-slate-500 font-bold text-xs mt-1">Diseñadora: {disenadoraNombre}{fichaExistente?.importada && <span className="ml-2 text-blue-600">• Importada a Costos</span>}</p>
                     </div>
                 </div>
-                {hasUnsavedChanges && (<div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>)}
+                <div className="flex items-center gap-3">
+                    {hasUnsavedChanges && (<div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>)}
+                    {canEdit && (
+                        <button 
+                            onClick={handleGuardar} 
+                            disabled={isLoading} 
+                            className="px-4 py-2 bg-gradient-to-r from-pink-600 to-pink-500 text-white font-black rounded-xl uppercase text-xs hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isLoading ? 'GUARDANDO...' : 'GUARDAR'}
+                        </button>
+                    )}
+                </div>
             </div>
 
             {isImportada && !isAdminOrSoporte && (

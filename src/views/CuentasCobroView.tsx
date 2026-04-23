@@ -436,7 +436,22 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
 
             {/* Concepto general */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-2">
-              <h2 className="text-xs font-black text-center text-slate-500 uppercase tracking-widest">Concepto general</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest">Concepto general</h2>
+                <button
+                  onClick={() => {
+                    const textoArticulo383 = "Me permito certificar según articulo 383, bajo la gravedad de juramento: Que como persona natural mis ingresos provienen de honorarios y/o compensación de servicios personales; adicionalmente no he contratado o vinculado dos (2) o más trabajadores asociados a la actividad que desarrollo.";
+                    setConcepto(textoArticulo383);
+                  }}
+                  className="flex items-center gap-1 bg-sky-100 hover:bg-sky-200 text-sky-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+                  title="Agregar certificación artículo 383"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3-6h.008v.008H15.75V12zm0 3h.008v.008H15.75V15zm0 3h.008v.008H15.75V18z" />
+                  </svg>
+                  Ley 383
+                </button>
+              </div>
               <textarea
                 value={concepto}
                 onChange={e => setConcepto(e.target.value)}
@@ -591,8 +606,8 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 {/* Concepto general */}
                 {concepto && (
                   <div>
-                    <p className="font-black text-[11px] uppercase border-b border-slate-300 pb-1 mb-1">La suma de:</p>
-                    <p className="text-[11px] border border-slate-200 p-2 rounded">{concepto}</p>
+                    <p className="font-black text-[11px] text-center uppercase border-b border-slate-300 pb-1 mb-1">Detalle adicional:</p>
+                    <p className="text-[9px] border border-slate-200 p-2 rounded text-justify leading-tight">{concepto}</p>
                   </div>
                 )}
 

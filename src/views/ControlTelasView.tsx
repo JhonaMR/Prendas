@@ -342,8 +342,8 @@ const TelaProduccionTable: React.FC<{ onBack: () => void; user: User }> = ({ onB
                     <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => canEdit && updateRow(row.id, 'subtotal', v)} cls={inputCls + (!canEdit ? ' pointer-events-none' : '')} /></td>
                     <td className={`${tdCls} text-right text-slate-500 whitespace-nowrap`}>{fmt(row.iva)}</td>
-                    <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalKilos)}</td>
-                    <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalMetros)}</td>
+                    <td className={`${tdCls} text-center font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalKilos)}</td>
+                    <td className={`${tdCls} text-center font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.precioTotalMetros)}</td>
                     <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => canEdit && updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-pink-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
                     <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={`${tdCls} text-center`}>
@@ -561,8 +561,8 @@ const TelaMuestrasTable: React.FC<{ onBack: () => void; user: User }> = ({ onBac
                     <td className={`${tdCls} text-center`}><input className={`${inputCls} text-center`} type="number" value={row.rdmto} onChange={e => updateRow(row.id, 'rdmto', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={tdCls}><NetoInput value={row.subtotal} onChange={v => canEdit && updateRow(row.id, 'subtotal', v)} cls={inputCls + (!canEdit ? ' pointer-events-none' : '')} /></td>
                     <td className={`${tdCls} text-right text-slate-500 whitespace-nowrap`}>{fmt(row.iva)}</td>
-                    <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioKilos)}</td>
-                    <td className={`${tdCls} text-right font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioMetros)}</td>
+                    <td className={`${tdCls} text-center font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioKilos)}</td>
+                    <td className={`${tdCls} text-center font-semibold text-slate-800 whitespace-nowrap`}>{fmt(row.totalPrecioMetros)}</td>
                     <td className={tdCls}><TextAutocomplete value={row.proveedor} onChange={v => canEdit && updateRow(row.id, 'proveedor', v)} suggestions={proveedorSuggestions} placeholder="" className={`text-[13px] border-none outline-none bg-transparent ${canEdit ? 'focus:ring-1 focus:ring-inset focus:ring-purple-300' : 'pointer-events-none'} rounded-sm font-normal`} /></td>
                     <td className={tdCls}><input className={inputCls} type="date" value={row.fechaCompra} onChange={e => updateRow(row.id, 'fechaCompra', e.target.value)} readOnly={!canEdit} /></td>
                     <td className={tdCls}><input className={inputCls + ' text-left'} value={row.facturaNo} onChange={e => updateRow(row.id, 'facturaNo', e.target.value)} readOnly={!canEdit} /></td>
@@ -743,8 +743,8 @@ const BuscarTelaModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                           <td className="px-3 py-2 text-center"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.undMedida === 'K' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>{r.undMedida}</span></td>
                           <td className="px-3 py-2 text-center text-slate-600 text-sm">{isM ? '—' : (r.rdmto || '—')}</td>
                           <td className="px-3 py-2 text-right text-slate-700 text-sm">{fmtModal(r.subtotal)}</td>
-                          <td className="px-3 py-2 text-right text-slate-700 text-sm">{fmtModal(metros)}</td>
-                          <td className="px-3 py-2 text-right text-slate-700 text-sm">{isM ? '—' : fmtModal(kilos)}</td>
+                          <td className="px-3 py-2 text-center text-slate-700 text-sm">{fmtModal(metros)}</td>
+                          <td className="px-3 py-2 text-center text-slate-700 text-sm">{isM ? '—' : fmtModal(kilos)}</td>
                           <td className="px-3 py-2 text-slate-600 text-sm">{r.proveedor}</td>
                           <td className="px-3 py-2 text-slate-500 text-xs whitespace-nowrap">{r.fechaCompra || '—'}</td>
                         </tr>
@@ -787,8 +787,8 @@ const BuscarTelaModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ i
                           <td className="px-3 py-2 text-center"><span className={`px-2 py-0.5 rounded-full text-xs font-bold ${r.undMedida === 'K' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>{r.undMedida}</span></td>
                           <td className="px-3 py-2 text-center text-slate-600 text-sm">{isM ? '—' : (r.rdmto || '—')}</td>
                           <td className="px-3 py-2 text-right text-slate-700 text-sm">{fmtModal(r.subtotal)}</td>
-                          <td className="px-3 py-2 text-right text-slate-700 text-sm">{fmtModal(metros)}</td>
-                          <td className="px-3 py-2 text-right text-slate-700 text-sm">{isM ? '—' : fmtModal(kilos)}</td>
+                          <td className="px-3 py-2 text-center text-slate-700 text-sm">{fmtModal(metros)}</td>
+                          <td className="px-3 py-2 text-center text-slate-700 text-sm">{isM ? '—' : fmtModal(kilos)}</td>
                           <td className="px-3 py-2 text-slate-600 text-sm">{r.proveedor}</td>
                           <td className="px-3 py-2 text-slate-500 text-xs whitespace-nowrap">{r.fechaCompra || '—'}</td>
                         </tr>

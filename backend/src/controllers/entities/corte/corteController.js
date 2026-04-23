@@ -8,7 +8,7 @@ exports.getCorteRegistros = async (req, res) => {
     const offset = (page - 1) * limit;
 
     const registros = await db.query(
-      'SELECT * FROM corte_registros ORDER BY fecha_corte DESC LIMIT $1 OFFSET $2',
+      'SELECT * FROM corte_registros ORDER BY numero_ficha DESC LIMIT $1 OFFSET $2',
       [parseInt(limit), offset]
     );
 
@@ -74,9 +74,6 @@ exports.createCorteRegistro = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating corte registro:', error);
-    if (error.code === '23505') {
-      return res.status(400).json({ success: false, message: 'El número de ficha ya existe' });
-    }
     res.status(500).json({ success: false, message: 'Error creating registro' });
   }
 };

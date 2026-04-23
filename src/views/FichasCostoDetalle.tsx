@@ -153,8 +153,17 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="flex items-center gap-3">
                     {hasUnsavedChanges && <div className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl"><div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
                     <div className="flex gap-2">
+                        {canEdit && (
+                            <button 
+                                onClick={handleGuardar} 
+                                disabled={isLoading} 
+                                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded-xl uppercase text-xs hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isLoading ? 'GUARDANDO...' : 'GUARDAR'}
+                            </button>
+                        )}
                         <button className="px-4 py-2 bg-yellow-500 text-white font-black rounded-xl uppercase text-xs">Costeo Inicial</button>
-                        {[1, 2, 3, 4].map(num => (
+                        {[1, 2, 3, 4, 5].map(num => (
                             <button key={num}
                         onClick={() => {
                                     const navegar = () => num <= numCortes ? onNavigate('fichas-corte-detalle', { referencia, numeroCorte: num }) : (num === numCortes + 1 ? setShowModalCorte(true) : null);
