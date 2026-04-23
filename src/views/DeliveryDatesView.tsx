@@ -246,9 +246,9 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     const pending = state.deliveryDates.filter(d => !d.deliveryDate);
 
     const highPriority = pending.filter(d => {
-      const expected = new Date(d.expectedDate);
+      const sendDate = new Date(d.sendDate);
       const today = new Date();
-      const diff = Math.round((today.getTime() - expected.getTime()) / (1000 * 60 * 60 * 24));
+      const diff = Math.round((today.getTime() - sendDate.getTime()) / (1000 * 60 * 60 * 24));
       return diff > 10;
     }).length;
 
@@ -281,9 +281,9 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
     if (filterHighPriority) {
       data = data.filter(d => {
         if (d.deliveryDate) return false; // Solo pendientes
-        const expected = new Date(d.expectedDate);
+        const sendDate = new Date(d.sendDate);
         const today = new Date();
-        const diff = Math.round((today.getTime() - expected.getTime()) / (1000 * 60 * 60 * 24));
+        const diff = Math.round((today.getTime() - sendDate.getTime()) / (1000 * 60 * 60 * 24));
         return diff > 10;
       });
     }
@@ -508,7 +508,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
         >
           <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2">Lotes de atención prioritaria</p>
           <p className="text-5xl font-black text-red-700 text-center">{metrics.highPriority}</p>
-          <p className="text-[10px] font-bold text-red-500 uppercase mt-1 text-center">Lotes con 10 días de retraso</p>
+          <p className="text-[10px] font-bold text-red-500 uppercase mt-1 text-center">Lotes enviados hace más de 10 días</p>
         </button>
 
         <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border border-yellow-200">
