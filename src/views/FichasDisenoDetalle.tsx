@@ -144,7 +144,6 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 alert('✅ Ficha guardada exitosamente');
                 const fichas = await apiFichas.getFichasDiseno();
                 updateState(prev => ({ ...prev, fichasDiseno: fichas }));
-                onNavigate('fichas-diseno');
             } else alert('❌ Error al guardar: ' + result.message);
         } catch { alert('❌ Error de conexión'); }
         finally { setIsLoading(false); }
