@@ -45,6 +45,12 @@ const GeneralUserLayout: React.FC<GeneralUserLayoutProps> = ({ user, onNavigate 
       description: 'Ver estado del inventario'
     },
     {
+      id: 'salidasBodega',
+      label: 'Salidas de Bodega',
+      icon: <Icons.Dispatch />,
+      description: 'Registrar salidas de bodega'
+    },
+    {
       id: 'orders',
       label: 'Pedidos',
       icon: <Icons.Orders />,

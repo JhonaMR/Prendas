@@ -64,6 +64,7 @@ const navGroups: NavGroup[] = [
       { id: 'dispatch',        label: 'Despachos',               icon: <Icons.Dispatch />,        description: 'Despachar mercancía' },
       { id: 'returnReception', label: 'Devolución de Mercancía', icon: <Icons.ReturnReception />, description: 'Registrar devoluciones' },
       { id: 'inventory',       label: 'Inventario',              icon: <Icons.Inventory />,       description: 'Ver inventario' },
+      { id: 'salidasBodega',   label: 'Salidas de Bodega',       icon: <Icons.Dispatch />,        description: 'Registrar salidas de bodega' },
     ],
   },
   {

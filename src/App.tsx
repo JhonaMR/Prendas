@@ -1267,26 +1267,24 @@ const App: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <ClockDisplay />
-          {/* Toggle modo oscuro — Soporte y Admin */}
-          {(user?.role === UserRole.SOPORTE || user?.role === UserRole.ADMIN) && (
-            <button
-              onClick={toggleDark}
-              title={isDark ? 'Modo claro' : 'Modo oscuro'}
-              className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-inner flex-shrink-0 ${
-                isDark
-                  ? 'bg-gradient-to-r from-violet-600 to-purple-500'
-                  : 'bg-slate-200'
-              }`}
-            >
-              <span className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-xs transition-all duration-300 ${
-                isDark
-                  ? 'translate-x-7 bg-white text-violet-600'
-                  : 'translate-x-0 bg-white text-slate-400'
-              }`}>
-                {isDark ? '🌙' : '☀️'}
-              </span>
-            </button>
-          )}
+          {/* Toggle modo oscuro — Todos los usuarios */}
+          <button
+            onClick={toggleDark}
+            title={isDark ? 'Modo claro' : 'Modo oscuro'}
+            className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-inner flex-shrink-0 ${
+              isDark
+                ? 'bg-gradient-to-r from-violet-600 to-purple-500'
+                : 'bg-slate-200'
+            }`}
+          >
+            <span className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-xs transition-all duration-300 ${
+              isDark
+                ? 'translate-x-7 bg-white text-violet-600'
+                : 'translate-x-0 bg-white text-slate-400'
+            }`}>
+              {isDark ? '🌙' : '☀️'}
+            </span>
+          </button>
           <button 
             onClick={() => window.location.reload()}
             className={`p-3 rounded-2xl transition-all shadow-sm flex items-center justify-center ${
