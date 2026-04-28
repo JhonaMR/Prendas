@@ -2177,6 +2177,59 @@ class ApiService {
       return data.data || [];
     } catch (error) { console.error('Error buscando transportes por referencia:', error); return []; }
   }
+
+  // ==================== SALIDAS DE BODEGA ====================
+
+  async getSalidasBodega(): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/salidas-bodega`, { headers: this.getAuthHeaders() });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) { console.error('Error obteniendo salidas de bodega:', error); return []; }
+  }
+
+  async createSalidaBodega(salida: any): Promise<any> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/salidas-bodega`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(salida),
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message || 'Error al crear salida' }; }
+  }
+
+  async createSalidasBodegaBatch(rows: any[]): Promise<any> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/salidas-bodega/batch`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ rows }),
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message || 'Error en carga masiva' }; }
+  }
+
+  async updateSalidaBodegaDevolucion(id: string, fechaDevolucion: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/salidas-bodega/${id}/devolucion`, {
+        method: 'PATCH',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ fechaDevolucion }),
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message || 'Error al actualizar devolución' }; }
+  }
+
+  async deleteSalidaBodega(id: string): Promise<any> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/salidas-bodega/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } catch (error: any) { return { success: false, message: error.message || 'Error al eliminar salida' }; }
+  }
 }
 
 // ==================== ADAPTADORES PARA HOOKS ====================

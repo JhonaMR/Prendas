@@ -1,23 +1,28 @@
 import React, { useContext } from 'react';
 import { useChat } from '../../hooks/useChat';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export const ChatFloatingButton: React.FC = () => {
+  const { isDark } = useDarkMode();
   const { openContactsModal, pendingUserIds } = useChat();
   const unreadCount = pendingUserIds.size;
 
   return (
     <button
       onClick={openContactsModal}
-      className="
+      className={`
         fixed bottom-4 right-4 z-50
         w-14 h-14 rounded-full
-        bg-blue-500 hover:bg-blue-600
         text-white shadow-lg
         flex items-center justify-center
         transition-all duration-200
         hover:scale-110
         active:scale-95
-      "
+        ${isDark 
+          ? 'bg-blue-500 hover:bg-blue-600' 
+          : 'bg-blue-500 hover:bg-blue-600'
+        }
+      `}
       title="Abrir chat"
     >
       {/* Chat icon */}

@@ -4,9 +4,10 @@ import { ChatMessage } from '../../context/ChatContext';
 interface MessageProps {
   message: ChatMessage;
   isOwn: boolean;
+  isDark?: boolean;
 }
 
-export const Message: React.FC<MessageProps> = ({ message, isOwn }) => {
+export const Message: React.FC<MessageProps> = ({ message, isOwn, isDark = false }) => {
   const formatTime = (date: Date) => {
     const d = new Date(date);
     return d.toLocaleTimeString('es-ES', {
@@ -20,20 +21,26 @@ export const Message: React.FC<MessageProps> = ({ message, isOwn }) => {
       <div
         className={`
           max-w-[85%] px-4 py-2 rounded-2xl relative
+          transition-all
           ${isOwn
             ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md shadow-blue-500/20 rounded-br-sm'
-            : 'bg-white text-gray-700 shadow-sm border border-gray-100 rounded-bl-sm'
+            : 'bg-gray-100 text-gray-700 shadow-sm border border-gray-200 rounded-bl-sm'
           }
-          transition-transform hover:scale-[1.01]
+          hover:scale-[1.01]
         `}
       >
-        <p className={`break-words text-[15px] leading-relaxed ${isOwn ? 'text-white/95' : 'text-gray-700'}`}>
+        <p className={`break-words text-[15px] leading-relaxed transition-colors ${isOwn ? 'text-white/95' : 'text-gray-700'}`}>
           {message.content}
         </p>
         <div
           className={`
             text-[10px] mt-1.5 flex items-center justify-end gap-1
-            ${isOwn ? 'text-blue-100 font-medium' : 'text-gray-400 font-medium'}
+            font-medium
+            transition-colors
+            ${isOwn 
+              ? 'text-blue-100' 
+              : 'text-gray-500'
+            }
           `}
         >
           <span>{formatTime(message.timestamp)}</span>

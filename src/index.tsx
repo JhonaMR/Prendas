@@ -2,6 +2,7 @@ import "./index.css";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { DarkModeProvider } from './context/DarkModeContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -11,6 +12,8 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <DarkModeProvider>
+      <App />
+    </DarkModeProvider>
   </React.StrictMode>
 );

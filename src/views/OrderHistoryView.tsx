@@ -8,6 +8,7 @@ import usePagination from '../hooks/usePagination';
 import { useBrand } from '../hooks/useBrand';
 import { exportOrderToExcel } from '../utils/exportOrderExcel';
 import { exportOrderToPdf } from '../utils/exportOrderPdf';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface OrderHistoryViewProps {
   state: AppState;
@@ -18,6 +19,7 @@ interface OrderHistoryViewProps {
 
 const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser, onOrderUpdate, onOrderDelete }) => {
 
+  const { isDark } = useDarkMode();
   const [filterSeller, setFilterSeller] = useState('');
   const [filterYear, setFilterYear] = useState('');
   const [filterCorreria, setFilterCorreria] = useState('');
@@ -178,22 +180,22 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   }, [state.orders, state.correrias, filterSeller, filterYear, filterCorreria, filterClient]);
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className={`space-y-8 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Historial de Pedidos</h2>
-          <p className="text-slate-400 font-medium">Registro global de ventas tabuladas</p>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Historial de Pedidos</h2>
+          <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Registro global de ventas tabuladas</p>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-pink-50 rounded-[32px] shadow-lg border-2 border-blue-200 p-6 md:p-8">
+      <div className={`rounded-[32px] shadow-lg p-6 md:p-8 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-900/30 to-pink-900/30 border-violet-700' : 'bg-gradient-to-r from-blue-50 to-pink-50 border-blue-200'} border-2`}>
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-4">
           <div className="flex-1 min-w-[200px] space-y-2">
-            <label className="text-[10px] font-black text-blue-600 uppercase tracking-widest px-4 block">👤 Vendedor</label>
+            <label className={`text-[10px] font-black uppercase tracking-widest px-4 block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>👤 Vendedor</label>
             <select
               value={filterSeller}
               onChange={e => setFilterSeller(e.target.value)}
-              className="w-full px-4 py-3 bg-white border-2 border-blue-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 transition-all shadow-sm hover:border-blue-300"
+              className={`w-full px-4 py-3 rounded-2xl font-bold text-sm transition-all transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-100 focus:ring-4 focus:ring-violet-600 focus:border-violet-500' : 'bg-white border-2 border-blue-200 text-slate-800 focus:ring-4 focus:ring-blue-100 focus:border-blue-400'} shadow-sm hover:border-opacity-75`}
             >
               <option value="">Todos los vendedores</option>
               {state.sellers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -201,18 +203,18 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
           </div>
 
           <div className="flex-1 min-w-[150px] space-y-2">
-            <label className="text-[10px] font-black text-pink-600 uppercase tracking-widest px-4 block">📅 Año</label>
+            <label className={`text-[10px] font-black uppercase tracking-widest px-4 block transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-600'}`}>📅 Año</label>
             <input
               type="number"
               value={filterYear}
               onChange={e => setFilterYear(e.target.value)}
               placeholder="Ej: 2025"
-              className="w-full px-4 py-3 bg-white border-2 border-pink-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-pink-100 focus:border-pink-400 transition-all shadow-sm hover:border-pink-300"
+              className={`w-full px-4 py-3 rounded-2xl font-bold text-sm transition-all transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-pink-600 text-violet-100 focus:ring-4 focus:ring-pink-600 focus:border-pink-500 placeholder:text-violet-400' : 'bg-white border-2 border-pink-200 text-slate-800 focus:ring-4 focus:ring-pink-100 focus:border-pink-400 placeholder:text-slate-400'} shadow-sm hover:border-opacity-75`}
             />
           </div>
 
           <div className="flex-1 min-w-[200px] space-y-2">
-            <label className="text-[10px] font-black text-purple-600 uppercase tracking-widest px-4 block">🎯 Correría</label>
+            <label className={`text-[10px] font-black uppercase tracking-widest px-4 block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-purple-600'}`}>🎯 Correría</label>
             <CorreriaAutocomplete
               value={filterCorreria}
               correrias={state.correrias}
@@ -225,7 +227,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
           </div>
 
           <div className="flex-1 min-w-[200px] space-y-2">
-            <label className="text-[10px] font-black text-orange-600 uppercase tracking-widest px-4 block">🏪 Cliente</label>
+            <label className={`text-[10px] font-black uppercase tracking-widest px-4 block transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>🏪 Cliente</label>
             <ClientAutocomplete
               value={filterClient}
               clients={state.clients}
@@ -239,20 +241,20 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
 
           <button
             onClick={() => { setFilterSeller(''); setFilterYear(''); setFilterCorreria(''); setFilterClient(''); setClientSearch(''); setCorreriaSearch(''); }}
-            className="px-8 py-3 bg-white text-slate-600 font-black rounded-2xl text-sm uppercase border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap"
+            className={`px-8 py-3 font-black rounded-2xl text-sm uppercase border-2 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200 border-violet-600 hover:bg-[#6a5a85]' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:border-slate-300'}`}
           >
             ✕ Limpiar
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className={`grid grid-cols-1 gap-4 transition-colors duration-300`}>
         {filteredOrders.length === 0 ? (
-          <div className="bg-white p-20 rounded-[40px] text-center border border-slate-100 flex flex-col items-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mb-4">
+          <div className={`p-20 rounded-[40px] text-center flex flex-col items-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-600' : 'bg-slate-50 text-slate-200'}`}>
               <Icons.History />
             </div>
-            <p className="text-slate-400 font-bold italic">No hay pedidos con los filtros seleccionados</p>
+            <p className={`font-bold italic transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No hay pedidos con los filtros seleccionados</p>
           </div>
         ) : (
           <>
@@ -263,27 +265,27 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               const isExpanded = expandedId === o.id;
 
               return (
-                <div key={o.id} className="bg-white rounded-[24px] shadow-sm border border-slate-100 overflow-hidden transition-all group">
+                <div key={o.id} className={`rounded-[24px] shadow-sm overflow-hidden transition-all group transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
                   <div
-                    className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer hover:bg-slate-50/50"
+                    className={`p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}
                     onClick={() => setExpandedId(isExpanded ? null : o.id)}
                   >
                     {/* Lado izquierdo: info del cliente, truncado */}
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-black uppercase">{correria?.name} {correria?.year}</span>
-                        <span className="text-[10px] text-slate-300 font-bold">{o.createdAt ? o.createdAt.slice(0, 10) + ' T ' + o.createdAt.slice(11, 16) : ''}</span>
+                        <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase transition-colors duration-300 ${isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-600'}`}>{correria?.name} {correria?.year}</span>
+                        <span className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>{o.createdAt ? o.createdAt.slice(0, 10) + ' T ' + o.createdAt.slice(11, 16) : ''}</span>
                       </div>
                       <div className="flex items-baseline gap-3 min-w-0">
-                        <h3 className="text-lg font-black text-slate-800 truncate">{client?.name || 'Cliente'}</h3>
-                        <span className="text-slate-300 font-bold text-xs">•</span>
-                        <span className="text-xs font-black text-blue-400">{client?.id}</span>
-                        <p className="text-xs font-medium text-slate-500 truncate">{client?.address}</p>
+                        <h3 className={`text-lg font-black truncate transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{client?.name || 'Cliente'}</h3>
+                        <span className={`font-bold text-xs transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>•</span>
+                        <span className={`text-xs font-black transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-400'}`}>{client?.id}</span>
+                        <p className={`text-xs font-medium truncate transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{client?.address}</p>
                       </div>
-                      <p className="text-[10px] font-black uppercase tracking-widest">
-                        <span className="text-pink-500">Vendedor: {seller?.name}</span>
-                        <span className="text-slate-300">   —   </span>
-                        <span className="text-violet-500">N° Pedido: {o.orderNumber ?? '-'}</span>
+                      <p className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : ''}`}>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-500'}`}>Vendedor: {seller?.name}</span>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>   —   </span>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>N° Pedido: {o.orderNumber ?? '-'}</span>
                       </p>
                     </div>
 
@@ -291,7 +293,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <button
                         onClick={(e) => { e.stopPropagation(); handleGenerateExcel(o, client, seller); }}
-                        className="px-4 py-2 bg-emerald-100 text-emerald-800 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-emerald-200 focus:ring-4 focus:ring-emerald-50 transition-all shadow-sm whitespace-nowrap"
+                        className={`px-4 py-2 font-black rounded-xl text-xs flex items-center gap-2 hover:opacity-80 focus:ring-4 transition-all shadow-sm whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-emerald-900/40 text-emerald-300 focus:ring-emerald-900/20' : 'bg-emerald-100 text-emerald-800 focus:ring-emerald-50'}`}
                         title="Generar pedido Excel"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -301,7 +303,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); handleGeneratePdf(o, client, seller); }}
-                        className="px-4 py-2 bg-red-100 text-red-700 font-black rounded-xl text-xs flex items-center gap-2 hover:bg-red-200 focus:ring-4 focus:ring-red-50 transition-all shadow-sm whitespace-nowrap"
+                        className={`px-4 py-2 font-black rounded-xl text-xs flex items-center gap-2 hover:opacity-80 focus:ring-4 transition-all shadow-sm whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-red-900/40 text-red-300 focus:ring-red-900/20' : 'bg-red-100 text-red-700 focus:ring-red-50'}`}
                         title="Generar pedido PDF"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
@@ -311,46 +313,46 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       </button>
 
                       <div className="w-[60px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">% OF</p>
-                        <p className="text-xs font-black text-blue-600">
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>% OF</p>
+                        <p className={`text-xs font-black transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>
                           {o.porcentajeOficial !== null && o.porcentajeOficial !== undefined ? o.porcentajeOficial.toFixed(2) : '0.00'}
                         </p>
                       </div>
                       <div className="w-[60px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">% RM</p>
-                        <p className="text-xs font-black text-pink-600">
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>% RM</p>
+                        <p className={`text-xs font-black transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-600'}`}>
                           {o.porcentajeRemision !== null && o.porcentajeRemision !== undefined ? o.porcentajeRemision.toFixed(2) : '0.00'}
                         </p>
                       </div>
 
                       <div className="w-[110px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Inicio Desp.</p>
-                        <p className={`text-sm font-black ${o.startDate ? 'text-blue-600' : 'text-slate-300'}`}>
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Inicio Desp.</p>
+                        <p className={`text-sm font-black transition-colors duration-300 ${o.startDate ? (isDark ? 'text-blue-300' : 'text-blue-600') : (isDark ? 'text-violet-600' : 'text-slate-300')}`}>
                           {o.startDate ? new Date(o.startDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
                         </p>
                       </div>
                       <div className="w-[110px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Límite Desp.</p>
-                        <p className={`text-sm font-black ${o.endDate ? 'text-pink-600' : 'text-slate-300'}`}>
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Límite Desp.</p>
+                        <p className={`text-sm font-black transition-colors duration-300 ${o.endDate ? (isDark ? 'text-pink-300' : 'text-pink-600') : (isDark ? 'text-violet-600' : 'text-slate-300')}`}>
                           {o.endDate ? new Date(o.endDate).toLocaleDateString('es-ES', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}
                         </p>
                       </div>
 
                       <div className="w-[90px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Resumen</p>
-                        <p className="text-sm font-black text-slate-700">{o.items.length} Refs</p>
-                        <p className="text-sm font-black text-slate-700">{o.items.reduce((a, b) => a + b.quantity, 0)} Unid.</p>
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Resumen</p>
+                        <p className={`text-sm font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{o.items.length} Refs</p>
+                        <p className={`text-sm font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{o.items.reduce((a, b) => a + b.quantity, 0)} Unid.</p>
                       </div>
                       <div className="w-[100px] text-center">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total</p>
-                        <p className="text-lg font-black text-blue-600">${o.totalValue.toLocaleString()}</p>
+                        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Valor Total</p>
+                        <p className={`text-lg font-black transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${o.totalValue.toLocaleString()}</p>
                       </div>
 
                       {isAdmin && (
                         <div className="flex items-center gap-1">
                           <button
                             onClick={(e) => { e.stopPropagation(); handleEditOrder(o); }}
-                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-blue-600 hover:text-blue-700"
+                            className={`p-2 rounded-lg transition-colors transition-colors duration-300 ${isDark ? 'hover:bg-blue-900/30 text-blue-400 hover:text-blue-300' : 'hover:bg-blue-50 text-blue-600 hover:text-blue-700'}`}
                             title="Editar pedido"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -359,7 +361,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDeleteOrder(o.id); }}
-                            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 hover:text-red-700"
+                            className={`p-2 rounded-lg transition-colors transition-colors duration-300 ${isDark ? 'hover:bg-red-900/30 text-red-400 hover:text-red-300' : 'hover:bg-red-50 text-red-600 hover:text-red-700'}`}
                             title="Eliminar pedido"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -370,7 +372,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       )}
 
                       <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                       </span>
@@ -378,39 +380,39 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                   </div>
 
                   {isExpanded && (
-                    <div className="p-8 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
-                      <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div className={`p-8 border-t animate-in slide-in-from-top-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50/50 border-slate-100'}`}>
+                      <div className={`rounded-3xl border overflow-hidden shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
                         <table className="w-full text-left text-xs">
                           <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                              <th className="px-6 py-4 font-black text-slate-400 uppercase">Referencia</th>
-                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-center">Cantidad</th>
-                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Precio Unit.</th>
-                              <th className="px-6 py-4 font-black text-slate-400 uppercase text-right">Subtotal</th>
+                            <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                              <th className={`px-6 py-4 font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Referencia</th>
+                              <th className={`px-6 py-4 font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Cantidad</th>
+                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Precio Unit.</th>
+                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Subtotal</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-50">
+                          <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700' : 'divide-slate-50'}`}>
                             {o.items.map((item, idx) => {
                               const ref = state.references.find(r => r.id === item.reference);
                               const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
                               return (
-                                <tr key={idx}>
+                                <tr key={idx} className={`transition-colors ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
                                   <td className="px-6 py-2">
-                                    <p className="font-black text-slate-800 text-sm">{item.reference}  -  <span className="font-bold text-slate-400 uppercase text-[10px]">{ref?.description}</span></p>
+                                    <p className={`font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{item.reference}  -  <span className={`font-bold uppercase text-[10px] transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{ref?.description}</span></p>
                                   </td>
-                                  <td className="px-6 py-2 text-center font-black text-slate-700 text-sm">{item.quantity}</td>
-                                  <td className="px-6 py-2 text-right font-bold text-slate-500 text-sm">${Math.round(displayPrice).toLocaleString('es-CO')}</td>
-                                  <td className="px-6 py-2 text-right font-black text-blue-600 text-sm">${Math.round(displayPrice * item.quantity).toLocaleString('es-CO')}</td>
+                                  <td className={`px-6 py-2 text-center font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{item.quantity}</td>
+                                  <td className={`px-6 py-2 text-right font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>${Math.round(displayPrice).toLocaleString('es-CO')}</td>
+                                  <td className={`px-6 py-2 text-right font-black text-sm transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${Math.round(displayPrice * item.quantity).toLocaleString('es-CO')}</td>
                                 </tr>
                               );
                             })}
                           </tbody>
                           <tfoot>
-                            <tr className="bg-slate-50/80 font-black text-slate-800">
-                              <td className="px-6 py-6 uppercase text-[9px] text-slate-400">Totales Pedido</td>
+                            <tr className={`font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-50/80 text-slate-800'}`}>
+                              <td className={`px-6 py-6 uppercase text-[9px] transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Totales Pedido</td>
                               <td className="px-6 py-6 text-center">{o.items.reduce((a, b) => a + b.quantity, 0)}</td>
                               <td></td>
-                              <td className="px-6 py-6 text-right text-blue-600 text-lg">${Math.round(o.totalValue).toLocaleString('es-CO')}</td>
+                              <td className={`px-6 py-6 text-right text-lg transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${Math.round(o.totalValue).toLocaleString('es-CO')}</td>
                             </tr>
                           </tfoot>
                         </table>
@@ -435,17 +437,17 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
 
       {/* Modal de Edición */}
       {editingOrderId && editingOrder && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-[32px] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div className="p-8 border-b border-slate-100 flex-shrink-0">
+        <div className={`fixed inset-0 flex items-center justify-center z-50 p-4 transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-black/50'}`}>
+          <div className={`rounded-[32px] shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
+            <div className={`p-8 border-b flex-shrink-0 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-white border-slate-100'}`}>
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black text-slate-800">Editar Pedido</h2>
+                <h2 className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Editar Pedido</h2>
                 <button
                   onClick={() => {
                     setEditingOrderId(null);
                     setEditingOrder(null);
                   }}
-                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  className={`transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-violet-300' : 'text-slate-400 hover:text-slate-600'}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -454,13 +456,13 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-6">
+            <div className={`flex-1 overflow-y-auto p-8 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
               {/* Items */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-black text-slate-800">Items del Pedido</h3>
+                  <h3 className={`text-lg font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Items del Pedido</h3>
                   <div className="flex items-center gap-2">
-                    <label className="text-[10px] font-black text-violet-500 uppercase tracking-widest">N° Pedido</label>
+                    <label className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>N° Pedido</label>
                     <input
                       type="number"
                       min="1"
@@ -468,14 +470,14 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       onChange={(e) => setEditingOrder({ ...editingOrder, orderNumber: e.target.value ? parseInt(e.target.value) : undefined })}
                       onFocus={(e) => e.target.select()}
                       placeholder="—"
-                      className="w-20 px-3 py-1.5 bg-violet-50 border border-violet-200 rounded-xl text-sm font-black text-violet-600 focus:ring-2 focus:ring-violet-300 text-center"
+                      className={`w-20 px-3 py-1.5 rounded-xl text-sm font-black text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-violet-900/30 border-violet-600 text-violet-200 focus:ring-violet-600' : 'bg-violet-50 border-violet-200 text-violet-600 focus:ring-violet-300'} border`}
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-[1fr_64px_96px_80px_32px] gap-2 px-4 mb-1">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Referencia</span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Cantidad</span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Precio venta</span>
+                <div className={`grid grid-cols-[1fr_64px_96px_80px_32px] gap-2 px-4 mb-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
+                  <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Referencia</span>
+                  <span className={`text-[10px] font-black uppercase tracking-widest text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Cantidad</span>
+                  <span className={`text-[10px] font-black uppercase tracking-widest text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Precio venta</span>
                   <span></span>
                   <span></span>
                 </div>
@@ -484,7 +486,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     const ref = state.references.find(r => r.id === item.reference);
                     const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
                     return (
-                      <div key={idx} className="flex items-center gap-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                      <div key={idx} className={`flex items-center gap-2 p-4 rounded-xl border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
                         <ReferenceAutocomplete
                           value={item.reference}
                           references={state.references}
@@ -496,7 +498,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                           value={item.quantity}
                           onChange={(e) => handleUpdateItemQuantity(idx, parseInt(e.target.value) || 1)}
                           onFocus={(e) => e.target.select()}
-                          className="w-16 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400 text-center"
+                          className={`w-16 px-2 py-2 rounded-lg text-sm font-bold text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-blue-400'} border`}
                           placeholder="Cant."
                         />
                         {focusedPriceIdx === idx ? (
@@ -509,20 +511,20 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             onFocus={(e) => e.target.select()}
                             onBlur={() => setFocusedPriceIdx(null)}
                             autoFocus
-                            className="w-24 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
+                            className={`w-24 px-2 py-2 rounded-lg text-sm font-bold focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-blue-400'} border`}
                           />
                         ) : (
                           <span
                             onClick={() => setFocusedPriceIdx(idx)}
-                            className="w-24 px-2 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 cursor-text inline-block text-center"
+                            className={`w-24 px-2 py-2 rounded-lg text-sm font-bold cursor-text inline-block text-center border transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100' : 'bg-white border-slate-200 text-slate-800'}`}
                           >
                             $ {Math.round(displayPrice).toLocaleString('es-CO')}
                           </span>
                         )}
-                        <span className="text-sm font-bold text-slate-600 min-w-fit">${(displayPrice * item.quantity).toLocaleString()}</span>
+                        <span className={`text-sm font-bold min-w-fit transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>${(displayPrice * item.quantity).toLocaleString()}</span>
                         <button
                           onClick={() => handleRemoveItem(idx)}
-                          className="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600 hover:text-red-700 flex-shrink-0"
+                          className={`p-2 rounded-lg transition-colors flex-shrink-0 transition-colors duration-300 ${isDark ? 'hover:bg-red-900/30 text-red-400 hover:text-red-300' : 'hover:bg-red-50 text-red-600 hover:text-red-700'}`}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -534,7 +536,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                 </div>
                 <button
                   onClick={handleAddItem}
-                  className="w-full px-4 py-3 bg-blue-50 text-blue-600 font-black rounded-xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-sm uppercase"
+                  className={`w-full px-4 py-3 font-black rounded-xl border-2 transition-colors text-sm uppercase transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-300 border-blue-600 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'}`}
                 >
                   + Agregar Referencia
                 </button>
@@ -543,21 +545,21 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               {/* Fechas */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">Fecha de Inicio</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest block text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Fecha de Inicio</label>
                   <input
                     type="date"
                     value={editingOrder.startDate ? editingOrder.startDate.slice(0, 10) : ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, startDate: e.target.value || null })}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-400'} border`}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">Fecha de Fin</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest block text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Fecha de Fin</label>
                   <input
                     type="date"
                     value={editingOrder.endDate ? editingOrder.endDate.slice(0, 10) : ''}
                     onChange={(e) => setEditingOrder({ ...editingOrder, endDate: e.target.value || null })}
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400"
+                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-400'} border`}
                   />
                 </div>
               </div>
@@ -565,7 +567,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
               {/* Porcentajes de Facturación */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">% Oficial</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest block text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>% Oficial</label>
                   <input
                     type="number"
                     step="0.01"
@@ -573,11 +575,11 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeOficial: e.target.value ? parseFloat(e.target.value) : null })}
                     onFocus={(e) => e.target.select()}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400 text-center"
+                    className={`w-full px-4 py-3 rounded-xl font-bold text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-400'} border`}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block text-center">% Remisión</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest block text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>% Remisión</label>
                   <input
                     type="number"
                     step="0.01"
@@ -585,34 +587,34 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                     onChange={(e) => setEditingOrder({ ...editingOrder, porcentajeRemision: e.target.value ? parseFloat(e.target.value) : null })}
                     onFocus={(e) => e.target.select()}
                     placeholder="0.00"
-                    className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-900 focus:ring-2 focus:ring-blue-400 text-center"
+                    className={`w-full px-4 py-3 rounded-xl font-bold text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-400'} border`}
                   />
                 </div>
               </div>
 
               {/* Total */}
-              <div className="p-4 bg-gradient-to-r from-blue-50 to-pink-50 rounded-xl border-2 border-blue-200">
+              <div className={`p-4 rounded-xl border-2 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-blue-900/30 to-pink-900/30 border-blue-600' : 'bg-gradient-to-r from-blue-50 to-pink-50 border-blue-200'}`}>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-black text-slate-600 uppercase">Valor Total</span>
-                  <span className="text-2xl font-black text-blue-600">${editingOrder.totalValue.toLocaleString()}</span>
+                  <span className={`text-sm font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>Valor Total</span>
+                  <span className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${editingOrder.totalValue.toLocaleString()}</span>
                 </div>
               </div>
             </div>
 
             {/* Acciones - Fixed at bottom */}
-            <div className="p-8 border-t border-slate-100 bg-white flex-shrink-0 flex gap-3">
+            <div className={`p-8 border-t flex-shrink-0 flex gap-3 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
               <button
                 onClick={() => {
                   setEditingOrderId(null);
                   setEditingOrder(null);
                 }}
-                className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 font-black rounded-xl hover:bg-slate-200 transition-colors text-sm uppercase"
+                className={`flex-1 px-4 py-3 font-black rounded-xl transition-colors text-sm uppercase transition-colors duration-300 ${isDark ? 'bg-slate-700 text-slate-200 hover:bg-slate-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
               >
                 Cancelar
               </button>
               <button
                 onClick={handleSaveEdit}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white font-black rounded-xl hover:bg-blue-700 transition-colors text-sm uppercase"
+                className={`flex-1 px-4 py-3 font-black rounded-xl transition-colors text-sm uppercase transition-colors duration-300 ${isDark ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
               >
                 Guardar Cambios
               </button>
@@ -634,6 +636,7 @@ const ReferenceAutocomplete: React.FC<{
   references: any[];
   onChange: (id: string) => void;
 }> = ({ value, references, onChange }) => {
+  const { isDark } = useDarkMode();
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -667,24 +670,24 @@ const ReferenceAutocomplete: React.FC<{
         onFocus={() => { setShowDropdown(true); setSearch(''); }}
         onBlur={handleBlur}
         placeholder="Buscar referencia..."
-        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-400"
+        className={`w-full px-3 py-2 rounded-lg text-sm font-bold focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-blue-400'} border`}
       />
       {showDropdown && (
         <div
-          className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-100 rounded-lg shadow-xl max-h-48 overflow-y-auto z-50"
+          className={`absolute top-full left-0 w-full mt-1 rounded-lg shadow-xl max-h-48 overflow-y-auto z-50 border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}
           onMouseDown={(e) => e.preventDefault()}
         >
           {filtered.map(r => (
             <button
               key={r.id}
               onMouseDown={() => handleSelect(r.id)}
-              className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+              className={`w-full px-4 py-3 text-left border-b transition-colors duration-300 last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700' : 'hover:bg-blue-50 border-slate-50'}`}
             >
-              <p className="font-black text-slate-800 text-sm">{r.id}</p>
-              <p className="text-[10px] text-slate-400 font-bold">{r.description}</p>
+              <p className={`font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{r.id}</p>
+              <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{r.description}</p>
             </button>
           ))}
-          {filtered.length === 0 && <p className="px-4 py-3 text-slate-400 font-bold italic text-sm">No se encontraron referencias</p>}
+          {filtered.length === 0 && <p className={`px-4 py-3 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No se encontraron referencias</p>}
         </div>
       )}
     </div>
@@ -700,6 +703,7 @@ const CorreriaAutocomplete: React.FC<{
   showDropdown: boolean;
   setShowDropdown: (show: boolean) => void;
 }> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const { isDark } = useDarkMode();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
@@ -731,25 +735,25 @@ const CorreriaAutocomplete: React.FC<{
         onFocus={() => { setShowDropdown(true); setSearch(''); }}
         onBlur={handleBlur}
         placeholder="Buscar..."
-        className="w-full px-4 py-3 bg-white border-2 border-purple-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-purple-100 focus:border-purple-400 transition-all shadow-sm hover:border-purple-300"
+        className={`w-full px-4 py-3 border-2 rounded-2xl font-bold text-sm transition-all shadow-sm hover:border-opacity-75 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-100 focus:ring-4 focus:ring-violet-600 focus:border-violet-500 placeholder:text-violet-400' : 'bg-white border-purple-200 text-slate-800 focus:ring-4 focus:ring-purple-100 focus:border-purple-400 placeholder:text-slate-400'}`}
       />
       {showDropdown && (
         <div
-          className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
+          className={`absolute top-full left-0 w-full mt-2 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50 border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}
           onMouseDown={(e) => e.preventDefault()}
         >
           {filtered.map(c => (
             <button
               key={c.id}
               onMouseDown={() => handleSelect(c.id)}
-              className="w-full px-6 py-4 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+              className={`w-full px-6 py-4 text-left border-b transition-colors duration-300 last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700' : 'hover:bg-slate-50 border-slate-50'}`}
             >
-              <p className="font-black text-slate-800">{c.name}</p>
-              <p className="text-[10px] text-slate-400 font-bold">{c.year}</p>
+              <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+              <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{c.year}</p>
             </button>
           ))}
-          {filtered.length === 0 && search.length >= 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron correrias</p>}
-          {filtered.length === 0 && search.length < 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">Escribe al menos 2 letras...</p>}
+          {filtered.length === 0 && search.length >= 2 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No se encontraron correrias</p>}
+          {filtered.length === 0 && search.length < 2 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Escribe al menos 2 letras...</p>}
         </div>
       )}
     </div>
@@ -767,6 +771,7 @@ const ClientAutocomplete: React.FC<{
   showDropdown: boolean;
   setShowDropdown: (show: boolean) => void;
 }> = ({ value, clients, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  const { isDark } = useDarkMode();
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
   const client = clients.find(c => c.id === value);
@@ -797,25 +802,25 @@ const ClientAutocomplete: React.FC<{
         onFocus={() => { setShowDropdown(true); setSearch(''); }}
         onBlur={handleBlur}
         placeholder="Buscar cliente..."
-        className="w-full px-4 py-3 bg-white border-2 border-orange-200 rounded-2xl font-bold text-sm text-slate-800 focus:ring-4 focus:ring-orange-100 focus:border-orange-400 transition-all shadow-sm hover:border-orange-300"
+        className={`w-full px-4 py-3 border-2 rounded-2xl font-bold text-sm transition-all shadow-sm hover:border-opacity-75 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-orange-600 text-violet-100 focus:ring-4 focus:ring-orange-600 focus:border-orange-500 placeholder:text-violet-400' : 'bg-white border-orange-200 text-slate-800 focus:ring-4 focus:ring-orange-100 focus:border-orange-400 placeholder:text-slate-400'}`}
       />
       {showDropdown && (
         <div
-          className="absolute top-full left-0 w-full mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50"
+          className={`absolute top-full left-0 w-full mt-2 rounded-2xl shadow-2xl max-h-60 overflow-y-auto z-50 border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}
           onMouseDown={(e) => e.preventDefault()}
         >
           {filtered.map(c => (
             <button
               key={c.id}
               onMouseDown={() => handleSelect(c.id)}
-              className="w-full px-6 py-4 text-left hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+              className={`w-full px-6 py-4 text-left border-b transition-colors duration-300 last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700' : 'hover:bg-slate-50 border-slate-50'}`}
             >
-              <p className="font-black text-slate-800">{c.name}</p>
-              <p className="text-[10px] text-slate-400 font-bold">{c.id}</p>
+              <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+              <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{c.id}</p>
             </button>
           ))}
-          {filtered.length === 0 && search.length >= 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>}
-          {filtered.length === 0 && search.length < 2 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">Escribe al menos 2 letras...</p>}
+          {filtered.length === 0 && search.length >= 2 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No se encontraron clientes</p>}
+          {filtered.length === 0 && search.length < 2 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Escribe al menos 2 letras...</p>}
         </div>
       )}
     </div>

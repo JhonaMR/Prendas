@@ -6,6 +6,7 @@ import PaginationComponent from '../components/PaginationComponent';
 import ProductoEnProcesoImportModal, { ImportedLoteRow } from '../components/ProductoEnProcesoImportModal';
 import TextAutocomplete from '../components/TextAutocomplete';
 import api from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 // ============================================================
 // TIPOS
@@ -174,12 +175,13 @@ interface CellProps {
   readOnly?: boolean;
   minWidth?: string;
   align?: 'left' | 'center';
+  isDark?: boolean;
 }
 
-const Cell: React.FC<CellProps> = ({ value, onChange, type = 'text', readOnly, minWidth = '80px', align = 'center' }) => {
+const Cell: React.FC<CellProps> = ({ value, onChange, type = 'text', readOnly, minWidth = '80px', align = 'center', isDark }) => {
   if (readOnly) {
     return (
-      <div className={`px-2 py-1 text-xs font-semibold rounded ${align === 'center' ? 'text-center' : 'text-left'}`} style={{ minWidth }}>
+      <div className={`px-2 py-1 text-xs font-semibold rounded transition-colors duration-300 ${align === 'center' ? 'text-center' : 'text-left'} ${isDark ? 'text-violet-300' : ''}`} style={{ minWidth }}>
         {value}
       </div>
     );
@@ -192,7 +194,7 @@ const Cell: React.FC<CellProps> = ({ value, onChange, type = 'text', readOnly, m
       onFocus={e => e.target.select()}
       onKeyDown={handleKeyDown}
       onWheel={type === 'number' ? e => (e.target as HTMLInputElement).blur() : undefined}
-      className={`w-full px-1 text-xs border border-transparent hover:border-slate-300 focus:border-blue-400 focus:outline-none rounded bg-transparent focus:bg-white ${align === 'center' ? 'text-center' : 'text-left'}`}
+      className={`w-full px-1 text-xs border rounded focus:outline-none transition-colors duration-300 ${align === 'center' ? 'text-center' : 'text-left'} ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 hover:border-violet-500 focus:border-violet-400 focus:bg-[#4a3a63]' : 'border-transparent hover:border-slate-300 focus:border-blue-400 bg-transparent focus:bg-white'}`}
       style={{ minWidth, height: '22px', boxSizing: 'border-box' }}
     />
   );
@@ -210,20 +212,21 @@ interface TdProps {
   className?: string;
   children: React.ReactNode;
   baseHighlight?: string;
+  isDark?: boolean;
   onContextMenu: (e: React.MouseEvent, rowId: string, fieldKey: string) => void;
   onMouseEnter: (e: React.MouseEvent, comment: string) => void;
   onMouseMove: (e: React.MouseEvent) => void;
   onMouseLeave: () => void;
 }
 
-const Td: React.FC<TdProps> = ({ rowId, fieldKey, row, className = '', children, baseHighlight, onContextMenu, onMouseEnter, onMouseMove, onMouseLeave }) => {
+const Td: React.FC<TdProps> = ({ rowId, fieldKey, row, className = '', children, baseHighlight, isDark, onContextMenu, onMouseEnter, onMouseMove, onMouseLeave }) => {
   const cellColor = row.cellHighlights[fieldKey];
   const hasComment = !!row.cellComments[fieldKey];
   const bg = cellColor ? cellHighlightClass(cellColor) : (baseHighlight || '');
 
   return (
     <td
-      className={`border border-slate-200 px-1 py-0.5 relative ${bg} ${className}`}
+      className={`border px-1 py-0.5 relative transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-200'} ${bg} ${className}`}
       onContextMenu={e => onContextMenu(e, rowId, fieldKey)}
       onMouseEnter={e => onMouseEnter(e, row.cellComments[fieldKey] || '')}
       onMouseMove={onMouseMove}
@@ -249,6 +252,7 @@ const Td: React.FC<TdProps> = ({ rowId, fieldKey, row, className = '', children,
 // ============================================================
 
 const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) => {
+  const { isDark } = useDarkMode();
   const editable = canEdit(user.role);
 
   const [rows, setRows] = useState<LoteRow[]>([]);
@@ -836,7 +840,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   const handleMouseLeaveCell = () => setTooltip(t => ({ ...t, visible: false }));
 
   const Th: React.FC<{ children: React.ReactNode; className?: string; colSpan?: number; width?: string }> = ({ children, className = '', colSpan, width }) => (
-    <th colSpan={colSpan} style={width ? { width, minWidth: width } : undefined} className={`px-2 py-1.5 text-xs font-bold text-center border border-slate-300 whitespace-nowrap ${className}`}>
+    <th colSpan={colSpan} style={width ? { width, minWidth: width } : undefined} className={`px-2 py-1.5 text-xs font-bold text-center border whitespace-nowrap transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-300'} ${className}`}>
       {children}
     </th>
   );
@@ -849,6 +853,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
   // Props compartidos para Td
   const tdHandlers = {
+    isDark,
     onContextMenu: handleContextMenu,
     onMouseEnter: handleMouseEnterCell,
     onMouseMove: handleMouseMoveCell,
@@ -856,10 +861,10 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
+    <div className={`p-4 md:p-6 space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
       {loading && (
-        <div className="flex items-center justify-center py-20 text-slate-400 text-sm gap-2">
-          <div className="w-5 h-5 border-2 border-slate-300 border-t-blue-500 rounded-full animate-spin"></div>
+        <div className={`flex items-center justify-center py-20 text-sm gap-2 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
+          <div className={`w-5 h-5 border-2 rounded-full animate-spin transition-colors duration-300 ${isDark ? 'border-violet-600 border-t-violet-300' : 'border-slate-300 border-t-blue-500'}`}></div>
           Cargando datos...
         </div>
       )}
@@ -867,7 +872,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       {/* Tooltip de comentario - portal para no afectar el layout */}
       {tooltip.visible && ReactDOM.createPortal(
         <div
-          className="fixed z-[9999] max-w-xs bg-yellow-50 border border-yellow-300 text-yellow-900 text-xs rounded shadow-lg px-3 py-2 pointer-events-none whitespace-pre-wrap"
+          className={`fixed z-[9999] max-w-xs border rounded shadow-lg px-3 py-2 pointer-events-none whitespace-pre-wrap text-xs transition-colors duration-300 ${isDark ? 'bg-violet-900/90 border-violet-700 text-violet-100' : 'bg-yellow-50 border-yellow-300 text-yellow-900'}`}
           style={{ left: tooltip.x + 14, top: tooltip.y + 14 }}
         >
           💬 {tooltip.text}
@@ -878,16 +883,16 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       {/* Context Menu - portal para no afectar el layout */}
       {ctxMenu.visible && ReactDOM.createPortal(
         <div
-          className="fixed z-[9999] bg-white border border-slate-200 rounded-xl shadow-xl py-1 min-w-[200px] text-xs"
+          className={`fixed z-[9999] rounded-xl shadow-xl py-1 min-w-[200px] text-xs border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}
           style={{ left: ctxMenu.x, top: ctxMenu.y }}
           data-ctx-menu
           onClick={e => e.stopPropagation()}
         >
           {/* Comentario */}
-          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Comentario</div>
+          <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Comentario</div>
           <button
             onClick={() => openCommentModal(ctxMenu.rowId, ctxMenu.fieldKey)}
-            className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2"
+            className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/40' : 'hover:bg-slate-50'}`}
           >
             <span>💬</span>
             {ctxHasComment ? 'Editar comentario' : 'Agregar comentario'}
@@ -895,46 +900,46 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
           {ctxHasComment && (
             <button
               onClick={() => { saveComment(ctxMenu.rowId, ctxMenu.fieldKey, ''); setCtxMenu(m => ({ ...m, visible: false })); }}
-              className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2 text-red-500"
+              className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-pink-400 hover:bg-violet-700/40' : 'text-red-500 hover:bg-slate-50'}`}
             >
               <span>🗑️</span> Eliminar comentario
             </button>
           )}
 
-          <div className="border-t border-slate-100 my-1" />
+          <div className={`border-t my-1 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`} />
 
           {/* Resaltar celda */}
-          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Resaltar celda</div>
+          <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Resaltar celda</div>
           <button onClick={() => { setCellHighlight(ctxMenu.rowId, ctxMenu.fieldKey, 'yellow'); setCtxMenu(m => ({ ...m, visible: false })); }}
-            className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2">
+            className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/40' : 'hover:bg-slate-50'}`}>
             <span className="w-3 h-3 rounded bg-yellow-200 border border-yellow-400 inline-block"></span> Amarillo
           </button>
           <button onClick={() => { setCellHighlight(ctxMenu.rowId, ctxMenu.fieldKey, 'red'); setCtxMenu(m => ({ ...m, visible: false })); }}
-            className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2">
+            className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/40' : 'hover:bg-slate-50'}`}>
             <span className="w-3 h-3 rounded bg-red-200 border border-red-400 inline-block"></span> Rojo
           </button>
           {ctxCellHighlight && (
             <button onClick={() => { setCellHighlight(ctxMenu.rowId, ctxMenu.fieldKey, null); setCtxMenu(m => ({ ...m, visible: false })); }}
-              className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2 text-slate-500">
+              className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-violet-600 hover:bg-violet-700/40' : 'text-slate-500 hover:bg-slate-50'}`}>
               ✕ Quitar resaltado celda
             </button>
           )}
 
-          <div className="border-t border-slate-100 my-1" />
+          <div className={`border-t my-1 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`} />
 
           {/* Resaltar fila */}
-          <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Resaltar fila</div>
+          <div className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Resaltar fila</div>
           <button onClick={() => { setRowHighlight(ctxMenu.rowId, 'yellow'); setCtxMenu(m => ({ ...m, visible: false })); }}
-            className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2">
+            className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/40' : 'hover:bg-slate-50'}`}>
             <span className="w-3 h-3 rounded bg-yellow-200 border border-yellow-400 inline-block"></span> Amarillo
           </button>
           <button onClick={() => { setRowHighlight(ctxMenu.rowId, 'red'); setCtxMenu(m => ({ ...m, visible: false })); }}
-            className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2">
+            className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/40' : 'hover:bg-slate-50'}`}>
             <span className="w-3 h-3 rounded bg-red-200 border border-red-400 inline-block"></span> Rojo
           </button>
           {ctxRowHighlight && (
             <button onClick={() => { setRowHighlight(ctxMenu.rowId, null); setCtxMenu(m => ({ ...m, visible: false })); }}
-              className="w-full text-left px-4 py-1.5 hover:bg-slate-50 flex items-center gap-2 text-slate-500">
+              className={`w-full text-left px-4 py-1.5 flex items-center gap-2 transition-colors duration-300 ${isDark ? 'text-violet-600 hover:bg-violet-700/40' : 'text-slate-500 hover:bg-slate-50'}`}>
               ✕ Quitar resaltado fila
             </button>
           )}
@@ -944,25 +949,25 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
 
       {/* Modal de comentario - portal para no afectar el layout */}
       {commentModal.visible && ReactDOM.createPortal(
-        <div className="fixed inset-0 bg-black/30 z-[9999] flex items-center justify-center" onMouseDown={() => setCommentModal(m => ({ ...m, visible: false }))}>
-          <div data-comment-modal className="bg-white rounded-2xl shadow-xl p-5 w-80 space-y-3" onMouseDown={e => e.stopPropagation()}>
-            <h3 className="font-bold text-slate-800 text-sm">💬 Comentario</h3>
+        <div className={`fixed inset-0 z-[9999] flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-black/50' : 'bg-black/30'}`} onMouseDown={() => setCommentModal(m => ({ ...m, visible: false }))}>
+          <div data-comment-modal className={`rounded-2xl shadow-xl p-5 w-80 space-y-3 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} onMouseDown={e => e.stopPropagation()}>
+            <h3 className={`font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>💬 Comentario</h3>
             <textarea
               ref={commentInputRef}
               value={commentModal.current}
               onChange={e => setCommentModal(m => ({ ...m, current: e.target.value }))}
-              className="w-full text-xs border border-slate-300 rounded-lg p-2 focus:outline-none focus:border-blue-400 resize-none overflow-auto"
+              className={`w-full text-xs rounded-lg p-2 focus:outline-none resize-none overflow-auto border transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400' : 'border-slate-300 focus:border-blue-400'}`}
               style={{ height: '80px' }}
               placeholder="Escribe tu comentario..."
             />
             <div className="flex gap-2 justify-end">
               <button onClick={() => setCommentModal(m => ({ ...m, visible: false }))}
-                className="px-3 py-1.5 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg">
+                className={`px-3 py-1.5 text-xs rounded-lg transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'text-slate-600 bg-slate-100 hover:bg-slate-200'}`}>
                 Cancelar
               </button>
               <button
                 onClick={() => { saveComment(commentModal.rowId, commentModal.fieldKey, commentModal.current); setCommentModal(m => ({ ...m, visible: false })); }}
-                className="px-3 py-1.5 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold">
+                className="px-3 py-1.5 text-xs text-white bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors duration-300">
                 Guardar
               </button>
             </div>
@@ -974,8 +979,8 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-black text-slate-800">Producto en Proceso</h2>
-          <p className="text-slate-400 text-sm">Control de lotes enviados a confeccionistas y demás procesos</p>
+          <h2 className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Producto en Proceso</h2>
+          <p className={`text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Control de lotes enviados a confeccionistas y demás procesos</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button
@@ -1042,14 +1047,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
             <>
             <button
               onClick={() => setHideEntregados(h => !h)}
-              className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl transition-colors border ${hideEntregados ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'}`}
+              className={`flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl transition-colors border ${hideEntregados ? 'bg-indigo-600 text-white border-indigo-600' : isDark ? 'bg-[#3d2d52] text-violet-300 border-violet-700 hover:border-violet-600' : 'bg-white text-slate-600 border-slate-300 hover:border-indigo-400'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
               </svg>
               {hideEntregados ? 'Mostrando pendientes' : 'Ocultar entregados'}
             </button>
-            <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold rounded-xl transition-colors">
+            <button onClick={clearFilters} className={`flex items-center gap-1 px-3 py-2 text-white text-xs font-semibold rounded-xl transition-colors ${isDark ? 'bg-pink-600 hover:bg-pink-700' : 'bg-red-500 hover:bg-red-600'}`}>
               <span className="text-sm font-black leading-none">✕</span>
               Limpiar filtros
             </button>
@@ -1068,14 +1073,14 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
               </button>
             )}
             {hasUnsavedChanges && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-xl border border-red-200">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-colors duration-300 ${isDark ? 'bg-pink-900/30 text-pink-300 border-pink-700' : 'bg-red-50 text-red-600 border-red-200'}`}>
+                <div className={`w-2 h-2 rounded-full animate-pulse transition-colors duration-300 ${isDark ? 'bg-pink-500' : 'bg-red-500'}`}></div>
                 <span className="font-bold text-xs">Cambios sin guardar</span>
               </div>
             )}
             <button
               onClick={handleSave}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-colors shadow ${hasUnsavedChanges ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-slate-200 text-slate-500 cursor-default'}`}
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-colors shadow ${hasUnsavedChanges ? 'bg-green-600 hover:bg-green-700 text-white' : isDark ? 'bg-violet-900/40 text-violet-600 cursor-default' : 'bg-slate-200 text-slate-500 cursor-default'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1088,54 +1093,54 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
       </div>
 
       {/* Tabla */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
-        <table className="text-xs border-collapse" style={{ minWidth: '1500px' }}>
+      <div className={`overflow-x-auto rounded-xl border shadow-sm transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-200'}`}>
+        <table className={`text-xs border-collapse transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`} style={{ minWidth: '1500px' }}>
           <thead>
             <tr>
-              <Th colSpan={12} className="bg-blue-700 text-white text-sm">LOTES - REFERENCIAS</Th>
-              <Th colSpan={3} className="bg-emerald-700 text-white text-sm">TALEGOS</Th>
-              <Th colSpan={3} className="bg-purple-700 text-white text-sm">MUESTRAS</Th>
-              <Th className="bg-orange-700 text-white text-sm">ROTACIÓN</Th>
-              {editable && <Th className="bg-slate-600 text-white text-sm"></Th>}
+              <Th colSpan={12} className={`text-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50' : 'bg-blue-700 text-white'}`}>LOTES - REFERENCIAS</Th>
+              <Th colSpan={3} className={`text-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50' : 'bg-emerald-700 text-white'}`}>TALEGOS</Th>
+              <Th colSpan={3} className={`text-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50' : 'bg-purple-700 text-white'}`}>MUESTRAS</Th>
+              <Th className={`text-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50' : 'bg-orange-700 text-white'}`}>ROTACIÓN</Th>
+              {editable && <Th className={`text-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50' : 'bg-slate-600 text-white'}`}></Th>}
             </tr>
-            <tr className="bg-slate-100">
-              <Th className="bg-slate-200" width="220px">CONFECCIONISTA</Th>
-              <Th className="bg-slate-200">REMISIÓN</Th>
-              <Th className="bg-slate-200">REF</Th>
-              <Th className="bg-slate-200">SALIDA</Th>
-              <Th className="bg-blue-100 text-blue-800">FECHA REMISIÓN</Th>
-              <Th className="bg-slate-200">ENTREGA</Th>
-              <Th className="bg-slate-200">SEGUNDAS</Th>
-              <Th className="bg-slate-200">VTA</Th>
-              <Th className="bg-slate-200">COBRADO</Th>
-              <Th className="bg-slate-200">INCOMPLETO</Th>
-              <Th className="bg-slate-200">TOTAL</Th>
-              <Th className="bg-green-100 text-green-800">FECHA LLEGADA</Th>
-              <Th className="bg-emerald-50" width="28px">SALIDA</Th>
-              <Th className="bg-emerald-50" width="28px">ENTREGA</Th>
-              <Th className="bg-emerald-50">TOTAL</Th>
-              <Th className="bg-purple-50" width="28px">SALIDA</Th>
-              <Th className="bg-purple-50" width="28px">ENTREGA</Th>
-              <Th className="bg-purple-50">TOTAL</Th>
-              <Th className="bg-orange-50">DÍAS</Th>
-              {editable && <Th className="bg-slate-100"></Th>}
+            <tr className={`transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-slate-100'}`}>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`} width="220px">CONFECCIONISTA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>REMISIÓN</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>REF</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>SALIDA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300' : 'bg-blue-100 text-blue-800'}`}>FECHA REMISIÓN</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>ENTREGA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>SEGUNDAS</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>VTA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>COBRADO</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>INCOMPLETO</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-200'}`}>TOTAL</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300' : 'bg-green-100 text-green-800'}`}>FECHA LLEGADA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-emerald-50'}`} width="28px">SALIDA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-emerald-50'}`} width="28px">ENTREGA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-emerald-50'}`}>TOTAL</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-purple-50'}`} width="28px">SALIDA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-purple-50'}`} width="28px">ENTREGA</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-purple-50'}`}>TOTAL</Th>
+              <Th className={`transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-orange-50'}`}>DÍAS</Th>
+              {editable && <Th className={`transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-slate-100'}`}></Th>}
             </tr>
             {/* Fila de filtros */}
-            <tr className="bg-slate-100">
-              <th className="border border-slate-200 px-1 py-0.5">
-                <input type="text" value={filterConfeccionista} onChange={e => setFilterConfeccionista(e.target.value)} placeholder="Filtrar..." className="w-full px-1 py-0.5 text-xs border border-slate-300 rounded focus:outline-none focus:border-blue-400 bg-white" />
+            <tr className={`transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-slate-100'}`}>
+              <th className={`border px-1 py-0.5 transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-200'}`}>
+                <input type="text" value={filterConfeccionista} onChange={e => setFilterConfeccionista(e.target.value)} placeholder="Filtrar..." className={`w-full px-1 py-0.5 text-xs rounded focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400' : 'border border-slate-300 bg-white focus:border-blue-400'}`} />
               </th>
-              <th className="border border-slate-200 px-1 py-0.5">
-                <input type="text" value={filterRemision} onChange={e => setFilterRemision(e.target.value)} placeholder="Filtrar..." className="w-full px-1 py-0.5 text-xs border border-slate-300 rounded focus:outline-none focus:border-blue-400 bg-white" />
+              <th className={`border px-1 py-0.5 transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-200'}`}>
+                <input type="text" value={filterRemision} onChange={e => setFilterRemision(e.target.value)} placeholder="Filtrar..." className={`w-full px-1 py-0.5 text-xs rounded focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400' : 'border border-slate-300 bg-white focus:border-blue-400'}`} />
               </th>
-              <th className="border border-slate-200 px-1 py-0.5">
-                <input type="text" value={filterRef} onChange={e => setFilterRef(e.target.value)} placeholder="Filtrar..." className="w-full px-1 py-0.5 text-xs border border-slate-300 rounded focus:outline-none focus:border-blue-400 bg-white" />
+              <th className={`border px-1 py-0.5 transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-200'}`}>
+                <input type="text" value={filterRef} onChange={e => setFilterRef(e.target.value)} placeholder="Filtrar..." className={`w-full px-1 py-0.5 text-xs rounded focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400' : 'border border-slate-300 bg-white focus:border-blue-400'}`} />
               </th>
-              <th className="border border-slate-200 px-1 py-0.5">
-                <input type="text" value={filterSalida} onChange={e => setFilterSalida(e.target.value)} placeholder="Filtrar..." className="w-full px-1 py-0.5 text-xs border border-slate-300 rounded focus:outline-none focus:border-blue-400 bg-white" />
+              <th className={`border px-1 py-0.5 transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-200'}`}>
+                <input type="text" value={filterSalida} onChange={e => setFilterSalida(e.target.value)} placeholder="Filtrar..." className={`w-full px-1 py-0.5 text-xs rounded focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400' : 'border border-slate-300 bg-white focus:border-blue-400'}`} />
               </th>
-              <th className="border border-slate-200 px-1 py-0.5 bg-blue-50">
-                <select value={filterFechaRemisionMes} onChange={e => setFilterFechaRemisionMes(e.target.value)} className="w-full px-1 py-0.5 text-xs border border-blue-300 rounded bg-white focus:outline-none">
+              <th className={`border px-1 py-0.5 transition-colors duration-300 ${isDark ? 'border-violet-700 bg-violet-900/40' : 'border-slate-200 bg-blue-50'}`}>
+                <select value={filterFechaRemisionMes} onChange={e => setFilterFechaRemisionMes(e.target.value)} className={`w-full px-1 py-0.5 text-xs rounded focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100' : 'border border-blue-300 bg-white'}`}>
                   <option value="">Mes</option>
                   {Array.from({ length: 12 }, (_, i) => (
                     <option key={i + 1} value={String(i + 1).padStart(2, '0')}>{new Date(2000, i).toLocaleString('es', { month: 'long' })}</option>
@@ -1189,7 +1194,7 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
               const baseRowBg = row.rowHighlight ? rowHighlightClass(row.rowHighlight) : (idx % 2 === 0 ? 'bg-white' : 'bg-slate-50');
 
               return (
-                <tr key={row.id} className={`${baseRowBg} hover:brightness-95 transition-all`} style={{ height: '28px' }}>
+                <tr key={row.id} className={`hover:brightness-95 transition-all ${isDark ? 'hover:brightness-110' : 'hover:brightness-95'}`} style={{ height: '28px' }}>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="confeccionista" row={row}>
                     {editable ? (
                       <TextAutocomplete
@@ -1203,79 +1208,79 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
                     )}
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="remision" row={row}>
-                    <Cell value={row.remision} onChange={v => updateRow(row.id, 'remision', v)} readOnly={!editable} minWidth="55px" />
+                    <Cell isDark={isDark} value={row.remision} onChange={v => updateRow(row.id, 'remision', v)} readOnly={!editable} minWidth="55px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="ref" row={row}>
-                    <Cell value={row.ref} onChange={v => updateRow(row.id, 'ref', v)} readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.ref} onChange={v => updateRow(row.id, 'ref', v)} readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="salida" row={row}>
-                    <Cell value={row.salida} onChange={v => updateRow(row.id, 'salida', v)} type="number" readOnly={!editable} minWidth="40px" />
+                    <Cell isDark={isDark} value={row.salida} onChange={v => updateRow(row.id, 'salida', v)} type="number" readOnly={!editable} minWidth="40px" />
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="fechaRemision" row={row} baseHighlight="bg-blue-50">
-                    <Cell value={row.fechaRemision} onChange={v => updateRow(row.id, 'fechaRemision', v)} type="date" readOnly={!editable} minWidth="120px" />
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="fechaRemision" row={row} baseHighlight={isDark ? "bg-violet-900/30" : "bg-blue-50"}>
+                    <Cell isDark={isDark} value={row.fechaRemision} onChange={v => updateRow(row.id, 'fechaRemision', v)} type="date" readOnly={!editable} minWidth="120px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="entrega" row={row}>
-                    <Cell value={row.entrega} onChange={v => updateRow(row.id, 'entrega', v)} type="number" readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.entrega} onChange={v => updateRow(row.id, 'entrega', v)} type="number" readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="segundas" row={row}>
-                    <Cell value={row.segundas} onChange={v => updateRow(row.id, 'segundas', v)} type="number" readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.segundas} onChange={v => updateRow(row.id, 'segundas', v)} type="number" readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="vta" row={row}>
-                    <Cell value={row.vta} onChange={v => updateRow(row.id, 'vta', v)} type="number" readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.vta} onChange={v => updateRow(row.id, 'vta', v)} type="number" readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="cobrado" row={row}>
-                    <Cell value={row.cobrado} onChange={v => updateRow(row.id, 'cobrado', v)} type="number" readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.cobrado} onChange={v => updateRow(row.id, 'cobrado', v)} type="number" readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="incompleto" row={row}>
-                    <Cell value={row.incompleto} onChange={v => updateRow(row.id, 'incompleto', v)} type="number" readOnly={!editable} minWidth="45px" />
+                    <Cell isDark={isDark} value={row.incompleto} onChange={v => updateRow(row.id, 'incompleto', v)} type="number" readOnly={!editable} minWidth="45px" />
                   </Td>
                   <Td {...tdHandlers} rowId={row.id} fieldKey="total" row={row} className="text-center">
                     <span className={`px-2 py-0.5 rounded text-xs font-bold ${hasData ? totalColor(total) : ''}`}>
                       {hasData ? total : ''}
                     </span>
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="fechaLlegada" row={row} baseHighlight="bg-green-50">
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="fechaLlegada" row={row} baseHighlight={isDark ? "bg-violet-900/30" : "bg-green-50"}>
                     {editable ? (
                       <input
                         type="date"
                         value={row.fechaLlegada}
                         onChange={e => updateRow(row.id, 'fechaLlegada', e.target.value)}
                         onKeyDown={handleKeyDown}
-                        className="w-full px-1 text-xs border border-transparent hover:border-slate-300 focus:border-blue-400 focus:outline-none rounded bg-transparent focus:bg-white text-center"
+                        className={`w-full px-1 text-xs rounded text-center transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 hover:border-violet-500 focus:border-violet-400 focus:bg-[#4a3a63]' : 'border border-transparent hover:border-slate-300 focus:border-blue-400 focus:outline-none bg-transparent focus:bg-white'}`}
                         style={{ minWidth: '120px', height: '22px', boxSizing: 'border-box' }}
                       />
                     ) : (
-                      <div className="px-2 py-1 text-xs font-semibold text-center" style={{ minWidth: '120px' }}>{row.fechaLlegada}</div>
+                      <div className={`px-2 py-1 text-xs font-semibold text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : ''}`} style={{ minWidth: '120px' }}>{row.fechaLlegada}</div>
                     )}
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosSalida" row={row} baseHighlight="bg-emerald-50/40">
-                    <Cell value={row.talegosSalida} onChange={v => updateRow(row.id, 'talegosSalida', v)} type="number" readOnly={!editable} minWidth="28px" />
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosSalida" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-emerald-50/40"}>
+                    <Cell isDark={isDark} value={row.talegosSalida} onChange={v => updateRow(row.id, 'talegosSalida', v)} type="number" readOnly={!editable} minWidth="28px" />
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosEntrega" row={row} baseHighlight="bg-emerald-50/40">
-                    <Cell value={row.talegosEntrega} onChange={v => updateRow(row.id, 'talegosEntrega', v)} type="number" readOnly={!editable} minWidth="28px" />
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosEntrega" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-emerald-50/40"}>
+                    <Cell isDark={isDark} value={row.talegosEntrega} onChange={v => updateRow(row.id, 'talegosEntrega', v)} type="number" readOnly={!editable} minWidth="28px" />
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosTotal" row={row} baseHighlight="bg-emerald-50/40" className="text-center">
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="talegosTotal" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-emerald-50/40"} className="text-center">
                     <span className={`px-2 py-0.5 rounded text-xs font-bold ${row.talegosSalida !== '' ? totalColor(tTotal) : ''}`}>
                       {row.talegosSalida !== '' ? tTotal : ''}
                     </span>
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasSalida" row={row} baseHighlight="bg-purple-50/40">
-                    <Cell value={row.muestrasSalida} onChange={v => updateRow(row.id, 'muestrasSalida', v)} type="number" readOnly={!editable} minWidth="28px" />
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasSalida" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-purple-50/40"}>
+                    <Cell isDark={isDark} value={row.muestrasSalida} onChange={v => updateRow(row.id, 'muestrasSalida', v)} type="number" readOnly={!editable} minWidth="28px" />
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasEntrega" row={row} baseHighlight="bg-purple-50/40">
-                    <Cell value={row.muestrasEntrega} onChange={v => updateRow(row.id, 'muestrasEntrega', v)} type="number" readOnly={!editable} minWidth="28px" />
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasEntrega" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-purple-50/40"}>
+                    <Cell isDark={isDark} value={row.muestrasEntrega} onChange={v => updateRow(row.id, 'muestrasEntrega', v)} type="number" readOnly={!editable} minWidth="28px" />
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasTotal" row={row} baseHighlight="bg-purple-50/40" className="text-center">
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="muestrasTotal" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-purple-50/40"} className="text-center">
                     <span className={`px-2 py-0.5 rounded text-xs font-bold ${row.muestrasSalida !== '' ? totalColor(mTotal) : ''}`}>
                       {row.muestrasSalida !== '' ? mTotal : ''}
                     </span>
                   </Td>
-                  <Td {...tdHandlers} rowId={row.id} fieldKey="rotacion" row={row} baseHighlight="bg-orange-50/40" className="text-center">
-                    <span className="text-xs font-semibold text-slate-600">{rotacion}</span>
+                  <Td {...tdHandlers} rowId={row.id} fieldKey="rotacion" row={row} baseHighlight={isDark ? "bg-violet-900/20" : "bg-orange-50/40"} className="text-center">
+                    <span className={`text-xs font-semibold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{rotacion}</span>
                   </Td>
                   {editable && (
-                    <td className="border border-slate-200 px-1 py-0.5 text-center">
-                      <button onClick={() => deleteRow(row.id)} className="text-red-400 hover:text-red-600 transition-colors p-0.5" title="Eliminar fila">
+                    <td className={`border px-1 py-0.5 text-center transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-200'}`}>
+                      <button onClick={() => deleteRow(row.id)} className={`transition-colors p-0.5 ${isDark ? 'text-pink-400 hover:text-pink-300' : 'text-red-400 hover:text-red-600'}`} title="Eliminar fila">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                         </svg>
@@ -1297,11 +1302,11 @@ const ProductoEnProcesoView: React.FC<ProductoEnProcesoViewProps> = ({ user }) =
         onPageSizeChange={pagination.setLimit}
       />
 
-      <div className="flex items-center gap-4 text-xs text-slate-500">
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 border border-green-300 inline-block"></span> TOTAL = 0</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-100 border border-red-300 inline-block"></span> TOTAL &gt; 0 (faltan unidades)</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100 border border-yellow-300 inline-block"></span> TOTAL &lt; 0 (exceso)</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-0 h-0" style={{ borderStyle:'solid', borderWidth:'0 7px 7px 0', borderColor:'transparent #f97316 transparent transparent' }}></span> Tiene comentario</span>
+      <div className={`flex items-center gap-4 text-xs transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
+        <span className={`flex items-center gap-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : ''}`}><span className={`w-3 h-3 rounded border inline-block transition-colors duration-300 ${isDark ? 'bg-green-900/40 border-green-700' : 'bg-green-100 border-green-300'}`}></span> TOTAL = 0</span>
+        <span className={`flex items-center gap-1 transition-colors duration-300 ${isDark ? 'text-pink-400' : ''}`}><span className={`w-3 h-3 rounded border inline-block transition-colors duration-300 ${isDark ? 'bg-red-900/40 border-red-700' : 'bg-red-100 border-red-300'}`}></span> TOTAL &gt; 0 (faltan unidades)</span>
+        <span className={`flex items-center gap-1 transition-colors duration-300 ${isDark ? 'text-amber-400' : ''}`}><span className={`w-3 h-3 rounded border inline-block transition-colors duration-300 ${isDark ? 'bg-yellow-900/40 border-yellow-700' : 'bg-yellow-100 border-yellow-300'}`}></span> TOTAL &lt; 0 (exceso)</span>
+        <span className={`flex items-center gap-1 transition-colors duration-300 ${isDark ? 'text-orange-400' : ''}`}><span className={`inline-block w-0 h-0 transition-colors duration-300`} style={{ borderStyle:'solid', borderWidth:'0 7px 7px 0', borderColor:'transparent #f97316 transparent transparent' }}></span> Tiene comentario</span>
       </div>
 
       {/* Modal efectividad de terceros */}

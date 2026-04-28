@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppState } from '../../types';
 import apiFichas from '../../services/apiFichas';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 interface MaletasAsignarProps {
   state: AppState;
@@ -11,6 +12,7 @@ interface MaletasAsignarProps {
 }
 
 const MaletasAsignar: React.FC<MaletasAsignarProps> = ({ state, user, updateState, id, onNavigate }) => {
+  const { isDark } = useDarkMode();
   const [maleta, setMaleta] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [nombre, setNombre] = useState('');
@@ -60,32 +62,32 @@ const MaletasAsignar: React.FC<MaletasAsignarProps> = ({ state, user, updateStat
     }
   };
 
-  if (loading) return <div className="p-4">Cargando...</div>;
+  if (loading) return <div className={`p-4 transition-colors ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>Cargando...</div>;
 
   return (
     <div className="space-y-6 pb-20">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-black text-slate-800">Maleta: {nombre}</h2>
+        <h2 className={`text-3xl font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Maleta: {nombre}</h2>
         <button
           onClick={() => onNavigate?.('maletas')}
-          className="px-6 py-3 bg-slate-200 text-slate-700 font-black rounded-xl hover:bg-slate-300 transition-colors"
+          className={`px-6 py-3 font-black rounded-xl transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`}
         >
           Volver
         </button>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-slate-100">
-        <label className="text-sm font-black text-slate-600 uppercase mb-2 block">Nombre</label>
+      <div className={`p-6 rounded-3xl border transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+        <label className={`text-sm font-black uppercase mb-2 block transition-colors ${isDark ? 'text-violet-400' : 'text-slate-600'}`}>Nombre</label>
         <input
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold"
+          className={`w-full px-4 py-3 rounded-xl font-bold border transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
         />
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-slate-100">
-        <h3 className="text-lg font-black text-slate-800 mb-4">Referencias ({referencias.length})</h3>
+      <div className={`p-6 rounded-3xl border transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+        <h3 className={`text-lg font-black mb-4 transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Referencias ({referencias.length})</h3>
         
         <div className="flex gap-2 mb-4">
           <input
@@ -93,12 +95,12 @@ const MaletasAsignar: React.FC<MaletasAsignarProps> = ({ state, user, updateStat
             value={newRef}
             onChange={(e) => setNewRef(e.target.value)}
             placeholder="Ingrese referencia..."
-            className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-bold"
+            className={`flex-1 px-4 py-3 rounded-xl font-bold border transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500' : 'bg-slate-50 border-slate-200 text-slate-900'}`}
           />
           <button
             onClick={handleAddRef}
             disabled={!newRef}
-            className="px-6 py-3 bg-blue-600 text-white font-black rounded-xl hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+            className={`px-6 py-3 font-black rounded-xl transition-colors ${isDark ? 'bg-violet-600 hover:bg-violet-700 text-white disabled:bg-violet-900/40 disabled:text-violet-700' : 'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400'}`}
           >
             Agregar
           </button>
@@ -106,11 +108,11 @@ const MaletasAsignar: React.FC<MaletasAsignarProps> = ({ state, user, updateStat
 
         <div className="space-y-2">
           {referencias.map(ref => (
-            <div key={ref} className="flex justify-between items-center bg-slate-50 p-3 rounded-lg">
-              <span className="font-bold text-slate-800">{ref}</span>
+            <div key={ref} className={`flex justify-between items-center p-3 rounded-lg transition-colors ${isDark ? 'bg-violet-700/30 text-violet-200' : 'bg-slate-50 text-slate-800'}`}>
+              <span className="font-bold">{ref}</span>
               <button
                 onClick={() => handleRemoveRef(ref)}
-                className="px-3 py-1 bg-red-500 text-white font-black rounded-lg hover:bg-red-600 transition-colors text-sm"
+                className={`px-3 py-1 font-black rounded-lg transition-colors text-sm ${isDark ? 'bg-pink-600 hover:bg-pink-700 text-white' : 'bg-red-500 text-white hover:bg-red-600'}`}
               >
                 Eliminar
               </button>
@@ -121,7 +123,7 @@ const MaletasAsignar: React.FC<MaletasAsignarProps> = ({ state, user, updateStat
 
       <button
         onClick={handleSave}
-        className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black rounded-2xl hover:shadow-lg transition-all uppercase tracking-wider"
+        className={`w-full px-6 py-4 text-white font-black rounded-2xl hover:shadow-lg transition-all uppercase tracking-wider ${isDark ? 'bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700' : 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600'}`}
       >
         Guardar Maleta
       </button>

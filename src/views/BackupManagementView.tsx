@@ -4,6 +4,7 @@ import api from '../services/api';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { detectInstance, getInstanceName, getInstanceColor } from '../utils/instanceDetector';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface Backup {
   filename: string;
@@ -34,6 +35,7 @@ interface BackupAlert {
 }
 
 const BackupManagementView: React.FC = () => {
+  const { isDark } = useDarkMode();
   const [backups, setBackups] = useState<Backup[]>([]);
   const [stats, setStats] = useState<BackupStats | null>(null);
   const [loading, setLoading] = useState(false);
@@ -189,7 +191,7 @@ const BackupManagementView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-8">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
@@ -199,41 +201,41 @@ const BackupManagementView: React.FC = () => {
         </div>
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-black text-slate-900">Gestión de Backups</h1>
-            <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-bold">
+            <h1 className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Gestión de Backups</h1>
+            <span className={`px-3 py-1 rounded-full text-sm font-bold transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'}`}>
               {getInstanceName(instance)}
             </span>
           </div>
-          <p className="text-sm text-slate-500 mt-1">Administra y restaura backups de la base de datos</p>
+          <p className={`text-sm mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Administra y restaura backups de la base de datos</p>
         </div>
       </div>
 
       {/* Estadísticas */}
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Total de Backups</p>
-            <p className="text-4xl font-black text-slate-900">{stats.totalBackups}</p>
+          <div className={`rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <p className={`text-xs font-bold uppercase tracking-wider mb-2 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Total de Backups</p>
+            <p className={`text-4xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{stats.totalBackups}</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Almacenamiento Total</p>
-            <p className="text-3xl font-black text-slate-900">{stats.totalSizeInMB}</p>
-            <p className="text-xs text-slate-400 mt-1">MB</p>
+          <div className={`rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <p className={`text-xs font-bold uppercase tracking-wider mb-2 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Almacenamiento Total</p>
+            <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{stats.totalSizeInMB}</p>
+            <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>MB</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Diarios</p>
-            <p className="text-3xl font-black text-blue-600">{stats.byType.daily.count}</p>
-            <p className="text-xs text-slate-400 mt-1">{stats.byType.daily.sizeInMB} MB</p>
+          <div className={`rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <p className={`text-xs font-bold uppercase tracking-wider mb-2 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Diarios</p>
+            <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{stats.byType.daily.count}</p>
+            <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{stats.byType.daily.sizeInMB} MB</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Semanales</p>
-            <p className="text-3xl font-black text-green-600">{stats.byType.weekly.count}</p>
-            <p className="text-xs text-slate-400 mt-1">{stats.byType.weekly.sizeInMB} MB</p>
+          <div className={`rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <p className={`text-xs font-bold uppercase tracking-wider mb-2 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Semanales</p>
+            <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-600'}`}>{stats.byType.weekly.count}</p>
+            <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{stats.byType.weekly.sizeInMB} MB</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Mensuales</p>
-            <p className="text-3xl font-black text-red-600">{stats.byType.monthly.count}</p>
-            <p className="text-xs text-slate-400 mt-1">{stats.byType.monthly.sizeInMB} MB</p>
+          <div className={`rounded-2xl p-6 shadow-sm border hover:shadow-md transition-shadow transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <p className={`text-xs font-bold uppercase tracking-wider mb-2 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Mensuales</p>
+            <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{stats.byType.monthly.count}</p>
+            <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{stats.byType.monthly.sizeInMB} MB</p>
           </div>
         </div>
       )}
@@ -243,7 +245,7 @@ const BackupManagementView: React.FC = () => {
         <button
           onClick={handleManualBackup}
           disabled={loading || restoring}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold rounded-2xl hover:shadow-lg hover:shadow-blue-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-blue-700 to-blue-600 text-white hover:shadow-lg hover:shadow-blue-900/30' : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-lg hover:shadow-blue-200'}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33A3 3 0 0116.5 19.5H6.75z" />
@@ -253,7 +255,7 @@ const BackupManagementView: React.FC = () => {
         <button
           onClick={loadBackups}
           disabled={loading || restoring}
-          className="flex items-center gap-2 px-6 py-3 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+          className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl border transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] text-violet-300 border-violet-700 hover:bg-[#5a4a75]' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-5.971m0 0eqn.023-9.348h4.992m0 0a3.022 3.022 0 010 5.957m-2.165 2.756h5.338a3 3 0 00 3-3V5.359a3 3 0 00-3-3h-5.337a3 3 0 00-3 3v13.999a3 3 0 003 3z" />
@@ -264,7 +266,7 @@ const BackupManagementView: React.FC = () => {
 
       {/* Mensajes de error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700 font-semibold">
+        <div className={`rounded-2xl p-4 font-semibold border transition-colors duration-300 ${isDark ? 'bg-red-900/20 border-red-700 text-red-400' : 'bg-red-50 border-red-200 text-red-700'}`}>
           {error}
         </div>
       )}
@@ -274,34 +276,27 @@ const BackupManagementView: React.FC = () => {
         <div className="space-y-3">
           {alerts.map((alert, idx) => {
             const bgColor = {
-              SUCCESS: 'bg-green-50 border-green-200',
-              WARNING: 'bg-yellow-50 border-yellow-200',
-              ERROR: 'bg-red-50 border-red-200',
-              INFO: 'bg-blue-50 border-blue-200'
+              SUCCESS: isDark ? 'bg-green-900/20 border-green-700' : 'bg-green-50 border-green-200',
+              WARNING: isDark ? 'bg-yellow-900/20 border-yellow-700' : 'bg-yellow-50 border-yellow-200',
+              ERROR: isDark ? 'bg-red-900/20 border-red-700' : 'bg-red-50 border-red-200',
+              INFO: isDark ? 'bg-blue-900/20 border-blue-700' : 'bg-blue-50 border-blue-200'
             }[alert.type];
 
             const textColor = {
-              SUCCESS: 'text-green-700',
-              WARNING: 'text-yellow-700',
-              ERROR: 'text-red-700',
-              INFO: 'text-blue-700'
-            }[alert.type];
-
-            const borderColor = {
-              SUCCESS: 'border-green-200',
-              WARNING: 'border-yellow-200',
-              ERROR: 'border-red-200',
-              INFO: 'border-blue-200'
+              SUCCESS: isDark ? 'text-green-400' : 'text-green-700',
+              WARNING: isDark ? 'text-yellow-400' : 'text-yellow-700',
+              ERROR: isDark ? 'text-red-400' : 'text-red-700',
+              INFO: isDark ? 'text-blue-400' : 'text-blue-700'
             }[alert.type];
 
             return (
-              <div key={idx} className={`rounded-2xl p-4 border ${bgColor}`}>
+              <div key={idx} className={`rounded-2xl p-4 border transition-colors duration-300 ${bgColor}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className={`font-bold text-lg ${textColor} mb-1`}>{alert.title}</h3>
-                    <p className={`text-sm ${textColor} mb-2`}>{alert.message}</p>
+                    <h3 className={`font-bold text-lg mb-1 transition-colors duration-300 ${textColor}`}>{alert.title}</h3>
+                    <p className={`text-sm mb-2 transition-colors duration-300 ${textColor}`}>{alert.message}</p>
                     {alert.details && (
-                      <div className={`text-xs ${textColor} opacity-75 space-y-1 mt-2`}>
+                      <div className={`text-xs opacity-75 space-y-1 mt-2 transition-colors duration-300 ${textColor}`}>
                         {typeof alert.details === 'object' ? (
                           Object.entries(alert.details).map(([key, value]) => (
                             <div key={key}>
@@ -316,7 +311,7 @@ const BackupManagementView: React.FC = () => {
                   </div>
                   <button
                     onClick={() => setShowAlerts(false)}
-                    className={`flex-shrink-0 p-2 rounded-lg hover:bg-white/50 transition-colors ${textColor}`}
+                    className={`flex-shrink-0 p-2 rounded-lg hover:bg-white/50 transition-colors transition-colors duration-300 ${textColor}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -330,46 +325,51 @@ const BackupManagementView: React.FC = () => {
       )}
 
       {/* Lista de backups */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <div className="p-6 border-b border-slate-100">
-          <h2 className="text-xl font-black text-slate-900">📁 Backups Disponibles</h2>
+      <div className={`rounded-2xl shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+        <div className={`p-6 border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-white border-slate-100'}`}>
+          <h2 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>📁 Backups Disponibles</h2>
         </div>
 
         {loading ? (
           <div className="p-12 text-center">
             <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-slate-600 font-semibold">Cargando backups...</p>
+            <p className={`font-semibold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>Cargando backups...</p>
           </div>
         ) : backups.length === 0 ? (
           <div className="p-12 text-center">
-            <p className="text-slate-500 font-semibold">No hay backups disponibles</p>
+            <p className={`font-semibold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>No hay backups disponibles</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-50 border-b border-slate-100">
+              <thead className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Tipo</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Fecha</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Tamaño</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-slate-600 uppercase tracking-wider">Acciones</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Tipo</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Fecha</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Tamaño</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
                 {backups.slice((backupsPagination.pagination.page - 1) * backupsPagination.pagination.limit, backupsPagination.pagination.page * backupsPagination.pagination.limit).map((backup) => (
-                  <tr key={backup.filename} className="hover:bg-slate-50 transition-colors">
+                  <tr key={backup.filename} className={`transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/20' : 'hover:bg-slate-50'}`}>
                     <td className="px-6 py-4">
-                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${getBackupTypeColor(backup.type)}`}>
+                      <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold transition-colors duration-300 ${
+                        backup.type === 'daily' ? (isDark ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700') :
+                        backup.type === 'weekly' ? (isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700') :
+                        backup.type === 'monthly' ? (isDark ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-700') :
+                        (isDark ? 'bg-gray-900/30 text-gray-400' : 'bg-gray-100 text-gray-700')
+                      }`}>
                         {getBackupTypeLabel(backup.type)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-700 font-medium">{formatDate(backup.createdAtISO)}</td>
-                    <td className="px-6 py-4 text-sm text-slate-700 font-medium">{backup.sizeInMB} MB</td>
+                    <td className={`px-6 py-4 text-sm font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{formatDate(backup.createdAtISO)}</td>
+                    <td className={`px-6 py-4 text-sm font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{backup.sizeInMB} MB</td>
                     <td className="px-6 py-4">
                       <button
                         onClick={() => handleRestoreClick(backup)}
                         disabled={restoring}
-                        className="px-4 py-2 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm shadow-sm hover:shadow-md"
+                        className={`px-4 py-2 font-bold rounded-xl text-sm shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-green-900/30 text-green-400 hover:bg-green-900/50' : 'bg-green-600 text-white hover:bg-green-700'}`}
                       >
                         ↩️ Restaurar
                       </button>
@@ -391,24 +391,24 @@ const BackupManagementView: React.FC = () => {
 
       {/* Modal de confirmación */}
       {showConfirmModal && selectedBackup && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
+        <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-colors duration-300 ${isDark ? 'bg-black/50' : 'bg-slate-900/40'}`}>
+          <div className={`rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6 text-yellow-600">
+              <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-yellow-900/30' : 'bg-yellow-100'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-6 h-6 transition-colors duration-300 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c.866 1.5 2.926 2.871 5.303 2.871s4.437-1.372 5.303-2.87m0 0a3.75 3.75 0 11-7.5 0m7.5 0a3.75 3.75 0 1-7.5 0" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-black text-slate-900">⚠️ Confirmar Restauración</h2>
+              <h2 className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>⚠️ Confirmar Restauración</h2>
             </div>
 
             <div className="space-y-3">
-              <p className="text-slate-700">
+              <p className={`transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>
                 ¿Estás seguro de que deseas restaurar el backup de{' '}
                 <strong>{formatDate(selectedBackup.createdAtISO)}</strong>?
               </p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-                <p className="text-sm text-yellow-800 font-semibold">
+              <div className={`rounded-xl p-4 transition-colors duration-300 ${isDark ? 'bg-yellow-900/20 border border-yellow-700' : 'bg-yellow-50 border border-yellow-200'}`}>
+                <p className={`text-sm font-semibold transition-colors duration-300 ${isDark ? 'text-yellow-400' : 'text-yellow-800'}`}>
                   ⚠️ Se perderán todos los cambios posteriores a esta fecha. Se creará automáticamente un backup de seguridad del estado actual.
                 </p>
               </div>
@@ -418,14 +418,14 @@ const BackupManagementView: React.FC = () => {
               <button
                 onClick={() => setShowConfirmModal(false)}
                 disabled={restoring}
-                className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`flex-1 px-4 py-3 font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}
               >
                 Cancelar
               </button>
               <button
                 onClick={handleConfirmRestore}
                 disabled={restoring}
-                className="flex-1 px-4 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`flex-1 px-4 py-3 font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-600 text-white hover:bg-red-700'}`}
               >
                 {restoring ? '⏳ Restaurando...' : '✅ Restaurar'}
               </button>

@@ -11,7 +11,7 @@ import { User, UserRole } from '../types';
  */
 export function canEdit(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === UserRole.OPERADOR;
 }
 
 /**
@@ -19,7 +19,7 @@ export function canEdit(user: User | null): boolean {
  */
 export function canCreate(user: User | null): boolean {
   if (!user) return false;
-  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE;
+  return user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE || user.role === UserRole.OPERADOR;
 }
 
 /**

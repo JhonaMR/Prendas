@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Correria, Reference, ProductionTracking, UserRole, AppState, User } from '../types';
 import api from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface OrdersViewProps {
   user: User;
@@ -10,6 +11,7 @@ interface OrdersViewProps {
 }
 
 const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUnsavedChanges }) => {
+  const { isDark } = useDarkMode();
   
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [refFilter, setRefFilter] = useState('');
@@ -556,11 +558,11 @@ const handleSaveProduction = async () => {
   });
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className={`space-y-6 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter leading-none">Ventas y producción</h2>
-          <p className="text-slate-500 font-bold text-xs mt-1">Campaña: {state.correrias.find(c => c.id === selectedCorreriaId)?.name}</p>
+          <h2 className={`text-3xl font-black tracking-tighter leading-none transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Ventas y producción</h2>
+          <p className={`font-bold text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Campaña: {state.correrias.find(c => c.id === selectedCorreriaId)?.name}</p>
         </div>
         
         <div className="flex items-center gap-3">
@@ -575,17 +577,17 @@ const handleSaveProduction = async () => {
               Depurar maleta
             </button>
           )}
-          <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
+          <div className={`flex flex-wrap gap-3 p-3 rounded-3xl shadow-sm items-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
           <div className="flex flex-col">
-            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Referencia</span>
-            <input type="text" value={refFilter} onChange={e => setRefFilter(e.target.value)} placeholder="Ej: 10210" className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-28 border-none focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300" />
+            <span className={`text-[8px] font-black uppercase ml-2 mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Referencia</span>
+            <input type="text" value={refFilter} onChange={e => setRefFilter(e.target.value)} placeholder="Ej: 10210" className={`px-3 py-1.5 rounded-xl text-xs font-bold w-28 border-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600 placeholder:text-violet-400' : 'bg-slate-50 text-slate-900 focus:ring-blue-100 placeholder:text-slate-300'}`} />
           </div>
-          <div className="flex items-center gap-2 border-l border-slate-100 pl-3 h-10 mt-2">
-             <input type="checkbox" checked={hideZeros} onChange={e => setHideZeros(e.target.checked)} id="hz" className="rounded text-blue-600 focus:ring-blue-500" />
-             <label htmlFor="hz" className="text-[10px] font-black text-slate-600 uppercase cursor-pointer">Ocultar 0</label>
+          <div className={`flex items-center gap-2 h-10 mt-2 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l pl-3`}>
+             <input type="checkbox" checked={hideZeros} onChange={e => setHideZeros(e.target.checked)} id="hz" className={`rounded transition-colors duration-300 ${isDark ? 'text-violet-600 focus:ring-violet-500' : 'text-blue-600 focus:ring-blue-500'}`} />
+             <label htmlFor="hz" className={`text-[10px] font-black uppercase cursor-pointer transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Ocultar 0</label>
           </div>
-            <div className="flex flex-col border-l border-slate-100 pl-3">
-            <span className="text-[8px] font-black text-slate-600 uppercase mb-1">Campaña</span>
+            <div className={`flex flex-col pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
+            <span className={`text-[8px] font-black uppercase mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Campaña</span>
             <CorreriaAutocomplete
               value={selectedCorreriaId}
               correrias={state.correrias}
@@ -599,7 +601,7 @@ const handleSaveProduction = async () => {
           
           {/* BOTÓN GUARDAR - Solo visible para admin */}
           {isAdmin && (
-            <div className="flex items-center border-l border-slate-100 pl-3 gap-2">
+            <div className={`flex items-center gap-2 pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
               <button 
                 onClick={handleSaveProduction}
                 disabled={isSaving}
@@ -628,7 +630,7 @@ const handleSaveProduction = async () => {
                   setTextFilterInputs({});
                   setNumericFilterInputs({});
                 }}
-                className="px-4 py-2.5 bg-slate-100 text-slate-600 font-black rounded-xl text-xs uppercase tracking-wider hover:bg-slate-200 transition-all flex items-center gap-2"
+                className={`px-4 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${isDark ? 'bg-[#5a4a75] text-violet-200 hover:bg-[#6a5a85]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -641,79 +643,79 @@ const handleSaveProduction = async () => {
 
         </div>
       </div>
-      <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 flex flex-col" style={{ height: 'calc(100vh - 220px)' }}>
+      <div className={`rounded-[32px] shadow-sm flex flex-col transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`} style={{ height: 'calc(100vh - 220px)' }}>
         <div
           className="overflow-auto custom-scrollbar flex-1"
         >
           <table className="w-full text-left text-[10px] min-w-[1400px] table-fixed">
-            <thead className="bg-slate-50 sticky top-0 z-20 shadow-sm">
-              <tr className="border-b border-slate-100">
-                <th className="px-4 py-3 font-black uppercase w-32 text-slate-700 sticky left-0 z-10 bg-slate-50">Referencia</th>
+            <thead className={`sticky top-0 z-20 shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-50'}`}>
+              <tr className={`transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-b`}>
+                <th className={`px-4 py-3 font-black uppercase w-32 sticky left-0 z-10 transition-colors duration-300 ${isDark ? 'text-violet-50 bg-[#5a4a75]' : 'text-slate-700 bg-slate-50'}`}>Referencia</th>
                 <th className="px-2 py-3 font-black uppercase text-center w-16 text-blue-800">
                   <div className="flex items-center justify-center gap-1">
-                    Vendido
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-800'}`}>Vendido</span>
                     <FilterButton columnKey="vendido" color="blue" />
                   </div>
                 </th>
                 <th className="px-2 py-3 font-black uppercase text-center w-20 text-orange-700">
                   <div className="flex items-center justify-center gap-1">
-                    Inventario
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-700'}`}>Inventario</span>
                     <FilterButton columnKey="inventory" color="orange" />
                   </div>
                 </th>
                 <th className="px-2 py-3 font-black uppercase text-center w-24 text-indigo-700">
                   <div className="flex items-center justify-center gap-1">
-                    Prog.
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-indigo-300' : 'text-indigo-700'}`}>Prog.</span>
                     <FilterButton columnKey="programmed" color="indigo" />
                   </div>
                 </th>
                 <th className="px-2 py-3 font-black uppercase text-center w-24 text-pink-700">
                   <div className="flex items-center justify-center gap-1">
-                    Cortado
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-700'}`}>Cortado</span>
                     <FilterButton columnKey="cut" color="pink" />
                   </div>
                 </th>
                 <th className="px-2 py-3 font-black uppercase text-center w-14 text-red-700">
                   <div className="flex items-center justify-center gap-1">
-                    Pend.
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-red-300' : 'text-red-700'}`}>Pend.</span>
                     <FilterButton columnKey="pending" color="red" />
                   </div>
                 </th>
-                <th className="px-2 py-3 font-black uppercase text-center w-10 text-slate-700">Clt</th>
-                <th className="px-2 py-3 font-black uppercase text-center w-14 text-slate-700 border-l border-slate-200">
+                <th className={`px-2 py-3 font-black uppercase text-center w-10 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Clt</th>
+                <th className={`px-2 py-3 font-black uppercase text-center w-14 border-l transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-700 border-slate-200'}`}>
                   <div className="flex items-center justify-center gap-1">
-                    Stock
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Stock</span>
                     <FilterButton columnKey="stock" color="slate" />
                   </div>
                 </th>
-                <th className="px-3 py-3 font-black uppercase text-center w-32 border-l border-slate-200 text-slate-700">
+                <th className={`px-3 py-3 font-black uppercase text-center w-32 border-l transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-700 border-slate-200'}`}>
                   <div className="flex items-center justify-center gap-1">
-                    Tela 1 / Prom / Total
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Tela 1 / Prom / Total</span>
                     <FilterButton columnKey="cloth1" color="blue" isTextFilter={true} />
                   </div>
                 </th>
-                <th className="px-3 py-3 font-black uppercase text-center w-32 border-l border-slate-200 text-slate-700">
+                <th className={`px-3 py-3 font-black uppercase text-center w-32 border-l transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-700 border-slate-200'}`}>
                   <div className="flex items-center justify-center gap-1">
-                    Tela 2 / Prom / Total
+                    <span className={`transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Tela 2 / Prom / Total</span>
                     <FilterButton columnKey="cloth2" color="pink" isTextFilter={true} />
                   </div>
                 </th>
-                <th className="px-3 py-3 font-black uppercase text-center w-32 border-l border-slate-200 text-amber-700">
+                <th className={`px-3 py-3 font-black uppercase text-center w-32 border-l transition-colors duration-300 ${isDark ? 'text-amber-300 border-violet-700' : 'text-amber-700 border-slate-200'}`}>
                   Novedades
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className={`transition-colors duration-300 ${isDark ? 'divide-[#5a4a75]' : 'divide-slate-50'} divide-y`}>
               {reportData.map(row => {
                 const prod = state.productionTracking.find(p => p.refId === row.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
                 return (
-                <tr key={row.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-2 sticky left-0 z-10 bg-white">
-                    <p className="font-black text-slate-800 text-sm leading-tight">{row.id}</p>
-                    <p className="text-[9px] font-bold text-slate-500 uppercase truncate">{row.description}</p>
+                <tr key={row.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
+                  <td className={`px-4 py-2 sticky left-0 z-10 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+                    <p className={`font-black text-sm leading-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.id}</p>
+                    <p className={`text-[9px] font-bold uppercase truncate transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{row.description}</p>
                   </td>
                   <td className="px-2 py-2 text-center">
-                    <span className={`px-2 py-1 rounded-md font-black text-sm ${row.totalSold > 0 ? 'bg-blue-600 text-white shadow-sm' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
+                    <span className={`px-2 py-1 rounded-md font-black text-sm transition-colors duration-300 ${row.totalSold > 0 ? 'bg-violet-600 text-white shadow-sm' : isDark ? 'bg-[#5a4a75] text-violet-300' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
                   </td>
                   <td className="px-2 py-2 text-center">
                     <input 
@@ -728,7 +730,7 @@ const handleSaveProduction = async () => {
                         updateProduction(row.id, 'inventory', result);
                       }}
                       readOnly={!isAdmin}
-                      className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-orange-700 text-sm focus:ring-2 focus:ring-orange-100 ${!isAdmin ? 'cursor-default' : ''}`}
+                      className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-orange-700 focus:ring-orange-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
                     />
                   </td>
                     <td className="px-2 py-2 text-center">
@@ -744,7 +746,7 @@ const handleSaveProduction = async () => {
                           updateProduction(row.id, 'programmed', result);
                         }}
                         readOnly={!isAdmin}
-                        className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-indigo-700 text-sm focus:ring-2 focus:ring-indigo-100 ${!isAdmin ? 'cursor-default' : ''}`}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-indigo-700 focus:ring-indigo-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
@@ -760,7 +762,7 @@ const handleSaveProduction = async () => {
                           updateProduction(row.id, 'cut', result);
                         }}
                         readOnly={!isAdmin}
-                        className={`w-16 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-black text-center text-pink-700 text-sm focus:ring-2 focus:ring-pink-100 ${!isAdmin ? 'cursor-default' : ''}`}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-pink-700 focus:ring-pink-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
                   <td className="px-2 py-2 text-center font-black text-sm">
@@ -772,40 +774,40 @@ const handleSaveProduction = async () => {
                       {row.pending}
                     </span>
                   </td>
-                  <td className="px-2 py-2 text-center font-bold text-slate-600 text-sm">{row.clientCount}</td>
-                  <td className="px-2 py-2 text-center font-bold text-slate-600 text-sm border-l border-slate-200">{row.stock}</td>
+                  <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.clientCount}</td>
+                  <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.stock}</td>
                   
                   {/* TELA 1 Column */}
-                  <td className="px-3 py-2 border-l border-slate-100">
+                  <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
                     {row.cloth1 ? (
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex flex-col flex-1 overflow-hidden">
-                          <span className="font-black text-slate-800 truncate text-xs uppercase">{row.cloth1}</span>
-                          <span className="text-[9px] font-bold text-slate-500">Prom: {row.avgCloth1}</span>
+                          <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth1}</span>
+                          <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth1}</span>
                         </div>
-                        <div className="bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
-                          <span className="text-blue-700 font-black text-xs">{row.totalCloth1.toFixed(1)}m</span>
+                        <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-violet-900/40 border-violet-700' : 'bg-blue-50 border-blue-100'}`}>
+                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-blue-700'}`}>{row.totalCloth1.toFixed(1)}m</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center text-slate-300">-</div>
+                      <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
                     )}
                   </td>
 
                   {/* TELA 2 Column */}
-                  <td className="px-3 py-2 border-l border-slate-100">
+                  <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
                     {row.cloth2 ? (
                       <div className="flex items-center justify-between gap-1">
                         <div className="flex flex-col flex-1 overflow-hidden">
-                          <span className="font-black text-slate-800 truncate text-xs uppercase">{row.cloth2}</span>
-                          <span className="text-[9px] font-bold text-slate-500">Prom: {row.avgCloth2}</span>
+                          <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth2}</span>
+                          <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth2}</span>
                         </div>
-                        <div className="bg-pink-50 px-2 py-1 rounded-lg border border-pink-100">
-                          <span className="text-pink-700 font-black text-xs">{row.totalCloth2.toFixed(1)}m</span>
+                        <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-pink-900/40 border-pink-700' : 'bg-pink-50 border-pink-100'}`}>
+                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-pink-700'}`}>{row.totalCloth2.toFixed(1)}m</span>
                         </div>
                       </div>
                     ) : (
-                      <div className="text-center text-slate-300">-</div>
+                      <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
                     )}
                   </td>
 
@@ -827,9 +829,9 @@ const handleSaveProduction = async () => {
             </tbody>
             {/* FILA DE TOTALES — sticky en la parte inferior */}
             {reportData.length > 0 && (
-              <tfoot className="sticky bottom-0 z-20">
-                <tr className="bg-slate-100 border-t-2 border-slate-300 font-black shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
-                  <td className="px-4 py-3 text-slate-800 uppercase text-xs sticky left-0 bg-slate-100">TOTALES</td>
+              <tfoot className={`sticky bottom-0 z-20 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-100'}`}>
+                <tr className={`font-black shadow-[0_-2px_8px_rgba(0,0,0,0.06)] transition-colors duration-300 ${isDark ? 'border-violet-600' : 'border-slate-300'} border-t-2`}>
+                  <td className={`px-4 py-3 uppercase text-xs sticky left-0 transition-colors duration-300 ${isDark ? 'text-violet-50 bg-[#5a4a75]' : 'text-slate-800 bg-slate-100'}`}>TOTALES</td>
                   <td className="px-2 py-3 text-center">
                     <span className="px-2 py-1 rounded-md font-black text-sm bg-blue-600 text-white shadow-sm">
                       {reportData.reduce((sum, row) => sum + row.totalSold, 0)}
@@ -855,15 +857,15 @@ const handleSaveProduction = async () => {
                       {reportData.reduce((sum, row) => sum + row.pending, 0)}
                     </span>
                   </td>
-                  <td className="px-2 py-3 text-center font-black text-slate-700 text-sm">
+                  <td className={`px-2 py-3 text-center font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>
                     {reportData.length > 0 ? (reportData.reduce((sum, row) => sum + row.clientCount, 0) / reportData.length).toFixed(1) : 0}
                   </td>
-                  <td className="px-2 py-3 text-center font-black text-slate-700 text-sm border-l border-slate-200">
+                  <td className={`px-2 py-3 text-center font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-700 border-l border-slate-200'}`}>
                     {reportData.reduce((sum, row) => sum + row.stock, 0)}
                   </td>
-                  <td className="px-3 py-3 border-l border-slate-200"></td>
-                  <td className="px-3 py-3 border-l border-slate-200"></td>
-                  <td className="px-3 py-3 border-l border-amber-100"></td>
+                  <td className={`px-3 py-3 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-200'}`}></td>
+                  <td className={`px-3 py-3 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-200'}`}></td>
+                  <td className={`px-3 py-3 transition-colors duration-300 ${isDark ? 'border-l border-amber-700' : 'border-l border-amber-100'}`}></td>
                 </tr>
               </tfoot>
             )}
@@ -872,16 +874,16 @@ const handleSaveProduction = async () => {
       </div>
 
       {showDepurarModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 w-full max-w-5xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-            <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
+        <div className={`fixed inset-0 z-[60] flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300 transition-colors ${isDark ? 'bg-slate-900/60' : 'bg-slate-900/40'}`}>
+          <div className={`rounded-[40px] shadow-2xl w-full max-w-5xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh] transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+            <div className={`p-8 flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]/50 border-violet-700' : 'bg-slate-50/50 border-slate-50'} border-b`}>
               <div>
-                <h3 className="text-2xl font-black text-slate-800 tracking-tighter">Depurar Maleta</h3>
-                <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mt-1">Seleccione las referencias que desea eliminar de esta correría</p>
+                <h3 className={`text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Depurar Maleta</h3>
+                <p className={`font-bold text-xs uppercase tracking-widest mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Seleccione las referencias que desea eliminar de esta correría</p>
               </div>
               <button 
                 onClick={() => setShowDepurarModal(false)}
-                className="p-3 bg-white text-slate-400 hover:text-slate-800 rounded-2xl shadow-sm border border-slate-100 transition-all hover:scale-110"
+                className={`p-3 rounded-2xl shadow-sm border transition-all hover:scale-110 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-300 hover:text-violet-50 border-violet-700' : 'bg-white text-slate-400 hover:text-slate-800 border-slate-100'}`}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -889,7 +891,7 @@ const handleSaveProduction = async () => {
               </button>
             </div>
 
-            <div className="p-8 overflow-y-auto custom-scrollbar flex-1">
+            <div className={`p-8 overflow-y-auto custom-scrollbar flex-1 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {state.references
                   .filter(ref => ref.correrias.includes(selectedCorreriaId))
@@ -903,7 +905,7 @@ const handleSaveProduction = async () => {
                         className={`p-4 rounded-2xl border-2 transition-all text-xs font-black uppercase tracking-tight text-center flex flex-col gap-1 ${
                           isSelected 
                             ? 'bg-red-50 border-red-200 text-red-600 shadow-inner' 
-                            : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm'
+                            : isDark ? 'bg-[#5a4a75] border-violet-700 text-violet-200 hover:border-violet-600 shadow-sm' : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm'
                         }`}
                       >
                         <span className="text-sm">{ref.id}</span>
@@ -914,15 +916,15 @@ const handleSaveProduction = async () => {
               </div>
             </div>
 
-            <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+            <div className={`p-8 flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]/50 border-violet-700' : 'bg-slate-50 border-slate-100'} border-t`}>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Seleccionadas:</span>
-                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full font-black text-xs">{selectedRefsToDepurar.length}</span>
+                <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Seleccionadas:</span>
+                <span className={`px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-100 text-red-700'}`}>{selectedRefsToDepurar.length}</span>
               </div>
               <div className="flex items-center gap-4">
                 <button 
                   onClick={() => setShowDepurarModal(false)}
-                  className="px-8 py-3 text-slate-500 font-black text-xs uppercase tracking-widest hover:text-slate-800 transition-all"
+                  className={`px-8 py-3 font-black text-xs uppercase tracking-widest transition-all transition-colors duration-300 ${isDark ? 'text-violet-300 hover:text-violet-50' : 'text-slate-500 hover:text-slate-800'}`}
                 >
                   Cancelar
                 </button>

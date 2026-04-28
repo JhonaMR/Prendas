@@ -1,114 +1,48 @@
 /**
  * 🔒 MIDDLEWARE DE RESTRICCIÓN PARA OPERACIONES DE USUARIO GENERAL
- * 
- * Permite que usuarios general realicen operaciones específicas (crear recepciones, despachos, etc.)
- * pero solo admin puede editar/eliminar
  */
 
 const { isAdmin, isGeneral, isSoporte, isOperador } = require('../utils/permissions');
 
-/**
- * Middleware para permitir crear recepciones a admin y general
- */
 const allowReceptionCreate = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: 'No autenticado'
-        });
-    }
-
-    if (!isAdmin(req.user) && !isGeneral(req.user)) {
-        return res.status(403).json({
-            success: false,
-            message: 'No tienes permiso para crear recepciones'
-        });
-    }
-
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isOperador(req.user))
+        return res.status(403).json({ success: false, message: 'No tienes permiso para crear recepciones' });
     next();
 };
 
-/**
- * Middleware para permitir crear compras a admin, general, soporte y operador
- */
 const allowComprasCreate = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: 'No autenticado'
-        });
-    }
-
-    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user) && !isOperador(req.user)) {
-        return res.status(403).json({
-            success: false,
-            message: 'No tienes permiso para crear compras'
-        });
-    }
-
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user) && !isOperador(req.user))
+        return res.status(403).json({ success: false, message: 'No tienes permiso para crear compras' });
     next();
 };
 
-/**
- * Middleware para permitir crear órdenes/pedidos a admin y general
- */
 const allowOrdersCreate = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: 'No autenticado'
-        });
-    }
-
-    if (!isAdmin(req.user) && !isGeneral(req.user)) {
-        return res.status(403).json({
-            success: false,
-            message: 'No tienes permiso para crear órdenes'
-        });
-    }
-
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isGeneral(req.user))
+        return res.status(403).json({ success: false, message: 'No tienes permiso para crear órdenes' });
     next();
 };
 
-/**
- * Middleware para permitir crear fechas de entrega a admin, general, soporte y operador
- */
 const allowDeliveryDatesCreate = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: 'No autenticado'
-        });
-    }
-
-    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user) && !isOperador(req.user)) {
-        return res.status(403).json({
-            success: false,
-            message: 'No tienes permiso para crear fechas de entrega'
-        });
-    }
-
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user) && !isOperador(req.user))
+        return res.status(403).json({ success: false, message: 'No tienes permiso para crear fechas de entrega' });
     next();
 };
 
-/**
- * Middleware para permitir editar/eliminar a admin y soporte
- */
 const allowAdminOnly = (req, res, next) => {
-    if (!req.user) {
-        return res.status(401).json({
-            success: false,
-            message: 'No autenticado'
-        });
-    }
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isSoporte(req.user))
+        return res.status(403).json({ success: false, message: 'Solo administradores y soporte pueden editar o eliminar' });
+    next();
+};
 
-    if (!isAdmin(req.user) && !isSoporte(req.user)) {
-        return res.status(403).json({
-            success: false,
-            message: 'Solo administradores y soporte pueden editar o eliminar'
-        });
-    }
-
+const allowOperadorOrAdmin = (req, res, next) => {
+    if (!req.user) return res.status(401).json({ success: false, message: 'No autenticado' });
+    if (!isAdmin(req.user) && !isSoporte(req.user) && !isOperador(req.user))
+        return res.status(403).json({ success: false, message: 'No tienes permiso para esta operación' });
     next();
 };
 
@@ -118,18 +52,5 @@ module.exports = {
     allowOrdersCreate,
     allowDeliveryDatesCreate,
     allowAdminOnly,
-    allowOperadorOrAdmin
+    allowOperadorOrAdmin,
 };
-
-/**
- * Middleware para permitir operaciones de transporte a admin, soporte y operador
- */
-function allowOperadorOrAdmin(req, res, next) {
-    if (!req.user) {
-        return res.status(401).json({ success: false, message: 'No autenticado' });
-    }
-    if (!isAdmin(req.user) && !isSoporte(req.user) && !isOperador(req.user)) {
-        return res.status(403).json({ success: false, message: 'No tienes permiso para esta operación' });
-    }
-    next();
-}

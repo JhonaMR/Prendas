@@ -8,6 +8,7 @@ interface TextAutocompleteProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  isDark?: boolean;
 }
 
 const TextAutocomplete: React.FC<TextAutocompleteProps> = ({
@@ -16,7 +17,8 @@ const TextAutocomplete: React.FC<TextAutocompleteProps> = ({
   suggestions,
   placeholder = 'Buscar...',
   disabled = false,
-  className = ''
+  className = '',
+  isDark = false
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [search, setSearch] = useState('');
@@ -83,11 +85,11 @@ const TextAutocomplete: React.FC<TextAutocompleteProps> = ({
         onBlur={handleBlur}
         disabled={disabled}
         placeholder={placeholder}
-        className={`w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 text-xs disabled:opacity-50 ${className}`}
+        className={`w-full px-2 py-1 rounded-lg font-bold text-xs focus:ring-2 disabled:opacity-50 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-violet-600' : 'bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-300 focus:ring-blue-100'} ${isDark ? 'border' : ''} ${className}`}
       />
       {showDropdown && filtered.length > 0 && ReactDOM.createPortal(
         <div
-          className="fixed bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
+          className={`fixed rounded-lg shadow-2xl max-h-48 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'} border`}
           style={{
             top: dropdownPos.top,
             left: dropdownPos.left,
@@ -100,7 +102,7 @@ const TextAutocomplete: React.FC<TextAutocompleteProps> = ({
             <button
               key={idx}
               onMouseDown={() => handleSelect(suggestion)}
-              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0 text-xs font-bold text-slate-800"
+              className={`w-full px-3 py-2 text-left transition-colors text-xs font-bold last:border-0 transition-colors duration-300 ${isDark ? 'border-b border-violet-700/50 text-violet-200 hover:bg-violet-700/40' : 'border-b border-slate-50 text-slate-800 hover:bg-blue-50'}`}
             >
               {suggestion}
             </button>

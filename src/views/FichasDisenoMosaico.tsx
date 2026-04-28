@@ -10,6 +10,7 @@ import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import FichaDisenoImportModal from '../components/FichaDisenoImportModal';
 import apiFichas from '../services/apiFichas';
+import { useDarkMode } from '../context/DarkModeContext';
 
 declare global { interface Window { API_CONFIG?: { getApiUrl: () => string } } }
 
@@ -26,6 +27,7 @@ interface Props {
 }
 
 const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
+    const { isDark } = useDarkMode();
     const [searchTerm, setSearchTerm] = useState('');
     const [disenadoraFilter, setDisenadoraFilter] = useState('');
     const [disenadoraInput, setDisenadoraInput] = useState('');
@@ -185,18 +187,18 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     };
 
     return (
-        <div className="space-y-6 pb-20">
+        <div className={`space-y-6 pb-20 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'} transition-colors duration-300`}>
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Fichas de Diseño</h2>
-                    <p className="text-slate-500 font-bold text-xs mt-1">{fichas.length} ficha{fichas.length !== 1 ? 's' : ''}</p>
+                    <h2 className={`text-3xl font-black tracking-tighter ${isDark ? 'text-violet-50' : 'text-slate-800'} transition-colors duration-300`}>Fichas de Diseño</h2>
+                    <p className={`font-bold text-xs mt-1 ${isDark ? 'text-violet-300' : 'text-slate-500'} transition-colors duration-300`}>{fichas.length} ficha{fichas.length !== 1 ? 's' : ''}</p>
                 </div>
                 <div className="flex flex-wrap gap-3 items-center">
                     {/* Limpiar filtros */}
                     <button
                         onClick={() => { setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); }}
                         title="Limpiar filtros"
-                        className="p-4 bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 rounded-2xl transition-colors border border-red-200"
+                        className={`p-4 rounded-2xl transition-colors border ${isDark ? 'bg-red-900/30 hover:bg-red-900/50 text-red-300 hover:text-red-200 border-red-700' : 'bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 border-red-200'}`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -210,7 +212,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                         placeholder="Año..."
                         min="2000"
                         max="2099"
-                        className="w-28 px-4 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm"
+                        className={`w-28 px-4 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-500/30' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-100'} border`}
                     />
                     {/* Filtro diseñadora */}
                     <div className="relative min-w-[200px]">
@@ -221,21 +223,21 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                             onFocus={() => setShowDisenadoraSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowDisenadoraSuggestions(false), 150)}
                             placeholder="Filtrar diseñadora..."
-                            className={`w-full px-6 py-4 bg-white border rounded-2xl focus:ring-4 focus:ring-purple-100 transition-all font-bold text-slate-900 shadow-sm ${disenadoraFilter ? 'border-purple-400 text-purple-700' : 'border-slate-200'}`}
+                            className={`w-full px-6 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm border ${isDark ? disenadoraFilter ? 'border-purple-600 text-purple-200 bg-[#3d2d52] focus:ring-purple-500/30' : 'border-violet-600 text-violet-100 bg-[#3d2d52] focus:ring-violet-500/30' : disenadoraFilter ? 'border-purple-400 text-purple-700 bg-white focus:ring-purple-100' : 'border-slate-200 text-slate-900 bg-white focus:ring-purple-100'}`}
                         />
                         {disenadoraFilter && (
                             <button
                                 onClick={() => { setDisenadoraFilter(''); setDisenadoraInput(''); }}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-purple-400 hover:text-purple-600 font-black text-lg leading-none"
+                                className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg leading-none transition-colors ${isDark ? 'text-purple-400 hover:text-purple-300' : 'text-purple-400 hover:text-purple-600'}`}
                             >×</button>
                         )}
                         {showDisenadoraSuggestions && disenadorasSugeridas.length > 0 && (
-                            <div className="absolute top-full mt-2 left-0 w-full bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-60 overflow-y-auto">
+                            <div className={`absolute top-full mt-2 left-0 w-full rounded-2xl shadow-2xl border z-50 max-h-60 overflow-y-auto ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
                                 {disenadorasSugeridas.map(d => (
                                     <button
                                         key={d}
                                         onMouseDown={() => { setDisenadoraFilter(d); setDisenadoraInput(d); setShowDisenadoraSuggestions(false); }}
-                                        className="w-full text-left px-5 py-3 hover:bg-purple-50 font-bold text-slate-700 text-sm border-b border-slate-50 last:border-0 transition-colors"
+                                        className={`w-full text-left px-5 py-3 font-bold text-sm border-b last:border-0 transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-200 border-violet-700' : 'hover:bg-purple-50 text-slate-700 border-slate-50'}`}
                                     >{d}</button>
                                 ))}
                             </div>
@@ -244,8 +246,8 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                     {/* Buscador referencia */}
                     <div className="relative flex-1 min-w-[250px]">
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar referencia, descripción..."
-                            className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm" />
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                            className={`w-full px-6 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm border ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-500/30' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-100'}`} />
+                        <div className={`absolute right-4 top-1/2 -translate-y-1/2 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
                         </div>
                     </div>
@@ -271,32 +273,32 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
 
             {/* Panel gestión diseñadoras — solo soporte */}
             {isSoporte && showGestionDisenadora && (
-                <div className="bg-white rounded-3xl border border-violet-200 shadow-sm overflow-hidden">
-                    <div className="px-6 py-4 bg-gradient-to-r from-violet-600 to-violet-500 flex items-center justify-between">
+                <div className={`rounded-3xl border shadow-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-violet-200'}`}>
+                    <div className={`px-6 py-4 flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-700 to-violet-600' : 'bg-gradient-to-r from-violet-600 to-violet-500'}`}>
                         <h3 className="text-white font-black uppercase tracking-widest text-sm">Gestionar Diseñadoras</h3>
-                        {loadingGestion && <span className="text-violet-200 text-xs font-bold animate-pulse">Cargando...</span>}
+                        {loadingGestion && <span className={`text-xs font-bold animate-pulse ${isDark ? 'text-violet-200' : 'text-violet-200'}`}>Cargando...</span>}
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className={`divide-y ${isDark ? 'divide-violet-700' : 'divide-slate-100'}`}>
                         {todasDisenadoras.length === 0 && !loadingGestion && (
-                            <p className="px-6 py-8 text-slate-400 font-bold text-sm text-center">No hay diseñadoras registradas</p>
+                            <p className={`px-6 py-8 font-bold text-sm text-center ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No hay diseñadoras registradas</p>
                         )}
                         {todasDisenadoras.map(d => (
-                            <div key={d.id} className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors">
+                            <div key={d.id} className={`flex items-center justify-between px-6 py-4 transition-colors ${isDark ? 'hover:bg-[#5a4a75]' : 'hover:bg-slate-50'}`}>
                                 <div>
-                                    <p className={`font-black text-sm ${d.activa ? 'text-slate-800' : 'text-slate-400 line-through'}`}>{d.nombre}</p>
-                                    <p className="text-xs text-slate-400 font-bold mt-0.5">
+                                    <p className={`font-black text-sm ${d.activa ? isDark ? 'text-violet-50' : 'text-slate-800' : isDark ? 'text-violet-600 line-through' : 'text-slate-400 line-through'}`}>{d.nombre}</p>
+                                    <p className={`text-xs font-bold mt-0.5 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                                         {d.cedula && <span className="mr-3">CC {d.cedula}</span>}
                                         {d.telefono && <span>{d.telefono}</span>}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className={`text-xs font-black uppercase tracking-widest ${d.activa ? 'text-green-600' : 'text-slate-400'}`}>
+                                    <span className={`text-xs font-black uppercase tracking-widest ${d.activa ? 'text-green-600' : isDark ? 'text-violet-600' : 'text-slate-400'}`}>
                                         {d.activa ? 'Activa' : 'Inactiva'}
                                     </span>
                                     <button
                                         onClick={() => handleToggleActiva(d.id)}
                                         disabled={togglingId === d.id}
-                                        className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${d.activa ? 'bg-green-500' : 'bg-slate-300'} ${togglingId === d.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                        className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${d.activa ? 'bg-green-500' : isDark ? 'bg-violet-700' : 'bg-slate-300'} ${togglingId === d.id ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                                     >
                                         <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${d.activa ? 'translate-x-6' : 'translate-x-0'}`} />
                                     </button>
@@ -307,11 +309,12 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 </div>
             )}
 
-            {fichas.length === 0 ? (                <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
-                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-300 mb-4">
+            {fichas.length === 0 ? (
+                <div className={`p-24 rounded-[48px] border-2 border-dashed flex flex-col items-center text-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
+                    <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${isDark ? 'bg-violet-900/40 text-violet-600' : 'bg-slate-100 text-slate-300'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                     </div>
-                    <p className="text-slate-400 font-bold text-lg">{searchTerm ? `No se encontraron fichas con "${searchTerm}"` : 'No hay fichas de diseño'}</p>
+                    <p className={`font-bold text-lg ${isDark ? 'text-violet-300' : 'text-slate-400'} transition-colors duration-300`}>{searchTerm ? `No se encontraron fichas con "${searchTerm}"` : 'No hay fichas de diseño'}</p>
                     {canCreate && !searchTerm && (
                         <button onClick={() => setShowModal(true)} className="mt-6 px-6 py-3 bg-pink-500 text-white font-black rounded-xl hover:bg-pink-600 transition-colors">Crear Primera Ficha</button>
                     )}
@@ -320,24 +323,24 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {pagedFichas.map(ficha => (
-                        <div key={ficha.id} className="group bg-white rounded-2xl border border-slate-200 hover:border-pink-300 hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer" onClick={() => onNavigate('fichas-diseno-detalle', { referencia: ficha.referencia })}>
-                            <div className="aspect-square bg-slate-100 relative overflow-hidden">
+                        <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => onNavigate('fichas-diseno-detalle', { referencia: ficha.referencia })}>
+                            <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
                                 {ficha.foto1 ? (
                                     <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
                                 ) : (
                                     <div className="flex items-center justify-center h-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className="w-12 h-12 text-slate-300"><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className={`w-12 h-12 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
                                     </div>
                                 )}
                                 {ficha.importada && <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase">Importada</div>}
-                                {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className="absolute top-2 left-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-500 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
                             </div>
                             <div className="p-3">
                                 <div className="flex items-center justify-between mb-2">
-                                    <p className="font-black text-pink-600 text-sm">{ficha.referencia}</p>
-                                    <span className="text-slate-400 font-bold text-[10px] truncate ml-1 max-w-[60%] text-right">{ficha.disenadoraNombre}</span>
+                                    <p className={`font-black text-sm ${isDark ? 'text-pink-400' : 'text-pink-600'} transition-colors duration-300`}>{ficha.referencia}</p>
+                                    <span className={`font-bold text-[10px] truncate ml-1 max-w-[60%] text-right ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>{ficha.disenadoraNombre}</span>
                                 </div>
-                                <p className="text-xs font-bold text-slate-600 truncate">{ficha.descripcion || 'Sin descripción'}</p>
+                                <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
                             </div>
                         </div>
                     ))}
@@ -355,34 +358,34 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
             )}
 
             {showModal && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
+                <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isDark ? 'bg-slate-900/60' : 'bg-slate-900/40'}`}>
+                    <div className={`rounded-3xl shadow-2xl max-w-md w-full p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
                         <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 text-pink-600"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-pink-900/30' : 'bg-pink-100'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-8 h-8 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-800 mb-2">Crear Ficha Nueva</h3>
-                            <p className="text-sm text-slate-500 font-bold">Ingrese la referencia y diseñadora</p>
+                            <h3 className={`text-2xl font-black mb-2 ${isDark ? 'text-violet-50' : 'text-slate-800'} transition-colors duration-300`}>Crear Ficha Nueva</h3>
+                            <p className={`text-sm font-bold ${isDark ? 'text-violet-300' : 'text-slate-500'} transition-colors duration-300`}>Ingrese la referencia y diseñadora</p>
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Referencia</label>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Referencia</label>
                                 <input type="text" value={nuevaRef} onChange={e => setNuevaRef(e.target.value.toUpperCase())} placeholder="Ej: 13011" autoFocus
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500" />
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-pink-500/30 focus:border-pink-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-pink-100 focus:border-pink-500'}`} />
                             </div>
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Diseñadora</label>
-                                    <button onClick={() => setShowNewDisenadora(true)} className="text-[10px] font-black text-pink-600 hover:text-pink-700 uppercase tracking-widest">+ Nueva</button>
+                                    <label className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Diseñadora</label>
+                                    <button onClick={() => setShowNewDisenadora(true)} className={`text-[10px] font-black uppercase tracking-widest ${isDark ? 'text-pink-400 hover:text-pink-300' : 'text-pink-600 hover:text-pink-700'}`}>+ Nueva</button>
                                 </div>
-                                <select value={disenadoraId} onChange={e => setDisenadoraId(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-pink-100 focus:border-pink-500">
+                                <select value={disenadoraId} onChange={e => setDisenadoraId(e.target.value)} className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-pink-500/30 focus:border-pink-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-pink-100 focus:border-pink-500'}`}>
                                     <option value="">Seleccionar...</option>
                                     {(state.disenadoras || []).filter(d => d.activa).map(d => <option key={d.id} value={d.id}>{d.nombre}</option>)}
                                 </select>
                             </div>
                         </div>
                         <div className="flex gap-3 mt-8">
-                            <button onClick={() => { setShowModal(false); setNuevaRef(''); setDisenadoraId(''); }} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide text-sm">Cancelar</button>
+                            <button onClick={() => { setShowModal(false); setNuevaRef(''); setDisenadoraId(''); }} className={`flex-1 px-6 py-3 font-black rounded-xl transition-colors uppercase tracking-wide text-sm ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>Cancelar</button>
                             <button onClick={handleCrear} className="flex-1 px-6 py-3 bg-gradient-to-r from-pink-600 to-pink-500 text-white font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm">Crear</button>
                         </div>
                     </div>
@@ -390,34 +393,34 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
             )}
 
             {showNewDisenadora && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8">
+                <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isDark ? 'bg-slate-900/60' : 'bg-slate-900/40'}`}>
+                    <div className={`rounded-3xl shadow-2xl max-w-md w-full p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
                         <div className="text-center mb-6">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 text-blue-600"><path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A6.375 6.375 0 013 19.235z" /></svg>
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-blue-900/30' : 'bg-blue-100'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-8 h-8 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}><path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A6.375 6.375 0 013 19.235z" /></svg>
                             </div>
-                            <h3 className="text-2xl font-black text-slate-800 mb-2">Nueva Diseñadora</h3>
-                            <p className="text-sm text-slate-500 font-bold">Ingrese los datos de la diseñadora</p>
+                            <h3 className={`text-2xl font-black mb-2 ${isDark ? 'text-violet-50' : 'text-slate-800'} transition-colors duration-300`}>Nueva Diseñadora</h3>
+                            <p className={`text-sm font-bold ${isDark ? 'text-violet-300' : 'text-slate-500'} transition-colors duration-300`}>Ingrese los datos de la diseñadora</p>
                         </div>
                         <div className="space-y-4">
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nombre *</label>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Nombre *</label>
                                 <input type="text" value={newDisenadoraNombre} onChange={e => setNewDisenadoraNombre(e.target.value)} placeholder="Ej: María García" autoFocus
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" />
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`} />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Cédula</label>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Cédula</label>
                                 <input type="text" value={newDisenadoraCedula} onChange={e => setNewDisenadoraCedula(e.target.value)} placeholder="Ej: 1234567890"
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" />
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`} />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Teléfono</label>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Teléfono</label>
                                 <input type="text" value={newDisenadoraTelefono} onChange={e => setNewDisenadoraTelefono(e.target.value)} placeholder="Ej: 3001234567"
-                                    className="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl font-bold focus:ring-4 focus:ring-blue-100 focus:border-blue-500" />
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`} />
                             </div>
                         </div>
                         <div className="flex gap-3 mt-8">
-                            <button onClick={() => { setShowNewDisenadora(false); setNewDisenadoraNombre(''); setNewDisenadoraCedula(''); setNewDisenadoraTelefono(''); }} className="flex-1 px-6 py-3 bg-slate-100 text-slate-600 font-black rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-wide text-sm">Cancelar</button>
+                            <button onClick={() => { setShowNewDisenadora(false); setNewDisenadoraNombre(''); setNewDisenadoraCedula(''); setNewDisenadoraTelefono(''); }} className={`flex-1 px-6 py-3 font-black rounded-xl transition-colors uppercase tracking-wide text-sm ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>Cancelar</button>
                             <button onClick={handleCrearDisenadora} className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm">Crear</button>
                         </div>
                     </div>

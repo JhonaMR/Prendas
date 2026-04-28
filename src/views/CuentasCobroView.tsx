@@ -3,6 +3,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { User, AppState, Confeccionista } from '../types';
 import { useBrand } from '../hooks/useBrand';
+import { useDarkMode } from '../context/DarkModeContext';
 
 // ── Helpers de API (mismo patrón que apiFichas.ts) ──────────────────────────
 function getApiUrl(): string {
@@ -83,6 +84,7 @@ const emptyLine = (): LineItem => ({
 });
 
 const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNavigate }) => {
+  const { isDark } = useDarkMode();
   const brand = useBrand();
   const empresa = brand.isMelas ? BRAND_INFO.melas : BRAND_INFO.plow;
   const printRef = useRef<HTMLDivElement>(null);
@@ -255,19 +257,19 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
   };
 
   return (
-    <div className="h-full w-full overflow-y-auto bg-slate-50 p-6">
+    <div className={`h-full w-full overflow-y-auto transition-colors duration-300 p-6 ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'}`}>
       <div className="w-full space-y-6">
 
         {/* Título */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tighter">Cuentas de Cobro</h1>
-            <p className="text-xs font-bold text-slate-400 uppercase mt-0.5">Formato oficial</p>
+            <h1 className={`text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Cuentas de Cobro</h1>
+            <p className={`text-xs font-bold uppercase mt-0.5 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Formato oficial</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={() => onNavigate?.('reception', { directToBatch: true })}
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700 text-violet-200 hover:bg-[#5a4a75]' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -277,7 +279,7 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
             <button
               onClick={handlePrint}
               disabled={printing}
-              className="flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-violet-600 text-white hover:bg-violet-700' : 'bg-slate-900 text-white hover:bg-slate-700'}`}
             >
               {printing ? (
                 <>
@@ -339,7 +341,7 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                   }
                 }
               }}
-              className="flex items-center gap-2 bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 transition-colors"
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700 text-violet-200 hover:bg-[#5a4a75]' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
@@ -355,55 +357,55 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
           <div className="space-y-4">
 
             {/* Datos del documento */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
-              <h2 className="text-xs font-black text-center text-slate-500 uppercase tracking-widest">Datos del documento</h2>
+            <div className={`rounded-2xl border shadow-sm p-5 space-y-3 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+              <h2 className={`text-xs font-black text-center uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Datos del documento</h2>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase block mb-1">N° Cuenta</label>
+                  <label className={`text-[10px] font-black uppercase block mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>N° Cuenta</label>
                   <input
                     value={numeroCuenta}
                     onChange={e => setNumeroCuenta(e.target.value)}
                     placeholder="001"
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-300"
+                    className={`w-full border rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] font-black text-slate-400 uppercase block mb-1">Fecha</label>
+                  <label className={`text-[10px] font-black uppercase block mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Fecha</label>
                   <input
                     type="date"
                     value={fecha}
                     onChange={e => setFecha(e.target.value)}
-                    className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-300"
+                    className={`w-full border rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                   />
                 </div>
               </div>
             </div>
 
             {/* Beneficiario */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
-              <h2 className="text-xs font-black text-center text-slate-500 uppercase tracking-widest">Beneficiario (Debe a)</h2>
+            <div className={`rounded-2xl border shadow-sm p-5 space-y-3 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+              <h2 className={`text-xs font-black text-center uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Beneficiario (Debe a)</h2>
 
               {/* Buscar confeccionista */}
               <div className="relative">
-                <label className="text-[10px] font-black text-slate-400 uppercase block mb-1">Buscar confeccionista</label>
+                <label className={`text-[10px] font-black uppercase block mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Buscar confeccionista</label>
                 <input
                   value={confSearch}
                   onChange={e => { setConfSearch(e.target.value); setShowConfDropdown(true); }}
                   onFocus={() => setShowConfDropdown(true)}
                   onBlur={() => setTimeout(() => setShowConfDropdown(false), 150)}
                   placeholder="Nombre o cédula..."
-                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-300"
+                  className={`w-full border rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                 />
                 {showConfDropdown && confeccionistas.length > 0 && (
-                  <div className="absolute z-20 top-full left-0 right-0 bg-white border border-slate-200 rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto">
+                  <div className={`absolute z-20 top-full left-0 right-0 rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white border border-slate-200'}`}>
                     {confeccionistas.slice(0, 10).map(c => (
                       <button
                         key={c.id}
                         onMouseDown={() => selectConf(c)}
-                        className="w-full text-left px-4 py-2.5 hover:bg-slate-50 border-b border-slate-50 last:border-0"
+                        className={`w-full text-left px-4 py-2.5 border-b last:border-0 transition-colors ${isDark ? 'text-violet-100 hover:bg-[#5a4a75] border-violet-700' : 'text-slate-800 hover:bg-slate-50 border-slate-50'}`}
                       >
-                        <p className="font-black text-slate-800 text-sm">{c.name}</p>
-                        <p className="text-[10px] font-bold text-slate-400">{c.id}</p>
+                        <p className={`font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+                        <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{c.id}</p>
                       </button>
                     ))}
                   </div>
@@ -419,11 +421,11 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                   { label: 'Teléfono', value: telefono, set: setTelefono },
                 ].map(({ label, value, set }) => (
                   <div key={label} className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-slate-500 uppercase w-20 shrink-0">{label}</span>
+                    <span className={`text-[10px] font-black uppercase w-20 shrink-0 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{label}</span>
                     <input
                       value={value}
                       onChange={e => set(e.target.value)}
-                      className="flex-1 border-b border-slate-200 px-1 py-1 text-sm font-bold focus:outline-none focus:border-slate-500 bg-transparent"
+                      className={`flex-1 border-b px-1 py-1 text-sm font-bold focus:outline-none bg-transparent transition-colors duration-300 ${isDark ? 'border-violet-600 text-violet-100 focus:border-violet-400' : 'border-slate-200 focus:border-slate-500'}`}
                     />
                   </div>
                 ))}
@@ -435,15 +437,15 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
           <div className="space-y-4">
 
             {/* Concepto general */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-2">
+            <div className={`rounded-2xl border shadow-sm p-5 space-y-2 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest">Concepto general</h2>
+                <h2 className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Concepto general</h2>
                 <button
                   onClick={() => {
                     const textoArticulo383 = "Me permito certificar según articulo 383, bajo la gravedad de juramento: Que como persona natural mis ingresos provienen de honorarios y/o compensación de servicios personales; adicionalmente no he contratado o vinculado dos (2) o más trabajadores asociados a la actividad que desarrollo.";
                     setConcepto(textoArticulo383);
                   }}
-                  className="flex items-center gap-1 bg-sky-100 hover:bg-sky-200 text-sky-700 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${isDark ? 'bg-violet-900/40 hover:bg-violet-900/60 text-violet-300' : 'bg-sky-100 hover:bg-sky-200 text-sky-700'}`}
                   title="Agregar certificación artículo 383"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
@@ -457,17 +459,17 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 onChange={e => setConcepto(e.target.value)}
                 rows={2}
                 placeholder="Descripción del servicio o trabajo..."
-                className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-slate-300 resize-none"
+                className={`w-full border rounded-lg px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 resize-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
               />
             </div>
 
             {/* Líneas de detalle */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 space-y-3">
+            <div className={`rounded-2xl border shadow-sm p-5 space-y-3 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
               <div className="flex items-center justify-between">
-                <h2 className="text-xs font-black text-slate-500 uppercase tracking-widest">Detalle</h2>
+                <h2 className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Detalle</h2>
                 <button
                   onClick={addLine}
-                  className="text-xs font-black text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                  className={`text-xs font-black flex items-center gap-1 transition-colors ${isDark ? 'text-violet-300 hover:text-violet-100' : 'text-blue-600 hover:text-blue-800'}`}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -477,7 +479,7 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
               </div>
 
               <div className="space-y-2">
-                <div className="grid grid-cols-12 gap-1 text-[9px] font-black text-slate-400 uppercase px-1">
+                <div className={`grid grid-cols-12 gap-1 text-[9px] font-black uppercase px-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                   <span className="col-span-4">Concepto</span>
                   <span className="col-span-3">Referencia</span>
                   <span className="col-span-2 text-right">Precio</span>
@@ -490,31 +492,31 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                       value={line.concepto}
                       onChange={e => updateLine(line.id, 'concepto', e.target.value)}
                       placeholder="Concepto"
-                      className="col-span-4 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-300"
+                      className={`col-span-4 border rounded-lg px-2 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                     />
                     <input
                       value={line.referencia}
                       onChange={e => updateLine(line.id, 'referencia', e.target.value)}
                       placeholder="Ref."
-                      className="col-span-3 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 focus:ring-slate-300"
+                      className={`col-span-3 border rounded-lg px-2 py-1.5 text-xs font-bold focus:outline-none focus:ring-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                     />
                     <input
                       type="number"
                       value={line.precio}
                       onChange={e => updateLine(line.id, 'precio', e.target.value)}
                       placeholder="0"
-                      className="col-span-2 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-right focus:outline-none focus:ring-1 focus:ring-slate-300"
+                      className={`col-span-2 border rounded-lg px-2 py-1.5 text-xs font-bold text-right focus:outline-none focus:ring-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                     />
                     <input
                       type="number"
                       value={line.cantidadVisual !== undefined ? line.cantidadVisual : line.cantidad}
                       onChange={e => updateLine(line.id, 'cantidad', e.target.value)}
                       placeholder="0"
-                      className="col-span-2 border border-slate-200 rounded-lg px-2 py-1.5 text-xs font-bold text-right focus:outline-none focus:ring-1 focus:ring-slate-300"
+                      className={`col-span-2 border rounded-lg px-2 py-1.5 text-xs font-bold text-right focus:outline-none focus:ring-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'border-slate-200 focus:ring-slate-300'}`}
                     />
                     <button
                       onClick={() => removeLine(line.id)}
-                      className="col-span-1 flex justify-center text-slate-300 hover:text-red-400 transition-colors"
+                      className={`col-span-1 flex justify-center transition-colors ${isDark ? 'text-violet-500 hover:text-red-400' : 'text-slate-300 hover:text-red-400'}`}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -524,10 +526,10 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
                 ))}
               </div>
 
-              <div className="flex justify-end pt-2 border-t border-slate-100">
+              <div className={`flex justify-end pt-2 border-t transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
                 <div className="text-right">
-                  <p className="text-[10px] font-black text-slate-400 uppercase">Total</p>
-                  <p className="text-xl font-black text-slate-900">{fmt(total)}</p>
+                  <p className={`text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Total</p>
+                  <p className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{fmt(total)}</p>
                 </div>
               </div>
             </div>
@@ -535,11 +537,11 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
 
           {/* Panel derecho: vista previa */}
           <div className="lg:sticky lg:top-6 self-start">
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-              <p className="text-[10px] font-black text-center text-slate-400 uppercase tracking-widest mb-4">Vista previa</p>
+            <div className={`rounded-2xl border shadow-sm p-5 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+              <p className={`text-[10px] font-black text-center uppercase tracking-widest mb-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Vista previa</p>
 
               {/* Documento imprimible */}
-              <div ref={printRef} className="border-2 p-6 font-mono text-xs text-slate-900 space-y-3" style={{ fontFamily: 'Arial, sans-serif', borderColor: empresa.textColor }}>
+              <div ref={printRef} className="border-2 p-6 font-mono text-xs text-slate-900 space-y-3 bg-white" style={{ fontFamily: 'Arial, sans-serif', borderColor: empresa.textColor }}>
 
                 {/* Header */}
                 <div className="text-center pb-3 mb-3" style={{ borderBottom: `2px solid ${empresa.textColor}`, background: empresa.bgColor, margin: '-24px -24px 0', padding: '16px 24px' }}>

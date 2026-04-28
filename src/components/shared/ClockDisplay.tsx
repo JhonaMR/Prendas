@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export const ClockDisplay: React.FC = () => {
   const [time, setTime] = useState<string>('');
+  const { isDark } = useDarkMode();
 
   useEffect(() => {
     const updateTime = () => {
@@ -31,7 +33,9 @@ export const ClockDisplay: React.FC = () => {
   }, []);
 
   return (
-    <div className="font-extrabold text-lg tracking-tighter text-slate-700 whitespace-nowrap">
+    <div className={`font-extrabold text-lg tracking-tighter whitespace-nowrap transition-colors duration-300 ${
+      isDark ? 'text-violet-200' : 'text-slate-700'
+    }`}>
       {time}
     </div>
   );

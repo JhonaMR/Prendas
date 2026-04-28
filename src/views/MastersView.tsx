@@ -7,10 +7,11 @@ import RoleBadge from '../components/Badge/RoleBadge';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { api } from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
-// Helper Components
+// Helper Components - These will be defined inside the main component to access isDark
 const TabBtn = ({ active, onClick, label }: any) => (
-  <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-blue-600 text-white shadow-xl' : 'text-slate-400 hover:bg-slate-50'}`}>{label}</button>
+  <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-violet-600 text-white shadow-xl' : 'text-violet-300 hover:bg-[#5a4a75]'}`}>{label}</button>
 );
 
 // Función para ordenar IDs correctamente (numérico si es posible, sino alfabético)
@@ -26,34 +27,6 @@ const sortByIdNaturally = (a: string, b: string) => {
   // Si no, ordenar alfabéticamente
   return a.localeCompare(b);
 };
-
-const FormWrapper = ({ children, title }: any) => (
-  <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
-    <h3 className="text-xl font-black text-slate-800">{title}</h3>
-    {children}
-  </div>
-);
-
-const TableWrapper = ({ children, title }: any) => (
-  <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 overflow-hidden">
-    <div className="p-6 bg-slate-50 border-b border-slate-100 font-black text-slate-700">{title}</div>
-    {children}
-  </div>
-);
-
-const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
-  <div className={`space-y-1.5 ${className}`}>
-    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">{label}</label>
-    <input 
-      type={type} 
-      value={value || ''} 
-      onChange={e => onChange(e.target.value)} 
-      disabled={disabled} 
-      maxLength={maxLength}
-      className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all disabled:opacity-50" 
-    />
-  </div>
-);
 
 interface MastersViewProps {
   user: User;
@@ -104,6 +77,37 @@ const MastersView: React.FC<MastersViewProps> = ({
   onUpdateCorreria,
   onDeleteCorreria
 }) => {
+  const { isDark } = useDarkMode();
+  
+  // Helper Components - defined inside to access isDark
+  const FormWrapper = ({ children, title }: any) => (
+    <div className={`p-8 rounded-[32px] shadow-sm space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+      <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{title}</h3>
+      {children}
+    </div>
+  );
+
+  const TableWrapper = ({ children, title }: any) => (
+    <div className={`rounded-[32px] shadow-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+      <div className={`p-6 font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50 border-violet-700' : 'bg-slate-50 text-slate-700 border-slate-100'} border-b`}>{title}</div>
+      {children}
+    </div>
+  );
+
+  const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
+    <div className={`space-y-1.5 ${className}`}>
+      <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>{label}</label>
+      <input 
+        type={type} 
+        value={value || ''} 
+        onChange={e => onChange(e.target.value)} 
+        disabled={disabled} 
+        maxLength={maxLength}
+        className={`w-full px-6 py-3.5 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-4 focus:ring-violet-600' : 'bg-slate-50 border-none text-slate-900 focus:ring-4 focus:ring-blue-100'} disabled:opacity-50`}
+      />
+    </div>
+  );
+  
   const [activeSubTab, setActiveSubTab] = useState<'clients' | 'users' | 'references' | 'sellers' | 'correrias' | 'confeccionistas'>('clients');
   const clientFileRef = useRef<HTMLInputElement>(null);
   const referenceFileRef = useRef<HTMLInputElement>(null);
@@ -769,15 +773,15 @@ const MastersView: React.FC<MastersViewProps> = ({
   };
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className={`space-y-8 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Maestros</h2>
-          <p className="text-slate-400 font-medium">Configuración de base de datos</p>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Maestros</h2>
+          <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Configuración de base de datos</p>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 p-1.5 bg-white rounded-3xl shadow-sm border border-slate-100 w-fit">
+      <div className={`flex flex-wrap gap-2 p-1.5 rounded-3xl shadow-sm w-fit transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
         <TabBtn active={activeSubTab === 'clients'} onClick={() => {setActiveSubTab('clients'); resetForms();}} label="Clientes" />
         <TabBtn active={activeSubTab === 'confeccionistas'} onClick={() => {setActiveSubTab('confeccionistas'); resetForms();}} label="Confeccionistas" />
         <TabBtn active={activeSubTab === 'references'} onClick={() => {setActiveSubTab('references'); resetForms();}} label="Referencias" />
@@ -800,7 +804,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                   
                   {/* DROPDOWN DE VENDEDORES */}
                   <div className="md:col-span-2 space-y-1.5 relative" data-seller-dropdown>
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Vendedor</label>
+                    <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Vendedor</label>
                     <div className="relative">
                       <input
                         type="text"
@@ -811,7 +815,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                         }}
                         onFocus={() => setShowSellerDropdown(true)}
                         placeholder="Buscar o seleccionar vendedor..."
-                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                        className={`w-full px-6 py-3.5 border-none rounded-2xl font-bold focus:ring-4 transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-600 focus:ring-violet-600' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
                       />
                       
                       {/* Botón para limpiar */}
@@ -821,7 +825,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                             setSellerSearch('');
                             setSeller('');
                           }}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black text-xl transition-colors"
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-xl transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`}
                         >
                           ×
                         </button>
@@ -830,7 +834,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                     
                     {/* Dropdown de vendedores */}
                     {showSellerDropdown && (
-                      <div className="absolute top-full left-0 mt-2 w-full bg-white border-2 border-slate-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                      <div className={`absolute top-full left-0 mt-2 w-full border-2 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
                         {state.sellers
                           .filter(s => 
                             s.name.toLowerCase().includes(sellerSearch.toLowerCase())
@@ -843,15 +847,15 @@ const MastersView: React.FC<MastersViewProps> = ({
                                 setSellerSearch(s.name);
                                 setShowSellerDropdown(false);
                               }}
-                              className="w-full px-6 py-3 text-left hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0"
+                              className={`w-full px-6 py-3 text-left transition-colors duration-300 border-b last:border-b-0 ${isDark ? 'hover:bg-violet-700/40 border-violet-700/50 text-violet-200' : 'hover:bg-blue-50 border-slate-100 text-slate-900'}`}
                             >
-                              <p className="font-black text-slate-800">{s.name}</p>
+                              <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{s.name}</p>
                             </button>
                           ))}
                         {state.sellers.filter(s => 
                           s.name.toLowerCase().includes(sellerSearch.toLowerCase())
                         ).length === 0 && (
-                          <div className="px-6 py-4 text-center text-slate-400 font-bold">
+                          <div className={`px-6 py-4 text-center font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                             No se encontraron vendedores
                           </div>
                         )}
@@ -866,23 +870,23 @@ const MastersView: React.FC<MastersViewProps> = ({
                     className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
                     {isLoading ? 'GUARDANDO...' : 'GUARDAR CLIENTE'}
                 </button>
-                  {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                  {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
                 </div>
               </FormWrapper>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
-                <h3 className="text-xl font-black text-slate-800">Importar Clientes</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">CSV: <span className="text-blue-500">id,name,nit,address,city,seller</span></p>
-                <p className="text-[9px] font-bold text-slate-500 italic mt-2">
+              <div className={`p-8 rounded-[32px] shadow-sm border space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Importar Clientes</h3>
+                <p className={`text-[10px] font-bold leading-relaxed transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>CSV: <span className={`transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>id,name,nit,address,city,seller</span></p>
+                <p className={`text-[9px] font-bold italic mt-2 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
                   Ejemplo:<br/>
-                  <span className="font-mono text-slate-600">C001,Acme Inc,123456,Cra 5 #10,Bogotá,Juan Pérez</span><br/>
-                  <span className="font-mono text-slate-600">C002,Tech Ltd,789012,Cra 7 #20,Medellín,María García</span>
+                  <span className={`font-mono transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-600'}`}>C001,Acme Inc,123456,Cra 5 #10,Bogotá,Juan Pérez</span><br/>
+                  <span className={`font-mono transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-600'}`}>C002,Tech Ltd,789012,Cra 7 #20,Medellín,María García</span>
                 </p>
                 <div className="flex gap-2">
                   <input type="file" ref={clientFileRef} onChange={(e) => handleImportCSV('clients', e)} accept=".csv" className="hidden" />
-                  <button onClick={() => clientFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-blue-50 transition-colors">SUBIR CSV</button>
-                  <a href="/ejemplo_clientes.csv" download className="flex-1 py-4 bg-blue-50 text-blue-600 font-black rounded-2xl border-2 border-blue-200 hover:bg-blue-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                  <button onClick={() => clientFileRef.current?.click()} className={`flex-1 py-4 font-black rounded-2xl border-2 border-dashed transition-colors duration-300 ${isDark ? 'bg-violet-900/20 text-violet-300 border-violet-700 hover:bg-violet-900/40' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-blue-50'}`}>SUBIR CSV</button>
+                  <a href="/ejemplo_clientes.csv" download className={`flex-1 py-4 font-black rounded-2xl border-2 transition-colors duration-300 text-center ${isDark ? 'bg-blue-900/20 text-blue-300 border-blue-700 hover:bg-blue-900/40' : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'}`}>DESCARGAR EJEMPLO</a>
                 </div>
               </div>
             </div>
@@ -896,12 +900,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                   value={clientSearchTerm}
                   onChange={(e) => setClientSearchTerm(e.target.value)}
                   placeholder="Buscar cliente..."
-                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                  className={`px-4 py-2 border-2 rounded-xl text-sm font-bold outline-none w-64 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-2 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400'}`}
                 />
                 {clientSearchTerm && (
                   <button
                     onClick={() => setClientSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 font-black transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`}
                   >
                     ×
                   </button>
@@ -911,20 +915,20 @@ const MastersView: React.FC<MastersViewProps> = ({
           }>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">ID</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">NIT</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cliente</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Ciudad</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Vendedor</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
-                <tbody className="divide-y divide-slate-100">
+                <thead><tr className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-50/50'}`}><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>ID</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>NIT</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Cliente</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Ciudad</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Vendedor</th><th className={`px-8 py-4 text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Acción</th></tr></thead>
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
                   {filteredClients.slice((clientsPagination.pagination.page - 1) * clientsPagination.pagination.limit, clientsPagination.pagination.page * clientsPagination.pagination.limit).map(c => {
                     const seller = state.sellers.find(s => s.id === c.sellerId);
                     return (
-                    <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-8 py-4 font-bold text-blue-500">{c.id}</td>
-                      <td className="px-8 py-4 font-bold text-slate-500">{c.nit}</td>
-                      <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
-                      <td className="px-8 py-4 font-bold text-slate-500">{c.city || '—'}</td>
-                      <td className="px-8 py-4 font-bold text-pink-500 uppercase text-[10px]">{seller?.name || c.sellerId || 'Sin vendedor'}</td>
+                    <tr key={c.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/20' : 'hover:bg-slate-50'}`}>
+                      <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>{c.id}</td>
+                      <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{c.nit}</td>
+                      <td className={`px-8 py-4 font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{c.name}</td>
+                      <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{c.city || '—'}</td>
+                      <td className={`px-8 py-4 font-bold uppercase text-[10px] transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>{seller?.name || c.sellerId || 'Sin vendedor'}</td>
                       <td className="px-8 py-4 text-right flex justify-end gap-2">
-                        <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
-                        <button disabled={!canDelete(user)} onClick={() => handleDelete('client', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                        <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}><Icons.Edit /></button>
+                        <button disabled={!canDelete(user)} onClick={() => handleDelete('client', c.id)} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}><Icons.Delete /></button>
                       </td>
                     </tr>
                   );
@@ -956,11 +960,11 @@ const MastersView: React.FC<MastersViewProps> = ({
                   <Input label="Celular" value={phone} onChange={setPhone} />
                   <div className="flex gap-3">
                     <div className="space-y-1.5 flex-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Puntaje</label>
+                      <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Puntaje</label>
                       <select
                         value={score}
                         onChange={(e) => setScore(e.target.value)}
-                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                        className={`w-full px-6 py-3.5 border-none rounded-2xl font-bold focus:ring-4 transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
                       >
                         <option value="NA">NA</option>
                         <option value="A">A</option>
@@ -969,48 +973,48 @@ const MastersView: React.FC<MastersViewProps> = ({
                       </select>
                     </div>
                     <div className="space-y-1.5 flex-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Consec. Rem</label>
+                      <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Consec. Rem</label>
                       <input
                         type="number"
                         min={0}
                         value={consecRem}
                         onChange={(e) => setConsecRem(Number(e.target.value))}
                         onFocus={(e) => e.target.select()}
-                        className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                        className={`w-full px-6 py-3.5 border-none rounded-2xl font-bold focus:ring-4 transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
                       />
                     </div>
                   </div>
                   <div className="space-y-1.5 md:col-span-2">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Estado Activo</label>
+                    <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Estado Activo</label>
                     <div className="flex gap-2">
-                       <button onClick={() => setIsActive(true)} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all ${isActive ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}>SÍ (Activo)</button>
-                       <button onClick={() => setIsActive(false)} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all ${!isActive ? 'bg-red-500 text-white shadow-lg' : 'bg-slate-100 text-slate-400'}`}>NO (Inactivo)</button>
+                       <button onClick={() => setIsActive(true)} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all transition-colors duration-300 ${isActive ? (isDark ? 'bg-blue-700 text-white shadow-lg' : 'bg-blue-600 text-white shadow-lg') : (isDark ? 'bg-violet-900/40 text-violet-300' : 'bg-slate-100 text-slate-400')}`}>SÍ (Activo)</button>
+                       <button onClick={() => setIsActive(false)} className={`flex-1 py-3.5 rounded-2xl font-bold transition-all transition-colors duration-300 ${!isActive ? (isDark ? 'bg-red-700 text-white shadow-lg' : 'bg-red-500 text-white shadow-lg') : (isDark ? 'bg-violet-900/40 text-violet-300' : 'bg-slate-100 text-slate-400')}`}>NO (Inactivo)</button>
                     </div>
                   </div>
                 </div>
                 <div className="flex gap-4 mt-6">
                   <button onClick={handleSaveConfeccionista}
                     disabled={isLoading}
-                      className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                      className={`px-10 py-4 font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                       {isLoading ? 'GUARDANDO...' : 'GUARDAR CONFECCIONISTA'}
                     </button>
-                  {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                  {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
                 </div>
               </FormWrapper>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
-                <h3 className="text-xl font-black text-slate-800">Importar Confeccionistas</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed italic">
-                  CSV: <span className="text-indigo-500 font-black">id,name,address,city,phone,score,active</span>
+              <div className={`p-8 rounded-[32px] shadow-sm border space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Importar Confeccionistas</h3>
+                <p className={`text-[10px] font-bold italic transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
+                  CSV: <span className={`font-black transition-colors duration-300 ${isDark ? 'text-indigo-400' : 'text-indigo-500'}`}>id,name,address,city,phone,score,active</span>
                 </p>
-                <p className="text-[9px] font-bold text-slate-500 italic">
+                <p className={`text-[9px] font-bold italic transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
                   Score: A/AA/AAA/NA | Activo: 1/0
                 </p>
                 <div className="flex gap-2">
                   <input type="file" ref={confeccionistaFileRef} onChange={(e) => handleImportCSV('confeccionistas', e)} accept=".csv" className="hidden" />
-                  <button onClick={() => confeccionistaFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
-                  <a href="/ejemplo_confeccionistas.csv" download className="flex-1 py-4 bg-indigo-50 text-indigo-600 font-black rounded-2xl border-2 border-indigo-200 hover:bg-indigo-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                  <button onClick={() => confeccionistaFileRef.current?.click()} className={`flex-1 py-4 font-black rounded-2xl border-2 border-dashed transition-colors duration-300 ${isDark ? 'bg-violet-900/20 text-violet-300 border-violet-700 hover:bg-violet-900/40' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-indigo-50'}`}>SUBIR CSV</button>
+                  <a href="/ejemplo_confeccionistas.csv" download className={`flex-1 py-4 font-black rounded-2xl border-2 transition-colors duration-300 text-center ${isDark ? 'bg-indigo-900/20 text-indigo-300 border-indigo-700 hover:bg-indigo-900/40' : 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100'}`}>DESCARGAR EJEMPLO</a>
                 </div>
               </div>
             </div>
@@ -1024,12 +1028,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                   value={confeccionistaSearchTerm}
                   onChange={(e) => setConfeccionistaSearchTerm(e.target.value)}
                   placeholder="Buscar confeccionista..."
-                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                  className={`px-4 py-2 border-2 rounded-xl text-sm font-bold outline-none w-64 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-2 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400'}`}
                 />
                 {confeccionistaSearchTerm && (
                   <button
                     onClick={() => setConfeccionistaSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 font-black transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`}
                   >
                     ×
                   </button>
@@ -1038,25 +1042,25 @@ const MastersView: React.FC<MastersViewProps> = ({
             </div>
           }>
             <table className="w-full text-left">
-              <thead><tr className="bg-slate-50/50"><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Cédula</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Nombre</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase">Celular</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Score</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Estado</th><th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase text-center">Consec. Rem</th><th className="px-8 py-4 text-right">Acción</th></tr></thead>
-              <tbody className="divide-y divide-slate-100">
+              <thead><tr className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-50/50'}`}><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Cédula</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Nombre</th><th className={`px-8 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Celular</th><th className={`px-8 py-4 text-[10px] font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Score</th><th className={`px-8 py-4 text-[10px] font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Estado</th><th className={`px-8 py-4 text-[10px] font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Consec. Rem</th><th className={`px-8 py-4 text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Acción</th></tr></thead>
+              <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
                 {filteredConfeccionistas.slice((confeccionistasPagination.pagination.page - 1) * confeccionistasPagination.pagination.limit, confeccionistasPagination.pagination.page * confeccionistasPagination.pagination.limit).map(c => (
-                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-8 py-4 font-bold text-slate-400">{c.id}</td>
-                    <td className="px-8 py-4 font-black text-slate-800">{c.name}</td>
-                    <td className="px-8 py-4 font-bold text-slate-600">{c.phone}</td>
-                    <td className="px-8 py-4 text-center font-black text-blue-600">{c.score}</td>
+                  <tr key={c.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/20' : 'hover:bg-slate-50'}`}>
+                    <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-slate-400'}`}>{c.id}</td>
+                    <td className={`px-8 py-4 font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{c.name}</td>
+                    <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{c.phone}</td>
+                    <td className={`px-8 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{c.score}</td>
                     <td className="px-8 py-4 text-center">
-                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${c.active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                      <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest transition-colors duration-300 ${c.active ? (isDark ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-600') : (isDark ? 'bg-red-900/30 text-red-400' : 'bg-red-100 text-red-600')}`}>
                         {c.active ? 'Activo' : 'Inactivo'}
                       </span>
                     </td>
-                    <td className="px-8 py-4 text-center font-bold text-slate-600">{c.ConsecRem ?? 0}</td>
+                    <td className={`px-8 py-4 text-center font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{c.ConsecRem ?? 0}</td>
                     <td className="px-8 py-4 text-right flex justify-end gap-2">
                       <button disabled={!canEdit(user)} onClick={() => { 
                         setEditingId(c.id); setId(c.id); setName(c.name); setAddress(c.address); setCity(c.city); setPhone(c.phone); setScore(c.score); setIsActive(c.active); setConsecRem(c.ConsecRem ?? 0);
-                      }} className="p-2.5 bg-blue-50 text-blue-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
-                      <button disabled={!canDelete(user)} onClick={() => handleDelete('confeccionista', c.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                      }} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('confeccionista', c.id)} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}><Icons.Delete /></button>
                     </td>
                   </tr>
                 ))}
@@ -1090,7 +1094,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                   
                   {/* SELECTOR DE CORRERÍAS CON AUTOCOMPLETADO */}
                   <div className="md:col-span-4 space-y-3">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">
+                    <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>
                       Correrías (Maleta) *
                     </label>
                     
@@ -1105,12 +1109,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                         }}
                         onFocus={() => setShowCorreriaDropdown(true)}
                         placeholder="Buscar correría (ej: Mad, Navidad)..."
-                        className="w-full px-6 py-3.5 bg-slate-50 border-2 border-slate-200 rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 focus:border-blue-300 transition-all placeholder:text-slate-300"
+                        className={`w-full px-6 py-3.5 border-2 rounded-2xl font-bold focus:ring-4 transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-300'}`}
                       />
                       
                       {/* Dropdown de correrías */}
                       {showCorreriaDropdown && (
-                        <div className="absolute top-full left-0 mt-2 w-full bg-white border-2 border-slate-200 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                        <div className={`absolute top-full left-0 mt-2 w-full border-2 rounded-2xl shadow-lg z-50 max-h-60 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
                           {state.correrias
                             .filter(c => 
                               `${c.name} ${c.year}`.toLowerCase().includes(correriaSearch.toLowerCase())
@@ -1125,21 +1129,21 @@ const MastersView: React.FC<MastersViewProps> = ({
                                   setCorreriaSearch('');
                                   setShowCorreriaDropdown(false);
                                 }}
-                                className="w-full px-6 py-3 text-left hover:bg-blue-50 transition-colors border-b border-slate-100 last:border-b-0 flex items-center justify-between group"
+                                className={`w-full px-6 py-3 text-left transition-colors duration-300 border-b last:border-b-0 flex items-center justify-between group ${isDark ? 'hover:bg-violet-700/40 border-violet-700/50' : 'hover:bg-blue-50 border-slate-100'}`}
                               >
                                 <div>
-                                  <p className="font-black text-slate-800">{correria.name}</p>
-                                  <p className="text-[10px] font-bold text-slate-400">{correria.year}</p>
+                                  <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{correria.name}</p>
+                                  <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{correria.year}</p>
                                 </div>
                                 {selectedCorrerias.includes(correria.id) && (
-                                  <span className="text-blue-600 font-black">✓</span>
+                                  <span className={`font-black transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>✓</span>
                                 )}
                               </button>
                             ))}
                           {state.correrias.filter(c => 
                             `${c.name} ${c.year}`.toLowerCase().includes(correriaSearch.toLowerCase())
                           ).length === 0 && (
-                            <div className="px-6 py-4 text-center text-slate-400 font-bold">
+                            <div className={`px-6 py-4 text-center font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                               No se encontraron correrías
                             </div>
                           )}
@@ -1148,7 +1152,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                     </div>
 
                     {/* Cajoncito con correrías seleccionadas */}
-                    <div className="bg-blue-50 p-4 rounded-2xl border-2 border-blue-200 min-h-[60px]">
+                    <div className={`p-4 rounded-2xl border-2 min-h-[60px] transition-colors duration-300 ${isDark ? 'bg-blue-900/20 border-blue-700' : 'bg-blue-50 border-blue-200'}`}>
                       {selectedCorrerias.length > 0 ? (
                         <div className="flex flex-wrap gap-2">
                           {selectedCorrerias.map(correriaId => {
@@ -1156,17 +1160,17 @@ const MastersView: React.FC<MastersViewProps> = ({
                             return correria ? (
                               <div
                                 key={correriaId}
-                                className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl border-2 border-blue-300 shadow-sm"
+                                className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-blue-700' : 'bg-white border-blue-300'}`}
                               >
                                 <div>
-                                  <p className="font-black text-xs text-slate-800">{correria.name}</p>
-                                  <p className="text-[9px] font-bold text-slate-400">{correria.year}</p>
+                                  <p className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{correria.name}</p>
+                                  <p className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{correria.year}</p>
                                 </div>
                                 <button
                                   onClick={() => {
                                     setSelectedCorrerias(selectedCorrerias.filter(id => id !== correriaId));
                                   }}
-                                  className="ml-2 text-red-500 hover:text-red-700 font-black text-lg leading-none hover:bg-red-50 rounded-full w-6 h-6 flex items-center justify-center transition-colors"
+                                  className={`ml-2 font-black text-lg leading-none rounded-full w-6 h-6 flex items-center justify-center transition-colors duration-300 ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-500 hover:bg-red-50'}`}
                                 >
                                   ×
                                 </button>
@@ -1175,7 +1179,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                           })}
                         </div>
                       ) : (
-                        <p className="text-xs text-red-500 font-bold text-center">
+                        <p className={`text-xs font-bold text-center transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
                           ⚠️ Debe seleccionar al menos una correría
                         </p>
                       )}
@@ -1185,26 +1189,26 @@ const MastersView: React.FC<MastersViewProps> = ({
                 <div className="flex gap-4 mt-6">
                   <button onClick={handleSaveReference}
                     disabled={isLoading}
-                      className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                      className={`px-10 py-4 font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                       {isLoading ? 'GUARDANDO...' : 'GUARDAR REFERENCIA'}
                     </button>
-                  {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                  {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
                 </div>
               </FormWrapper>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-4">
-                <h3 className="text-xl font-black text-slate-800">Importar Referencias</h3>
-                <p className="text-[10px] font-bold text-slate-400 leading-relaxed">
-                  CSV: <span className="text-indigo-500">id,description,price,designer,cloth1,avgCloth1,cloth2,avgCloth2,correrias</span>
+              <div className={`p-8 rounded-[32px] shadow-sm border space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Importar Referencias</h3>
+                <p className={`text-[10px] font-bold leading-relaxed transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
+                  CSV: <span className={`transition-colors duration-300 ${isDark ? 'text-indigo-400' : 'text-indigo-500'}`}>id,description,price,designer,cloth1,avgCloth1,cloth2,avgCloth2,correrias</span>
                 </p>
-                <p className="text-[9px] font-bold text-slate-500 italic mt-1">
+                <p className={`text-[9px] font-bold italic mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
                   Correrías separadas por | (ej: Madres2026|Padres2026|Navidad2026)
                 </p>
                 <div className="flex gap-2">
                   <input type="file" ref={referenceFileRef} onChange={(e) => handleImportCSV('references', e)} accept=".csv" className="hidden" />
-                  <button onClick={() => referenceFileRef.current?.click()} className="flex-1 py-4 bg-slate-50 text-slate-500 font-black rounded-2xl border-2 border-dashed border-slate-200 hover:bg-indigo-50 transition-colors">SUBIR CSV</button>
-                  <a href="/ejemplo_referencias.csv" download className="flex-1 py-4 bg-indigo-50 text-indigo-600 font-black rounded-2xl border-2 border-indigo-200 hover:bg-indigo-100 transition-colors text-center">DESCARGAR EJEMPLO</a>
+                  <button onClick={() => referenceFileRef.current?.click()} className={`flex-1 py-4 font-black rounded-2xl border-2 border-dashed transition-colors duration-300 ${isDark ? 'bg-violet-900/20 text-violet-300 border-violet-700 hover:bg-violet-900/40' : 'bg-slate-50 text-slate-500 border-slate-200 hover:bg-indigo-50'}`}>SUBIR CSV</button>
+                  <a href="/ejemplo_referencias.csv" download className={`flex-1 py-4 font-black rounded-2xl border-2 transition-colors duration-300 text-center ${isDark ? 'bg-indigo-900/20 text-indigo-300 border-indigo-700 hover:bg-indigo-900/40' : 'bg-indigo-50 text-indigo-600 border-indigo-200 hover:bg-indigo-100'}`}>DESCARGAR EJEMPLO</a>
                 </div>
               </div>
             </div>
@@ -1218,12 +1222,12 @@ const MastersView: React.FC<MastersViewProps> = ({
                   value={referenceSearchTerm}
                   onChange={(e) => setReferenceSearchTerm(e.target.value)}
                   placeholder="Buscar referencia..."
-                  className="px-4 py-2 bg-white border-2 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400 outline-none w-64"
+                  className={`px-4 py-2 border-2 rounded-xl text-sm font-bold outline-none w-64 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-2 focus:ring-violet-600' : 'bg-white border-slate-200 text-slate-800 focus:ring-2 focus:ring-blue-200 focus:border-blue-400'}`}
                 />
                 {referenceSearchTerm && (
                   <button
                     onClick={() => setReferenceSearchTerm('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-red-500 font-black"
+                    className={`absolute right-2 top-1/2 -translate-y-1/2 font-black transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-red-400' : 'text-slate-400 hover:text-red-500'}`}
                   >
                     ×
                   </button>
@@ -1233,28 +1237,28 @@ const MastersView: React.FC<MastersViewProps> = ({
           }>
             <div className="overflow-x-auto">
               <table className="w-full text-left min-w-[800px]">
-                <thead><tr className="bg-slate-50/50"><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Ref</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Descripción</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Precio</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Diseñadora</th><th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase">Telas / Prom</th><th className="px-6 py-4 text-right">Acción</th></tr></thead>
-                <tbody className="divide-y divide-slate-100">
+                <thead><tr className={`transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-50/50'}`}><th className={`px-6 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Ref</th><th className={`px-6 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Descripción</th><th className={`px-6 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Precio</th><th className={`px-6 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Diseñadora</th><th className={`px-6 py-4 text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Telas / Prom</th><th className={`px-6 py-4 text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Acción</th></tr></thead>
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
                   {filteredReferences.slice((referencesPagination.pagination.page - 1) * referencesPagination.pagination.limit, referencesPagination.pagination.page * referencesPagination.pagination.limit).map(r => (
-                    <tr key={r.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-black text-indigo-600">{r.id}</td>
-                      <td className="px-6 py-4 font-black text-slate-900">{r.description}</td>
-                      <td className="px-6 py-4 font-bold text-slate-400">$ {Math.round(r.price).toLocaleString('es-CO')}</td>
-                      <td className="px-6 py-4 font-bold text-slate-600">{r.designer || <span className="text-slate-300 italic">—</span>}</td>
-                      <td className="px-6 py-4 text-[10px] space-y-1">
+                    <tr key={r.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/20' : 'hover:bg-slate-50'}`}>
+                      <td className={`px-6 py-4 font-black transition-colors duration-300 ${isDark ? 'text-indigo-400' : 'text-indigo-600'}`}>{r.id}</td>
+                      <td className={`px-6 py-4 font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{r.description}</td>
+                      <td className={`px-6 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>$ {Math.round(r.price).toLocaleString('es-CO')}</td>
+                      <td className={`px-6 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{r.designer || <span className={`italic transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>—</span>}</td>
+                      <td className={`px-6 py-4 text-[10px] space-y-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
                         {r.cloth1 ? (
                           <>
                             <div className="flex gap-2">
-                              <span className="font-black text-slate-700">{r.cloth1}:</span> <span>{r.avgCloth1}</span>
+                              <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{r.cloth1}:</span> <span>{r.avgCloth1}</span>
                             </div>
                             {r.cloth2 && (
                               <div className="flex gap-2">
-                                <span className="font-black text-slate-700">{r.cloth2}:</span> <span>{r.avgCloth2}</span>
+                                <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{r.cloth2}:</span> <span>{r.avgCloth2}</span>
                               </div>
                             )}
                           </>
                         ) : (
-                          <span className="text-slate-400 italic">Sin telas</span>
+                          <span className={`italic transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-400'}`}>Sin telas</span>
                         )}
                       </td>
                       <td className="px-6 py-4 text-right flex justify-end gap-2">
@@ -1269,8 +1273,8 @@ const MastersView: React.FC<MastersViewProps> = ({
                           setCloth2(r.cloth2||''); 
                           setAvgCloth2(Number(r.avgCloth2) || 0);
                           setSelectedCorrerias(r.correrias || []);
-                        }} className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
-                        <button disabled={!canDelete(user)} onClick={() => handleDelete('reference', r.id)} className="p-2.5 bg-red-50 text-red-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                        }} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-indigo-900/30 text-indigo-400 hover:bg-indigo-900/50' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}`}><Icons.Edit /></button>
+                        <button disabled={!canDelete(user)} onClick={() => handleDelete('reference', r.id)} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}><Icons.Delete /></button>
                       </td>
                     </tr>
                   ))}
@@ -1297,15 +1301,15 @@ const MastersView: React.FC<MastersViewProps> = ({
                    <div className="flex gap-4">
                       <button onClick={handleSaveSeller}
                     disabled={isLoading}
-                      className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                      className={`px-10 py-4 font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                       {isLoading ? 'GUARDANDO...' : 'GUARDAR VENDEDOR'}
                     </button>
-                      {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                      {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
                    </div>
                 </div>
              </FormWrapper>
            ) : (
-             <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl flex items-center gap-4 text-amber-700 font-bold">
+             <div className={`border p-6 rounded-3xl flex items-center gap-4 font-bold transition-colors duration-300 ${isDark ? 'bg-amber-900/20 border-amber-700 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
                </svg>
@@ -1314,12 +1318,12 @@ const MastersView: React.FC<MastersViewProps> = ({
            )}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {state.sellers.map(s => (
-                <div key={s.id} className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm">
-                   <p className="font-black text-slate-800">{s.name}</p>
+                <div key={s.id} className={`p-6 rounded-3xl border flex items-center justify-between shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                   <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{s.name}</p>
                    {isAdmin && (
                     <div className="flex gap-2">
-                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(s.id); setName(s.name); }} className="p-2 text-pink-400 hover:bg-pink-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
-                      <button disabled={!canDelete(user)} onClick={() => handleDelete('seller', s.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(s.id); setName(s.name); }} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-pink-400 hover:bg-pink-900/30' : 'text-pink-400 hover:bg-pink-50'}`}><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('seller', s.id)} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-400 hover:bg-red-50'}`}><Icons.Delete /></button>
                     </div>
                    )}
                 </div>
@@ -1339,14 +1343,14 @@ const MastersView: React.FC<MastersViewProps> = ({
                 <div className="flex gap-4 mt-6">
                    <button onClick={handleSaveCorreria}
                       disabled={isLoading}
-                        className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                        className={`px-10 py-4 font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                         {isLoading ? 'GUARDANDO...' : 'GUARDAR CORRERÍA'}
                       </button>
-                   {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                   {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
                 </div>
              </FormWrapper>
            ) : (
-             <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl flex items-center gap-4 text-amber-700 font-bold">
+             <div className={`border p-6 rounded-3xl flex items-center gap-4 font-bold transition-colors duration-300 ${isDark ? 'bg-amber-900/20 border-amber-700 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
                </svg>
@@ -1355,15 +1359,15 @@ const MastersView: React.FC<MastersViewProps> = ({
            )}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {state.correrias.sort((a,b)=>b.year.localeCompare(a.year)).map(c => (
-                <div key={c.id} className="bg-white p-6 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm">
+                <div key={c.id} className={`p-6 rounded-3xl border flex items-center justify-between shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
                    <div>
-                      <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{c.year}</p>
-                      <p className="font-black text-slate-800">{c.name}</p>
+                      <p className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>{c.year}</p>
+                      <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{c.name}</p>
                    </div>
                    {isAdmin && (
                      <div className="flex gap-2">
-                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); }} className="p-2 text-blue-400 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Edit /></button>
-                      <button disabled={!canDelete(user)} onClick={() => handleDelete('correria', c.id)} className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"><Icons.Delete /></button>
+                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); }} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-blue-400 hover:bg-blue-900/30' : 'text-blue-400 hover:bg-blue-50'}`}><Icons.Edit /></button>
+                      <button disabled={!canDelete(user)} onClick={() => handleDelete('correria', c.id)} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-400 hover:bg-red-50'}`}><Icons.Delete /></button>
                      </div>
                    )}
                 </div>
@@ -1381,11 +1385,11 @@ const MastersView: React.FC<MastersViewProps> = ({
                 <Input label="Código (3 Letras)" value={id} onChange={setId} maxLength={3} disabled={!!editingId} />
                 <Input label="PIN (4 Números)" value={pin} onChange={setPin} maxLength={4} type="password" />
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-4">Rol del Usuario</label>
+                  <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Rol del Usuario</label>
                   <select 
                     value={userRole} 
                     onChange={(e) => setUserRole(e.target.value as UserRole)}
-                    className="w-full px-6 py-3.5 bg-slate-50 border-none rounded-2xl font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 transition-all"
+                    className={`w-full px-6 py-3.5 border-none rounded-2xl font-bold focus:ring-4 transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
                   >
                     <option value={UserRole.GENERAL}>General</option>
                     <option value={UserRole.OBSERVER}>Observador</option>
@@ -1398,14 +1402,14 @@ const MastersView: React.FC<MastersViewProps> = ({
               <div className="flex gap-4 mt-6">
                  <button onClick={handleSaveUser}
                     disabled={isLoading}
-                      className="px-10 py-4 bg-blue-600 text-white font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed">
+                      className={`px-10 py-4 font-black rounded-2xl shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-700 text-white hover:bg-blue-600' : 'bg-blue-600 text-white hover:bg-blue-700'}`}>
                       {isLoading ? 'GUARDANDO...' : 'GUARDAR USUARIO'}
                     </button>
-                 {editingId && <button onClick={resetForms} className="px-6 py-4 bg-slate-100 text-slate-400 font-bold rounded-2xl">CANCELAR</button>}
+                 {editingId && <button onClick={resetForms} className={`px-6 py-4 font-bold rounded-2xl transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-400'}`}>CANCELAR</button>}
               </div>
             </FormWrapper>
           ) : (
-            <div className="bg-amber-50 border border-amber-200 p-6 rounded-3xl flex items-center gap-4 text-amber-700 font-bold">
+            <div className={`border p-6 rounded-3xl flex items-center gap-4 font-bold transition-colors duration-300 ${isDark ? 'bg-amber-900/20 border-amber-700 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-700'}`}>
                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m0-10.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.75c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.249-8.25-3.286zm0 13.036h.008v.008H12v-.008z" />
                </svg>
@@ -1417,17 +1421,17 @@ const MastersView: React.FC<MastersViewProps> = ({
              {[...state.users].sort((a, b) => a.role.localeCompare(b.role)).slice((usersPagination.pagination.page - 1) * usersPagination.pagination.limit, usersPagination.pagination.page * usersPagination.pagination.limit).map(u => {
                const isSoporteUser = u.loginCode === 'SOP' && u.role === UserRole.SOPORTE;
                return (
-               <div key={u.id} className={`bg-white p-8 rounded-[40px] border ${isSoporteUser ? 'border-amber-200 bg-amber-50' : 'border-slate-100'} flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden`}>
+               <div key={u.id} className={`p-8 rounded-[40px] border flex flex-col items-center text-center space-y-4 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden transition-colors duration-300 ${isSoporteUser ? (isDark ? 'bg-amber-900/20 border-amber-700' : 'bg-amber-50 border-amber-200') : (isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100')}`}>
                   <RoleBadge role={u.role} />
                   <div className={`w-16 h-16 rounded-3xl flex items-center justify-center text-white font-black text-xl shadow-inner ${u.role === UserRole.ADMIN ? 'bg-gradient-to-br from-pink-500 to-pink-400' : u.role === UserRole.SOPORTE ? 'bg-gradient-to-br from-amber-500 to-amber-400' : u.role === UserRole.OBSERVER ? 'bg-gradient-to-br from-purple-500 to-purple-400' : u.role === UserRole.DISEÑADORA ? 'bg-gradient-to-br from-green-400 to-green-300' : u.role === UserRole.OPERADOR ? 'bg-gradient-to-br from-teal-500 to-teal-400' : 'bg-gradient-to-br from-blue-500 to-blue-400'}`}>
                     {u.loginCode}
                   </div>
                   <div>
-                    <p className="font-black text-slate-800 text-lg leading-none mb-1">{u.name}</p>
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">PIN: ****</p>
+                    <p className={`font-black text-lg leading-none mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{u.name}</p>
+                    <p className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>PIN: ****</p>
                   </div>
                   {isAdmin && (
-                    <div className="flex gap-3 w-full pt-4 border-t border-slate-50">
+                    <div className={`flex gap-3 w-full pt-4 border-t transition-colors duration-300 ${isDark ? 'border-violet-700/50' : 'border-slate-50'}`}>
                       <button 
                         onClick={() => { 
                           setEditingId(u.id); 
@@ -1437,14 +1441,14 @@ const MastersView: React.FC<MastersViewProps> = ({
                           setUserRole(u.role); 
                         }} 
                         disabled={isSoporteUser}
-                        className="flex-1 py-2 bg-blue-50 text-blue-600 font-black rounded-xl text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={`flex-1 py-2 font-black rounded-xl text-[10px] uppercase tracking-widest transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}
                       >
                         Editar
                       </button>
                       {user.role === UserRole.SOPORTE && (
                         <button
                           onClick={() => { setChangePinModal({ loginCode: u.loginCode, name: u.name }); setCurrentPin(''); setNewPin(''); setConfirmPin(''); setChangePinError(''); }}
-                          className="p-2 bg-amber-50 text-amber-600 rounded-xl hover:bg-amber-100 transition-colors"
+                          className={`p-2 rounded-xl transition-colors duration-300 ${isDark ? 'bg-amber-900/30 text-amber-400 hover:bg-amber-900/50' : 'bg-amber-50 text-amber-600 hover:bg-amber-100'}`}
                           title="Cambiar PIN"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -1455,7 +1459,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                       {u.id !== user.id && !isSoporteUser && (
                         <button 
                           onClick={() => handleDelete('user', u.id)} 
-                          className="p-2 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors"
+                          className={`p-2 rounded-xl transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}
                         >
                           <Icons.Delete />
                         </button>
@@ -1478,8 +1482,8 @@ const MastersView: React.FC<MastersViewProps> = ({
 
       {/* Modal cambio de PIN - solo soporte */}
       {changePinModal && (
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+      <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-colors duration-300 ${isDark ? 'bg-black/50' : 'bg-black/50'}`}>
+        <div className={`rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
           <div className="bg-gradient-to-br from-amber-500 to-amber-400 px-6 pt-6 pb-8 relative">
             <div className="flex items-start justify-between">
               <div>
@@ -1491,38 +1495,38 @@ const MastersView: React.FC<MastersViewProps> = ({
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
             </div>
-            <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+            <div className={`absolute -bottom-4 left-0 right-0 h-8 rounded-t-3xl transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}/>
           </div>
           <div className="px-6 pt-2 pb-6 flex flex-col gap-4">
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">PIN Actual</label>
+              <label className={`text-[10px] font-black uppercase tracking-widest px-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>PIN Actual</label>
               <input
                 type="password" maxLength={4} value={currentPin}
                 onChange={e => setCurrentPin(e.target.value.replace(/\D/g, ''))}
                 placeholder="••••"
-                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+                className={`w-full px-4 py-3 rounded-2xl font-bold focus:outline-none focus:ring-4 text-center text-xl tracking-widest transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-amber-600' : 'bg-slate-50 text-slate-900 focus:ring-amber-100'}`}
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">PIN Nuevo</label>
+              <label className={`text-[10px] font-black uppercase tracking-widest px-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>PIN Nuevo</label>
               <input
                 type="password" maxLength={4} value={newPin}
                 onChange={e => setNewPin(e.target.value.replace(/\D/g, ''))}
                 placeholder="••••"
-                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+                className={`w-full px-4 py-3 rounded-2xl font-bold focus:outline-none focus:ring-4 text-center text-xl tracking-widest transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-amber-600' : 'bg-slate-50 text-slate-900 focus:ring-amber-100'}`}
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Confirmar PIN Nuevo</label>
+              <label className={`text-[10px] font-black uppercase tracking-widest px-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Confirmar PIN Nuevo</label>
               <input
                 type="password" maxLength={4} value={confirmPin}
                 onChange={e => setConfirmPin(e.target.value.replace(/\D/g, ''))}
                 placeholder="••••"
-                className="w-full px-4 py-3 bg-slate-50 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-amber-100 text-center text-xl tracking-widest"
+                className={`w-full px-4 py-3 rounded-2xl font-bold focus:outline-none focus:ring-4 text-center text-xl tracking-widest transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-amber-600' : 'bg-slate-50 text-slate-900 focus:ring-amber-100'}`}
               />
             </div>
             {changePinError && (
-              <p className="text-red-500 text-xs font-bold text-center">{changePinError}</p>
+              <p className={`text-xs font-bold text-center transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-500'}`}>{changePinError}</p>
             )}
             <div className="flex gap-3 pt-2">
               <button onClick={handleChangePin} disabled={changePinLoading}
@@ -1530,7 +1534,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                 {changePinLoading ? 'Guardando...' : 'Cambiar PIN'}
               </button>
               <button onClick={() => setChangePinModal(null)}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                className={`flex-1 font-bold py-3 rounded-2xl text-sm transition-colors ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
                 Cancelar
               </button>
             </div>

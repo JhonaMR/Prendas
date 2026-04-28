@@ -5,6 +5,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import apiFichas from '../../services/apiFichas';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 declare global {
     interface Window {
@@ -22,6 +23,7 @@ interface SubidaFotosProps {
 }
 
 const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onFoto1Change, onFoto2Change, readOnly }) => {
+    const { isDark } = useDarkMode();
     const [uploading1, setUploading1] = useState(false);
     const [uploading2, setUploading2] = useState(false);
     const [preview1, setPreview1] = useState<string | null>(null);
@@ -95,7 +97,7 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
         const src = preview || (foto ? `${getBaseUrl()}${foto}` : null);
         return (
             <div className="flex-1">
-                <div className="relative h-80 bg-slate-100 rounded-2xl overflow-hidden border-2 border-slate-200 group cursor-pointer" onClick={() => src && setFotoAmpliada(src)}>
+                <div className={`relative h-80 rounded-2xl overflow-hidden border-2 group cursor-pointer transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-100 border-slate-200'}`} onClick={() => src && setFotoAmpliada(src)}>
                     {src ? (
                         <>
                             <img src={src} alt={`Foto ${numero}`} className="w-full h-full object-cover group-hover:brightness-75 transition-all" />
@@ -111,17 +113,17 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
                     ) : uploading ? (
                         <div className="flex items-center justify-center h-full">
                             <div className="text-center">
-                                <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-                                <p className="text-slate-500 font-bold text-sm">Subiendo...</p>
+                                <div className={`w-12 h-12 border-4 rounded-full animate-spin mx-auto mb-3 transition-colors ${isDark ? 'border-violet-500 border-t-transparent' : 'border-blue-500 border-t-transparent'}`}></div>
+                                <p className={`font-bold text-sm transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Subiendo...</p>
                             </div>
                         </div>
                     ) : (
                         <div className="flex items-center justify-center h-full">
                             <div className="text-center">
-                                <div className="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-400"><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 transition-colors ${isDark ? 'bg-violet-900/40' : 'bg-slate-200'}`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-8 h-8 transition-colors ${isDark ? 'text-violet-600' : 'text-slate-400'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
                                 </div>
-                                <p className="text-slate-400 font-bold text-sm">Sin foto</p>
+                                <p className={`font-bold text-sm transition-colors ${isDark ? 'text-violet-600' : 'text-slate-400'}`}>Sin foto</p>
                             </div>
                         </div>
                     )}
@@ -129,10 +131,10 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
                 {!readOnly && (
                     <div className="mt-3">
                         <input ref={inputRef} type="file" accept="image/jpeg,image/jpg,image/png" onChange={e => { const f = e.target.files?.[0]; if (f) handleFileSelect(f, numero); }} className="hidden" id={`foto-upload-${numero}`} />
-                        <label htmlFor={`foto-upload-${numero}`} className="block w-full py-2 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-xl text-center cursor-pointer hover:shadow-lg transition-all text-sm uppercase tracking-wider">
+                        <label htmlFor={`foto-upload-${numero}`} className={`block w-full py-2 px-4 text-white font-black rounded-xl text-center cursor-pointer hover:shadow-lg transition-all text-sm uppercase tracking-wider ${isDark ? 'bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800' : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'}`}>
                             {src ? 'Cambiar' : 'Seleccionar'} Foto {numero}
                         </label>
-                        <p className="text-xs text-slate-400 font-bold mt-1 text-center">{numero === 1 ? `${referencia}.jpg` : `${referencia}-2.jpg`}</p>
+                        <p className={`text-xs font-bold mt-1 text-center transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>{numero === 1 ? `${referencia}.jpg` : `${referencia}-2.jpg`}</p>
                     </div>
                 )}
             </div>
@@ -140,10 +142,10 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
     };
 
     return (
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+        <div className={`p-6 rounded-3xl border shadow-sm transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
             <div className="mb-4">
-                <h3 className="text-sm font-black text-slate-600 uppercase tracking-widest">Fotos de Referencia</h3>
-                <p className="text-xs text-slate-400 font-bold mt-1">JPG, JPEG o PNG • Máximo 5MB por foto</p>
+                <h3 className={`text-sm font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Fotos de Referencia</h3>
+                <p className={`text-xs font-bold mt-1 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>JPG, JPEG o PNG • Máximo 5MB por foto</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FotoBox numero={1} foto={foto1} preview={preview1} uploading={uploading1} inputRef={input1Ref} />
@@ -151,11 +153,11 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({ referencia, foto1, foto2, onF
             </div>
 
             {fotoAmpliada && (
-                <div data-foto-ampliada="true" className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setFotoAmpliada(null)}>
+                <div data-foto-ampliada="true" className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-colors ${isDark ? 'bg-slate-900/80' : 'bg-slate-900/80'}`} onClick={() => setFotoAmpliada(null)}>
                     <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
                         <img src={fotoAmpliada} alt="Foto ampliada" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl" />
-                        <button onClick={() => setFotoAmpliada(null)} className="absolute top-4 right-4 p-3 bg-white rounded-full shadow-lg hover:bg-slate-100 transition-colors">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-slate-800"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <button onClick={() => setFotoAmpliada(null)} className={`absolute top-4 right-4 p-3 rounded-full shadow-lg transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-800 text-white' : 'bg-white hover:bg-slate-100 text-slate-800'}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
                 </div>

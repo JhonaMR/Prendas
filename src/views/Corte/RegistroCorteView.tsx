@@ -5,6 +5,7 @@ import usePagination from '../../hooks/usePagination';
 import api from '../../services/api';
 import CorteImportModal, { ImportedCorteRow } from '../../components/CorteImportModal';
 import { User, UserRole, Reference } from '../../types';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 interface RegistroCorte {
   id: string;
@@ -24,6 +25,7 @@ interface Props {
 
 
 const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
+  const { isDark } = useDarkMode();
   const [registros, setRegistros] = useState<RegistroCorte[]>([]);
   const [searchReferencia, setSearchReferencia] = useState('');
   const [searchNumeroFicha, setSearchNumeroFicha] = useState('');
@@ -295,49 +297,49 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   );
 
   return (
-    <div className="h-full w-full flex flex-col p-6 bg-transparent">
+    <div className={`h-full w-full flex flex-col p-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 mb-1">Registro de Corte</h1>
-            <p className="text-sm text-slate-500">Gestiona tus fichas de corte de forma eficiente</p>
+            <h1 className={`text-4xl font-bold mb-1 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Registro de Corte</h1>
+            <p className={`text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Gestiona tus fichas de corte de forma eficiente</p>
           </div>
 
           <div className="flex items-end gap-3">
             {/* Limpiar filtros */}
             <button
               onClick={() => { setSearchReferencia(''); setSearchNumeroFicha(''); }}
-              className="flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-lg font-bold text-lg transition shadow-md"
+              className={`flex items-center justify-center w-10 h-10 rounded-lg font-bold text-lg transition shadow-md transition-colors duration-300 ${isDark ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-500 hover:bg-red-600 text-white'}`}
               title="Limpiar filtros"
             >✕</button>
 
             {/* Filtro Ref */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1 text-center">Filtro por Ref.</label>
+              <label className={`block text-xs font-semibold mb-1 text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>Filtro por Ref.</label>
               <div className="relative">
-                <Search className="absolute left-2 top-2 w-4 h-4 text-pink-400" />
+                <Search className={`absolute left-2 top-2 w-4 h-4 transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-400'}`} />
                 <input
                   type="text"
                   placeholder="13101"
                   value={searchReferencia}
                   onChange={e => setSearchReferencia(e.target.value)}
-                  className="pl-7 pr-3 py-1.5 text-sm border-2 border-pink-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white/80"
+                  className={`pl-7 pr-3 py-1.5 text-sm border-2 rounded-lg focus:outline-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-200 placeholder-pink-600 focus:ring-pink-500' : 'border-pink-200 focus:ring-pink-400 bg-white/80 text-slate-900'}`}
                 />
               </div>
             </div>
 
             {/* Filtro N° Ficha */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1 text-center">Filtrar por N° FICHA</label>
+              <label className={`block text-xs font-semibold mb-1 text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>Filtrar por N° FICHA</label>
               <div className="relative">
-                <Search className="absolute left-2 top-2 w-4 h-4 text-purple-400" />
+                <Search className={`absolute left-2 top-2 w-4 h-4 transition-colors duration-300 ${isDark ? 'text-purple-400' : 'text-purple-400'}`} />
                 <input
                   type="text"
                   placeholder="1482"
                   value={searchNumeroFicha}
                   onChange={e => setSearchNumeroFicha(e.target.value)}
-                  className="pl-7 pr-3 py-1.5 text-sm border-2 border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 bg-white/80"
+                  className={`pl-7 pr-3 py-1.5 text-sm border-2 rounded-lg focus:outline-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-purple-600 text-purple-200 placeholder-purple-600 focus:ring-purple-500' : 'border-purple-200 focus:ring-purple-400 bg-white/80 text-slate-900'}`}
                 />
               </div>
             </div>
@@ -346,7 +348,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
             {isSoporte && (
               <button
                 onClick={() => setShowImportModal(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md"
+                className={`flex items-center gap-2 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-600 hover:to-blue-500' : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'}`}
               >
                 <Upload className="w-4 h-4" />
                 Importar
@@ -356,7 +358,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
             {/* Botón Agregar */}
             <button
               onClick={handleAddNew}
-              className="flex items-center gap-2 bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md"
+              className={`flex items-center gap-2 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400' : 'bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600'}`}
             >
               <Plus className="w-4 h-4" />
               Agregar
@@ -366,10 +368,10 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
             <button
               onClick={handleSaveAll}
               disabled={!hasUnsavedChanges || saving}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md transition-colors duration-300 ${
                 hasUnsavedChanges && !saving
-                  ? 'bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  ? isDark ? 'bg-gradient-to-r from-green-700 to-green-600 hover:from-green-600 hover:to-green-500 text-white' : 'bg-gradient-to-r from-green-400 to-green-500 hover:from-green-500 hover:to-green-600 text-white'
+                  : isDark ? 'bg-violet-900/40 text-violet-700 cursor-not-allowed' : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
               <Save className="w-4 h-4" />
@@ -380,87 +382,87 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       </div>
 
       {/* Tabla */}
-      <div className="flex-1 overflow-auto bg-white/90 backdrop-blur rounded-xl shadow-lg border border-pink-100 mb-4">
+      <div className={`flex-1 overflow-auto backdrop-blur rounded-xl shadow-lg border mb-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white/90 border-pink-100'}`}>
         {loading ? (
-          <div className="flex items-center justify-center h-40 text-slate-400">Cargando...</div>
+          <div className={`flex items-center justify-center h-40 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Cargando...</div>
         ) : (
           <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
-            <thead className="bg-gradient-to-r from-pink-100 to-purple-100 border-b-2 border-pink-200 sticky top-0">
+            <thead className={`border-b-2 sticky top-0 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-gradient-to-r from-pink-100 to-purple-100 border-pink-200'}`}>
               <tr>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 border-r border-pink-200 w-32">N° DE FICHA</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 border-r border-pink-200 w-32">FECHA CORTE</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 border-r border-pink-200" style={{ width: '100px' }}>REF.</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 border-r border-pink-200" style={{ width: '200px' }}>DESCRIPCION</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 border-r border-pink-200 w-32">CANT. CORTADA</th>
-                <th className="px-6 py-4 text-center text-sm font-bold text-slate-800 w-20">Acciones</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold border-r w-32 transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-800 border-pink-200'}`}>N° DE FICHA</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold border-r w-32 transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-800 border-pink-200'}`}>FECHA CORTE</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold border-r transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-800 border-pink-200'}`} style={{ width: '100px' }}>REF.</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold border-r transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-800 border-pink-200'}`} style={{ width: '200px' }}>DESCRIPCION</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold border-r w-32 transition-colors duration-300 ${isDark ? 'text-violet-200 border-violet-700' : 'text-slate-800 border-pink-200'}`}>CANT. CORTADA</th>
+                <th className={`px-6 py-4 text-center text-sm font-bold w-20 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {paginatedRegistros.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan={6} className={`px-6 py-12 text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                     <div className="flex flex-col items-center gap-2">
-                      <Search className="w-8 h-8 text-pink-200" />
+                      <Search className={`w-8 h-8 transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-pink-200'}`} />
                       <p>No hay registros que coincidan con tu búsqueda</p>
                     </div>
                   </td>
                 </tr>
               ) : (
                 paginatedRegistros.map((registro, idx) => (
-                  <tr key={registro.id} className={`border-b border-pink-100 hover:bg-pink-50/50 transition ${idx % 2 === 0 ? 'bg-white/50' : 'bg-purple-50/30'}`}>
-                    <td className="px-6 py-2.5 text-sm border-r border-pink-100 text-center">
+                  <tr key={registro.id} className={`border-b transition-colors duration-300 ${isDark ? `border-violet-700/50 ${idx % 2 === 0 ? 'bg-[#3d2d52]' : 'bg-[#4a3a5f]'} hover:bg-violet-700/20` : `border-pink-100 ${idx % 2 === 0 ? 'bg-white/50' : 'bg-purple-50/30'} hover:bg-pink-50/50`}`}>
+                    <td className={`px-6 py-2.5 text-sm border-r transition-colors duration-300 text-center ${isDark ? 'border-violet-700/50 text-violet-200' : 'border-pink-100 text-slate-900'}`}>
                       {editingId === registro.id ? (
                         <input type="text" value={registro.numeroFicha}
                           onChange={e => handleFieldChange(registro.id, 'numeroFicha', e.target.value)}
-                          className="w-full px-2 py-1 border-2 border-pink-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white text-center" />
+                          className={`w-full px-2 py-1 border-2 rounded focus:outline-none focus:ring-2 transition-colors duration-300 text-center ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-200 focus:ring-pink-500' : 'border-pink-300 focus:ring-pink-400 bg-white text-slate-900'}`} />
                       ) : (
-                        <span className="text-slate-900 font-semibold">{registro.numeroFicha}</span>
+                        <span className={`font-semibold transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{registro.numeroFicha}</span>
                       )}
                     </td>
-                    <td className="px-6 py-2.5 text-sm border-r border-pink-100 text-center">
+                    <td className={`px-6 py-2.5 text-sm border-r transition-colors duration-300 text-center ${isDark ? 'border-violet-700/50 text-violet-300' : 'border-pink-100 text-slate-700'}`}>
                       {editingId === registro.id ? (
                         <input type="date" value={registro.fechaCorte}
                           onChange={e => handleFieldChange(registro.id, 'fechaCorte', e.target.value)}
-                          className="w-full px-2 py-1 border-2 border-pink-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white text-center" />
+                          className={`w-full px-2 py-1 border-2 rounded focus:outline-none focus:ring-2 transition-colors duration-300 text-center ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-200 focus:ring-pink-500' : 'border-pink-300 focus:ring-pink-400 bg-white text-slate-900'}`} />
                       ) : (
-                        <span className="text-slate-700">{registro.fechaCorte}</span>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{registro.fechaCorte}</span>
                       )}
                     </td>
-                    <td className="px-6 py-2.5 text-sm border-r border-pink-100 text-center">
+                    <td className={`px-6 py-2.5 text-sm border-r transition-colors duration-300 text-center ${isDark ? 'border-violet-700/50 text-violet-200' : 'border-pink-100 text-slate-900'}`}>
                       {editingId === registro.id ? (
                         <input type="text" value={registro.referencia}
                           onChange={e => handleEditReferencia(registro.id, e.target.value)}
                           placeholder="13101" list="referencias-list"
-                          className="w-full px-2 py-1 border-2 border-pink-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white text-center" />
+                          className={`w-full px-2 py-1 border-2 rounded focus:outline-none focus:ring-2 transition-colors duration-300 text-center ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-200 focus:ring-pink-500' : 'border-pink-300 focus:ring-pink-400 bg-white text-slate-900'}`} />
                       ) : (
-                        <span className="text-slate-900 font-semibold">{registro.referencia}</span>
+                        <span className={`font-semibold transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{registro.referencia}</span>
                       )}
                     </td>
-                    <td className="px-6 py-2.5 text-sm border-r border-pink-100 text-left">
-                      <span className="text-slate-700">{registro.descripcion}</span>
+                    <td className={`px-6 py-2.5 text-sm border-r transition-colors duration-300 text-left ${isDark ? 'border-violet-700/50 text-violet-300' : 'border-pink-100 text-slate-700'}`}>
+                      <span className={`transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{registro.descripcion}</span>
                     </td>
-                    <td className="px-6 py-2.5 text-sm border-r border-pink-100 text-center">
+                    <td className={`px-6 py-2.5 text-sm border-r transition-colors duration-300 text-center ${isDark ? 'border-violet-700/50 text-violet-200' : 'border-pink-100 text-slate-900'}`}>
                       {editingId === registro.id ? (
                         <input type="number" value={registro.cantidadCortada}
                           onChange={e => handleFieldChange(registro.id, 'cantidadCortada', parseInt(e.target.value) || 0)}
-                          className="w-full px-2 py-1 border-2 border-pink-300 rounded focus:outline-none focus:ring-2 focus:ring-pink-400 bg-white text-center" />
+                          className={`w-full px-2 py-1 border-2 rounded focus:outline-none focus:ring-2 transition-colors duration-300 text-center ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-200 focus:ring-pink-500' : 'border-pink-300 focus:ring-pink-400 bg-white text-slate-900'}`} />
                       ) : (
-                        <span className="text-slate-900 font-bold">{registro.cantidadCortada}</span>
+                        <span className={`font-bold transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{registro.cantidadCortada}</span>
                       )}
                     </td>
                     <td className="px-6 py-2.5 text-center">
                       <div className="flex justify-center gap-2">
                         {editingId === registro.id ? (
                           <button onClick={() => setEditingId(null)}
-                            className="p-2 text-slate-600 hover:bg-red-100 rounded-lg transition" title="Cancelar">✕</button>
+                            className={`p-2 rounded-lg transition-colors duration-300 ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-slate-600 hover:bg-red-100'}`} title="Cancelar">✕</button>
                         ) : (
                           <>
                             <button onClick={() => setEditingId(registro.id)}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition" title="Editar">
+                              className={`p-2 rounded-lg transition-colors duration-300 ${isDark ? 'text-blue-400 hover:bg-blue-900/30' : 'text-blue-600 hover:bg-blue-100'}`} title="Editar">
                               <Edit2 className="w-4 h-4" />
                             </button>
                             <button onClick={() => handleDelete(registro.id)}
-                              className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition" title="Eliminar">
+                              className={`p-2 rounded-lg transition-colors duration-300 ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-100'}`} title="Eliminar">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </>

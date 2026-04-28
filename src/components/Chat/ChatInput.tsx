@@ -4,9 +4,10 @@ import { ChatContext } from '../../context/ChatContext';
 
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
+  isDark?: boolean;
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
+export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isDark = false }) => {
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { currentChat } = useContext(ChatContext)!;
@@ -56,16 +57,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
   }, [showEmojiPicker]);
 
   return (
-    <div className="p-4 bg-white border-t border-gray-100 relative rounded-b-2xl">
-      <div className="flex items-center relative bg-gray-50 p-1.5 rounded-full border border-gray-200/60 shadow-inner focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-300 transition-all">
+    <div className={`p-4 border-t relative rounded-b-2xl transition-colors ${isDark ? 'bg-gray-50 border-gray-100' : 'bg-white border-gray-100'}`}>
+      <div className={`flex items-center relative p-1.5 rounded-full border shadow-inner focus-within:ring-2 transition-all ${isDark ? 'bg-gray-100 border-gray-200 focus-within:ring-blue-400/20 focus-within:border-blue-300' : 'bg-gray-50 border-gray-200/60 focus-within:ring-blue-500/20 focus-within:border-blue-300'}`}>
         <button
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className="
+          className={`
             p-2 w-10 h-10
-            text-gray-500 hover:text-gray-700 hover:bg-gray-200/50 rounded-full
+            rounded-full
             transition-all
             text-xl flex items-center justify-center flex-shrink-0
-          "
+            ${isDark 
+              ? 'text-gray-600 hover:text-gray-700 hover:bg-gray-200/50' 
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200/50'
+            }
+          `}
           title="Agregar emoji"
         >
           😊
@@ -78,12 +83,17 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
           onChange={handleChange}
           onKeyPress={handleKeyPress}
           placeholder="Escribe tu mensaje..."
-          className="
+          className={`
             flex-1 bg-transparent px-3 py-2
             focus:outline-none focus:ring-0
-            text-[14px] text-gray-700 placeholder-gray-400
+            text-[14px] placeholder
             min-w-0
-          "
+            transition-colors
+            ${isDark 
+              ? 'text-gray-700 placeholder-gray-500' 
+              : 'text-gray-700 placeholder-gray-400'
+            }
+          `}
         />
 
         <button
@@ -94,7 +104,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
             transition-all duration-200 ml-1
             ${message.trim()
               ? 'bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md shadow-blue-500/30 text-white transform hover:scale-105 active:scale-95'
-              : 'bg-gray-200 text-white cursor-not-allowed'}
+              : 'bg-gray-200 text-white cursor-not-allowed'
+            }
           `}
           title="Enviar mensaje"
         >
@@ -118,7 +129,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
       {showEmojiPicker && (
         <div
           ref={emojiPickerRef}
-          className="absolute bottom-full right-0 mb-4 z-50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden border border-gray-100 bg-white"
+          className={`absolute bottom-full right-0 mb-4 z-50 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden border bg-white transition-colors ${isDark ? 'border-gray-200' : 'border-gray-100'}`}
         >
           <EmojiPicker
             onEmojiClick={handleEmojiClick}

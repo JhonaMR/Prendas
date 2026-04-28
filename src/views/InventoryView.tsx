@@ -3,6 +3,7 @@ import { BatchReception, Dispatch, ItemEntry, Reference, UserRole } from '../typ
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import InventoryInsumosView from './InventoryInsumosView';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface InventoryViewProps {
   receptions?: BatchReception[];
@@ -21,6 +22,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   correrias = [],
   user
 }) => {
+  const { isDark } = useDarkMode();
   const [search, setSearch] = useState('');
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportFormat, setReportFormat] = useState<'pdf' | 'excel'>('pdf');
@@ -341,40 +343,40 @@ const InventoryView: React.FC<InventoryViewProps> = ({
 
   if (inventoryType === 'selector') {
     return (
-      <div className="space-y-8 pb-20">
+      <div className={`space-y-8 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Inventario</h2>
-          <p className="text-slate-400 font-medium">Selecciona el tipo de inventario</p>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Inventario</h2>
+          <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Selecciona el tipo de inventario</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <button
             onClick={() => setInventoryType('finished')}
-            className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 hover:shadow-md hover:border-blue-200 transition-all flex flex-col items-center justify-center gap-6 min-h-[400px]"
+            className={`p-8 rounded-[32px] shadow-sm border transition-all flex flex-col items-center justify-center gap-6 min-h-[400px] ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:shadow-md hover:border-violet-600' : 'bg-white border-slate-100 hover:shadow-md hover:border-blue-200'}`}
           >
-            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 text-blue-500">
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-violet-900/40' : 'bg-blue-50'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-8 h-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-blue-500'}`}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H2.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
               </svg>
             </div>
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-black text-slate-800">Inventario de Producto Terminado</h3>
-              <p className="text-slate-400 font-medium">Existencias de referencias confeccionadas</p>
+              <h3 className={`text-2xl font-black tracking-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Inventario de Producto Terminado</h3>
+              <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Existencias de referencias confeccionadas</p>
             </div>
           </button>
 
           <button
             onClick={() => setInventoryType('supplies')}
-            className="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 hover:shadow-md hover:border-orange-200 transition-all flex flex-col items-center justify-center gap-6 min-h-[400px]"
+            className={`p-8 rounded-[32px] shadow-sm border transition-all flex flex-col items-center justify-center gap-6 min-h-[400px] ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:shadow-md hover:border-violet-600' : 'bg-white border-slate-100 hover:shadow-md hover:border-orange-200'}`}
           >
-            <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 text-orange-500">
+            <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-violet-900/40' : 'bg-orange-50'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-8 h-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-orange-500'}`}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375M12 9.75v.75m0 2.25v.75m0 2.25v.75" />
               </svg>
             </div>
             <div className="text-center space-y-2">
-              <h3 className="text-2xl font-black text-slate-800">Inventario de Insumos</h3>
-              <p className="text-slate-400 font-medium">Materias primas y materiales</p>
+              <h3 className={`text-2xl font-black tracking-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Inventario de Insumos</h3>
+              <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Materias primas y materiales</p>
             </div>
           </button>
         </div>
@@ -389,16 +391,16 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   }
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className={`space-y-6 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tighter">Inventario</h2>
-          <p className="text-slate-400 font-medium text-sm sm:text-base">Existencias actuales por referencia</p>
+          <h2 className={`text-3xl sm:text-4xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Inventario</h2>
+          <p className={`font-medium text-sm sm:text-base transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Existencias actuales por referencia</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
           <button
             onClick={() => setInventoryType('selector')}
-            className="px-6 py-4 rounded-[24px] bg-white text-slate-400 font-bold hover:text-slate-600 transition-all border border-slate-100 text-sm"
+            className={`px-6 py-4 rounded-[24px] font-bold text-sm transition-all border ${isDark ? 'bg-[#4a3a63] text-violet-300 border-violet-700 hover:text-violet-200' : 'bg-white text-slate-400 border-slate-100 hover:text-slate-600'}`}
           >
             Atrás
           </button>
@@ -409,9 +411,9 @@ const InventoryView: React.FC<InventoryViewProps> = ({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar referencia..."
-                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-[24px] focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900 shadow-sm text-sm"
+                className={`w-full px-6 py-4 rounded-[24px] focus:ring-4 transition-all font-bold text-sm shadow-sm ${isDark ? 'bg-[#3d2d52] border border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-violet-400' : 'bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-blue-100'}`}
               />
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+              <div className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
@@ -431,49 +433,49 @@ const InventoryView: React.FC<InventoryViewProps> = ({
 
       <div className="grid grid-cols-1 gap-2 sm:gap-3">
         {filteredSortedStock.length === 0 ? (
-          <div className="bg-white p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-slate-200 text-center text-slate-400 font-bold italic">
+          <div className={`p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed text-center font-bold italic transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700 text-violet-400' : 'bg-white border-slate-200 text-slate-400'}`}>
             {search ? `No se encontraron resultados para "${search}"` : 'No hay mercancía registrada en bodega'}
           </div>
         ) : (
           <>
             {paginatedStock.map(([ref, data]) => (
-              <div key={ref} className="bg-white rounded-[20px] sm:rounded-[24px] shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all border-l-4 border-l-blue-500 px-4 py-2 sm:py-3">
+              <div key={ref} className={`rounded-[20px] sm:rounded-[24px] shadow-sm border-l-4 px-4 py-2 sm:py-3 overflow-hidden hover:shadow-md transition-all ${isDark ? 'bg-[#4a3a63] border-violet-700 border-l-violet-500' : 'bg-white border-slate-100 border-l-blue-500'}`}>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
                   <div className="flex items-center gap-2 min-w-fit">
-                    <h3 className="text-base sm:text-lg font-black text-slate-800 tracking-tight leading-none">{ref}</h3>
-                    <span className="px-1 py-0 bg-blue-100 text-blue-600 text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded leading-none whitespace-nowrap">
+                    <h3 className={`text-base sm:text-lg font-black tracking-tight leading-none transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{ref}</h3>
+                    <span className={`px-1 py-0 text-[8px] sm:text-[9px] font-black uppercase tracking-widest rounded leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-violet-900/50 text-violet-300' : 'bg-blue-100 text-blue-600'}`}>
                       Lotes: {data.lotsCount}
                     </span>
                   </div>
 
                   {refDescriptionMap[ref] && (
-                    <p className="text-[11px] sm:text-sm font-medium text-slate-500 leading-tight flex-1 truncate">{refDescriptionMap[ref]}</p>
+                    <p className={`text-[11px] sm:text-sm font-medium leading-tight flex-1 truncate transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{refDescriptionMap[ref]}</p>
                   )}
 
                   <div className="flex gap-4 sm:gap-6">
-                    <div className="px-2 py-1 bg-blue-50/50 rounded w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-blue-400 uppercase leading-none whitespace-nowrap">Ing:</span>
-                      <span className="text-base sm:text-lg font-black text-blue-600 leading-none">+{data.received}</span>
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-violet-900/30' : 'bg-blue-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-blue-400'}`}>Ing:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>+{data.received}</span>
                     </div>
 
-                    <div className="px-2 py-1 bg-pink-50/50 rounded w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-pink-400 uppercase leading-none whitespace-nowrap">Desp:</span>
-                      <span className="text-base sm:text-lg font-black text-pink-600 leading-none">-{data.dispatched}</span>
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-pink-900/30' : 'bg-pink-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-400'}`}>Desp:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-600'}`}>-{data.dispatched}</span>
                     </div>
 
-                    <div className="px-2 py-1 bg-white rounded-lg shadow-xs border border-slate-100 w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none whitespace-nowrap">Stock:</span>
-                      <span className="text-base sm:text-lg font-black text-blue-600 leading-none">{data.available}</span>
+                    <div className={`px-2 py-1 rounded-lg shadow-xs border w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600' : 'bg-white border-slate-100'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-400'}`}>Stock:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>{data.available}</span>
                     </div>
 
-                    <div className="px-2 py-1 bg-purple-50/50 rounded w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-purple-400 uppercase leading-none whitespace-nowrap">Ped:</span>
-                      <span className="text-base sm:text-lg font-black text-purple-600 leading-none">{data.ordersCount}</span>
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-purple-900/30' : 'bg-purple-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-purple-400' : 'text-purple-400'}`}>Ped:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-purple-300' : 'text-purple-600'}`}>{data.ordersCount}</span>
                     </div>
 
-                    <div className="px-2 py-1 bg-amber-50/50 rounded w-24 flex items-center gap-1">
-                      <span className="text-[8px] sm:text-[9px] font-black text-amber-400 uppercase leading-none whitespace-nowrap">Corr:</span>
-                      <span className="text-base sm:text-lg font-black text-amber-600 leading-none">{data.correriasCount}</span>
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-amber-900/30' : 'bg-amber-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-amber-400' : 'text-amber-400'}`}>Corr:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-amber-300' : 'text-amber-600'}`}>{data.correriasCount}</span>
                     </div>
                   </div>
                 </div>
@@ -493,16 +495,16 @@ const InventoryView: React.FC<InventoryViewProps> = ({
       </div>
 
       {showReportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
-            <div className="bg-gradient-to-r from-green-100 to-green-50 px-8 py-6 border-b border-green-200">
-              <h3 className="text-2xl font-black text-green-800 text-center">Generar Informe</h3>
-              <p className="text-sm text-green-600 text-center mt-1">Selecciona el formato</p>
+        <div className={`fixed inset-0 flex items-center justify-center z-50 p-4 transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-black/50'}`}>
+          <div className={`rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+            <div className={`px-8 py-6 border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-600' : 'bg-gradient-to-r from-green-100 to-green-50 border-green-200'}`}>
+              <h3 className={`text-2xl font-black text-center transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-green-800'}`}>Generar Informe</h3>
+              <p className={`text-sm text-center mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-green-600'}`}>Selecciona el formato</p>
             </div>
 
-            <div className="border-2 border-slate-200 m-6 rounded-2xl p-6 space-y-6 bg-slate-50">
+            <div className={`border-2 m-6 rounded-2xl p-6 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                <label className={`text-xs font-black uppercase tracking-widest text-center block transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-600'}`}>
                   Formato
                 </label>
                 <div className="flex gap-3">
@@ -511,7 +513,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportFormat === 'pdf'
                         ? 'bg-red-300 text-red-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        : isDark ? 'bg-violet-900/40 text-violet-400 hover:bg-violet-900/60' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     PDF
@@ -521,7 +523,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportFormat === 'excel'
                         ? 'bg-emerald-300 text-emerald-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        : isDark ? 'bg-violet-900/40 text-violet-400 hover:bg-violet-900/60' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Excel
@@ -530,7 +532,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
               </div>
             </div>
 
-            <div className="flex gap-3 px-8 py-6 bg-slate-50 border-t border-slate-200">
+            <div className={`flex gap-3 px-8 py-6 border-t transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
               <button
                 onClick={() => {
                   if (reportFormat === 'pdf') {
@@ -545,7 +547,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
               </button>
               <button
                 onClick={() => setShowReportModal(false)}
-                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-slate-300 text-slate-700 hover:bg-slate-400 transition-all shadow-sm"
+                className={`flex-1 py-3 px-4 rounded-lg font-black text-sm transition-all shadow-sm ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-300 text-slate-700 hover:bg-slate-400'}`}
               >
                 Cancelar
               </button>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { AppState, Correria, User } from '../types';
 import { api } from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface SalesReportViewProps {
   state: AppState;
@@ -8,7 +9,7 @@ interface SalesReportViewProps {
 }
 
 const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
-  
+  const { isDark } = useDarkMode();
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
@@ -787,14 +788,14 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
   };
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className={`space-y-6 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter leading-none">
+          <h2 className={`text-3xl font-black tracking-tighter leading-none transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>
             Informes generales de ventas y despacho por correría
           </h2>
-          <p className="text-slate-500 font-bold text-xs mt-1">
+          <p className={`font-bold text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
             Panel Ejecutivo de Ventas y Despachos
           </p>
         </div>
@@ -806,7 +807,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
           {isAdminOrSoporte && selectedCorreriaId && (
             <button
               onClick={handleOpenEditModal}
-              className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
+              className={`text-white px-5 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm ${isDark ? 'bg-amber-600 hover:bg-amber-700' : 'bg-amber-500 hover:bg-amber-600'}`}
             >
               📋 Agregar Novedades
             </button>
@@ -814,15 +815,15 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
           <button
             onClick={() => setShowReportModal(true)}
-            className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white px-6 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm"
+            className={`text-white px-6 py-3 rounded-3xl font-black text-sm uppercase tracking-wide transition-all shadow-sm ${isDark ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600' : 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600'}`}
           >
             ✓ Generar Informe
           </button>
 
           {/* Selector de correría */}
-          <div className="bg-white p-3 rounded-3xl border border-slate-100 shadow-sm">
+          <div className={`p-3 rounded-3xl border shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <span className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
                 Correría Seleccionada
               </span>
               <CorreriaAutocomplete
@@ -833,6 +834,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                 setSearch={setCorreriaSearch}
                 showDropdown={showCorreriaDropdown}
                 setShowDropdown={setShowCorreriaDropdown}
+                isDark={isDark}
               />
             </div>
           </div>
@@ -843,11 +845,11 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       {novedades.length > 0 && selectedCorreriaId && (
         <button
           onClick={() => setShowNovedadesModal(true)}
-          className="w-full text-left flex items-center gap-3 px-5 py-3 rounded-2xl bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-all group"
+          className={`w-full text-left flex items-center gap-3 px-5 py-3 rounded-2xl border transition-all group ${isDark ? 'bg-amber-900/30 border-amber-700 hover:bg-amber-900/50' : 'bg-amber-50 border-amber-200 hover:bg-amber-100'}`}
         >
           <span className="text-xl">💡</span>
           <div className="flex-1">
-            <span className="text-amber-800 font-black text-sm">
+            <span className={`font-black text-sm transition-colors duration-300 ${isDark ? 'text-amber-300' : 'text-amber-800'}`}>
               Esta correría tiene {novedades.length} novedad{novedades.length > 1 ? 'es' : ''} registrada{novedades.length > 1 ? 's' : ''}.
             </span>
             <span className="text-amber-600 font-bold text-xs ml-2">Haz clic para verlas →</span>
@@ -856,37 +858,37 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       )}
 
       {!metrics ? (
-        <div className="bg-white p-24 rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center">
-          <p className="text-slate-400 font-bold text-lg">Seleccione una correría</p>
+        <div className={`p-24 rounded-[48px] border-2 border-dashed flex flex-col items-center text-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
+          <p className={`font-bold text-lg transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Seleccione una correría</p>
         </div>
       ) : (
         <>
           {/* Cards de métricas principales */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Card 1: Referencias (Maleta) */}
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-3xl border border-orange-200 shadow-sm">
-              <p className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-4">
+            <div className={`p-6 rounded-3xl border shadow-sm transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-orange-900/30 to-orange-900/20 border-orange-700' : 'bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200'}`}>
+              <p className={`text-[10px] font-black uppercase tracking-widest mb-4 transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>
                 Referencias (Maleta)
               </p>
               <div className="space-y-4">
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.totalRefsUnicas}</p>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total referencias únicas</p>
+                  <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-orange-200' : 'text-slate-800'}`}>{metrics.totalRefsUnicas}</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-orange-400' : 'text-slate-500'}`}>Total referencias únicas</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.refsEnCero}</p>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-orange-200' : 'text-slate-800'}`}>{metrics.refsEnCero}</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-orange-400' : 'text-slate-500'}`}>
                     Referencias en cero ({metrics.porcentajeEnCero.toFixed(0)}%)
                   </p>
                 </div>
-                <div className="pt-2 border-t border-orange-200">
-                  <div className="w-full bg-orange-200 rounded-full h-2 mb-2">
+                <div className={`pt-2 border-t transition-colors duration-300 ${isDark ? 'border-orange-700' : 'border-orange-200'}`}>
+                  <div className={`w-full rounded-full h-2 mb-2 transition-colors duration-300 ${isDark ? 'bg-orange-900/40' : 'bg-orange-200'}`}>
                     <div 
-                      className="bg-orange-600 h-2 rounded-full transition-all" 
+                      className={`h-2 rounded-full transition-all ${isDark ? 'bg-orange-500' : 'bg-orange-600'}`}
                       style={{ width: `${metrics.efectividad}%` }}
                     ></div>
                   </div>
-                  <p className="text-[10px] font-black text-orange-600 uppercase">
+                  <p className={`text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>
                     Efectividad Ref: {metrics.efectividad.toFixed(1)}%
                   </p>
                 </div>
@@ -894,27 +896,27 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             </div>
 
             {/* Card 2: Ventas vs Despachos */}
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-3xl border border-blue-200 shadow-sm">
-              <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-4">
+            <div className={`p-6 rounded-3xl border shadow-sm transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-blue-900/30 to-blue-900/20 border-blue-700' : 'bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200'}`}>
+              <p className={`text-[10px] font-black uppercase tracking-widest mb-4 transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>
                 Ventas vs Despachos
               </p>
               <div className="space-y-4">
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.totalVendidas.toLocaleString('es-CO')}</p>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades vendidas</p>
+                  <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-blue-200' : 'text-slate-800'}`}>{metrics.totalVendidas.toLocaleString('es-CO')}</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-slate-500'}`}>Unidades vendidas</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-black text-slate-800">{metrics.totalDespachadas.toLocaleString('es-CO')}</p>
-                  <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades despachadas</p>
+                  <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-blue-200' : 'text-slate-800'}`}>{metrics.totalDespachadas.toLocaleString('es-CO')}</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-slate-500'}`}>Unidades despachadas</p>
                 </div>
-                <div className="pt-2 border-t border-blue-200">
-                  <div className="w-full bg-blue-200 rounded-full h-2 mb-2">
+                <div className={`pt-2 border-t transition-colors duration-300 ${isDark ? 'border-blue-700' : 'border-blue-200'}`}>
+                  <div className={`w-full rounded-full h-2 mb-2 transition-colors duration-300 ${isDark ? 'bg-blue-900/40' : 'bg-blue-200'}`}>
                     <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all" 
+                      className={`h-2 rounded-full transition-all ${isDark ? 'bg-blue-500' : 'bg-blue-600'}`}
                       style={{ width: `${metrics.cumplimientoUnidades}%` }}
                     ></div>
                   </div>
-                  <p className="text-[10px] font-black text-blue-600 uppercase">
+                  <p className={`text-[10px] font-black uppercase transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>
                     Cumplimiento: {metrics.cumplimientoUnidades.toFixed(1)}%
                   </p>
                 </div>
@@ -922,50 +924,50 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             </div>
 
             {/* Card 3: Resumen Financiero - Más ancho */}
-            <div className="md:col-span-2 bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-3xl border border-green-200 shadow-sm">
-              <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-4">
+            <div className={`md:col-span-2 p-6 rounded-3xl border shadow-sm transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-green-900/30 to-green-900/20 border-green-700' : 'bg-gradient-to-br from-green-50 to-green-100 border-green-200'}`}>
+              <p className={`text-[10px] font-black uppercase tracking-widest mb-4 transition-colors duration-300 ${isDark ? 'text-green-300' : 'text-green-600'}`}>
                 Resumen Financiero
               </p>
               <div className="flex items-center justify-between gap-6">
                 {/* Lado izquierdo: Total vendido y despachado */}
                 <div className="space-y-4 flex-1">
                   <div>
-                    <p className="text-3xl font-black text-slate-800">
+                    <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-green-200' : 'text-slate-800'}`}>
                       $ {metrics.totalVendidoValor.toLocaleString()}
                     </p>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total vendido</p>
+                    <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-slate-500'}`}>Total vendido</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-black text-slate-800">
+                    <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-green-200' : 'text-slate-800'}`}>
                       $ {metrics.totalDespachadoValor.toLocaleString()}
                     </p>
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total despachado</p>
+                    <p className={`text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-slate-500'}`}>Total despachado</p>
                   </div>
                 </div>
 
                 {/* Lado derecho: Diferencia centrada */}
-                <div className="flex flex-col items-center justify-center border-l border-green-200 pl-6">
-                  <p className="text-3xl font-black text-red-600">
+                <div className={`flex flex-col items-center justify-center border-l pl-6 transition-colors duration-300 ${isDark ? 'border-green-700' : 'border-green-200'}`}>
+                  <p className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                     $ {metrics.diferenciaValor.toLocaleString()}
                   </p>
-                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider text-center">
+                  <p className={`text-[10px] font-bold uppercase tracking-wider text-center transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
                     Diferencia faltante
                   </p>
-                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider text-center">
+                  <p className={`text-[10px] font-bold uppercase tracking-wider text-center transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
                     {metrics.porcentajeDiferencia.toFixed(1)}% de venta
                   </p>
                 </div>
               </div>
 
               {/* Barra de cumplimiento */}
-              <div className="pt-4 border-t border-green-200 mt-4">
-                <div className="w-full bg-green-200 rounded-full h-2 mb-2">
+              <div className={`pt-4 border-t mt-4 transition-colors duration-300 ${isDark ? 'border-green-700' : 'border-green-200'}`}>
+                <div className={`w-full rounded-full h-2 mb-2 transition-colors duration-300 ${isDark ? 'bg-green-900/40' : 'bg-green-200'}`}>
                   <div 
-                    className="bg-green-600 h-2 rounded-full transition-all" 
+                    className={`h-2 rounded-full transition-all ${isDark ? 'bg-green-500' : 'bg-green-600'}`}
                     style={{ width: `${metrics.cumplimientoValor}%` }}
                   ></div>
                 </div>
-                <p className="text-[10px] font-black text-green-600 uppercase text-center">
+                <p className={`text-[10px] font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-green-300' : 'text-green-600'}`}>
                   Cumplimiento: {metrics.cumplimientoValor.toFixed(1)}%
                 </p>
               </div>
@@ -973,8 +975,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
           </div>
 
           {/* Tabla: Análisis de Vendedores */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-4">
+          <div className={`rounded-3xl shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <div className={`px-8 py-4 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-600 to-violet-500' : 'bg-gradient-to-r from-blue-600 to-blue-500'}`}>
               <h3 className="text-lg font-black text-white uppercase tracking-wide">
                 Análisis de Vendedores
               </h3>
@@ -982,53 +984,53 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-base min-w-[900px]">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                  <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                    <th className={`px-6 py-4 font-black uppercase tracking-widest text-[10px] transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Vendedor
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Pedidos
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Vendidas vs Despachadas
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Ventas ($)
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Cumplimiento (UND)
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Cumplimiento (Valor)
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700' : 'divide-slate-100'}`}>
                   {metrics.vendedoresData.map((vendedor, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                    <tr key={idx} className={`transition-colors ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
                       <td className="px-6 py-4">
-                        <p className="font-black text-slate-800 text-sm">{vendedor.nombre}</p>
+                        <p className={`font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{vendedor.nombre}</p>
                         <p className="text-[10px] font-bold text-blue-500">
                           {vendedor.porcentajeVenta.toFixed(1)}% de la venta total
                         </p>
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
-                        {vendedor.pedidos}
+                      <td className="px-4 py-4 text-center font-black">
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{vendedor.pedidos}</span>
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <span className="font-black text-slate-800">{vendedor.vendidas.toLocaleString('es-CO')}</span>
-                        <span className="text-slate-400 mx-1">/</span>
-                        <span className="font-black text-blue-600">{vendedor.despachadas.toLocaleString('es-CO')}</span>
+                        <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{vendedor.vendidas.toLocaleString('es-CO')}</span>
+                        <span className={`mx-1 transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-400'}`}>/</span>
+                        <span className={`font-black transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{vendedor.despachadas.toLocaleString('es-CO')}</span>
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
-                        $ {vendedor.ventas.toLocaleString()}
+                      <td className="px-4 py-4 text-center font-black">
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>$ {vendedor.ventas.toLocaleString()}</span>
                       </td>
                       <td className="px-4 py-4 text-center">
                         <div className="flex items-center gap-2 justify-center">
-                          <span className="font-black text-xs">{vendedor.cumplimientoUnd.toFixed(1)}%</span>
-                          <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{vendedor.cumplimientoUnd.toFixed(1)}%</span>
+                          <div className={`w-16 rounded-full h-1.5 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`}>
                             <div 
-                              className="bg-green-500 h-1.5 rounded-full" 
+                              className={`h-1.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-green-400' : 'bg-green-500'}`}
                               style={{ width: `${Math.min(vendedor.cumplimientoUnd, 100)}%` }}
                             ></div>
                           </div>
@@ -1036,10 +1038,10 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                       </td>
                       <td className="px-4 py-4 text-center">
                         <div className="flex items-center gap-2 justify-center">
-                          <span className="font-black text-xs">{vendedor.cumplimientoValor.toFixed(1)}%</span>
-                          <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{vendedor.cumplimientoValor.toFixed(1)}%</span>
+                          <div className={`w-16 rounded-full h-1.5 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`}>
                             <div 
-                              className="bg-blue-500 h-1.5 rounded-full" 
+                              className={`h-1.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-blue-400' : 'bg-blue-500'}`}
                               style={{ width: `${Math.min(vendedor.cumplimientoValor, 100)}%` }}
                             ></div>
                           </div>
@@ -1049,28 +1051,28 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-slate-100 border-t-2 border-slate-300">
-                    <td className="px-6 py-4 font-black text-slate-700 uppercase text-xs">
+                  <tr className={`border-t-2 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-100 border-slate-300'}`}>
+                    <td className={`px-6 py-4 font-black uppercase text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>
                       Totales Consolidado
                     </td>
-                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                    <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                       {metrics.vendedoresData.reduce((acc, v) => acc + v.pedidos, 0)}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="font-black text-slate-800">{metrics.totalVendidas.toLocaleString('es-CO')}</span>
-                      <span className="text-slate-400 mx-1">/</span>
-                      <span className="font-black text-blue-600">{metrics.totalDespachadas.toLocaleString('es-CO')}</span>
+                      <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{metrics.totalVendidas.toLocaleString('es-CO')}</span>
+                      <span className={`mx-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>/</span>
+                      <span className={`font-black transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>{metrics.totalDespachadas.toLocaleString('es-CO')}</span>
                     </td>
-                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                    <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                       $ {metrics.totalVendidoValor.toLocaleString()}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="inline-block px-3 py-1 bg-green-100 text-green-700 font-black text-xs rounded-full">
+                      <span className={`inline-block px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-green-900/40 text-green-300' : 'bg-green-100 text-green-700'}`}>
                         {metrics.cumplimientoUnidades.toFixed(1)}% GLOBAL (UND)
                       </span>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 font-black text-xs rounded-full">
+                      <span className={`inline-block px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>
                         {metrics.cumplimientoValor.toFixed(1)}% GLOBAL (VALOR)
                       </span>
                     </td>
@@ -1081,8 +1083,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
           </div>
 
           {/* Tabla: Análisis de Valores Vendidos */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-8 py-4">
+          <div className={`rounded-3xl shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <div className={`px-8 py-4 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-emerald-700 to-emerald-600' : 'bg-gradient-to-r from-emerald-600 to-emerald-500'}`}>
               <h3 className="text-lg font-black text-white uppercase tracking-wide">
                 Análisis de Valores Vendidos
               </h3>
@@ -1090,60 +1092,60 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-base min-w-[1100px]">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                  <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                    <th className={`px-6 py-4 font-black uppercase tracking-widest text-[10px] transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Vendedor
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Pedidos
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Valor Lista
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Valor Real
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Diferencia
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Cumplimiento Real
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700' : 'divide-slate-100'}`}>
                   {metrics.valoresVendidosData.map((vendedor, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-black text-slate-800 text-sm">
+                    <tr key={idx} className={`transition-colors ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
+                      <td className={`px-6 py-4 font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>
                         {vendedor.nombre}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                         {vendedor.pedidos}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-green-300' : 'text-slate-800'}`}>
                         $ {vendedor.valorLista.toLocaleString()}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-emerald-600">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-emerald-600'}`}>
                         $ {vendedor.valorReal.toLocaleString()}
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <span className="font-black text-red-600">
+                        <span className={`font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                           $ {vendedor.diferencia.toLocaleString()}
                         </span>
-                        <p className="text-[9px] text-red-500 font-bold">
+                        <p className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-500'}`}>
                           {vendedor.valorLista > 0 ? ((vendedor.diferencia / vendedor.valorLista) * 100).toFixed(1) : 0}% descuento
                         </p>
                       </td>
                       <td className="px-4 py-4 text-center">
                         <div className="flex flex-col items-center gap-2">
-                          <span className="font-black text-emerald-600">
+                          <span className={`font-black transition-colors duration-300 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
                             $ {vendedor.valorDespachado.toLocaleString()}
                           </span>
                           <div className="flex items-center gap-2">
-                            <span className="font-black text-xs">{vendedor.cumplimientoReal.toFixed(1)}%</span>
-                            <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                            <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{vendedor.cumplimientoReal.toFixed(1)}%</span>
+                            <div className={`w-16 rounded-full h-1.5 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`}>
                               <div 
-                                className="bg-emerald-500 h-1.5 rounded-full" 
+                                className={`h-1.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-emerald-400' : 'bg-emerald-500'}`}
                                 style={{ width: `${Math.min(vendedor.cumplimientoReal, 100)}%` }}
                               ></div>
                             </div>
@@ -1154,26 +1156,26 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-slate-100 border-t-2 border-slate-300">
-                    <td className="px-6 py-4 font-black text-slate-700 uppercase text-xs">
+                  <tr className={`border-t-2 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-100 border-slate-300'}`}>
+                    <td className={`px-6 py-4 font-black uppercase text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>
                       Totales Consolidado
                     </td>
-                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                    <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                       {metrics.valoresVendidosData.reduce((acc, v) => acc + v.pedidos, 0)}
                     </td>
-                    <td className="px-4 py-4 text-center font-black text-slate-800">
+                    <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-green-300' : 'text-slate-800'}`}>
                       $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorLista, 0).toLocaleString()}
                     </td>
-                    <td className="px-4 py-4 text-center font-black text-emerald-600">
+                    <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-emerald-600'}`}>
                       $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorReal, 0).toLocaleString()}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="font-black text-red-600">
+                      <span className={`font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                         $ {metrics.valoresVendidosData.reduce((acc, v) => acc + v.diferencia, 0).toLocaleString()}
                       </span>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 font-black text-xs rounded-full">
+                      <span className={`inline-block px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-100 text-emerald-700'}`}>
                         {metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorDespachado, 0) > 0 
                           ? ((metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorDespachado, 0) / metrics.valoresVendidosData.reduce((acc, v) => acc + v.valorReal, 0)) * 100).toFixed(1)
                           : 0}% GLOBAL
@@ -1186,8 +1188,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
           </div>
 
           {/* Tabla: Performance de Diseñadoras */}
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-slate-700 to-slate-600 px-8 py-4 flex items-center justify-between">
+          <div className={`rounded-3xl shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <div className={`px-8 py-4 flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-700 to-violet-600' : 'bg-gradient-to-r from-slate-700 to-slate-600'}`}>
               <h3 className="text-lg font-black text-white uppercase tracking-wide">
                 Performance de Diseñadoras
               </h3>
@@ -1211,55 +1213,55 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-base min-w-[800px]">
                 <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="px-6 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px]">
+                  <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                    <th className={`px-6 py-4 font-black uppercase tracking-widest text-[10px] transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Diseñadora
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Ventas Generadas
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Ref. Creadas
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Ref. Vendidas
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       % Éxito Pedido
                     </th>
-                    <th className="px-4 py-4 font-black text-slate-500 uppercase tracking-widest text-[10px] text-center">
+                    <th className={`px-4 py-4 font-black uppercase tracking-widest text-[10px] text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                       Refs en Cero
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700' : 'divide-slate-100'}`}>
                   {metrics.disenadorasData.map((disenadora, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 font-black text-slate-800 text-sm uppercase">
+                    <tr key={idx} className={`transition-colors ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
+                      <td className={`px-6 py-4 font-black text-sm uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>
                         {disenadora.nombre}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                         {hideVentasDisenadora ? '-' : `$ ${disenadora.ventasGeneradas.toLocaleString()}`}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-slate-800">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>
                         {disenadora.refsCreadas}
                       </td>
-                      <td className="px-4 py-4 text-center font-black text-green-600">
+                      <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-600'}`}>
                         {disenadora.refsVendidas}
                       </td>
                       <td className="px-4 py-4 text-center">
                         <div className="flex items-center gap-2 justify-center">
-                          <span className="font-black text-xs">{disenadora.exitoPedido.toFixed(0)}%</span>
-                          <div className="w-16 bg-slate-200 rounded-full h-1.5">
+                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{disenadora.exitoPedido.toFixed(0)}%</span>
+                          <div className={`w-16 rounded-full h-1.5 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`}>
                             <div 
-                              className="bg-green-500 h-1.5 rounded-full" 
+                              className={`h-1.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-green-400' : 'bg-green-500'}`}
                               style={{ width: `${disenadora.exitoPedido}%` }}
                             ></div>
                           </div>
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <span className="font-black text-red-600">
+                        <span className={`font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
                           {disenadora.refsEnCero} ({disenadora.porcentajeEnCero.toFixed(0)}%)
                         </span>
                       </td>
@@ -1273,13 +1275,13 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     const totalEnCero = metrics.disenadorasData.reduce((acc, d) => acc + d.refsEnCero, 0);
                     const avgEnCero = metrics.disenadorasData.reduce((acc, d) => acc + d.porcentajeEnCero, 0) / metrics.disenadorasData.length;
                     return (
-                      <tr className="bg-slate-100 border-t-2 border-slate-300 font-black">
-                        <td className="px-6 py-4 font-black text-slate-700 uppercase text-xs">Totales</td>
-                        <td className="px-4 py-4 text-center font-black text-slate-800">{hideVentasDisenadora ? '-' : `$ ${totalVentas.toLocaleString('es-CO')}`}</td>
-                        <td className="px-4 py-4 text-center font-black text-slate-800">{totalCreadas}</td>
-                        <td className="px-4 py-4 text-center font-black text-green-600">{totalVendidas}</td>
-                        <td className="px-4 py-4 text-center font-black text-slate-800">{avgExito.toFixed(0)}%</td>
-                        <td className="px-4 py-4 text-center font-black text-red-600">{totalEnCero} ({avgEnCero.toFixed(0)}%)</td>
+                      <tr className={`border-t-2 font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-100 border-slate-300'}`}>
+                        <td className={`px-6 py-4 font-black uppercase text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Totales</td>
+                        <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{hideVentasDisenadora ? '-' : `$ ${totalVentas.toLocaleString('es-CO')}`}</td>
+                        <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{totalCreadas}</td>
+                        <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-600'}`}>{totalVendidas}</td>
+                        <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{avgExito.toFixed(0)}%</td>
+                        <td className={`px-4 py-4 text-center font-black transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{totalEnCero} ({avgEnCero.toFixed(0)}%)</td>
                       </tr>
                     );
                   })()}
@@ -1292,19 +1294,19 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
       {/* Modal: Generar Informe */}
       {showReportModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div className={`fixed inset-0 flex items-center justify-center z-50 p-4 transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-black/50'}`}>
+          <div className={`rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
             {/* Encabezado del modal */}
-            <div className="bg-gradient-to-r from-purple-100 to-purple-50 px-8 py-6 border-b border-purple-200">
-              <h3 className="text-2xl font-black text-purple-800 text-center">Generar Informe</h3>
-              <p className="text-sm text-purple-600 text-center mt-1">Configura los parámetros</p>
+            <div className={`px-8 py-6 border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-gradient-to-r from-purple-100 to-purple-50 border-purple-200'}`}>
+              <h3 className={`text-2xl font-black text-center transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-purple-800'}`}>Generar Informe</h3>
+              <p className={`text-sm text-center mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-purple-600'}`}>Configura los parámetros</p>
             </div>
 
             {/* Contenedor de selectores con borde */}
-            <div className="border-2 border-slate-200 m-6 rounded-2xl p-6 space-y-6 bg-slate-50">
+            <div className={`border-2 m-6 rounded-2xl p-6 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
               {/* Selector: Incluir Despachadas */}
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                <label className={`text-xs font-black uppercase tracking-widest text-center block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
                   Incluir Despachadas
                 </label>
                 <div className="flex gap-3">
@@ -1312,8 +1314,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: false })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       !reportConfig.includeDespachadas
-                        ? 'bg-blue-300 text-blue-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-violet-600 text-white shadow-sm' : 'bg-blue-300 text-blue-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     No
@@ -1322,8 +1324,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, includeDespachadas: true })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.includeDespachadas
-                        ? 'bg-blue-300 text-blue-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-violet-600 text-white shadow-sm' : 'bg-blue-300 text-blue-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Sí
@@ -1333,7 +1335,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
               {/* Selector: Agregar Vendidas en 0 */}
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                <label className={`text-xs font-black uppercase tracking-widest text-center block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
                   Agregar Vendidas en 0
                 </label>
                 <div className="flex gap-3">
@@ -1341,8 +1343,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: true })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.includeZeroSales
-                        ? 'bg-orange-300 text-orange-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-orange-600 text-white shadow-sm' : 'bg-orange-300 text-orange-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Sí
@@ -1351,8 +1353,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, includeZeroSales: false })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       !reportConfig.includeZeroSales
-                        ? 'bg-orange-300 text-orange-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-orange-600 text-white shadow-sm' : 'bg-orange-300 text-orange-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     No
@@ -1362,7 +1364,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
               {/* Selector: Ordenar Por */}
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                <label className={`text-xs font-black uppercase tracking-widest text-center block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
                   Ordenar Por
                 </label>
                 <div className="flex gap-3">
@@ -1370,8 +1372,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, sortBy: 'reference' })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.sortBy === 'reference'
-                        ? 'bg-green-300 text-green-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-green-600 text-white shadow-sm' : 'bg-green-300 text-green-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Ref. Menor a Mayor
@@ -1380,8 +1382,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, sortBy: 'vendidas' })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.sortBy === 'vendidas'
-                        ? 'bg-green-300 text-green-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-green-600 text-white shadow-sm' : 'bg-green-300 text-green-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Vendidas Mayor a Menor
@@ -1391,7 +1393,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
               {/* Selector: Formato */}
               <div className="space-y-3">
-                <label className="text-xs font-black text-slate-600 uppercase tracking-widest text-center block">
+                <label className={`text-xs font-black uppercase tracking-widest text-center block transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
                   Formato
                 </label>
                 <div className="flex gap-3">
@@ -1399,8 +1401,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, format: 'pdf' })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.format === 'pdf'
-                        ? 'bg-red-300 text-red-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-red-600 text-white shadow-sm' : 'bg-red-300 text-red-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     PDF
@@ -1409,8 +1411,8 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     onClick={() => setReportConfig({ ...reportConfig, format: 'excel' })}
                     className={`flex-1 py-2 px-4 rounded-lg font-black text-sm transition-all ${
                       reportConfig.format === 'excel'
-                        ? 'bg-emerald-300 text-emerald-900 shadow-sm'
-                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                        ? isDark ? 'bg-emerald-600 text-white shadow-sm' : 'bg-emerald-300 text-emerald-900 shadow-sm'
+                        : isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-[#6a5a85]' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
                     Excel
@@ -1420,7 +1422,7 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
             </div>
 
             {/* Botones de acción */}
-            <div className="flex gap-3 px-8 py-6 bg-slate-50 border-t border-slate-200">
+            <div className={`flex gap-3 px-8 py-6 border-t transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
               <button
                 onClick={() => {
                   if (reportConfig.format === 'pdf') {
@@ -1429,13 +1431,13 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
                     generateExcelReport();
                   }
                 }}
-                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-gradient-to-r from-purple-300 to-purple-200 text-purple-900 hover:from-purple-400 hover:to-purple-300 transition-all shadow-sm"
+                className={`flex-1 py-3 px-4 rounded-lg font-black text-sm transition-all shadow-sm ${isDark ? 'bg-gradient-to-r from-violet-600 to-violet-500 text-white hover:from-violet-700 hover:to-violet-600' : 'bg-gradient-to-r from-purple-300 to-purple-200 text-purple-900 hover:from-purple-400 hover:to-purple-300'}`}
               >
                 Generar
               </button>
               <button
                 onClick={() => setShowReportModal(false)}
-                className="flex-1 py-3 px-4 rounded-lg font-black text-sm bg-slate-300 text-slate-700 hover:bg-slate-400 transition-all shadow-sm"
+                className={`flex-1 py-3 px-4 rounded-lg font-black text-sm transition-all shadow-sm ${isDark ? 'bg-[#5a4a75] text-violet-200 hover:bg-[#6a5a85]' : 'bg-slate-300 text-slate-700 hover:bg-slate-400'}`}
               >
                 Cancelar
               </button>
@@ -1445,28 +1447,28 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       )}
       {/* Modal lectura de Novedades - visible para todos */}
       {showNovedadesModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-black/40'}`}>
+          <div className={`rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
+            <div className={`px-8 py-6 border-b flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-amber-900/40 border-amber-700' : 'bg-amber-50 border-amber-100'}`}>
               <div>
-                <h3 className="text-xl font-black text-amber-900">Novedades de la Correría</h3>
-                <p className="text-amber-600 font-bold text-xs mt-0.5 uppercase tracking-wider">{selectedCorreria?.name} {selectedCorreria?.year}</p>
+                <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-amber-300' : 'text-amber-900'}`}>Novedades de la Correría</h3>
+                <p className={`font-bold text-xs mt-0.5 uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>{selectedCorreria?.name} {selectedCorreria?.year}</p>
               </div>
-              <button onClick={() => setShowNovedadesModal(false)} className="text-amber-400 hover:text-amber-600 text-2xl font-black">×</button>
+              <button onClick={() => setShowNovedadesModal(false)} className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-400 hover:text-amber-600'}`}>×</button>
             </div>
-            <div className="p-8 space-y-3 max-h-[60vh] overflow-y-auto">
+            <div className={`p-8 space-y-3 max-h-[60vh] overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
               {novedades.map((n, idx) => (
                 <div key={n.id} className="flex items-start gap-3">
-                  <span className="mt-1 w-5 h-5 flex-shrink-0 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black flex items-center justify-center">{idx + 1}</span>
-                  <p className="text-slate-700 font-bold text-sm leading-relaxed">{n.contenido}</p>
+                  <span className={`mt-1 w-5 h-5 flex-shrink-0 rounded-full text-[10px] font-black flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-600'}`}>{idx + 1}</span>
+                  <p className={`font-bold text-sm leading-relaxed transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{n.contenido}</p>
                 </div>
               ))}
             </div>
             {isAdminOrSoporte && (
-              <div className="px-8 py-4 bg-slate-50 border-t border-slate-100">
+              <div className={`px-8 py-4 border-t transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
                 <button
                   onClick={() => { setShowNovedadesModal(false); handleOpenEditModal(); }}
-                  className="w-full py-2.5 rounded-xl font-black text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all"
+                  className={`w-full py-2.5 rounded-xl font-black text-sm transition-all ${isDark ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`}
                 >
                   Editar novedades
                 </button>
@@ -1478,51 +1480,51 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
 
       {/* Modal edición de Novedades - solo Admin/Soporte */}
       {showEditNovedadesModal && isAdminOrSoporte && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden">
-            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-black/40'}`}>
+          <div className={`rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
+            <div className={`px-8 py-6 border-b flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-amber-900/40 border-amber-700' : 'bg-amber-50 border-amber-100'}`}>
               <div>
-                <h3 className="text-xl font-black text-amber-900">Agregar Novedades</h3>
-                <p className="text-amber-600 font-bold text-xs mt-0.5 uppercase tracking-wider">Correría: {selectedCorreria?.name} {selectedCorreria?.year}</p>
+                <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-amber-300' : 'text-amber-900'}`}>Agregar Novedades</h3>
+                <p className={`font-bold text-xs mt-0.5 uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-amber-400' : 'text-amber-600'}`}>Correría: {selectedCorreria?.name} {selectedCorreria?.year}</p>
               </div>
               <button
                 onClick={handleAddLine}
-                className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl font-black text-sm transition-all"
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-black text-sm transition-all ${isDark ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`}
               >
                 + Agregar
               </button>
             </div>
-            <div className="p-6 space-y-3 max-h-[55vh] overflow-y-auto">
+            <div className={`p-6 space-y-3 max-h-[55vh] overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
               {editNovedadesLines.map((line, idx) => (
                 <div key={idx} className="flex items-center gap-3">
-                  <span className="w-5 h-5 flex-shrink-0 rounded-full bg-amber-100 text-amber-600 text-[10px] font-black flex items-center justify-center">{idx + 1}</span>
+                  <span className={`w-5 h-5 flex-shrink-0 rounded-full text-[10px] font-black flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-amber-900/40 text-amber-400' : 'bg-amber-100 text-amber-600'}`}>{idx + 1}</span>
                   <input
                     type="text"
                     value={line}
                     onChange={e => handleLineChange(idx, e.target.value)}
                     placeholder="Escribe una novedad..."
-                    className="flex-1 px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none"
+                    className={`flex-1 px-4 py-2.5 rounded-xl text-sm font-bold focus:ring-2 outline-none transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border border-violet-600 text-violet-100 placeholder-violet-400 focus:ring-violet-500' : 'bg-slate-50 border border-slate-200 text-slate-800 focus:ring-amber-200 focus:border-amber-400'}`}
                   />
                   {editNovedadesLines.length > 1 && (
                     <button
                       onClick={() => handleRemoveLine(idx)}
-                      className="w-7 h-7 flex items-center justify-center rounded-full bg-red-100 hover:bg-red-200 text-red-500 font-black text-sm transition-all"
+                      className={`w-7 h-7 flex items-center justify-center rounded-full font-black text-sm transition-all ${isDark ? 'bg-red-900/40 hover:bg-red-900/60 text-red-400' : 'bg-red-100 hover:bg-red-200 text-red-500'}`}
                     >×</button>
                   )}
                 </div>
               ))}
             </div>
-            <div className="flex gap-3 px-8 py-5 bg-slate-50 border-t border-slate-100">
+            <div className={`flex gap-3 px-8 py-5 border-t transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
               <button
                 onClick={handleSaveNovedades}
                 disabled={savingNovedades}
-                className="flex-1 py-3 rounded-xl font-black text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all disabled:opacity-50"
+                className={`flex-1 py-3 rounded-xl font-black text-sm transition-all disabled:opacity-50 ${isDark ? 'bg-amber-600 hover:bg-amber-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`}
               >
                 {savingNovedades ? 'Guardando...' : 'Guardar Novedades'}
               </button>
               <button
                 onClick={() => setShowEditNovedadesModal(false)}
-                className="flex-1 py-3 rounded-xl font-black text-sm bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all"
+                className={`flex-1 py-3 rounded-xl font-black text-sm transition-all ${isDark ? 'bg-[#5a4a75] hover:bg-[#6a5a85] text-violet-200' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'}`}
               >
                 Cancelar
               </button>
@@ -1544,7 +1546,8 @@ const CorreriaAutocomplete: React.FC<{
   setSearch: (search: string) => void;
   showDropdown: boolean;
   setShowDropdown: (show: boolean) => void;
-}> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown }) => {
+  isDark: boolean;
+}> = ({ value, correrias, onChange, search, setSearch, showDropdown, setShowDropdown, isDark }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
 
@@ -1576,11 +1579,11 @@ const CorreriaAutocomplete: React.FC<{
         onFocus={() => { setShowDropdown(true); setSearch(''); }}
         onBlur={handleBlur}
         placeholder="Buscar correría..."
-        className="bg-slate-100 border border-slate-300 rounded-xl font-black text-sm text-slate-800 focus:ring-2 focus:ring-slate-400 focus:outline-none px-3 py-1.5 pr-8 placeholder:text-slate-400 min-w-[180px]"
+        className={`border rounded-xl font-black text-sm focus:ring-2 focus:outline-none px-3 py-1.5 pr-8 placeholder:text-slate-400 min-w-[180px] transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-500' : 'bg-slate-100 border-slate-300 text-slate-800 focus:ring-slate-400'}`}
       />
       {showDropdown && search.length >= 2 && (
         <div 
-          className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
+          className={`absolute top-full left-0 mt-1 rounded-lg shadow-2xl max-h-48 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white border border-slate-200'}`}
           style={{ 
             zIndex: 9999,
             minWidth: '250px'
@@ -1591,10 +1594,10 @@ const CorreriaAutocomplete: React.FC<{
             <button
               key={c.id}
               onMouseDown={() => handleSelect(c.id)}
-              className="w-full px-3 py-2 text-left hover:bg-blue-50 transition-colors border-b border-slate-50 last:border-0"
+              className={`w-full px-3 py-2 text-left transition-colors border-b last:border-0 ${isDark ? 'text-violet-100 hover:bg-[#5a4a75] border-violet-700' : 'text-slate-800 hover:bg-blue-50 border-slate-50'}`}
             >
-              <p className="font-black text-slate-800 text-xs">{c.name}</p>
-              <p className="text-[9px] text-slate-400">{c.year}</p>
+              <p className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+              <p className={`text-[9px] transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{c.year}</p>
             </button>
           ))}
         </div>

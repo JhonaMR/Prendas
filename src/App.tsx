@@ -8,6 +8,7 @@ import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContaine
 import PWAInstallPrompt from './components/PWAInstallPrompt';
 import PWAUpdateNotification from './components/PWAUpdateNotification';
 import { useSessionClose } from './hooks/useSessionClose';
+import { useDarkMode } from './context/DarkModeContext';
 import { socketService } from './services/socketService';
 import './styles/pwa.css';
 
@@ -17,6 +18,7 @@ import HomeView from './views/HomeView';
 import ReceptionView from './views/ReceptionView';
 import ReturnReceptionView from './views/ReturnReceptionView';
 import DispatchView from './views/DispatchView';
+import SalidasBodegaView from './views/SalidasBodegaView';
 import InventoryView from './views/InventoryView';
 import MastersView from './views/MastersView';
 import ReportsView from './views/ReportsView';
@@ -56,6 +58,7 @@ const App: React.FC = () => {
   
   // Hook para escuchar cierre de sesiones
   useSessionClose();
+  const { isDark, toggleDark, resetToDark } = useDarkMode();
   const [state, setState] = useState<AppState>({
     users: [],
     references: [],
@@ -251,6 +254,7 @@ const App: React.FC = () => {
     api.logout();
     setUser(null);
     setIsNavOpen(false);
+    resetToDark(false); // Resetear a modo claro
     setState({
       users: [],
       references: [],
@@ -1059,6 +1063,8 @@ const App: React.FC = () => {
             onDeleteDispatch={deleteDispatch}
           />
         );
+      case 'salidasBodega':
+        return <SalidasBodegaView user={user} />;
       case 'inventory':
         return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} orders={state.orders} correrias={state.correrias} user={user} />;
         case 'orders':
@@ -1223,12 +1229,24 @@ const App: React.FC = () => {
 
   return (
     <ChatProvider>
-      <div className="relative h-screen w-screen overflow-hidden text-slate-700 bg-slate-50 flex flex-col">
-        <header className="h-20 bg-white border-b border-slate-200 px-6 flex items-center justify-between z-40 shrink-0">
+      <div className={`relative h-screen w-screen overflow-hidden flex flex-col transition-colors duration-300 ${
+        isDark
+          ? 'text-violet-200 bg-[#3d2d52]'
+          : 'text-slate-700 bg-slate-50'
+      }`}>
+        <header className={`h-20 border-b px-6 flex items-center justify-between z-40 shrink-0 transition-colors duration-300 ${
+          isDark
+            ? 'bg-[#4a3a63] border-violet-700'
+            : 'bg-white border-slate-200'
+        }`}>
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setIsNavOpen(true)}
-            className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
+            className={`p-3 rounded-2xl transition-all shadow-sm flex items-center justify-center ${
+              isDark
+                ? 'bg-violet-700/40 text-violet-300 hover:bg-violet-700/60'
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            }`}
             aria-label="Abrir Menú"
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
@@ -1241,17 +1259,41 @@ const App: React.FC = () => {
               {window.BRAND_CONFIG?.name || 'Plow'}
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-extrabold text-lg tracking-tighter leading-none">Gestión de inventarios</h1>
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest block mt-0.5">Ventas y producción</span>
+              <h1 className={`font-extrabold text-lg tracking-tighter leading-none ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Gestión de inventarios</h1>
+              <span className={`text-[9px] font-bold uppercase tracking-widest block mt-0.5 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Ventas y producción</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <ClockDisplay />
+          {/* Toggle modo oscuro — Soporte y Admin */}
+          {(user?.role === UserRole.SOPORTE || user?.role === UserRole.ADMIN) && (
+            <button
+              onClick={toggleDark}
+              title={isDark ? 'Modo claro' : 'Modo oscuro'}
+              className={`relative w-14 h-7 rounded-full transition-all duration-300 shadow-inner flex-shrink-0 ${
+                isDark
+                  ? 'bg-gradient-to-r from-violet-600 to-purple-500'
+                  : 'bg-slate-200'
+              }`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full shadow-md flex items-center justify-center text-xs transition-all duration-300 ${
+                isDark
+                  ? 'translate-x-7 bg-white text-violet-600'
+                  : 'translate-x-0 bg-white text-slate-400'
+              }`}>
+                {isDark ? '🌙' : '☀️'}
+              </span>
+            </button>
+          )}
           <button 
             onClick={() => window.location.reload()}
-            className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
+            className={`p-3 rounded-2xl transition-all shadow-sm flex items-center justify-center ${
+              isDark
+                ? 'bg-violet-700/40 text-violet-300 hover:bg-violet-700/60'
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            }`}
             aria-label="Refrescar"
             title="Refrescar"
           >
@@ -1261,7 +1303,11 @@ const App: React.FC = () => {
           </button>
           <button 
             onClick={() => handleTabChange('home')}
-            className="p-3 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all shadow-sm flex items-center justify-center"
+            className={`p-3 rounded-2xl transition-all shadow-sm flex items-center justify-center ${
+              isDark
+                ? 'bg-violet-700/40 text-violet-300 hover:bg-violet-700/60'
+                : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+            }`}
             aria-label="Ir a Inicio"
             title="Ir a Inicio"
           >
@@ -1270,8 +1316,8 @@ const App: React.FC = () => {
             </svg>
           </button>
           <div className="hidden sm:flex flex-col items-end">
-            <p className="font-bold text-sm leading-none">{user.name}</p>
-            <p className="text-[10px] text-slate-400 capitalize font-bold mt-1">{user.role}</p>
+            <p className={`font-bold text-sm leading-none ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{user.name}</p>
+            <p className={`text-[10px] capitalize font-bold mt-1 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>{user.role}</p>
           </div>
           <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-sm ${user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE ? 'bg-pink-500' : 'bg-blue-500'}`}>
             {user.loginCode}
@@ -1280,50 +1326,66 @@ const App: React.FC = () => {
       </header>
 
       <div 
-        className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${isNavOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+          isDark ? 'bg-black/40' : 'bg-slate-900/40'
+        } ${isNavOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsNavOpen(false)}
       >
         <div 
-          className={`absolute top-0 left-0 h-full w-full max-w-[320px] bg-white shadow-2xl transition-transform duration-300 transform ${isNavOpen ? 'translate-x-0' : '-translate-x-full'}`}
+          className={`absolute top-0 left-0 h-full w-full max-w-[320px] shadow-2xl transition-transform duration-300 transform ${
+            isDark
+              ? 'bg-[#3d2d52] border-r border-violet-700'
+              : 'bg-white'
+          } ${isNavOpen ? 'translate-x-0' : '-translate-x-full'}`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+          <div className={`p-8 border-b flex items-center justify-between ${
+            isDark
+              ? 'border-violet-700'
+              : 'border-slate-100'
+          }`}>
              <div className="flex items-center gap-3">
                 <div className="w-40 h-10 bg-gradient-to-br from-blue-500 to-pink-500 rounded-xl flex items-center justify-center text-white font-black text-lg">
                   Menú
                 </div>
                 <h1 className="font-black text-xl tracking-tighter"></h1>
              </div>
-             <button onClick={() => setIsNavOpen(false)} className="p-2 text-slate-400 hover:text-slate-600">
+             <button onClick={() => setIsNavOpen(false)} className={`p-2 transition-colors ${
+               isDark
+                 ? 'text-violet-500 hover:text-violet-400'
+                 : 'text-slate-400 hover:text-slate-600'
+             }`}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
              </button>
           </div>
 
-          <div className="p-6 space-y-0.5 overflow-y-auto max-h-[calc(100vh-200px)] custom-scrollbar">
+          <div className={`p-6 space-y-0.5 overflow-y-auto max-h-[calc(100vh-200px)] custom-scrollbar ${
+            isDark ? 'bg-[#3d2d52]' : ''
+          }`}>
             <NavItem active={activeTab === 'home'} onClick={() => handleTabChange('home')} icon={<Icons.Home />} label="Inicio" />
             
             {/* Mostrar secciones según el rol */}
             {user.role !== UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Sistema de Fichas</p>
                 <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
                 <NavItem active={activeTab === 'fichas-costo'} onClick={() => handleTabChange('fichas-costo')} icon={<Icons.FichasCosto />} label="Fichas de Costo" />
               </div>
             )}
             
             {user.role === UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Sistema de Fichas</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Sistema de Fichas</p>
                 <NavItem active={activeTab === 'fichas-diseno'} onClick={() => handleTabChange('fichas-diseno')} icon={<Icons.FichasDiseno />} label="Fichas de Diseño" />
               </div>
             )}
             
             {/* Mostrar secciones según el rol */}
             {user.role !== UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Manejo de Inventario</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Manejo de Inventario</p>
                 <NavItem active={activeTab === 'reception'} onClick={() => handleTabChange('reception')} icon={<Icons.Reception />} label="Recepción" />
                 <NavItem active={activeTab === 'dispatch'} onClick={() => handleTabChange('dispatch')} icon={<Icons.Dispatch />} label="Despachos" />
                 <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
@@ -1332,8 +1394,8 @@ const App: React.FC = () => {
             )}
             
             {user.role === UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Operaciones</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Operaciones</p>
                 <NavItem active={activeTab === 'inventory'} onClick={() => handleTabChange('inventory')} icon={<Icons.Inventory />} label="Inventario" />
                 <NavItem active={activeTab === 'orders'} onClick={() => handleTabChange('orders')} icon={<Icons.Orders />} label="Pedidos" />
                 <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.DeliveryDates />} label="Fechas Entrega" />
@@ -1341,8 +1403,8 @@ const App: React.FC = () => {
             )}
             
             {user.role !== UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Comercial</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Comercial</p>
                 <NavItem 
                   active={activeTab === 'orders'} 
                   onClick={() => handleTabChange('orders')} 
@@ -1374,15 +1436,15 @@ const App: React.FC = () => {
             )}
             
             {user.role !== UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
-                <p className="px-6 text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Producción</p>
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Producción</p>
                 <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<Icons.Maletas />} label="Maletas" />
                 <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.DeliveryDates />} label="Fechas de Entrega" />
               </div>
             )}
             
             {user.role !== UserRole.DISEÑADORA && (
-              <div className="my-2 border-t border-slate-100 pt-2">
+              <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
                 {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                   <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
                 )}
@@ -1394,8 +1456,16 @@ const App: React.FC = () => {
             )}
           </div>
 
-          <div className="absolute bottom-0 left-0 w-full p-8 border-t border-slate-100 bg-slate-50/50">
-            <button onClick={handleLogout} className="w-full py-4 flex items-center justify-center gap-3 rounded-2xl bg-white border border-slate-200 text-slate-400 font-bold hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all shadow-sm">
+          <div className={`absolute bottom-0 left-0 w-full p-8 border-t transition-colors ${
+            isDark
+              ? 'border-violet-700 bg-[#4a3a5f]'
+              : 'border-slate-100 bg-slate-50/50'
+          }`}>
+            <button onClick={handleLogout} className={`w-full py-4 flex items-center justify-center gap-3 rounded-2xl font-bold transition-all shadow-sm border ${
+              isDark
+                ? 'bg-[#3d2d52] border-violet-700 text-violet-400 hover:bg-red-900/30 hover:text-red-400 hover:border-red-700'
+                : 'bg-white border-slate-200 text-slate-400 hover:bg-red-50 hover:text-red-500 hover:border-red-100'
+            }`}>
               <Icons.Logout />
               <span>Cerrar Sesión</span>
             </button>
@@ -1403,7 +1473,9 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <main className="flex-1 relative overflow-hidden bg-slate-50">
+      <main className={`flex-1 relative overflow-hidden transition-colors duration-300 ${
+        isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'
+      }`}>
         <DottedBackground />
         <div className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative z-10">
           <div className="max-w-full mx-auto">
@@ -1426,18 +1498,31 @@ const App: React.FC = () => {
   );
 };
 
-const NavItem = ({ active, onClick, icon, label }: any) => (
-  <button 
-    onClick={onClick}
-    className={`w-full flex items-center gap-4 px-6 py-2.5 rounded-[22px] transition-all group ${
-      active 
-        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold shadow-lg shadow-blue-200' 
-        : 'text-slate-500 hover:bg-slate-100 hover:translate-x-1'
-    }`}
-  >
-    <span className={`${active ? 'text-white' : 'text-slate-400 group-hover:text-blue-500'}`}>{icon}</span>
-    <span className="text-[14px]">{label}</span>
-  </button>
-);
+const NavItem = ({ active, onClick, icon, label }: any) => {
+  const { isDark } = useDarkMode();
+  return (
+    <button 
+      onClick={onClick}
+      className={`w-full flex items-center gap-4 px-6 py-2.5 rounded-[22px] transition-all group ${
+        active 
+          ? isDark
+            ? 'bg-gradient-to-r from-violet-600 to-purple-500 text-white font-bold shadow-lg shadow-violet-500/30'
+            : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold shadow-lg shadow-blue-200'
+          : isDark
+            ? 'text-violet-400 hover:bg-violet-700/30 hover:translate-x-1'
+            : 'text-slate-500 hover:bg-slate-100 hover:translate-x-1'
+      }`}
+    >
+      <span className={`${
+        active 
+          ? 'text-white' 
+          : isDark
+            ? 'text-violet-500 group-hover:text-violet-400'
+            : 'text-slate-400 group-hover:text-blue-500'
+      }`}>{icon}</span>
+      <span className="text-[14px]">{label}</span>
+    </button>
+  );
+};
 
 export default App;

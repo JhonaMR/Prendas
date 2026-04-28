@@ -4,8 +4,10 @@ import { MessagesList } from './MessagesList';
 import { ChatInput } from './ChatInput';
 import { TypingIndicator } from './TypingIndicator';
 import { useChat } from '../../hooks/useChat';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export const ChatWindow: React.FC = () => {
+  const { isDark } = useDarkMode();
   const {
     currentChat,
     messages,
@@ -57,26 +59,31 @@ export const ChatWindow: React.FC = () => {
 
   return (
     <div
-      className="
+      className={`
         fixed bottom-6 right-6 z-50
-        bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100
+        rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border
         w-[22rem] h-[32rem]
         flex flex-col
         overflow-visible
         animate-scale-in
-      "
+        transition-colors
+        ${isDark 
+          ? 'bg-white/95 backdrop-blur-md border-gray-100' 
+          : 'bg-white/95 backdrop-blur-md border-gray-100'
+        }
+      `}
     >
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm relative z-10 rounded-t-2xl">
+      <div className={`flex justify-between items-center p-4 border-b shadow-sm relative z-10 rounded-t-2xl transition-colors ${isDark ? 'border-violet-200 bg-gradient-to-r from-violet-600 to-purple-600' : 'border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-lg font-bold ring-2 ring-white/30 shadow-inner">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold ring-2 ring-white/30 shadow-inner transition-colors ${isDark ? 'bg-white/20 text-white' : 'bg-white/20 text-white'}`}>
             {currentChat.userName.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="font-semibold text-white text-sm tracking-wide">
+            <div className={`font-semibold text-sm tracking-wide transition-colors text-white`}>
               {currentChat.userName}
             </div>
-            <div className="text-xs text-blue-100 flex items-center gap-1.5 opacity-90">
+            <div className={`text-xs flex items-center gap-1.5 opacity-90 transition-colors text-white/80`}>
               <span className="text-[10px]">{getStatusIcon(otherUser?.status)}</span>
               <span className="font-medium">
                 {otherUser?.status === 'online'
@@ -90,28 +97,28 @@ export const ChatWindow: React.FC = () => {
         </div>
         <button
           onClick={closeChat}
-          className="
-            text-white/70 hover:text-white hover:bg-white/10
+          className={`
             transition-all duration-200 rounded-full w-8 h-8 flex items-center justify-center
-            text-lg focus:outline-none focus:ring-2 focus:ring-white/50
-          "
+            text-lg focus:outline-none focus:ring-2
+            text-white/70 hover:text-white hover:bg-white/10 focus:ring-white/50
+          `}
         >
           ✕
         </button>
       </div>
 
       {/* Messages */}
-      <MessagesList messages={messages} currentUserId={currentUserId} />
+      <MessagesList messages={messages} currentUserId={currentUserId} isDark={isDark} />
 
       {/* Typing indicator */}
       {isTyping && (
         <div className="px-4">
-          <TypingIndicator />
+          <TypingIndicator isDark={isDark} />
         </div>
       )}
 
       {/* Input */}
-      <ChatInput onSendMessage={sendMessage} />
+      <ChatInput onSendMessage={sendMessage} isDark={isDark} />
     </div>
   );
 };

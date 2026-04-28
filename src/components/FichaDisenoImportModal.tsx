@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import { AppState } from '../types';
 import { ConceptoFicha, FichaFormData } from '../types/typesFichas';
 import apiFichas from '../services/apiFichas';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface Props {
     isOpen: boolean;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user, onSuccess }) => {
+    const { isDark } = useDarkMode();
     const [referenciaToSearch, setReferenciaToSearch] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -172,38 +174,38 @@ const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user,
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-            <div className="bg-white rounded-[32px] shadow-2xl max-w-lg w-full p-8 border border-slate-100">
+        <div className={`fixed inset-0 backdrop-blur-sm z-[100] flex items-center justify-center p-4 ${isDark ? 'bg-slate-900/70' : 'bg-slate-900/60'}`}>
+            <div className={`rounded-[32px] shadow-2xl max-w-lg w-full p-8 border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <h3 className="text-2xl font-black text-slate-800 tracking-tight">Importación Especial</h3>
-                        <p className="text-sm text-slate-500 font-bold">Carga masiva desde Libro de Costos</p>
+                        <h3 className={`text-2xl font-black tracking-tight ${isDark ? 'text-violet-50' : 'text-slate-800'} transition-colors duration-300`}>Importación Especial</h3>
+                        <p className={`text-sm font-bold ${isDark ? 'text-violet-300' : 'text-slate-500'} transition-colors duration-300`}>Carga masiva desde Libro de Costos</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6 text-slate-400"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    <button onClick={onClose} className={`p-2 rounded-full transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-400' : 'hover:bg-slate-100 text-slate-400'}`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4">
+                    <div className={`rounded-2xl p-4 border transition-colors duration-300 ${isDark ? 'bg-blue-900/30 border-blue-700' : 'bg-blue-50 border-blue-100'}`}>
                         <div className="flex gap-3">
-                            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white shrink-0">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 ${isDark ? 'bg-blue-600' : 'bg-blue-500'}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
                             </div>
-                            <p className="text-sm text-blue-700 font-bold leading-tight">
+                            <p className={`text-sm font-bold leading-tight ${isDark ? 'text-blue-300' : 'text-blue-700'} transition-colors duration-300`}>
                                 Ingrese la referencia que desea importar. El sistema buscará una hoja con ese nombre en el archivo Excel.
                             </p>
                         </div>
                     </div>
 
                     <div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 px-1">Número de Referencia</label>
+                        <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 px-1 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Número de Referencia</label>
                         <input 
                             type="text" 
                             value={referenciaToSearch} 
                             onChange={e => setReferenciaToSearch(e.target.value)} 
                             placeholder="Ej: 13098"
-                            className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl font-black text-lg focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all outline-none"
+                            className={`w-full px-5 py-4 rounded-2xl font-black text-lg focus:ring-4 transition-all outline-none border-2 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-100 text-slate-900 placeholder-slate-400 focus:ring-blue-100 focus:border-blue-500'}`}
                         />
                     </div>
 
@@ -221,8 +223,8 @@ const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user,
                             disabled={!referenciaToSearch.trim() || isLoading}
                             className={`w-full py-5 rounded-2xl flex flex-col items-center justify-center gap-2 border-2 border-dashed transition-all
                                 ${!referenciaToSearch.trim() || isLoading 
-                                    ? 'bg-slate-50 border-slate-100 cursor-not-allowed opacity-50' 
-                                    : 'bg-white border-blue-200 hover:border-blue-500 hover:bg-blue-50 text-blue-600'
+                                    ? isDark ? 'bg-[#3d2d52] border-violet-700/50 cursor-not-allowed opacity-50 text-violet-600' : 'bg-slate-50 border-slate-100 cursor-not-allowed opacity-50'
+                                    : isDark ? 'bg-[#4a3a63] border-blue-700 hover:border-blue-600 hover:bg-blue-900/20 text-blue-400' : 'bg-white border-blue-200 hover:border-blue-500 hover:bg-blue-50 text-blue-600'
                                 }`}
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8"><path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33A3 3 0 0116.5 19.5H6.75z" /></svg>
@@ -235,7 +237,7 @@ const FichaDisenoImportModal: React.FC<Props> = ({ isOpen, onClose, state, user,
                     <div className="flex gap-4 pt-4">
                         <button 
                             onClick={onClose}
-                            className="flex-1 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-colors uppercase tracking-widest text-xs"
+                            className={`flex-1 py-4 font-black rounded-2xl transition-colors uppercase tracking-widest text-xs ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}
                         >
                             Cerrar
                         </button>

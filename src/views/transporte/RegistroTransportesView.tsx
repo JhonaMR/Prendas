@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
 import api from '../../services/api';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 interface Transportista { id: string; nombre: string; colorKey: string; }
 interface ItemRuta { id: string; taller: string; celular: string; direccion: string; sector: string; detalle: string; servicio: string; }
@@ -35,15 +36,18 @@ function fmt(f: string) {
   return `${parseInt(d)} de ${MESES[parseInt(m)-1]} de ${a}`;
 }
 
-const CloseBtn: React.FC<{onClick:()=>void}> = ({onClick}) => (
-  <button onClick={onClick} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-slate-500"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+const CloseBtn: React.FC<{onClick:()=>void;isDark?:boolean}> = ({onClick, isDark}) => (
+  <button onClick={onClick} className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-500'}`}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
   </button>
 );
 
-const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'id'>)=>void}> = ({form, onChange}) => {
+const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'id'>)=>void; isDark?:boolean}> = ({form, onChange, isDark}) => {
   const [sugerencias, setSugerencias] = useState<TallerRegistrado[]>([]);
   const [talleres, setTalleres] = useState<TallerRegistrado[]>([]);
+  const inputCls = isDark 
+    ? "w-full px-3 py-2 border-2 border-violet-600 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-[#3d2d52] text-violet-100 placeholder-violet-500"
+    : "w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400";
 
   useEffect(() => {
     (api as any).getTalleres().then((data: TallerRegistrado[]) => setTalleres(data));
@@ -69,24 +73,24 @@ const FormItem: React.FC<{form: Omit<ItemRuta,'id'>; onChange:(f:Omit<ItemRuta,'
         <input type="text" placeholder="Taller" value={form.taller}
           onChange={e => handleTallerChange(e.target.value)}
           onBlur={() => setTimeout(() => setSugerencias([]), 150)}
-          className={ic}/>
+          className={inputCls}/>
         {sugerencias.length > 0 && (
-          <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border-2 border-slate-200 rounded-xl shadow-lg overflow-hidden">
+          <div className={`absolute z-10 top-full left-0 right-0 mt-1 rounded-xl shadow-lg overflow-hidden border-2 ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
             {sugerencias.map(t => (
               <button key={t.id} type="button" onMouseDown={() => seleccionarTaller(t)}
-                className="w-full text-left px-4 py-2.5 text-sm hover:bg-pink-50 hover:text-pink-700 transition-colors border-b border-slate-100 last:border-0">
+                className={`w-full text-left px-4 py-2.5 text-sm transition-colors border-b last:border-0 ${isDark ? 'hover:bg-violet-700/50 hover:text-violet-100 text-violet-200 border-violet-700' : 'hover:bg-pink-50 hover:text-pink-700 text-slate-700 border-slate-100'}`}>
                 <span className="font-semibold">{t.nombre}</span>
-                {t.sector && <span className="text-slate-400 ml-2 text-xs">{t.sector}</span>}
+                {t.sector && <span className={`ml-2 text-xs ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{t.sector}</span>}
               </button>
             ))}
           </div>
         )}
       </div>
-      <input type="text" placeholder="Celular"   value={form.celular}   onChange={e=>onChange({...form,celular:e.target.value})}   className={ic}/>
-      <input type="text" placeholder="Dirección" value={form.direccion} onChange={e=>onChange({...form,direccion:e.target.value})} className={ic}/>
-      <input type="text" placeholder="Sector"    value={form.sector}    onChange={e=>onChange({...form,sector:e.target.value})}    className={ic}/>
-      <textarea placeholder="Detalle" value={form.detalle} onChange={e=>onChange({...form,detalle:e.target.value})} rows={3} className={ic+' resize-none'}/>
-      <input type="text" placeholder="Servicio"  value={form.servicio}  onChange={e=>onChange({...form,servicio:e.target.value})}  className={ic}/>
+      <input type="text" placeholder="Celular"   value={form.celular}   onChange={e=>onChange({...form,celular:e.target.value})}   className={inputCls}/>
+      <input type="text" placeholder="Dirección" value={form.direccion} onChange={e=>onChange({...form,direccion:e.target.value})} className={inputCls}/>
+      <input type="text" placeholder="Sector"    value={form.sector}    onChange={e=>onChange({...form,sector:e.target.value})}    className={inputCls}/>
+      <textarea placeholder="Detalle" value={form.detalle} onChange={e=>onChange({...form,detalle:e.target.value})} rows={3} className={inputCls+' resize-none'}/>
+      <input type="text" placeholder="Servicio"  value={form.servicio}  onChange={e=>onChange({...form,servicio:e.target.value})}  className={inputCls}/>
     </div>
   );
 };
@@ -99,12 +103,21 @@ interface TablaProps {
   onEdit: (item: ItemRuta) => void;
   onDelete: (id: string) => void;
   onMove: (item: ItemRuta) => void;
+  isDark?: boolean;
 }
 
-const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, onEdit, onDelete, onMove, fecha}) => {
+const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, onEdit, onDelete, onMove, fecha, isDark}) => {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<Omit<ItemRuta,'id'>>({...VACIO});
   const c = COLORES[transportista.colorKey] || COLORES['red'];
+  const darkHeaderBg = isDark ? 'bg-[#5a4a75]' : 'bg-slate-700';
+  const darkHeaderText = isDark ? 'text-violet-200' : 'text-white';
+  const darkHeaderBorder = isDark ? 'border-violet-700' : 'border-slate-600';
+  const darkTableBg = isDark ? 'bg-[#3d2d52]' : 'bg-white';
+  const darkRowEven = isDark ? 'bg-[#3d2d52]' : 'bg-white';
+  const darkRowOdd = isDark ? 'bg-[#4a3a5f]' : 'bg-slate-50';
+  const darkRowText = isDark ? 'text-violet-300' : 'text-slate-600';
+  const darkRowBorder = isDark ? 'border-violet-700/40' : 'border-slate-100';
 
   const exportarRutaPDF = () => {
     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
@@ -228,55 +241,55 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
   };
 
   return (
-    <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
-      <div className={`px-6 py-3 ${c.bg} ${c.border} border-b flex items-center justify-between`}>
-        <span className={`text-base font-black ${c.text}`}>{transportista.nombre}</span>
+    <div className={`rounded-3xl overflow-hidden border transition-colors ${isDark ? 'border-violet-700 bg-[#4a3a63]' : 'border-slate-200 bg-white'} shadow-sm`}>
+      <div className={`px-6 py-3 ${c.bg} ${c.border} border-b flex items-center justify-between transition-colors`}>
+        <span className={`text-base font-black transition-colors ${c.text}`}>{transportista.nombre}</span>
         <div className="flex items-center gap-2">
           <button onClick={exportarRutaPDF}
-            className="flex items-center gap-1.5 text-xs font-bold bg-white/70 hover:bg-white px-3 py-1.5 rounded-lg transition-colors text-slate-700">
+            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${isDark ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-md' : 'bg-white/70 hover:bg-white text-slate-700'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12M12 16.5V3"/></svg>
             Exportar ruta
           </button>
           <button onClick={()=>{setForm({...VACIO});setOpen(true);}}
-            className="flex items-center gap-1.5 text-xs font-bold bg-white/70 hover:bg-white px-3 py-1.5 rounded-lg transition-colors text-slate-700">
+            className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors ${isDark ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-md' : 'bg-white/70 hover:bg-white text-slate-700'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             Agregar registro
           </button>
         </div>
       </div>
-      <div className="overflow-x-auto bg-white">
+      <div className={`overflow-x-auto transition-colors ${darkTableBg}`}>
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-slate-700 text-white">
-              <th className="text-left px-4 py-3 font-bold w-56 border-r border-slate-600">Taller</th>
-              <th className="text-left px-4 py-3 font-bold w-36 border-r border-slate-600">Celular</th>
-              <th className="text-left px-4 py-3 font-bold w-80 border-r border-slate-600">Dirección</th>
-              <th className="text-left px-4 py-3 font-bold w-36 border-r border-slate-600">Sector</th>
-              <th className="text-left px-4 py-3 font-bold w-72 border-r border-slate-600">Detalle</th>
-              <th className="text-left px-4 py-3 font-bold w-32 border-r border-slate-600">Servicio</th>
-              <th className="text-center px-4 py-3 font-bold w-28">Acciones</th>
+            <tr className={`${darkHeaderBg} ${darkHeaderText} transition-colors`}>
+              <th className={`text-left px-4 py-3 font-bold w-56 border-r transition-colors ${darkHeaderBorder}`}>Taller</th>
+              <th className={`text-left px-4 py-3 font-bold w-36 border-r transition-colors ${darkHeaderBorder}`}>Celular</th>
+              <th className={`text-left px-4 py-3 font-bold w-80 border-r transition-colors ${darkHeaderBorder}`}>Dirección</th>
+              <th className={`text-left px-4 py-3 font-bold w-36 border-r transition-colors ${darkHeaderBorder}`}>Sector</th>
+              <th className={`text-left px-4 py-3 font-bold w-72 border-r transition-colors ${darkHeaderBorder}`}>Detalle</th>
+              <th className={`text-left px-4 py-3 font-bold w-32 border-r transition-colors ${darkHeaderBorder}`}>Servicio</th>
+              <th className={`text-center px-4 py-3 font-bold w-28 transition-colors`}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {items.length === 0
-              ? <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400 text-sm">Sin registros</td></tr>
+              ? <tr><td colSpan={7} className={`px-4 py-8 text-center text-sm transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Sin registros</td></tr>
               : items.map((item, idx) => (
-                <tr key={item.id} className={idx%2===0?'bg-white':'bg-slate-50'}>
-                  <td className="px-4 py-3 font-semibold text-slate-900 border-r border-slate-100">{item.taller||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.celular||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.direccion||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.sector||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.detalle||'—'}</td>
-                  <td className="px-4 py-3 text-slate-600 border-r border-slate-100">{item.servicio||'—'}</td>
+                <tr key={item.id} className={`transition-colors ${idx%2===0?darkRowEven:darkRowOdd}`}>
+                  <td className={`px-4 py-3 font-semibold border-r transition-colors ${isDark ? 'text-violet-200 border-violet-700/40' : 'text-slate-900 border-slate-100'}`}>{item.taller||'—'}</td>
+                  <td className={`px-4 py-3 border-r transition-colors ${darkRowText} ${darkRowBorder}`}>{item.celular||'—'}</td>
+                  <td className={`px-4 py-3 border-r transition-colors ${darkRowText} ${darkRowBorder}`}>{item.direccion||'—'}</td>
+                  <td className={`px-4 py-3 border-r transition-colors ${darkRowText} ${darkRowBorder}`}>{item.sector||'—'}</td>
+                  <td className={`px-4 py-3 border-r transition-colors ${darkRowText} ${darkRowBorder}`}>{item.detalle||'—'}</td>
+                  <td className={`px-4 py-3 border-r transition-colors ${darkRowText} ${darkRowBorder}`}>{item.servicio||'—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
-                      <button onClick={()=>onEdit(item)} title="Editar" className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                      <button onClick={()=>onEdit(item)} title="Editar" className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-violet-700 hover:text-blue-400 hover:bg-blue-500/20' : 'text-slate-300 hover:text-blue-500 hover:bg-blue-50'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125"/></svg>
                       </button>
-                      <button onClick={()=>onMove(item)} title="Mover" className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-amber-500 hover:bg-amber-50 transition-colors">
+                      <button onClick={()=>onMove(item)} title="Mover" className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-violet-700 hover:text-amber-400 hover:bg-amber-500/20' : 'text-slate-300 hover:text-amber-500 hover:bg-amber-50'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5"><path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
                       </button>
-                      <button onClick={()=>onDelete(item.id)} title="Eliminar" className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors">
+                      <button onClick={()=>onDelete(item.id)} title="Eliminar" className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors ${isDark ? 'text-violet-700 hover:text-pink-400 hover:bg-pink-500/20' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                       </button>
                     </div>
@@ -288,16 +301,16 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
         </table>
       </div>
       {open && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors ${isDark ? 'bg-black/60' : 'bg-black/40'}`}>
+          <div className={`rounded-3xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4 transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-slate-900">Agregar registro</h2>
-              <CloseBtn onClick={()=>setOpen(false)}/>
+              <h2 className={`text-xl font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>Agregar registro</h2>
+              <CloseBtn onClick={()=>setOpen(false)} isDark={isDark}/>
             </div>
-            <FormItem form={form} onChange={setForm}/>
+            <FormItem form={form} onChange={setForm} isDark={isDark}/>
             <div className="flex gap-2">
-              <button onClick={guardar} className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Guardar</button>
-              <button onClick={()=>setOpen(false)} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
+              <button onClick={guardar} className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors ${isDark ? 'bg-pink-600 hover:bg-pink-700 text-white' : 'bg-pink-500 hover:bg-pink-600 text-white'}`}>Guardar</button>
+              <button onClick={()=>setOpen(false)} className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>Cancelar</button>
             </div>
           </div>
         </div>
@@ -307,6 +320,7 @@ const TablaTransportista: React.FC<TablaProps> = ({transportista, items, onAdd, 
 };
 
 const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas, onAgregarRuta, onActualizarRutas, onVolver}) => {
+  const { isDark } = useDarkMode();
   const [modalAgregar, setModalAgregar] = useState(false);
   const [tSeleccionado, setTSeleccionado] = useState('');
   const [formNuevo, setFormNuevo] = useState<Omit<ItemRuta,'id'>>({...VACIO});
@@ -399,37 +413,37 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
   };
 
   return (
-    <div className="h-full w-full flex flex-col bg-transparent p-4 md:p-8 overflow-auto">
+    <div className={`h-full w-full flex flex-col p-4 md:p-8 overflow-auto transition-colors ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <button onClick={onVolver} className="h-10 w-10 rounded-xl bg-white border-2 border-slate-200 hover:border-pink-400 flex items-center justify-center text-slate-500 hover:text-pink-600 transition-all flex-shrink-0">
+          <button onClick={onVolver} className={`h-10 w-10 rounded-xl border-2 flex items-center justify-center transition-all flex-shrink-0 ${isDark ? 'bg-violet-700/40 border-violet-700 text-violet-300 hover:bg-violet-700/60 hover:border-violet-600' : 'bg-white border-slate-200 text-slate-500 hover:border-pink-400 hover:text-pink-600'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
           </button>
           <div>
-            <h1 className="text-3xl md:text-4xl font-black text-slate-900">Registro de Transportes</h1>
-            <p className="text-slate-400 text-sm mt-1">{fmt(fecha)}</p>
+            <h1 className={`text-3xl md:text-4xl font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>Registro de Transportes</h1>
+            <p className={`text-sm mt-1 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{fmt(fecha)}</p>
           </div>
         </div>
         <button onClick={()=>{setTSeleccionado('');setFormNuevo({...VACIO});setModalAgregar(true);}}
-          className="flex items-center gap-2 bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm whitespace-nowrap">
+          className={`flex items-center gap-2 font-bold px-4 py-2.5 rounded-xl text-sm transition-colors shadow-sm whitespace-nowrap ${isDark ? 'bg-pink-600 hover:bg-pink-700 text-white' : 'bg-pink-500 hover:bg-pink-600 text-white'}`}>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
           Agregar ruta
         </button>
       </div>
 
       {tDelDia.length === 0 ? (
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className={`rounded-3xl shadow-sm border overflow-hidden transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
           <table className="w-full text-sm">
-            <thead><tr className="bg-slate-700 text-white">
-              <th className="text-left px-4 py-3.5 font-bold w-56 border-r border-slate-600">Taller</th>
-              <th className="text-left px-4 py-3.5 font-bold w-36 border-r border-slate-600">Celular</th>
-              <th className="text-left px-4 py-3.5 font-bold w-80 border-r border-slate-600">Dirección</th>
-              <th className="text-left px-4 py-3.5 font-bold w-36 border-r border-slate-600">Sector</th>
-              <th className="text-left px-4 py-3.5 font-bold w-72 border-r border-slate-600">Detalle</th>
-              <th className="text-left px-4 py-3.5 font-bold w-32 border-r border-slate-600">Servicio</th>
+            <thead><tr className={`transition-colors ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-700 text-white'}`}>
+              <th className={`text-left px-4 py-3.5 font-bold w-56 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Taller</th>
+              <th className={`text-left px-4 py-3.5 font-bold w-36 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Celular</th>
+              <th className={`text-left px-4 py-3.5 font-bold w-80 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Dirección</th>
+              <th className={`text-left px-4 py-3.5 font-bold w-36 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Sector</th>
+              <th className={`text-left px-4 py-3.5 font-bold w-72 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Detalle</th>
+              <th className={`text-left px-4 py-3.5 font-bold w-32 border-r transition-colors ${isDark ? 'border-violet-700' : 'border-slate-600'}`}>Servicio</th>
               <th className="text-center px-4 py-3.5 font-bold w-28">Acciones</th>
             </tr></thead>
-            <tbody><tr><td colSpan={7} className="px-4 py-12 text-center text-slate-400 text-sm">No hay registros para este día</td></tr></tbody>
+            <tbody><tr><td colSpan={7} className={`px-4 py-12 text-center text-sm transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>No hay registros para este día</td></tr></tbody>
           </table>
         </div>
       ) : (
@@ -442,6 +456,7 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                 onEdit={item => startEdit(item, ruta!.id)}
                 onDelete={id => deleteItem(id, ruta!.id)}
                 onMove={item => startMove(item, ruta!.id)}
+                isDark={isDark}
               />
             );
           })}
@@ -461,9 +476,12 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
           pink:   'from-pink-500 to-fuchsia-600',
         };
         const grad = tActual ? (gradients[tActual.colorKey] || gradients['pink']) : 'from-pink-500 to-fuchsia-600';
+        const selectCls = isDark 
+          ? "w-full px-3 py-2 border-2 border-violet-600 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-[#3d2d52] text-violet-100"
+          : "w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400";
         return (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors ${isDark ? 'bg-black/60' : 'bg-black/50 backdrop-blur-sm'}`}>
+            <div className={`rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
               {/* Header con gradiente */}
               <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative`}>
                 <div className="flex items-start justify-between">
@@ -483,20 +501,20 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                   </button>
                 </div>
                 {/* Decoración */}
-                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+                <div className={`absolute -bottom-4 left-0 right-0 h-8 rounded-t-3xl transition-colors ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}/>
               </div>
 
               {/* Contenido */}
               <div className="px-6 pt-2 pb-6 flex flex-col gap-4">
                 {/* Selector transportista */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Transportista</label>
+                  <label className={`text-xs font-bold uppercase tracking-wide transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Transportista</label>
                   <div className="relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
                     </svg>
                     <select value={tSeleccionado} onChange={e=>setTSeleccionado(e.target.value)}
-                      className={`${ic} pl-9 bg-white ${c ? `border-2 ${c.border} ${c.bg}` : ''}`}>
+                      className={`${selectCls} pl-9`}>
                       <option value="">Seleccionar transportista...</option>
                       {transportistas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
                     </select>
@@ -505,12 +523,12 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
 
                 {/* Separador */}
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-100"/>
-                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
-                  <div className="flex-1 h-px bg-slate-100"/>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
+                  <span className={`text-xs font-semibold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Datos del registro</span>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
                 </div>
 
-                <FormItem form={formNuevo} onChange={setFormNuevo}/>
+                <FormItem form={formNuevo} onChange={setFormNuevo} isDark={isDark}/>
 
                 {/* Botones */}
                 <div className="flex gap-2 pt-1">
@@ -519,7 +537,7 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                     Agregar ruta
                   </button>
                   <button onClick={()=>setModalAgregar(false)}
-                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    className={`flex-1 font-bold py-3 rounded-2xl text-sm transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
                     Cancelar
                   </button>
                 </div>
@@ -545,8 +563,8 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
         const c = tEdit ? (COLORES[tEdit.colorKey] || COLORES['red']) : null;
         void c;
         return (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors ${isDark ? 'bg-black/60' : 'bg-black/50 backdrop-blur-sm'}`}>
+            <div className={`rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
               <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative`}>
                 <div className="flex items-start justify-between">
                   <div>
@@ -564,22 +582,22 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </div>
-                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+                <div className={`absolute -bottom-4 left-0 right-0 h-8 rounded-t-3xl transition-colors ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}/>
               </div>
               <div className="px-6 pt-6 pb-6 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-100"/>
-                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
-                  <div className="flex-1 h-px bg-slate-100"/>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
+                  <span className={`text-xs font-semibold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Datos del registro</span>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
                 </div>
-                <FormItem form={formEdit} onChange={setFormEdit}/>
+                <FormItem form={formEdit} onChange={setFormEdit} isDark={isDark}/>
                 <div className="flex gap-2 pt-1">
                   <button onClick={saveEdit}
                     className={`flex-1 bg-gradient-to-r ${grad} text-white font-bold py-3 rounded-2xl text-sm transition-all shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]`}>
                     Guardar
                   </button>
                   <button onClick={()=>setEditState(null)}
-                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    className={`flex-1 font-bold py-3 rounded-2xl text-sm transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
                     Cancelar
                   </button>
                 </div>
@@ -605,9 +623,12 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
         const tDest = transportistas.find(t => t.id === tDestSeleccionado);
         const grad = tDest ? (gradients[tDest.colorKey] || gradients['orange']) : 'from-amber-400 to-orange-500';
         const c = tDest ? (COLORES[tDest.colorKey] || COLORES['red']) : null;
+        const inputCls = isDark 
+          ? "w-full px-3 py-2 border-2 border-violet-600 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-[#3d2d52] text-violet-100"
+          : "w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400";
         return (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col">
+          <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-colors ${isDark ? 'bg-black/60' : 'bg-black/50 backdrop-blur-sm'}`}>
+            <div className={`rounded-3xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
               {/* Header */}
               <div className={`bg-gradient-to-br ${grad} px-6 pt-6 pb-8 relative transition-all duration-300`}>
                 <div className="flex items-start justify-between">
@@ -626,7 +647,7 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </div>
-                <div className="absolute -bottom-4 left-0 right-0 h-8 bg-white rounded-t-3xl"/>
+                <div className={`absolute -bottom-4 left-0 right-0 h-8 rounded-t-3xl transition-colors ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}/>
               </div>
 
               {/* Contenido */}
@@ -635,23 +656,23 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                 {/* Fila fecha + transportista */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Mover al día</label>
+                    <label className={`text-xs font-bold uppercase tracking-wide transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Mover al día</label>
                     <div className="relative">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/>
                       </svg>
                       <input type="date" value={fechaDest} onChange={e=>setFechaDest(e.target.value)}
-                        className={`${ic} pl-9 ${c ? `${c.border} ${c.bg}` : ''}`}/>
+                        className={`${inputCls} pl-9`}/>
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wide">Transportista</label>
+                    <label className={`text-xs font-bold uppercase tracking-wide transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Transportista</label>
                     <div className="relative">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
                       </svg>
                       <select value={tDestSeleccionado} onChange={e=>setTDestSeleccionado(e.target.value)}
-                        className={`${ic} pl-9 bg-white ${c ? `${c.border} ${c.bg}` : ''}`}>
+                        className={`${inputCls} pl-9`}>
                         <option value="">Seleccionar...</option>
                         {transportistas.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
                       </select>
@@ -661,12 +682,12 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
 
                 {/* Separador */}
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-slate-100"/>
-                  <span className="text-xs text-slate-400 font-semibold">Datos del registro</span>
-                  <div className="flex-1 h-px bg-slate-100"/>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
+                  <span className={`text-xs font-semibold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Datos del registro</span>
+                  <div className={`flex-1 h-px transition-colors ${isDark ? 'bg-violet-700/50' : 'bg-slate-100'}`}/>
                 </div>
 
-                <FormItem form={formMove} onChange={setFormMove}/>
+                <FormItem form={formMove} onChange={setFormMove} isDark={isDark}/>
 
                 {/* Botones */}
                 <div className="flex gap-2 pt-1">
@@ -675,7 +696,7 @@ const RegistroTransportesView: React.FC<Props> = ({fecha, transportistas, rutas,
                     Mover
                   </button>
                   <button type="button" onClick={()=>setMoveState(null)}
-                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                    className={`flex-1 font-bold py-3 rounded-2xl text-sm transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
                     Cancelar
                   </button>
                 </div>

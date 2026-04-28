@@ -350,6 +350,21 @@ router.post('/rutas-transporte',           verifyToken, rutasTransporteControlle
 router.post('/rutas-transporte/sync',      verifyToken, rutasTransporteController.sync);
 router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rutasTransporteController.remove);
 
+// ==================== SALIDAS DE BODEGA ====================
+
+const salidasBodegaController = require('../controllers/salidasBodegaController');
+
+// GET  — todos los roles autenticados pueden ver
+router.get('/salidas-bodega',                verifyToken, salidasBodegaController.getAll);
+// POST — cualquier usuario autenticado puede crear
+router.post('/salidas-bodega',               verifyToken, salidasBodegaController.create);
+// POST batch — solo Soporte (carga masiva desde Excel)
+router.post('/salidas-bodega/batch',         verifyToken, verifyAdmin, salidasBodegaController.createBatch);
+// PATCH devolucion — cualquier usuario puede poner fecha; quitar fecha lo controla el frontend
+router.patch('/salidas-bodega/:id/devolucion', verifyToken, salidasBodegaController.updateDevolucion);
+// DELETE — solo admin/soporte (controlado también en el frontend)
+router.delete('/salidas-bodega/:id',         verifyToken, allowAdminOnly, salidasBodegaController.remove);
+
 // ==================== CONTROL DE TELAS ====================
 
 const controlTelasController = require('../controllers/controlTelasController');

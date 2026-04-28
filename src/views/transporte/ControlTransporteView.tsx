@@ -3,6 +3,7 @@ import RegistroTransportesView from './RegistroTransportesView';
 import TalleresView from './TalleresView';
 import api from '../../services/api';
 import { User } from '../../types';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 // ─── Tipos ───────────────────────────────────────────────────────────────────
 
@@ -62,39 +63,43 @@ const FORM_VACIO: Omit<Transportista,'id'> = { nombre:'', celular:'', picoyplaca
 
 // ─── Selector de color ────────────────────────────────────────────────────────
 
-const ColorSelector: React.FC<{ value: string; onChange: (k: string) => void; usedKeys?: string[]; excludeSelf?: boolean }> = ({ value, onChange, usedKeys = [], excludeSelf = true }) => (
-  <div className="space-y-1.5">
-    <p className="text-xs text-slate-500 font-semibold">Color del indicador</p>
-    <div className="flex gap-2 flex-wrap">
-      {COLOR_KEYS.map(k => {
-        const c = COLORES[k];
-        const isUsed = excludeSelf
-          ? usedKeys.includes(k) && k !== value
-          : usedKeys.includes(k);
-        return (
-          <button
-            key={k}
-            type="button"
-            onClick={() => !isUsed && onChange(k)}
-            title={isUsed ? `${c.label} (en uso)` : c.label}
-            disabled={isUsed}
-            className={`w-7 h-7 rounded-full transition-all
-              ${isUsed
-                ? 'bg-slate-200 cursor-not-allowed opacity-50'
-                : value === k
-                  ? `${c.dot} ring-2 ring-offset-2 ring-slate-400 scale-110`
-                  : `${c.dot} opacity-60 hover:opacity-100`
-              }`}
-          />
-        );
-      })}
+const ColorSelector: React.FC<{ value: string; onChange: (k: string) => void; usedKeys?: string[]; excludeSelf?: boolean }> = ({ value, onChange, usedKeys = [], excludeSelf = true }) => {
+  const { isDark } = useDarkMode();
+  return (
+    <div className="space-y-1.5">
+      <p className={`text-xs font-semibold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Color del indicador</p>
+      <div className="flex gap-2 flex-wrap">
+        {COLOR_KEYS.map(k => {
+          const c = COLORES[k];
+          const isUsed = excludeSelf
+            ? usedKeys.includes(k) && k !== value
+            : usedKeys.includes(k);
+          return (
+            <button
+              key={k}
+              type="button"
+              onClick={() => !isUsed && onChange(k)}
+              title={isUsed ? `${c.label} (en uso)` : c.label}
+              disabled={isUsed}
+              className={`w-7 h-7 rounded-full transition-all
+                ${isUsed
+                  ? `${isDark ? 'bg-violet-700' : 'bg-slate-200'} cursor-not-allowed opacity-50`
+                  : value === k
+                    ? `${c.dot} ring-2 ring-offset-2 ${isDark ? 'ring-violet-500 ring-offset-[#4a3a63]' : 'ring-slate-400'} scale-110`
+                    : `${c.dot} opacity-60 hover:opacity-100`
+                }`}
+            />
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ─── Componente principal ────────────────────────────────────────────────────
 
 const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
+  const { isDark } = useDarkMode();
   const hoy = new Date();
   const [mes, setMes]   = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
@@ -208,7 +213,7 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   const getColor = (t: Transportista) => COLORES[t.colorKey] || COLORES['red'];
 
   if (loading) {
-    return <div className="h-full flex items-center justify-center text-slate-400 text-sm">Cargando...</div>;
+    return <div className={`h-full flex items-center justify-center text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Cargando...</div>;
   }
 
   if (verTalleres) {
@@ -229,32 +234,32 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   }
 
   return (
-    <div className="h-full w-full flex flex-col bg-transparent p-4 md:p-8 overflow-auto">
+    <div className={`h-full w-full flex flex-col p-4 md:p-8 overflow-auto transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
 
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900">Control de Transporte</h1>
-          <p className="text-slate-400 text-sm mt-1">Programaciones de ruta de transporte</p>
+          <h1 className={`text-3xl md:text-4xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Control de Transporte</h1>
+          <p className={`text-sm mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Programaciones de ruta de transporte</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           <select value={mes} onChange={e => setMes(Number(e.target.value))}
-            className="appearance-none bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl px-4 py-2 focus:outline-none focus:border-pink-400 cursor-pointer shadow-sm">
+            className={`appearance-none border-2 font-semibold rounded-xl px-4 py-2 focus:outline-none cursor-pointer shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-700 focus:border-pink-400'}`}>
             {MESES.map((m, i) => <option key={i} value={i}>{m}</option>)}
           </select>
           <select value={anio} onChange={e => setAnio(Number(e.target.value))}
-            className="appearance-none bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl px-4 py-2 focus:outline-none focus:border-pink-400 cursor-pointer shadow-sm">
+            className={`appearance-none border-2 font-semibold rounded-xl px-4 py-2 focus:outline-none cursor-pointer shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-700 focus:border-pink-400'}`}>
             {anios.map(a => <option key={a} value={a}>{a}</option>)}
           </select>
           <button onClick={() => setModalTransportistas(true)}
-            className="flex items-center gap-2 bg-white border-2 border-slate-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors whitespace-nowrap">
+            className={`flex items-center gap-2 border-2 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors duration-300 whitespace-nowrap ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-200 hover:border-violet-400 hover:text-violet-100' : 'bg-white border-slate-200 text-slate-600 hover:border-pink-400 hover:text-pink-600'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
             </svg>
             Control de transportistas
           </button>
           <button onClick={() => setVerTalleres(true)}
-            className="flex items-center gap-2 bg-white border-2 border-slate-200 hover:border-pink-400 text-slate-600 hover:text-pink-600 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors whitespace-nowrap">
+            className={`flex items-center gap-2 border-2 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors duration-300 whitespace-nowrap ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-200 hover:border-violet-400 hover:text-violet-100' : 'bg-white border-slate-200 text-slate-600 hover:border-pink-400 hover:text-pink-600'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
             </svg>
@@ -264,25 +269,31 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
       </div>
 
       {/* Calendario */}
-      <div className="flex-1 bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden flex flex-col min-h-[600px]">
-        <div className="grid grid-cols-7 bg-slate-700">
+      <div className={`flex-1 rounded-3xl shadow-lg border overflow-hidden flex flex-col min-h-[600px] transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+        <div className={`grid grid-cols-7 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]' : 'bg-slate-700'}`}>
           {DIAS_SEMANA_HEADER.map(d => (
-            <div key={d} className="py-3 text-center text-white font-bold text-sm tracking-wide">{d}</div>
+            <div key={d} className={`py-3 text-center font-bold text-sm tracking-wide transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-white'}`}>{d}</div>
           ))}
         </div>
         <div className="flex-1 grid grid-cols-7" style={{ gridAutoRows: '1fr' }}>
           {celdas.map((dia, idx) => {
             const colIdx = idx % 7;
             const esFinDeSemana = colIdx === 0 || colIdx === 6;
-            if (dia === null) return <div key={`e-${idx}`} className={`border-b border-r border-slate-100 ${esFinDeSemana ? 'bg-slate-50' : ''}`} />;
+            if (dia === null) return <div key={`e-${idx}`} className={`border-b border-r transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-100 bg-slate-50'}`} />;
             const counts = getRutasDia(dia);
             const hoyFlag = esHoy(dia);
             const tieneRutas = Object.keys(counts).length > 0;
             return (
               <div key={dia}
                 onClick={() => setFechaSeleccionada(toKey(anio, mes, dia))}
-                className={`relative border-b border-r border-slate-100 p-2 flex flex-col items-start justify-between min-h-[110px] cursor-pointer hover:brightness-95 transition-all ${hoyFlag ? 'bg-slate-700' : esFinDeSemana ? 'bg-slate-50' : 'bg-white'}`}>
-                <span className={`text-sm md:text-base font-bold leading-none ${hoyFlag ? 'text-white' : 'text-slate-800'}`}>{dia}</span>
+                className={`relative border-b border-r p-2 flex flex-col items-start justify-between min-h-[110px] cursor-pointer transition-all duration-300 ${
+                  hoyFlag 
+                    ? isDark ? 'bg-[#5a4a75]' : 'bg-slate-700'
+                    : esFinDeSemana 
+                      ? isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'
+                      : isDark ? 'bg-[#4a3a63]' : 'bg-white'
+                } ${isDark ? 'border-violet-700 hover:brightness-110' : 'border-slate-100 hover:brightness-95'}`}>
+                <span className={`text-sm md:text-base font-bold leading-none transition-colors duration-300 ${hoyFlag ? (isDark ? 'text-violet-50' : 'text-white') : (isDark ? 'text-violet-100' : 'text-slate-800')}`}>{dia}</span>
                 {tieneRutas && (
                   <div className="flex flex-col gap-1 w-full mt-1 items-end">
                     {transportistas.map((t: Transportista) => {
@@ -291,8 +302,8 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                       const c = getColor(t);
                       return (
                         <div key={t.id} className="flex items-center gap-1 justify-end">
-                          <span className={`text-xs text-slate-400 leading-none`}>{t.nombre}</span>
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${c.bg} ${c.text} flex-shrink-0`}>{count}</span>
+                          <span className={`text-xs leading-none transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>{t.nombre}</span>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0 ${c.bg} ${c.text}`}>{count}</span>
                         </div>
                       );
                     })}
@@ -311,7 +322,7 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
           return (
             <div key={t.id} className="flex items-center gap-2">
               <span className={`w-3 h-3 rounded-full ${c.dot}`} />
-              <span className="text-xs text-slate-500 font-medium">{t.nombre}</span>
+              <span className={`text-xs font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{t.nombre}</span>
             </div>
           );
         })}
@@ -320,46 +331,46 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
       {/* Modal transportistas */}
       {modalTransportistas && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-slate-100">
-              <h2 className="text-xl font-black text-slate-900">Transportistas</h2>
+          <div className={`rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+            <div className={`flex items-center justify-between p-6 border-b transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+              <h2 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Transportistas</h2>
               <button onClick={() => { setModalTransportistas(false); setAgregando(false); setEditandoId(null); }}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 text-slate-500">
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600' : 'bg-slate-100 hover:bg-slate-200'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
                   <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
               </button>
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-3">
-              {transportistas.length === 0 && <p className="text-slate-400 text-sm text-center py-4">No hay transportistas registrados</p>}
+              {transportistas.length === 0 && <p className={`text-sm text-center py-4 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No hay transportistas registrados</p>}
               {transportistas.map((t: Transportista) => {
                 const c = getColor(t);
                 return (
-                  <div key={t.id} className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+                  <div key={t.id} className={`rounded-2xl border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
                     {editandoId === t.id ? (
                       <div className="p-4 space-y-3">
                         <input type="text" placeholder="Nombre" value={formEditar.nombre}
                           onChange={e => setFormEditar(p => ({ ...p, nombre: e.target.value }))}
-                          className="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400" />
+                          className={`w-full px-3 py-2 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400 placeholder-violet-500' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400 placeholder-slate-400'}`} />
                         <input type="text" placeholder="Celular" value={formEditar.celular}
                           onChange={e => setFormEditar(p => ({ ...p, celular: e.target.value }))}
-                          className="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400" />
+                          className={`w-full px-3 py-2 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400 placeholder-violet-500' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400 placeholder-slate-400'}`} />
                         <select value={formEditar.picoyplaca} onChange={e => setFormEditar(p => ({ ...p, picoyplaca: e.target.value }))}
-                          className="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                          className={`w-full px-3 py-2 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400'}`}>
                           <option value="">Día de pico y placa</option>
                           {DIAS_SEMANA_SELECTOR.map(d => <option key={d} value={d}>{d}</option>)}
                         </select>
                         <select value={formEditar.tipoVehiculo} onChange={e => setFormEditar(p => ({ ...p, tipoVehiculo: e.target.value }))}
-                          className="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                          className={`w-full px-3 py-2 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400'}`}>
                           <option value="">Tipo de vehículo</option>
                           {TIPOS_VEHICULO.map(tv => <option key={tv.value} value={tv.value}>{tv.label}</option>)}
                         </select>
                         <ColorSelector value={formEditar.colorKey} onChange={k => setFormEditar(p => ({ ...p, colorKey: k }))}
                           usedKeys={transportistas.filter((x: Transportista) => x.id !== editandoId).map((x: Transportista) => x.colorKey)} />
                         <div className="flex gap-2 pt-1">
-                          <button onClick={guardarEdicion} className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 rounded-xl text-sm transition-colors">Guardar</button>
-                          <button onClick={cancelarEdicion} className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-sm transition-colors">Cancelar</button>
+                          <button onClick={guardarEdicion} className={`flex-1 font-bold py-2 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-600 hover:bg-violet-500 text-violet-50' : 'bg-pink-500 hover:bg-pink-600 text-white'}`}>Guardar</button>
+                          <button onClick={cancelarEdicion} className={`flex-1 font-bold py-2 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-violet-100' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>Cancelar</button>
                         </div>
                       </div>
                     ) : (
@@ -367,19 +378,19 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                         <div className="flex items-center gap-3">
                           <span className={`w-3 h-3 rounded-full flex-shrink-0 ${c.dot}`} />
                           <div>
-                            <p className="font-bold text-slate-900 text-sm">{t.nombre}</p>
-                            <p className="text-xs text-slate-400">{t.celular || 'Sin celular'} · Pico y placa: {t.picoyplaca || '—'} · {TIPOS_VEHICULO.find(tv => tv.value === t.tipoVehiculo)?.label || 'Sin tipo'}</p>
+                            <p className={`font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{t.nombre}</p>
+                            <p className={`text-xs transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{t.celular || 'Sin celular'} · Pico y placa: {t.picoyplaca || '—'} · {TIPOS_VEHICULO.find(tv => tv.value === t.tipoVehiculo)?.label || 'Sin tipo'}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
                           <button onClick={() => iniciarEdicion(t)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-blue-500 hover:bg-blue-50 transition-colors">
+                            className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-violet-200 hover:bg-violet-700' : 'text-slate-300 hover:text-blue-500 hover:bg-blue-50'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                             </svg>
                           </button>
                           <button onClick={() => setConfirmEliminarId(t.id)}
-                            className="w-7 h-7 flex items-center justify-center rounded-full text-slate-300 hover:text-red-500 hover:bg-red-50 transition-colors">
+                            className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-red-300 hover:bg-red-900' : 'text-slate-300 hover:text-red-500 hover:bg-red-50'}`}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
                               <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
                             </svg>
@@ -394,35 +405,35 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
 
             {/* Formulario nuevo */}
             {agregando ? (
-              <div className="p-6 border-t border-slate-100 space-y-3">
+              <div className={`p-6 border-t space-y-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
                 <input type="text" placeholder="Nombre" value={formNuevo.nombre}
                   onChange={e => setFormNuevo(p => ({ ...p, nombre: e.target.value }))}
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400" />
+                  className={`w-full px-4 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400 placeholder-violet-500' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400 placeholder-slate-400'}`} />
                 <input type="text" placeholder="Celular" value={formNuevo.celular}
                   onChange={e => setFormNuevo(p => ({ ...p, celular: e.target.value }))}
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400" />
+                  className={`w-full px-4 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400 placeholder-violet-500' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400 placeholder-slate-400'}`} />
                 <select value={formNuevo.picoyplaca} onChange={e => setFormNuevo(p => ({ ...p, picoyplaca: e.target.value }))}
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                  className={`w-full px-4 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400'}`}>
                   <option value="">Día de pico y placa</option>
                   {DIAS_SEMANA_SELECTOR.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
                 <select value={formNuevo.tipoVehiculo} onChange={e => setFormNuevo(p => ({ ...p, tipoVehiculo: e.target.value }))}
-                  className="w-full px-4 py-2.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-pink-400 bg-white">
+                  className={`w-full px-4 py-2.5 border-2 rounded-xl text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400'}`}>
                   <option value="">Tipo de vehículo</option>
                   {TIPOS_VEHICULO.map(tv => <option key={tv.value} value={tv.value}>{tv.label}</option>)}
                 </select>
                 <ColorSelector value={formNuevo.colorKey} onChange={k => setFormNuevo(p => ({ ...p, colorKey: k }))}
                   usedKeys={transportistas.map((x: Transportista) => x.colorKey)} excludeSelf={false} />
                 <div className="flex gap-2">
-                  <button onClick={agregarTransportista} className="flex-1 bg-pink-500 hover:bg-pink-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Guardar</button>
+                  <button onClick={agregarTransportista} className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-600 hover:bg-violet-500 text-violet-50' : 'bg-pink-500 hover:bg-pink-600 text-white'}`}>Guardar</button>
                   <button onClick={() => { setAgregando(false); setFormNuevo({ ...FORM_VACIO }); }}
-                    className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
+                    className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-violet-100' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>Cancelar</button>
                 </div>
               </div>
             ) : (
-              <div className="p-6 border-t border-slate-100">
+              <div className={`p-6 border-t transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
                 <button onClick={() => setAgregando(true)}
-                  className="w-full flex items-center justify-center gap-2 bg-pink-50 hover:bg-pink-100 border-2 border-dashed border-pink-300 text-pink-600 font-bold py-3 rounded-2xl text-sm transition-colors">
+                  className={`w-full flex items-center justify-center gap-2 border-2 border-dashed font-bold py-3 rounded-2xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-900 hover:bg-violet-800 border-violet-600 text-violet-300' : 'bg-pink-50 hover:bg-pink-100 border-pink-300 text-pink-600'}`}>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
@@ -440,16 +451,16 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
         if (!t) return null;
         return (
           <div className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 flex flex-col gap-4">
+            <div className={`rounded-3xl shadow-2xl w-full max-w-sm p-6 flex flex-col gap-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
               <div className="text-center space-y-1">
-                <p className="text-slate-600 text-sm">¿Seguro que desea eliminar al transportista</p>
-                <p className="font-black text-slate-900 text-base">{t.nombre}</p>
+                <p className={`text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>¿Seguro que desea eliminar al transportista</p>
+                <p className={`font-black text-base transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{t.nombre}</p>
               </div>
               <div className="flex gap-3">
                 <button onClick={() => eliminarTransportista(confirmEliminarId)}
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Eliminar</button>
+                  className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-red-900 hover:bg-red-800 text-red-200' : 'bg-red-500 hover:bg-red-600 text-white'}`}>Eliminar</button>
                 <button onClick={() => setConfirmEliminarId(null)}
-                  className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2.5 rounded-xl text-sm transition-colors">Cancelar</button>
+                  className={`flex-1 font-bold py-2.5 rounded-xl text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-violet-100' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>Cancelar</button>
               </div>
             </div>
           </div>

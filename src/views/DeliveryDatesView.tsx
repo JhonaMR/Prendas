@@ -6,6 +6,7 @@ import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import DeliveryDatesImportModal from '../components/DeliveryDatesImportModal';
 import TextAutocomplete from '../components/TextAutocomplete';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface DeliveryDatesViewProps {
   state: AppState;
@@ -15,6 +16,7 @@ interface DeliveryDatesViewProps {
 }
 
 const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateState, user, onUnsavedChanges }) => {
+  const { isDark } = useDarkMode();
   const [initialData, setInitialData] = useState<DeliveryDate[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [hideDelivered, setHideDelivered] = useState(false);
@@ -414,22 +416,22 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   }, [filteredData, deliveryDatesPagination.pagination.page, deliveryDatesPagination.pagination.limit]);
 
   return (
-    <div className="space-y-6 pb-20">
+    <div className={`space-y-6 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Control de fechas de entrega y producción</h2>
-          <p className="text-slate-500 font-bold text-xs mt-1">Gestión de lotes y cronogramas</p>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Control de fechas de entrega y producción</h2>
+          <p className={`font-bold text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Gestión de lotes y cronogramas</p>
         </div>
 
         <div className="flex items-center gap-3">
         <button
           onClick={() => setIsUndPendientesOpen(true)}
-          className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all"
+          className={`px-5 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all transition-colors duration-300 ${isDark ? 'bg-indigo-700 hover:bg-indigo-600 text-white' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
         >
           Ver UND pendientes
         </button>
 
-        <div className="flex flex-wrap gap-3 bg-white p-3 rounded-3xl border border-slate-100 shadow-sm items-center">
+        <div className={`flex flex-wrap gap-3 p-3 rounded-3xl border shadow-sm items-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
           <button
             onClick={() => {
               setConfFilterId('');
@@ -443,7 +445,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
               setHideDelivered(false);
             }}
             title="Limpiar todos los filtros"
-            className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit flex items-center gap-2"
+            className={`px-4 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all h-fit flex items-center gap-2 transition-colors duration-300 ${isDark ? 'bg-red-700 hover:bg-red-600 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -452,7 +454,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           </button>
 
           <div className="flex flex-col">
-            <span className="text-[8px] font-black text-slate-600 uppercase ml-2 mb-1">Año (Envío)</span>
+            <span className={`text-[8px] font-black uppercase ml-2 mb-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>Año (Envío)</span>
             <input
               type="number"
               value={yearFilter}
@@ -460,29 +462,29 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
               placeholder="2026"
               min="2000"
               max="2099"
-              className="px-3 py-1.5 bg-slate-50 rounded-xl text-xs font-bold w-24 border-none focus:ring-2 focus:ring-blue-100"
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold w-24 border-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600' : 'bg-slate-50 text-slate-800 focus:ring-blue-100'}`}
             />
           </div>
 
-          <div className="flex items-center gap-2 border-l border-slate-100 pl-3 h-10 mt-2">
+          <div className={`flex items-center gap-2 border-l pl-3 h-10 mt-2 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
             <input
               type="checkbox"
               checked={hideDelivered}
               onChange={e => setHideDelivered(e.target.checked)}
               id="hideD"
-              className="rounded text-blue-600 focus:ring-blue-500"
+              className={`rounded focus:ring-2 transition-colors duration-300 ${isDark ? 'text-violet-600 focus:ring-violet-500 bg-[#3d2d52]' : 'text-blue-600 focus:ring-blue-500'}`}
             />
-            <label htmlFor="hideD" className="text-[10px] font-black text-slate-600 uppercase cursor-pointer">
+            <label htmlFor="hideD" className={`text-[10px] font-black uppercase cursor-pointer transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
               Ocultar entregados
             </label>
           </div>
 
           {true && (
-            <div className="flex items-center gap-2 border-l border-slate-100 pl-3">
+            <div className={`flex items-center gap-2 border-l pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
               {(user?.role === UserRole.SOPORTE || user?.role === 'soporte') && (
                 <button
                   onClick={() => setIsImportModalOpen(true)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all"
+                  className={`px-6 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500 text-white' : 'bg-gradient-to-r from-purple-600 to-purple-500 text-white'}`}
                 >
                   Importar Excel
                 </button>
@@ -490,7 +492,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50"
+                className={`px-6 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-green-700 to-green-600 hover:from-green-600 hover:to-green-500 text-white' : 'bg-gradient-to-r from-green-600 to-green-500 text-white'}`}
               >
                 {isSaving ? 'Guardando...' : 'Guardar'}
               </button>
@@ -504,29 +506,29 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <button
           onClick={() => setFilterHighPriority(!filterHighPriority)}
-          className={`bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-3xl border-2 transition-all cursor-pointer ${filterHighPriority ? 'border-red-500 shadow-lg scale-105' : 'border-red-200 hover:border-red-400'}`}
+          className={`p-6 rounded-3xl border-2 transition-all cursor-pointer transition-colors duration-300 ${filterHighPriority ? (isDark ? 'border-red-500 shadow-lg scale-105 bg-gradient-to-br from-red-900/40 to-red-800/40' : 'border-red-500 shadow-lg scale-105 bg-gradient-to-br from-red-50 to-red-100') : (isDark ? 'border-red-700/40 bg-gradient-to-br from-red-900/20 to-red-800/20 hover:border-red-600' : 'border-red-200 bg-gradient-to-br from-red-50 to-red-100 hover:border-red-400')}`}
         >
-          <p className="text-[10px] font-black text-red-600 uppercase tracking-widest mb-2">Lotes de atención prioritaria</p>
-          <p className="text-5xl font-black text-red-700 text-center">{metrics.highPriority}</p>
-          <p className="text-[10px] font-bold text-red-500 uppercase mt-1 text-center">Lotes vencidos hace más de 3 días</p>
+          <p className={`text-[10px] font-black uppercase tracking-widest mb-2 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>Lotes de atención prioritaria</p>
+          <p className={`text-5xl font-black text-center transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-700'}`}>{metrics.highPriority}</p>
+          <p className={`text-[10px] font-bold uppercase mt-1 text-center transition-colors duration-300 ${isDark ? 'text-red-500' : 'text-red-500'}`}>Lotes vencidos hace más de 3 días</p>
         </button>
 
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-3xl border border-yellow-200">
-          <p className="text-[10px] font-black text-yellow-600 uppercase tracking-widest mb-2">Lotes en proceso</p>
-          <p className="text-5xl font-black text-yellow-700 text-center">{metrics.pending}</p>
-          <p className="text-[10px] font-bold text-yellow-500 uppercase mt-1 text-center">Pendientes por entregar</p>
+        <div className={`p-6 rounded-3xl border transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-yellow-900/20 to-yellow-800/20 border-yellow-700/40' : 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'}`}>
+          <p className={`text-[10px] font-black uppercase tracking-widest mb-2 transition-colors duration-300 ${isDark ? 'text-yellow-400' : 'text-yellow-600'}`}>Lotes en proceso</p>
+          <p className={`text-5xl font-black text-center transition-colors duration-300 ${isDark ? 'text-yellow-400' : 'text-yellow-700'}`}>{metrics.pending}</p>
+          <p className={`text-[10px] font-bold uppercase mt-1 text-center transition-colors duration-300 ${isDark ? 'text-yellow-500' : 'text-yellow-500'}`}>Pendientes por entregar</p>
         </div>
 
-        <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-6 rounded-3xl border border-pink-200">
-          <p className="text-[10px] font-black text-pink-600 uppercase tracking-widest mb-2">Retraso promedio</p>
-          <p className="text-5xl font-black text-pink-700 text-center">{metrics.avgDelay}</p>
-          <p className="text-[10px] font-bold text-pink-500 uppercase mt-1 text-center">Días respecto a fecha pactada</p>
+        <div className={`p-6 rounded-3xl border transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-pink-900/20 to-pink-800/20 border-pink-700/40' : 'bg-gradient-to-br from-pink-50 to-pink-100 border-pink-200'}`}>
+          <p className={`text-[10px] font-black uppercase tracking-widest mb-2 transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>Retraso promedio</p>
+          <p className={`text-5xl font-black text-center transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-700'}`}>{metrics.avgDelay}</p>
+          <p className={`text-[10px] font-bold uppercase mt-1 text-center transition-colors duration-300 ${isDark ? 'text-pink-500' : 'text-pink-500'}`}>Días respecto a fecha pactada</p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-3xl border border-green-200">
-          <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-2">Eficiencia entrega</p>
-          <p className="text-5xl font-black text-green-700 text-center">{metrics.efficiency}%</p>
-          <p className="text-[10px] font-bold text-green-500 uppercase mt-1 text-center">Cumplimiento de cronograma</p>
+        <div className={`p-6 rounded-3xl border transition-colors duration-300 ${isDark ? 'bg-gradient-to-br from-green-900/20 to-green-800/20 border-green-700/40' : 'bg-gradient-to-br from-green-50 to-green-100 border-green-200'}`}>
+          <p className={`text-[10px] font-black uppercase tracking-widest mb-2 transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-600'}`}>Eficiencia entrega</p>
+          <p className={`text-5xl font-black text-center transition-colors duration-300 ${isDark ? 'text-green-400' : 'text-green-700'}`}>{metrics.efficiency}%</p>
+          <p className={`text-[10px] font-bold uppercase mt-1 text-center transition-colors duration-300 ${isDark ? 'text-green-500' : 'text-green-500'}`}>Cumplimiento de cronograma</p>
         </div>
       </div>
 
@@ -534,7 +536,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       {true && (
         <button
           onClick={addNewRow}
-          className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+          className={`w-full py-4 font-black rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white' : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'}`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -544,27 +546,27 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
       )}
 
       {/* TABLA */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-100" style={{ overflow: 'visible' }}>
+      <div className={`rounded-3xl shadow-sm border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`} style={{ overflow: 'visible' }}>
         <div style={{ overflow: 'visible' }}>
           <table className="w-full text-left text-sm min-w-[1800px]">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
               <tr>
-                <th className="px-4 py-2 font-black uppercase text-slate-700 w-48">Confeccionista</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Ref.</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-20">Cant.</th>
-                <th className="px-3 py-2 font-black uppercase text-orange-700 text-center w-32 bg-yellow-50">Fecha envío lote</th>
-                <th className="px-3 py-2 font-black uppercase text-orange-700 text-center w-36 bg-yellow-50">Fecha presup. entrega</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-20">REM</th>
-                <th className="px-3 py-2 font-black uppercase text-blue-700 text-center w-32 bg-blue-50">Fecha entrega</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Dif fechas</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Rot. inicial</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-24">Rot. final</th>
-                <th className="px-3 py-2 font-black uppercase text-slate-700 text-center w-28">Rot final vs ini</th>
-                <th className="px-4 py-2 font-black uppercase text-slate-700 w-32">Proceso</th>
-                <th className="px-4 py-2 font-black uppercase text-slate-700 w-40">Observación</th>
+                <th className={`px-4 py-2 font-black uppercase text-center w-48 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Confeccionista</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-24 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Ref.</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-20 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Cant.</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-32 transition-colors duration-300 ${isDark ? 'bg-yellow-900/40 text-yellow-300' : 'bg-yellow-50 text-orange-700'}`}>Fecha envío lote</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-36 transition-colors duration-300 ${isDark ? 'bg-yellow-900/40 text-yellow-300' : 'bg-yellow-50 text-orange-700'}`}>Fecha presup. entrega</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-20 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>REM</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-32 transition-colors duration-300 ${isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700'}`}>Fecha entrega</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-24 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Dif fechas</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-24 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Rot. inicial</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-24 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Rot. final</th>
+                <th className={`px-3 py-2 font-black uppercase text-center w-28 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Rot final vs ini</th>
+                <th className={`px-4 py-2 font-black uppercase w-32 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Proceso</th>
+                <th className={`px-4 py-2 font-black uppercase w-40 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Observación</th>
                 <th className="px-3 py-2 text-center w-16"></th>
               </tr>
-              <tr className="bg-slate-100">
+              <tr className={`transition-colors duration-300 ${isDark ? 'bg-[#4a3a5f]' : 'bg-slate-100'}`}>
                 <th className="px-4 py-1">
                   <TextAutocomplete
                     value={confFilterId}
@@ -572,6 +574,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                     onChange={setConfFilterId}
                     placeholder="Filtrar..."
                     disabled={false}
+                    isDark={isDark}
                   />
                 </th>
                 <th className="px-3 py-1">
@@ -581,14 +584,15 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                     onChange={setRefFilterId}
                     placeholder="Filtrar..."
                     disabled={false}
+                    isDark={isDark}
                   />
                 </th>
                 <th className="px-3 py-1"></th>
-                <th className="px-3 py-1 bg-yellow-100">
+                <th className={`px-3 py-1 transition-colors duration-300 ${isDark ? 'bg-yellow-900/40' : 'bg-yellow-100'}`}>
                   <select
                     value={sendDateMonthFilter}
                     onChange={e => setSendDateMonthFilter(e.target.value)}
-                    className="w-full px-1 py-0.5 text-xs border border-orange-300 rounded bg-white"
+                    className={`w-full px-1 py-0.5 text-xs border rounded transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-yellow-700 text-yellow-300' : 'bg-white border-orange-300 text-slate-800'}`}
                   >
                     <option value="">Mes</option>
                     {Array.from({ length: 12 }, (_, i) => (
@@ -598,11 +602,11 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                     ))}
                   </select>
                 </th>
-                <th className="px-3 py-1 bg-yellow-100">
+                <th className={`px-3 py-1 transition-colors duration-300 ${isDark ? 'bg-yellow-900/40' : 'bg-yellow-100'}`}>
                   <select
                     value={expectedDateMonthFilter}
                     onChange={e => setExpectedDateMonthFilter(e.target.value)}
-                    className="w-full px-1 py-0.5 text-xs border border-orange-300 rounded bg-white"
+                    className={`w-full px-1 py-0.5 text-xs border rounded transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-yellow-700 text-yellow-300' : 'bg-white border-orange-300 text-slate-800'}`}
                   >
                     <option value="">Mes</option>
                     {Array.from({ length: 12 }, (_, i) => (
@@ -613,11 +617,11 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                   </select>
                 </th>
                 <th className="px-3 py-1"></th>
-                <th className="px-3 py-1 bg-blue-100">
+                <th className={`px-3 py-1 transition-colors duration-300 ${isDark ? 'bg-blue-900/40' : 'bg-blue-100'}`}>
                   <select
                     value={deliveryDateMonthFilter}
                     onChange={e => setDeliveryDateMonthFilter(e.target.value)}
-                    className="w-full px-1 py-0.5 text-xs border border-blue-300 rounded bg-white"
+                    className={`w-full px-1 py-0.5 text-xs border rounded transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-blue-700 text-blue-300' : 'bg-white border-blue-300 text-slate-800'}`}
                   >
                     <option value="">Mes</option>
                     {Array.from({ length: 12 }, (_, i) => (
@@ -638,13 +642,14 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                     onChange={setProcessFilter}
                     placeholder="Filtrar..."
                     disabled={false}
+                    isDark={isDark}
                   />
                 </th>
                 <th className="px-4 py-1"></th>
                 <th className="px-3 py-1"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-50'}`}>
               {paginatedData.map((row, displayIndex) => {
                 const recordIndex = state.deliveryDates.findIndex(d => d.id === row.id);
                 const hasErrors = validationErrors[recordIndex];
@@ -654,7 +659,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                 const rotDiff = rotInicial !== null && rotFinal !== null ? rotInicial - rotFinal : null;
 
                 return (
-                  <tr key={row.id} className={`hover:bg-slate-50 transition-colors ${hasErrors ? 'bg-red-50' : ''}`}>
+                  <tr key={row.id} className={`transition-colors duration-300 ${hasErrors ? (isDark ? 'bg-red-900/30' : 'bg-red-50') : displayIndex % 2 === 0 ? (isDark ? 'bg-[#3d2d52]' : 'bg-white') : (isDark ? 'bg-[#4a3a5f]' : 'bg-slate-50/50')}`}>
                     <td className="px-4 py-1">
                       <div>
                         <TextAutocomplete
@@ -663,9 +668,10 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           onChange={val => updateRow(row.id, 'confeccionistaId', val)}
                           placeholder="Confeccionista..."
                           disabled={false}
+                          isDark={isDark}
                         />
                         {hasErrors?.confeccionistaId && (
-                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.confeccionistaId}</p>
+                          <p className={`text-[8px] font-bold mt-0.5 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{hasErrors.confeccionistaId}</p>
                         )}
                       </div>
                     </td>
@@ -677,10 +683,11 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           onChange={val => updateRow(row.id, 'referenceId', val)}
                           placeholder="Referencia..."
                           disabled={false}
-                          className="text-center text-blue-700"
+                          isDark={isDark}
+                          className={`text-center transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-700'}`}
                         />
                         {hasErrors?.referenceId && (
-                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.referenceId}</p>
+                          <p className={`text-[8px] font-bold mt-0.5 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{hasErrors.referenceId}</p>
                         )}
                       </div>
                     </td>
@@ -692,38 +699,38 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                           onChange={e => updateRow(row.id, 'quantity', Number(e.target.value))}
                           onFocus={e => e.target.select()}
                           readOnly={false}
-                          className={`w-full px-2 py-1 bg-slate-50 border rounded-lg font-black text-center focus:ring-2 focus:ring-blue-100 ${hasErrors?.quantity ? 'border-red-500' : 'border-slate-200'}`}
+                          className={`w-full px-2 py-1 rounded-lg font-black text-center focus:ring-2 transition-colors duration-300 ${hasErrors?.quantity ? (isDark ? 'border-red-600 bg-[#3d2d52] text-violet-100 focus:ring-red-600' : 'border-red-500 bg-slate-50') : (isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 focus:ring-blue-100')} border`}
                         />
                         {hasErrors?.quantity && (
-                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.quantity}</p>
+                          <p className={`text-[8px] font-bold mt-0.5 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{hasErrors.quantity}</p>
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-1 text-center bg-yellow-50">
+                    <td className={`px-3 py-1 text-center transition-colors duration-300 ${isDark ? 'bg-yellow-900/30' : 'bg-yellow-50'}`}>
                       <div>
                         <input
                           type="date"
                           value={row.sendDate}
                           onChange={e => updateRow(row.id, 'sendDate', e.target.value)}
                           readOnly={false}
-                          className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.sendDate ? 'border-red-500' : 'border-orange-200'}`}
+                          className={`w-full px-2 py-1 rounded-lg font-bold text-center focus:ring-2 transition-colors duration-300 ${hasErrors?.sendDate ? (isDark ? 'border-red-600 bg-[#3d2d52] text-yellow-300 focus:ring-red-600' : 'border-red-500 bg-white text-orange-700 focus:ring-orange-100') : (isDark ? 'bg-[#3d2d52] border-yellow-700 text-yellow-300 focus:ring-yellow-600' : 'bg-white border-orange-200 text-orange-700 focus:ring-orange-100')} border`}
                         />
                         {hasErrors?.sendDate && (
-                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.sendDate}</p>
+                          <p className={`text-[8px] font-bold mt-0.5 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{hasErrors.sendDate}</p>
                         )}
                       </div>
                     </td>
-                    <td className="px-3 py-1 text-center bg-yellow-50">
+                    <td className={`px-3 py-1 text-center transition-colors duration-300 ${isDark ? 'bg-yellow-900/30' : 'bg-yellow-50'}`}>
                       <div>
                         <input
                           type="date"
                           value={row.expectedDate}
                           onChange={e => updateRow(row.id, 'expectedDate', e.target.value)}
                           readOnly={false}
-                          className={`w-full px-2 py-1 bg-white border rounded-lg font-bold text-center text-orange-700 focus:ring-2 focus:ring-orange-100 ${hasErrors?.expectedDate ? 'border-red-500' : 'border-orange-200'}`}
+                          className={`w-full px-2 py-1 rounded-lg font-bold text-center focus:ring-2 transition-colors duration-300 ${hasErrors?.expectedDate ? (isDark ? 'border-red-600 bg-[#3d2d52] text-yellow-300 focus:ring-red-600' : 'border-red-500 bg-white text-orange-700 focus:ring-orange-100') : (isDark ? 'bg-[#3d2d52] border-yellow-700 text-yellow-300 focus:ring-yellow-600' : 'bg-white border-orange-200 text-orange-700 focus:ring-orange-100')} border`}
                         />
                         {hasErrors?.expectedDate && (
-                          <p className="text-[8px] text-red-600 font-bold mt-0.5">{hasErrors.expectedDate}</p>
+                          <p className={`text-[8px] font-bold mt-0.5 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{hasErrors.expectedDate}</p>
                         )}
                       </div>
                     </td>
@@ -733,10 +740,10 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         value={row.rem ?? ''}
                         onChange={e => updateRow(row.id, 'rem', e.target.value === '' ? null : Number(e.target.value))}
                         placeholder="-"
-                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-center focus:ring-2 focus:ring-blue-100"
+                        className={`w-full px-2 py-1 rounded-lg font-bold text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-slate-800 focus:ring-blue-100'} border`}
                       />
                     </td>
-                    <td className="px-3 py-1 text-center bg-blue-50">
+                    <td className={`px-3 py-1 text-center transition-colors duration-300 ${isDark ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
                       <input
                         type={row.deliveryDate ? 'date' : 'text'}
                         value={row.deliveryDate || ''}
@@ -744,22 +751,22 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         onFocus={e => (e.target.type = 'date')}
                         onBlur={e => { if (!e.target.value) e.target.type = 'text'; }}
                         placeholder=""
-                        className="w-full px-2 py-1 bg-white border border-blue-200 rounded-lg font-bold text-center text-blue-700 focus:ring-2 focus:ring-blue-100"
+                        className={`w-full px-2 py-1 rounded-lg font-bold text-center focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-blue-700 text-blue-300 focus:ring-blue-600' : 'bg-white border-blue-200 text-blue-700 focus:ring-blue-100'} border`}
                       />
                     </td>
                     <td className="px-3 py-1 text-center">
-                      <span className={`font-black ${difFechas && difFechas > 0 ? 'text-red-600' : difFechas && difFechas < 0 ? 'text-green-600' : 'text-slate-400'}`}>
+                      <span className={`font-black transition-colors duration-300 ${difFechas && difFechas > 0 ? (isDark ? 'text-red-400' : 'text-red-600') : difFechas && difFechas < 0 ? (isDark ? 'text-green-400' : 'text-green-600') : (isDark ? 'text-violet-500' : 'text-slate-400')}`}>
                         {difFechas !== null ? difFechas : '-'}
                       </span>
                     </td>
                     <td className="px-3 py-1 text-center">
-                      <span className="font-bold text-slate-700">{rotInicial !== null ? rotInicial : '-'}</span>
+                      <span className={`font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{rotInicial !== null ? rotInicial : '-'}</span>
                     </td>
                     <td className="px-3 py-1 text-center">
-                      <span className="font-bold text-slate-700">{rotFinal !== null ? rotFinal : '-'}</span>
+                      <span className={`font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{rotFinal !== null ? rotFinal : '-'}</span>
                     </td>
                     <td className="px-3 py-1 text-center">
-                      <span className={`font-black ${rotDiff && rotDiff > 0 ? 'text-red-600' : rotDiff && rotDiff < 0 ? 'text-green-600' : 'text-slate-400'}`}>
+                      <span className={`font-black transition-colors duration-300 ${rotDiff && rotDiff > 0 ? (isDark ? 'text-red-400' : 'text-red-600') : rotDiff && rotDiff < 0 ? (isDark ? 'text-green-400' : 'text-green-600') : (isDark ? 'text-violet-500' : 'text-slate-400')}`}>
                         {rotDiff !== null ? rotDiff : '-'}
                       </span>
                     </td>
@@ -770,6 +777,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         onChange={val => updateRow(row.id, 'process', val)}
                         placeholder="Estado..."
                         disabled={false}
+                        isDark={isDark}
                       />
                     </td>
                     <td className="px-4 py-1">
@@ -779,14 +787,14 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
                         onChange={e => updateRow(row.id, 'observation', e.target.value)}
                         readOnly={false}
                         placeholder="Nota..."
-                        className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-700 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300"
+                        className={`w-full px-2 py-1 rounded-lg font-bold focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-violet-600' : 'bg-slate-50 border border-slate-200 text-slate-700 placeholder:text-slate-300 focus:ring-blue-100'} ${isDark ? 'border' : ''}`}
                       />
                     </td>
                     <td className="px-3 py-2 text-center">
                       {(isAdmin || isGeneral) && (
                         <button
                           onClick={() => deleteRow(row.id)}
-                          className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                          className={`p-1.5 rounded-lg transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50 hover:text-red-300' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -835,6 +843,7 @@ const UndPendientesModal: React.FC<{
   data: { proceso: string; cantEntradas: number; cantRef: number; cantUnd: number; undTotales: number }[];
   onClose: () => void;
 }> = ({ data, onClose }) => {
+  const { isDark } = useDarkMode();
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handleKey);
@@ -850,17 +859,17 @@ const UndPendientesModal: React.FC<{
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className={`rounded-3xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh] transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
 
         {/* Header con gradiente */}
-        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-5 flex items-center justify-between shrink-0">
+        <div className={`px-6 py-5 flex items-center justify-between shrink-0 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-indigo-700 to-violet-700' : 'bg-gradient-to-r from-indigo-600 to-violet-600'}`}>
           <div>
-            <h3 className="font-black text-white text-xl tracking-tight">UND pendientes por proceso</h3>
-            <p className="text-indigo-200 text-xs font-semibold uppercase tracking-widest mt-0.5">Lotes sin fecha de entrega</p>
+            <h3 className={`font-black text-xl tracking-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-white'}`}>UND pendientes por proceso</h3>
+            <p className={`text-xs font-semibold uppercase tracking-widest mt-0.5 transition-colors duration-300 ${isDark ? 'text-indigo-200' : 'text-indigo-200'}`}>Lotes sin fecha de entrega</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/25 text-white transition-colors"
+            className={`p-2 rounded-xl transition-colors duration-300 ${isDark ? 'bg-white/10 hover:bg-white/25 text-white' : 'bg-white/10 hover:bg-white/25 text-white'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -870,16 +879,16 @@ const UndPendientesModal: React.FC<{
 
         {/* Totales resumen */}
         {data.length > 0 && (
-          <div className="grid grid-cols-4 divide-x divide-slate-100 bg-slate-50 border-b border-slate-200 shrink-0">
+          <div className={`grid grid-cols-4 divide-x border-b shrink-0 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] divide-violet-700 border-violet-700' : 'bg-slate-50 divide-slate-100 border-slate-200'}`}>
             {[
-              { label: 'Lotes', value: totals.cantEntradas, color: 'text-slate-700' },
-              { label: 'Cant. Ref', value: totals.cantRef, color: 'text-blue-600' },
-              { label: 'Cant. Und', value: totals.cantUnd, color: 'text-indigo-600' },
-              { label: 'Und. Totales', value: totals.undTotales, color: 'text-emerald-600' },
+              { label: 'Lotes', value: totals.cantEntradas, color: isDark ? 'text-violet-300' : 'text-slate-700' },
+              { label: 'Cant. Ref', value: totals.cantRef, color: isDark ? 'text-blue-300' : 'text-blue-600' },
+              { label: 'Cant. Und', value: totals.cantUnd, color: isDark ? 'text-indigo-300' : 'text-indigo-600' },
+              { label: 'Und. Totales', value: totals.undTotales, color: isDark ? 'text-emerald-300' : 'text-emerald-600' },
             ].map(({ label, value, color }) => (
               <div key={label} className="flex flex-col items-center py-3 px-2">
                 <span className={`text-2xl font-black ${color}`}>{value.toLocaleString()}</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">{label}</span>
+                <span className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{label}</span>
               </div>
             ))}
           </div>
@@ -889,18 +898,18 @@ const UndPendientesModal: React.FC<{
         <div className="overflow-y-auto flex-1">
           <table className="w-full text-sm">
             <thead className="sticky top-0 z-10">
-              <tr className="bg-slate-100 border-b border-slate-200">
-                <th className="px-5 py-3 text-left font-black uppercase text-slate-500 text-[11px] tracking-wider">Proceso</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Lotes</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Cant. Ref</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Cant. Und</th>
-                <th className="px-4 py-3 text-center font-black uppercase text-slate-500 text-[11px] tracking-wider">Und. Totales</th>
+              <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-100 border-slate-200'}`}>
+                <th className={`px-5 py-3 text-left font-black uppercase text-[11px] tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Proceso</th>
+                <th className={`px-4 py-3 text-center font-black uppercase text-[11px] tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Lotes</th>
+                <th className={`px-4 py-3 text-center font-black uppercase text-[11px] tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Cant. Ref</th>
+                <th className={`px-4 py-3 text-center font-black uppercase text-[11px] tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Cant. Und</th>
+                <th className={`px-4 py-3 text-center font-black uppercase text-[11px] tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Und. Totales</th>
               </tr>
             </thead>
             <tbody>
               {data.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-16 text-center text-slate-400 font-bold">
+                  <td colSpan={5} className={`px-6 py-16 text-center font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
                     No hay lotes pendientes
                   </td>
                 </tr>
@@ -908,20 +917,20 @@ const UndPendientesModal: React.FC<{
                 data.map((row, i) => (
                   <tr
                     key={row.proceso}
-                    className={`border-b border-slate-100 hover:bg-indigo-50/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}`}
+                    className={`border-b transition-colors duration-300 ${isDark ? 'border-violet-700/50 hover:bg-violet-700/20' : 'border-slate-100 hover:bg-indigo-50/50'} ${i % 2 === 0 ? (isDark ? 'bg-[#3d2d52]' : 'bg-white') : (isDark ? 'bg-[#4a3a5f]' : 'bg-slate-50/50')}`}
                   >
-                    <td className="px-5 py-3.5 font-black text-slate-800">{row.proceso}</td>
+                    <td className={`px-5 py-3.5 font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{row.proceso}</td>
                     <td className="px-4 py-3.5 text-center">
-                      <span className="inline-block bg-slate-100 text-slate-600 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantEntradas}</span>
+                      <span className={`inline-block font-bold rounded-lg px-2.5 py-0.5 text-sm transition-colors duration-300 ${isDark ? 'bg-violet-900/40 text-violet-300' : 'bg-slate-100 text-slate-600'}`}>{row.cantEntradas}</span>
                     </td>
                     <td className="px-4 py-3.5 text-center">
-                      <span className="inline-block bg-blue-50 text-blue-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantRef}</span>
+                      <span className={`inline-block font-bold rounded-lg px-2.5 py-0.5 text-sm transition-colors duration-300 ${isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700'}`}>{row.cantRef}</span>
                     </td>
                     <td className="px-4 py-3.5 text-center">
-                      <span className="inline-block bg-indigo-50 text-indigo-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.cantUnd}</span>
+                      <span className={`inline-block font-bold rounded-lg px-2.5 py-0.5 text-sm transition-colors duration-300 ${isDark ? 'bg-indigo-900/40 text-indigo-300' : 'bg-indigo-50 text-indigo-700'}`}>{row.cantUnd}</span>
                     </td>
                     <td className="px-4 py-3.5 text-center">
-                      <span className="inline-block bg-emerald-50 text-emerald-700 font-bold rounded-lg px-2.5 py-0.5 text-sm">{row.undTotales.toLocaleString()}</span>
+                      <span className={`inline-block font-bold rounded-lg px-2.5 py-0.5 text-sm transition-colors duration-300 ${isDark ? 'bg-emerald-900/40 text-emerald-300' : 'bg-emerald-50 text-emerald-700'}`}>{row.undTotales.toLocaleString()}</span>
                     </td>
                   </tr>
                 ))

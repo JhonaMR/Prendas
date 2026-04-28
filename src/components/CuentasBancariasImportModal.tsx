@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import * as XLSX from 'xlsx';
 import api from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface Props {
   onClose: () => void;
@@ -16,6 +17,7 @@ interface FilaPreview {
 }
 
 const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) => {
+  const { isDark } = useDarkMode();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<FilaPreview[] | null>(null);
   const [fileName, setFileName] = useState('');
@@ -35,7 +37,6 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
       const sheet = workbook.Sheets[workbook.SheetNames[0]];
       const rows: any[] = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
-      // Omitir primera fila (títulos)
       const filas: FilaPreview[] = rows.slice(1)
         .filter(r => r.some((c: any) => String(c).trim() !== ''))
         .map(r => {
@@ -75,11 +76,14 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
   const invalidas = preview?.filter(f => !f.valida) ?? [];
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-      onClick={onClose}>
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
-        onClick={e => e.stopPropagation()}>
-
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <div
+        className={`rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transition-colors ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}
+        onClick={e => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="bg-violet-500 px-8 py-6 rounded-t-3xl flex items-center justify-between">
           <div>
@@ -95,7 +99,7 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
 
         <div className="p-8">
           {/* Instrucciones */}
-          <div className="bg-violet-50 border border-violet-200 rounded-2xl p-4 mb-6 text-sm text-violet-700">
+          <div className={`border rounded-2xl p-4 mb-6 text-sm transition-colors ${isDark ? 'bg-violet-900/30 border-violet-700 text-violet-300' : 'bg-violet-50 border-violet-200 text-violet-700'}`}>
             <p className="font-semibold mb-1">Formato esperado del Excel:</p>
             <p>Fila 1: Títulos (se omite automáticamente)</p>
             <p>Columna A: Cédula &nbsp;·&nbsp; Columna B: Nombre &nbsp;·&nbsp; Columna C: Cuenta Bancaria</p>
@@ -104,13 +108,15 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
           {/* Selector de archivo */}
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-violet-300 hover:border-violet-500 rounded-2xl p-8 text-center cursor-pointer transition-colors mb-6"
+            className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-colors mb-6 ${isDark ? 'border-violet-600 hover:border-violet-400' : 'border-violet-300 hover:border-violet-500'}`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-violet-300 mx-auto mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-10 h-10 mx-auto mb-3 ${isDark ? 'text-violet-500' : 'text-violet-300'}`}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
             </svg>
-            <p className="text-violet-500 font-semibold">{fileName || 'Haz clic para seleccionar un archivo'}</p>
-            <p className="text-violet-300 text-xs mt-1">.xlsx o .xls</p>
+            <p className={`font-semibold ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>
+              {fileName || 'Haz clic para seleccionar un archivo'}
+            </p>
+            <p className={`text-xs mt-1 ${isDark ? 'text-violet-500' : 'text-violet-300'}`}>.xlsx o .xls</p>
             <input ref={fileInputRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleFileSelect} />
           </div>
 
@@ -118,12 +124,12 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
           {preview && (
             <div className="mb-6">
               <div className="flex items-center gap-4 mb-3">
-                <span className="text-sm font-semibold text-emerald-600">{validas.length} válidos</span>
-                {invalidas.length > 0 && <span className="text-sm font-semibold text-red-400">{invalidas.length} con errores</span>}
+                <span className={`text-sm font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{validas.length} válidos</span>
+                {invalidas.length > 0 && <span className={`text-sm font-semibold ${isDark ? 'text-red-400' : 'text-red-400'}`}>{invalidas.length} con errores</span>}
               </div>
 
               {validas.length > 0 && (
-                <div className="bg-slate-50 rounded-2xl overflow-hidden max-h-64 overflow-y-auto border border-slate-200">
+                <div className={`rounded-2xl overflow-hidden max-h-64 overflow-y-auto border transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
                   <table className="w-full text-xs">
                     <thead className="bg-violet-500 text-white">
                       <tr>
@@ -132,12 +138,12 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
                         <th className="text-left px-4 py-2">Cuenta Bancaria</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className={`divide-y transition-colors ${isDark ? 'divide-violet-700' : 'divide-slate-100'}`}>
                       {validas.map((f, i) => (
-                        <tr key={i} className="bg-white">
-                          <td className="px-4 py-2 text-slate-600">{f.cedula}</td>
-                          <td className="px-4 py-2 font-semibold text-slate-800">{f.nombre}</td>
-                          <td className="px-4 py-2 font-mono text-slate-600">{f.cuenta}</td>
+                        <tr key={i} className={isDark ? (i % 2 === 0 ? 'bg-[#4a3a63]' : 'bg-[#3d2d52]') : 'bg-white'}>
+                          <td className={`px-4 py-2 ${isDark ? 'text-violet-400' : 'text-slate-600'}`}>{f.cedula}</td>
+                          <td className={`px-4 py-2 font-semibold ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{f.nombre}</td>
+                          <td className={`px-4 py-2 font-mono ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{f.cuenta}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -146,7 +152,7 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
               )}
 
               {invalidas.length > 0 && (
-                <div className="mt-3 bg-red-50 rounded-xl p-3 text-xs text-red-500">
+                <div className={`mt-3 rounded-xl p-3 text-xs transition-colors ${isDark ? 'bg-red-900/30 border border-red-700 text-red-400' : 'bg-red-50 text-red-500'}`}>
                   <p className="font-semibold mb-1">Filas con errores (se omitirán):</p>
                   {invalidas.map((f, i) => (
                     <p key={i}>Fila {i + 1}: {f.error}</p>
@@ -158,16 +164,18 @@ const CuentasBancariasImportModal: React.FC<Props> = ({ onClose, onImportado }) 
 
           {/* Resultado */}
           {resultado && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-6 text-sm text-emerald-700 font-semibold">
+            <div className={`border rounded-2xl p-4 mb-6 text-sm font-semibold transition-colors ${isDark ? 'bg-emerald-900/30 border-emerald-700 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'}`}>
               ✅ Importación completada: {resultado.ok} cuentas guardadas.
-              {resultado.errores > 0 && <span className="text-red-500 ml-2">{resultado.errores} con errores.</span>}
+              {resultado.errores > 0 && <span className={`ml-2 ${isDark ? 'text-red-400' : 'text-red-500'}`}>{resultado.errores} con errores.</span>}
             </div>
           )}
 
           {/* Botones */}
           <div className="flex gap-3">
-            <button onClick={onClose}
-              className="flex-1 border-2 border-violet-200 text-violet-500 font-semibold py-2.5 rounded-xl hover:bg-violet-50 transition-colors">
+            <button
+              onClick={onClose}
+              className={`flex-1 border-2 font-semibold py-2.5 rounded-xl transition-colors ${isDark ? 'border-violet-600 text-violet-300 hover:bg-violet-700/30' : 'border-violet-200 text-violet-500 hover:bg-violet-50'}`}
+            >
               {resultado ? 'Cerrar' : 'Cancelar'}
             </button>
             {!resultado && (

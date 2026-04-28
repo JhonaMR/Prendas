@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import api from '../services/api';
 import usePagination from '../hooks/usePagination';
+import PaginationComponent from '../components/PaginationComponent';
 import { UserRole } from '../types';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface InventoryMovement {
   id: string;
@@ -23,6 +25,7 @@ interface InventoryInsumosViewProps {
 }
 
 const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNavigate }) => {
+  const { isDark } = useDarkMode();
   const [movements, setMovements] = useState<InventoryMovement[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -505,17 +508,17 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
   }, [movements, insumoFilter, referenciaFilter, movimientoFilter, pagination.page, pagination.limit]);
 
   return (
-    <div className="w-full flex flex-col bg-slate-50">
+    <div className={`w-full flex flex-col transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'}`}>
       {/* Header con búsqueda y botón */}
       <div className="px-4 md:px-6 pt-4 md:pt-6 flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900">Inventario de Insumos</h1>
-          <p className="text-slate-500 text-sm md:text-base">Movimientos de insumos</p>
+          <h1 className={`text-3xl md:text-4xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Inventario de Insumos</h1>
+          <p className={`text-sm md:text-base transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Movimientos de insumos</p>
         </div>
         <div className="flex gap-3 items-center flex-wrap">
           <button
             onClick={() => onNavigate?.()}
-            className="px-4 py-2 bg-white text-slate-400 font-bold hover:text-slate-600 transition-all border border-slate-100 text-sm rounded-lg"
+            className={`px-4 py-2 font-bold text-sm rounded-lg transition-all border ${isDark ? 'bg-[#4a3a63] text-violet-300 border-violet-700 hover:bg-[#5a4a75]' : 'bg-white text-slate-400 border-slate-100 hover:text-slate-600'}`}
           >
             ← Atrás
           </button>
@@ -527,7 +530,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               setInsumoFilter(e.target.value);
               goToPage(1);
             }}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+            className={`px-4 py-2 border rounded-lg text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
           />
           <input
             type="text"
@@ -537,7 +540,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               setReferenciaFilter(e.target.value);
               goToPage(1);
             }}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+            className={`px-4 py-2 border rounded-lg text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
           />
           <select
             value={movimientoFilter}
@@ -545,7 +548,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               setMovimientoFilter(e.target.value as 'Entrada' | 'Salida' | '');
               goToPage(1);
             }}
-            className="px-4 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"
+            className={`px-4 py-2 border rounded-lg text-sm focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
           >
             <option value="">Todos los movimientos</option>
             <option value="Entrada">Entrada</option>
@@ -559,7 +562,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
                 setMovimientoFilter('');
                 goToPage(1);
               }}
-              className="px-3 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-300 transition-colors whitespace-nowrap"
+              className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors whitespace-nowrap ${isDark ? 'bg-[#4a3a63] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}`}
             >
               Limpiar
             </button>
@@ -567,7 +570,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
           {canGenerateReports && (
             <button
               onClick={() => setShowReportModal(true)}
-              className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white px-6 py-2 rounded-lg font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap"
+              className={`px-6 py-2 rounded-lg font-black text-sm uppercase tracking-wide transition-all shadow-sm whitespace-nowrap ${isDark ? 'bg-gradient-to-r from-violet-600 to-violet-500 hover:from-violet-700 hover:to-violet-600 text-white' : 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white'}`}
             >
               Generar Informe
             </button>
@@ -578,7 +581,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               setShowForm(!showForm);
             }}
             disabled={loading}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+            className={`px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 whitespace-nowrap ${isDark ? 'bg-violet-600 text-white hover:bg-violet-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
           >
             {showForm ? 'Cancelar' : '+ Nuevo Movimiento'}
           </button>
@@ -587,23 +590,23 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
 
       {/* Form Section */}
       {showForm && (
-        <div className="mt-4 mx-4 md:mx-6 mb-4 bg-white rounded-2xl border-2 border-slate-200 p-6">
-          <h2 className="text-xl font-bold text-slate-900 mb-6">{editingId ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h2>
+        <div className={`mt-4 mx-4 md:mx-6 mb-4 rounded-2xl border-2 p-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
+          <h2 className={`text-xl font-bold mb-6 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{editingId ? 'Editar Movimiento' : 'Nuevo Movimiento'}</h2>
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Insumo *</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Insumo *</label>
                 <input 
                   type="text" 
                   name="insumo"
                   value={formData.insumo}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Cantidad *</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Cantidad *</label>
                 <input 
                   type="number" 
                   name="cantidad"
@@ -611,11 +614,11 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
                   onChange={handleCantidadChange}
                   step="0.01"
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Valor Unitario *</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Valor Unitario *</label>
                 <input 
                   type="number" 
                   name="valor_unitario"
@@ -623,59 +626,59 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
                   onChange={handleValorUnitarioChange}
                   step="0.01"
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Valor Total</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Valor Total</label>
                 <input 
                   type="number" 
                   name="valor_total"
                   value={formData.valor_total}
                   readOnly
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:outline-none" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100' : 'bg-slate-100 border-slate-300'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Proveedor *</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Proveedor *</label>
                 <input 
                   type="text" 
                   name="proveedor"
                   value={formData.proveedor}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Referencia/Destino</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Referencia/Destino</label>
                 <input 
                   type="text" 
                   name="referencia_destino"
                   value={formData.referencia_destino}
                   onChange={handleInputChange}
                   placeholder="Opcional"
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Remisión/Factura</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Remisión/Factura</label>
                 <input 
                   type="text" 
                   name="remision_factura"
                   value={formData.remision_factura}
                   onChange={handleInputChange}
                   placeholder="Opcional"
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500" 
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-400 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Movimiento *</label>
+                <label className={`block text-sm font-semibold mb-2 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>Movimiento *</label>
                 <select 
                   name="movimiento"
                   value={formData.movimiento}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className={`w-full px-4 py-2 border rounded-lg focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-500' : 'border-slate-300 focus:border-blue-500'}`}
                 >
                   <option value="Entrada">Entrada</option>
                   <option value="Salida">Salida</option>
@@ -686,7 +689,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
               <button 
                 type="submit"
                 disabled={loading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                className={`px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 ${isDark ? 'bg-violet-600 text-white hover:bg-violet-700' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
               >
                 {loading ? 'Guardando...' : 'Guardar'}
               </button>
@@ -697,7 +700,7 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
                   resetForm();
                 }}
                 disabled={loading}
-                className="px-6 py-2 bg-slate-300 text-slate-900 rounded-lg font-semibold hover:bg-slate-400 transition-colors disabled:opacity-50"
+                className={`px-6 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50 ${isDark ? 'bg-[#5a4a75] text-violet-100 hover:bg-[#6a5a85]' : 'bg-slate-300 text-slate-900 hover:bg-slate-400'}`}
               >
                 Cancelar
               </button>
@@ -707,68 +710,68 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
       )}
 
       {/* Table Section */}
-      <div className="flex-1 mx-4 md:mx-6 mt-4 mb-4 md:mb-6 bg-white rounded-2xl border-2 border-slate-200 overflow-visible flex flex-col">
+      <div className={`flex-1 mx-4 md:mx-6 mt-4 mb-4 md:mb-6 rounded-2xl border-2 overflow-visible flex flex-col transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
         <div className="overflow-x-auto flex-1">
           <table className="w-full text-sm">
-            <thead className="bg-slate-100 border-b-2 border-slate-200 sticky top-0">
+            <thead className={`border-b-2 sticky top-0 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-600' : 'bg-slate-100 border-slate-200'}`}>
               <tr>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-40">Insumo</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-24">Cantidad</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-24">Valor Unit.</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-24">Valor Total</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-32">Proveedor</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-32">Referencia/Destino</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-32">Remisión/Factura</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-20">Movimiento</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-24">Fecha</th>
-                <th className="px-4 py-3 text-center font-bold text-slate-700 w-24">Acciones</th>
+                <th className={`px-4 py-3 text-center font-bold w-40 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Insumo</th>
+                <th className={`px-4 py-3 text-center font-bold w-24 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Cantidad</th>
+                <th className={`px-4 py-3 text-center font-bold w-24 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Valor Unit.</th>
+                <th className={`px-4 py-3 text-center font-bold w-24 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Valor Total</th>
+                <th className={`px-4 py-3 text-center font-bold w-32 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Proveedor</th>
+                <th className={`px-4 py-3 text-center font-bold w-32 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Referencia/Destino</th>
+                <th className={`px-4 py-3 text-center font-bold w-32 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Remisión/Factura</th>
+                <th className={`px-4 py-3 text-center font-bold w-20 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Movimiento</th>
+                <th className={`px-4 py-3 text-center font-bold w-24 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Fecha</th>
+                <th className={`px-4 py-3 text-center font-bold w-24 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-slate-500">
+                  <td colSpan={10} className={`px-4 py-8 text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
                     Cargando...
                   </td>
                 </tr>
               ) : filteredMovements.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-4 py-8 text-center text-slate-500">
+                  <td colSpan={10} className={`px-4 py-8 text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
                     {movements.length === 0 ? 'No hay movimientos registrados. Crea uno nuevo para comenzar.' : 'No hay resultados que coincidan con los filtros.'}
                   </td>
                 </tr>
               ) : (
                 filteredMovements.map((movement) => (
-                  <tr key={movement.id} className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3 text-slate-900 w-40">{movement.insumo}</td>
-                    <td className="px-4 py-3 text-slate-900 w-24 text-center">{Math.round(movement.cantidad)}</td>
-                    <td className="px-4 py-3 text-slate-900 w-24 text-right">{formatCurrency(movement.valor_unitario)}</td>
-                    <td className="px-4 py-3 text-slate-900 font-semibold w-24 text-right">{formatCurrency(movement.valor_total)}</td>
-                    <td className="px-4 py-3 text-slate-900 w-32 text-center">{movement.proveedor}</td>
-                    <td className="px-4 py-3 text-slate-900 w-32 text-center">{movement.referencia_destino || '-'}</td>
-                    <td className="px-4 py-3 text-slate-900 w-32 text-center">{movement.remision_factura || '-'}</td>
+                  <tr key={movement.id} className={`border-b transition-colors duration-300 ${isDark ? 'border-violet-700 hover:bg-[#5a4a75]' : 'border-slate-200 hover:bg-slate-50'}`}>
+                    <td className={`px-4 py-3 w-40 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{movement.insumo}</td>
+                    <td className={`px-4 py-3 w-24 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{Math.round(movement.cantidad)}</td>
+                    <td className={`px-4 py-3 w-24 text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{formatCurrency(movement.valor_unitario)}</td>
+                    <td className={`px-4 py-3 font-semibold w-24 text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{formatCurrency(movement.valor_total)}</td>
+                    <td className={`px-4 py-3 w-32 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{movement.proveedor}</td>
+                    <td className={`px-4 py-3 w-32 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{movement.referencia_destino || '-'}</td>
+                    <td className={`px-4 py-3 w-32 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{movement.remision_factura || '-'}</td>
                     <td className="px-4 py-3 text-center w-20">
-                      <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors duration-300 ${
                         movement.movimiento === 'Entrada' 
-                          ? 'bg-green-100 text-green-800 border-green-300'
-                          : 'bg-red-100 text-red-800 border-red-300'
+                          ? isDark ? 'bg-green-900 text-green-200 border-green-700' : 'bg-green-100 text-green-800 border-green-300'
+                          : isDark ? 'bg-red-900 text-red-200 border-red-700' : 'bg-red-100 text-red-800 border-red-300'
                       }`}>
                         {movement.movimiento}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-900 w-24 text-center">{formatDate(movement.fecha_creacion)}</td>
+                    <td className={`px-4 py-3 w-24 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-900'}`}>{formatDate(movement.fecha_creacion)}</td>
                     <td className="px-4 py-3 text-center w-24">
                       <button 
                         onClick={() => handleEdit(movement)}
                         disabled={loading}
-                        className="text-blue-600 hover:text-blue-800 font-semibold text-xs mr-2 disabled:opacity-50"
+                        className={`font-semibold text-xs mr-2 disabled:opacity-50 transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-violet-300' : 'text-blue-600 hover:text-blue-800'}`}
                       >
                         Editar
                       </button>
                       <button 
                         onClick={() => handleDelete(movement.id)}
                         disabled={loading}
-                        className="text-red-600 hover:text-red-800 font-semibold text-xs disabled:opacity-50"
+                        className={`font-semibold text-xs disabled:opacity-50 transition-colors duration-300 ${isDark ? 'text-red-400 hover:text-red-300' : 'text-red-600 hover:text-red-800'}`}
                       >
                         Eliminar
                       </button>
@@ -781,42 +784,14 @@ const InventoryInsumosView: React.FC<InventoryInsumosViewProps> = ({ user, onNav
         </div>
         
         {/* Pagination Controls */}
-        {movements.length > 0 && (
-          <div className="border-t border-slate-200 bg-slate-50 px-4 py-3 flex items-center justify-between">
-            <div className="text-sm text-slate-600">
-              Mostrando {filteredMovements.length > 0 ? (pagination.page - 1) * pagination.limit + 1 : 0} - {Math.min(pagination.page * pagination.limit, pagination.total)} de {pagination.total} movimientos
-            </div>
-            <div className="flex gap-2 items-center">
-              <select
-                value={pagination.limit}
-                onChange={(e) => setLimit(parseInt(e.target.value))}
-                className="px-3 py-1 border border-slate-300 rounded text-sm"
-              >
-                <option value={10}>10 por página</option>
-                <option value={25}>25 por página</option>
-                <option value={50}>50 por página</option>
-                <option value={100}>100 por página</option>
-              </select>
-              <button
-                onClick={() => previousPage()}
-                disabled={!pagination.hasPreviousPage}
-                className="px-3 py-1 border border-slate-300 rounded text-sm hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                ← Anterior
-              </button>
-              <span className="text-sm text-slate-600">
-                Página {pagination.page} de {pagination.totalPages || 1}
-              </span>
-              <button
-                onClick={() => nextPage()}
-                disabled={!pagination.hasNextPage}
-                className="px-3 py-1 border border-slate-300 rounded text-sm hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Siguiente →
-              </button>
-            </div>
-          </div>
-        )}
+        <PaginationComponent
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages || 1}
+          pageSize={pagination.limit}
+          onPageChange={goToPage}
+          onPageSizeChange={setLimit}
+          pageSizeOptions={[10, 25, 50, 100]}
+        />
       </div>
 
       {showReportModal && (

@@ -3,6 +3,7 @@ import { User, UserRole, AppState, ItemEntry, Client, Reference } from '../types
 import ScannerSimulator from '../components/ScannerSimulator';
 import { Icons } from '../constants';
 import { api } from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface ReturnReceptionViewProps {
   user: User;
@@ -33,6 +34,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
   onUpdateReturnReception,
   onDeleteReturnReception
 }) => {
+  const { isDark } = useDarkMode();
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState('');
   const [clientSearch, setClientSearch] = useState('');
@@ -247,21 +249,21 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
 
   if (isProcessing) {
     return (
-      <div className="space-y-8 animate-in slide-in-from-bottom-6 duration-500 pb-20">
+      <div className={`space-y-8 animate-in slide-in-from-bottom-6 duration-500 pb-20 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-800 tracking-tight">{editingReturn ? 'Editar Devolución' : 'Nueva Devolución'}</h2>
-            <p className="text-slate-400 font-bold text-xs sm:text-base">Registro de devoluciones de clientes</p>
+            <h2 className={`text-2xl sm:text-3xl font-black tracking-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{editingReturn ? 'Editar Devolución' : 'Nueva Devolución'}</h2>
+            <p className={`font-bold text-xs sm:text-base transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Registro de devoluciones de clientes</p>
           </div>
-          <button onClick={() => { setIsProcessing(false); setEditingReturn(null); }} className="px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-white text-slate-400 font-bold hover:text-red-500 transition-all border border-slate-100 text-sm">
+          <button onClick={() => { setIsProcessing(false); setEditingReturn(null); }} className={`px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-bold hover:text-red-500 transition-all border text-sm ${isDark ? 'bg-[#4a3a63] text-violet-200 border-violet-700 hover:bg-[#5a4a75]' : 'bg-white text-slate-400 border-slate-100'}`}>
             Cancelar
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100">
+        <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
           <div className="space-y-4 relative col-span-2">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-blue-500 tracking-widest px-4">Buscar Cliente</label>
+              <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-500'}`}>Buscar Cliente</label>
               <div className="relative">
                 <input 
                   type="text" 
@@ -269,21 +271,21 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                   onChange={(e) => { setClientSearch(e.target.value); setShowClientResults(true); if(!e.target.value) setSelectedClientId(''); }}
                   onFocus={() => setShowClientResults(true)}
                   placeholder="ID o Nombre de cliente..."
-                  className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-blue-100 transition-all font-bold text-slate-900"
+                  className={`w-full px-6 py-4 border-none rounded-2xl focus:ring-4 transition-all font-bold ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-400 focus:ring-violet-500/30' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
                 />
                 {showClientResults && clientSearch.length > 0 && (
-                  <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 max-h-60 overflow-y-auto custom-scrollbar">
+                  <div className={`absolute top-full left-0 w-full mt-2 rounded-2xl shadow-2xl border z-50 max-h-60 overflow-y-auto custom-scrollbar transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
                     {filteredClients.map(c => (
                       <button 
                         key={c.id} 
                         onClick={() => selectClient(c)}
-                        className="w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0"
+                        className={`w-full text-left px-6 py-4 transition-colors border-b last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700/50 text-violet-50' : 'hover:bg-slate-50 border-slate-50 text-slate-800'}`}
                       >
-                        <p className="font-black text-slate-800">{c.name}</p>
-                        <p className="text-[10px] text-slate-400 font-bold">ID: {c.id} • {c.city}</p>
+                        <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+                        <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>ID: {c.id} • {c.city}</p>
                       </button>
                     ))}
-                    {filteredClients.length === 0 && <p className="px-6 py-4 text-slate-400 font-bold italic text-sm">No se encontraron clientes</p>}
+                    {filteredClients.length === 0 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>No se encontraron clientes</p>}
                   </div>
                 )}
               </div>
@@ -292,12 +294,12 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Nota Crédito</label>
-              <input value={creditNoteNumber} onChange={e => setCreditNoteNumber(e.target.value)} placeholder="Ej: NC-1234" className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl focus:ring-4 focus:ring-pink-100 transition-all font-bold tracking-widest text-slate-900" />
+              <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-pink-500'}`}>Nota Crédito</label>
+              <input value={creditNoteNumber} onChange={e => setCreditNoteNumber(e.target.value)} placeholder="Ej: NC-1234" className={`w-full px-6 py-4 border-none rounded-2xl focus:ring-4 transition-all font-bold tracking-widest ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-400 focus:ring-violet-500/30' : 'bg-slate-50 text-slate-900 focus:ring-pink-100'}`} />
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase text-pink-500 tracking-widest px-4">Valor Total</label>
-              <div className="w-full px-6 py-4 bg-slate-50 border-none rounded-2xl font-black text-slate-900 text-lg">
+              <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-pink-500'}`}>Valor Total</label>
+              <div className={`w-full px-6 py-4 border-none rounded-2xl font-black text-lg transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100' : 'bg-slate-50 text-slate-900'}`}>
                 ${totalValue.toLocaleString()}
               </div>
             </div>
@@ -307,23 +309,23 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
         <ScannerSimulator onScan={handleScan} label="Escanear Referencia" />
 
         {items.length > 0 && (
-          <div className="bg-white rounded-[32px] sm:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-            <div className="p-6 bg-slate-50 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h3 className="font-black text-slate-700">Resumen de Devolución</h3>
-              <div className="px-6 py-2 bg-blue-600 text-white rounded-full font-black text-sm shadow-lg shadow-blue-100 w-fit">
+          <div className={`rounded-[32px] sm:rounded-[40px] shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <div className={`p-6 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+              <h3 className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-700'}`}>Resumen de Devolución</h3>
+              <div className={`px-6 py-2 rounded-full font-black text-sm shadow-lg w-fit transition-colors duration-300 ${isDark ? 'bg-violet-600 text-violet-50 shadow-violet-900/30' : 'bg-blue-600 text-white shadow-blue-100'}`}>
                 Total: {totalUnits} unidades
               </div>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
               {items.map((item) => (
-                <div key={item.reference} className="p-6 sm:p-8">
+                <div key={item.reference} className={`p-6 sm:p-8 transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl sm:text-2xl font-black text-blue-600 tracking-tighter">{item.reference}</span>
+                    <span className={`text-xl sm:text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>{item.reference}</span>
                     <div className="flex items-center gap-4">
-                      <span className="text-lg sm:text-xl font-black text-slate-800">{item.quantity}</span>
+                      <span className={`text-lg sm:text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{item.quantity}</span>
                       <button 
                         onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
-                        className="w-6 h-6 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-[10px] hover:bg-red-200 transition-colors"
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-100 text-red-500 hover:bg-red-200'}`}
                       >
                         ×
                       </button>
@@ -335,7 +337,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
           </div>
         )}
 
-        <button onClick={handleSave} className="w-full py-5 sm:py-6 bg-gradient-to-r from-blue-600 to-pink-600 text-white font-black text-xl sm:text-2xl rounded-[28px] sm:rounded-[32px] shadow-2xl shadow-blue-200 hover:scale-[1.01] transition-all">
+        <button onClick={handleSave} className={`w-full py-5 sm:py-6 text-white font-black text-xl sm:text-2xl rounded-[28px] sm:rounded-[32px] shadow-2xl hover:scale-[1.01] transition-all ${isDark ? 'bg-gradient-to-r from-violet-600 to-pink-600 shadow-violet-900/30' : 'bg-gradient-to-r from-blue-600 to-pink-600 shadow-blue-200'}`}>
           GUARDAR DEVOLUCIÓN
         </button>
       </div>
@@ -343,37 +345,37 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
   }
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className={`space-y-8 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : ''}`}>
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Devoluciones</h2>
-          <p className="text-slate-400 font-medium">Historial de devoluciones de clientes</p>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Devoluciones</h2>
+          <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Historial de devoluciones de clientes</p>
         </div>
-        <button onClick={() => setIsProcessing(true)} className="w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl shadow-blue-200 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
+        <button onClick={() => setIsProcessing(true)} className={`w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 ${isDark ? 'bg-gradient-to-r from-violet-600 to-pink-600 shadow-violet-900/30' : 'bg-gradient-to-r from-blue-500 to-pink-500 shadow-blue-200'}`}>
           <Icons.Reception />
           NUEVA DEVOLUCIÓN
         </button>
       </div>
 
       {isLoading ? (
-        <div className="bg-white p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center space-y-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-300 animate-pulse">
+        <div className={`p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed flex flex-col items-center text-center space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
+          <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center animate-pulse transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-400' : 'bg-slate-100 text-slate-300'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 sm:w-10 sm:h-10">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
             </svg>
           </div>
-          <p className="text-slate-400 font-bold text-base sm:text-lg italic">
+          <p className={`font-bold text-base sm:text-lg italic transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>
             Cargando devoluciones...
           </p>
         </div>
       ) : returnReceptions.length === 0 ? (
-        <div className="bg-white p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-slate-200 flex flex-col items-center text-center space-y-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-300">
+        <div className={`p-12 sm:p-24 rounded-[32px] sm:rounded-[48px] border-2 border-dashed flex flex-col items-center text-center space-y-4 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
+          <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-400' : 'bg-slate-100 text-slate-300'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 sm:w-10 sm:h-10">
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
             </svg>
           </div>
-          <p className="text-slate-400 font-bold text-base sm:text-lg italic">
+          <p className={`font-bold text-base sm:text-lg italic transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>
             Sin devoluciones registradas
           </p>
         </div>
@@ -392,41 +394,41 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
             }, {} as Record<string, number>);
 
             return (
-              <div key={reception.id} className="bg-white rounded-[24px] sm:rounded-[32px] shadow-sm border border-slate-100 overflow-hidden group hover:shadow-md transition-all">
+              <div key={reception.id} className={`rounded-[24px] sm:rounded-[32px] shadow-sm border overflow-hidden group hover:shadow-md transition-all ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
                 <div 
-                  className="p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer" 
+                  className={`p-5 sm:p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 cursor-pointer transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}
                   onClick={() => setExpandedId(isExpanded ? null : reception.id)}
                 >
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[9px] sm:text-[10px] text-slate-400 font-bold">{new Date(reception.createdAt).toLocaleString()}</span>
-                      {reception.creditNoteNumber && <span className="text-[9px] sm:text-[10px] font-black bg-blue-50 text-blue-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">NC: {reception.creditNoteNumber}</span>}
+                      <span className={`text-[9px] sm:text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>{new Date(reception.createdAt).toLocaleString()}</span>
+                      {reception.creditNoteNumber && <span className={`text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter transition-colors duration-300 ${isDark ? 'bg-violet-600/30 text-violet-300' : 'bg-blue-50 text-blue-500'}`}>NC: {reception.creditNoteNumber}</span>}
                     </div>
                     <div className="flex items-baseline gap-3">
-                      <h3 className="text-lg sm:text-xl font-black text-slate-800">{client?.name || 'Cliente Desconocido'}</h3>
-                      <p className="text-xs sm:text-sm font-bold text-slate-400">{client?.address}</p>
+                      <h3 className={`text-lg sm:text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{client?.name || 'Cliente Desconocido'}</h3>
+                      <p className={`text-xs sm:text-sm font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>{client?.address}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between w-full md:w-auto gap-4">
                     <div className="flex flex-wrap gap-4 hidden sm:flex">
-                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Referencias: <span className="text-slate-800 font-black">{Object.keys(itemsByRef).length}</span></span>
-                      <span className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase">Total Unid: <span className="text-pink-600 font-black">{totalQty}</span></span>
+                      <span className={`text-[10px] sm:text-xs font-bold uppercase transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Referencias: <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{Object.keys(itemsByRef).length}</span></span>
+                      <span className={`text-[10px] sm:text-xs font-bold uppercase transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Total Unid: <span className={`font-black transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>{totalQty}</span></span>
                     </div>
-                    <div className="text-left md:text-right hidden sm:block">
-                      <p className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">Recibido por</p>
-                      <p className="text-xs font-black text-slate-500">{reception.receivedBy}</p>
+                    <div className={`text-left md:text-right hidden sm:block transition-colors duration-300 ${isDark ? 'text-violet-300' : ''}`}>
+                      <p className={`text-[9px] font-black uppercase tracking-widest mb-0.5 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>Recibido por</p>
+                      <p className={`text-xs font-black transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-500'}`}>{reception.receivedBy}</p>
                     </div>
                     <div className="flex items-center gap-3 ml-auto md:ml-0">
-                      <button onClick={(e) => { e.stopPropagation(); handleEdit(reception); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-blue-50 hover:text-blue-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                      <button onClick={(e) => { e.stopPropagation(); handleEdit(reception); }} className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all opacity-100 md:opacity-0 group-hover:opacity-100 ${isDark ? 'bg-[#5a4a75] text-violet-300 hover:bg-violet-600 hover:text-violet-50' : 'bg-slate-50 text-slate-400 hover:bg-blue-50 hover:text-blue-500'}`}>
                         <Icons.Edit />
                       </button>
                       {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
-                        <button onClick={(e) => { e.stopPropagation(); handleDelete(reception.id); }} className="p-2 sm:p-3 bg-slate-50 rounded-xl sm:rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-500 transition-all opacity-100 md:opacity-0 group-hover:opacity-100">
+                        <button onClick={(e) => { e.stopPropagation(); handleDelete(reception.id); }} className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all opacity-100 md:opacity-0 group-hover:opacity-100 ${isDark ? 'bg-[#5a4a75] text-red-400 hover:bg-red-900/30 hover:text-red-300' : 'bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500'}`}>
                           <Icons.Delete />
                         </button>
                       )}
                       <span className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-slate-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-5 h-5 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                       </span>
@@ -435,35 +437,35 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                 </div>
 
                 {isExpanded && (
-                  <div className="px-6 pb-6 sm:px-8 sm:pb-8 pt-4 bg-slate-50/50 border-t border-slate-100 animate-in slide-in-from-top-2">
+                  <div className={`px-6 pb-6 sm:px-8 sm:pb-8 pt-4 border-t animate-in slide-in-from-top-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]/50 border-violet-700' : 'bg-slate-50/50 border-slate-100'}`}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 mb-6 sm:mb-8">
                       <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Detalles del Cliente</p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mb-3 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Detalles del Cliente</p>
                         <div className="space-y-1">
-                          <p className="font-black text-slate-800 text-base sm:text-lg">{client?.name}</p>
-                          <p className="text-xs sm:text-sm font-bold text-slate-500">{client?.address} • {client?.city}</p>
-                          {client?.seller && <p className="text-[9px] sm:text-[10px] font-black text-blue-500 uppercase tracking-widest">Vendedor: {client?.seller}</p>}
+                          <p className={`font-black text-base sm:text-lg transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{client?.name}</p>
+                          <p className={`text-xs sm:text-sm font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{client?.address} • {client?.city}</p>
+                          {client?.seller && <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-blue-500'}`}>Vendedor: {client?.seller}</p>}
                         </div>
                       </div>
                       <div className="md:text-right">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Auditoría</p>
-                        <p className="text-xs sm:text-sm font-bold text-slate-600">Ingresado por: <span className="text-slate-900 font-black">{reception.receivedBy}</span></p>
-                        <p className="text-xs sm:text-sm font-bold text-slate-600">Fecha: <span className="text-slate-900 font-black">{new Date(reception.createdAt).toLocaleString()}</span></p>
+                        <p className={`text-[10px] font-black uppercase tracking-widest mb-3 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Auditoría</p>
+                        <p className={`text-xs sm:text-sm font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>Ingresado por: <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{reception.receivedBy}</span></p>
+                        <p className={`text-xs sm:text-sm font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>Fecha: <span className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{new Date(reception.createdAt).toLocaleString()}</span></p>
                       </div>
                     </div>
 
-                    <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div className={`rounded-2xl sm:rounded-3xl border overflow-hidden shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`}>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-left text-sm min-w-[500px]">
+                        <table className={`w-full text-left text-sm min-w-[500px] transition-colors duration-300`}>
                           <thead>
-                            <tr className="bg-slate-50 border-b border-slate-100">
-                              <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest">Referencia / Descripción</th>
-                              <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-center">Cantidad</th>
-                              <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">Precio Unit</th>
-                              <th className="px-4 py-3 sm:px-6 sm:py-4 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">Subtotal</th>
+                            <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                              <th className={`px-4 py-3 sm:px-6 sm:py-4 font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Referencia / Descripción</th>
+                              <th className={`px-4 py-3 sm:px-6 sm:py-4 font-black text-[9px] sm:text-[10px] uppercase tracking-widest text-center transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Cantidad</th>
+                              <th className={`px-4 py-3 sm:px-6 sm:py-4 font-black text-[9px] sm:text-[10px] uppercase tracking-widest text-right transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Precio Unit</th>
+                              <th className={`px-4 py-3 sm:px-6 sm:py-4 font-black text-[9px] sm:text-[10px] uppercase tracking-widest text-right transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Subtotal</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-slate-50">
+                          <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-50'}`}>
                             {Object.entries(itemsByRef).map(([ref, qty]: [string, any]) => {
                               const returnItem = reception.items?.find((item: ItemEntry) => item.reference === ref);
                               const masterRef = referencesMaster.find(rm => rm.id === ref);
@@ -473,22 +475,22 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                               return (
                                 <tr key={ref}>
                                   <td className="px-4 py-3 sm:px-6 sm:py-4">
-                                    <p className="font-black text-blue-600 text-xs sm:text-sm">{ref}</p>
-                                    <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase">{masterRef?.description || 'Sin descripción'}</p>
+                                    <p className={`font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>{ref}</p>
+                                    <p className={`text-[9px] sm:text-[10px] font-bold uppercase transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{masterRef?.description || 'Sin descripción'}</p>
                                   </td>
-                                  <td className="px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-slate-800 text-xs sm:text-sm">{qty}</td>
-                                  <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-slate-500 text-xs sm:text-sm">${price.toLocaleString()}</td>
-                                  <td className="px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-slate-800 text-xs sm:text-sm">${subtotal.toLocaleString()}</td>
+                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{qty}</td>
+                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>${price.toLocaleString()}</td>
+                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>${subtotal.toLocaleString()}</td>
                                 </tr>
                               );
                             })}
                           </tbody>
                           <tfoot>
-                            <tr className="bg-slate-50/80 border-t border-slate-100">
-                              <td className="px-4 py-4 sm:px-6 sm:py-6 font-black text-slate-400 text-[9px] sm:text-[10px] uppercase tracking-widest text-right">TOTALES DEVOLUCIÓN</td>
-                              <td className="px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-slate-900 text-lg sm:text-xl">{totalQty}</td>
+                            <tr className={`border-t transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]/50 border-violet-700' : 'bg-slate-50/80 border-slate-100'}`}>
+                              <td className={`px-4 py-4 sm:px-6 sm:py-6 font-black text-[9px] sm:text-[10px] uppercase tracking-widest text-right transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>TOTALES DEVOLUCIÓN</td>
+                              <td className={`px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-lg sm:text-xl transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-900'}`}>{totalQty}</td>
                               <td></td>
-                              <td className="px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-pink-600 text-xl sm:text-2xl">${reception.totalValue?.toLocaleString() || '0'}</td>
+                              <td className={`px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-xl sm:text-2xl transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>${reception.totalValue?.toLocaleString() || '0'}</td>
                             </tr>
                           </tfoot>
                         </table>

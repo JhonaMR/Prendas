@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import CuentasBancariasView from './CuentasBancariasView';
 import api from '../services/api';
+import { useDarkMode } from '../context/DarkModeContext';
 
 interface ProgramacionPagosViewProps {
   user: User;
@@ -33,6 +34,7 @@ function getPrimerDiaSemana(year: number, month: number): number {
 }
 
 const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onNavigate }) => {
+  const { isDark } = useDarkMode();
   const hoy = new Date();
   const [mes, setMes] = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
@@ -76,12 +78,12 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   while (celdas.length % 7 !== 0) celdas.push(null);
 
   return (
-    <div className="h-full w-full flex flex-col bg-transparent p-4 md:p-8 overflow-auto">
+    <div className={`h-full w-full flex flex-col p-4 md:p-8 overflow-auto pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-violet-900">Programación de Pagos</h1>
-          <p className="text-violet-400 text-sm mt-1">Selecciona un día para gestionar los pagos</p>
+          <h1 className={`text-3xl md:text-4xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-violet-900'}`}>Programación de Pagos</h1>
+          <p className={`text-sm mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-violet-400'}`}>Selecciona un día para gestionar los pagos</p>
         </div>
 
         {/* Selectores */}
@@ -89,7 +91,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
           <select
             value={mes}
             onChange={e => setMes(Number(e.target.value))}
-            className="appearance-none bg-white border-2 border-violet-200 text-violet-800 font-semibold rounded-xl px-4 py-2 focus:outline-none focus:border-violet-400 cursor-pointer shadow-sm"
+            className={`appearance-none font-semibold rounded-xl px-4 py-2 focus:outline-none cursor-pointer shadow-sm transition-all transition-colors duration-300 border-2 ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-100 focus:border-violet-500' : 'bg-white border-violet-200 text-violet-800 focus:border-violet-400'}`}
           >
             {MESES.map((m, i) => (
               <option key={i} value={i}>{m}</option>
@@ -99,7 +101,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
           <select
             value={anio}
             onChange={e => setAnio(Number(e.target.value))}
-            className="appearance-none bg-white border-2 border-violet-200 text-violet-800 font-semibold rounded-xl px-4 py-2 focus:outline-none focus:border-violet-400 cursor-pointer shadow-sm"
+            className={`appearance-none font-semibold rounded-xl px-4 py-2 focus:outline-none cursor-pointer shadow-sm transition-all transition-colors duration-300 border-2 ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-100 focus:border-violet-500' : 'bg-white border-violet-200 text-violet-800 focus:border-violet-400'}`}
           >
             {anios.map(a => (
               <option key={a} value={a}>{a}</option>
@@ -108,7 +110,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
 
           <button
             onClick={() => setVerCuentas(true)}
-            className="flex items-center gap-2 bg-white border-2 border-violet-200 hover:border-violet-400 text-violet-500 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors whitespace-nowrap"
+            className={`flex items-center gap-2 font-semibold px-4 py-2 rounded-xl shadow-sm transition-all whitespace-nowrap border-2 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-300 hover:border-violet-500 hover:bg-[#5a4a75]' : 'bg-white border-violet-200 text-violet-500 hover:border-violet-400 hover:bg-violet-50'}`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" />
@@ -119,11 +121,11 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
       </div>
 
       {/* Calendario */}
-      <div className="flex-1 bg-white rounded-3xl shadow-lg border border-violet-100 overflow-hidden flex flex-col min-h-[600px]">
+      <div className={`flex-1 rounded-3xl shadow-lg border overflow-hidden flex flex-col min-h-[600px] transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-violet-100'}`}>
         {/* Cabecera días de semana */}
-        <div className="grid grid-cols-7 bg-violet-500">
+        <div className={`grid grid-cols-7 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-violet-500'}`}>
           {DIAS_SEMANA.map(d => (
-            <div key={d} className="py-3 text-center text-white font-bold text-sm tracking-wide">
+            <div key={d} className={`py-3 text-center font-bold text-sm tracking-wide transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-white'}`}>
               {d}
             </div>
           ))}
@@ -139,7 +141,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
               return (
                 <div
                   key={`empty-${idx}`}
-                  className={`border-b border-r border-violet-50 ${esFinDeSemana ? 'bg-violet-50/60' : 'bg-violet-50/20'}`}
+                  className={`border-b border-r transition-colors duration-300 ${isDark ? 'border-violet-700 bg-violet-900/20' : 'border-violet-50'} ${esFinDeSemana ? (isDark ? 'bg-violet-900/30' : 'bg-violet-50/60') : (isDark ? 'bg-violet-900/10' : 'bg-violet-50/20')}`}
                 />
               );
             }
@@ -152,20 +154,21 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
                 key={dia}
                 onClick={() => handleDiaClick(dia)}
                 className={`
-                  relative border-b border-r border-violet-100 p-2 flex flex-col items-start justify-between
+                  relative border-b border-r p-2 flex flex-col items-start justify-between
                   transition-all duration-200 group min-h-[110px]
                   ${hoyFlag
-                    ? 'bg-violet-500 hover:bg-violet-500'
+                    ? isDark ? 'bg-violet-700 hover:bg-violet-700' : 'bg-violet-500 hover:bg-violet-500'
                     : esFinDeSemana
-                      ? 'bg-violet-50/70 hover:bg-violet-100/80'
-                      : 'bg-white hover:bg-violet-50'
+                      ? isDark ? 'bg-violet-900/20 hover:bg-violet-900/30' : 'bg-violet-50/70 hover:bg-violet-100/80'
+                      : isDark ? 'bg-[#4a3a63] hover:bg-violet-900/20' : 'bg-white hover:bg-violet-50'
                   }
+                  ${isDark ? 'border-violet-700' : 'border-violet-100'}
                 `}
               >
                 {/* Número del día */}
                 <span className={`
-                  text-sm md:text-base font-bold leading-none
-                  ${hoyFlag ? 'text-white' : 'text-violet-900 group-hover:text-violet-500'}
+                  text-sm md:text-base font-bold leading-none transition-colors duration-300
+                  ${hoyFlag ? 'text-white' : isDark ? 'text-violet-200 group-hover:text-violet-100' : 'text-violet-900 group-hover:text-violet-500'}
                 `}>
                   {dia}
                 </span>
@@ -173,10 +176,10 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
                 {/* Badge de pagos */}
                 {pagos > 0 && (
                   <span className={`
-                    self-end text-sm font-bold px-3 py-1 rounded-full
+                    self-end text-sm font-bold px-3 py-1 rounded-full transition-colors duration-300
                     ${hoyFlag
                       ? 'bg-white/20 text-white'
-                      : 'bg-pink-100 text-pink-600'
+                      : isDark ? 'bg-pink-900/30 text-pink-400' : 'bg-pink-100 text-pink-600'
                     }
                   `}>
                     {pagos} {pagos === 1 ? 'pago' : 'pagos'}
@@ -185,7 +188,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
 
                 {/* Indicador hover */}
                 {!hoyFlag && (
-                  <div className="absolute inset-0 border-2 border-violet-400 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <div className={`absolute inset-0 border-2 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none transition-colors duration-300 ${isDark ? 'border-violet-500' : 'border-violet-400'}`} />
                 )}
               </button>
             );
@@ -194,13 +197,13 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
       </div>
 
       {/* Leyenda */}
-      <div className="mt-4 flex items-center gap-6 text-xs text-violet-400">
+      <div className={`mt-4 flex items-center gap-6 text-xs transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-violet-400'}`}>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-violet-500" />
+          <div className={`w-4 h-4 rounded transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-violet-500'}`} />
           <span>Hoy</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="bg-pink-100 text-pink-600 font-bold px-2 py-0.5 rounded-full">N pagos</span>
+          <span className={`font-bold px-2 py-0.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-pink-900/30 text-pink-400' : 'bg-pink-100 text-pink-600'}`}>N pagos</span>
           <span>Pagos programados</span>
         </div>
       </div>

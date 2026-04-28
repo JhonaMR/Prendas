@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useChat } from '../../hooks/useChat';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export const ChatContactsModal: React.FC = () => {
+  const { isDark } = useDarkMode();
   const {
     isContactsModalOpen,
     closeContactsModal,
@@ -35,17 +37,19 @@ export const ChatContactsModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50">
       <div
-        className="
+        className={`
           fixed bottom-6 right-6 z-50
-          bg-white/95 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100
+          rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border
           w-[20rem] h-[30rem]
           flex flex-col
           overflow-hidden
           animate-scale-in
-        "
+          transition-colors
+          bg-white/95 backdrop-blur-md border-gray-100
+        `}
       >
         {/* Header */}
-        <div className="flex justify-between items-center p-4 border-b border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600 shadow-sm relative z-10">
+        <div className={`flex justify-between items-center p-4 border-b shadow-sm relative z-10 transition-colors ${isDark ? 'border-violet-200 bg-gradient-to-r from-purple-700 to-purple-600' : 'border-gray-100 bg-gradient-to-r from-blue-600 to-indigo-600'}`}>
           <h2 className="text-lg font-bold text-white tracking-wide">Contactos</h2>
           <button
             onClick={closeContactsModal}
