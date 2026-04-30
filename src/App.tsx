@@ -1031,6 +1031,7 @@ const App: React.FC = () => {
             referencesMaster={state.references}
             onAddReception={addReception}
             onDeleteReception={deleteReception}
+            onAddConfeccionista={addConfeccionista}
             directToBatch={navigationOptions.directToBatch}
             onNavigate={handleTabChange}
           />
@@ -1077,7 +1078,7 @@ const App: React.FC = () => {
             />
           );
       case 'settle':
-        return <OrderSettleView state={state} user={user} updateState={updateState} />;
+        return <OrderSettleView state={state} user={user} updateState={updateState} onAddClient={addClient} />;
       case 'salesReport':
         return <SalesReportView state={state} user={user} />;
       case 'orderHistory':

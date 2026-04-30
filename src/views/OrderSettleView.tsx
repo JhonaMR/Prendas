@@ -6,11 +6,13 @@ import api from '../services/api';
 import * as XLSX from 'xlsx';
 import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 import { useDarkMode } from '../context/DarkModeContext';
+import NuevoClienteModal from '../components/NuevoClienteModal';
 
 interface OrderSettleViewProps {
   user: User;
   state: AppState;
   updateState: (fn: (prev: AppState) => AppState) => void;
+  onAddClient?: (client: any) => Promise<{ success: boolean }>;
 }
 
 interface InvalidReference {
@@ -18,12 +20,13 @@ interface InvalidReference {
   reason: string;
 }
 
-const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateState }) => {
+const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateState, onAddClient }) => {
   const { isDark } = useDarkMode();
   
   const [selectedClientId, setSelectedClientId] = useState('');
   const [clientSearch, setClientSearch] = useState('');
   const [showClientResults, setShowClientResults] = useState(false);
+  const [showNuevoClienteModal, setShowNuevoClienteModal] = useState(false);
   
   const [selectedSellerId, setSelectedSellerId] = useState('');
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
@@ -212,9 +215,19 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
 
   return (
     <div className={`space-y-8 pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
-      <div>
-        <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Asentar Ventas</h2>
-        <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Carga rápida de pedidos por cliente</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Asentar Ventas</h2>
+          <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Carga rápida de pedidos por cliente</p>
+        </div>
+        {onAddClient && (
+          <button
+            onClick={() => setShowNuevoClienteModal(true)}
+            className={`px-6 py-3 rounded-2xl font-bold border text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700/40 text-violet-200 border-violet-600 hover:bg-violet-700/60' : 'bg-violet-50 text-violet-600 border-violet-200 hover:bg-violet-100'}`}
+          >
+            Nuevo cliente
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -457,6 +470,23 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           </div>
         </div>
       </div>
+
+      {showNuevoClienteModal && onAddClient && (
+        <NuevoClienteModal
+          sellers={state.sellers}
+          onClose={() => setShowNuevoClienteModal(false)}
+          onSave={async (client) => {
+            const result = await onAddClient(client);
+            if (result.success) {
+              // Auto-seleccionar el cliente recién creado
+              setSelectedClientId(client.id);
+              setClientSearch(`${client.id} - ${client.name}`);
+              setShowNuevoClienteModal(false);
+            }
+            return result;
+          }}
+        />
+      )}
     </div>
   );
 };

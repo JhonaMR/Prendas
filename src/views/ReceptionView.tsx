@@ -7,6 +7,7 @@ import ReturnReceptionView from './ReturnReceptionView';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { useDarkMode } from '../context/DarkModeContext';
+import NuevaConfeccionistaModal from '../components/NuevaConfeccionistaModal';
 
 interface ReceptionViewProps {
   user: User;
@@ -17,6 +18,7 @@ interface ReceptionViewProps {
   clientsMaster?: any[];  
   onAddReception?: (reception: any) => Promise<any>;
   onDeleteReception?: (id: string) => Promise<any>;
+  onAddConfeccionista?: (conf: any) => Promise<{ success: boolean }>;
   ReturnReceptionComponent?: React.ComponentType<any>;
   state?: AppState;
   directToBatch?: boolean;
@@ -32,6 +34,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
   clientsMaster = [],
   onAddReception,
   onDeleteReception,
+  onAddConfeccionista,
   ReturnReceptionComponent,
   state,
   directToBatch = false,
@@ -39,6 +42,7 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
 }) => {
   const { isDark } = useDarkMode();
   const [isCounting, setIsCounting] = useState(false);
+  const [showNuevaConfModal, setShowNuevaConfModal] = useState(false);
   const [receptionType, setReceptionType] = useState<'selector' | 'batch' | 'return' | 'listing'>('listing');
   const [editingLot, setEditingLot] = useState<BatchReception | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -350,9 +354,18 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
             <h2 className={`text-2xl sm:text-3xl font-black tracking-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{editingLot ? 'Editar Lote' : 'Conteo de Lote'}</h2>
             <p className={`font-bold text-xs sm:text-base transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Registro de ingreso de producción</p>
           </div>
-          <button onClick={() => { setReceptionType('listing'); setIsCounting(false); setEditingLot(null); }} className={`px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-bold hover:transition-all border text-sm transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-200 border-violet-700 hover:text-red-400' : 'bg-white text-slate-400 border-slate-100 hover:text-red-500'}`}>
-            Atrás
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => { setReceptionType('listing'); setIsCounting(false); setEditingLot(null); }} className={`px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-bold hover:transition-all border text-sm transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-200 border-violet-700 hover:text-red-400' : 'bg-white text-slate-400 border-slate-100 hover:text-red-500'}`}>
+              Atrás
+            </button>
+            {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+              <button
+                onClick={() => setShowNuevaConfModal(true)}
+                className={`px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-bold border text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700/40 text-violet-200 border-violet-600 hover:bg-violet-700/60' : 'bg-violet-50 text-violet-600 border-violet-200 hover:bg-violet-100'}`}>
+                Nueva conf.
+              </button>
+            )}
+          </div>
         </div>
 
         <div className={`p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm space-y-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white border border-slate-100'}`}>
@@ -617,6 +630,13 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
         <button onClick={handleSave} className={`w-full py-5 sm:py-6 text-white font-black text-xl sm:text-2xl rounded-[28px] sm:rounded-[32px] shadow-2xl hover:scale-[1.01] transition-all ${isDark ? 'bg-gradient-to-r from-violet-600 to-purple-600 shadow-purple-900/50' : 'bg-gradient-to-r from-blue-600 to-pink-600 shadow-blue-200'}`}>
           GUARDAR RECEPCIÓN
         </button>
+
+      {showNuevaConfModal && onAddConfeccionista && (
+        <NuevaConfeccionistaModal
+          onClose={() => setShowNuevaConfModal(false)}
+          onSave={onAddConfeccionista}
+        />
+      )}
       </div>
     );
   }

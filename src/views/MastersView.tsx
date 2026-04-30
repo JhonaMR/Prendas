@@ -1,4 +1,4 @@
-
+﻿
 import React, { useState, useRef, useMemo } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
@@ -9,9 +9,37 @@ import usePagination from '../hooks/usePagination';
 import { api } from '../services/api';
 import { useDarkMode } from '../context/DarkModeContext';
 
-// Helper Components - These will be defined inside the main component to access isDark
+// Helper Components - defined outside MastersView to avoid re-mounting on every render
 const TabBtn = ({ active, onClick, label }: any) => (
   <button onClick={onClick} className={`px-8 py-3 rounded-2xl text-xs font-black transition-all ${active ? 'bg-violet-600 text-white shadow-xl' : 'text-violet-300 hover:bg-[#5a4a75]'}`}>{label}</button>
+);
+
+const FormWrapper = ({ children, title, isDark }: any) => (
+  <div className={`p-8 rounded-[32px] shadow-sm space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+    <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{title}</h3>
+    {children}
+  </div>
+);
+
+const TableWrapper = ({ children, title, isDark }: any) => (
+  <div className={`rounded-[32px] shadow-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
+    <div className={`p-6 font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50 border-violet-700' : 'bg-slate-50 text-slate-700 border-slate-100'} border-b`}>{title}</div>
+    {children}
+  </div>
+);
+
+const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength, isDark }: any) => (
+  <div className={`space-y-1.5 ${className}`}>
+    <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>{label}</label>
+    <input
+      type={type}
+      value={value || ''}
+      onChange={e => onChange(e.target.value)}
+      disabled={disabled}
+      maxLength={maxLength}
+      className={`w-full px-6 py-3.5 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-4 focus:ring-violet-600' : 'bg-slate-50 border-none text-slate-900 focus:ring-4 focus:ring-blue-100'} disabled:opacity-50`}
+    />
+  </div>
 );
 
 // Función para ordenar IDs correctamente (numérico si es posible, sino alfabético)
@@ -78,35 +106,6 @@ const MastersView: React.FC<MastersViewProps> = ({
   onDeleteCorreria
 }) => {
   const { isDark } = useDarkMode();
-  
-  // Helper Components - defined inside to access isDark
-  const FormWrapper = ({ children, title }: any) => (
-    <div className={`p-8 rounded-[32px] shadow-sm space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
-      <h3 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{title}</h3>
-      {children}
-    </div>
-  );
-
-  const TableWrapper = ({ children, title }: any) => (
-    <div className={`rounded-[32px] shadow-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
-      <div className={`p-6 font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-50 border-violet-700' : 'bg-slate-50 text-slate-700 border-slate-100'} border-b`}>{title}</div>
-      {children}
-    </div>
-  );
-
-  const Input = ({ label, value, onChange, type = "text", className = "", disabled = false, maxLength }: any) => (
-    <div className={`space-y-1.5 ${className}`}>
-      <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>{label}</label>
-      <input 
-        type={type} 
-        value={value || ''} 
-        onChange={e => onChange(e.target.value)} 
-        disabled={disabled} 
-        maxLength={maxLength}
-        className={`w-full px-6 py-3.5 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-4 focus:ring-violet-600' : 'bg-slate-50 border-none text-slate-900 focus:ring-4 focus:ring-blue-100'} disabled:opacity-50`}
-      />
-    </div>
-  );
   
   const [activeSubTab, setActiveSubTab] = useState<'clients' | 'users' | 'references' | 'sellers' | 'correrias' | 'confeccionistas'>('clients');
   const clientFileRef = useRef<HTMLInputElement>(null);
@@ -794,13 +793,13 @@ const MastersView: React.FC<MastersViewProps> = ({
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <FormWrapper title={editingId ? 'Editar Cliente' : 'Nuevo Cliente'}>
+              <FormWrapper isDark={isDark} title={editingId ? 'Editar Cliente' : 'Nuevo Cliente'}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input label="ID Cliente" value={id} onChange={setId} disabled={!!editingId} />
-                  <Input label="NIT" value={nit} onChange={setNit} />
-                  <Input label="Nombre del Cliente" value={name} onChange={setName} />
-                  <Input label="Dirección" value={address} onChange={setAddress} />
-                  <Input label="Ciudad" value={city} onChange={setCity} />
+                  <Input isDark={isDark} label="ID Cliente" value={id} onChange={setId} disabled={!!editingId} />
+                  <Input isDark={isDark} label="NIT" value={nit} onChange={setNit} />
+                  <Input isDark={isDark} label="Nombre del Cliente" value={name} onChange={setName} />
+                  <Input isDark={isDark} label="Dirección" value={address} onChange={setAddress} />
+                  <Input isDark={isDark} label="Ciudad" value={city} onChange={setCity} />
                   
                   {/* DROPDOWN DE VENDEDORES */}
                   <div className="md:col-span-2 space-y-1.5 relative" data-seller-dropdown>
@@ -891,7 +890,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title={
+          <TableWrapper isDark={isDark} title={
             <div className="flex items-center justify-between">
               <span>Listado de Clientes</span>
               <div className="relative">
@@ -951,13 +950,13 @@ const MastersView: React.FC<MastersViewProps> = ({
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <FormWrapper title={editingId ? 'Editar Confeccionista' : 'Nuevo Confeccionista'}>
+              <FormWrapper isDark={isDark} title={editingId ? 'Editar Confeccionista' : 'Nuevo Confeccionista'}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input label="Cédula" value={id} onChange={setId} disabled={!!editingId} />
-                  <Input label="Nombre / Razón Social" value={name} onChange={setName} />
-                  <Input label="Dirección" value={address} onChange={setAddress} />
-                  <Input label="Ciudad" value={city} onChange={setCity} />
-                  <Input label="Celular" value={phone} onChange={setPhone} />
+                  <Input isDark={isDark} label="Cédula" value={id} onChange={setId} disabled={!!editingId} />
+                  <Input isDark={isDark} label="Nombre / Razón Social" value={name} onChange={setName} />
+                  <Input isDark={isDark} label="Dirección" value={address} onChange={setAddress} />
+                  <Input isDark={isDark} label="Ciudad" value={city} onChange={setCity} />
+                  <Input isDark={isDark} label="Celular" value={phone} onChange={setPhone} />
                   <div className="flex gap-3">
                     <div className="space-y-1.5 flex-1">
                       <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Puntaje</label>
@@ -1019,7 +1018,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title={
+          <TableWrapper isDark={isDark} title={
             <div className="flex items-center justify-between">
               <span>Listado de Confeccionistas</span>
               <div className="relative">
@@ -1081,16 +1080,16 @@ const MastersView: React.FC<MastersViewProps> = ({
         <div className="space-y-8 animate-in fade-in duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <FormWrapper title={editingId ? 'Editar Referencia' : 'Nueva Referencia'}>
+              <FormWrapper isDark={isDark} title={editingId ? 'Editar Referencia' : 'Nueva Referencia'}>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <Input label="Referencia" value={id} onChange={setId} disabled={!!editingId} />
-                  <Input label="Descripción" value={desc} onChange={setDesc} className="md:col-span-3" />
-                  <Input label="Precio Venta" type="number" value={price} onChange={(v: string) => setPrice(Number(v))} />
-                  <Input label="Diseñadora" value={designer} onChange={setDesigner} />
-                  <Input label="Tela 1" value={cloth1} onChange={setCloth1} />
-                  <Input label="Prom. Tela 1" type="number" value={avgCloth1} onChange={(v: string) => setAvgCloth1(Number(v))} />
-                  <Input label="Tela 2" value={cloth2} onChange={setCloth2} />
-                  <Input label="Prom. Tela 2" type="number" value={avgCloth2} onChange={(v: string) => setAvgCloth2(Number(v))} />
+                  <Input isDark={isDark} label="Referencia" value={id} onChange={setId} disabled={!!editingId} />
+                  <Input isDark={isDark} label="Descripción" value={desc} onChange={setDesc} className="md:col-span-3" />
+                  <Input isDark={isDark} label="Precio Venta" type="number" value={price} onChange={(v: string) => setPrice(Number(v))} />
+                  <Input isDark={isDark} label="Diseñadora" value={designer} onChange={setDesigner} />
+                  <Input isDark={isDark} label="Tela 1" value={cloth1} onChange={setCloth1} />
+                  <Input isDark={isDark} label="Prom. Tela 1" type="number" value={avgCloth1} onChange={(v: string) => setAvgCloth1(Number(v))} />
+                  <Input isDark={isDark} label="Tela 2" value={cloth2} onChange={setCloth2} />
+                  <Input isDark={isDark} label="Prom. Tela 2" type="number" value={avgCloth2} onChange={(v: string) => setAvgCloth2(Number(v))} />
                   
                   {/* SELECTOR DE CORRERÍAS CON AUTOCOMPLETADO */}
                   <div className="md:col-span-4 space-y-3">
@@ -1213,7 +1212,7 @@ const MastersView: React.FC<MastersViewProps> = ({
               </div>
             </div>
           </div>
-          <TableWrapper title={
+          <TableWrapper isDark={isDark} title={
             <div className="flex items-center justify-between">
               <span>Listado de Referencias</span>
               <div className="relative">
@@ -1295,9 +1294,9 @@ const MastersView: React.FC<MastersViewProps> = ({
       {activeSubTab === 'sellers' && (
         <div className="space-y-6 animate-in fade-in duration-300">
            {isAdmin ? (
-             <FormWrapper title={editingId ? 'Editar Vendedor' : 'Nuevo Vendedor'}>
+             <FormWrapper isDark={isDark} title={editingId ? 'Editar Vendedor' : 'Nuevo Vendedor'}>
                 <div className="max-w-md space-y-4">
-                   <Input label="Nombre del Vendedor" value={name} onChange={setName} />
+                   <Input isDark={isDark} label="Nombre del Vendedor" value={name} onChange={setName} />
                    <div className="flex gap-4">
                       <button onClick={handleSaveSeller}
                     disabled={isLoading}
@@ -1335,10 +1334,10 @@ const MastersView: React.FC<MastersViewProps> = ({
       {activeSubTab === 'correrias' && (
         <div className="space-y-6 animate-in fade-in duration-300">
            {isAdmin ? (
-             <FormWrapper title={editingId ? 'Editar Correría' : 'Nueva Correría'}>
+             <FormWrapper isDark={isDark} title={editingId ? 'Editar Correría' : 'Nueva Correría'}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl">
-                   <Input label="Nombre de Campaña" value={name} onChange={setName} />
-                   <Input label="Año" value={year} onChange={setYear} type="number" />
+                   <Input isDark={isDark} label="Nombre de Campaña" value={name} onChange={setName} />
+                   <Input isDark={isDark} label="Año" value={year} onChange={setYear} type="number" />
                 </div>
                 <div className="flex gap-4 mt-6">
                    <button onClick={handleSaveCorreria}
@@ -1379,11 +1378,11 @@ const MastersView: React.FC<MastersViewProps> = ({
       {activeSubTab === 'users' && (
         <div className="space-y-8 animate-in fade-in duration-300">
           {isAdmin ? (
-            <FormWrapper title={editingId ? 'Editar Usuario' : 'Nuevo Usuario'}>
+            <FormWrapper isDark={isDark} title={editingId ? 'Editar Usuario' : 'Nuevo Usuario'}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Input label="Nombre del Usuario" value={name} onChange={setName} />
-                <Input label="Código (3 Letras)" value={id} onChange={setId} maxLength={3} disabled={!!editingId} />
-                <Input label="PIN (4 Números)" value={pin} onChange={setPin} maxLength={4} type="password" />
+                <Input isDark={isDark} label="Nombre del Usuario" value={name} onChange={setName} />
+                <Input isDark={isDark} label="Código (3 Letras)" value={id} onChange={setId} maxLength={3} disabled={!!editingId} />
+                <Input isDark={isDark} label="PIN (4 Números)" value={pin} onChange={setPin} maxLength={4} type="password" />
                 <div className="space-y-1.5">
                   <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Rol del Usuario</label>
                   <select 

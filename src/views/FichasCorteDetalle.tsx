@@ -104,7 +104,11 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     }, [materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones]);
 
     const costoProyectado = Math.ceil(fichaData?.costoTotal || 0);
+    const precioVenta = fichaData?.precioVenta || 0;
     const diferencia = Math.ceil(costoProyectado - totales.costoReal);
+    // Rentabilidad sobre precio de venta: (PV - Costo Real) / PV * 100
+    const rentabilidadPV = precioVenta > 0 ? ((precioVenta - totales.costoReal) / precioVenta) * 100 : 0;
+    // Rentabilidad del corte (fórmula anterior): diferencia / costo real * 100
     const margenUtilidad = totales.costoReal !== 0 ? (diferencia / totales.costoReal) * 100 : 0;
 
     const handleGuardar = async () => {
@@ -194,10 +198,16 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         </div>
                         <div className={`pt-4 border-t-2 transition-colors ${isDark ? 'border-blue-700/50' : 'border-blue-300'}`}>
                             <p className={`text-[10px] font-black uppercase tracking-widest mb-2 transition-colors ${isDark ? 'text-blue-400' : 'text-blue-600'}`}>M.R Utilidad</p>
-                            <div className="flex items-end gap-3">
-                                <p className={`text-6xl font-black transition-colors ${margenUtilidad >= 0 ? (isDark ? 'text-green-400' : 'text-green-600') : (isDark ? 'text-red-400' : 'text-red-600')}`}>{margenUtilidad.toFixed(2)}%</p>
-                                <div className={`mb-3 px-4 py-2 rounded-xl transition-colors ${margenUtilidad >= 0 ? (isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700') : (isDark ? 'bg-red-900/40 text-red-400' : 'bg-red-100 text-red-700')}`}>
-                                    <p className="text-xs font-black uppercase">{margenUtilidad >= 0 ? '✓ Utilidad' : '✗ Pérdida'}</p>
+                            <div className="flex items-end justify-between gap-3">
+                                <div className="flex items-end gap-3">
+                                    <p className={`text-6xl font-black transition-colors ${rentabilidadPV >= 0 ? (isDark ? 'text-green-400' : 'text-green-600') : (isDark ? 'text-red-400' : 'text-red-600')}`}>{rentabilidadPV.toFixed(2)}%</p>
+                                    <div className={`mb-3 px-4 py-2 rounded-xl transition-colors ${rentabilidadPV >= 0 ? (isDark ? 'bg-green-900/40 text-green-400' : 'bg-green-100 text-green-700') : (isDark ? 'bg-red-900/40 text-red-400' : 'bg-red-100 text-red-700')}`}>
+                                        <p className="text-xs font-black uppercase">{rentabilidadPV >= 0 ? '✓ Utilidad' : '✗ Pérdida'}</p>
+                                    </div>
+                                </div>
+                                <div className={`mb-2 px-4 py-3 rounded-xl text-right transition-colors ${isDark ? 'bg-blue-900/30' : 'bg-blue-100/60'}`}>
+                                    <p className={`text-[9px] font-black uppercase tracking-widest mb-1 transition-colors ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>Rent. del Corte</p>
+                                    <p className={`text-xl font-black transition-colors ${margenUtilidad >= 0 ? (isDark ? 'text-green-400' : 'text-green-600') : (isDark ? 'text-red-400' : 'text-red-600')}`}>{margenUtilidad.toFixed(2)}%</p>
                                 </div>
                             </div>
                         </div>
