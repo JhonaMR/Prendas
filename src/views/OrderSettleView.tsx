@@ -53,6 +53,21 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
     setShowClientResults(false);
   };
 
+  const handleCorreriaChange = (correriaId: string) => {
+    setSelectedCorreriaId(correriaId);
+    
+    // Calcular el siguiente número de pedido para esta correría
+    if (correriaId) {
+      const ordersInCorreria = state.orders.filter(o => o.correriaId === correriaId);
+      const maxOrderNumber = ordersInCorreria.reduce((max, order) => {
+        const orderNum = order.orderNumber || 0;
+        return Math.max(max, orderNum);
+      }, 0);
+      
+      setOrderNumber(maxOrderNumber + 1);
+    }
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -279,7 +294,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                 <CorreriaAutocomplete
                   value={selectedCorreriaId}
                   correrias={state.correrias}
-                  onChange={setSelectedCorreriaId}
+                  onChange={handleCorreriaChange}
                   search={correriaSearch}
                   setSearch={setCorreriaSearch}
                   showDropdown={showCorreriaDropdown}
@@ -474,6 +489,7 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
       {showNuevoClienteModal && onAddClient && (
         <NuevoClienteModal
           sellers={state.sellers}
+          nextId={String(Math.max(0, ...state.clients.map(c => parseInt(c.id) || 0)) + 1)}
           onClose={() => setShowNuevoClienteModal(false)}
           onSave={async (client) => {
             const result = await onAddClient(client);

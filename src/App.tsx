@@ -75,7 +75,8 @@ const App: React.FC = () => {
     disenadoras: [],
     fichasDiseno: [],
     fichasCosto: [],
-    maletas: []
+    maletas: [],
+    salidasBodega: []
   });
 
   const [user, setUser] = useState<User | null>(null);
@@ -143,7 +144,8 @@ const App: React.FC = () => {
           disenadoresData,
           fichasDisenoData,
           fichasCostoData,
-          maletasData
+          maletasData,
+          salidasBodegaData
         ] = await Promise.all([
           api.listUsers(),
           api.getReferences(),
@@ -205,7 +207,8 @@ const App: React.FC = () => {
               console.warn('⚠️ Error cargando maletas:', e);
               return [];
             }
-          })()
+          })(),
+          api.getSalidasBodega()
         ]);
 
         setState({
@@ -224,7 +227,8 @@ const App: React.FC = () => {
           disenadoras: disenadoresData,
           fichasDiseno: fichasDisenoData,
           fichasCosto: fichasCostoData,
-          maletas: maletasData
+          maletas: maletasData,
+          salidasBodega: salidasBodegaData
         });
 
         console.log('✅ Datos cargados del backend exitosamente');
@@ -1067,7 +1071,7 @@ const App: React.FC = () => {
       case 'salidasBodega':
         return <SalidasBodegaView user={user} />;
       case 'inventory':
-        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} orders={state.orders} correrias={state.correrias} user={user} />;
+        return <InventoryView receptions={state.receptions} dispatches={state.dispatches} references={state.references} orders={state.orders} correrias={state.correrias} returnReceptions={state.returnReceptions} salidasBodega={state.salidasBodega} user={user} />;
         case 'orders':
           return (
             <OrdersView 

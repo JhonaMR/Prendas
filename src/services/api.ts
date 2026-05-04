@@ -1999,6 +1999,19 @@ class ApiService {
     }
   }
 
+  async getTotalesPagosPorMes(anio: number, mes: number): Promise<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>(response);
+      return data.data || {};
+    } catch (error) {
+      console.error('Error obteniendo totales de pagos:', error);
+      return {};
+    }
+  }
+
   async createPago(pago: any): Promise<ApiResponse<any>> {
     try {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados`, {

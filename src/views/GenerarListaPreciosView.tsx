@@ -89,6 +89,20 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
         if (!splitFacturacion) { setPorcentajeOficial(100); setPorcentajeRemision(0); }
     };
 
+    // ── Auto-número de pedido al seleccionar correría ──
+    const handleCorreriaChange = (id: string) => {
+        setSelectedCorreriaId(id);
+        if (id) {
+            const ordersInCorreria = state.orders.filter(o => o.correriaId === id && o.orderNumber != null);
+            const maxNumber = ordersInCorreria.length > 0
+                ? Math.max(...ordersInCorreria.map(o => o.orderNumber as number))
+                : 0;
+            setOrderNumber(maxNumber + 1);
+        } else {
+            setOrderNumber('');
+        }
+    };
+
     // ── Manejo de filas ──
     const updateItem = (idx: number, field: keyof ItemRow, value: string) => {
         setItems(prev => {
@@ -397,7 +411,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                             <CorreriaAutocomplete
                                 value={selectedCorreriaId}
                                 correrias={state.correrias}
-                                onChange={setSelectedCorreriaId}
+                                onChange={handleCorreriaChange}
                                 search={correriaSearch}
                                 setSearch={setCorreriaSearch}
                                 showDropdown={showCorreriaDropdown}

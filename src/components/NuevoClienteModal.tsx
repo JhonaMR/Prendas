@@ -3,14 +3,15 @@ import { useDarkMode } from '../context/DarkModeContext';
 
 interface NuevoClienteModalProps {
   sellers: { id: string; name: string }[];
+  nextId?: string;
   onClose: () => void;
   onSave: (client: any) => Promise<{ success: boolean }>;
 }
 
-const NuevoClienteModal: React.FC<NuevoClienteModalProps> = ({ sellers, onClose, onSave }) => {
+const NuevoClienteModal: React.FC<NuevoClienteModalProps> = ({ sellers, nextId, onClose, onSave }) => {
   const { isDark } = useDarkMode();
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState(nextId ?? '');
   const [name, setName] = useState('');
   const [nit, setNit] = useState('');
   const [address, setAddress] = useState('');

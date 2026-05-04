@@ -39,10 +39,10 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   const [mes, setMes] = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
   const [verCuentas, setVerCuentas] = useState(false);
-  const [conteoPagos, setConteoPagos] = useState<Record<string, number>>({});
+  const [totalesPagos, setTotalesPagos] = useState<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>({});
 
   useEffect(() => {
-    api.getConteoPagosPorMes(anio, mes).then(data => setConteoPagos(data));
+    api.getTotalesPagosPorMes(anio, mes).then(data => setTotalesPagos(data));
   }, [anio, mes]);
 
   if (verCuentas) {
@@ -63,9 +63,9 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   const esHoy = (dia: number) =>
     dia === hoy.getDate() && mes === hoy.getMonth() && anio === hoy.getFullYear();
 
-  const getPagosDelDia = (dia: number): number => {
+  const getPagosDelDia = (dia: number): { totalOF: number; totalML: number; countOF: number; countML: number } => {
     const key = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-    return conteoPagos[key] ?? 0;
+    return totalesPagos[key] ?? { totalOF: 0, totalML: 0, countOF: 0, countML: 0 };
   };
 
   // Celdas vacías antes del primer día
@@ -174,17 +174,52 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
                 </span>
 
                 {/* Badge de pagos */}
-                {pagos > 0 && (
-                  <span className={`
-                    self-end text-sm font-bold px-3 py-1 rounded-full transition-colors duration-300
-                    ${hoyFlag
-                      ? 'bg-white/20 text-white'
-                      : isDark ? 'bg-pink-900/30 text-pink-400' : 'bg-pink-100 text-pink-600'
-                    }
-                  `}>
-                    {pagos} {pagos === 1 ? 'pago' : 'pagos'}
-                  </span>
-                )}
+                <div className="self-end flex flex-col gap-1">
+                  {pagos.totalOF > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className={`
+                        w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
+                        ${hoyFlag
+                          ? 'bg-white/20 text-white'
+                          : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
+                        }
+                      `}>
+                        {pagos.countOF}
+                      </div>
+                      <div className={`
+                        text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
+                        ${hoyFlag
+                          ? 'bg-white/20 text-white'
+                          : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
+                        }
+                      `}>
+                        $ {pagos.totalOF.toLocaleString('es-CR')} - OF
+                      </div>
+                    </div>
+                  )}
+                  {pagos.totalML > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className={`
+                        w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
+                        ${hoyFlag
+                          ? 'bg-white/20 text-white'
+                          : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
+                        }
+                      `}>
+                        {pagos.countML}
+                      </div>
+                      <div className={`
+                        text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
+                        ${hoyFlag
+                          ? 'bg-white/20 text-white'
+                          : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
+                        }
+                      `}>
+                        $ {pagos.totalML.toLocaleString('es-CR')} - ML
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Indicador hover */}
                 {!hoyFlag && (
@@ -203,8 +238,10 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
           <span>Hoy</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`font-bold px-2 py-0.5 rounded-full transition-colors duration-300 ${isDark ? 'bg-pink-900/30 text-pink-400' : 'bg-pink-100 text-pink-600'}`}>N pagos</span>
-          <span>Pagos programados</span>
+          <span className={`font-bold px-2 py-0.5 rounded-lg transition-colors duration-300 ${isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'}`}>$ OF</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`font-bold px-2 py-0.5 rounded-lg transition-colors duration-300 ${isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>$ ML</span>
         </div>
       </div>
     </div>

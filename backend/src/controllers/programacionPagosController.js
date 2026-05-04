@@ -144,6 +144,74 @@ const getConteoPorMes = async (req, res) => {
 };
 
 /**
+ * GET /pagos-programados/totales?anio=YYYY&mes=MM
+ * Devuelve { "YYYY-MM-DD": { totalOF, totalML, countOF, countML } }
+ * Calcula los totales netos (bruto - descuentos) por día
+ */
+const getTotalesPorMes = async (req, res) => {
+  try {
+    const { anio, mes } = req.query;
+    if (!anio || !mes) return res.status(400).json({ success: false, message: 'anio y mes son requeridos' });
+
+    const pool = getPool();
+    
+    // Obtener todos los pagos del mes con sus descuentos
+    const { rows: pagos } = await pool.query(
+      `SELECT id, fecha::text, bruto_of, bruto_ml
+       FROM pagos_programados
+       WHERE EXTRACT(YEAR FROM fecha) = $1 AND EXTRACT(MONTH FROM fecha) = $2
+       ORDER BY fecha`,
+      [parseInt(anio), parseInt(mes)]
+    );
+
+    if (!pagos.length) {
+      return res.json({ success: true, data: {} });
+    }
+
+    const pagoIds = pagos.map(p => p.id);
+    const { rows: descuentos } = await pool.query(
+      `SELECT pago_id, tipo, monto FROM descuentos_pago WHERE pago_id = ANY($1)`,
+      [pagoIds]
+    );
+
+    // Agrupar descuentos por pago
+    const descuentosPorPago = {};
+    descuentos.forEach(d => {
+      if (!descuentosPorPago[d.pago_id]) {
+        descuentosPorPago[d.pago_id] = { OF: 0, ML: 0 };
+      }
+      descuentosPorPago[d.pago_id][d.tipo] += parseFloat(d.monto) || 0;
+    });
+
+    // Agrupar por fecha y calcular totales
+    const totalesPorFecha = {};
+    pagos.forEach(p => {
+      const fecha = p.fecha;
+      if (!totalesPorFecha[fecha]) {
+        totalesPorFecha[fecha] = { totalOF: 0, totalML: 0, countOF: 0, countML: 0 };
+      }
+
+      const descuentosDelPago = descuentosPorPago[p.id] || { OF: 0, ML: 0 };
+      
+      if (p.bruto_of > 0) {
+        totalesPorFecha[fecha].totalOF += p.bruto_of - descuentosDelPago.OF;
+        totalesPorFecha[fecha].countOF += 1;
+      }
+      
+      if (p.bruto_ml > 0) {
+        totalesPorFecha[fecha].totalML += p.bruto_ml - descuentosDelPago.ML;
+        totalesPorFecha[fecha].countML += 1;
+      }
+    });
+
+    res.json({ success: true, data: totalesPorFecha });
+  } catch (err) {
+    console.error('getTotalesPorMes error:', err);
+    res.status(500).json({ success: false, message: 'Error al obtener totales' });
+  }
+};
+
+/**
  * POST /pagos-programados
  * Crea un pago con sus descuentos en una transacción
  */
@@ -340,6 +408,6 @@ const bulkImportCuentas = async (req, res) => {
 
 module.exports = {
   getCuentas, createCuenta, updateCuenta, deleteCuenta,
-  getPagosPorFecha, getConteoPorMes, createPago, updatePago, deletePago, reordenarPagos,
+  getPagosPorFecha, getConteoPorMes, getTotalesPorMes, createPago, updatePago, deletePago, reordenarPagos,
   bulkImportCuentas,
 };

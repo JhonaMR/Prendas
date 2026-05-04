@@ -60,9 +60,8 @@ function calcMuestra(row: TelaMuestra): TelaMuestra {
   const neto = parseFloat(row.subtotal) || 0;
   if (!neto) return { ...row, iva: '', totalPrecioKilos: '', totalPrecioMetros: '' };
   
-  // Si IVA no está incluido, no calcular IVA
-  const shouldCalculateIva = row.usadaEnProduccion === 'S'; // Usar el campo equivalente
-  const iva = shouldCalculateIva ? parseFloat((neto * IVA).toFixed(2)) : 0;
+  // Muestras siempre calcula con IVA
+  const iva = parseFloat((neto * IVA).toFixed(2));
   const totalKilos = parseFloat((neto + iva).toFixed(2));
   const rdmto = parseFloat(row.rdmto) || 0;
   const totalMetros = rdmto > 0 ? parseFloat((totalKilos / rdmto).toFixed(2)) : 0;
@@ -70,14 +69,14 @@ function calcMuestra(row: TelaMuestra): TelaMuestra {
   if (row.undMedida === 'M') {
     return { 
       ...row, 
-      iva: shouldCalculateIva ? String(iva) : '', 
+      iva: String(iva), 
       totalPrecioKilos: '', 
       totalPrecioMetros: String(neto + iva) 
     };
   }
   return {
     ...row, 
-    iva: shouldCalculateIva ? String(iva) : '',
+    iva: String(iva),
     totalPrecioKilos: String(totalKilos),
     totalPrecioMetros: rdmto > 0 ? String(totalMetros) : '',
   };

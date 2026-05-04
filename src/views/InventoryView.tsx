@@ -11,6 +11,8 @@ interface InventoryViewProps {
   references?: Reference[];
   orders?: any[];
   correrias?: any[];
+  returnReceptions?: any[];
+  salidasBodega?: any[];
   user?: any;
 }
 
@@ -20,6 +22,8 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   references = [],
   orders = [],
   correrias = [],
+  returnReceptions = [],
+  salidasBodega = [],
   user
 }) => {
   const { isDark } = useDarkMode();
@@ -44,7 +48,9 @@ const InventoryView: React.FC<InventoryViewProps> = ({
   const stockByRef = useMemo(() => {
     const stock: Record<string, {
       received: number,
+      returned: number,
       dispatched: number,
+      salidas: number,
       available: number,
       lotsCount: number,
       ordersCount: number,
@@ -56,7 +62,7 @@ const InventoryView: React.FC<InventoryViewProps> = ({
       .forEach(r => {
         r.items.forEach(item => {
           if (!stock[item.reference]) {
-            stock[item.reference] = { received: 0, dispatched: 0, available: 0, lotsCount: 0, ordersCount: 0, correriasCount: 0 };
+            stock[item.reference] = { received: 0, returned: 0, dispatched: 0, salidas: 0, available: 0, lotsCount: 0, ordersCount: 0, correriasCount: 0 };
           }
           stock[item.reference].received += item.quantity;
           stock[item.reference].available += item.quantity;
@@ -73,6 +79,16 @@ const InventoryView: React.FC<InventoryViewProps> = ({
         stock[item.reference].dispatched += item.quantity;
         stock[item.reference].available -= item.quantity;
       });
+    });
+
+    // Calcular salidas de bodega por referencia
+    salidasBodega.forEach(salida => {
+      if (!stock[salida.referencia]) {
+        stock[salida.referencia] = { received: 0, returned: 0, dispatched: 0, salidas: 0, available: 0, lotsCount: 0, ordersCount: 0, correriasCount: 0 };
+      }
+      const cantidad = parseInt(salida.cantidad) || 0;
+      stock[salida.referencia].salidas += cantidad;
+      stock[salida.referencia].available -= cantidad;
     });
 
     const ordersByRef = new Map<string, Set<string>>();
@@ -100,8 +116,19 @@ const InventoryView: React.FC<InventoryViewProps> = ({
       stock[ref].correriasCount = correriasSet.get(ref)?.size || 0;
     });
 
+    // Sumar devoluciones a las entradas
+    returnReceptions.forEach(r => {
+      r.items.forEach(item => {
+        if (!stock[item.reference]) {
+          stock[item.reference] = { received: 0, returned: 0, dispatched: 0, salidas: 0, available: 0, lotsCount: 0, ordersCount: 0, correriasCount: 0 };
+        }
+        stock[item.reference].returned += item.quantity;
+        stock[item.reference].available += item.quantity;
+      });
+    });
+
     return stock;
-  }, [receptions, dispatches, orders]);
+  }, [receptions, dispatches, orders, returnReceptions, salidasBodega]);
 
   // Filter and Sort entries
   const filteredSortedStock = useMemo(() => {
@@ -204,11 +231,13 @@ const InventoryView: React.FC<InventoryViewProps> = ({
 
       drawTableHeader();
 
-      const reportData = Object.entries(stockByRef).map(([ref, data]: [string, any]) => ({
-        referencia: ref,
-        descripcion: refDescriptionMap[ref] || '',
-        cantidad: data.available
-      }));
+      const reportData = Object.entries(stockByRef)
+        .map(([ref, data]: [string, any]) => ({
+          referencia: ref,
+          descripcion: refDescriptionMap[ref] || '',
+          cantidad: data.available
+        }))
+        .filter(row => row.cantidad >= 1);
 
       for (let i = 0; i < reportData.length; i++) {
         const row = reportData[i];
@@ -310,11 +339,13 @@ const InventoryView: React.FC<InventoryViewProps> = ({
       worksheet.getColumn(2).width = 30;
       worksheet.getColumn(3).width = 15;
 
-      const reportData = Object.entries(stockByRef).map(([ref, data]: [string, any]) => ({
-        referencia: ref,
-        descripcion: refDescriptionMap[ref] || '',
-        cantidad: data.available
-      }));
+      const reportData = Object.entries(stockByRef)
+        .map(([ref, data]: [string, any]) => ({
+          referencia: ref,
+          descripcion: refDescriptionMap[ref] || '',
+          cantidad: data.available
+        }))
+        .filter(row => row.cantidad >= 1);
 
       reportData.forEach(row => {
         const dataRow = worksheet.addRow([row.referencia, row.descripcion, row.cantidad]);
@@ -458,9 +489,19 @@ const InventoryView: React.FC<InventoryViewProps> = ({
                       <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>+{data.received}</span>
                     </div>
 
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-orange-900/30' : 'bg-orange-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-orange-400' : 'text-orange-400'}`}>Dev:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>+{data.returned}</span>
+                    </div>
+
                     <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-pink-900/30' : 'bg-pink-50/50'}`}>
                       <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-400'}`}>Desp:</span>
                       <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-600'}`}>-{data.dispatched}</span>
+                    </div>
+
+                    <div className={`px-2 py-1 rounded w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-red-900/30' : 'bg-red-50/50'}`}>
+                      <span className={`text-[8px] sm:text-[9px] font-black uppercase leading-none whitespace-nowrap transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-400'}`}>Sal:</span>
+                      <span className={`text-base sm:text-lg font-black leading-none transition-colors duration-300 ${isDark ? 'text-red-300' : 'text-red-600'}`}>-{data.salidas}</span>
                     </div>
 
                     <div className={`px-2 py-1 rounded-lg shadow-xs border w-24 flex items-center gap-1 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600' : 'bg-white border-slate-100'}`}>

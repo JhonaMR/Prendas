@@ -45,6 +45,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editingReturn, setEditingReturn] = useState<any | null>(null);
+  const [filterSinProcesar, setFilterSinProcesar] = useState(false);
 
   // Load return receptions on mount
   useEffect(() => {
@@ -261,7 +262,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
         </div>
 
         <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 p-6 sm:p-8 rounded-[32px] sm:rounded-[40px] shadow-sm border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
-          <div className="space-y-4 relative col-span-2">
+          <div className="space-y-4 relative z-[100]">
             <div className="space-y-2">
               <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-500'}`}>Buscar Cliente</label>
               <div className="relative">
@@ -271,28 +272,47 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                   onChange={(e) => { setClientSearch(e.target.value); setShowClientResults(true); if(!e.target.value) setSelectedClientId(''); }}
                   onFocus={() => setShowClientResults(true)}
                   placeholder="ID o Nombre de cliente..."
-                  className={`w-full px-6 py-4 border-none rounded-2xl focus:ring-4 transition-all font-bold ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-400 focus:ring-violet-500/30' : 'bg-slate-50 text-slate-900 focus:ring-blue-100'}`}
+                  className={`w-full px-6 py-4 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-600 border border-violet-600 focus:ring-4 focus:ring-violet-400' : 'bg-slate-50 text-slate-900 placeholder-slate-400 border-none focus:ring-4 focus:ring-blue-100'}`}
                 />
                 {showClientResults && clientSearch.length > 0 && (
-                  <div className={`absolute top-full left-0 w-full mt-2 rounded-2xl shadow-2xl border z-50 max-h-60 overflow-y-auto custom-scrollbar transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                  <div className={`fixed rounded-2xl shadow-2xl border z-[9999] min-h-[280px] max-h-[350px] overflow-y-auto custom-scrollbar transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`} style={{
+                    top: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().bottom + 8}px`,
+                    left: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().left}px`,
+                    width: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().width}px`
+                  }}>
                     {filteredClients.map(c => (
                       <button 
                         key={c.id} 
                         onClick={() => selectClient(c)}
-                        className={`w-full text-left px-6 py-4 transition-colors border-b last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700/50 text-violet-50' : 'hover:bg-slate-50 border-slate-50 text-slate-800'}`}
+                        className={`w-full text-left px-6 py-4 transition-colors duration-300 border-b last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700/40 text-violet-100' : 'hover:bg-slate-50 border-slate-50 text-slate-800'}`}
                       >
-                        <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
-                        <p className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>ID: {c.id} • {c.city}</p>
+                        <p className={`font-black text-base transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+                        <p className={`text-xs font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>ID: {c.id} • {c.city}</p>
                       </button>
                     ))}
-                    {filteredClients.length === 0 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>No se encontraron clientes</p>}
+                    {filteredClients.length === 0 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No se encontraron clientes</p>}
                   </div>
                 )}
               </div>
             </div>
+            {(() => {
+              const selectedClient = clientsMaster.find(c => c.id === selectedClientId);
+              return (
+                <div className="space-y-2">
+                  <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-500'}`}>Dirección</label>
+                  <div className={`px-6 py-4 rounded-2xl min-h-[56px] flex items-center transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'}`}>
+                    {selectedClient ? (
+                      <p className={`font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{selectedClient.address}&nbsp;&nbsp;–&nbsp;&nbsp;{selectedClient.city}</p>
+                    ) : (
+                      <p className={`text-sm font-bold italic transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>Selecciona un cliente para ver su dirección</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 content-start">
             <div className="space-y-2">
               <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-pink-500'}`}>Nota Crédito</label>
               <input value={creditNoteNumber} onChange={e => setCreditNoteNumber(e.target.value)} placeholder="Ej: NC-1234" className={`w-full px-6 py-4 border-none rounded-2xl focus:ring-4 transition-all font-bold tracking-widest ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-400 focus:ring-violet-500/30' : 'bg-slate-50 text-slate-900 focus:ring-pink-100'}`} />
@@ -300,7 +320,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
             <div className="space-y-2">
               <label className={`text-[10px] font-black uppercase tracking-widest px-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-pink-500'}`}>Valor Total</label>
               <div className={`w-full px-6 py-4 border-none rounded-2xl font-black text-lg transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100' : 'bg-slate-50 text-slate-900'}`}>
-                ${totalValue.toLocaleString()}
+                ${totalValue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
               </div>
             </div>
           </div>
@@ -318,11 +338,23 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
             </div>
             <div className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
               {items.map((item) => (
-                <div key={item.reference} className={`p-6 sm:p-8 transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
+                <div key={item.reference} className={`px-6 sm:px-8 py-2 transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
                   <div className="flex items-center justify-between">
                     <span className={`text-xl sm:text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>{item.reference}</span>
                     <div className="flex items-center gap-4">
-                      <span className={`text-lg sm:text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{item.quantity}</span>
+                      <input
+                        type="number"
+                        min={1}
+                        value={item.quantity}
+                        onChange={e => {
+                          const val = parseInt(e.target.value);
+                          if (!isNaN(val) && val > 0) {
+                            setItems(prev => prev.map(p => p.reference === item.reference ? { ...p, quantity: val } : p));
+                          }
+                        }}
+                        onFocus={e => e.target.select()}
+                        className={`text-lg sm:text-xl font-black text-center border-none outline-none w-16 cursor-pointer transition-all transition-colors duration-300 ${isDark ? 'bg-transparent text-violet-100 focus:bg-violet-700/40 focus:rounded-lg focus:px-2' : 'bg-transparent text-slate-800 focus:bg-blue-50 focus:rounded-lg focus:px-2'}`}
+                      />
                       <button 
                         onClick={() => setItems(prev => prev.filter(p => p.reference !== item.reference))}
                         className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-100 text-red-500 hover:bg-red-200'}`}
@@ -351,10 +383,18 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
           <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Devoluciones</h2>
           <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Historial de devoluciones de clientes</p>
         </div>
-        <button onClick={() => setIsProcessing(true)} className={`w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 ${isDark ? 'bg-gradient-to-r from-violet-600 to-pink-600 shadow-violet-900/30' : 'bg-gradient-to-r from-blue-500 to-pink-500 shadow-blue-200'}`}>
-          <Icons.Reception />
-          NUEVA DEVOLUCIÓN
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setFilterSinProcesar(v => !v)}
+            className={`px-5 py-3 rounded-[20px] font-black text-xs uppercase tracking-wider transition-all border ${filterSinProcesar ? (isDark ? 'bg-red-900/40 text-red-300 border-red-700 shadow-lg shadow-red-900/50 scale-105' : 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-100 scale-105') : (isDark ? 'bg-[#4a3a63] text-red-300 border-red-700 hover:border-red-600 hover:scale-105' : 'bg-white text-red-400 border-red-200 hover:border-red-400 hover:scale-105')}`}
+          >
+            Filtrar sin procesar
+          </button>
+          <button onClick={() => setIsProcessing(true)} className={`w-full sm:w-auto px-8 py-4 sm:px-10 sm:py-5 text-white font-black rounded-[24px] sm:rounded-[28px] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 ${isDark ? 'bg-gradient-to-r from-violet-600 to-pink-600 shadow-violet-900/30' : 'bg-gradient-to-r from-blue-500 to-pink-500 shadow-blue-200'}`}>
+            <Icons.Reception />
+            NUEVA DEVOLUCIÓN
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -381,7 +421,9 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {returnReceptions.map((reception) => {
+          {returnReceptions
+            .filter(r => !filterSinProcesar || ['0', '00', '000', '0000'].includes(r.creditNoteNumber?.trim()))
+            .map((reception) => {
             const client = clientsMaster.find(c => c.id === reception.clientId);
             const isExpanded = expandedId === reception.id;
             const totalQty = reception.items?.reduce((a: number, b: ItemEntry) => a + b.quantity, 0) || 0;
@@ -402,7 +444,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                   <div className="flex-1 w-full">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`text-[9px] sm:text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>{new Date(reception.createdAt).toLocaleString()}</span>
-                      {reception.creditNoteNumber && <span className={`text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter transition-colors duration-300 ${isDark ? 'bg-violet-600/30 text-violet-300' : 'bg-blue-50 text-blue-500'}`}>NC: {reception.creditNoteNumber}</span>}
+                      {reception.creditNoteNumber && <span className={`text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tighter transition-colors duration-300 ${['0', '00', '000', '0000'].includes(reception.creditNoteNumber?.trim()) ? (isDark ? 'bg-red-900/40 text-red-300' : 'bg-red-100 text-red-600') : (isDark ? 'bg-violet-600/30 text-violet-300' : 'bg-blue-50 text-blue-500')}`}>NC: {reception.creditNoteNumber}</span>}
                     </div>
                     <div className="flex items-baseline gap-3">
                       <h3 className={`text-lg sm:text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{client?.name || 'Cliente Desconocido'}</h3>
@@ -479,8 +521,8 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                                     <p className={`text-[9px] sm:text-[10px] font-bold uppercase transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{masterRef?.description || 'Sin descripción'}</p>
                                   </td>
                                   <td className={`px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{qty}</td>
-                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>${price.toLocaleString()}</td>
-                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>${subtotal.toLocaleString()}</td>
+                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>$ {Number(price).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
+                                  <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>$ {Number(subtotal).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
                                 </tr>
                               );
                             })}
@@ -490,7 +532,7 @@ const ReturnReceptionView: React.FC<ReturnReceptionViewProps> = ({
                               <td className={`px-4 py-4 sm:px-6 sm:py-6 font-black text-[9px] sm:text-[10px] uppercase tracking-widest text-right transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>TOTALES DEVOLUCIÓN</td>
                               <td className={`px-4 py-4 sm:px-6 sm:py-6 text-center font-black text-lg sm:text-xl transition-colors duration-300 ${isDark ? 'text-violet-100' : 'text-slate-900'}`}>{totalQty}</td>
                               <td></td>
-                              <td className={`px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-xl sm:text-2xl transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>${reception.totalValue?.toLocaleString() || '0'}</td>
+                              <td className={`px-4 py-4 sm:px-6 sm:py-6 text-right font-black text-xl sm:text-2xl transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-600'}`}>$ {Number(reception.totalValue || 0).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</td>
                             </tr>
                           </tfoot>
                         </table>

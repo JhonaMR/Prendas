@@ -273,6 +273,132 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
   const totalNetoOF = pagos.reduce((a, p) => a + neto(p.brutOF, p.descuentosOF), 0);
   const totalNetoML = pagos.reduce((a, p) => a + neto(p.brutML, p.descuentosML), 0);
 
+  // ── Descargar Excel ────────────────────────────────────────────────────
+  const descargarExcel = (tipo: 'OF' | 'ML') => {
+    // Importar exceljs para mejor formato
+    import('exceljs').then(({ Workbook }) => {
+      const wb = new Workbook();
+      const ws = wb.addWorksheet(`Pagos ${tipo}`);
+
+      // Definir columnas con headers
+      ws.columns = [
+        { header: 'Fecha', key: 'Fecha', width: 12 },
+        { header: 'Cédula', key: 'Cedula', width: 18 },
+        { header: 'Nombre', key: 'Nombre', width: 35 },
+        { header: 'Cuenta', key: 'Cuenta', width: 20 },
+        { header: 'Valor', key: 'Valor', width: 18 },
+      ];
+
+      // Estilo del encabezado (primera fila)
+      const headerRow = ws.getRow(1);
+      headerRow.height = 28;
+      
+      const headerColor = tipo === 'OF' ? 'FFFFC9A3' : 'FFA8D8FF'; // Naranja suave para OF, Azul suave para ML
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: headerColor },
+        };
+        cell.font = { bold: true, size: 12, color: { argb: 'FF333333' } };
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF999999' } },
+          bottom: { style: 'thin', color: { argb: 'FF999999' } },
+          left: { style: 'thin', color: { argb: 'FF999999' } },
+          right: { style: 'thin', color: { argb: 'FF999999' } },
+        };
+      });
+
+      // Preparar datos
+      const datos = pagos
+        .filter(p => tipo === 'OF' ? p.brutOF > 0 : p.brutML > 0)
+        .map(p => ({
+          Fecha: fecha,
+          Cedula: p.cedula,
+          Nombre: p.nombre,
+          Cuenta: p.cuenta,
+          Valor: tipo === 'OF' ? neto(p.brutOF, p.descuentosOF) : neto(p.brutML, p.descuentosML),
+        }));
+
+      // Agregar filas de datos
+      datos.forEach((dato, index) => {
+        const row = ws.addRow(dato);
+        row.height = 18;
+        row.font = { size: 11, color: { argb: 'FF333333' } };
+
+        // Alternar colores de fila
+        if (index % 2 === 0) {
+          row.eachCell((cell) => {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFFAFAFA' },
+            };
+          });
+        } else {
+          row.eachCell((cell) => {
+            cell.fill = {
+              type: 'pattern',
+              pattern: 'solid',
+              fgColor: { argb: 'FFFFFFFF' },
+            };
+          });
+        }
+
+        // Alinear columna Valor a la derecha y formato moneda
+        const valorCell = row.getCell('Valor');
+        valorCell.alignment = { horizontal: 'right', vertical: 'middle' };
+        valorCell.numFmt = '#,##0';
+      });
+
+      // Agregar fila de total
+      const totalRow = ws.addRow({
+        Fecha: '',
+        Cedula: '',
+        Nombre: 'TOTAL',
+        Cuenta: '',
+        Valor: tipo === 'OF' ? totalNetoOF : totalNetoML,
+      });
+      totalRow.height = 22;
+      
+      const totalColor = tipo === 'OF' ? 'FFFFE0CC' : 'FFD4E8FF'; // Naranja muy suave para OF, Azul muy suave para ML
+      totalRow.eachCell((cell) => {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: totalColor },
+        };
+        cell.font = { bold: true, size: 12, color: { argb: 'FF333333' } };
+        cell.alignment = { horizontal: 'right', vertical: 'middle' };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'FF999999' } },
+          bottom: { style: 'thin', color: { argb: 'FF999999' } },
+          left: { style: 'thin', color: { argb: 'FF999999' } },
+          right: { style: 'thin', color: { argb: 'FF999999' } },
+        };
+      });
+      
+      const totalValorCell = totalRow.getCell('Valor');
+      totalValorCell.numFmt = '#,##0';
+
+      // Guardar archivo usando buffer
+      wb.xlsx.writeBuffer().then((buffer: ArrayBuffer) => {
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Pagos_${tipo}_${fecha}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      });
+    }).catch((err) => {
+      console.error('Error al descargar Excel:', err);
+    });
+  };
+
   // ── Render ─────────────────────────────────────────────────────────────
   return (
     <div className={`h-full w-full flex flex-col p-4 md:p-6 pt-1 md:pt-2 overflow-auto pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
@@ -291,13 +417,29 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
           <h1 className={`text-3xl md:text-4xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-violet-900'}`}>Pagos del día</h1>
           <p className={`text-sm mt-0.5 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-violet-400'}`}>{labelFecha(fecha)}</p>
         </div>
-        <button onClick={abrirCrear}
-          className={`flex items-center gap-2 font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-violet-500 hover:bg-violet-600 text-white'}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-          Agregar pago
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => descargarExcel('OF')}
+            className={`flex items-center gap-2 font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-orange-700 hover:bg-orange-600 text-white' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l-3 3m3-3l3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33A3 3 0 0116.5 19.5H6.75z" />
+            </svg>
+            Descargar OF
+          </button>
+          <button onClick={() => descargarExcel('ML')}
+            className={`flex items-center gap-2 font-semibold px-4 py-2.5 rounded-xl shadow-sm transition-all whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-blue-700 hover:bg-blue-600 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 16.5V9.75m0 0l-3 3m3-3l3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33A3 3 0 0116.5 19.5H6.75z" />
+            </svg>
+            Descargar ML
+          </button>
+          <button onClick={abrirCrear}
+            className={`flex items-center gap-2 font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all whitespace-nowrap transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-violet-500 hover:bg-violet-600 text-white'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+            Agregar pago
+          </button>
+        </div>
       </div>
 
       {/* Tabla */}
