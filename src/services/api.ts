@@ -1978,7 +1978,15 @@ class ApiService {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados?fecha=${fecha}`, {
         headers: this.getAuthHeaders()
       });
-      const data = await this.handleResponse<any[]>(response);
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('current_user');
+          window.location.href = '/login';
+        }
+        return [];
+      }
+      const data = await response.json();
       return data.data || [];
     } catch (error) {
       console.error('Error obteniendo pagos:', error);
@@ -2004,7 +2012,15 @@ class ApiService {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
         headers: this.getAuthHeaders()
       });
-      const data = await this.handleResponse<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>(response);
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('current_user');
+          window.location.href = '/login';
+        }
+        return {};
+      }
+      const data = await response.json();
       return data.data || {};
     } catch (error) {
       console.error('Error obteniendo totales de pagos:', error);

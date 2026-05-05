@@ -40,9 +40,19 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   const [anio, setAnio] = useState(hoy.getFullYear());
   const [verCuentas, setVerCuentas] = useState(false);
   const [totalesPagos, setTotalesPagos] = useState<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>({});
+  const [loadingCalendario, setLoadingCalendario] = useState(false);
 
   useEffect(() => {
-    api.getTotalesPagosPorMes(anio, mes).then(data => setTotalesPagos(data));
+    let cancelled = false;
+    setLoadingCalendario(true);
+    setTotalesPagos({});
+    api.getTotalesPagosPorMes(anio, mes).then(data => {
+      if (!cancelled) {
+        setTotalesPagos(data);
+        setLoadingCalendario(false);
+      }
+    });
+    return () => { cancelled = true; };
   }, [anio, mes]);
 
   if (verCuentas) {
@@ -175,49 +185,57 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
 
                 {/* Badge de pagos */}
                 <div className="self-end flex flex-col gap-1">
-                  {pagos.totalOF > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className={`
-                        w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
-                        ${hoyFlag
-                          ? 'bg-white/20 text-white'
-                          : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
-                        }
-                      `}>
-                        {pagos.countOF}
-                      </div>
-                      <div className={`
-                        text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
-                        ${hoyFlag
-                          ? 'bg-white/20 text-white'
-                          : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
-                        }
-                      `}>
-                        $ {pagos.totalOF.toLocaleString('es-CR')} - OF
-                      </div>
+                  {loadingCalendario ? (
+                    <div className={`text-xs px-2 py-1 rounded-lg animate-pulse transition-colors duration-300 ${hoyFlag ? 'bg-white/20 text-white/60' : isDark ? 'bg-violet-700/40 text-violet-500' : 'bg-violet-100 text-violet-300'}`}>
+                      ...
                     </div>
-                  )}
-                  {pagos.totalML > 0 && (
-                    <div className="flex items-center gap-2">
-                      <div className={`
-                        w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
-                        ${hoyFlag
-                          ? 'bg-white/20 text-white'
-                          : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
-                        }
-                      `}>
-                        {pagos.countML}
-                      </div>
-                      <div className={`
-                        text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
-                        ${hoyFlag
-                          ? 'bg-white/20 text-white'
-                          : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
-                        }
-                      `}>
-                        $ {pagos.totalML.toLocaleString('es-CR')} - ML
-                      </div>
-                    </div>
+                  ) : (
+                    <>
+                      {pagos.totalOF > 0 && (
+                        <div className="flex items-center gap-2">
+                          <div className={`
+                            w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
+                            ${hoyFlag
+                              ? 'bg-white/20 text-white'
+                              : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
+                            }
+                          `}>
+                            {pagos.countOF}
+                          </div>
+                          <div className={`
+                            text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
+                            ${hoyFlag
+                              ? 'bg-white/20 text-white'
+                              : isDark ? 'bg-orange-900/40 text-orange-300' : 'bg-orange-100 text-orange-700'
+                            }
+                          `}>
+                            $ {pagos.totalOF.toLocaleString('es-CR')} - OF
+                          </div>
+                        </div>
+                      )}
+                      {pagos.totalML > 0 && (
+                        <div className="flex items-center gap-2">
+                          <div className={`
+                            w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300
+                            ${hoyFlag
+                              ? 'bg-white/20 text-white'
+                              : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
+                            }
+                          `}>
+                            {pagos.countML}
+                          </div>
+                          <div className={`
+                            text-xs font-bold px-2 py-1 rounded-lg transition-colors duration-300
+                            ${hoyFlag
+                              ? 'bg-white/20 text-white'
+                              : isDark ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-100 text-blue-700'
+                            }
+                          `}>
+                            $ {pagos.totalML.toLocaleString('es-CR')} - ML
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
 

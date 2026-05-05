@@ -220,10 +220,8 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
         const result = await onUpdateDispatch(editingDisp.id, updatedData);
         if (result?.success) {
-          // No actualizar el estado aquí porque onUpdateDispatch ya lo hace
-          setIsDispatching(false);
           setEditingDisp(null);
-          alert("Despacho actualizado exitosamente");
+          setIsDispatching(false);
         } else {
           const errorMsg = result?.message || 'Error desconocido al actualizar el despacho';
           alert(`Error al actualizar el despacho: ${errorMsg}`);
@@ -246,9 +244,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
         const result = await onAddDispatch(newData);
         if (result.success) {
-          // No actualizar el estado aquí porque onAddDispatch ya lo hace
           setIsDispatching(false);
-          alert("Despacho guardado exitosamente");
         } else {
           alert("Error al guardar el despacho");
         }
