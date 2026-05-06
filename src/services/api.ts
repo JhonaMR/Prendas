@@ -560,7 +560,9 @@ class ApiService {
         nit: client.nit,
         address: client.address,
         city: client.city,
-        sellerId: client.seller_id
+        sellerId: client.seller_id,
+        codOf: client.cod_of ?? null,
+        codRm: client.cod_rm ?? null
       }));
       
       return transformedClients;
@@ -1413,6 +1415,36 @@ class ApiService {
     }
   }
 
+  // ==================== NOTAS DE PEDIDOS ====================
+
+  async getOrderNotes(orderIds: string[]): Promise<{ order_id: string; contacto: string | null; novedad: string | null }[]> {
+    try {
+      if (orderIds.length === 0) return [];
+      const params = orderIds.join(',');
+      const response = await fetch(`${this.getApiUrl()}/order-notes?orderIds=${encodeURIComponent(params)}`, {
+        headers: this.getAuthHeaders()
+      });
+      const data = await this.handleResponse<any[]>(response);
+      return data.data || [];
+    } catch (error) {
+      console.error('Error obteniendo order notes:', error);
+      return [];
+    }
+  }
+
+  async batchUpsertOrderNotes(notes: { orderId: string; contacto: string; novedad: string }[]): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/order-notes/batch`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ notes })
+      });
+      return this.handleResponse<any>(response);
+    } catch (error: any) {
+      return { success: false, message: error.message || 'Error al guardar notas' };
+    }
+  }
+
   // ==================== PRODUCCIÓN ====================
 
   async getProductionTracking(): Promise<ProductionTracking[]> {
@@ -1887,6 +1919,67 @@ class ApiService {
       return {
         success: false,
         message: error.message || 'Error al restaurar backup'
+      };
+    }
+  }
+
+  async executeFullDump(): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/backups/full-dump`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al generar full dump'
+      };
+    }
+  }
+
+  async uploadDump(file: File): Promise<ApiResponse> {
+    try {
+      const formData = new FormData();
+      formData.append('dumpFile', file);
+
+      // getAuthHeaders() devuelve Content-Type: application/json, no sirve para FormData
+      // Sacamos solo el Authorization
+      const authHeaders = this.getAuthHeaders();
+      const headers: Record<string, string> = {};
+      if (authHeaders['Authorization']) {
+        headers['Authorization'] = authHeaders['Authorization'];
+      }
+
+      const response = await fetch(`${this.getApiUrl()}/backups/upload-dump`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al cargar dump'
+      };
+    }
+  }
+
+  async listFullDumps(): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/backups/full-dumps/list`, {
+        method: 'GET',
+        headers: this.getAuthHeaders()
+      });
+
+      return this.handleResponse(response);
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.message || 'Error al listar full dumps'
       };
     }
   }

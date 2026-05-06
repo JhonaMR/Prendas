@@ -37,6 +37,8 @@ export interface Client {
   address: string;
   city: string;
   sellerId: string;
+  codOf?: string | null;
+  codRm?: string | null;
 }
 
 export interface Confeccionista {

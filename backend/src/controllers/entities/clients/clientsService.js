@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Servicio de lógica de negocio para Clients - POSTGRESQL
  */
 
@@ -15,7 +15,7 @@ const { validateSellerId } = require('./sellerValidator');
 async function getAllClients() {
   try {
     const result = await query(`
-      SELECT id, name, nit, address, city, seller_id
+      SELECT id, name, nit, address, city, seller_id, cod_of, cod_rm
       FROM clients
       ORDER BY id
     `);
@@ -35,7 +35,7 @@ async function getAllClients() {
 async function getClientById(id) {
   try {
     const result = await query(`
-      SELECT id, name, nit, address, city, seller_id
+      SELECT id, name, nit, address, city, seller_id, cod_of, cod_rm
       FROM clients
       WHERE id = $1
     `, [id]);
@@ -134,6 +134,16 @@ async function updateClient(id, data) {
     if (data.seller_id !== undefined || data.sellerId !== undefined) {
       updates.push(`seller_id = $${paramIndex++}`);
       values.push(data.seller_id || data.sellerId);
+    }
+    if (data.cod_of !== undefined || data.codOf !== undefined) {
+      const codOfVal = data.cod_of !== undefined ? data.cod_of : (data.codOf !== undefined ? data.codOf : null);
+      updates.push('cod_of = ' + paramIndex++);
+      values.push(codOfVal);
+    }
+    if (data.cod_rm !== undefined || data.codRm !== undefined) {
+      const codRmVal = data.cod_rm !== undefined ? data.cod_rm : (data.codRm !== undefined ? data.codRm : null);
+      updates.push('cod_rm = ' + paramIndex++);
+      values.push(codRmVal);
     }
 
     if (updates.length > 0) {

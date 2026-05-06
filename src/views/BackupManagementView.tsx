@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from '../constants';
 import api from '../services/api';
 import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { detectInstance, getInstanceName, getInstanceColor } from '../utils/instanceDetector';
 import { useDarkMode } from '../context/DarkModeContext';
+import { User, UserRole } from '../types';
+import { isSoporte } from '../utils/permissions';
 
 interface Backup {
   filename: string;
@@ -34,7 +36,18 @@ interface BackupAlert {
   details?: any;
 }
 
-const BackupManagementView: React.FC = () => {
+interface FullDump {
+  filename: string;
+  sizeInMB: string;
+  createdAt: string;
+  createdAtISO: string;
+}
+
+interface Props {
+  user: User;
+}
+
+const BackupManagementView: React.FC<Props> = ({ user }) => {
   const { isDark } = useDarkMode();
   const [backups, setBackups] = useState<Backup[]>([]);
   const [stats, setStats] = useState<BackupStats | null>(null);
@@ -48,9 +61,22 @@ const BackupManagementView: React.FC = () => {
   const [instance, setInstance] = useState(detectInstance());
   const backupsPagination = usePagination(1, 50);
 
+  // Full Dump
+  const [generatingFullDump, setGeneratingFullDump] = useState(false);
+  const [fullDumps, setFullDumps] = useState<FullDump[]>([]);
+
+  // Upload Dump
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pendingDumpFile, setPendingDumpFile] = useState<File | null>(null);
+  const [showUploadConfirmModal, setShowUploadConfirmModal] = useState(false);
+  const [uploadingDump, setUploadingDump] = useState(false);
+
+  const esSoporte = isSoporte(user);
+
   useEffect(() => {
     loadBackups();
     loadStats();
+    loadFullDumps();
 
     const interval = setInterval(() => {
       loadBackups();
@@ -68,7 +94,7 @@ const BackupManagementView: React.FC = () => {
   const loadBackups = async () => {
     try {
       setLoading(true);
-      const response = await api.getBackups();
+      const response: any = await api.getBackups();
       if (response.success) {
         // El controlador retorna { success, backups, stats }
         // No { success, data: { backups } }
@@ -84,7 +110,7 @@ const BackupManagementView: React.FC = () => {
 
   const loadStats = async () => {
     try {
-      const response = await api.getBackupStats();
+      const response: any = await api.getBackupStats();
       if (response.success) {
         // El controlador retorna { success, stats, backupsByType }
         setStats(response.stats || null);
@@ -94,13 +120,121 @@ const BackupManagementView: React.FC = () => {
     }
   };
 
+  const loadFullDumps = async () => {
+    try {
+      const response: any = await api.listFullDumps();
+      if (response.success) {
+        setFullDumps(response.dumps || []);
+      }
+    } catch (err) {
+      console.error('Error cargando full dumps:', err);
+    }
+  };
+
+  const handleFullDump = async () => {
+    try {
+      setGeneratingFullDump(true);
+      setAlerts([]);
+      setShowAlerts(false);
+
+      const response: any = await api.executeFullDump();
+
+      if (response.success) {
+        setAlerts([{
+          type: 'SUCCESS',
+          title: '✅ Full Dump Generado',
+          message: `Archivo: ${response.filename} (${response.sizeInMB} MB)`,
+          details: { instancia: response.instance, archivo: response.filename }
+        }]);
+        setShowAlerts(true);
+        loadFullDumps();
+      } else {
+        setAlerts([{
+          type: 'ERROR',
+          title: '❌ Error al generar Full Dump',
+          message: response.error || response.message || 'Error desconocido'
+        }]);
+        setShowAlerts(true);
+      }
+    } catch (err: any) {
+      setAlerts([{
+        type: 'ERROR',
+        title: '❌ Error al generar Full Dump',
+        message: err.message || 'Error desconocido'
+      }]);
+      setShowAlerts(true);
+    } finally {
+      setGeneratingFullDump(false);
+    }
+  };
+
+  const handleUploadDumpClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPendingDumpFile(file);
+    setShowUploadConfirmModal(true);
+  };
+
+  const handleConfirmUploadDump = async () => {
+    if (!pendingDumpFile) return;
+    try {
+      setUploadingDump(true);
+      setShowUploadConfirmModal(false);
+      setAlerts([]);
+      setShowAlerts(false);
+
+      const response: any = await api.uploadDump(pendingDumpFile);
+
+      if (response.success) {
+        setAlerts([{
+          type: 'SUCCESS',
+          title: '✅ Dump Cargado Exitosamente',
+          message: `El archivo "${response.originalFile}" fue cargado correctamente. La aplicación se recargará en 3 segundos...`,
+          details: { backup_seguridad: response.securityBackup, tamaño: `${response.sizeInMB} MB` }
+        }]);
+        setShowAlerts(true);
+        setTimeout(() => window.location.reload(), 3000);
+      } else {
+        setAlerts([{
+          type: 'ERROR',
+          title: '❌ Error al Cargar Dump',
+          message: response.error || response.message || 'Error desconocido'
+        }]);
+        setShowAlerts(true);
+      }
+    } catch (err: any) {
+      setAlerts([{
+        type: 'ERROR',
+        title: '❌ Error al Cargar Dump',
+        message: err.message || 'Error desconocido'
+      }]);
+      setShowAlerts(true);
+    } finally {
+      setUploadingDump(false);
+      setPendingDumpFile(null);
+    }
+  };
+
+  const handleCancelUploadDump = () => {
+    setShowUploadConfirmModal(false);
+    setPendingDumpFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const handleManualBackup = async () => {
     try {
       setLoading(true);
       setAlerts([]);
       setShowAlerts(false);
 
-      const response = await api.executeManualBackup();
+      const response: any = await api.executeManualBackup();
 
       if (response.alerts && response.alerts.length > 0) {
         setAlerts(response.alerts);
@@ -241,7 +375,7 @@ const BackupManagementView: React.FC = () => {
       )}
 
       {/* Botones de acción */}
-      <div className="flex gap-3">
+      <div className="flex gap-3 flex-wrap">
         <button
           onClick={handleManualBackup}
           disabled={loading || restoring}
@@ -257,11 +391,43 @@ const BackupManagementView: React.FC = () => {
           disabled={loading || restoring}
           className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl border transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] text-violet-300 border-violet-700 hover:bg-[#5a4a75]' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}`}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-5.971m0 0eqn.023-9.348h4.992m0 0a3.022 3.022 0 010 5.957m-2.165 2.756h5.338a3 3 0 00 3-3V5.359a3 3 0 00-3-3h-5.337a3 3 0 00-3 3v13.999a3 3 0 003 3z" />
-          </svg>
-          🔄 Recargar
+         🔄 Recargar
         </button>
+
+        {/* Botones exclusivos para Soporte */}
+        {esSoporte && (
+          <>
+            <div className={`w-px self-stretch mx-1 transition-colors duration-300 ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`} />
+            <button
+              onClick={handleFullDump}
+              disabled={generatingFullDump || uploadingDump}
+              className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-700 to-violet-600 text-white hover:shadow-lg hover:shadow-violet-900/30' : 'bg-gradient-to-r from-violet-600 to-violet-500 text-white hover:shadow-lg hover:shadow-violet-200'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 2.625c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+              </svg>
+              {generatingFullDump ? '⏳ Generando...' : '🗄️ Full Dump'}
+            </button>
+            <button
+              onClick={handleUploadDumpClick}
+              disabled={generatingFullDump || uploadingDump}
+              className={`flex items-center gap-2 px-6 py-3 font-bold rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-orange-700 to-orange-600 text-white hover:shadow-lg hover:shadow-orange-900/30' : 'bg-gradient-to-r from-orange-500 to-orange-400 text-white hover:shadow-lg hover:shadow-orange-200'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              {uploadingDump ? '⏳ Cargando...' : '📂 Cargar Dump'}
+            </button>
+            {/* Input oculto para seleccionar archivo */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".sql"
+              className="hidden"
+              onChange={handleFileSelected}
+            />
+          </>
+        )}
       </div>
 
       {/* Mensajes de error */}
@@ -389,7 +555,89 @@ const BackupManagementView: React.FC = () => {
         )}
       </div>
 
-      {/* Modal de confirmación */}
+      {/* Sección Full Dumps — solo Soporte */}
+      {esSoporte && fullDumps.length > 0 && (
+        <div className={`rounded-2xl shadow-sm border overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+          <div className={`p-6 border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <h2 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>
+              🗄️ Full Dumps — {getInstanceName(instance)}
+            </h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                <tr>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Archivo</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Fecha</th>
+                  <th className={`px-6 py-4 text-left text-xs font-bold uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Tamaño</th>
+                </tr>
+              </thead>
+              <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
+                {fullDumps.map((dump) => (
+                  <tr key={dump.filename} className={`transition-colors duration-300 ${isDark ? 'hover:bg-violet-700/20' : 'hover:bg-slate-50'}`}>
+                    <td className={`px-6 py-4 text-sm font-mono font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{dump.filename}</td>
+                    <td className={`px-6 py-4 text-sm font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{formatDate(dump.createdAtISO)}</td>
+                    <td className={`px-6 py-4 text-sm font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-700'}`}>{dump.sizeInMB} MB</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Modal confirmación Cargar Dump */}
+      {showUploadConfirmModal && pendingDumpFile && (
+        <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-colors duration-300 ${isDark ? 'bg-black/60' : 'bg-slate-900/50'}`}>
+          <div className={`rounded-3xl shadow-2xl max-w-md w-full p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+            {/* Ícono de peligro centrado */}
+            <div className="flex flex-col items-center text-center mb-6">
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 transition-colors duration-300 ${isDark ? 'bg-red-900/40' : 'bg-red-100'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-10 h-10 transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+              </div>
+              <h2 className={`text-2xl font-black mb-2 transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>
+                ¿Cargar este dump?
+              </h2>
+              <p className={`text-sm leading-relaxed transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
+                Toda la información de la base de datos será reemplazada por el contenido del archivo seleccionado.
+              </p>
+            </div>
+
+            {/* Info del archivo */}
+            <div className={`rounded-2xl p-4 mb-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border border-violet-700' : 'bg-slate-50 border border-slate-200'}`}>
+              <p className={`text-xs font-bold uppercase tracking-wider mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Archivo seleccionado</p>
+              <p className={`text-sm font-semibold font-mono break-all transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{pendingDumpFile.name}</p>
+              <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{(pendingDumpFile.size / 1024 / 1024).toFixed(2)} MB</p>
+            </div>
+
+            <div className={`rounded-xl p-3 mb-6 transition-colors duration-300 ${isDark ? 'bg-yellow-900/20 border border-yellow-700' : 'bg-yellow-50 border border-yellow-200'}`}>
+              <p className={`text-xs font-semibold transition-colors duration-300 ${isDark ? 'text-yellow-400' : 'text-yellow-700'}`}>
+                ⚠️ Se creará un backup de seguridad automático antes de cargar.
+              </p>
+            </div>
+
+            {/* Botones */}
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelUploadDump}
+                className={`flex-1 px-4 py-3 font-bold rounded-2xl transition-all transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-100 text-red-600 hover:bg-red-200'}`}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConfirmUploadDump}
+                className={`flex-1 px-4 py-3 font-bold rounded-2xl transition-all transition-colors duration-300 ${isDark ? 'bg-green-900/30 text-green-400 hover:bg-green-900/50' : 'bg-green-100 text-green-700 hover:bg-green-200'}`}
+              >
+                Cargar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de confirmación restauración */}
       {showConfirmModal && selectedBackup && (
         <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-colors duration-300 ${isDark ? 'bg-black/50' : 'bg-slate-900/40'}`}>
           <div className={`rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>

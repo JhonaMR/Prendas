@@ -51,6 +51,7 @@ import ControlTransporteView from './views/transporte/ControlTransporteView';
 import CuentasCobroView from './views/CuentasCobroView';
 import HistoricoReferenciaView from './views/HistoricoReferenciaView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
+import ClientesPorCorreriaView from './views/ClientesPorCorreriaView';
 import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
@@ -1140,6 +1141,8 @@ const App: React.FC = () => {
         return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
       case 'historicoReferencia':
         return <HistoricoReferenciaView user={user} onNavigate={handleTabChange} state={state} />;
+      case 'clientesPorCorreria':
+        return <ClientesPorCorreriaView orders={state.orders} clients={state.clients} correrias={state.correrias} sellers={state.sellers} />;
       case 'listaPrecios':
         return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':
@@ -1162,7 +1165,7 @@ const App: React.FC = () => {
           alert('No tienes permiso para acceder a esta sección');
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
-        return <BackupManagementView />;
+        return <BackupManagementView user={user} />;
       case 'compras':
         // Diseñadora no puede acceder a Compras
         if (user.role === UserRole.DISEÑADORA) {

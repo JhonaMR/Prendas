@@ -5,6 +5,24 @@
 const BackupExecutionService = require('../services/BackupExecutionService');
 const BackupRotationService = require('../services/BackupRotationService');
 const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
+const { promisify } = require('util');
+const execAsync = promisify(exec);
+const multer = require('multer');
+
+// Multer: almacenamiento temporal en memoria para dumps subidos
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500 MB máximo
+  fileFilter: (req, file, cb) => {
+    if (file.originalname.endsWith('.sql')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Solo se permiten archivos .sql'));
+    }
+  }
+});
 
 // Inicializar servicios - detectan automáticamente la instancia
 const backupExecutionService = new BackupExecutionService();
@@ -173,9 +191,217 @@ exports.restoreBackup = async (req, res) => {
 };
 
 /**
- * GET /api/backups/:filename
- * Obtiene información de un backup específico
+ * POST /api/backups/full-dump
+ * Genera un dump completo de la BD (schema + datos + índices + todo)
+ * Solo disponible para usuario Soporte
  */
+exports.executeFullDump = async (req, res) => {
+  try {
+    const dbUser     = process.env.DB_USER     || 'postgres';
+    const dbPassword = process.env.DB_PASSWORD;
+    const dbHost     = process.env.DB_HOST     || 'localhost';
+    const dbPort     = process.env.DB_PORT     || 5433;
+    const dbName     = process.env.DB_NAME     || 'inventory';
+
+    if (!dbPassword) {
+      return res.status(500).json({ success: false, error: 'DB_PASSWORD no configurada' });
+    }
+
+    const instanceName = backupExecutionService.instanceName; // 'plow' o 'melas'
+
+    // Carpeta: backups/{instancia}/full-dumps/
+    const fullDumpsDir = path.join(
+      __dirname, '../../backups', instanceName,
+      `full-dump-${instanceName}`
+    );
+
+    if (!fs.existsSync(fullDumpsDir)) {
+      fs.mkdirSync(fullDumpsDir, { recursive: true });
+    }
+
+    // Nombre del archivo con timestamp
+    const now = new Date();
+    const timestamp = now.toISOString()
+      .replace('T', '-')
+      .replace(/:/g, '-')
+      .split('.')[0];
+
+    const filename = `full-dump-${instanceName}-${timestamp}.sql`;
+    const dumpPath = path.join(fullDumpsDir, filename);
+
+    // pg_dump completo: schema + datos + índices + secuencias + triggers + funciones
+    // Sin --clean ni --create para que sea un dump puro de objetos
+    const command = [
+      'pg_dump',
+      '--encoding=UTF8',
+      '--no-password',
+      '--verbose',
+      '--format=plain',        // SQL plano, legible y portable
+      '--no-owner',            // No incluir SET OWNER (evita errores de roles)
+      '--no-acl',              // No incluir GRANT/REVOKE
+      `-U ${dbUser}`,
+      `-h ${dbHost}`,
+      `-p ${dbPort}`,
+      `-d ${dbName}`,
+      `-f "${dumpPath}"`
+    ].join(' ');
+
+    const env = { ...process.env, PGPASSWORD: dbPassword };
+    await execAsync(command, { env, maxBuffer: 50 * 1024 * 1024 });
+
+    if (!fs.existsSync(dumpPath)) {
+      throw new Error('El archivo de dump no se creó');
+    }
+
+    const stats = fs.statSync(dumpPath);
+    const sizeInMB = (stats.size / 1024 / 1024).toFixed(2);
+
+    console.log(`✅ Full dump generado: ${filename} (${sizeInMB} MB)`);
+
+    res.json({
+      success: true,
+      message: `Full dump generado correctamente`,
+      filename,
+      sizeInMB,
+      instance: instanceName,
+      path: dumpPath,
+      createdAt: now.toISOString()
+    });
+  } catch (error) {
+    console.error('Error generando full dump:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+/**
+ * GET /api/backups/full-dumps/list
+ * Lista los full dumps disponibles para la instancia actual
+ */
+exports.listFullDumps = (req, res) => {
+  try {
+    const instanceName = backupExecutionService.instanceName;
+    const fullDumpsDir = path.join(
+      __dirname, '../../backups', instanceName,
+      `full-dump-${instanceName}`
+    );
+
+    if (!fs.existsSync(fullDumpsDir)) {
+      return res.json({ success: true, dumps: [], instance: instanceName });
+    }
+
+    const dumps = fs.readdirSync(fullDumpsDir)
+      .filter(f => f.endsWith('.sql'))
+      .map(f => {
+        const filePath = path.join(fullDumpsDir, f);
+        const stats = fs.statSync(filePath);
+        return {
+          filename: f,
+          sizeInMB: (stats.size / 1024 / 1024).toFixed(2),
+          createdAt: stats.birthtime.toISOString(),
+          createdAtISO: stats.birthtime.toISOString()
+        };
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    res.json({ success: true, dumps, instance: instanceName });
+  } catch (error) {
+    console.error('Error listando full dumps:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+/**
+ * POST /api/backups/upload-dump
+ * Recibe un archivo .sql, hace backup de seguridad y lo carga en la BD actual
+ * Solo disponible para usuario Soporte
+ */
+exports.uploadDump = [
+  upload.single('dumpFile'),
+  async (req, res) => {
+    let tempFilePath = null;
+
+    try {
+      if (!req.file) {
+        return res.status(400).json({ success: false, error: 'No se recibió ningún archivo' });
+      }
+
+      const dbUser     = process.env.DB_USER     || 'postgres';
+      const dbPassword = process.env.DB_PASSWORD;
+      const dbHost     = process.env.DB_HOST     || 'localhost';
+      const dbPort     = process.env.DB_PORT     || 5433;
+      const dbName     = process.env.DB_NAME     || 'inventory';
+
+      if (!dbPassword) {
+        return res.status(500).json({ success: false, error: 'DB_PASSWORD no configurada' });
+      }
+
+      // Guardar el buffer en un archivo temporal
+      const os = require('os');
+      const tempDir = os.tmpdir();
+      const tempFilename = `upload-dump-${Date.now()}.sql`;
+      tempFilePath = path.join(tempDir, tempFilename);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      console.log(`📥 Dump recibido: ${req.file.originalname} (${(req.file.size / 1024 / 1024).toFixed(2)} MB)`);
+
+      // 1. Backup de seguridad automático antes de cargar
+      console.log('💾 Creando backup de seguridad antes de cargar dump...');
+      const securityBackup = await backupExecutionService.executeBackup();
+      if (!securityBackup.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'No se pudo crear backup de seguridad previo: ' + securityBackup.error
+        });
+      }
+      console.log(`✅ Backup de seguridad creado: ${securityBackup.filename}`);
+
+      // 2. Cargar el dump en la BD actual
+      // Usamos psql con -f apuntando al archivo temporal
+      // Si el dump tiene CREATE DATABASE o \connect, psql los ejecutará pero
+      // los errores de esas líneas no detienen la ejecución del resto
+      const command = [
+        'psql',
+        '--no-password',
+        `-U ${dbUser}`,
+        `-h ${dbHost}`,
+        `-p ${dbPort}`,
+        `-d ${dbName}`,
+        `-f "${tempFilePath}"`
+      ].join(' ');
+
+      const env = { ...process.env, PGPASSWORD: dbPassword };
+
+      console.log(`🔄 Cargando dump en BD: ${dbName}...`);
+      const { stdout, stderr } = await execAsync(command, {
+        env,
+        maxBuffer: 50 * 1024 * 1024,
+        timeout: 10 * 60 * 1000 // 10 minutos máximo
+      });
+
+      console.log('✅ Dump cargado exitosamente');
+
+      res.json({
+        success: true,
+        message: 'Dump cargado exitosamente en la base de datos',
+        originalFile: req.file.originalname,
+        sizeInMB: (req.file.size / 1024 / 1024).toFixed(2),
+        securityBackup: securityBackup.filename,
+        instance: backupExecutionService.instanceName
+      });
+    } catch (error) {
+      console.error('Error cargando dump:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message || 'Error desconocido al cargar el dump'
+      });
+    } finally {
+      // Limpiar archivo temporal siempre
+      if (tempFilePath && fs.existsSync(tempFilePath)) {
+        try { fs.unlinkSync(tempFilePath); } catch (_) {}
+      }
+    }
+  }
+];
 exports.getBackupInfo = (req, res) => {
   try {
     const { filename } = req.params;

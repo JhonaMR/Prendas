@@ -32,4 +32,13 @@ router.post('/manual', backupController.executeManualBackup);
 // Restaurar desde un backup
 router.post('/restore', backupController.restoreBackup);
 
+// Generar full dump completo (solo soporte)
+router.post('/full-dump', backupController.executeFullDump);
+
+// Cargar dump desde archivo (solo soporte)
+router.post('/upload-dump', backupController.uploadDump);
+
+// Listar full dumps disponibles
+router.get('/full-dumps/list', backupController.listFullDumps);
+
 module.exports = router;

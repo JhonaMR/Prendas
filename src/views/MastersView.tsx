@@ -144,6 +144,8 @@ const MastersView: React.FC<MastersViewProps> = ({
   const [nit, setNit] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
+  const [codOf, setCodOf] = useState('');
+  const [codRm, setCodRm] = useState('');
   const [seller, setSeller] = useState('');
   
   const [desc, setDesc] = useState('');
@@ -249,6 +251,8 @@ const MastersView: React.FC<MastersViewProps> = ({
     setNit('');
     setAddress('');
     setCity('');
+    setCodOf('');
+    setCodRm('');
     setSeller('');
     setDesc('');
     setPrice(0);
@@ -476,7 +480,7 @@ const MastersView: React.FC<MastersViewProps> = ({
     if (!id || !name) return alert("ID y Nombre son obligatorios");
     if (!seller) return alert("Debe seleccionar un vendedor");
     
-    const newItem: Client = { id, name, nit, address, city, sellerId: seller };
+    const newItem: Client = { id, name, nit, address, city, sellerId: seller, codOf: codOf || null, codRm: codRm || null };
     
     setIsLoading(true);
     try {
@@ -800,6 +804,14 @@ const MastersView: React.FC<MastersViewProps> = ({
                   <Input isDark={isDark} label="Nombre del Cliente" value={name} onChange={setName} />
                   <Input isDark={isDark} label="Dirección" value={address} onChange={setAddress} />
                   <Input isDark={isDark} label="Ciudad" value={city} onChange={setCity} />
+                  <div className="flex gap-3">
+                    <div className="flex-1 min-w-0">
+                      <Input isDark={isDark} label="Cód. OF" value={codOf} onChange={setCodOf} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <Input isDark={isDark} label="Cód. RM" value={codRm} onChange={setCodRm} />
+                    </div>
+                  </div>
                   
                   {/* DROPDOWN DE VENDEDORES */}
                   <div className="md:col-span-2 space-y-1.5 relative" data-seller-dropdown>
@@ -926,7 +938,7 @@ const MastersView: React.FC<MastersViewProps> = ({
                       <td className={`px-8 py-4 font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{c.city || '—'}</td>
                       <td className={`px-8 py-4 font-bold uppercase text-[10px] transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>{seller?.name || c.sellerId || 'Sin vendedor'}</td>
                       <td className="px-8 py-4 text-right flex justify-end gap-2">
-                        <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}><Icons.Edit /></button>
+                        <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setId(c.id); setNit(c.nit); setName(c.name); setAddress(c.address); setCity(c.city); setCodOf(c.codOf || ''); setCodRm(c.codRm || ''); setSeller(c.sellerId); setSellerSearch(seller?.name || ''); }} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}><Icons.Edit /></button>
                         <button disabled={!canDelete(user)} onClick={() => handleDelete('client', c.id)} className={`p-2.5 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}><Icons.Delete /></button>
                       </td>
                     </tr>

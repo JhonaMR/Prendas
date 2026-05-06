@@ -163,6 +163,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       items: [
         { id: 'cuentasCobro', label: 'Cuentas de Cobro', icon: <Icons.Edit />, description: 'Gestionar cuentas de cobro' },
         { id: 'historicoReferencia', label: 'Histórico de Referencia', icon: <Icons.History />, description: 'Consultar historial de referencias' },
+        { id: 'clientesPorCorreria', label: 'Clientes por Correría', icon: <Icons.ClientesCorreria />, description: 'Listado de clientes por correría' },
       ],
     },
     {

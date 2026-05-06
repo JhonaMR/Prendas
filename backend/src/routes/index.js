@@ -351,6 +351,14 @@ router.post('/rutas-transporte',           verifyToken, rutasTransporteControlle
 router.post('/rutas-transporte/sync',      verifyToken, rutasTransporteController.sync);
 router.delete('/rutas-transporte/:id',     verifyToken, preventNonAdminEdit, rutasTransporteController.remove);
 
+// ==================== NOTAS DE PEDIDOS (order_notes) ====================
+
+const orderNotesController = require('../controllers/entities/orderNotes/orderNotesController');
+
+router.get('/order-notes',              verifyToken, orderNotesController.getByOrderIds);
+router.put('/order-notes/:orderId',     verifyToken, orderNotesController.upsert);
+router.post('/order-notes/batch',       verifyToken, orderNotesController.batchUpsert);
+
 // ==================== SALIDAS DE BODEGA ====================
 
 const salidasBodegaController = require('../controllers/salidasBodegaController');

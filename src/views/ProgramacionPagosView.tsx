@@ -44,14 +44,22 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
 
   useEffect(() => {
     let cancelled = false;
-    setLoadingCalendario(true);
-    setTotalesPagos({});
-    api.getTotalesPagosPorMes(anio, mes).then(data => {
-      if (!cancelled) {
-        setTotalesPagos(data);
-        setLoadingCalendario(false);
+    const cargarTotales = async () => {
+      setLoadingCalendario(true);
+      try {
+        const data = await api.getTotalesPagosPorMes(anio, mes);
+        if (!cancelled) {
+          setTotalesPagos(data);
+        }
+      } catch (e) {
+        console.error('Error cargando totales de pagos:', e);
+      } finally {
+        if (!cancelled) {
+          setLoadingCalendario(false);
+        }
       }
-    });
+    };
+    cargarTotales();
     return () => { cancelled = true; };
   }, [anio, mes]);
 
