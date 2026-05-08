@@ -2101,24 +2101,19 @@ class ApiService {
   }
 
   async getTotalesPagosPorMes(anio: number, mes: number): Promise<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>> {
-    try {
-      const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
-        headers: this.getAuthHeaders()
-      });
-      if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('current_user');
-          window.location.href = '/login';
-        }
-        return {};
+    const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
+      headers: this.getAuthHeaders()
+    });
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('current_user');
+        window.location.href = '/login';
       }
-      const data = await response.json();
-      return data.data || {};
-    } catch (error) {
-      console.error('Error obteniendo totales de pagos:', error);
-      return {};
+      throw new Error(`HTTP ${response.status}`);
     }
+    const data = await response.json();
+    return data.data || {};
   }
 
   async createPago(pago: any): Promise<ApiResponse<any>> {

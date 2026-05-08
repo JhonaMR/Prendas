@@ -41,27 +41,50 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   const [verCuentas, setVerCuentas] = useState(false);
   const [totalesPagos, setTotalesPagos] = useState<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>({});
   const [loadingCalendario, setLoadingCalendario] = useState(false);
+  const [errorCalendario, setErrorCalendario] = useState(false);
+  const [recargarKey, setRecargarKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const cargarTotales = async () => {
       setLoadingCalendario(true);
-      try {
-        const data = await api.getTotalesPagosPorMes(anio, mes);
-        if (!cancelled) {
-          setTotalesPagos(data);
+      setErrorCalendario(false);
+
+      // Reintenta hasta 3 veces con 800ms entre intentos
+      const MAX_INTENTOS = 3;
+      const DELAY_MS = 800;
+
+      for (let intento = 1; intento <= MAX_INTENTOS; intento++) {
+        if (cancelled) return;
+        try {
+          const data = await api.getTotalesPagosPorMes(anio, mes);
+          if (cancelled) return;
+          // Si devolvió datos reales, o es el último intento, aceptamos el resultado
+          if (Object.keys(data).length > 0 || intento === MAX_INTENTOS) {
+            setTotalesPagos(data);
+            setLoadingCalendario(false);
+            return;
+          }
+          // Respuesta vacía pero no es el último intento — esperar y reintentar
+          await new Promise(res => setTimeout(res, DELAY_MS));
+        } catch (e) {
+          console.error(`Error cargando totales de pagos (intento ${intento}):`, e);
+          if (intento < MAX_INTENTOS) {
+            await new Promise(res => setTimeout(res, DELAY_MS));
+          }
         }
-      } catch (e) {
-        console.error('Error cargando totales de pagos:', e);
-      } finally {
-        if (!cancelled) {
-          setLoadingCalendario(false);
-        }
+      }
+
+      // Agotamos los intentos
+      if (!cancelled) {
+        setTotalesPagos({});
+        setErrorCalendario(true);
+        setLoadingCalendario(false);
       }
     };
     cargarTotales();
     return () => { cancelled = true; };
-  }, [anio, mes]);
+  }, [anio, mes, recargarKey]);
 
   if (verCuentas) {
     return <CuentasBancariasView onVolver={() => setVerCuentas(false)} user={user} />;
@@ -137,6 +160,27 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
           </button>
         </div>
       </div>
+
+      {/* Banner de error con reintento */}
+      {errorCalendario && (
+        <div className={`mb-4 flex items-center justify-between gap-4 px-5 py-3 rounded-2xl border transition-colors duration-300 ${isDark ? 'bg-red-900/30 border-red-700 text-red-300' : 'bg-red-50 border-red-200 text-red-600'}`}>
+          <div className="flex items-center gap-2 text-sm font-semibold">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4 flex-shrink-0">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            No se pudieron cargar los datos del calendario. Puede ser un problema de conexión.
+          </div>
+          <button
+            onClick={() => setRecargarKey(k => k + 1)}
+            className={`flex items-center gap-1.5 text-xs font-black px-3 py-1.5 rounded-xl transition-colors flex-shrink-0 ${isDark ? 'bg-red-800/50 hover:bg-red-700/60 text-red-200' : 'bg-red-100 hover:bg-red-200 text-red-700'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+            Reintentar
+          </button>
+        </div>
+      )}
 
       {/* Calendario */}
       <div className={`flex-1 rounded-3xl shadow-lg border overflow-hidden flex flex-col min-h-[600px] transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-violet-100'}`}>

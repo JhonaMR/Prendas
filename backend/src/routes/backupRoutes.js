@@ -23,8 +23,9 @@ router.get('/validation/report', backupController.getValidationReport);
 // Obtener estadísticas de almacenamiento
 router.get('/stats', backupController.getBackupStats);
 
-// Obtener información de un backup específico
-router.get('/:filename', backupController.getBackupInfo);
+// Listar full dumps disponibles
+// IMPORTANTE: debe ir ANTES de /:filename para que Express no lo capture como wildcard
+router.get('/full-dumps/list', backupController.listFullDumps);
 
 // Ejecutar backup manual
 router.post('/manual', backupController.executeManualBackup);
@@ -38,7 +39,8 @@ router.post('/full-dump', backupController.executeFullDump);
 // Cargar dump desde archivo (solo soporte)
 router.post('/upload-dump', backupController.uploadDump);
 
-// Listar full dumps disponibles
-router.get('/full-dumps/list', backupController.listFullDumps);
+// Obtener información de un backup específico
+// IMPORTANTE: debe ir AL FINAL porque /:filename captura cualquier segmento
+router.get('/:filename', backupController.getBackupInfo);
 
 module.exports = router;

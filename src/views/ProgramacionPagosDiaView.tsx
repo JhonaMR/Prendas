@@ -7,6 +7,7 @@ export interface Descuento {
   id: number;
   etiqueta: string;
   monto: number;
+  tipo?: 'suma' | 'resta';
 }
 
 export interface PagoDia {
@@ -44,8 +45,11 @@ interface Props {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-const sumar = (ds: Descuento[]) => ds.reduce((a, d) => a + (d.monto || 0), 0);
-const neto = (bruto: number, ds: Descuento[]) => bruto - sumar(ds);
+const sumarDs = (ds: Descuento[]) => ds.reduce((a, d) => {
+  const m = d.monto || 0;
+  return d.tipo === 'suma' ? a - m : a + m; // 'resta' (default) descuenta, 'suma' suma
+}, 0);
+const neto = (bruto: number, ds: Descuento[]) => bruto - sumarDs(ds);
 const fmt = (n: number) => n === 0 ? '-' : `$${n.toLocaleString('es-CR')}`;
 
 const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
@@ -148,8 +152,8 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
   };
 
   // ── Descuentos ─────────────────────────────────────────────────────────
-  const addDescuento = (tipo: 'OF' | 'ML') => {
-    const nuevo: Descuento = { id: Date.now(), etiqueta: '', monto: 0 };
+  const addDescuento = (tipo: 'OF' | 'ML', operacion: 'suma' | 'resta' = 'resta') => {
+    const nuevo: Descuento = { id: Date.now(), etiqueta: '', monto: 0, tipo: operacion };
     if (tipo === 'OF') setForm(f => ({ ...f, descuentosOF: [...f.descuentosOF, nuevo] }));
     else setForm(f => ({ ...f, descuentosML: [...f.descuentosML, nuevo] }));
   };
@@ -592,9 +596,25 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
             <div className={`rounded-2xl p-4 transition-colors duration-300 ${isDark ? 'bg-blue-900/30 border border-blue-700' : 'bg-blue-50 border border-blue-200'}`}>
               <div className="flex items-center justify-between mb-3">
                 <span className={`font-bold text-sm transition-colors duration-300 ${isDark ? 'text-blue-200' : 'text-blue-800'}`}>💳 Pago OF</span>
-                <span className={`text-xs transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
-                  Neto: <strong>{fmt(neto(parseFloat(String(form.brutOF)) || 0, form.descuentosOF))}</strong>
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => addDescuento('OF', 'suma')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded-lg transition-colors ${isDark ? 'bg-green-800/60 hover:bg-green-700/80 text-green-300' : 'bg-green-100 hover:bg-green-200 text-green-700'}`}
+                  >
+                    Sumar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addDescuento('OF', 'resta')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded-lg transition-colors ${isDark ? 'bg-red-900/50 hover:bg-red-800/70 text-red-300' : 'bg-red-100 hover:bg-red-200 text-red-600'}`}
+                  >
+                    Restar
+                  </button>
+                  <span className={`text-xs transition-colors duration-300 ${isDark ? 'text-blue-400' : 'text-blue-500'}`}>
+                    Neto: <strong>{fmt(neto(parseFloat(String(form.brutOF)) || 0, form.descuentosOF))}</strong>
+                  </span>
+                </div>
               </div>
               <div className="mb-3">
                 <label className={`block text-xs font-semibold mb-1 transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>Valor Bruto OF</label>
@@ -606,27 +626,42 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
                 <div key={d.id} className="flex gap-2 mb-2">
                   <input type="number" value={d.monto || ''} onChange={e => updateDescuento('OF', d.id, 'monto', e.target.value)}
                     placeholder="Monto"
-                    className={`w-36 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-blue-600 text-blue-100 focus:border-blue-500' : 'border-blue-200 text-slate-900 focus:border-blue-400'}`} />
+                    className={`w-36 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'bg-[#3d2d52] border-green-600 text-green-100 focus:border-green-500' : 'border-green-300 text-slate-900 focus:border-green-400' : isDark ? 'bg-[#3d2d52] border-blue-600 text-blue-100 focus:border-blue-500' : 'border-blue-200 text-slate-900 focus:border-blue-400'}`} />
                   <input type="text" value={d.etiqueta} onChange={e => updateDescuento('OF', d.id, 'etiqueta', e.target.value)}
-                    placeholder="Etiqueta (ej: RTE FTE)"
-                    className={`flex-1 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-blue-600 text-blue-100 focus:border-blue-500' : 'border-blue-200 text-slate-900 focus:border-blue-400'}`} />
+                    placeholder={d.tipo === 'suma' ? 'Concepto (ej: BONIF)' : 'Etiqueta (ej: RTE FTE)'}
+                    className={`flex-1 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'bg-[#3d2d52] border-green-600 text-green-100 focus:border-green-500' : 'border-green-300 text-slate-900 focus:border-green-400' : isDark ? 'bg-[#3d2d52] border-blue-600 text-blue-100 focus:border-blue-500' : 'border-blue-200 text-slate-900 focus:border-blue-400'}`} />
+                  <span className={`self-center text-xs font-bold w-10 text-center ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-500'}`}>
+                    {d.tipo === 'suma' ? '+' : '−'}
+                  </span>
                   <button onClick={() => removeDescuento('OF', d.id)}
                     className={`px-2 transition-colors duration-300 ${isDark ? 'text-red-400 hover:text-red-300' : 'text-red-400 hover:text-red-600'}`}>✕</button>
                 </div>
               ))}
-              <button onClick={() => addDescuento('OF')}
-                className={`text-xs font-semibold mt-1 transition-colors duration-300 ${isDark ? 'text-blue-300 hover:text-blue-100' : 'text-blue-500 hover:text-blue-700'}`}>
-                + Agregar descuento OF
-              </button>
             </div>
 
             {/* ML */}
             <div className={`rounded-2xl p-4 transition-colors duration-300 ${isDark ? 'bg-pink-900/20 border border-pink-700' : 'bg-pink-50 border border-pink-200'}`}>
               <div className="flex items-center justify-between mb-3">
                 <span className={`font-bold text-sm transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-pink-800'}`}>💰 Pago ML</span>
-                <span className={`text-xs transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>
-                  Neto: <strong>{fmt(neto(parseFloat(String(form.brutML)) || 0, form.descuentosML))}</strong>
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => addDescuento('ML', 'suma')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded-lg transition-colors ${isDark ? 'bg-green-800/60 hover:bg-green-700/80 text-green-300' : 'bg-green-100 hover:bg-green-200 text-green-700'}`}
+                  >
+                    Sumar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => addDescuento('ML', 'resta')}
+                    className={`text-xs font-bold px-2.5 py-1 rounded-lg transition-colors ${isDark ? 'bg-red-900/50 hover:bg-red-800/70 text-red-300' : 'bg-red-100 hover:bg-red-200 text-red-600'}`}
+                  >
+                    Restar
+                  </button>
+                  <span className={`text-xs transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-pink-500'}`}>
+                    Neto: <strong>{fmt(neto(parseFloat(String(form.brutML)) || 0, form.descuentosML))}</strong>
+                  </span>
+                </div>
               </div>
               <div className="mb-3">
                 <label className={`block text-xs font-semibold mb-1 transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-600'}`}>Valor Bruto ML</label>
@@ -638,18 +673,17 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
                 <div key={d.id} className="flex gap-2 mb-2">
                   <input type="number" value={d.monto || ''} onChange={e => updateDescuento('ML', d.id, 'monto', e.target.value)}
                     placeholder="Monto"
-                    className={`w-36 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-100 focus:border-pink-500' : 'border-pink-200 text-slate-900 focus:border-pink-400'}`} />
+                    className={`w-36 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'bg-[#3d2d52] border-green-600 text-green-100 focus:border-green-500' : 'border-green-300 text-slate-900 focus:border-green-400' : isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-100 focus:border-pink-500' : 'border-pink-200 text-slate-900 focus:border-pink-400'}`} />
                   <input type="text" value={d.etiqueta} onChange={e => updateDescuento('ML', d.id, 'etiqueta', e.target.value)}
-                    placeholder="Etiqueta (ej: TRANSP)"
-                    className={`flex-1 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-100 focus:border-pink-500' : 'border-pink-200 text-slate-900 focus:border-pink-400'}`} />
+                    placeholder={d.tipo === 'suma' ? 'Concepto (ej: BONIF)' : 'Etiqueta (ej: TRANSP)'}
+                    className={`flex-1 border-2 rounded-xl px-3 py-2 text-sm focus:outline-none transition-all transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'bg-[#3d2d52] border-green-600 text-green-100 focus:border-green-500' : 'border-green-300 text-slate-900 focus:border-green-400' : isDark ? 'bg-[#3d2d52] border-pink-600 text-pink-100 focus:border-pink-500' : 'border-pink-200 text-slate-900 focus:border-pink-400'}`} />
+                  <span className={`self-center text-xs font-bold w-10 text-center ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-500'}`}>
+                    {d.tipo === 'suma' ? '+' : '−'}
+                  </span>
                   <button onClick={() => removeDescuento('ML', d.id)}
                     className={`px-2 transition-colors duration-300 ${isDark ? 'text-red-400 hover:text-red-300' : 'text-red-400 hover:text-red-600'}`}>✕</button>
                 </div>
               ))}
-              <button onClick={() => addDescuento('ML')}
-                className={`text-xs font-semibold mt-1 transition-colors duration-300 ${isDark ? 'text-pink-300 hover:text-pink-100' : 'text-pink-500 hover:text-pink-700'}`}>
-                + Agregar descuento ML
-              </button>
             </div>
             </div>
 
@@ -702,7 +736,10 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
                 </div>
                 {seleccionado.descuentosOF.map(d => (
                   <div key={d.id} className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
-                    <span>- {d.etiqueta || 'Descuento'}</span><span className={`transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-400'}`}>-{fmt(d.monto)}</span>
+                    <span>{d.tipo === 'suma' ? '+' : '-'} {d.etiqueta || 'Descuento'}</span>
+                    <span className={`transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-400'}`}>
+                      {d.tipo === 'suma' ? '+' : '-'}{fmt(d.monto)}
+                    </span>
                   </div>
                 ))}
                 <div className={`flex justify-between text-sm font-bold pt-2 mt-2 border-t transition-colors duration-300 ${isDark ? 'border-violet-700 text-emerald-400' : 'border-violet-200 text-emerald-700'}`}>
@@ -720,7 +757,10 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
                 </div>
                 {seleccionado.descuentosML.map(d => (
                   <div key={d.id} className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-slate-500'}`}>
-                    <span>- {d.etiqueta || 'Descuento'}</span><span className={`transition-colors duration-300 ${isDark ? 'text-red-400' : 'text-red-400'}`}>-{fmt(d.monto)}</span>
+                    <span>{d.tipo === 'suma' ? '+' : '-'} {d.etiqueta || 'Descuento'}</span>
+                    <span className={`transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-400'}`}>
+                      {d.tipo === 'suma' ? '+' : '-'}{fmt(d.monto)}
+                    </span>
                   </div>
                 ))}
                 <div className={`flex justify-between text-sm font-bold pt-2 mt-2 border-t transition-colors duration-300 ${isDark ? 'border-pink-700 text-emerald-400' : 'border-pink-200 text-emerald-700'}`}>

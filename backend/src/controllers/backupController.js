@@ -230,13 +230,17 @@ exports.executeFullDump = async (req, res) => {
     const dumpPath = path.join(fullDumpsDir, filename);
 
     // pg_dump completo: schema + datos + índices + secuencias + triggers + funciones
-    // Sin --clean ni --create para que sea un dump puro de objetos
+    // --clean --if-exists: genera DROP TABLE IF EXISTS antes de cada CREATE TABLE,
+    // garantizando que al restaurar se reescriba toda la BD desde cero sin conflictos
+    // de primary key ni datos residuales de tablas que ya existían.
     const command = [
       'pg_dump',
       '--encoding=UTF8',
       '--no-password',
       '--verbose',
       '--format=plain',        // SQL plano, legible y portable
+      '--clean',               // Incluye DROP TABLE IF EXISTS antes de cada CREATE
+      '--if-exists',           // Evita errores si la tabla no existe al hacer DROP
       '--no-owner',            // No incluir SET OWNER (evita errores de roles)
       '--no-acl',              // No incluir GRANT/REVOKE
       `-U ${dbUser}`,
@@ -356,12 +360,15 @@ exports.uploadDump = [
       console.log(`✅ Backup de seguridad creado: ${securityBackup.filename}`);
 
       // 2. Cargar el dump en la BD actual
-      // Usamos psql con -f apuntando al archivo temporal
-      // Si el dump tiene CREATE DATABASE o \connect, psql los ejecutará pero
-      // los errores de esas líneas no detienen la ejecución del resto
+      // -v ON_ERROR_STOP=1: detiene la ejecución ante el primer error real y
+      //   retorna exit code != 0, permitiendo detectar fallos correctamente.
+      // --single-transaction: envuelve todo en una transacción; si algo falla
+      //   hace rollback completo en lugar de dejar la BD en estado parcial.
       const command = [
         'psql',
         '--no-password',
+        '-v ON_ERROR_STOP=1',
+        '--single-transaction',
         `-U ${dbUser}`,
         `-h ${dbHost}`,
         `-p ${dbPort}`,
@@ -372,11 +379,25 @@ exports.uploadDump = [
       const env = { ...process.env, PGPASSWORD: dbPassword };
 
       console.log(`🔄 Cargando dump en BD: ${dbName}...`);
-      const { stdout, stderr } = await execAsync(command, {
-        env,
-        maxBuffer: 50 * 1024 * 1024,
-        timeout: 10 * 60 * 1000 // 10 minutos máximo
-      });
+      let psqlStdout = '';
+      let psqlStderr = '';
+      try {
+        const result = await execAsync(command, {
+          env,
+          maxBuffer: 50 * 1024 * 1024,
+          timeout: 10 * 60 * 1000 // 10 minutos máximo
+        });
+        psqlStdout = result.stdout || '';
+        psqlStderr = result.stderr || '';
+      } catch (psqlError) {
+        // execAsync lanza error cuando exit code != 0 (ON_ERROR_STOP activado)
+        const errorDetail = psqlError.stderr || psqlError.message || 'Error desconocido en psql';
+        console.error('❌ Error al cargar dump:', errorDetail);
+        return res.status(500).json({
+          success: false,
+          error: `Error al ejecutar el dump: ${errorDetail}`
+        });
+      }
 
       console.log('✅ Dump cargado exitosamente');
 
