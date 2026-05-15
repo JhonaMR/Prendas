@@ -127,6 +127,35 @@ export const uploadMoldeFicha = async (file: File): Promise<ApiResponse> => {
     return r.json();
 };
 
+// ===== FICHAS DE CONFECCION =====
+
+export const getFichasConfeccion = async (): Promise<any[]> => {
+    const r = await fetch(`${getApiUrl()}/fichas-confeccion`, { headers: getHeaders() });
+    const d = await r.json();
+    return d.data || [];
+};
+
+export const createFichaConfeccion = async (ficha: any): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-confeccion`, {
+        method: 'POST', headers: getHeaders(), body: JSON.stringify(ficha)
+    });
+    return r.json();
+};
+
+export const updateFichaConfeccion = async (id: string, ficha: any): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
+        method: 'PUT', headers: getHeaders(), body: JSON.stringify(ficha)
+    });
+    return r.json();
+};
+
+export const deleteFichaConfeccion = async (id: string): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
+        method: 'DELETE', headers: getHeaders()
+    });
+    return r.json();
+};
+
 // ===== FICHAS DE COSTO =====
 
 export const getFichasCosto = async (): Promise<FichaCosto[]> => {
@@ -230,7 +259,8 @@ const apiFichas = {
     uploadFotoFicha, uploadMoldeFicha,
     getFichasCosto, getFichaCosto, importarFichaDiseno, createFichaCosto, updateFichaCosto,
     crearCorte, updateCorte, deleteCorte,
-    getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria
+    getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria,
+    getFichasConfeccion, createFichaConfeccion, updateFichaConfeccion, deleteFichaConfeccion,
 };
 
 export default apiFichas;
