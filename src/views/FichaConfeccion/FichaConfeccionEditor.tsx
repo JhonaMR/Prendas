@@ -418,14 +418,13 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
                                 onBlur={() => setTimeout(() => setShowRefDrop(false), 150)}
                                 onKeyDown={e => {
                                     if (e.key === 'Enter') {
-                                        // Buscar coincidencia exacta primero, luego la primera del filtro
                                         const exacta = (state.fichasCosto || []).find((fc: any) =>
                                             fc.referencia.toLowerCase() === refSearch.toLowerCase()
                                         );
                                         const primera = refsFiltradas[0];
                                         const elegida = exacta || primera;
                                         if (elegida) {
-                                            set('referencia', elegida.referencia);
+                                            setReferenciaActiva(elegida.referencia);
                                             setRefSearch(elegida.referencia);
                                             setShowRefDrop(false);
                                             (e.target as HTMLInputElement).blur();

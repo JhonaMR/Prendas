@@ -387,6 +387,16 @@ router.get('/control-telas/muestras',           verifyToken, verifyAdminOrOperad
 router.post('/control-telas/muestras/batch',    verifyToken, verifyAdminOrOperador, controlTelasController.saveBatchMuestras);
 router.delete('/control-telas/muestras/:id',    verifyToken, verifyAdminOrOperador, controlTelasController.deleteMuestra);
 
+// ==================== FICHAS DE CONFECCION ====================
+
+const fichasConfeccionController = require('../controllers/fichasConfeccionController');
+
+router.get('/fichas-confeccion',      verifyToken, fichasConfeccionController.getFichasConfeccion);
+router.get('/fichas-confeccion/:id',  verifyToken, fichasConfeccionController.getFichaConfeccion);
+router.post('/fichas-confeccion',     verifyToken, allowOperadorOrAdmin, fichasConfeccionController.createFichaConfeccion);
+router.put('/fichas-confeccion/:id',  verifyToken, allowOperadorOrAdmin, fichasConfeccionController.updateFichaConfeccion);
+router.delete('/fichas-confeccion/:id', verifyToken, allowAdminOnly, fichasConfeccionController.deleteFichaConfeccion);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');
