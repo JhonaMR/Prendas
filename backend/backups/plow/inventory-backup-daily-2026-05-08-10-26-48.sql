@@ -2,12 +2,39 @@
 -- PostgreSQL database dump
 --
 
-\restrict lvu7sJdeq47v43aIgbvt1oOsmIRf9XhKxe1Bbzyei9Tv2uMU7pmtno2DAhTwt3O
+\restrict 8uMlLfOByKauFCQKR49gkYThbn1D8Sk5Mvns5BkQymqE4avTC2Zgk0wPITY41dc
 
 -- Dumped from database version 18.2
 -- Dumped by pg_dump version 18.2
 
--- Started on 2026-05-06 15:52:24
+-- Started on 2026-05-08 16:26:48
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE IF EXISTS inventory_dev;
+--
+-- TOC entry 5658 (class 1262 OID 29700)
+-- Name: inventory_dev; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE inventory_dev WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Spanish_Colombia.1252';
+
+
+ALTER DATABASE inventory_dev OWNER TO postgres;
+
+\unrestrict 8uMlLfOByKauFCQKR49gkYThbn1D8Sk5Mvns5BkQymqE4avTC2Zgk0wPITY41dc
+\connect inventory_dev
+\restrict 8uMlLfOByKauFCQKR49gkYThbn1D8Sk5Mvns5BkQymqE4avTC2Zgk0wPITY41dc
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -23,24 +50,26 @@ SET row_security = off;
 
 --
 -- TOC entry 5 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
 -- *not* creating schema, since initdb creates it
 
 
+ALTER SCHEMA public OWNER TO postgres;
+
 --
--- TOC entry 5648 (class 0 OID 0)
+-- TOC entry 5659 (class 0 OID 0)
 -- Dependencies: 5
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
 --
 
 COMMENT ON SCHEMA public IS '';
 
 
 --
--- TOC entry 276 (class 1255 OID 29701)
--- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: -
+-- TOC entry 277 (class 1255 OID 29701)
+-- Name: update_user_view_preferences_timestamp(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
 CREATE FUNCTION public.update_user_view_preferences_timestamp() RETURNS trigger
@@ -58,13 +87,15 @@ END;
 $$;
 
 
+ALTER FUNCTION public.update_user_view_preferences_timestamp() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
 -- TOC entry 219 (class 1259 OID 29702)
--- Name: audit_log; Type: TABLE; Schema: public; Owner: -
+-- Name: audit_log; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.audit_log (
@@ -82,9 +113,11 @@ CREATE TABLE public.audit_log (
 );
 
 
+ALTER TABLE public.audit_log OWNER TO postgres;
+
 --
 -- TOC entry 220 (class 1259 OID 29711)
--- Name: clients; Type: TABLE; Schema: public; Owner: -
+-- Name: clients; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.clients (
@@ -97,13 +130,17 @@ CREATE TABLE public.clients (
     created_at timestamp without time zone,
     seller_id character varying(255),
     updated_at timestamp without time zone,
-    active boolean DEFAULT true
+    active boolean DEFAULT true,
+    cod_of character varying(255),
+    cod_rm character varying(255)
 );
 
 
+ALTER TABLE public.clients OWNER TO postgres;
+
 --
 -- TOC entry 221 (class 1259 OID 29722)
--- Name: compras; Type: TABLE; Schema: public; Owner: -
+-- Name: compras; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.compras (
@@ -127,9 +164,11 @@ CREATE TABLE public.compras (
 );
 
 
+ALTER TABLE public.compras OWNER TO postgres;
+
 --
 -- TOC entry 222 (class 1259 OID 29739)
--- Name: confeccionistas; Type: TABLE; Schema: public; Owner: -
+-- Name: confeccionistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.confeccionistas (
@@ -145,9 +184,11 @@ CREATE TABLE public.confeccionistas (
 );
 
 
+ALTER TABLE public.confeccionistas OWNER TO postgres;
+
 --
 -- TOC entry 273 (class 1259 OID 32081)
--- Name: control_telas_muestras; Type: TABLE; Schema: public; Owner: -
+-- Name: control_telas_muestras; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.control_telas_muestras (
@@ -172,9 +213,11 @@ CREATE TABLE public.control_telas_muestras (
 );
 
 
+ALTER TABLE public.control_telas_muestras OWNER TO postgres;
+
 --
 -- TOC entry 272 (class 1259 OID 32054)
--- Name: control_telas_produccion; Type: TABLE; Schema: public; Owner: -
+-- Name: control_telas_produccion; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.control_telas_produccion (
@@ -199,9 +242,11 @@ CREATE TABLE public.control_telas_produccion (
 );
 
 
+ALTER TABLE public.control_telas_produccion OWNER TO postgres;
+
 --
 -- TOC entry 223 (class 1259 OID 29751)
--- Name: correria_catalog; Type: TABLE; Schema: public; Owner: -
+-- Name: correria_catalog; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.correria_catalog (
@@ -212,9 +257,11 @@ CREATE TABLE public.correria_catalog (
 );
 
 
+ALTER TABLE public.correria_catalog OWNER TO postgres;
+
 --
 -- TOC entry 224 (class 1259 OID 29759)
--- Name: correria_novedades; Type: TABLE; Schema: public; Owner: -
+-- Name: correria_novedades; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.correria_novedades (
@@ -225,9 +272,11 @@ CREATE TABLE public.correria_novedades (
 );
 
 
+ALTER TABLE public.correria_novedades OWNER TO postgres;
+
 --
 -- TOC entry 225 (class 1259 OID 29768)
--- Name: correria_novedades_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: correria_novedades_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.correria_novedades_id_seq
@@ -239,10 +288,12 @@ CREATE SEQUENCE public.correria_novedades_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.correria_novedades_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5649 (class 0 OID 0)
+-- TOC entry 5661 (class 0 OID 0)
 -- Dependencies: 225
--- Name: correria_novedades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: correria_novedades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.correria_novedades_id_seq OWNED BY public.correria_novedades.id;
@@ -250,7 +301,7 @@ ALTER SEQUENCE public.correria_novedades_id_seq OWNED BY public.correria_novedad
 
 --
 -- TOC entry 226 (class 1259 OID 29769)
--- Name: correrias; Type: TABLE; Schema: public; Owner: -
+-- Name: correrias; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.correrias (
@@ -262,9 +313,11 @@ CREATE TABLE public.correrias (
 );
 
 
+ALTER TABLE public.correrias OWNER TO postgres;
+
 --
 -- TOC entry 274 (class 1259 OID 32122)
--- Name: corte_registros; Type: TABLE; Schema: public; Owner: -
+-- Name: corte_registros; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.corte_registros (
@@ -281,9 +334,11 @@ CREATE TABLE public.corte_registros (
 );
 
 
+ALTER TABLE public.corte_registros OWNER TO postgres;
+
 --
 -- TOC entry 262 (class 1259 OID 30303)
--- Name: cuentas_bancarias; Type: TABLE; Schema: public; Owner: -
+-- Name: cuentas_bancarias; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.cuentas_bancarias (
@@ -296,9 +351,11 @@ CREATE TABLE public.cuentas_bancarias (
 );
 
 
+ALTER TABLE public.cuentas_bancarias OWNER TO postgres;
+
 --
 -- TOC entry 261 (class 1259 OID 30302)
--- Name: cuentas_bancarias_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.cuentas_bancarias_id_seq
@@ -310,10 +367,12 @@ CREATE SEQUENCE public.cuentas_bancarias_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.cuentas_bancarias_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5650 (class 0 OID 0)
+-- TOC entry 5662 (class 0 OID 0)
 -- Dependencies: 261
--- Name: cuentas_bancarias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.cuentas_bancarias_id_seq OWNED BY public.cuentas_bancarias.id;
@@ -321,7 +380,7 @@ ALTER SEQUENCE public.cuentas_bancarias_id_seq OWNED BY public.cuentas_bancarias
 
 --
 -- TOC entry 227 (class 1259 OID 29778)
--- Name: delivery_dates; Type: TABLE; Schema: public; Owner: -
+-- Name: delivery_dates; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.delivery_dates (
@@ -340,9 +399,11 @@ CREATE TABLE public.delivery_dates (
 );
 
 
+ALTER TABLE public.delivery_dates OWNER TO postgres;
+
 --
 -- TOC entry 266 (class 1259 OID 30349)
--- Name: descuentos_pago; Type: TABLE; Schema: public; Owner: -
+-- Name: descuentos_pago; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.descuentos_pago (
@@ -357,9 +418,11 @@ CREATE TABLE public.descuentos_pago (
 );
 
 
+ALTER TABLE public.descuentos_pago OWNER TO postgres;
+
 --
 -- TOC entry 265 (class 1259 OID 30348)
--- Name: descuentos_pago_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.descuentos_pago_id_seq
@@ -371,10 +434,12 @@ CREATE SEQUENCE public.descuentos_pago_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.descuentos_pago_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5651 (class 0 OID 0)
+-- TOC entry 5663 (class 0 OID 0)
 -- Dependencies: 265
--- Name: descuentos_pago_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.descuentos_pago_id_seq OWNED BY public.descuentos_pago.id;
@@ -382,7 +447,7 @@ ALTER SEQUENCE public.descuentos_pago_id_seq OWNED BY public.descuentos_pago.id;
 
 --
 -- TOC entry 228 (class 1259 OID 29790)
--- Name: disenadoras; Type: TABLE; Schema: public; Owner: -
+-- Name: disenadoras; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.disenadoras (
@@ -396,9 +461,11 @@ CREATE TABLE public.disenadoras (
 );
 
 
+ALTER TABLE public.disenadoras OWNER TO postgres;
+
 --
 -- TOC entry 229 (class 1259 OID 29799)
--- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: dispatch_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.dispatch_items_id_seq
@@ -409,9 +476,11 @@ CREATE SEQUENCE public.dispatch_items_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.dispatch_items_id_seq OWNER TO postgres;
+
 --
 -- TOC entry 230 (class 1259 OID 29800)
--- Name: dispatch_items; Type: TABLE; Schema: public; Owner: -
+-- Name: dispatch_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.dispatch_items (
@@ -423,9 +492,11 @@ CREATE TABLE public.dispatch_items (
 );
 
 
+ALTER TABLE public.dispatch_items OWNER TO postgres;
+
 --
 -- TOC entry 231 (class 1259 OID 29811)
--- Name: dispatches; Type: TABLE; Schema: public; Owner: -
+-- Name: dispatches; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.dispatches (
@@ -440,9 +511,11 @@ CREATE TABLE public.dispatches (
 );
 
 
+ALTER TABLE public.dispatches OWNER TO postgres;
+
 --
 -- TOC entry 232 (class 1259 OID 29824)
--- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: -
+-- Name: fichas_cortes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.fichas_cortes (
@@ -473,9 +546,11 @@ CREATE TABLE public.fichas_cortes (
 );
 
 
+ALTER TABLE public.fichas_cortes OWNER TO postgres;
+
 --
 -- TOC entry 233 (class 1259 OID 29851)
--- Name: fichas_costo; Type: TABLE; Schema: public; Owner: -
+-- Name: fichas_costo; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.fichas_costo (
@@ -521,9 +596,11 @@ CREATE TABLE public.fichas_costo (
 );
 
 
+ALTER TABLE public.fichas_costo OWNER TO postgres;
+
 --
 -- TOC entry 234 (class 1259 OID 29885)
--- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: -
+-- Name: fichas_diseno; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.fichas_diseno (
@@ -556,9 +633,11 @@ CREATE TABLE public.fichas_diseno (
 );
 
 
+ALTER TABLE public.fichas_diseno OWNER TO postgres;
+
 --
 -- TOC entry 235 (class 1259 OID 29907)
--- Name: inventory_movements; Type: TABLE; Schema: public; Owner: -
+-- Name: inventory_movements; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.inventory_movements (
@@ -579,9 +658,11 @@ CREATE TABLE public.inventory_movements (
 );
 
 
+ALTER TABLE public.inventory_movements OWNER TO postgres;
+
 --
 -- TOC entry 236 (class 1259 OID 29923)
--- Name: maletas; Type: TABLE; Schema: public; Owner: -
+-- Name: maletas; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.maletas (
@@ -594,9 +675,11 @@ CREATE TABLE public.maletas (
 );
 
 
+ALTER TABLE public.maletas OWNER TO postgres;
+
 --
 -- TOC entry 237 (class 1259 OID 29933)
--- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: -
+-- Name: maletas_referencias; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.maletas_referencias (
@@ -608,9 +691,11 @@ CREATE TABLE public.maletas_referencias (
 );
 
 
+ALTER TABLE public.maletas_referencias OWNER TO postgres;
+
 --
 -- TOC entry 238 (class 1259 OID 29942)
--- Name: messages; Type: TABLE; Schema: public; Owner: -
+-- Name: messages; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.messages (
@@ -624,9 +709,11 @@ CREATE TABLE public.messages (
 );
 
 
+ALTER TABLE public.messages OWNER TO postgres;
+
 --
 -- TOC entry 239 (class 1259 OID 29954)
--- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: messages_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.messages_id_seq
@@ -638,10 +725,12 @@ CREATE SEQUENCE public.messages_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.messages_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5652 (class 0 OID 0)
+-- TOC entry 5664 (class 0 OID 0)
 -- Dependencies: 239
--- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
@@ -649,7 +738,7 @@ ALTER SEQUENCE public.messages_id_seq OWNED BY public.messages.id;
 
 --
 -- TOC entry 240 (class 1259 OID 29955)
--- Name: order_items; Type: TABLE; Schema: public; Owner: -
+-- Name: order_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.order_items (
@@ -660,9 +749,27 @@ CREATE TABLE public.order_items (
 );
 
 
+ALTER TABLE public.order_items OWNER TO postgres;
+
+--
+-- TOC entry 276 (class 1259 OID 32190)
+-- Name: order_notes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.order_notes (
+    order_id character varying(255) NOT NULL,
+    contacto character varying(255),
+    novedad text,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_by character varying(255)
+);
+
+
+ALTER TABLE public.order_notes OWNER TO postgres;
+
 --
 -- TOC entry 241 (class 1259 OID 29965)
--- Name: orders; Type: TABLE; Schema: public; Owner: -
+-- Name: orders; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.orders (
@@ -681,9 +788,11 @@ CREATE TABLE public.orders (
 );
 
 
+ALTER TABLE public.orders OWNER TO postgres;
+
 --
 -- TOC entry 260 (class 1259 OID 30286)
--- Name: pago_lotes_config; Type: TABLE; Schema: public; Owner: -
+-- Name: pago_lotes_config; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pago_lotes_config (
@@ -696,9 +805,11 @@ CREATE TABLE public.pago_lotes_config (
 );
 
 
+ALTER TABLE public.pago_lotes_config OWNER TO postgres;
+
 --
 -- TOC entry 259 (class 1259 OID 30285)
--- Name: pago_lotes_config_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pago_lotes_config_id_seq
@@ -710,10 +821,12 @@ CREATE SEQUENCE public.pago_lotes_config_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.pago_lotes_config_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5653 (class 0 OID 0)
+-- TOC entry 5665 (class 0 OID 0)
 -- Dependencies: 259
--- Name: pago_lotes_config_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pago_lotes_config_id_seq OWNED BY public.pago_lotes_config.id;
@@ -721,7 +834,7 @@ ALTER SEQUENCE public.pago_lotes_config_id_seq OWNED BY public.pago_lotes_config
 
 --
 -- TOC entry 264 (class 1259 OID 30319)
--- Name: pagos_programados; Type: TABLE; Schema: public; Owner: -
+-- Name: pagos_programados; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.pagos_programados (
@@ -741,9 +854,11 @@ CREATE TABLE public.pagos_programados (
 );
 
 
+ALTER TABLE public.pagos_programados OWNER TO postgres;
+
 --
 -- TOC entry 263 (class 1259 OID 30318)
--- Name: pagos_programados_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: pagos_programados_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.pagos_programados_id_seq
@@ -755,10 +870,12 @@ CREATE SEQUENCE public.pagos_programados_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.pagos_programados_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5654 (class 0 OID 0)
+-- TOC entry 5666 (class 0 OID 0)
 -- Dependencies: 263
--- Name: pagos_programados_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: pagos_programados_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.pagos_programados_id_seq OWNED BY public.pagos_programados.id;
@@ -766,7 +883,7 @@ ALTER SEQUENCE public.pagos_programados_id_seq OWNED BY public.pagos_programados
 
 --
 -- TOC entry 242 (class 1259 OID 29977)
--- Name: product_references; Type: TABLE; Schema: public; Owner: -
+-- Name: product_references; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.product_references (
@@ -783,9 +900,11 @@ CREATE TABLE public.product_references (
 );
 
 
+ALTER TABLE public.product_references OWNER TO postgres;
+
 --
 -- TOC entry 243 (class 1259 OID 29987)
--- Name: production_tracking; Type: TABLE; Schema: public; Owner: -
+-- Name: production_tracking; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.production_tracking (
@@ -798,9 +917,11 @@ CREATE TABLE public.production_tracking (
 );
 
 
+ALTER TABLE public.production_tracking OWNER TO postgres;
+
 --
 -- TOC entry 271 (class 1259 OID 32024)
--- Name: producto_en_proceso; Type: TABLE; Schema: public; Owner: -
+-- Name: producto_en_proceso; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.producto_en_proceso (
@@ -830,9 +951,11 @@ CREATE TABLE public.producto_en_proceso (
 );
 
 
+ALTER TABLE public.producto_en_proceso OWNER TO postgres;
+
 --
 -- TOC entry 244 (class 1259 OID 29997)
--- Name: reception_items; Type: TABLE; Schema: public; Owner: -
+-- Name: reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.reception_items (
@@ -843,9 +966,11 @@ CREATE TABLE public.reception_items (
 );
 
 
+ALTER TABLE public.reception_items OWNER TO postgres;
+
 --
 -- TOC entry 245 (class 1259 OID 30006)
--- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.reception_items_id_seq
@@ -856,10 +981,12 @@ CREATE SEQUENCE public.reception_items_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.reception_items_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5655 (class 0 OID 0)
+-- TOC entry 5667 (class 0 OID 0)
 -- Dependencies: 245
--- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
@@ -867,7 +994,7 @@ ALTER SEQUENCE public.reception_items_id_seq OWNED BY public.reception_items.id;
 
 --
 -- TOC entry 246 (class 1259 OID 30007)
--- Name: receptions; Type: TABLE; Schema: public; Owner: -
+-- Name: receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.receptions (
@@ -890,10 +1017,12 @@ CREATE TABLE public.receptions (
 );
 
 
+ALTER TABLE public.receptions OWNER TO postgres;
+
 --
--- TOC entry 5656 (class 0 OID 0)
+-- TOC entry 5668 (class 0 OID 0)
 -- Dependencies: 246
--- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: -
+-- Name: COLUMN receptions.affects_inventory; Type: COMMENT; Schema: public; Owner: postgres
 --
 
 COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this reception impacts the inventory. Set to FALSE for partial receptions that are part of a larger batch.';
@@ -901,7 +1030,7 @@ COMMENT ON COLUMN public.receptions.affects_inventory IS 'Controls whether this 
 
 --
 -- TOC entry 247 (class 1259 OID 30026)
--- Name: return_reception_items; Type: TABLE; Schema: public; Owner: -
+-- Name: return_reception_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.return_reception_items (
@@ -913,9 +1042,11 @@ CREATE TABLE public.return_reception_items (
 );
 
 
+ALTER TABLE public.return_reception_items OWNER TO postgres;
+
 --
 -- TOC entry 248 (class 1259 OID 30035)
--- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: return_reception_items_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.return_reception_items_id_seq
@@ -926,10 +1057,12 @@ CREATE SEQUENCE public.return_reception_items_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.return_reception_items_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5657 (class 0 OID 0)
+-- TOC entry 5669 (class 0 OID 0)
 -- Dependencies: 248
--- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: return_reception_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_reception_items.id;
@@ -937,7 +1070,7 @@ ALTER SEQUENCE public.return_reception_items_id_seq OWNED BY public.return_recep
 
 --
 -- TOC entry 249 (class 1259 OID 30036)
--- Name: return_receptions; Type: TABLE; Schema: public; Owner: -
+-- Name: return_receptions; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.return_receptions (
@@ -950,9 +1083,11 @@ CREATE TABLE public.return_receptions (
 );
 
 
+ALTER TABLE public.return_receptions OWNER TO postgres;
+
 --
 -- TOC entry 269 (class 1259 OID 30412)
--- Name: rutas_transporte; Type: TABLE; Schema: public; Owner: -
+-- Name: rutas_transporte; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.rutas_transporte (
@@ -964,9 +1099,11 @@ CREATE TABLE public.rutas_transporte (
 );
 
 
+ALTER TABLE public.rutas_transporte OWNER TO postgres;
+
 --
 -- TOC entry 270 (class 1259 OID 30430)
--- Name: rutas_transporte_items; Type: TABLE; Schema: public; Owner: -
+-- Name: rutas_transporte_items; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.rutas_transporte_items (
@@ -982,9 +1119,11 @@ CREATE TABLE public.rutas_transporte_items (
 );
 
 
+ALTER TABLE public.rutas_transporte_items OWNER TO postgres;
+
 --
 -- TOC entry 275 (class 1259 OID 32148)
--- Name: salidas_bodega; Type: TABLE; Schema: public; Owner: -
+-- Name: salidas_bodega; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.salidas_bodega (
@@ -1003,9 +1142,11 @@ CREATE TABLE public.salidas_bodega (
 );
 
 
+ALTER TABLE public.salidas_bodega OWNER TO postgres;
+
 --
 -- TOC entry 250 (class 1259 OID 30046)
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.schema_migrations (
@@ -1018,9 +1159,11 @@ CREATE TABLE public.schema_migrations (
 );
 
 
+ALTER TABLE public.schema_migrations OWNER TO postgres;
+
 --
 -- TOC entry 251 (class 1259 OID 30055)
--- Name: schema_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: schema_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.schema_migrations_id_seq
@@ -1032,10 +1175,12 @@ CREATE SEQUENCE public.schema_migrations_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.schema_migrations_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5658 (class 0 OID 0)
+-- TOC entry 5670 (class 0 OID 0)
 -- Dependencies: 251
--- Name: schema_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: schema_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.schema_migrations_id_seq OWNED BY public.schema_migrations.id;
@@ -1043,7 +1188,7 @@ ALTER SEQUENCE public.schema_migrations_id_seq OWNED BY public.schema_migrations
 
 --
 -- TOC entry 252 (class 1259 OID 30056)
--- Name: sellers; Type: TABLE; Schema: public; Owner: -
+-- Name: sellers; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.sellers (
@@ -1054,9 +1199,11 @@ CREATE TABLE public.sellers (
 );
 
 
+ALTER TABLE public.sellers OWNER TO postgres;
+
 --
 -- TOC entry 268 (class 1259 OID 30391)
--- Name: talleres; Type: TABLE; Schema: public; Owner: -
+-- Name: talleres; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.talleres (
@@ -1073,9 +1220,11 @@ CREATE TABLE public.talleres (
 );
 
 
+ALTER TABLE public.talleres OWNER TO postgres;
+
 --
 -- TOC entry 267 (class 1259 OID 30375)
--- Name: transportistas; Type: TABLE; Schema: public; Owner: -
+-- Name: transportistas; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.transportistas (
@@ -1090,9 +1239,11 @@ CREATE TABLE public.transportistas (
 );
 
 
+ALTER TABLE public.transportistas OWNER TO postgres;
+
 --
 -- TOC entry 253 (class 1259 OID 30064)
--- Name: user_sessions; Type: TABLE; Schema: public; Owner: -
+-- Name: user_sessions; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.user_sessions (
@@ -1105,9 +1256,11 @@ CREATE TABLE public.user_sessions (
 );
 
 
+ALTER TABLE public.user_sessions OWNER TO postgres;
+
 --
 -- TOC entry 254 (class 1259 OID 30075)
--- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: user_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.user_sessions_id_seq
@@ -1119,10 +1272,12 @@ CREATE SEQUENCE public.user_sessions_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.user_sessions_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5659 (class 0 OID 0)
+-- TOC entry 5671 (class 0 OID 0)
 -- Dependencies: 254
--- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: user_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
@@ -1130,7 +1285,7 @@ ALTER SEQUENCE public.user_sessions_id_seq OWNED BY public.user_sessions.id;
 
 --
 -- TOC entry 255 (class 1259 OID 30076)
--- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: -
+-- Name: user_view_preferences; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.user_view_preferences (
@@ -1142,9 +1297,11 @@ CREATE TABLE public.user_view_preferences (
 );
 
 
+ALTER TABLE public.user_view_preferences OWNER TO postgres;
+
 --
 -- TOC entry 256 (class 1259 OID 30087)
--- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: user_view_preferences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.user_view_preferences_id_seq
@@ -1156,10 +1313,12 @@ CREATE SEQUENCE public.user_view_preferences_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.user_view_preferences_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5660 (class 0 OID 0)
+-- TOC entry 5672 (class 0 OID 0)
 -- Dependencies: 256
--- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: user_view_preferences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_preferences.id;
@@ -1167,7 +1326,7 @@ ALTER SEQUENCE public.user_view_preferences_id_seq OWNED BY public.user_view_pre
 
 --
 -- TOC entry 257 (class 1259 OID 30088)
--- Name: users; Type: TABLE; Schema: public; Owner: -
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.users (
@@ -1182,9 +1341,11 @@ CREATE TABLE public.users (
 );
 
 
+ALTER TABLE public.users OWNER TO postgres;
+
 --
 -- TOC entry 258 (class 1259 OID 30099)
--- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
 CREATE SEQUENCE public.users_id_seq
@@ -1195,115 +1356,117 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
+
 --
--- TOC entry 5661 (class 0 OID 0)
+-- TOC entry 5673 (class 0 OID 0)
 -- Dependencies: 258
--- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 5047 (class 2604 OID 30100)
--- Name: correria_novedades id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5051 (class 2604 OID 32226)
+-- Name: correria_novedades id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.correria_novedades ALTER COLUMN id SET DEFAULT nextval('public.correria_novedades_id_seq'::regclass);
 
 
 --
--- TOC entry 5156 (class 2604 OID 30306)
--- Name: cuentas_bancarias id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5160 (class 2604 OID 32227)
+-- Name: cuentas_bancarias id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.cuentas_bancarias ALTER COLUMN id SET DEFAULT nextval('public.cuentas_bancarias_id_seq'::regclass);
 
 
 --
--- TOC entry 5165 (class 2604 OID 30352)
--- Name: descuentos_pago id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5169 (class 2604 OID 32228)
+-- Name: descuentos_pago id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.descuentos_pago ALTER COLUMN id SET DEFAULT nextval('public.descuentos_pago_id_seq'::regclass);
 
 
 --
--- TOC entry 5128 (class 2604 OID 30101)
--- Name: messages id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5132 (class 2604 OID 32229)
+-- Name: messages id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.messages ALTER COLUMN id SET DEFAULT nextval('public.messages_id_seq'::regclass);
 
 
 --
--- TOC entry 5154 (class 2604 OID 30289)
--- Name: pago_lotes_config id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5158 (class 2604 OID 32230)
+-- Name: pago_lotes_config id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pago_lotes_config ALTER COLUMN id SET DEFAULT nextval('public.pago_lotes_config_id_seq'::regclass);
 
 
 --
--- TOC entry 5159 (class 2604 OID 30322)
--- Name: pagos_programados id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5163 (class 2604 OID 32231)
+-- Name: pagos_programados id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pagos_programados ALTER COLUMN id SET DEFAULT nextval('public.pagos_programados_id_seq'::regclass);
 
 
 --
--- TOC entry 5133 (class 2604 OID 30102)
--- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5137 (class 2604 OID 32232)
+-- Name: reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.reception_items ALTER COLUMN id SET DEFAULT nextval('public.reception_items_id_seq'::regclass);
 
 
 --
--- TOC entry 5141 (class 2604 OID 30103)
--- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5145 (class 2604 OID 32233)
+-- Name: return_reception_items id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.return_reception_items ALTER COLUMN id SET DEFAULT nextval('public.return_reception_items_id_seq'::regclass);
 
 
 --
--- TOC entry 5142 (class 2604 OID 30104)
--- Name: schema_migrations id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5146 (class 2604 OID 32234)
+-- Name: schema_migrations id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.schema_migrations ALTER COLUMN id SET DEFAULT nextval('public.schema_migrations_id_seq'::regclass);
 
 
 --
--- TOC entry 5145 (class 2604 OID 30105)
--- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5149 (class 2604 OID 32235)
+-- Name: user_sessions id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_sessions ALTER COLUMN id SET DEFAULT nextval('public.user_sessions_id_seq'::regclass);
 
 
 --
--- TOC entry 5149 (class 2604 OID 30106)
--- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5153 (class 2604 OID 32236)
+-- Name: user_view_preferences id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_view_preferences ALTER COLUMN id SET DEFAULT nextval('public.user_view_preferences_id_seq'::regclass);
 
 
 --
--- TOC entry 5153 (class 2604 OID 30107)
--- Name: users id; Type: DEFAULT; Schema: public; Owner: -
+-- TOC entry 5157 (class 2604 OID 32237)
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
 
 
 --
--- TOC entry 5586 (class 0 OID 29702)
+-- TOC entry 5595 (class 0 OID 29702)
 -- Dependencies: 219
--- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: audit_log; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, new_values, changes, ip_address, user_agent, created_at) FROM stdin;
@@ -1311,329 +1474,329 @@ COPY public.audit_log (id, entity_type, entity_id, user_id, action, old_values, 
 
 
 --
--- TOC entry 5587 (class 0 OID 29711)
+-- TOC entry 5596 (class 0 OID 29711)
 -- Dependencies: 220
--- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: clients; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id, updated_at, active) FROM stdin;
-1	INVERSIONES SURTIMODA SAS	900582506	CALLE 14 #17-70 BARRIO CENTRO	ACACIAS	\N	2026-02-14 06:32:24	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-10	SALAS ASOCIADOS S.A.S	900392405	CL 49 9 44 SEC COMERCIAL	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-100	TIENDAS MICROEMPRESARIALES LANFER S.A.S.	900118155	CL 9 6 71 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-101	RAYOTEX S.A.S	1800144409	CLL 12 5 49	CUCUTA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N┬░ 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N┬░ 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-104	GALLEGO JOHN JAMIME	5225	AV. SIMON BOLIVAR #38-130  LOCAL 114	DOSQUEBRADAS	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-105	NAVANA MEGATODO S.A.S	2901169855	CRA 17 # 15-22	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-106	INVERSIONES 8A S.A.S N┬░4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-107	ARISTIZABAL ARISTIBAL DUBIAN DE JESUS	70829130	CL 25 48 71 LC 2 BRR CENTRO	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-108	JIMENEZ MAYORGA MARIA ALEJANDRA	1129574347	CR 50 25 55	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N┬░ 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-11	SALAS ASOCIADOS S.A.S	1900392405	CL 49 9 44 SEC COMERCIAL PTO BOYACA	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-110	SANCHEZ TORRES LILIANA	1117485254	CR 4 # 2 - 29	EL PAUJIL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-111	REPRESENTACIONES INTERMODA S.A.S	901121571	CLLE 10 # 4-102 ESPINAL TOLIMA	ESPINAL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-112	INTIMOS ALMA S.A.S N┬░22	2283003804	CL 7 N┬░ 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-113	ROJAS FARUK	981	C.C. OROCENTOR LOCAL 1-68	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-114	RAMIREZ CARDENAS FREDY ALBERTO	70698350	CL 16 11 41 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N┬░ 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-116	PINILLA LESMES DIANA CAROLina Pulgarin	1006512762	CL 22 2 A BIS 06 BRR ATALAY	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-117	INVERSIONES INTERMODA S.A.S	901068621	CLLE 16 #11-33 FLORENCIA	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-118	ORDO├æEZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-119	GONZALES MU├æOZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-12	EL GIGANTE DE LA MODA S.A.S	900646287	CL 49 9 62	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-120	RAMIREZ VALENCIA CESAR	17915	CRA 12 # 15-17	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-121	VALENCIA RAMIREZ OMAR	17137	CRA 12 # 15-31	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-122	RESTREPO JARAMILLO JULIAN ANDRES	379726416	CLLE 9 # 17-24	FLORIDA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-123	COMERCIALIZADORA MGV SAS	1901413624	CL 13 18 33	FONSECA	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-124	PEDROZO LUZ MERY	792	CRA 116 A N┬░ 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-125	DISTRIBUIDORA MUNDO FASHION	900324182	CALLE 4 # 8A -49	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-126	CARLOS MARIO SALAZAR ECHEVERRI	70694755	CALLE 6 NRO. 8A-18	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-127	COMERCIALIZADORA GIRALDO DEL CARIBE	900454797	CL 4 8A 20	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N┬░ 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-129	DUQUE HOYOS JUAN GONZALO	2104501630	CL 8 N 7 76	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-13	INVERSIONES SOLOMODA BARRANCA S.A.S	900351574	CL 49 9 78	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-130	INVERSIONES 8A S.A.S N┬░20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-131	DUQUE HOYOS JUAN GONZALO	1104501630	CL 7 10 87	GARZON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-132	INVERSIONES ESTRENATODO S.A.S	900275560	CARRERA 10 #14-47	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-133	PANTYJEANS GIRARDOT CIA LTDA	900284812	CR 10 13 52	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-134	EL UNIVERSO DE LA MODA ACTUAL S.A.S	900468771	CR 10 14 15	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-135	ALMACENES GANE LIMITADA	1890203597	CR 26  37 104	GIRON	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-136	RUSSI CACERES NESTOR LUIS	91296133	CR 26 # 40 - 20 BRR EL POBLADO	GIRON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-137	INTIMOS ALMA S.A.S N┬░ 26	2683003804	CL 17 N┬░ 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-138	DISTRIBUIDORA DE MODA GRANADA	901619815	CR 15 17 44 BRR CENTRO	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-139	GUTIERREZ FANDI├æO FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-14	PALACIO MARIA ALIX	7076	CRA 47 B # 37 A 08	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-140	GUERRA EDILSON DARIO	4536	CR 7 # 8-07	HORMIGA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-141	RAMIREZ BOTERO ADOLFO JESUS	70691066	CL 17 2 92 96 98 P5 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-142	SURTIDORA EL UNIVERSO DE LA MODA	900023407	CR 3 13 A 29	IBAGUE	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-143	SURTIDORA PANTY JEAN'S DE COLOMBIA SAS	900744578	CR 3 15 90 94 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-144	INNOVACIONES WIN S.A.S	900835285	CRA 51 # 50- 15 ITAGUI	ITAGUI	\N	2026-02-14 06:27:59	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-145	BOHORQUEZ GALVIS LUTH DARE	49764593	CLL 11 8 78	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-146	CARO CARO ANGELA MARIA	29567740	CR 10 11 53	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-147	COMPA├æIA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-148	ALTA MODA LA DORADA	7507	CLLE 5 # 5-35	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-149	SALAZAR ZULUAGA MAURICIO ANTONIO	1027	CRA 4 #14-49	LA DORADA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-15	HERRERA JOHN FREDY	4065	CALLE 30 #42-04 MEGAMODA	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-150	ZULUAGA EDWIN DAVID	6942	CRA 7 # 12-38 MERCADO VIEJO	LA GUAJIRA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-151	DUQUE HOYOS JUAN GONZALO	1045016303	CL 6 N 3 56	LA PLATA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-152	GOMEZ HERNANDEZ JUAN DAVID	1010153349	CARRERA 7 # 11-38	LA TEBAIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-153	ARBOLEDA VASQUEZ JULIAN ANDRES	16552144	CARRERA 15 #15-42	LA UNION	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-154	BRABO DUARTE LUZ DARIS	63471107	CL 11 9-15 BRR CENTRO	LEBRIJA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-155	CARDOZO AMAYA YOLANDA	65498039	CR 6 # 8 26 BRR CENTRO	LERIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-156	ALIANZA MU├æOZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-157	G & G RETAIL S.A.S	901234880	CRA 20 # 2 -34	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-158	JIMENEZ MAYORGA MARIA ALEJANDRA	1112957434	CL DE LAS FLORES 12 24	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-159	ALIANZA MABLE SAS	900638635	CRA 3 B # 3-75	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-16	ALIANZA MAS SAS	900596174	CALLE 34 # 43 147	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-160	K-LU DE COLOMBIA SAS	901663086	CL 10 A 13 05 BRR CENTRO	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-161	LOPEZ HERRERA ANDRES FELIPE	1035912972	CL 12 # 11 60 LC 3	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-162	LOPEZ HERRERA GILDARDO ALONSO	15173215	CR 12 12 27	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-163	SALAZAR JARAMILLO CESAR AUGUSTO	16138274	CR 23 # 27 - 28	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-164	ARIAS GUAPACHA NATALIA	1053799325	CR 23 # 57 - 37	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-165	CASTRO CARRETERO OSCAR ALFONSO	1814	CRA 23 57 37 BRR LEONORA	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-166	SANCHEZ SANTAMARIA FLOR MARINA	41642642	CL 19 # 20 - 31 ALMACEN FAS # 1	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-167	CASTRO CARRETERO OSCAR ALFONSO	55991814	CR 23 57 37 BRR LEONORA	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-168	COMERCIALIZADORA CENTER S.A.S.	900747073	CALLE 46 # 53 - 05 - AMAZONA CENTER	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-169	INNOVACIONES DE MODA SAS	2900463523	CALLE 48 #51-27  PICHINCHA	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-17	ALIANZA ESTRENO SAS	900593525	CALLE 34 #43-81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-170	INNOVACIONES DE MODA S.A.S	900463523	CARRERA 51 #50-27 P.BERRIO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-171	INVERSIONES GAFREMOL S.A.S	900532343	CARRERA 52 #48-02 CENTRAL	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-172	INNOVACIONES DE MODA SAS	1900463523	CARRERA 52 #50-50  CARABOBO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-173	INVERSIONES LA MEDIA NARANJA S.A.S	2900109044	CENTRO COMERCIAL CENTRAL BUENOS AIRES	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-174	INVERSIONES LA MEDIA NARANJA S.A.S	3900109044	CLLE 49 # 49-29 AYACUHO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-175	INVERSIONES LA MEDIA NARANJA S.A.S	900109044	CRA 53 #48-29 CUNDINAMARCA	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-176	TENDENCIAS FUTURISTAS S.A.S #2	1900314739	CALLE 29 #20-337 LOCAL 169 C.C NUESTRO	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-177	COMERCIALIZADORA EL PALACIO DE LA PANTALETA	1901164484	CALLE 35 #2-22	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-178	INVERSIONES LA PANTALETA S.A.S	900050852	CARRERA 2 # 32-07	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-179	COMERCIALIZADORA EL PALACIO DE LA PANTALETA	901164484	CARRERA 2 #34-12 CENTRO	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-18	TRICIA DUARTE	8544	CARRERA 4 # 45 G - 32	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-180	TENDENCIAS FUTURISTAS S.A.S #1	900314739	CRA 2 #35-36	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-181	GRUPO COMERCIAL INTERMODA S.A.S	900442422	CALLE 8 #3-33	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-182	GRUPO COMERCIAL INTERMODA S.A.S	3900442422	CLLE 8 # 3-81	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-183	GRUPO COMERCIAL INTERMODA S.A.S	2900442422	CRA 5 # 8-56	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N┬░ 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCA├æA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-186	INVERSIONES 8A S.A.S N┬░10	1090013702	CL 25 N┬░ 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-187	GUERRERO MU├æOZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-188	GUITIERREZ RESTREPO LAURA	1730	CLLE 30 # 27-15 CENTRO	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-189	INVERSIONES BANETY SAS	901580883	CALLE 17 #20 64 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-19	JIMENEZ QUINTERO DECIMO ALEXANDER	7606	CARRERA 41 #30-54	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-190	SOTO GOMEZ ELCY BIBIANA	1045017326	CL 18 # 23 - 85 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-191	SOTO FRANCO JHOVANNY	7271	CR 20 A 16 74	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-192	SOTO FRANCO ALEXANDER	70697270	CR 22 # 16 - 80. EL GRAN SURTIDOR	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-193	GOMEZ GOMEZ MARIA MERCEDES	41892604	CR 8 CL 17 ESQ 16 75 CC LA OCTAVA	PEREIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-194	INVERSIONES LA MEDIA NARANJA S.A.S	1900109044	CRA 8 #17-34	PEREIRA	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-195	ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER	14817	CR 26 40 20	PIEDECUESTA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-196	ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER	1033814817	CR 6 # 10 - 88	PIEDECUESTA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-197	BARRERA MORA BETURIA	8911	CLLE 7 # 2-34	PITALITO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-198	SUPERMODA CIA Y LIMITADA	809010278	CRA 4 # 7 -45 PITALITO	PITALITO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-199	VARIEDADES SJ DEL CARIBE S.A.S	901413205	CRA 10 9 31	PIVIJAY	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-2	INVERSIONES AM ACACIAS S.A.S.	901509626	CL 13 # 19 - 79 BRR CENTRO	ACACIAS	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.268	t
-20	ZULUAGA GOMEZ RIGOBERTO	170827090	CL 34 43 70 LC M 5	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-200	G & G RETAIL S.A.S	3901234880	CLLE 20 N┬░ 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-201	RAMIREZ LLERENA LUZ ADRIANA	700082020	CR 15 11-65	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-202	ALIANZA HERMANOS JGV	16326	CR 15 12 69	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-203	MORCILLO GONZALEZ LEIDY	4000	CALLE 6 #18-48	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-204	ARCILA BEATRIZ HELENA	4957	CARRERA 7 #6-26	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-205	ZULUAGA ORLANDO	1694	CLLE 6 # 6-43	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-206	COMPA├æIA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N┬░ 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-208	SANCHEZ TORRES NELSY	40091533	CALLE 5 # 7-33	PUERTO RICO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-209	GUERRA EDILSON DARIO	5369	CRA 7 # 8-07	PUTUMAYO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-21	ZULUAGA GOMEZ RIGOBERTO	70827090	CL 35 44 18	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-210	ALIANZA MAS S.A.S	1900596174	CALLE 15 #18-274 LOC 138 C.C VIVA GUAJIRA	RIOHACHA	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-211	PASSARELA RIOHACHA S.A.S.	901697930	CR 7 # 12 - 45	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-212	RAMIREZ GIRALDO ANDRES FELIPE	700159350	CR 7 12 38	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-213	SUPERMODA RIOHACHA S.A.S	901697954	CR 7 12 38	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-214	SALAZAR ECHEVERRI LUIS ALBERTO	270693888	CR 7 N 12 28	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-215	SUPERMODA SABANALARGA S.A.S	901698678	CR 19 # 20-31	SABANALARGA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-216	MEDINA MERCHAN YESENIA	1052989202	CL 13 CR 10 60 BRR CENTRO LC 2	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-217	G & G RETAIL S.A.S	1901234880	CRA 11 #13-73	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-218	INVERSIONES 8A S.A.S N┬░16	1690013702	CR 9 N┬░ 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-219	G & G RETAIL S.A.S	2901234880	CR 24 15 29	SAN MARCOS	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-22	GH ENTERPRISE S.A.S.	901486883	CL 53 46 192 LC 240 CC PORTAL DEL PRADO	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-220	DISTRIBUIDORA MUNDO FASHION	2900324182	CALLE 22 #5-37 EDIFICIO ANDINA APTO 202	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-221	INVERSIONES TORRES CA S.A.S.	901155149	CL 11 # 8 - 31 BRR MERCADO	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-222	INVERSIONES RABI SAS	901090933	CLLE 11 # 8 A 23	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-223	ZULUAGA SALAZAR LEONEL ALBERTO	88210403	CR 5 19 08	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-224	INVERSIONES RABI SAS	1901090933	CRA 5 # 21 - 30	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-225	ALIANZA HNOS JGVS SAS	900676326	CRA 5 #18-43	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-226	GUITIERREZ RESTREPO LAURA	2119279173	CLLE 4 # 10-59 CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-227	TAMAYO JARAMILLO LUZ MARIA	24431638	CLLE 4 # 11-32 CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-228	ARCILA CARDENAS SANDRA EMILSEN	265	CL 50 # 46 - 27	SANTUARIO	\N	2026-02-14 06:28:01	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-229	SERNA RAMIREZ ANGELA MARIA	19585	CL 50 50 71 IN 101	SANTUARIO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-23	ALIANZA ESTRENO SAS	1900593525	CLLE 34 # 43-42	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-230	COMERCIALIZADORA MAGOTEX S.A.S #2	1901239802	CALLE 21 #19-12	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-231	MP RETAIL S.A.S	901181807	CALLE 22 #20-68	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N┬░ 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-233	COMERCIALIZADORA MAGOTEX 1	901239802	CALLE 23 # 20 - 64	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-234	ALIANZA MABLE SAS	1900638635	CL 28 25 B 97 LC 2 318	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-235	INVERSIONES GAFE S.A.S	2900463519	CALLE 36 SUR # 43-31	ENVIGADO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 N┬║ 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-237	NAVANA MEGATODO SOACHA S.A.S	1901169855	CRA 7 # 32-35 LOCAL 207	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-238	ACU├æA MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-239	VARIMODA SAS	901729900	CR 11 14 91	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-24	COMERCIALIZADORA MGV SAS	901413624	CR 13 104 45	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-240	INVERSIONES 8A S.A.S N┬░7	7900137023	CR 11 N┬░ 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-241	ALIANZA VC S.A.S	900225992	CALLE 20 N┬░ 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-242	INVERSIONES JBARA S.A.S	901462378	CL 63 14 50	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-243	DUQUE HOYOS JUAN GONZALO	3104501630	CR 19 19 41	SOLEDAD	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-244	ZULAGA GIRALDO HECTOR MAURICIO	70690823	CL 27 24 59 BR CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-245	DECADA 10 EN TODO S.A.S	900519038	CR 24 27 30 BRR EL CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-246	QUINTERO ADRIAN ALBERTO	3257	CLL DEL COMERCIO EL PACIFICO DEL BARATON	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-247	NORE├æA MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-248	INVERSIONES INTERMODA S.A.S	1901068621	CLLE MOSQUERA DIAG A TELECOM	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-249	VARGAS MONTIEL JACKSON FABIAN	9052	CRA 9 # 8 -99	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-25	ZULUAGA GOMEZ EDGAR ALONSO	8778704	CR 41 32 81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-250	INVERSIONES 8A S.A.S N┬░19	1990013702	AV UNIVERSITARIA N┬░ 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-251	INVERSIONES 8A S.A.S N┬░8	8900137023	CL 19 N┬░ 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-252	INVERSIONES 8A S.A.S N┬░15	1590013702	CR 7 N┬░ 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-253	SAJIN AREVALO SAMIR	77038476	CL 16 B 8 45	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-254	KHALED BASSAN SAJIN MHANNA	1065629467	CL 16B # 7-39 - Centro	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-255	ALIANZA SURTIDORA SAS	901084883	CR 7 16 A 133	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N┬░ 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-257	CIELO MODA S.A.S - AMV LLANO 2	901784502	CALLE 39 #30-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-258	BARAKI S.A.S	901712681	CALLE 39 N┬░ 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-259	AMV LLANO S.A.S	900469068	CARRERA 30 #36-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-26	ALIANZA VC S.A.S	1900225992	CR 41 37 23	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-260	AMV LLANO S.A.S	2900469068	CL 39 30 A 38 BRR CENTRO	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-261	MONTOYA VARGAS CENERY	52654284	CRA 5 # 5 23	VILLETA	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-262	MARTINEZ ARANGO DIANA ELISABETH	32564630	CR 19 # 20 - 74	YARUMAL	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-263	JIMENEZ GOMEZ CARLOS ALCIDES	70694674	CALLE 9 # 19-14	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-264	COL MODA YOPAL SAS	901697458	CL 10 19 52	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-265	RAMIREZ ZULUAGA BLANCA AMELIA	43404158	CR 20 14 31	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N┬░ 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-267	EPICA DE MODAD SAS	901170874	CL 34 43 109 OF 312	BARRANQUILLA	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-268	GUTIERREZ FANDI├æO FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-269	VASQUEZ MARIA ORFANIA	29809163	CL 9 11 08	ZARZAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-27	ALMACEN Y DISTRIBUIDORA GONZALEZ S.A.S	800160395	CR 42 32 28	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-270	AL MUSTAKIM	901812038	CLL 9 # 20 - 59	SAN JOSE DEL GUAVIARE	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-271	JHOJAINNE SULVARAN	1006745382	CR 12 # 13 - 22	MAICAO	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N┬░ 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-273	CA├æAVERAL NU├æEZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-274	ARBOLEDA NIETO JOSE ALEJANDRO	14978082	CR 5 9 81 BRR GUADALUPE	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-275	GV INFINITE SAS	901523339	CL 12 7 30 LOCAL 1	RIOHACHA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-276	VIDAL MARIN INGRIT MALLERLY	3207003070	CRA 25 # 37 - 29	CALARCA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCA├æA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-278	BAYONA BAYONA JORGE LUIS	1094574518	CR 5 # 13 - 87 BRR CENTRO	ABREGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-279	G & G RETAIL S.A.S	6901234880	CRA 15 # 8 - 64 LOC 1	CIENAGA DE ORO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-28	ALIANZA MU├æOZ GOMEZ SAS	1901079469	CRA 44 N┬░ 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-280	EPICA DE MODA SAS	901170874	CALLE 30 # 43-50 LOCAL 296A  CENTRO COMERCIAL ALEGRA	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-281	LA PORFIA AM SAS	901891158	CR 43 # 70-05 SUR PORFIA	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-282	SALANEDA INVERSIONES S.A.S.	901800090	CL 49 9 44 SEC COMERCIAL PUERT	BARRANCABERMEJA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-283	COMERCIAL BP SAS	901349219	CALLE 17 # 6 - 104 PISO 3	MONTELIBANO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-284	COMERCIAL BP SAS	1901349219	CALLE 10 A # 12 - 12 GUADALUPE	PUERTO LIBERTADOR	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-285	COMERCIAL BP SAS	2901349219	CALLE 20 # 9B - 24	LA PARTADA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-286	ALIANZA REDUART S.A.S.	901049593	CL 45 H 4 04	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-287	JARAMILLO JARAMILLO SANTIAGO	700159299	CL 10 4 38	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-288	JARAMILLO JARAMILLO SANTIAGO	1700159299	CR 5 7 44	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-289	JUAN ALEJANDRO JARAMILLO	1002652738	CL 9 16 35	FLORIDA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-29	ARIZUL DEL CARIBE S.A.S	900648001	VIA 40 # 85-410	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-290	MARTINEZ SAAVEDRA LIGIA MARIA	24661204	CR 23 26 58 BRR CENTRO	TULUA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-291	MACHADO ORTEGA JESUS DAVID	88309883	CL 11 19 C 45 BRR GARUPAL  II ETAPA	VALLEDUPAR	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-292	CLASIC AM S.A.S.	901864953	CR 30 # 36 - 40	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-293	GRUPO EMPRESARIAL EL SURTIDOR SAS	901595448	CLL 8 # 5 - 47 BRR CENTRO	CUCUTA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-294	INVERSIONES DUQUE QUINTERO S.A.S.	901324937	AV PEDRO DE HEREDIA CR 27 30 01	CARTAGENA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-295	GALVIS RODOLFO	4870	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-296	PEREZ ACOSTA CANDY SUSANA	32930941	CR 8 10 26	SANTA ANA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-297	RUEDA MIRANDA YERSON OSWALDO	91078808	CR 11 # 12 - 75 P 2	SAN GIL	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-298	INVERSIONES ASH S.A.S.	900469154	CRA 4 # 24 - 70	QUIBDO	\N	2026-02-14 06:28:04	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-299	LARGACHA CAMPO YUBERNEI	9737771	CR 8 # 4 - 33	CHAPARRAL	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-3	RAMIREZ BOTERO OSCAR MANUEL	70690518	CL 5  # 13-52	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-30	INVERSIONES GAFE S.A.S	900463519	CARRERA 49 #49-38	BELLO	\N	2026-02-14 06:27:56	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-300	MEDIA NARANJA	-	TODOS LOS ALMACENES	MEDELLIN	\N	2026-02-14 06:28:05	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-301	HERNANDEZ MONTES ANA MILENA	50929792	CL 20 CR 7 ESQU	PLANETA RICA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-302	RESTREPO LAURA VALENTINA	1192791730	CL 4 # 10 - 59 CRR EL CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-303	LONDO├æO MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-304	YONELBIS ZAMBRANO SUAREZ	6057	CRA 12 # 12 - 27	MAICAO	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-305	G&G RETAIL S.A.S	7901234880	CLL 15 A # 14 A 41	CERETE	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-306	VICTOR ANDRES AROCA	1140896249	CL 34 43 129 BG 434 CC COLOMBIA	BARRANQUILLA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-307	SANTIAGO JARAMILLO JARAMILLO	2700159299	CRA 8 # 9 - 72 LOCAL 5	CHINCHINA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-308	EL SURTIDOR BG SAS NUEVO	2490	AV 5 # 5 - 63 PISO 4	CUCUTA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-309	PANTYJEANS GIRARDOT SAS 2	1900284812	CR 10 # 14 - 47 BRR CENTRO	GIRARDOT	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-31	ALMA BELLA S.A.S	900352713	CL 129 N┬░ 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-32	RESTREPO JARAMILLO JULIAN ANDRES	79726416	CLL 129 B # 91-64 SUBA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-33	INTIMOS ALMA S.A.S N┬░11	1183003804	CR 13 N┬░ 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-34	INTIMOS ALMA S.A.S N┬░ 14	1483003804	CR 71D N┬░ 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-35	INTIMOS ALMA S.A.S N┬░24	2483003844	CR 80 N┬░ 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-36	INTIMOS ALMA S.A.S N┬░ 3	3830038044	CR 88C N┬░ 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-37	GUTIERREZ FANDI├æO FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-38	INVERSIONES 8A S.A.S N┬░6	6900137023	CRA 6 N┬░ 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-39	INTIMOS ALMA S.A.S N┬░2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-4	P & S INVERSIONES ASOCIADOS S.A.S	901195775	CL 5 16 36	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-40	INVERSIONES 8A S.A.S N┬░17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-41	INTIMOS ALMA S.A.S N┬░9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-42	INTIMOS ALMA S.A.S N┬░5	5830038044	TV 4 ESTE N┬░ 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-43	INTIMOS ALMA S.A.S N┬░1	1830038444	TV 78 L N┬░ 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-44	HEGA G B S.A.S	830091761	CALLE 37 SUR # 78 H 21	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR N┬║ 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-46	HEGA G B S.A.S	1830091761	CALLE 42 A #93 C 17 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR N┬║ 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-48	INVERSIONES GOBOTEX S A S	3830125982	CLL 13 # 5 - 63	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-49	INVERSIONES GOBOTEX S A S	830125982	CR 100 20 45	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-5	SALAZAR ECHEVERRI LUIS ALBERTO	170693888	CL 5 N 12 81	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-50	INVERSIONES MASSARA S.A.S	901514722	CRA 4 # 14 - 49 (DESPACHO)	LA DORADA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-51	INVERSIONES SACHA S.A.S	900186125	CR 78 B 35 C 14 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-52	ZULUAGA ARISTIZABAL SANDRA MILENA	52855335	DG 49 A SUR 53 25	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-53	NAVANA MEGATODO BOSA S.A.S	901169855	CRA 88 C # 58 D 31 SUR	BOSA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-54	ZULUAGA RAMIREZ HECTOR EMILIO	70693516	CALLE 18 19 -36	BOSCONIA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-55	ZULUAGA GIRALDO MARTA NELLY	52024421	CL 18 18 23 LC3 BRR CENTRO	BOSCONIA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-56	CRISTANCHO CRISTANCHO ULICES	1960	CALLE 35 # 17-18	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-57	ALMACENES GRAN SAS	890204683	CALLE 52 # 33-20 BARRIO CABECERA	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-58	ALMACENES GANE LIMITADA	890203597	CL 35 15 59 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-59	COMERCIALIZADORA DE CONFECCIONES S.A.S	901217960	CLLE 35 # 16 - 61 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-6	BOUTIQUE EL IMPERIO DE LA MODA DE AGUAZUL	900448728	CRA 16 # 9-48	AGUAZUL	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-60	JAIMES SUAREZ CESAR ELADIO	13925155	CR 17 34 43 49 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-61	JARAMILLO LOPEZ VIVIANA PATRICIA	29231576	CALLE 3 # 36 - 39	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-62	CARVAJAL FRANCY	10897	CARRERA 9 #2-10	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-63	ARBOLEDA MEJIA JANETH	31588477	CL 5 5 14 BRR CENTRO SEC SANANDRESITO	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-64	ALMACENES CRAMAR	1144	CLL 3 # 3-60	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-65	BARRETO HORTUA JOSE IRLEY	16552612	CR 16 10 35 BRR CENTRO	CAICEDONIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-66	INVERSIONES 8A S.A.S N┬░21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-67	ARISTIZABAL ARISTIZABAL SANDRA LILIANA	3849	CL 14 # 8 - 50	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-68	HOYOS RAMIREZ YULIETH	29509965	CL 47 NORTE # 4 B N - 29	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-69	PARRA SUAREZ ZORAIDA EMILCEN	8528	CLLE 14 CON CRR 7 ESQUINA CC ELITE LOCAL 515	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-7	INVERSIONES GAFE SAS	1900463519	C.C. NUESTRO URABA KM 1 APARTADO	APARTADO	\N	2026-02-14 06:27:55	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t
-70	GERMOR CALI SAS	890328800	CRA 8 # 13-24	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-71	DUQUE RAMIREZ MAURICIO ALBEIRO	70694868	CRA 8 # 13-97	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-73	GIRALDO GLADYS	5800	CALLE DE LA MONEDA - ALMCN CHISPA DE MODA	CAREPA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-74	G & G RETAIL S.A.S	5901234880	CRA 25 # 48 - 10	CARMEN DE BOLIVAR	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-75	INVERSIONES SOLO MODAS S.A.S	900298207	AV PEDRO DE HEREDIA CL 30 25 04 BRR CHINO	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-76	KAR-MEL ASOCIADOS S.A.S	900441381	AV PEDRO DE HEREDIA CL 30 25 11 BRR LA QUINTA	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-77	REVOLLO POLO ESTELA BEATRIZ	57415102	AV. PEDRO DE HEREDIA # 26-75	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-78	INVERSIONES EL GIGANTE SAS	900143784	CALLE 30 # 24-58	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-79	ALIANZA M & G S.A	900196158	CALLE DE LA MONEDA # 7-156	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-8	COMERCIALIZADORA MINIMAX S.A.S.	901553853	CLL 17 # 16 - 17	ARMENIA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-80	ALMACENES JAMBO LTDA	900266030	CC PASEO DE LA CASTELLANA LC 29 ET SEGUNDA	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-81	MODATEXTIL DEL CARIBE S.A.S.	901783220	CL 31 6535 LC 1 BRR: CHIPRE	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-82	ENERGY FASHION S.A.S.	900236935	TV 54 94 - 31	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-83	GUITIERREZ RESTREPO LAURA	1192791730	CL 10 # 4 38	CARTAGO	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-84	ALIANZA MU├æOZ GOMEZ SAS	2901079469	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-85	ELMELAO S.A.S	900663011	CR 11 N┬░ 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-86	INVERSIONES 8A S.A.S N┬░13	1390013702	CR 10 N┬░ 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-87	DISTRIBUIDORA MUNDO FASHION	1900324182	CALLE 17 # 11-57	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-88	SALAZAR ECHEVERRI LUIS ALBERTO	70693888	CL 17 13 29 BRR CENTRO	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-89	JIMENEZ BERMUDEZ ALBA DE JESUS	3095	CR 57 A 47 56	CIUDAD BOLIVAR	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-9	INVERSIONES 8A S.A.S N┬░27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-90	G & G RETAIL S.A.S	4901234880	CL 31 25 11 LC 2	COROZAL	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t
-91	AMPER GROUP S.A.S.	901341754	AV 8 8 55 LC 21 22 CC SAN ANTONIO BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N┬░ 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-93	EL SURTIDOR BG SAS #2	1901342490	CALLE 8 # 4- 35	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-94	EL SURTIDOR BG SAS	901342490	CALLE 8 # 5- 47	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-95	RAYOTEX S.A.S	2800144409	CL 10 NRO. 0-09	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-97	HENRIQUEZ LOPERA MARY LUZ	60367610	CL 8 4 98 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-98	TIENDAS BUV SAS	901400615	CL 8 5 87 BRR EL CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-99	RAYOTEX S.A.S	800144409	CL 9 4 90 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t
-test-restore-1	Cliente Restore	NIT-RESTORE	Direcci├│n	Ciudad	\N	\N	seller	\N	t
-310	ALIANZA VC SAS	900225992	CRA 3A # 17 - 61	CAUCASIA	\N	\N	mlia6sxbdfmbvlex0	\N	t
-311	ANTEXTIL S.A.S.	901170873	AV PEDRO HEREDIA 26 - 75	CARTAGENA	\N	\N	mlia6sxbdfmbvlex0	\N	t
+COPY public.clients (id, name, nit, address, city, seller, created_at, seller_id, updated_at, active, cod_of, cod_rm) FROM stdin;
+239	VARIMODA SAS	901729900	CR 11 14 91	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901729900	\N
+1	INVERSIONES SURTIMODA SAS	900582506	CALLE 14 #17-70 BARRIO CENTRO	ACACIAS	\N	2026-02-14 06:32:24	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900582506	\N
+10	SALAS ASOCIADOS S.A.S	900392405	CL 49 9 44 SEC COMERCIAL	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900392405	\N
+100	TIENDAS MICROEMPRESARIALES LANFER S.A.S.	900118155	CL 9 6 71 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900118155	\N
+101	RAYOTEX S.A.S	1800144409	CLL 12 5 49	CUCUTA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1800144409	\N
+102	INVERSIONES SACHA S.A.S	1900186125	CARRERA 6 N┬░ 8-96	CUNDINAMARCA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1900186125	\N
+103	RAMIREZ BOTERO ADOLFO JESUS	1066	CRA 15 N┬░ 8 -43 CURUMANI	CURUMANI	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1066	\N
+104	GALLEGO JOHN JAMIME	5225	AV. SIMON BOLIVAR #38-130  LOCAL 114	DOSQUEBRADAS	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	5225	\N
+105	NAVANA MEGATODO S.A.S	2901169855	CRA 17 # 15-22	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2901169855	\N
+106	INVERSIONES 8A S.A.S N┬░4	4900137023	CRA 17 # 16 49/59 DUITAMA	DUITAMA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4900137023	\N
+107	ARISTIZABAL ARISTIBAL DUBIAN DE JESUS	70829130	CL 25 48 71 LC 2 BRR CENTRO	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70829130	\N
+108	JIMENEZ MAYORGA MARIA ALEJANDRA	1129574347	CR 50 25 55	EL CARMEN DE BOLIVAR	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1129574347	\N
+109	RESTREPO JARAMILLO JULIAN ANDRES	179726416	CRA 12 N┬░ 7 -11 BRR CENTRO	EL CERRITO	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	179726416	\N
+11	SALAS ASOCIADOS S.A.S	1900392405	CL 49 9 44 SEC COMERCIAL PTO BOYACA	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900392405	\N
+110	SANCHEZ TORRES LILIANA	1117485254	CR 4 # 2 - 29	EL PAUJIL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1117485254	\N
+111	REPRESENTACIONES INTERMODA S.A.S	901121571	CLLE 10 # 4-102 ESPINAL TOLIMA	ESPINAL	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901121571	\N
+112	INTIMOS ALMA S.A.S N┬░22	2283003804	CL 7 N┬░ 3 - 65	FACATATIVA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2283003804	\N
+113	ROJAS FARUK	981	C.C. OROCENTOR LOCAL 1-68	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	981	\N
+114	RAMIREZ CARDENAS FREDY ALBERTO	70698350	CL 16 11 41 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	70698350	\N
+115	RAMIREZ CARDENAS EVER GONZALO	1045019291	CL 16 N┬░ 11-58 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1045019291	\N
+116	PINILLA LESMES DIANA CAROLina Pulgarin	1006512762	CL 22 2 A BIS 06 BRR ATALAY	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1006512762	\N
+117	INVERSIONES INTERMODA S.A.S	901068621	CLLE 16 #11-33 FLORENCIA	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901068621	\N
+118	ORDO├æEZ ALVAREZ ESTEBAN JAVIER	9336	CLLE 17 # 9-14	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	9336	\N
+119	GONZALES MU├æOZ EVANGELina Pulgarin	40784925	CR 11 # 13-60 BRR CENTRO	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	40784925	\N
+12	EL GIGANTE DE LA MODA S.A.S	900646287	CL 49 9 62	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900646287	\N
+120	RAMIREZ VALENCIA CESAR	17915	CRA 12 # 15-17	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	17915	\N
+121	VALENCIA RAMIREZ OMAR	17137	CRA 12 # 15-31	FLORENCIA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	17137	\N
+122	RESTREPO JARAMILLO JULIAN ANDRES	379726416	CLLE 9 # 17-24	FLORIDA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	379726416	\N
+123	COMERCIALIZADORA MGV SAS	1901413624	CL 13 18 33	FONSECA	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901413624	\N
+124	PEDROZO LUZ MERY	792	CRA 116 A N┬░ 15 C -70 APTO 307 TORRE 1	FONTIBON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	792	\N
+125	DISTRIBUIDORA MUNDO FASHION	900324182	CALLE 4 # 8A -49	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900324182	\N
+126	CARLOS MARIO SALAZAR ECHEVERRI	70694755	CALLE 6 NRO. 8A-18	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70694755	\N
+127	COMERCIALIZADORA GIRALDO DEL CARIBE	900454797	CL 4 8A 20	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900454797	\N
+128	ZULUAGA SALAZAR LEONEL ALBERTO	188210403	CR 8 N┬░ 5-26	FUNDACION	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	188210403	\N
+129	DUQUE HOYOS JUAN GONZALO	2104501630	CL 8 N 7 76	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2104501630	\N
+13	INVERSIONES SOLOMODA BARRANCA S.A.S	900351574	CL 49 9 78	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900351574	\N
+130	INVERSIONES 8A S.A.S N┬░20	2090013702	CLL 8 # 8-71 EXT 1120	FUSAGASUGA	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2090013702	\N
+131	DUQUE HOYOS JUAN GONZALO	1104501630	CL 7 10 87	GARZON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1104501630	\N
+132	INVERSIONES ESTRENATODO S.A.S	900275560	CARRERA 10 #14-47	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900275560	\N
+133	PANTYJEANS GIRARDOT CIA LTDA	900284812	CR 10 13 52	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900284812	\N
+134	EL UNIVERSO DE LA MODA ACTUAL S.A.S	900468771	CR 10 14 15	GIRARDOT	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900468771	\N
+135	ALMACENES GANE LIMITADA	1890203597	CR 26  37 104	GIRON	\N	2026-02-14 06:27:58	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1890203597	\N
+136	RUSSI CACERES NESTOR LUIS	91296133	CR 26 # 40 - 20 BRR EL POBLADO	GIRON	\N	2026-02-14 06:27:58	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	91296133	\N
+137	INTIMOS ALMA S.A.S N┬░ 26	2683003804	CL 17 N┬░ 14 - 41 EXT: 1120	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2683003804	\N
+138	DISTRIBUIDORA DE MODA GRANADA	901619815	CR 15 17 44 BRR CENTRO	GRANADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901619815	\N
+139	GUTIERREZ FANDI├æO FANNY	52456059	CR 7 3 68 BRR CENTRO	GUACARI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	52456059	\N
+14	PALACIO MARIA ALIX	7076	CRA 47 B # 37 A 08	BARRANCABERMEJA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	7076	\N
+140	GUERRA EDILSON DARIO	4536	CR 7 # 8-07	HORMIGA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4536	\N
+141	RAMIREZ BOTERO ADOLFO JESUS	70691066	CL 17 2 92 96 98 P5 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70691066	\N
+142	SURTIDORA EL UNIVERSO DE LA MODA	900023407	CR 3 13 A 29	IBAGUE	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900023407	\N
+143	SURTIDORA PANTY JEAN'S DE COLOMBIA SAS	900744578	CR 3 15 90 94 BRR CENTRO	IBAGUE	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900744578	\N
+144	INNOVACIONES WIN S.A.S	900835285	CRA 51 # 50- 15 ITAGUI	ITAGUI	\N	2026-02-14 06:27:59	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900835285	\N
+145	BOHORQUEZ GALVIS LUTH DARE	49764593	CLL 11 8 78	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	49764593	\N
+146	CARO CARO ANGELA MARIA	29567740	CR 10 11 53	JAMUNDI	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	29567740	\N
+147	COMPA├æIA REPUBLIC S.A.S EN LIQUIDACION	900385825	CARRERA 4 #14-49 CENTRO	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900385825	\N
+148	ALTA MODA LA DORADA	7507	CLLE 5 # 5-35	LA DORADA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	7507	\N
+149	SALAZAR ZULUAGA MAURICIO ANTONIO	1027	CRA 4 #14-49	LA DORADA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1027	\N
+15	HERRERA JOHN FREDY	4065	CALLE 30 #42-04 MEGAMODA	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4065	\N
+150	ZULUAGA EDWIN DAVID	6942	CRA 7 # 12-38 MERCADO VIEJO	LA GUAJIRA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	6942	\N
+151	DUQUE HOYOS JUAN GONZALO	1045016303	CL 6 N 3 56	LA PLATA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1045016303	\N
+152	GOMEZ HERNANDEZ JUAN DAVID	1010153349	CARRERA 7 # 11-38	LA TEBAIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1010153349	\N
+153	ARBOLEDA VASQUEZ JULIAN ANDRES	16552144	CARRERA 15 #15-42	LA UNION	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	16552144	\N
+154	BRABO DUARTE LUZ DARIS	63471107	CL 11 9-15 BRR CENTRO	LEBRIJA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	63471107	\N
+155	CARDOZO AMAYA YOLANDA	65498039	CR 6 # 8 26 BRR CENTRO	LERIDA	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	65498039	\N
+156	ALIANZA MU├æOZ GOMEZ SAS	901079469	CR 20 2 A 22	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901079469	\N
+157	G & G RETAIL S.A.S	901234880	CRA 20 # 2 -34	LORICA	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901234880	\N
+158	JIMENEZ MAYORGA MARIA ALEJANDRA	1112957434	CL DE LAS FLORES 12 24	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1112957434	\N
+159	ALIANZA MABLE SAS	900638635	CRA 3 B # 3-75	MAGANGUE	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900638635	\N
+16	ALIANZA MAS SAS	900596174	CALLE 34 # 43 147	BARRANQUILLA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900596174	\N
+160	K-LU DE COLOMBIA SAS	901663086	CL 10 A 13 05 BRR CENTRO	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901663086	\N
+161	LOPEZ HERRERA ANDRES FELIPE	1035912972	CL 12 # 11 60 LC 3	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1035912972	\N
+162	LOPEZ HERRERA GILDARDO ALONSO	15173215	CR 12 12 27	MAICAO	\N	2026-02-14 06:27:59	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	15173215	\N
+163	SALAZAR JARAMILLO CESAR AUGUSTO	16138274	CR 23 # 27 - 28	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	16138274	\N
+164	ARIAS GUAPACHA NATALIA	1053799325	CR 23 # 57 - 37	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1053799325	\N
+165	CASTRO CARRETERO OSCAR ALFONSO	1814	CRA 23 57 37 BRR LEONORA	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1814	\N
+166	SANCHEZ SANTAMARIA FLOR MARINA	41642642	CL 19 # 20 - 31 ALMACEN FAS # 1	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	41642642	\N
+167	CASTRO CARRETERO OSCAR ALFONSO	55991814	CR 23 57 37 BRR LEONORA	MANIZALES	\N	2026-02-14 06:27:59	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	55991814	\N
+168	COMERCIALIZADORA CENTER S.A.S.	900747073	CALLE 46 # 53 - 05 - AMAZONA CENTER	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900747073	\N
+169	INNOVACIONES DE MODA SAS	2900463523	CALLE 48 #51-27  PICHINCHA	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	2900463523	\N
+17	ALIANZA ESTRENO SAS	900593525	CALLE 34 #43-81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900593525	\N
+170	INNOVACIONES DE MODA S.A.S	900463523	CARRERA 51 #50-27 P.BERRIO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900463523	\N
+171	INVERSIONES GAFREMOL S.A.S	900532343	CARRERA 52 #48-02 CENTRAL	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900532343	\N
+172	INNOVACIONES DE MODA SAS	1900463523	CARRERA 52 #50-50  CARABOBO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	1900463523	\N
+173	INVERSIONES LA MEDIA NARANJA S.A.S	2900109044	CENTRO COMERCIAL CENTRAL BUENOS AIRES	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	2900109044	\N
+174	INVERSIONES LA MEDIA NARANJA S.A.S	3900109044	CLLE 49 # 49-29 AYACUHO	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	3900109044	\N
+175	INVERSIONES LA MEDIA NARANJA S.A.S	900109044	CRA 53 #48-29 CUNDINAMARCA	MEDELLIN	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900109044	\N
+176	TENDENCIAS FUTURISTAS S.A.S #2	1900314739	CALLE 29 #20-337 LOCAL 169 C.C NUESTRO	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900314739	\N
+177	COMERCIALIZADORA EL PALACIO DE LA PANTALETA	1901164484	CALLE 35 #2-22	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901164484	\N
+178	INVERSIONES LA PANTALETA S.A.S	900050852	CARRERA 2 # 32-07	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900050852	\N
+179	COMERCIALIZADORA EL PALACIO DE LA PANTALETA	901164484	CARRERA 2 #34-12 CENTRO	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901164484	\N
+18	TRICIA DUARTE	8544	CARRERA 4 # 45 G - 32	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	8544	\N
+180	TENDENCIAS FUTURISTAS S.A.S #1	900314739	CRA 2 #35-36	MONTERIA	\N	2026-02-14 06:28:00	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900314739	\N
+181	GRUPO COMERCIAL INTERMODA S.A.S	900442422	CALLE 8 #3-33	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900442422	\N
+182	GRUPO COMERCIAL INTERMODA S.A.S	3900442422	CLLE 8 # 3-81	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3900442422	\N
+183	GRUPO COMERCIAL INTERMODA S.A.S	2900442422	CRA 5 # 8-56	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2900442422	\N
+184	GRUPO COMERCIAL INTERMODA S.A.S	4900442422	CRA 5 N┬░ 8-25	NEIVA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4900442422	\N
+185	TIENDAS MICROEMPRESARIALES LANFER S.A.S	1900118155	CR 13 9 52 SECTOR DEL DULCE NOMBRE	OCA├æA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1900118155	\N
+186	INVERSIONES 8A S.A.S N┬░10	1090013702	CL 25 N┬░ 22 - 18 / LC 1	PAIPA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1090013702	\N
+187	GUERRERO MU├æOZ SANDRA PATRICIA	66776819	CL 33 19 85	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	66776819	\N
+188	GUITIERREZ RESTREPO LAURA	1730	CLLE 30 # 27-15 CENTRO	PALMIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1730	\N
+189	INVERSIONES BANETY SAS	901580883	CALLE 17 #20 64 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901580883	\N
+19	JIMENEZ QUINTERO DECIMO ALEXANDER	7606	CARRERA 41 #30-54	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	7606	\N
+190	SOTO GOMEZ ELCY BIBIANA	1045017326	CL 18 # 23 - 85 BRR CENTRO	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1045017326	\N
+191	SOTO FRANCO JHOVANNY	7271	CR 20 A 16 74	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	7271	\N
+192	SOTO FRANCO ALEXANDER	70697270	CR 22 # 16 - 80. EL GRAN SURTIDOR	PASTO	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	70697270	\N
+193	GOMEZ GOMEZ MARIA MERCEDES	41892604	CR 8 CL 17 ESQ 16 75 CC LA OCTAVA	PEREIRA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	41892604	\N
+194	INVERSIONES LA MEDIA NARANJA S.A.S	1900109044	CRA 8 #17-34	PEREIRA	\N	2026-02-14 06:28:00	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	1900109044	\N
+195	ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER	14817	CR 26 40 20	PIEDECUESTA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	14817	\N
+196	ZULUAGA CEBALLOS John Efrain Bolivar ALEXANDER	1033814817	CR 6 # 10 - 88	PIEDECUESTA	\N	2026-02-14 06:28:00	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1033814817	\N
+197	BARRERA MORA BETURIA	8911	CLLE 7 # 2-34	PITALITO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	8911	\N
+198	SUPERMODA CIA Y LIMITADA	809010278	CRA 4 # 7 -45 PITALITO	PITALITO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	809010278	\N
+199	VARIEDADES SJ DEL CARIBE S.A.S	901413205	CRA 10 9 31	PIVIJAY	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901413205	\N
+2	INVERSIONES AM ACACIAS S.A.S.	901509626	CL 13 # 19 - 79 BRR CENTRO	ACACIAS	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.268	t	901509626	\N
+20	ZULUAGA GOMEZ RIGOBERTO	170827090	CL 34 43 70 LC M 5	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	170827090	\N
+200	G & G RETAIL S.A.S	3901234880	CLLE 20 N┬░ 7-41	PLANETA RICA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	3901234880	\N
+201	RAMIREZ LLERENA LUZ ADRIANA	700082020	CR 15 11-65	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	700082020	\N
+202	ALIANZA HERMANOS JGV	16326	CR 15 12 69	PLATO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	16326	\N
+203	MORCILLO GONZALEZ LEIDY	4000	CALLE 6 #18-48	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4000	\N
+204	ARCILA BEATRIZ HELENA	4957	CARRERA 7 #6-26	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	4957	\N
+205	ZULUAGA ORLANDO	1694	CLLE 6 # 6-43	POPAYAN	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1694	\N
+206	COMPA├æIA REPUBLIC S.A.S.	1900385825	CL 54 3 00 ESQ	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900385825	\N
+207	INVERSIONES SOLOMODA BARRANCA S.A.S	2900351574	CR 3 N┬░ 9-18	PUERTO BERRIO	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	2900351574	\N
+208	SANCHEZ TORRES NELSY	40091533	CALLE 5 # 7-33	PUERTO RICO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	40091533	\N
+209	GUERRA EDILSON DARIO	5369	CRA 7 # 8-07	PUTUMAYO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	5369	\N
+21	ZULUAGA GOMEZ RIGOBERTO	70827090	CL 35 44 18	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70827090	\N
+210	ALIANZA MAS S.A.S	1900596174	CALLE 15 #18-274 LOC 138 C.C VIVA GUAJIRA	RIOHACHA	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1900596174	\N
+211	PASSARELA RIOHACHA S.A.S.	901697930	CR 7 # 12 - 45	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901697930	\N
+212	RAMIREZ GIRALDO ANDRES FELIPE	700159350	CR 7 12 38	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	700159350	\N
+213	SUPERMODA RIOHACHA S.A.S	901697954	CR 7 12 38	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901697954	\N
+214	SALAZAR ECHEVERRI LUIS ALBERTO	270693888	CR 7 N 12 28	RIOHACHA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	270693888	\N
+215	SUPERMODA SABANALARGA S.A.S	901698678	CR 19 # 20-31	SABANALARGA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901698678	\N
+216	MEDINA MERCHAN YESENIA	1052989202	CL 13 CR 10 60 BRR CENTRO LC 2	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1052989202	\N
+217	G & G RETAIL S.A.S	1901234880	CRA 11 #13-73	SAHAGUN	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901234880	\N
+218	INVERSIONES 8A S.A.S N┬░16	1690013702	CR 9 N┬░ 11 - 36	SAN GIL	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1690013702	\N
+219	G & G RETAIL S.A.S	2901234880	CR 24 15 29	SAN MARCOS	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	2901234880	\N
+22	GH ENTERPRISE S.A.S.	901486883	CL 53 46 192 LC 240 CC PORTAL DEL PRADO	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901486883	\N
+220	DISTRIBUIDORA MUNDO FASHION	2900324182	CALLE 22 #5-37 EDIFICIO ANDINA APTO 202	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	2900324182	\N
+221	INVERSIONES TORRES CA S.A.S.	901155149	CL 11 # 8 - 31 BRR MERCADO	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901155149	\N
+222	INVERSIONES RABI SAS	901090933	CLLE 11 # 8 A 23	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901090933	\N
+223	ZULUAGA SALAZAR LEONEL ALBERTO	88210403	CR 5 19 08	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	88210403	\N
+224	INVERSIONES RABI SAS	1901090933	CRA 5 # 21 - 30	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901090933	\N
+225	ALIANZA HNOS JGVS SAS	900676326	CRA 5 #18-43	SANTA MARTA	\N	2026-02-14 06:28:01	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900676326	\N
+226	GUITIERREZ RESTREPO LAURA	2119279173	CLLE 4 # 10-59 CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2119279173	\N
+227	TAMAYO JARAMILLO LUZ MARIA	24431638	CLLE 4 # 11-32 CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:01	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	24431638	\N
+228	ARCILA CARDENAS SANDRA EMILSEN	265	CL 50 # 46 - 27	SANTUARIO	\N	2026-02-14 06:28:01	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	265	\N
+229	SERNA RAMIREZ ANGELA MARIA	19585	CL 50 50 71 IN 101	SANTUARIO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	19585	\N
+23	ALIANZA ESTRENO SAS	1900593525	CLLE 34 # 43-42	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900593525	\N
+230	COMERCIALIZADORA MAGOTEX S.A.S #2	1901239802	CALLE 21 #19-12	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901239802	\N
+231	MP RETAIL S.A.S	901181807	CALLE 22 #20-68	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901181807	\N
+232	PANAMA PLAZA S.A.S	901212878	CALLE 22 N┬░ 21-22	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901212878	\N
+233	COMERCIALIZADORA MAGOTEX 1	901239802	CALLE 23 # 20 - 64	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901239802	\N
+234	ALIANZA MABLE SAS	1900638635	CL 28 25 B 97 LC 2 318	SINCELEJO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900638635	\N
+235	INVERSIONES GAFE S.A.S	2900463519	CALLE 36 SUR # 43-31	ENVIGADO	\N	2026-02-14 06:28:02	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	2900463519	\N
+236	INVERSIONES GOBOTEX S A S	1830125982	CALLE 13 N┬║ 5-63	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1830125982	\N
+237	NAVANA MEGATODO SOACHA S.A.S	1901169855	CRA 7 # 32-35 LOCAL 207	SOACHA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1901169855	\N
+238	ACU├æA MARIA CRISTINA	30205366	CL 10 14 39 BRR CENTRO	SOCORRO	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	30205366	\N
+24	COMERCIALIZADORA MGV SAS	901413624	CR 13 104 45	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901413624	\N
+240	INVERSIONES 8A S.A.S N┬░7	7900137023	CR 11 N┬░ 13 - 29 SOGAMOSO	SOGAMOSO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	7900137023	\N
+241	ALIANZA VC S.A.S	900225992	CALLE 20 N┬░ 19-17	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900225992	\N
+242	INVERSIONES JBARA S.A.S	901462378	CL 63 14 50	SOLEDAD	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901462378	\N
+243	DUQUE HOYOS JUAN GONZALO	3104501630	CR 19 19 41	SOLEDAD	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3104501630	\N
+244	ZULAGA GIRALDO HECTOR MAURICIO	70690823	CL 27 24 59 BR CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	70690823	\N
+245	DECADA 10 EN TODO S.A.S	900519038	CR 24 27 30 BRR EL CENTRO	TULUA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900519038	\N
+246	QUINTERO ADRIAN ALBERTO	3257	CLL DEL COMERCIO EL PACIFICO DEL BARATON	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3257	\N
+247	NORE├æA MAZUERA ALEXANDER	100	CALLE MERCEDES ALM LISTO MEDELLIN	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	100	\N
+248	INVERSIONES INTERMODA S.A.S	1901068621	CLLE MOSQUERA DIAG A TELECOM	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1901068621	\N
+249	VARGAS MONTIEL JACKSON FABIAN	9052	CRA 9 # 8 -99	TUMACO	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	9052	\N
+25	ZULUAGA GOMEZ EDGAR ALONSO	8778704	CR 41 32 81	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	8778704	\N
+250	INVERSIONES 8A S.A.S N┬░19	1990013702	AV UNIVERSITARIA N┬░ 51 21 LC 207 CC VIVA TUNJA	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1990013702	\N
+251	INVERSIONES 8A S.A.S N┬░8	8900137023	CL 19 N┬░ 10 - 46	TUNJA	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	8900137023	\N
+252	INVERSIONES 8A S.A.S N┬░15	1590013702	CR 7 N┬░ 9 - 48	UBATE	\N	2026-02-14 06:28:02	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1590013702	\N
+253	SAJIN AREVALO SAMIR	77038476	CL 16 B 8 45	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	77038476	\N
+254	KHALED BASSAN SAJIN MHANNA	1065629467	CL 16B # 7-39 - Centro	VALLEDUPAR	\N	2026-02-14 06:28:02	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1065629467	\N
+255	ALIANZA SURTIDORA SAS	901084883	CR 7 16 A 133	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901084883	\N
+256	DISTRIBUIDORA MUNDO FASHION	3900324182	DIG 10 A N┬░ 6 N 15 CC GUATAPURI LC 215	VALLEDUPAR	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	3900324182	\N
+257	CIELO MODA S.A.S - AMV LLANO 2	901784502	CALLE 39 #30-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901784502	\N
+258	BARAKI S.A.S	901712681	CALLE 39 N┬░ 30 A 38	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901712681	\N
+259	AMV LLANO S.A.S	900469068	CARRERA 30 #36-40	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900469068	\N
+26	ALIANZA VC S.A.S	1900225992	CR 41 37 23	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900225992	\N
+260	AMV LLANO S.A.S	2900469068	CL 39 30 A 38 BRR CENTRO	VILLAVICENCIO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2900469068	\N
+261	MONTOYA VARGAS CENERY	52654284	CRA 5 # 5 23	VILLETA	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	52654284	\N
+262	MARTINEZ ARANGO DIANA ELISABETH	32564630	CR 19 # 20 - 74	YARUMAL	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	32564630	\N
+263	JIMENEZ GOMEZ CARLOS ALCIDES	70694674	CALLE 9 # 19-14	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	70694674	\N
+264	COL MODA YOPAL SAS	901697458	CL 10 19 52	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901697458	\N
+265	RAMIREZ ZULUAGA BLANCA AMELIA	43404158	CR 20 14 31	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	43404158	\N
+266	INVERSIONES JIMENEZ GOMEZ S.A.S	900960772	CRA 20 N┬░ 14-39 BELLO HORIZONTE	YOPAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900960772	\N
+267	EPICA DE MODAD SAS	901170874	CL 34 43 109 OF 312	BARRANQUILLA	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901170874	\N
+268	GUTIERREZ FANDI├æO FANNY	152456059	CRA 4 # 6 -03 CENTRA	YUMBO	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	152456059	\N
+269	VASQUEZ MARIA ORFANIA	29809163	CL 9 11 08	ZARZAL	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	29809163	\N
+27	ALMACEN Y DISTRIBUIDORA GONZALEZ S.A.S	800160395	CR 42 32 28	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	800160395	\N
+270	AL MUSTAKIM	901812038	CLL 9 # 20 - 59	SAN JOSE DEL GUAVIARE	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901812038	\N
+271	JHOJAINNE SULVARAN	1006745382	CR 12 # 13 - 22	MAICAO	\N	2026-02-14 06:28:03	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1006745382	\N
+272	DISTRIBUIDORA VISTEMODA LTDA	800222200	CL 52 N┬░ 15 A 05	CALI	\N	2026-02-14 06:28:03	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	800222200	\N
+273	CA├æAVERAL NU├æEZ YOLANDA	66677499	CL 9 6 82	ROLDANILLO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	66677499	\N
+274	ARBOLEDA NIETO JOSE ALEJANDRO	14978082	CR 5 9 81 BRR GUADALUPE	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	14978082	\N
+275	GV INFINITE SAS	901523339	CL 12 7 30 LOCAL 1	RIOHACHA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901523339	\N
+276	VIDAL MARIN INGRIT MALLERLY	3207003070	CRA 25 # 37 - 29	CALARCA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3207003070	\N
+277	SINDY LISADY SAAVEDRA	1045016946	CRA 13 # 8-51	OCA├æA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1045016946	\N
+278	BAYONA BAYONA JORGE LUIS	1094574518	CR 5 # 13 - 87 BRR CENTRO	ABREGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1094574518	\N
+279	G & G RETAIL S.A.S	6901234880	CRA 15 # 8 - 64 LOC 1	CIENAGA DE ORO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	6901234880	\N
+28	ALIANZA MU├æOZ GOMEZ SAS	1901079469	CRA 44 N┬░ 34-31 PISO 6 EDFC COLSEGUROS	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901079469	\N
+280	EPICA DE MODA SAS	901170874	CALLE 30 # 43-50 LOCAL 296A  CENTRO COMERCIAL ALEGRA	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901170874	\N
+281	LA PORFIA AM SAS	901891158	CR 43 # 70-05 SUR PORFIA	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901891158	\N
+282	SALANEDA INVERSIONES S.A.S.	901800090	CL 49 9 44 SEC COMERCIAL PUERT	BARRANCABERMEJA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901800090	\N
+283	COMERCIAL BP SAS	901349219	CALLE 17 # 6 - 104 PISO 3	MONTELIBANO	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901349219	\N
+284	COMERCIAL BP SAS	1901349219	CALLE 10 A # 12 - 12 GUADALUPE	PUERTO LIBERTADOR	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1901349219	\N
+285	COMERCIAL BP SAS	2901349219	CALLE 20 # 9B - 24	LA PARTADA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	2901349219	\N
+286	ALIANZA REDUART S.A.S.	901049593	CL 45 H 4 04	BARRANQUILLA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901049593	\N
+287	JARAMILLO JARAMILLO SANTIAGO	700159299	CL 10 4 38	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	700159299	\N
+288	JARAMILLO JARAMILLO SANTIAGO	1700159299	CR 5 7 44	CARTAGO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1700159299	\N
+289	JUAN ALEJANDRO JARAMILLO	1002652738	CL 9 16 35	FLORIDA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1002652738	\N
+29	ARIZUL DEL CARIBE S.A.S	900648001	VIA 40 # 85-410	BARRANQUILLA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900648001	\N
+290	MARTINEZ SAAVEDRA LIGIA MARIA	24661204	CR 23 26 58 BRR CENTRO	TULUA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	24661204	\N
+291	MACHADO ORTEGA JESUS DAVID	88309883	CL 11 19 C 45 BRR GARUPAL  II ETAPA	VALLEDUPAR	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	88309883	\N
+292	CLASIC AM S.A.S.	901864953	CR 30 # 36 - 40	VILLAVICENCIO	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901864953	\N
+293	GRUPO EMPRESARIAL EL SURTIDOR SAS	901595448	CLL 8 # 5 - 47 BRR CENTRO	CUCUTA	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901595448	\N
+294	INVERSIONES DUQUE QUINTERO S.A.S.	901324937	AV PEDRO DE HEREDIA CR 27 30 01	CARTAGENA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901324937	\N
+295	GALVIS RODOLFO	4870	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	4870	\N
+296	PEREZ ACOSTA CANDY SUSANA	32930941	CR 8 10 26	SANTA ANA	\N	2026-02-14 06:28:04	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	32930941	\N
+297	RUEDA MIRANDA YERSON OSWALDO	91078808	CR 11 # 12 - 75 P 2	SAN GIL	\N	2026-02-14 06:28:04	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	91078808	\N
+298	INVERSIONES ASH S.A.S.	900469154	CRA 4 # 24 - 70	QUIBDO	\N	2026-02-14 06:28:04	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900469154	\N
+299	LARGACHA CAMPO YUBERNEI	9737771	CR 8 # 4 - 33	CHAPARRAL	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	9737771	\N
+3	RAMIREZ BOTERO OSCAR MANUEL	70690518	CL 5  # 13-52	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70690518	\N
+30	INVERSIONES GAFE S.A.S	900463519	CARRERA 49 #49-38	BELLO	\N	2026-02-14 06:27:56	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	900463519	\N
+300	MEDIA NARANJA	-	TODOS LOS ALMACENES	MEDELLIN	\N	2026-02-14 06:28:05	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	-	\N
+301	HERNANDEZ MONTES ANA MILENA	50929792	CL 20 CR 7 ESQU	PLANETA RICA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	50929792	\N
+302	RESTREPO LAURA VALENTINA	1192791730	CL 4 # 10 - 59 CRR EL CENTRO	SANTANDER DE QUILICHAO	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1192791730	\N
+303	LONDO├æO MARIA DEL CARMEN	25109415	CR 15 # 16 43 BRR CENTRO	LA UNION	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	25109415	\N
+304	YONELBIS ZAMBRANO SUAREZ	6057	CRA 12 # 12 - 27	MAICAO	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	6057	\N
+305	G&G RETAIL S.A.S	7901234880	CLL 15 A # 14 A 41	CERETE	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	7901234880	\N
+306	VICTOR ANDRES AROCA	1140896249	CL 34 43 129 BG 434 CC COLOMBIA	BARRANQUILLA	\N	2026-02-14 06:28:05	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1140896249	\N
+307	SANTIAGO JARAMILLO JARAMILLO	2700159299	CRA 8 # 9 - 72 LOCAL 5	CHINCHINA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2700159299	\N
+308	EL SURTIDOR BG SAS NUEVO	2490	AV 5 # 5 - 63 PISO 4	CUCUTA	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2490	\N
+309	PANTYJEANS GIRARDOT SAS 2	1900284812	CR 10 # 14 - 47 BRR CENTRO	GIRARDOT	\N	2026-02-14 06:28:05	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1900284812	\N
+31	ALMA BELLA S.A.S	900352713	CL 129 N┬░ 47 - 43 PRADO VERANIEGO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900352713	\N
+32	RESTREPO JARAMILLO JULIAN ANDRES	79726416	CLL 129 B # 91-64 SUBA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	79726416	\N
+33	INTIMOS ALMA S.A.S N┬░11	1183003804	CR 13 N┬░ 59 - 41	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1183003804	\N
+34	INTIMOS ALMA S.A.S N┬░ 14	1483003804	CR 71D N┬░ 8 - 70 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1483003804	\N
+35	INTIMOS ALMA S.A.S N┬░24	2483003844	CR 80 N┬░ 51 - 03 SUR EXT: 1102	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2483003844	\N
+36	INTIMOS ALMA S.A.S N┬░ 3	3830038044	CR 88C N┬░ 58D 32 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3830038044	\N
+37	GUTIERREZ FANDI├æO FANNY	252456059	CRA 14 # 75 A -51 SUR B/SANTA LIBRADA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	252456059	\N
+38	INVERSIONES 8A S.A.S N┬░6	6900137023	CRA 6 N┬░ 23-40 SUR 20 DE JULIO	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	6900137023	\N
+39	INTIMOS ALMA S.A.S N┬░2	5830038444	CRA 80 # 51-25 SUR CASA BLANCA	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	5830038444	\N
+4	P & S INVERSIONES ASOCIADOS S.A.S	901195775	CL 5 16 36	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901195775	\N
+40	INVERSIONES 8A S.A.S N┬░17	1790013702	DIAG. 71 B # 96-60 EXT 1117 ALAMOS NORTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1790013702	\N
+41	INTIMOS ALMA S.A.S N┬░9	9830038044	TRANS.78L #68B -09/15 SUR BOSA PIAMONTE	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	9830038044	\N
+42	INTIMOS ALMA S.A.S N┬░5	5830038044	TV 4 ESTE N┬░ 37A - 28 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	5830038044	\N
+43	INTIMOS ALMA S.A.S N┬░1	1830038444	TV 78 L N┬░ 69 - 23 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1830038444	\N
+44	HEGA G B S.A.S	830091761	CALLE 37 SUR # 78 H 21	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	830091761	\N
+45	INVERSIONES GOBOTEX S A S	2830125982	CALLE 38 SUR N┬║ 86 A-09	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2830125982	\N
+46	HEGA G B S.A.S	1830091761	CALLE 42 A #93 C 17 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1830091761	\N
+47	INVERSIONES SACHA S.A.S	2900186125	"CALLE 57 D SUR N┬║ 78H - 14	LOCAL 227"	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2900186125	\N
+48	INVERSIONES GOBOTEX S A S	3830125982	CLL 13 # 5 - 63	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3830125982	\N
+49	INVERSIONES GOBOTEX S A S	830125982	CR 100 20 45	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	830125982	\N
+5	SALAZAR ECHEVERRI LUIS ALBERTO	170693888	CL 5 N 12 81	AGUACHICA	\N	2026-02-14 06:27:55	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	170693888	\N
+50	INVERSIONES MASSARA S.A.S	901514722	CRA 4 # 14 - 49 (DESPACHO)	LA DORADA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901514722	\N
+51	INVERSIONES SACHA S.A.S	900186125	CR 78 B 35 C 14 SUR	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900186125	\N
+52	ZULUAGA ARISTIZABAL SANDRA MILENA	52855335	DG 49 A SUR 53 25	BOGOTA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	52855335	\N
+53	NAVANA MEGATODO BOSA S.A.S	901169855	CRA 88 C # 58 D 31 SUR	BOSA	\N	2026-02-14 06:27:56	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901169855	\N
+54	ZULUAGA RAMIREZ HECTOR EMILIO	70693516	CALLE 18 19 -36	BOSCONIA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70693516	\N
+55	ZULUAGA GIRALDO MARTA NELLY	52024421	CL 18 18 23 LC3 BRR CENTRO	BOSCONIA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	52024421	\N
+56	CRISTANCHO CRISTANCHO ULICES	1960	CALLE 35 # 17-18	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1960	\N
+57	ALMACENES GRAN SAS	890204683	CALLE 52 # 33-20 BARRIO CABECERA	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	890204683	\N
+58	ALMACENES GANE LIMITADA	890203597	CL 35 15 59 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	890203597	\N
+59	COMERCIALIZADORA DE CONFECCIONES S.A.S	901217960	CLLE 35 # 16 - 61 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901217960	\N
+6	BOUTIQUE EL IMPERIO DE LA MODA DE AGUAZUL	900448728	CRA 16 # 9-48	AGUAZUL	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900448728	\N
+60	JAIMES SUAREZ CESAR ELADIO	13925155	CR 17 34 43 49 BRR CENTRO	BUCARAMANGA	\N	2026-02-14 06:27:56	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	13925155	\N
+61	JARAMILLO LOPEZ VIVIANA PATRICIA	29231576	CALLE 3 # 36 - 39	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	29231576	\N
+62	CARVAJAL FRANCY	10897	CARRERA 9 #2-10	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	10897	\N
+63	ARBOLEDA MEJIA JANETH	31588477	CL 5 5 14 BRR CENTRO SEC SANANDRESITO	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	31588477	\N
+64	ALMACENES CRAMAR	1144	CLL 3 # 3-60	BUENAVENTURA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1144	\N
+65	BARRETO HORTUA JOSE IRLEY	16552612	CR 16 10 35 BRR CENTRO	CAICEDONIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	16552612	\N
+66	INVERSIONES 8A S.A.S N┬░21	2190013702	CRA 6 # 3 -45	CAJICA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2190013702	\N
+67	ARISTIZABAL ARISTIZABAL SANDRA LILIANA	3849	CL 14 # 8 - 50	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3849	\N
+68	HOYOS RAMIREZ YULIETH	29509965	CL 47 NORTE # 4 B N - 29	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	29509965	\N
+69	PARRA SUAREZ ZORAIDA EMILCEN	8528	CLLE 14 CON CRR 7 ESQUINA CC ELITE LOCAL 515	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	8528	\N
+7	INVERSIONES GAFE SAS	1900463519	C.C. NUESTRO URABA KM 1 APARTADO	APARTADO	\N	2026-02-14 06:27:55	mlia6gb0u2bhftxam	2026-02-19 01:52:18.269	t	1900463519	\N
+70	GERMOR CALI SAS	890328800	CRA 8 # 13-24	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	890328800	\N
+71	DUQUE RAMIREZ MAURICIO ALBEIRO	70694868	CRA 8 # 13-97	CALI	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	70694868	\N
+73	GIRALDO GLADYS	5800	CALLE DE LA MONEDA - ALMCN CHISPA DE MODA	CAREPA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	5800	\N
+74	G & G RETAIL S.A.S	5901234880	CRA 25 # 48 - 10	CARMEN DE BOLIVAR	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	5901234880	\N
+75	INVERSIONES SOLO MODAS S.A.S	900298207	AV PEDRO DE HEREDIA CL 30 25 04 BRR CHINO	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900298207	\N
+76	KAR-MEL ASOCIADOS S.A.S	900441381	AV PEDRO DE HEREDIA CL 30 25 11 BRR LA QUINTA	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900441381	\N
+77	REVOLLO POLO ESTELA BEATRIZ	57415102	AV. PEDRO DE HEREDIA # 26-75	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	57415102	\N
+78	INVERSIONES EL GIGANTE SAS	900143784	CALLE 30 # 24-58	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900143784	\N
+79	ALIANZA M & G S.A	900196158	CALLE DE LA MONEDA # 7-156	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900196158	\N
+8	COMERCIALIZADORA MINIMAX S.A.S.	901553853	CLL 17 # 16 - 17	ARMENIA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901553853	\N
+80	ALMACENES JAMBO LTDA	900266030	CC PASEO DE LA CASTELLANA LC 29 ET SEGUNDA	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900266030	\N
+81	MODATEXTIL DEL CARIBE S.A.S.	901783220	CL 31 6535 LC 1 BRR: CHIPRE	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	901783220	\N
+82	ENERGY FASHION S.A.S.	900236935	TV 54 94 - 31	CARTAGENA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	900236935	\N
+83	GUITIERREZ RESTREPO LAURA	1192791730	CL 10 # 4 38	CARTAGO	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1192791730	\N
+84	ALIANZA MU├æOZ GOMEZ SAS	2901079469	CRA 3A N┬║ 17-61	CAUCASIA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	2901079469	\N
+85	ELMELAO S.A.S	900663011	CR 11 N┬░ 8 - 82	CHIA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	900663011	\N
+86	INVERSIONES 8A S.A.S N┬░13	1390013702	CR 10 N┬░ 17 - 25	CHINQUINQUIRA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1390013702	\N
+87	DISTRIBUIDORA MUNDO FASHION	1900324182	CALLE 17 # 11-57	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	1900324182	\N
+88	SALAZAR ECHEVERRI LUIS ALBERTO	70693888	CL 17 13 29 BRR CENTRO	CIENAGA	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	70693888	\N
+89	JIMENEZ BERMUDEZ ALBA DE JESUS	3095	CR 57 A 47 56	CIUDAD BOLIVAR	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	3095	\N
+9	INVERSIONES 8A S.A.S N┬░27	2790013702	CR 9 # 10-68 LC2	BARBOSA	\N	2026-02-14 06:27:55	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2790013702	\N
+90	G & G RETAIL S.A.S	4901234880	CL 31 25 11 LC 2	COROZAL	\N	2026-02-14 06:27:57	mlia6sxbdfmbvlex0	2026-02-19 01:52:18.269	t	4901234880	\N
+91	AMPER GROUP S.A.S.	901341754	AV 8 8 55 LC 21 22 CC SAN ANTONIO BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901341754	\N
+92	MATIZ VASQUEZ CARLOS JULIO	13505840	AVENIDA 5 N┬░ 7- 04	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	13505840	\N
+93	EL SURTIDOR BG SAS #2	1901342490	CALLE 8 # 4- 35	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	1901342490	\N
+94	EL SURTIDOR BG SAS	901342490	CALLE 8 # 5- 47	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901342490	\N
+95	RAYOTEX S.A.S	2800144409	CL 10 NRO. 0-09	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	2800144409	\N
+97	HENRIQUEZ LOPERA MARY LUZ	60367610	CL 8 4 98 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	60367610	\N
+98	TIENDAS BUV SAS	901400615	CL 8 5 87 BRR EL CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	901400615	\N
+99	RAYOTEX S.A.S	800144409	CL 9 4 90 BRR CENTRO	CUCUTA	\N	2026-02-14 06:27:57	mlia7rpjfmtwhg66q	2026-02-19 01:52:18.269	t	800144409	\N
+test-restore-1	Cliente Restore	NIT-RESTORE	Direcci├│n	Ciudad	\N	\N	seller	\N	t	NIT-RESTORE	\N
+310	ALIANZA VC SAS	900225992	CRA 3A # 17 - 61	CAUCASIA	\N	\N	mlia6sxbdfmbvlex0	\N	t	900225992	\N
+311	ANTEXTIL S.A.S.	901170873	AV PEDRO HEREDIA 26 - 75	CARTAGENA	\N	\N	mlia6sxbdfmbvlex0	\N	t	901170873	\N
 \.
 
 
 --
--- TOC entry 5588 (class 0 OID 29722)
+-- TOC entry 5597 (class 0 OID 29722)
 -- Dependencies: 221
--- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: compras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.compras (id, fecha, referencia, unidades, insumo, cantidad_insumo, precio_unidad, cantidad_total, total, proveedor, fecha_pedido, observacion, factura, precio_real_insumo_und, afecta_inventario, created_at, updated_at) FROM stdin;
@@ -1671,9 +1834,9 @@ mmapjhr3vfzfej7hg	2026-02-17	12970	138	GUIPURE	1.68	2500.00	231.84	579600.00	BOM
 
 
 --
--- TOC entry 5589 (class 0 OID 29739)
+-- TOC entry 5598 (class 0 OID 29739)
 -- Dependencies: 222
--- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: confeccionistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.confeccionistas (id, name, address, city, phone, score, active, created_at, "ConsecRem") FROM stdin;
@@ -1829,9 +1992,9 @@ COPY public.confeccionistas (id, name, address, city, phone, score, active, crea
 
 
 --
--- TOC entry 5640 (class 0 OID 32081)
+-- TOC entry 5649 (class 0 OID 32081)
 -- Dependencies: 273
--- Data for Name: control_telas_muestras; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: control_telas_muestras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.control_telas_muestras (id, tela, color, und_medida, rdmto, subtotal, iva, total_precio_kilos, total_precio_metros, proveedor, fecha_compra, factura_no, solicita_recibe, usada_en_produccion, created_by, created_at, updated_at) FROM stdin;
@@ -1897,13 +2060,209 @@ a0666d2f-5991-409c-a6d8-e2759e768985	ZARZAMORA	COLORES	K	\N	24000.0000	4560.0000
 a474cfed-70f2-4fab-b1c7-12de6af6c626	MAREEN	BEIGE	M	\N	9200.0000	1748.0000	\N	10948.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 10:15:05.819938	2026-04-18 10:15:05.819938
 69f8f09a-bba7-435f-8b41-629f09e68dc9	SOHOSLUB	CREAM	M	\N	14900.0000	2831.0000	\N	17731.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 10:15:05.820566	2026-04-18 10:15:05.820566
 e66bbff9-e25d-4c72-9b57-d35377f8a88f	STELLARTECH	OFF WITHE	M	\N	11200.0000	2128.0000	\N	13328.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 10:15:05.821178	2026-04-18 10:15:05.821178
+9206acd1-e4d5-4845-8481-35a99aa396f6	STELLARTECH	OFF WITHE	M	\N	11200.0000	2128.0000	\N	13328.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.014826	2026-04-18 11:04:11.014826
+b5aa956a-cd72-4461-a4a2-0d185f554f32	SOHOSLUB	CREAM	M	\N	14900.0000	2831.0000	\N	17731.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.023837	2026-04-18 11:04:11.023837
+9c7fcccc-3147-418d-a195-632e61cb7c23	MAREEN	BEIGE	M	\N	9200.0000	1748.0000	\N	10948.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.025633	2026-04-18 11:04:11.025633
+d6a3d3b5-2a38-42a7-b10e-29fdce7225dd	FULLMOON	CREAM	M	\N	17500.0000	3325.0000	\N	20825.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.027219	2026-04-18 11:04:11.027219
+88aa49bf-d5dc-4326-b9a2-420253ee7c6b	ALTAMAR	ROSE	M	\N	10500.0000	1995.0000	\N	12495.0000	PRIMATELA	2026-03-26	1111459874	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.028837	2026-04-18 11:04:11.028837
+a667aa80-3cb9-4ae9-9679-ca7bdb984713	ZARZAMORA	COLORES	K	\N	24000.0000	4560.0000	28560.0000	\N	CORBETA	2026-03-27	P147488639	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.030422	2026-04-18 11:04:11.030422
+7a4c9c39-6d30-480f-8dab-a0367b41948d	PERA PLUS	TEÑIDA	M	\N	9900.0000	1881.0000	\N	11781.0000	CORBETA	2026-03-26	P147488656	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.031957	2026-04-18 11:04:11.031957
+9a3b8862-90db-45f1-a80f-03bb13c7b51c	PERA PLUS	BLANCA	M	\N	9900.0000	1881.0000	\N	11781.0000	CORBETA	2026-03-26	P147488656	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.03357	2026-04-18 11:04:11.03357
+1fcf313f-f0b6-4497-8869-5c222e45646e	ZARZAMORA	COLORES	K	\N	24000.0000	4560.0000	28560.0000	\N	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.036686	2026-04-18 11:04:11.036686
+eca72bb3-b929-4288-aa42-a14dd6ad7238	AVENA	COLORES	M	\N	14500.0000	2755.0000	\N	17255.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.038351	2026-04-18 11:04:11.038351
+47dc0862-f921-4ad0-93d1-e14c561a8911	RUIBARBO PEACH	COLORES	M	\N	14900.0000	2831.0000	\N	17731.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.039882	2026-04-18 11:04:11.039882
+109779d3-b054-461d-bbbd-543764b56b0c	VIOLETA LUREX	COLORES	M	\N	12900.0000	2451.0000	\N	15351.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.041436	2026-04-18 11:04:11.041436
+7500c57d-6228-493e-a22a-8752b95f0c3b	HIERBA LUISA	TEÑIDA	M	\N	13900.0000	2641.0000	\N	16541.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.04348	2026-04-18 11:04:11.04348
+ac9238d0-bb65-456d-84bf-a57c42df330e	ALCAPARRA	PRETEÑIDO	M	\N	10900.0000	2071.0000	\N	12971.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.045289	2026-04-18 11:04:11.045289
+06787ce8-a3b6-4fdf-b766-fcabd007c548	FRAMBUESA BPT	COLORES	M	\N	13500.0000	2565.0000	\N	16065.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.046905	2026-04-18 11:04:11.046905
+8d40502b-fa10-48c8-8951-7decaf9c22b3	GROSELLA FLAME	COLORES	M	\N	13900.0000	2641.0000	\N	16541.0000	CORBETA	2026-03-26	P147488573	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.048455	2026-04-18 11:04:11.048455
+9fbf4fbf-505e-401e-9c68-f09e830ac34b	MOSHINO	NEGRO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-24	2312152705	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.051483	2026-04-18 11:04:11.051483
+bca360c2-0f67-4265-a3fe-3cd90ff81dd9	CUMBRE TIBE	PRETEÑIDO	M	\N	13900.0000	2641.0000	\N	16541.0000	MANUFACTURAS ELIOT	2026-03-24	2312152923	JACKELINE PEREA		mm9a66x3tqtxja160	2026-04-18 11:04:11.053037	2026-04-18 11:04:11.053037
+2235797f-a859-4311-9da6-4bcd0bc2dcff	MIKELZEN	CREMA	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.057566	2026-04-18 11:04:11.057566
+4fea222e-53ae-404c-b546-4bae2d7faf30	MENTZ MOS	PRETEÑIDO	M	\N	8990.0000	1708.1000	\N	10698.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.059057	2026-04-18 11:04:11.059057
+8faddf3d-da7c-4070-aa3e-6bfa6cb4eb41	LUMA GALWAY	PRETEÑIDO	K	\N	34990.0000	6648.1000	41638.1000	\N	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.060591	2026-04-18 11:04:11.060591
+d849b238-f256-401e-9189-356f674f6613	GAIA SEC	BLANCO	K	\N	34990.0000	6648.1000	41638.1000	\N	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.062119	2026-04-18 11:04:11.062119
+1fffe709-8781-4a8e-91f4-01b70d2ce7b8	FOI VALIMANCHAS	ESTAMPADO	K	\N	71990.0000	13678.1000	85668.1000	\N	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.063757	2026-04-18 11:04:11.063757
+ab23d31d-2540-4d36-adf7-de7eb07f1eb8	BRONZETTI	CREMA	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.065177	2026-04-18 11:04:11.065177
+2c7f4c0c-3990-4ab9-a1a1-a197178d26cb	BRAZILIA	CREMA	M	\N	8990.0000	1708.1000	\N	10698.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.066512	2026-04-18 11:04:11.066512
+65fc7a9e-4ded-44a3-a4d6-1ea47a96309f	VALIZARAE	ESTAMPADO	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.069221	2026-04-18 11:04:11.069221
+ed4681a1-6d3a-4fbe-bcb5-dccbc0bc4e1a	VALIPUNTA	ESTAMPADO	K	\N	69990.0000	13298.1000	83288.1000	\N	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.070551	2026-04-18 11:04:11.070551
+04a3477a-04e1-4099-b2a8-cae83c1959d8	SARONNIS	BEIGE	K	\N	34990.0000	6648.1000	41638.1000	\N	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.071866	2026-04-18 11:04:11.071866
+f86239e9-a868-4bb9-a998-e9fc6b418df5	RIB BRAZILIA	COLORES	M	\N	8990.0000	1708.1000	\N	10698.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.073185	2026-04-18 11:04:11.073185
+51406fe9-c44f-4aff-a19d-af2a861fb567	MINIWAFER	COLORES	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.076332	2026-04-18 11:04:11.076332
+134c7b6d-08b2-4044-a210-f4f26dd371ce	JAT VIENTO	ESTAMPADO	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.077645	2026-04-18 11:04:11.077645
+aa43acde-bff2-4467-a608-3ef79649aff4	ELO HUGE	ESTAMPADO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.078974	2026-04-18 11:04:11.078974
+b139504c-04e0-4831-85f3-dcaf035fcdc1	BRAZILIA HELADA	COLORES	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.081611	2026-04-18 11:04:11.081611
+6ccc87dd-5366-4e8d-82d7-719c7eafa97b	SIERRA BENDITA	PRETEÑIDO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.082928	2026-04-18 11:04:11.082928
+dd516d4f-cdbe-4d1c-8564-51652eddb3fe	OKSANA	COLORES	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.084232	2026-04-18 11:04:11.084232
+2cc9cc75-baae-4e17-b69e-0b4f7d34ce36	MOSHINO	COLORES	M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.085541	2026-04-18 11:04:11.085541
+6d091bbf-9d5f-4b97-abf1-9cb6480d2b8d	MENTZ MESUIN	PRETEÑIDO	M	\N	8990.0000	1708.1000	\N	10698.1000	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.086896	2026-04-18 11:04:11.086896
+d5459cde-59e5-428b-903f-2eacb271fe3d	LINOBROOKS	PRETEÑIDO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.088234	2026-04-18 11:04:11.088234
+dd711c99-91a9-44da-ba73-11d32421ee62	RIB FERREIRAS	COLORES	M	\N	21990.0000	4178.1000	\N	26168.1000	MANUFACTURAS ELIOT	2026-03-27	2312153919	ISABEL MONTOYA	13149	mm9a66x3tqtxja160	2026-04-18 11:04:11.035121	2026-05-05 12:26:06.395507
+4a916b4b-f515-4c4e-953d-0f07509162ba	MORESCA	COLORES	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA	13151	mm9a66x3tqtxja160	2026-04-18 11:04:11.075021	2026-05-05 12:26:06.400397
+581d8172-b4be-4970-b27c-dfe7aa180333	ARE BLOCKS	COLORES	M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA	13162	mm9a66x3tqtxja160	2026-04-18 11:04:11.067873	2026-05-05 12:19:23.145147
+d2cfcbfd-5121-4d43-baa9-ae1d457b6107	SANTEZA	CREMA	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA	13168	mm9a66x3tqtxja160	2026-04-18 11:04:11.056072	2026-05-05 12:19:23.147349
+eefe5629-890b-4c1c-a3a9-8b2421b82842	YEIN	COLORES	K	2.6000	34990.0000	6648.1000	41638.1000	16014.6500	MANUFACTURAS ELIOT	2026-03-21	2312152384	ISABEL MONTOYA	13157	mm9a66x3tqtxja160	2026-04-18 11:04:11.054548	2026-05-05 12:19:23.149227
+6d41e244-22b5-4180-bbd0-d0584a0df02b	DELIRIO	COLORES	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-03-24	2312152591	ISABEL MONTOYA	13087	mm9a66x3tqtxja160	2026-04-18 11:04:11.080297	2026-05-05 15:44:30.683299
+b136390a-6f02-4329-8e74-fc23cb0e3405	KLIPFEN CLAP	PRETEÑIDO	K	\N	39990.0000	7598.1000	47588.1000	\N	MANUFACTURAS ELIOT	2026-03-18	2312151429	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.090094	2026-04-18 11:04:11.090094
+6b00fa17-664a-42a1-ab8d-df8ed8628995	SUCKI ITALY	PRETEÑIDO	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-18	2312151427	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.093171	2026-04-18 11:04:11.093171
+2c228587-5587-4659-80b0-d7c5b9b0307a	SORTILEGIO	COLORES	M	\N	21990.0000	4178.1000	\N	26168.1000	MANUFACTURAS ELIOT	2026-03-18	2312151427	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.094623	2026-04-18 11:04:11.094623
+0e2ea7a9-be1a-49cd-ad57-13c273d79fdc	MUSETTI	COLORES	K	\N	39990.0000	7598.1000	47588.1000	\N	MANUFACTURAS ELIOT	2026-03-18	2312151427	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.097365	2026-04-18 11:04:11.097365
+21d80902-44cf-4358-94e9-08c90bc9182b	UNIKRAYADA	ESTAMPADO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.100203	2026-04-18 11:04:11.100203
+05bb73fd-13fa-4d78-b0ac-4974858a9b36	PUFOR CIELO	ESTAMPADO	M	\N	15990.0000	3038.1000	\N	19028.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.101614	2026-04-18 11:04:11.101614
+66486d7c-ab08-4a16-962b-a127f2a3ce4b	PUF ELOFIELD	ESTAMPADO	M	\N	15990.0000	3038.1000	\N	19028.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.104455	2026-04-18 11:04:11.104455
+22ab7b2b-154c-427d-af46-c55cbc4d27e5	MUSETTI	COLORES	K	\N	39990.0000	7598.1000	47588.1000	\N	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.106471	2026-04-18 11:04:11.106471
+c66c33a3-2297-4bb5-aef8-3958068287b6	KEA TINOS	PRETEÑIDO	M	\N	8990.0000	1708.1000	\N	10698.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.107881	2026-04-18 11:04:11.107881
+8f33d872-dfb4-4f3a-a172-33c4d07f5717	JAT RUTA	ESTAMPADO	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.10924	2026-04-18 11:04:11.10924
+f19aa4aa-c6f9-488d-9fe1-ad01b2da0566	BOUTISPOT	ESTAMPADO	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.110697	2026-04-18 11:04:11.110697
+b7fecb38-5a2d-4439-b9a0-08f6c7ed7d9a	ALCANTARA	COLORES	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA		mm9a66x3tqtxja160	2026-04-18 11:04:11.112113	2026-04-18 11:04:11.112113
+25107889-a0da-4776-ad5b-b6a4ff5fba1d	ZATLAN	COLORES	M	\N	9900.0000	1881.0000	\N	11781.0000	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.11492	2026-04-18 11:04:11.11492
+673cd654-78c7-48ed-8990-cba1ab95c241	VALIANAPLUS	HUESO	K	\N	46990.0000	8928.1000	55918.1000	\N	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.116238	2026-04-18 11:04:11.116238
+0e89c8b6-a786-45c0-b640-ffe429e6a3c0	UNIKLO	AZUL	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.117517	2026-04-18 11:04:11.117517
+2c322be1-0dfe-4590-8ea6-4f08d1f1dc27	ROMABELLA	MARFIL	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.118806	2026-04-18 11:04:11.118806
+e1aa40cf-7ed8-4670-b292-7cdc3e245f08	DAIMON	MARFIL	M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.121473	2026-04-18 11:04:11.121473
+cf95b939-6d67-41c7-b891-6f7f2731da30	ARBOLEDA	CREMA	K	\N	32990.0000	6268.1000	39258.1000	\N	MANUFACTURAS ELIOT	2026-03-17	2312151333			mm9a66x3tqtxja160	2026-04-18 11:04:11.124097	2026-04-18 11:04:11.124097
+eb14385b-9c33-471c-919b-e5c47ccb1aed	VERAMIPALM	ESTAMPADO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.125494	2026-04-18 11:04:11.125494
+0f592b85-ce92-49e3-8046-c8da1e54482e	UNIKLO	BEIGE	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.126909	2026-04-18 11:04:11.126909
+1d2c18f7-3c8f-4e6f-89bb-f2e9aa311896	UNIKLO	APT	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.128314	2026-04-18 11:04:11.128314
+7edf659c-d44d-466e-ba02-d296c0c62ec0	MO HIERRO	ESTAMPADO	M	\N	15490.0000	2943.1000	\N	18433.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.131061	2026-04-18 11:04:11.131061
+23fe2d1d-50f2-49fe-8351-c1a8f8e6dce9	KLOS PLAY	ESTAMPADO	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.132293	2026-04-18 11:04:11.132293
+22836b9f-0df4-472c-aa0b-6b5cd33fca78	JAT LIMBO	ESTAMPADO	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.133617	2026-04-18 11:04:11.133617
+7e93710b-31ba-4eea-8dcb-eed44540d461	JAT ENVES	ESTAMPADO	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.135223	2026-04-18 11:04:11.135223
+2369283d-d659-48cf-b27c-a798b59b4d4e	CUMBRE TIBE	PRETEÑIDO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.136539	2026-04-18 11:04:11.136539
+16de9419-19ec-4062-be35-d7419f4f39d6	RIB ARENA BLANCO	BLANCO	M	\N	21849.0000	4151.3100	\N	26000.3100	EL GATO	2026-02-24	TGAT12019			mm9a66x3tqtxja160	2026-04-18 11:04:11.14523	2026-04-18 11:04:11.14523
+39af6ef4-1d9b-427a-8be9-389af8e322a6	LIMALIMON		M	\N	14500.0000	2755.0000	\N	17255.0000	CORBETA	2026-02-10	P14850037			mm9a66x3tqtxja160	2026-04-18 11:04:11.147917	2026-04-18 11:04:11.147917
+9dbfbb27-5e43-4c17-a6d4-3e51e54d036d	MILANNO PACK		M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-01-20	2312136069			mm9a66x3tqtxja160	2026-04-18 11:04:11.156255	2026-04-18 11:04:11.156255
+888641e1-e4f3-44b9-ba2a-4666f8f9be5e	HAWAI R008	CRUDO/NEGRO	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-01-20	F22452		13112,13058,13055	mm9a66x3tqtxja160	2026-04-18 11:04:11.140907	2026-05-05 16:12:01.203744
+b73050a2-cd0d-48cd-aa6c-96021e79f9f7	ISLANDIA	BEIGE	K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2026-03-17	FETP6819		12908,12881,12907	mm9a66x3tqtxja160	2026-04-18 11:04:11.113509	2026-04-23 13:53:24.825761
+143dc1d9-768c-4bd7-9468-e917df805d6c	SUCKI SUIZA	PRETEÑIDO	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313	ISABEL MONTOYA	12895	mm9a66x3tqtxja160	2026-04-18 11:04:11.129752	2026-04-23 14:00:01.355645
+95bb386a-0ee4-43a2-b42d-76145cc5848d	DUVALL 197	NEGRO	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-02-19	2312144240		13083	mm9a66x3tqtxja160	2026-04-18 11:04:11.146555	2026-04-23 14:04:08.81498
+b522bf4e-3329-4e30-b46d-d76f9e2a3781	FLATY	COLORES	K	2.7000	31990.0000	6078.1000	38068.1000	14099.3000	MANUFACTURAS ELIOT	2026-03-18	2312151427	ISABEL MONTOYA	12864	mm9a66x3tqtxja160	2026-04-18 11:04:11.098764	2026-04-23 14:04:49.313076
+96fcf619-97c0-4b36-b214-e1a397f8e3f1	GITANILLA 5		K	2.6000	42000.0000	7980.0000	49980.0000	19223.0800	CORBETA	2026-02-10	P14850037		13067	mm9a66x3tqtxja160	2026-04-18 11:04:11.150561	2026-04-23 14:07:42.280589
+85e2c76b-dec6-40b0-9019-ca3fff300236	FLOR DE JAMAICA		K	2.9000	33000.0000	6270.0000	39270.0000	13541.3800	CORBETA	2026-02-10	P14850037		13005	mm9a66x3tqtxja160	2026-04-18 11:04:11.149241	2026-04-23 14:07:42.282553
+d8d8f540-9ff9-41c3-bf96-f123aa6ec0c8	MAUI RAYON	COLORES	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2026-03-10	FE6610		12990	mm9a66x3tqtxja160	2026-04-18 11:04:11.139503	2026-04-23 14:15:07.143037
+dc2ec2bd-70aa-4de0-b7ea-0455e26002a3	RU KIOTO		M	\N	8490.0000	1613.1000	\N	10103.1000	MANUFACTURAS ELIOT	2026-01-20	2312136069		12968	mm9a66x3tqtxja160	2026-04-18 11:04:11.154953	2026-04-23 14:26:40.137416
+3eebeb12-8d72-4ae4-809c-08d9bc469d20	CARIFEN DANA	PRETEÑIDO	M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2026-03-17	2312151333	ISABEL MONTOYA	13142	mm9a66x3tqtxja160	2026-04-18 11:04:11.122786	2026-05-05 12:26:06.403243
+3fb6de86-a3d0-4dda-9c74-298f8ad3a357	NANPA	BLANCO	M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2026-03-17	2312151333	ISABEL MONTOYA	13138	mm9a66x3tqtxja160	2026-04-18 11:04:11.120112	2026-05-05 12:29:22.556564
+a9c86928-40f7-42e5-8d4e-741fb90f8357	BORDADO		M	\N	16500.0000	3135.0000	\N	19635.0000	PRONTAMODA	2026-02-06	FETP6582		13108	mm9a66x3tqtxja160	2026-04-18 11:04:11.153657	2026-05-05 15:28:52.526034
+37cef6d8-cf70-4b0e-a8e1-35e3a218963d	RIB GUADUA		K	\N	47500.0000	9025.0000	56525.0000	\N	CORBETA	2026-02-10	P14850037		13085	mm9a66x3tqtxja160	2026-04-18 11:04:11.151871	2026-05-05 15:49:54.493991
+27bdbc57-9881-40a6-aa79-f56c11a487b4	PUFHER PASTEL	ESTAMPADO	M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-03-18	2312151430	ISABEL MONTOYA	13054	mm9a66x3tqtxja160	2026-04-18 11:04:11.103028	2026-05-05 16:15:52.575412
+5afadbff-fccb-4f75-882c-d99da4d49fdd	CHIPRE GUMS	PRETEÑIDO	M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-03-17	2312151313			mm9a66x3tqtxja160	2026-04-18 11:04:11.138037	2026-05-05 16:43:13.287153
+c4df32da-b719-432f-8b87-9c8f2a6c54ed	LICRA POP		M	\N	11344.5400	2155.4600	\N	13500.0000	MN TEXTIL	2026-02-06	FEV1073		13007.13006	mm9a66x3tqtxja160	2026-04-18 11:04:11.143858	2026-05-05 16:52:47.286027
+2f683c0c-2100-49c3-ab18-494de107b8f4	NIKINI		M	\N	12900.0000	2451.0000	\N	15351.0000	MANUFACTURAS ELIOT	2026-01-19	2312135794			mm9a66x3tqtxja160	2026-04-18 11:04:11.158987	2026-04-18 11:04:11.158987
+f0a33491-fbe2-420c-9213-d096e77b7c26	RAYON COOL TOUC		M	\N	14900.0000	2831.0000	\N	17731.0000	PRONTAMODA	2026-01-20	FETP6483			mm9a66x3tqtxja160	2026-04-18 11:04:11.164356	2026-04-18 11:04:11.164356
+1d9c90fc-f52d-49f5-a7dc-3d1f51536d19	ZOERAYCAM701		M	\N	12900.0000	2451.0000	\N	15351.0000	ARGATEX	2026-01-31	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.168982	2026-04-18 11:04:11.168982
+e696748c-ee7f-466c-bb93-782e24867bb7	PARIBE102		M	\N	19900.0000	3781.0000	\N	23681.0000	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.173099	2026-04-18 11:04:11.173099
+8816f87b-beb5-4fb8-a0d0-4ea96535a760	LUZABE102		M	\N	14083.0000	2675.7700	\N	16758.7700	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.175915	2026-04-18 11:04:11.175915
+b2e4614e-b65e-4766-b7b9-7ba068f07450	LUCARO602		K	\N	34500.0000	6555.0000	41055.0000	\N	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.177293	2026-04-18 11:04:11.177293
+b84dc383-a1de-4f91-b2e5-7ed998e0e49f	LUCACAM701		K	\N	34500.0000	6555.0000	41055.0000	\N	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.178656	2026-04-18 11:04:11.178656
+7b6c6df8-9249-4a91-9f1c-a711a57a8058	LUCABE102		K	\N	34500.0000	6555.0000	41055.0000	\N	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.180069	2026-04-18 11:04:11.180069
+e6f50593-f5f5-48c1-bbaf-e55f2a5e437e	LUCAARE115		K	\N	34500.0000	6555.0000	41055.0000	\N	ARGATEX	2026-01-21	FE6370			mm9a66x3tqtxja160	2026-04-18 11:04:11.181483	2026-04-18 11:04:11.181483
+c768ac09-d95c-4c44-bc4e-7df8befac815	RIKER		M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-01-26	2312137184			mm9a66x3tqtxja160	2026-04-18 11:04:11.188662	2026-04-18 11:04:11.188662
+90052d60-4265-46ad-a7b3-55b6aadbc755	LOAIZA		K	\N	34990.0000	6648.1000	41638.1000	\N	MANUFACTURAS ELIOT	2026-01-26	2312137184			mm9a66x3tqtxja160	2026-04-18 11:04:11.191409	2026-04-18 11:04:11.191409
+2fe8fdf6-2d06-4036-be56-864b7188f980	BEYONCE		K	2.4000	35294.1100	6705.8800	41999.9900	17500.0000	SUPER NOVA TEXTIL	2026-01-31	FEV1894			mm9a66x3tqtxja160	2026-04-18 11:04:11.201265	2026-04-18 11:04:11.201265
+c9840818-54b0-4eaa-907f-5641160e2a05	MILANCAMINO		M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2025-11-27	2312129210			mm9a66x3tqtxja160	2026-04-18 11:04:11.206216	2026-04-18 11:04:11.206216
+2584ece4-ac04-443a-b6d7-61e75851605a	SANTEZA		M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2025-11-25	2312128540			mm9a66x3tqtxja160	2026-04-18 11:04:11.207466	2026-04-18 11:04:11.207466
+50e48ff8-5ee1-4f0a-bb2d-73ff269a4bfd	GENFLORETI		M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2025-11-25	2312128540			mm9a66x3tqtxja160	2026-04-18 11:04:11.209911	2026-04-18 11:04:11.209911
+3110d8d5-2cda-42c8-836e-9237cab8af73	FLATY		K	3.7000	37990.0000	7218.1000	45208.1000	12218.4100	MANUFACTURAS ELIOT	2025-11-25	2312128540			mm9a66x3tqtxja160	2026-04-18 11:04:11.211686	2026-04-18 11:04:11.211686
+67f0c3ee-c49a-4920-ba54-f9c9f3b7e14b	MAYATEX	BLANCO F ENTERO	M	\N	5714.0000	1085.6600	\N	6799.6600	EL GATO	2025-11-18	TGAT11732			mm9a66x3tqtxja160	2026-04-18 11:04:11.212917	2026-04-18 11:04:11.212917
+3f806115-99d5-4b60-b178-8f95abf91b2f	TELA FRIA		K	2.5000	31092.0000	5907.4800	36999.4800	14799.7900	EL GATO	2025-11-18	TGAT11732			mm9a66x3tqtxja160	2026-04-18 11:04:11.214164	2026-04-18 11:04:11.214164
+d96a23f0-d1fa-4a12-ba97-c6e2bbf67ae3	PITILLO HEAVY		K	2.2000	26900.0000	5111.0000	32011.0000	14550.4500	PRONTAMODA	2025-11-20	FETP6365			mm9a66x3tqtxja160	2026-04-18 11:04:11.21542	2026-04-18 11:04:11.21542
+c23569c8-c510-487c-89b7-8234f8af8493	ISLANDIA		K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2025-11-20	FETP6365			mm9a66x3tqtxja160	2026-04-18 11:04:11.216657	2026-04-18 11:04:11.216657
+35c20be6-ec86-48c8-b33d-d88d056a5fcd	CROCHET MISSONI		M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-11-20	FETP6365			mm9a66x3tqtxja160	2026-04-18 11:04:11.217894	2026-04-18 11:04:11.217894
+eb59f081-b50a-441f-8fa2-7edd9f3293b6	FIORI D2		M	\N	20671.0000	3927.4900	\N	24598.4900	PRONTAMODA	2025-11-25	FETP6378			mm9a66x3tqtxja160	2026-04-18 11:04:11.219127	2026-04-18 11:04:11.219127
+458246e3-c94a-4915-b949-3f9f42964d4f	RIB LUREX		M	\N	22800.0000	4332.0000	\N	27132.0000	PRONTAMODA	2025-11-25	FETP6378			mm9a66x3tqtxja160	2026-04-18 11:04:11.220574	2026-04-18 11:04:11.220574
+3a96276b-7c23-4459-ab81-2d11f449f7ec	UIGUR		M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2025-11-20	2312127531			mm9a66x3tqtxja160	2026-04-18 11:04:11.223024	2026-04-18 11:04:11.223024
+586465b7-7103-4375-8fc1-6a16243403c3	TEARAYI		M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2025-11-20	2312127531			mm9a66x3tqtxja160	2026-04-18 11:04:11.224268	2026-04-18 11:04:11.224268
+cfb5d36c-583c-4bed-bab4-b537ee2e2b15	LYCRA FRIA		K	\N	40000.0000	7600.0000	47600.0000	\N	PRONTAMODA	2026-01-20	FETP6483		13100	mm9a66x3tqtxja160	2026-04-18 11:04:11.165757	2026-04-23 12:57:04.800981
+ea771812-2bbd-4bc6-9c80-0f14bb083961	VERONABE102		M	\N	19900.0000	3781.0000	\N	23681.0000	ARGATEX	2026-01-21	FE6370		12965	mm9a66x3tqtxja160	2026-04-18 11:04:11.171674	2026-04-23 12:59:22.81966
+93de65bf-38fe-4c44-bc67-c5b008ef4cf2	PARIS JERSEY		K	\N	33613.4400	6386.5500	39999.9900	\N	SUPER NOVA TEXTIL	2026-01-31	FEV1894		13042	mm9a66x3tqtxja160	2026-04-18 11:04:11.200015	2026-04-23 13:52:15.356461
+3ece23ce-fed0-432e-9cd8-105474debec8	RU LOCO ESTAMPADO V16	ESTAMPADO	M	\N	8490.0000	1613.1000	\N	10103.1000	MANUFACTURAS ELIOT	2026-01-25	2312136900		13059	mm9a66x3tqtxja160	2026-04-18 11:04:11.197548	2026-05-05 16:09:36.068262
+db6d629e-b511-4be5-8746-f72840dd33b9	CATTLEYA		M	\N	13990.0000	2658.1000	\N	16648.1000	MANUFACTURAS ELIOT	2026-01-26	2312137184		13052	mm9a66x3tqtxja160	2026-04-18 11:04:11.196327	2026-05-05 16:15:52.579055
+5de7a572-c685-4bd8-8ee2-51ed7fec607b	HAWAI R009	BANANA CLARO	K	2.1000	38900.0000	7391.0000	46291.0000	22043.3300	TEXTILES ESTACION	2026-01-20	F22452		13112.13058,13055	mm9a66x3tqtxja160	2026-04-18 11:04:11.18721	2026-05-05 16:12:01.200022
+3770ef89-6b9d-41b4-aabd-fea51102b9bb	VICTORIA RAYA CRUDO	CRUDO/NEGRO	K	2.2000	44900.0000	8531.0000	53431.0000	24286.8200	TEXTILES ESTACION	2026-01-20	F22452		12909	mm9a66x3tqtxja160	2026-04-18 11:04:11.184372	2026-04-23 14:02:11.980359
+bb97f8a4-b43a-4464-97ea-a3219bca8949	DUVALL	COLORES	M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-01-19	2312135794		13083	mm9a66x3tqtxja160	2026-04-18 11:04:11.160377	2026-04-23 14:04:08.817164
+f39cf058-83ba-4c9d-a91f-23c264dfc255	LUZARO602		M	\N	14083.0000	2675.7700	\N	16758.7700	ARGATEX	2026-01-21	FE6370		13044	mm9a66x3tqtxja160	2026-04-18 11:04:11.174502	2026-05-05 16:19:10.894051
+6afbede3-bc70-42ef-8a36-797304a46a33	MANTEYA		M	\N	15990.0000	3038.1000	\N	19028.1000	MANUFACTURAS ELIOT	2025-11-25	2312128540		12917	mm9a66x3tqtxja160	2026-04-18 11:04:11.208689	2026-04-23 14:26:40.139077
+67acf266-a172-409e-9033-5665b29cbd27	SOPHIA		M	\N	19500.0000	3705.0000	\N	23205.0000	PRONTAMODA	2026-01-20	FETP6483		13077,12964	mm9a66x3tqtxja160	2026-04-18 11:04:11.163044	2026-04-23 14:14:18.948901
+49373a21-3eba-4669-b34b-ff36f2e3066b	TABIO		K	3.2000	45990.0000	8738.1000	54728.1000	17102.5300	MANUFACTURAS ELIOT	2025-11-27	2312129210			mm9a66x3tqtxja160	2026-04-18 11:04:11.204981	2026-04-25 10:46:04.358442
+f015ca89-7cb3-4644-a3f1-694f42f60390	YARABE102		M	\N	15900.0000	3021.0000	\N	18921.0000	ARGATEX	2026-01-21	FE6370	ISABEL MONTOYA	13153	mm9a66x3tqtxja160	2026-04-18 11:04:11.170265	2026-05-05 12:26:06.404806
+abf1e65e-2a08-443a-a770-c02d0de6390c	CALI RIB		K	3.0000	35294.1100	6705.8800	41999.9900	14000.0000	SUPER NOVA TEXTIL	2026-01-31	FEV1894		13089	mm9a66x3tqtxja160	2026-04-18 11:04:11.20249	2026-05-05 15:38:58.863801
+affb3e4c-eaf3-4f84-be47-db1b4f371289	DELIRIO	COLORES	M	\N	15990.0000	3038.1000	\N	19028.1000	MANUFACTURAS ELIOT	2026-01-26	2312137184		13087	mm9a66x3tqtxja160	2026-04-18 11:04:11.193883	2026-05-05 15:44:30.687961
+c945cd88-93eb-44de-b053-4a53d25df604	POLO RIB		K	2.0000	30252.1000	5747.9000	36000.0000	18000.0000	SUPER NOVA TEXTIL	2026-01-31	FEV1894		13079	mm9a66x3tqtxja160	2026-04-18 11:04:11.198767	2026-05-05 15:49:54.498886
+040734c2-282f-4bd9-ba49-a2848042c574	LINO MILANES		M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2026-01-26	2312137184		13066	mm9a66x3tqtxja160	2026-04-18 11:04:11.192651	2026-05-05 16:05:50.314111
+28300fe1-ecd3-4435-b3c2-c98ca986b870	CORTEZA		K	2.5000	39990.0000	7598.1000	47588.1000	19035.2400	MANUFACTURAS ELIOT	2026-01-26	2312137184		13041,13065	mm9a66x3tqtxja160	2026-04-18 11:04:11.195108	2026-05-05 16:06:21.124823
+f327a25c-3746-430f-9c0f-167153a05512	HAWAI R004	AZUL	K	2.1000	38900.0000	7391.0000	46291.0000	22043.3300	TEXTILES ESTACION	2026-01-20	F22452		13112,13058,13055	mm9a66x3tqtxja160	2026-04-18 11:04:11.185808	2026-05-05 16:12:01.20217
+7c0015e3-e1db-40c5-8618-7c5487dac83f	LORD		M	\N	7900.0000	1501.0000	\N	9401.0000	PRONTAMODA	2026-01-20	FE6380		13064,13045	mm9a66x3tqtxja160	2026-04-18 11:04:11.167101	2026-05-05 16:17:14.142167
+42b3bd93-092d-4772-8eff-0f41be8e4027	CHIPRE GUMS PRETEÑIDO		M	\N	11990.0000	2278.1000	\N	14268.1000	MANUFACTURAS ELIOT	2026-01-19	2312135794		13019	mm9a66x3tqtxja160	2026-04-18 11:04:11.161692	2026-05-05 16:43:13.29
+cefc87a8-dcbc-4b43-b205-964d742285ee	VERAGENN		M	\N	13490.0000	2563.1000	\N	16053.1000	MANUFACTURAS ELIOT	2025-11-27	2312129210		12966	mm9a66x3tqtxja160	2026-04-18 11:04:11.203752	2026-05-06 08:30:17.373121
+fa05434b-6c0b-43f6-bd96-1a815650b90f	NOA D1		K	\N	33915.0000	6443.8500	40358.8500	\N	PRONTAMODA	2025-11-25	FETP6378		12915	mm9a66x3tqtxja160	2026-04-18 11:04:11.221796	2026-05-06 08:52:59.542075
+06203f08-b65c-4733-afc1-0a596791cc64	MILANFEN		M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2025-11-20	2312127531			mm9a66x3tqtxja160	2026-04-18 11:04:11.225478	2026-04-18 11:04:11.225478
+3ed10d09-3ec9-4795-989c-329520fb472f	CHENOA		K	\N	29990.0000	5698.1000	35688.1000	\N	MANUFACTURAS ELIOT	2025-09-24	2312114346			mm9a66x3tqtxja160	2026-04-18 11:04:11.229321	2026-04-18 11:04:11.229321
+74a07ec8-b20c-469f-8697-44ae2a30c9bb	POLINA		M	\N	5600.0000	1064.0000	\N	6664.0000	ARGATEX	2025-09-23	FE6040			mm9a66x3tqtxja160	2026-04-18 11:04:11.230509	2026-04-18 11:04:11.230509
+831c514f-65f3-48d6-8cd1-015c2f289e94	MAIA		M	\N	23900.0000	4541.0000	\N	28441.0000	ARGATEX	2025-09-23	FE6040			mm9a66x3tqtxja160	2026-04-18 11:04:11.231708	2026-04-18 11:04:11.231708
+e26e3b6c-964d-494b-8085-be4ee955668d	FLORALUNI		M	\N	8500.0000	1615.0000	\N	10115.0000	PRIAMATELA	2025-10-06	1111436357			mm9a66x3tqtxja160	2026-04-18 11:04:11.232917	2026-04-18 11:04:11.232917
+8ab4787d-c7b4-4c7a-af4b-ae570a32afb8	DUNEA		M	\N	9200.0000	1748.0000	\N	10948.0000	PRIAMATELA	2025-10-07	1111436528			mm9a66x3tqtxja160	2026-04-18 11:04:11.234129	2026-04-18 11:04:11.234129
+fcd2d3dd-9467-48ee-b484-17942617e65e	CRISALDA		M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2025-09-17	2312112214			mm9a66x3tqtxja160	2026-04-18 11:04:11.23533	2026-04-18 11:04:11.23533
+774c7d49-be45-465e-b112-71733e772662	ARUBA		K	2.4000	41900.0000	7961.0000	49861.0000	20775.4200	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.236557	2026-04-18 11:04:11.236557
+cb828922-76ee-4d52-a4e9-12d88ea23cbd	TAYLOR		K	\N	39900.0000	7581.0000	47481.0000	\N	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.237862	2026-04-18 11:04:11.237862
+6ab4b0ec-350c-48e8-8ece-d5e83175e7db	AZULEJOS		K	\N	41900.0000	7961.0000	49861.0000	\N	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.2393	2026-04-18 11:04:11.2393
+76068a8a-fc19-4efd-b461-6992f44a86a9	IRIS		K	2.3000	36900.0000	7011.0000	43911.0000	19091.7400	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.240609	2026-04-18 11:04:11.240609
+f7d8c30b-5ae0-49b1-8973-b56dd7663a8e	EVEREST		K	2.1000	43900.0000	8341.0000	52241.0000	24876.6700	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.242438	2026-04-18 11:04:11.242438
+fdaa5835-5657-4f82-9ca2-effc3c962440	VICTORIA RAYA		K	2.2000	39900.0000	7581.0000	47481.0000	21582.2700	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.243824	2026-04-18 11:04:11.243824
+050fe00d-abf0-4894-b82d-2365a24966e9	MALLA CROCHE 1 BEIGE		K	2.1000	39900.0000	7581.0000	47481.0000	22610.0000	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.245101	2026-04-18 11:04:11.245101
+d1f5dee9-1f24-4be0-b196-b784728a0875	SIBERIA		K	2.8000	41900.0000	7961.0000	49861.0000	17807.5000	TEXTILES ESTACION	2025-09-03	F21776			mm9a66x3tqtxja160	2026-04-18 11:04:11.246356	2026-04-18 11:04:11.246356
+5428d676-bcbb-4365-b4c8-bde818f69581	MAYATEX ESTAMPADA	ESTAMPADO	M	\N	10924.0000	2075.5600	\N	12999.5600	EL GATO	2025-09-04				mm9a66x3tqtxja160	2026-04-18 11:04:11.247716	2026-04-18 11:04:11.247716
+1fc73c95-122f-4235-a1af-31351aae0f92	INDU		M	\N	6303.0000	1197.5700	\N	7500.5700	EL GATO	2025-09-04	TGAT11426			mm9a66x3tqtxja160	2026-04-18 11:04:11.248944	2026-04-18 11:04:11.248944
+35ab5451-283a-4923-8573-9e5ffdf3e51c	LINO HOLAN BEIGS		M	\N	11765.0000	2235.3500	\N	14000.3500	EL GATO	2025-09-04	TGAT11426			mm9a66x3tqtxja160	2026-04-18 11:04:11.250226	2026-04-18 11:04:11.250226
+2d2b0c80-0e12-4cd1-b4c5-4089859a202b	LINO NATURAL		M	\N	13445.0000	2554.5500	\N	15999.5500	EL GATO	2025-09-04	TGAT11426			mm9a66x3tqtxja160	2026-04-18 11:04:11.251553	2026-04-18 11:04:11.251553
+10e1d1a6-c356-48be-af39-516334f9047c	MAYATEX FONDO ENTERO		M	\N	5882.0000	1117.5800	\N	6999.5800	EL GATO	2025-09-04	TGAT11426			mm9a66x3tqtxja160	2026-04-18 11:04:11.252852	2026-04-18 11:04:11.252852
+22b6da6e-d307-49db-81a7-51c59f247fef	PONTIROMA BEIGE		M	\N	21008.0000	3991.5200	\N	24999.5200	EL GATO	2025-09-05	TGAT11436			mm9a66x3tqtxja160	2026-04-18 11:04:11.254144	2026-04-18 11:04:11.254144
+861c92c5-cc14-48e1-bedc-5ed547436d7c	BLONDA IMPORTADA BEIGE		M	\N	11765.0000	2235.3500	\N	14000.3500	EL GATO	2025-09-05	TGAT11436			mm9a66x3tqtxja160	2026-04-18 11:04:11.255461	2026-04-18 11:04:11.255461
+72c675bd-51d9-4e46-a1b1-1784db6f8fd3	VERONARAYON		M	\N	9900.0000	1881.0000	\N	11781.0000	PRIMATELA	2025-09-07	1111430581			mm9a66x3tqtxja160	2026-04-18 11:04:11.256721	2026-04-18 11:04:11.256721
+b7f92b06-72bc-45dd-946d-179eea8ab353	LYNORECYCLED1		M	\N	10900.0000	2071.0000	\N	12971.0000	PRIMATELA	2025-09-06	1111430581			mm9a66x3tqtxja160	2026-04-18 11:04:11.258006	2026-04-18 11:04:11.258006
+19645ab2-eb21-4599-8144-a2bee7898552	LINENTOKIO		M	\N	11200.0000	2128.0000	\N	13328.0000	PRIMATELA	2025-09-05	1111430581			mm9a66x3tqtxja160	2026-04-18 11:04:11.259502	2026-04-18 11:04:11.259502
+2f55e84f-6a8d-4345-a0f1-0d10850d0689	TIFANY		M	\N	7000.0000	1330.0000	\N	8330.0000	ARGATEX	2025-08-27	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.260803	2026-04-18 11:04:11.260803
+5c7bb091-ff6b-46ca-b49f-a1e473c124d1	ROSI		K	8.0000	49200.0000	9348.0000	58548.0000	7318.5000	ARGATEX	2025-08-26	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.262083	2026-04-18 11:04:11.262083
+956f8ed9-bb69-4605-b45a-82a938718f69	MAYTEX		K	\N	34700.0000	6593.0000	41293.0000	\N	ARGATEX	2025-08-25	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.263373	2026-04-18 11:04:11.263373
+ffaf6dbe-ccd4-4110-ae2e-322d2916e93e	LUZBELA		M	\N	7900.0000	1501.0000	\N	9401.0000	ARGATEX	2025-08-23	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.265967	2026-04-18 11:04:11.265967
+485883c2-04df-48ae-abff-5ca57e19567d	GALU		M	\N	10900.0000	2071.0000	\N	12971.0000	ARGATEX	2025-08-22	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.26724	2026-04-18 11:04:11.26724
+e8c90b18-6ba3-4a33-ac4d-d037a98b64f5	CORAPUNTICO (MAYATEX)		K	10.0000	79000.0000	15010.0000	94010.0000	9401.0000	ARGATEX	2025-08-22	FE5901			mm9a66x3tqtxja160	2026-04-18 11:04:11.26853	2026-04-18 11:04:11.26853
+9f2c5c24-586d-4c82-8a3e-3c3f22bb8bfd	BENGALINA BLUZZ NJA		M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2025-08-04	FETP5906			mm9a66x3tqtxja160	2026-04-18 11:04:11.26983	2026-04-18 11:04:11.26983
+fd8137f4-9458-4b3e-be4f-a764cfb50ac1	VALIANA		K	6.4000	43990.0000	8358.1000	52348.1000	8179.3900	MANUFACTURAS ELIOT	2025-08-08	2312099683			mm9a66x3tqtxja160	2026-04-18 11:04:11.271659	2026-04-18 11:04:11.271659
+75d90d0d-0a8a-45ca-a45d-adcc8a92cd0f	JABON		K	3.5000	26990.0000	5128.1000	32118.1000	9176.6000	MANUFACTURAS ELIOT	2025-08-06	2312099485			mm9a66x3tqtxja160	2026-04-18 11:04:11.27347	2026-04-18 11:04:11.27347
+d6462df7-3af5-460d-9164-de9d6c7516a1	NEW COQUETE		M	\N	7000.0000	1330.0000	\N	8330.0000	PRIMATELA	2025-08-05	1111424335			mm9a66x3tqtxja160	2026-04-18 11:04:11.274773	2026-04-18 11:04:11.274773
+12bcdb69-a5bd-4dcb-94b7-9189576a4c30	MOHIKA BRIGHT		K	2.4000	34990.0000	6648.1000	41638.1000	17349.2100	MANUFACTURAS ELIOT	2025-08-05	2312098863			mm9a66x3tqtxja160	2026-04-18 11:04:11.276063	2026-04-18 11:04:11.276063
+ae3501bd-620d-423a-a8a4-0a2164970b1b	BLONELLA		K	\N	45900.0000	8721.0000	54621.0000	\N	ARGATEX	2025-08-12	FE5848			mm9a66x3tqtxja160	2026-04-18 11:04:11.277329	2026-04-18 11:04:11.277329
+ea30298e-2e10-4eed-a75d-461abe3c0b80	TERAPHY		K	\N	44990.0000	8548.1000	53538.1000	\N	MANUFACTURAS ELIOT	2025-07-26	2312096170			mm9a66x3tqtxja160	2026-04-18 11:04:11.27861	2026-04-18 11:04:11.27861
+b0a532d3-193a-4735-90b7-0b345a762e93	VICTORIA		K	2.2000	36875.0000	7006.2500	43881.2500	19946.0200	PRONTAMODA	2025-07-09	FETP5807			mm9a66x3tqtxja160	2026-04-18 11:04:11.279931	2026-04-18 11:04:11.279931
+9d68c3a2-5a4e-4c81-8965-e1a5e67e93b6	BENGALINA PANA		M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-07-23	FETP5858			mm9a66x3tqtxja160	2026-04-18 11:04:11.281228	2026-04-18 11:04:11.281228
+680d0b59-8cbd-4216-9122-3599842a5104	SORONA		K	\N	32670.0000	6207.3000	38877.3000	\N	PRONTAMODA	2025-07-21	FETP5848			mm9a66x3tqtxja160	2026-04-18 11:04:11.282575	2026-04-18 11:04:11.282575
+085abf23-8e5c-4a2e-b197-14a95232c23e	LATINA		M	\N	7990.0000	1518.1000	\N	9508.1000	MANUFACTURAS ELIOT	2025-07-19	2312094091			mm9a66x3tqtxja160	2026-04-18 11:04:11.285233	2026-04-18 11:04:11.285233
+af8c96ca-c415-4736-b717-298e08a0654b	TELA FRIA		K	2.5000	31092.0000	5907.4800	36999.4800	14799.7900	EL GATO	2026-02-24	TGAT12020		13148	mm9a66x3tqtxja160	2026-04-18 11:04:11.142398	2026-04-23 12:55:47.243682
+b087b51a-a8b2-4eec-b44c-11b9097ec4f8	RU KIOTO	ESTAMPADO	M	\N	8490.0000	1613.1000	\N	10103.1000	MANUFACTURAS ELIOT	2026-03-18	2312151427	ISABEL MONTOYA	12968	mm9a66x3tqtxja160	2026-04-18 11:04:11.096013	2026-04-23 14:26:40.133486
+50681709-cecc-482f-90dd-11c3b49942b8	CORAPUNTICO (MAYATEX)		K	10.0000	79000.0000	15010.0000	94010.0000	9401.0000	ARGATEX	2026-01-21	FE6370		12955	mm9a66x3tqtxja160	2026-04-18 11:04:11.182914	2026-04-27 14:12:44.321158
+482d12b6-fc7b-4ef2-b91f-0ada0f41de81	JEFFREYS HELADA	COLORES	M	\N	19990.0000	3798.1000	\N	23788.1000	MANUFACTURAS ELIOT	2026-03-17	2312151326	ISABEL MONTOYA	13167	mm9a66x3tqtxja160	2026-04-18 11:04:11.049972	2026-05-05 12:19:23.150937
+96689d64-dce3-457f-817a-bcec3df60efb	PICOT		M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2026-01-26	2312137184		13029, 13059	mm9a66x3tqtxja160	2026-04-18 11:04:11.190165	2026-05-05 16:09:36.064646
+0223c3d6-071e-4ef3-a606-364c5015d2d8	MAUI		M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2025-08-24	FE5901		13014	mm9a66x3tqtxja160	2026-04-18 11:04:11.264661	2026-05-05 16:46:26.205734
+8bdd7753-df97-40b9-9821-a44e72e9df04	NOCHES DE VIENA		M	\N	12200.0000	2318.0000	\N	14518.0000	PRONTAMODA	2025-07-21	FETP5848		13003	mm9a66x3tqtxja160	2026-04-18 11:04:11.283915	2026-05-05 16:54:10.029159
+5c4afd8c-6695-4c1f-95d3-b834f579d409	LOOKSTYLE		M	\N	12990.0000	2468.1000	\N	15458.1000	MANUFACTURAS ELIOT	2025-11-20	2312127531		12972	mm9a66x3tqtxja160	2026-04-18 11:04:11.226901	2026-05-06 08:27:50.18063
+f84d1b92-e692-4ec2-b61a-c641841b63ab	BOUTIPUNTI		M	\N	14990.0000	2848.1000	\N	17838.1000	MANUFACTURAS ELIOT	2025-11-20	2312127531		12931	mm9a66x3tqtxja160	2026-04-18 11:04:11.228121	2026-05-06 08:46:53.707521
+5e6a1e39-5912-4190-a3d6-b1c29158f90a	MO HIERRO	ESTAMPADO	M	\N	15490.0000	2943.1000	\N	18433.1000	MANUFACTURAS ELIOT	2026-04-30	2312161850	JACKELINE PEREA		mmze56k4iwquqhbul	2026-05-04 10:29:30.946496	2026-05-05 10:23:44.939297
+6d4e5fef-7034-4e9a-b299-36f16b8e402c	INDU 	COLORES	M	\N	6303.0000	1197.5700	\N	7500.5700	EL GATO	2026-05-05	TGAT12266			mmze56k4iwquqhbul	2026-05-05 10:20:48.845452	2026-05-05 10:41:13.846356
+364fad95-6b87-4564-a3c3-2e2d21284d94	VICTORIA RAYA 1 	ARENA	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	F23293			mmze56k4iwquqhbul	2026-05-05 11:57:29.222068	2026-05-05 11:57:29.222068
+fdee2b29-f15e-4547-806a-eaec15be14e8	VICTORIA RAYA 1 	AZUL CLARO	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	F23293			mmze56k4iwquqhbul	2026-05-05 11:57:29.225606	2026-05-05 11:57:29.225606
+28ea8739-1078-416e-a058-53b2d45b9690	VICTORIA RAYA 1 	CRUDE/NEGRO	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	F23293			mmze56k4iwquqhbul	2026-05-05 11:57:29.227538	2026-05-05 11:57:29.227538
+38de5e5c-d9f6-4119-a13d-c777a765622d	MUSETTI	BLANCO	K	\N	39990.0000	7598.1000	47588.1000	\N	MANUFACTURAS ELIOT	2026-04-25	2312160794	ISABEL MONTOYA	13141	mmze56k4iwquqhbul	2026-04-27 11:26:00.172101	2026-05-05 12:29:22.554172
+eef69255-b489-4517-bde5-a2d430f29c21	VALIDOTI	ESTAMPADO V1,2,3	K	\N	69990.0000	13298.1000	83288.1000	\N	MANUFACTURAS ELIOT	2026-05-05	2312162642			mmze56k4iwquqhbul	2026-05-05 13:58:46.737994	2026-05-05 13:58:46.737994
+5936b9e0-5b80-46a5-9ac1-49c8aacadce3	GEN BASICFROZ	ESTAMPADO	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-01-20	2312136069		12968	mm9a66x3tqtxja160	2026-04-18 11:04:11.157551	2026-05-06 08:30:17.32552
 \.
 
 
 --
--- TOC entry 5639 (class 0 OID 32054)
+-- TOC entry 5648 (class 0 OID 32054)
 -- Dependencies: 272
--- Data for Name: control_telas_produccion; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: control_telas_produccion; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.control_telas_produccion (id, tela, color, und_medida, rdmto, subtotal, iva, precio_total_kilos, precio_total_metros, proveedor, fecha_compra, iva_incluido, fe_or_rm, created_by, created_at, updated_at) FROM stdin;
@@ -1941,13 +2300,310 @@ ee54eb2b-ed5a-44d8-b19c-7301659bc9ac	ISLANDIA	COLORES	K	3.1000	32500.0000	6175.0
 b0197e5a-58fe-4561-b305-0e79d027f3b6	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2026-03-30	S	FETP6890	mm9a66x3tqtxja160	2026-04-18 10:06:39.017867	2026-04-18 10:06:39.017867
 a85264fc-57cc-4120-b1f7-f9ebf943899f	HAWAI R014	CRUDE/NEGRO	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-03-26	S	F23005	mm9a66x3tqtxja160	2026-04-18 10:06:39.019464	2026-04-18 10:06:39.019464
 65d9f8e6-b567-463c-afcd-9470e6ae4b3d	FLATY	BEIGE	K	3.7000	37990.0000	7218.1000	45208.1000	12218.4100	MANUFACTURAS ELIOT	2026-03-28	S	2312154121	mm9a66x3tqtxja160	2026-04-18 10:06:39.020621	2026-04-18 10:06:39.020621
+645b3994-b31d-4bbb-a047-fa7b39673d17	FLATY	BEIGE	K	3.7000	37990.0000	7218.1000	45208.1000	12218.4100	MANUFACTURAS ELIOT	2026-03-28	S	2312154121	mm9a66x3tqtxja160	2026-04-18 11:03:58.47662	2026-04-18 11:03:58.47662
+72a6767a-0dfe-4a41-9384-ca320dd0df07	HAWAI R014	CRUDE/NEGRO	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-03-26	S	F23005	mm9a66x3tqtxja160	2026-04-18 11:03:58.481652	2026-04-18 11:03:58.481652
+3b854c8a-497b-4868-85e5-962c5b94686b	POLILICRA	NEGRO	K	3.0000	19327.7300	3672.2700	23000.0000	7666.6700	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-26	S	FEV1129	mm9a66x3tqtxja160	2026-04-18 11:03:58.485244	2026-04-18 11:03:58.485244
+c296ce13-d520-451c-8453-4e5595ed2fa8	ISLANDIA	COLORES	K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2026-03-25	S	FETP6867	mm9a66x3tqtxja160	2026-04-18 11:03:58.487479	2026-04-18 11:03:58.487479
+209ebd32-5aa4-4bd1-887b-9ed99a931ffe	BENGALINA PANA	COLORES	M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2026-03-26	S	FETP6876	mm9a66x3tqtxja160	2026-04-18 11:03:58.489196	2026-04-18 11:03:58.489196
+f1e6230d-e816-4100-99b6-e9e08768c86e	SUCKI	COLORES	M	\N	9990.0000	1898.1000	\N	11888.1000	MANUFACTURAS ELIOT	2026-03-20	S	2312152156	mm9a66x3tqtxja160	2026-04-18 11:03:58.490888	2026-04-18 11:03:58.490888
+6edd0683-6711-486c-8185-0e3d5343b2ae	VERONA	COLORES	M	\N	19900.0000	3781.0000	\N	23681.0000	ARGATEX	2026-03-25	S	FE6660	mm9a66x3tqtxja160	2026-04-18 11:03:58.492529	2026-04-18 11:03:58.492529
+4b223754-0798-4b81-818a-7ed2895bdc7c	PARIS	COLORES	M	\N	19900.0000	3781.0000	\N	23681.0000	ARGATEX	2026-03-25	S	FE6660	mm9a66x3tqtxja160	2026-04-18 11:03:58.494269	2026-04-18 11:03:58.494269
+09cb7858-0903-4b8b-88ea-b4aaaceaefe9	AMELIA-180	COLORES	K	3.4000	20500.0000	3895.0000	24395.0000	7175.0000	ARGATEX	2026-03-25	S	FE6660	mm9a66x3tqtxja160	2026-04-18 11:03:58.495996	2026-04-18 11:03:58.495996
+241d90ef-85d1-4892-9bf6-a00e5a2d13a0	POLO RIB	COLORES	K	2.0000	26000.0000	4940.0000	30940.0000	15470.0000	SUPER NOVA TEXTIL	2026-03-25	S	FE2187	mm9a66x3tqtxja160	2026-04-18 11:03:58.497803	2026-04-18 11:03:58.497803
+acf09e3a-745c-4127-b9b8-2ea71e863315	NAOMI	BEIGE	K	7.7000	29900.0000	5681.0000	35581.0000	4620.9100	TEXTILES ESTACION	2026-03-19	S	F22927	mm9a66x3tqtxja160	2026-04-18 11:03:58.499542	2026-04-18 11:03:58.499542
+cab3a901-6528-49c5-92a2-1b54c6577ee6	VICTORIA RAYA	TAUPE	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	MANUFACTURAS ELIOT	2026-03-19	S	F22927	mm9a66x3tqtxja160	2026-04-18 11:03:58.501287	2026-04-18 11:03:58.501287
+649a9073-2651-4646-b882-8029f04ca673	VICTORIA RAYA	CRUDE/ARENA	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	MANUFACTURAS ELIOT	2026-03-19	S	F22927	mm9a66x3tqtxja160	2026-04-18 11:03:58.502959	2026-04-18 11:03:58.502959
+58b4ea9f-e00c-4416-8c14-a24675b2f57e	VICTORIA RAYA	BLANCO/JASPE	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	MANUFACTURAS ELIOT	2026-03-19	S	F22927	mm9a66x3tqtxja160	2026-04-18 11:03:58.504893	2026-04-18 11:03:58.504893
+234569db-6e5c-4723-906a-2e41d15ab780	CORTEZA	COLORES	K	2.5000	39990.0000	7598.1000	47588.1000	19035.2400	MANUFACTURAS ELIOT	2026-03-21	S	2312152406	mm9a66x3tqtxja160	2026-04-18 11:03:58.508329	2026-04-18 11:03:58.508329
+82ed1cbc-539d-4b41-a53f-cbf73a23b054	RIO R004	TAUPE	K	2.4000	35900.0000	6821.0000	42721.0000	17800.4200	TEXTILES ESTACION	2026-03-16	S	F22896	mm9a66x3tqtxja160	2026-04-18 11:03:58.510251	2026-04-18 11:03:58.510251
+6cfb6fe4-014f-4740-b226-7e646a40bcab	RIO RO14	NEGRO MAT	K	2.4000	35900.0000	6821.0000	42721.0000	17800.4200	TEXTILES ESTACION	2026-03-16	S	F22896	mm9a66x3tqtxja160	2026-04-18 11:03:58.51189	2026-04-18 11:03:58.51189
+d49aeb73-1353-45cf-b222-404deba5be84	RIO R006	ARENA CROSS	K	2.4000	35900.0000	6821.0000	42721.0000	17800.4200	TEXTILES ESTACION	2026-03-16	S	F22896	mm9a66x3tqtxja160	2026-04-18 11:03:58.513562	2026-04-18 11:03:58.513562
+71831ce6-9e76-4a15-b0eb-2c8b7e7741c2	RIO R009	BEIGE	K	2.4000	35900.0000	6821.0000	42721.0000	17800.4200	TEXTILES ESTACION	2026-03-16	S	F22896	mm9a66x3tqtxja160	2026-04-18 11:03:58.515228	2026-04-18 11:03:58.515228
+ca393422-56a5-4970-abbd-c30e8518684f	PIEL DE DURAZNO	COLORES	K	3.6000	15546.2185	2953.7800	18500.0000	5138.8900	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-17	S	FEV1114	mm9a66x3tqtxja160	2026-04-18 11:03:58.51691	2026-04-18 11:03:58.51691
+049b8959-aa32-4376-ae73-1eec5aaa9b33	LICRA DESTELLANTE	COLORES	K	3.2000	40336.1345	7663.8700	48000.0000	15000.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-17	S	FEV1114	mm9a66x3tqtxja160	2026-04-18 11:03:58.518636	2026-04-18 11:03:58.518636
+ea145b6b-f8e9-4a2b-b886-5b522425773e	BURDA MN	COLORES	K	2.4000	26890.7563	5109.2400	32000.0000	13333.3300	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-17	S	FEV1114	mm9a66x3tqtxja160	2026-04-18 11:03:58.520352	2026-04-18 11:03:58.520352
+f6074505-56c9-474a-9623-802a9ab0be0c	JEFFREYS HELADA	COLORES	M	\N	19989.9160	3798.0800	\N	23787.9960	MANUFACTURAS ELIOT	2026-03-17	S	2312151326	mm9a66x3tqtxja160	2026-04-18 11:03:58.523693	2026-04-18 11:03:58.523693
+58c8e30b-efb0-46ce-8832-d29a1fc44f4c	MAUI RAYON	COLORES	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2026-03-10	S	FE6610	mm9a66x3tqtxja160	2026-04-18 11:03:58.525358	2026-04-18 11:03:58.525358
+2a0018dc-df95-4c86-ac4d-d2c4d4f8a130	VICTORIA RAYA R001	CRUDE/NEGRO	K	2.2000	44925.2101	8535.7900	53461.0000	24300.4500	TEXTILES ESTACION	2026-01-20	S	F22452	mm9a66x3tqtxja160	2026-04-18 11:03:58.527012	2026-04-18 11:03:58.527012
+e51e7709-5db3-4672-a3bc-ceef08e678ae	VICTORIA RAYA R025	CRUDE/NEGRO	K	2.2000	44925.2101	8535.7900	53461.0000	24300.4500	TEXTILES ESTACION	2026-01-20	S	F22452	mm9a66x3tqtxja160	2026-04-18 11:03:58.528681	2026-04-18 11:03:58.528681
+4c4ad2a9-1204-4ca4-8f42-00e2d63a0141	HAWAI R013	NEGRO/CRUDE	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-03-13	S	F22870	mm9a66x3tqtxja160	2026-04-18 11:03:58.530318	2026-04-18 11:03:58.530318
+1bf2e223-0472-455c-bd4a-6d419fd8a2e0	NAOMI	COLORES	K	7.7000	29900.0000	5681.0000	35581.0000	4620.9100	TEXTILES ESTACION	2026-03-12	S	F22859	mm9a66x3tqtxja160	2026-04-18 11:03:58.532003	2026-04-18 11:03:58.532003
+2a76f59e-8f4b-4add-88b9-cfaa8064fb1a	HAWAI R027	CRUDE/NEGRO	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-03-13	S	F22870	mm9a66x3tqtxja160	2026-04-18 11:03:58.533654	2026-04-18 11:03:58.533654
+afe22076-3ec7-43f2-8758-3d4c22d39ebe	HAWAI R004	AZUL	K	2.1000	38900.0000	7391.0000	46291.0000	22043.3300	TEXTILES ESTACION	2026-01-20	S	F22452	mm9a66x3tqtxja160	2026-04-18 11:03:58.535752	2026-04-18 11:03:58.535752
+469e1a00-217d-4d59-98ff-21cdf560e719	HAWAI R009	BANANA CLARO	K	2.1000	38900.0000	7391.0000	46291.0000	22043.3300	TEXTILES ESTACION	2026-01-20	S	F22452	mm9a66x3tqtxja160	2026-04-18 11:03:58.537377	2026-04-18 11:03:58.537377
+83ee79dd-d269-4ed0-a99b-a3fb8d072e14	VICTORIA RAYA	COLORES	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-03-05	S	F22794	mm9a66x3tqtxja160	2026-04-18 11:03:58.538942	2026-04-18 11:03:58.538942
+cec589d3-dc2b-4d71-a09e-0f6824f22753	HAWAI R008	CRUDE/NEGRO	K	2.1000	44900.0000	8531.0000	53431.0000	25443.3300	TEXTILES ESTACION	2026-03-05	S	F22794	mm9a66x3tqtxja160	2026-04-18 11:03:58.540497	2026-04-18 11:03:58.540497
+2a1d45d9-78f0-49f2-a401-4c01e4467b63	LORD	COLORES	M	\N	7900.0000	1501.0000	\N	9401.0000	PRONTAMODA	2026-03-11	S	FETP6798	mm9a66x3tqtxja160	2026-04-18 11:03:58.542026	2026-04-18 11:03:58.542026
+0f011b19-1466-4ef8-a95f-2065eedfc425	DUVALL	COLORES	M	\N	10989.9160	2088.0800	\N	13077.9960	MANUFACTURAS ELIOT	2026-03-07	S	2312148587	mm9a66x3tqtxja160	2026-04-18 11:03:58.543555	2026-04-18 11:03:58.543555
+10f77bc0-f475-415c-9328-9b71a7f6e88c	MAUI RAYON	NEGRO	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2026-03-09	S	FE 6604	mm9a66x3tqtxja160	2026-04-18 11:03:58.545074	2026-04-18 11:03:58.545074
+21815ba4-5eb7-40a6-bec1-3bee40bd95d9	BYRON	NEGRO	K	2.6000	41989.0756	7977.9200	49967.0000	19218.0800	MANUFACTURAS ELIOT	2026-03-05	S	2312148125	mm9a66x3tqtxja160	2026-04-18 11:03:58.546631	2026-04-18 11:03:58.546631
+7b8b10f6-5415-4cb3-9112-09018ba46274	FLOR DE JAMAICA	BEIGE_NEGRO	K	2.9000	33000.0000	6270.0000	39270.0000	13541.3800	CORBETA	2026-03-06	S	P 1471487234	mm9a66x3tqtxja160	2026-04-18 11:03:58.548292	2026-04-18 11:03:58.548292
+07733228-d696-44b2-ad3f-e79366977043	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2026-03-04	S	FETP6758	mm9a66x3tqtxja160	2026-04-18 11:03:58.550382	2026-04-18 11:03:58.550382
+34535f97-179d-4489-a1b0-0e358414a1b1	SOPHIA	COLORES	M	\N	19500.0000	3705.0000	\N	23205.0000	PRONTAMODA	2026-03-05	S	FETP6766	mm9a66x3tqtxja160	2026-04-18 11:03:58.551729	2026-04-18 11:03:58.551729
+6fac523b-435a-4ad5-8cbf-a89e053857a4	LINO CREPE	BEIGE	M	\N	7900.0000	1501.0000	\N	9401.0000	PRONTAMODA	2026-03-05	S	FETP6766	mm9a66x3tqtxja160	2026-04-18 11:03:58.553069	2026-04-18 11:03:58.553069
+a0bab48d-5d8f-4078-9b77-759dc5fb6256	GITANILLA 5	COLORES	K	2.6000	42000.0000	7980.0000	49980.0000	19223.0800	CORBETA	2026-03-05	S	P 1471486997	mm9a66x3tqtxja160	2026-04-18 11:03:58.554406	2026-04-18 11:03:58.554406
+768b7c9f-5a08-4bf6-ad89-413075be9191	TELA FRIA	COLORES	K	3.1000	33193.2773	6306.7200	39500.0000	12741.9400	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-04	S	FEV 1100	mm9a66x3tqtxja160	2026-04-18 11:03:58.555815	2026-04-18 11:03:58.555815
+28ad93b1-de58-436b-a014-932ebf5eeede	CROCHET APT	APT	M	\N	15126.0000	2873.9400	\N	17999.9400	TEXTILES EL GATO	2026-03-04	S	TGAT 12047	mm9a66x3tqtxja160	2026-04-18 11:03:58.557181	2026-04-18 11:03:58.557181
+e6c6a985-82d5-42e7-b4b2-9e8df10e0785	TELA FRIA	COLORES	K	2.5000	31092.0000	5907.4800	36999.4800	14799.7900	TEXTILES EL GATO	2026-03-04	S	TGAT 12047	mm9a66x3tqtxja160	2026-04-18 11:03:58.558587	2026-04-18 11:03:58.558587
+9d37e952-e05c-4624-866c-a2834802a573	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2026-03-30	S	FETP6890	mm9a66x3tqtxja160	2026-04-18 11:03:58.483461	2026-04-28 08:59:48.63106
+ec98cb82-81c8-4ef7-9e45-6d296394525e	V	CRUDE/NEGRO	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	MANUFACTURAS ELIOT	2026-03-19	S	F22927	mm9a66x3tqtxja160	2026-04-18 11:03:58.506662	2026-05-05 12:05:30.950977
+5d99f458-227e-46a7-99c5-4f9dfcce02a4	PRAGA	COLORES	K	2.7000	31932.7731	6067.2300	38000.0000	14074.0700	TEXTILES EL GATO	2026-03-04	S	TGAT 12047	mm9a66x3tqtxja160	2026-04-18 11:03:58.55995	2026-04-18 11:03:58.55995
+5a9a3b67-9fca-4346-8361-719574461a7b	RIB 2X1	COLORES	K	3.0000	28991.5966	5508.4000	34500.0000	11500.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-03-03	S	FEV1098	mm9a66x3tqtxja160	2026-04-18 11:03:58.562783	2026-04-18 11:03:58.562783
+bbcc241d-778f-4326-8fce-2c83f522fa14	MILANMARK	COLORES	M	\N	10989.9160	2088.0800	\N	13077.9960	MANUFACTURAS ELIOT	2026-02-02	S	2312144373	mm9a66x3tqtxja160	2026-04-18 11:03:58.564181	2026-04-18 11:03:58.564181
+3566ab67-63e0-4a93-b4cf-c4d22f22e9a5	LORD	COLORES	M	\N	7900.0000	1501.0000	\N	9401.0000	PRONTAMODA	2026-03-02	S	FETP6750	mm9a66x3tqtxja160	2026-04-18 11:03:58.565536	2026-04-18 11:03:58.565536
+063e0f52-9ff3-4832-978a-26eeab31d767	BENGALINA PANA	COLORES	M	\N	11989.9160	2278.0800	\N	14267.9960	PRONTAMODA	2026-03-02	S	FETP6750	mm9a66x3tqtxja160	2026-04-18 11:03:58.566884	2026-04-18 11:03:58.566884
+b9d45126-f953-42c1-93a0-64773b28cf58	FLATY	NEGRO	K	3.7000	37989.9160	7218.0800	45208.0000	12218.3800	MANUFACTURAS ELIOT	2026-03-07	S	2312148587	mm9a66x3tqtxja160	2026-04-18 11:03:58.568233	2026-04-18 11:03:58.568233
+827c2c06-1968-4971-aa2c-2bbe654f56a1	FLATY	COLORES	K	3.7000	31989.9160	6078.0800	38068.0000	10288.6500	MANUFACTURAS ELIOT	2026-03-07	S	2312148587	mm9a66x3tqtxja160	2026-04-18 11:03:58.569598	2026-04-18 11:03:58.569598
+40ef4b5e-35f0-4210-b85f-ec1652370fd9	DUVALL	NEGRO	M	\N	12989.9160	2468.0800	\N	15457.9960	MANUFACTURAS ELIOT	2026-03-07	S	2312148587	mm9a66x3tqtxja160	2026-04-18 11:03:58.570954	2026-04-18 11:03:58.570954
+0bcb5c7b-738e-4ac5-9cf3-d615a985b269	MAYATEX	COLORES	M	\N	5462.1765	1037.8100	\N	6499.9865	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-25	S	FEV1096	mm9a66x3tqtxja160	2026-04-18 11:03:58.577946	2026-04-18 11:03:58.577946
+451980fd-f1e3-4a36-adfd-c2cf4fc1c243	ISLANDIA	COLORES	K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2026-02-23	S	FETP 6697	mm9a66x3tqtxja160	2026-04-18 11:03:58.579405	2026-04-18 11:03:58.579405
+22a3cef3-dfe8-481b-9f8d-e8a42c46ff70	LORD	COLORES	M	\N	7900.0000	1501.0000	\N	9401.0000	PRONTAMODA	2026-02-24	S	FETP 6705	mm9a66x3tqtxja160	2026-04-18 11:03:58.581205	2026-04-18 11:03:58.581205
+6a2e8fae-0b07-432b-bb86-973cc6d60bdd	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2026-02-24	S	FETP 6705	mm9a66x3tqtxja160	2026-04-18 11:03:58.583091	2026-04-18 11:03:58.583091
+0af36a6c-f324-48af-966d-e31fd29171ac	VERONA	COLORES	M	\N	19900.0000	3781.0000	\N	23681.0000	ARGATEX	2026-02-12	S	FE 6494	mm9a66x3tqtxja160	2026-04-18 11:03:58.584405	2026-04-18 11:03:58.584405
+554d8be2-1aa4-4fa7-885b-e3a62914042e	MANTEYA	COLORES	M	\N	15989.9160	3038.0800	\N	19027.9960	MANUFACTURAS ELIOT	2026-02-09	S	2312141008	mm9a66x3tqtxja160	2026-04-18 11:03:58.585704	2026-04-18 11:03:58.585704
+06bedb88-e969-4451-b914-ae977a1c2c15	RIB 2X1_1	COLORES	K	3.0000	28991.5966	5508.4000	34500.0000	11500.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-17	S	FEV 1089	mm9a66x3tqtxja160	2026-04-18 11:03:58.588548	2026-04-18 11:03:58.588548
+bc51bf0a-fb3c-4412-b4d3-5be41947fee3	SOPHIA	COLORES	M	\N	18000.0000	3420.0000	\N	21420.0000	PRONTAMODA	2026-02-17	S	FETP6655	mm9a66x3tqtxja160	2026-04-18 11:03:58.589967	2026-04-18 11:03:58.589967
+e785b2c5-e0ab-40b5-9bdb-db7e73d28d37	PRAGA	COLORES	K	2.7000	31932.7731	6067.2300	38000.0000	14074.0700	TEXTILES EL GATO	2026-02-18	S	TGAT 11983	mm9a66x3tqtxja160	2026-04-18 11:03:58.591483	2026-04-18 11:03:58.591483
+3c76c339-4c3f-4d0b-94c8-9be9b977a5ef	TELA FRIA	COLORES	K	3.1000	33193.2773	6306.7200	39500.0000	12741.9400	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-18	S	FEV 1090	mm9a66x3tqtxja160	2026-04-18 11:03:58.592972	2026-04-18 11:03:58.592972
+c4cdbd0d-1734-4cab-b852-a400345acb4b	PIEL DE DURAZNO	COLORES	K	3.6000	15546.2185	2953.7800	18500.0000	5138.8900	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-18	S	FEV 1090	mm9a66x3tqtxja160	2026-04-18 11:03:58.594686	2026-04-18 11:03:58.594686
+dee949d2-1949-4b60-8cda-f87c79fa1e86	LICRA DESTELLANTE	COLORES	K	3.2000	40336.1345	7663.8700	48000.0000	15000.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-18	S	FEV 1090	mm9a66x3tqtxja160	2026-04-18 11:03:58.596064	2026-04-18 11:03:58.596064
+00b5c2b2-4b90-4c99-8f0a-d7aae25e4a53	AMELIA-180	COLORES	K	3.4000	20500.0000	3895.0000	24395.0000	7175.0000	ARGATEX	2026-02-20	S	FE 6523	mm9a66x3tqtxja160	2026-04-18 11:03:58.597435	2026-04-18 11:03:58.597435
+4f561e20-0c05-4a6d-947f-05f2820e4d49	MAUI RAYON	COLORES	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2026-02-20	S	FE 6533	mm9a66x3tqtxja160	2026-04-18 11:03:58.598811	2026-04-18 11:03:58.598811
+76cb71ac-afda-4073-a353-48b3a7902050	LUCA	COLORES	K	2.6000	33200.0000	6308.0000	39508.0000	15195.3800	ARGATEX	2026-02-20	S	FE 6533	mm9a66x3tqtxja160	2026-04-18 11:03:58.600203	2026-04-18 11:03:58.600203
+008144b6-b385-40b9-8565-62542edc260b	VERAWELL	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2026-02-18	S	2312143708	mm9a66x3tqtxja160	2026-04-18 11:03:58.601546	2026-04-18 11:03:58.601546
+15a59153-95d0-4347-9be6-e6c4c59ea532	VERASTYLE	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2026-02-18	S	2312143708	mm9a66x3tqtxja160	2026-04-18 11:03:58.602908	2026-04-18 11:03:58.602908
+7dc08e87-02e2-4843-805f-6a0d43d107cb	VARACOCO	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2026-02-18	S	2312143708	mm9a66x3tqtxja160	2026-04-18 11:03:58.604223	2026-04-18 11:03:58.604223
+863df7a5-60d2-4e15-b0c5-ba70acd75526	PUF ELOFORMS	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2026-02-18	S	2312143708	mm9a66x3tqtxja160	2026-04-18 11:03:58.605555	2026-04-18 11:03:58.605555
+28ac17a6-a712-4b59-89ed-d6d185fc0140	DAISY OJALILLO	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2026-02-18	S	2312143708	mm9a66x3tqtxja160	2026-04-18 11:03:58.606886	2026-04-18 11:03:58.606886
+96f52e27-1272-4bde-8c00-3c6e89c3d9e3	RU KIOTO ESTAMPADO V4	COLORES	M	\N	8489.9160	1613.0800	\N	10102.9960	MANUFACTURAS ELIOT	2026-02-12	S	2312141864	mm9a66x3tqtxja160	2026-04-18 11:03:58.608235	2026-04-18 11:03:58.608235
+4e894a3d-f9d8-483c-8e36-191a0a9aca3f	PIEL DE DURAZNO	COLORES	K	3.6000	15546.2185	2953.7800	18500.0000	5138.8900	MN TEXTIL_ MELISA CANO (FRANK)	2026-02-12	S	FEV 1081	mm9a66x3tqtxja160	2026-04-18 11:03:58.610058	2026-04-18 11:03:58.610058
+9006c063-1c0e-4852-8a70-f99959055d0e	LULULEMON YOGA	COLORES	K	2.4000	22605.0336	4294.9600	26899.9900	11208.3300	TELASCOMPRO	2026-02-04	S	FET1134	mm9a66x3tqtxja160	2026-04-18 11:03:58.611399	2026-04-18 11:03:58.611399
+40621a53-8c7b-45d2-8a92-d8030faa0663	GALLETA	COLORES	M	\N	9900.0000	1881.0000	\N	11781.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-01-21	S	FEV1049	mm9a66x3tqtxja160	2026-04-18 11:03:58.612711	2026-04-18 11:03:58.612711
+70389644-9757-4924-b063-ba9df179241a	PRAGA	COLORES	K	2.7000	31932.7731	6067.2300	38000.0000	14074.0700	TEXTILES EL GATO	2026-01-29	S	TGAT11932	mm9a66x3tqtxja160	2026-04-18 11:03:58.613997	2026-04-18 11:03:58.613997
+612a9ff0-f853-4ce1-9fee-4be221f5fa44	BURDA FRIA_TELASCOMPRO	COLORES	K	2.1000	28747.8992	5462.1000	34210.0000	16290.4800	TELASCOMPRO	2026-01-22	S	FET 1083	mm9a66x3tqtxja160	2026-04-18 11:03:58.61533	2026-04-18 11:03:58.61533
+f5d64b0f-2678-4901-a38c-1791dc10a068	TELA FRIA	COLORES	K	3.1000	33193.2773	6306.7200	39500.0000	12741.9400	MN TEXTIL_ MELISA CANO (FRANK)	2025-01-30	S	FEV 1064	mm9a66x3tqtxja160	2026-04-18 11:03:58.616633	2026-04-18 11:03:58.616633
+19b4a891-b4d3-4df1-b82c-dd0c85f79d62	ISLANDIA	COLORES	K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2025-01-27	S	FETP6507	mm9a66x3tqtxja160	2026-04-18 11:03:58.61793	2026-04-18 11:03:58.61793
+e810abd3-effd-4024-b227-9e0788a66db6	BURDA MN	COLORES	K	2.4000	26890.7563	5109.2400	32000.0000	13333.3300	MN TEXTIL_ MELISA CANO (FRANK)	2026-01-21	S	FEV1049	mm9a66x3tqtxja160	2026-04-18 11:03:58.619225	2026-04-18 11:03:58.619225
+3d04aac4-6f54-4797-8e0b-d042cb22c056	VICTORIA RAYA	COLORES	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-01-19	S	F22450	mm9a66x3tqtxja160	2026-04-18 11:03:58.620507	2026-04-18 11:03:58.620507
+fc59066d-cfec-4f1f-9890-3dddf5079062	EXTERIORES CAPRIATI TIPO A	COLORES	K	3.6000	30168.0000	5731.9200	35899.9200	9972.2000	PASH S.A.S	2025-12-11	S	535535115	mm9a66x3tqtxja160	2026-04-18 11:03:58.623084	2026-04-18 11:03:58.623084
+e402949b-938e-4f93-a71b-e11c305f49b8	CAPRIATI SEC TIPO B	COLORES	K	3.6000	28989.9160	5508.0800	34498.0000	9582.7800	PASH S.A.S	2025-12-11	S	500727029	mm9a66x3tqtxja160	2026-04-18 11:03:58.624362	2026-04-18 11:03:58.624362
+d6351ff9-457d-4583-b541-ede26b5410f9	RIB 2X1	COLORES	K	3.0000	28571.4286	5428.5700	34000.0000	11333.3300	MN TEXTIL_ MELISA CANO (FRANK)	2025-11-28	S	FEV 1014	mm9a66x3tqtxja160	2026-04-18 11:03:58.626135	2026-04-18 11:03:58.626135
+7fe393b8-4fde-4496-8b41-8fbefab06bf7	POLILICRA	NEGRO	K	3.0000	18907.5630	3592.4400	22500.0000	7500.0000	MN TEXTIL_ MELISA CANO (FRANK)	2025-11-28	S	FEV 1014	mm9a66x3tqtxja160	2026-04-18 11:03:58.627427	2026-04-18 11:03:58.627427
+675813c3-420b-4e26-825e-1b52e0c97a7b	BEYONCE	COLORES	K	2.4000	35294.1100	6705.8800	41999.9900	17500.0000	SUPER NOVA TEXTIL	2026-01-31	S	FE 1894	mm9a66x3tqtxja160	2026-04-18 11:03:58.575222	2026-04-28 08:59:48.689876
+1757ee62-2a53-4c89-99fb-fda3e8efbd3a	PARIS JERSEY	COLORES	K	\N	33613.4400	6386.5500	39999.9900	\N	SUPER NOVA TEXTIL	2026-01-31	S	FE 1894	mm9a66x3tqtxja160	2026-04-18 11:03:58.573865	2026-04-28 08:59:48.691623
+aba724dd-a1ff-435c-96a8-4a8a9d2ae9f3	POLO RIB	COLORES	K	2.0000	30252.1000	5747.9000	36000.0000	18000.0000	SUPER NOVA TEXTIL	2026-01-31	S	FE 1894	mm9a66x3tqtxja160	2026-04-18 11:03:58.572511	2026-04-28 08:59:48.693205
+8ad11847-a852-4243-a8fe-79f848355f95	POLILICRA	COLORES	K	3.3000	18487.3950	\N	18487.4000	5602.2400	G.G.L	2025-12-11	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.621794	2026-04-28 08:59:48.69485
+1a3bc067-8aa6-4a43-8665-8306e3988b55	BENGALINA FLOW	BEIGE	M	\N	11900.0000	2261.0000	\N	14161.0000	PRIMATELA	2025-11-27	S	1111444355	mm9a66x3tqtxja160	2026-04-18 11:03:58.62869	2026-04-18 11:03:58.62869
+4a6e88b2-1994-4b51-ab1e-f34330a9bc2d	ROSI	COLORES	K	8.0000	49200.0000	9348.0000	58548.0000	7318.5000	ARGATEX	2025-09-26	S	FE 6060	mm9a66x3tqtxja160	2026-04-18 11:03:58.630052	2026-04-18 11:03:58.630052
+c43357a7-40e7-4ac9-bba8-e046165d581f	NEWCOQUETE	COLORES	M	\N	6900.0000	1311.0000	\N	8211.0000	PRIMATELA	2025-11-13	S	1111442608	mm9a66x3tqtxja160	2026-04-18 11:03:58.631304	2026-04-18 11:03:58.631304
+41656869-73a4-4803-87fb-3677ec67d858	MAYATEX FONDO ENTERO	BLANCO	M	\N	5714.2857	1085.7100	\N	6799.9957	TEXTILES EL GATO	2025-11-18	S	TGAT 11732	mm9a66x3tqtxja160	2026-04-18 11:03:58.632558	2026-04-18 11:03:58.632558
+acce1523-d4fa-453a-9ef7-fe800eaf3168	PITILLO HEAVY	COLORES	K	2.2000	26900.0000	5111.0000	32011.0000	14550.4500	PRONTAMODA	2025-11-20	S	FETP 6365	mm9a66x3tqtxja160	2026-04-18 11:03:58.634244	2026-04-18 11:03:58.634244
+9b5ab94d-7c33-47dd-875c-ac2aa77c7815	ISLANDIA	COLORES	K	3.1000	32500.0000	6175.0000	38675.0000	12475.8100	PRONTAMODA	2025-11-20	S	FETP 6365	mm9a66x3tqtxja160	2026-04-18 11:03:58.635667	2026-04-18 11:03:58.635667
+bae211d3-da64-4f0c-9f69-7b3375515fce	CROCHET MISSONI	COLORES	M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-11-20	S	FETP 6365	mm9a66x3tqtxja160	2026-04-18 11:03:58.637096	2026-04-18 11:03:58.637096
+e8e26c26-d1a4-45fb-9440-b0d0ac00c694	SANTEZA	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112400	mm9a66x3tqtxja160	2026-04-18 11:03:58.638617	2026-04-18 11:03:58.638617
+95bbc6af-4747-438f-9842-89fa4a551297	VERONARAYON	COLORES	M	\N	8700.0000	1653.0000	\N	10353.0000	PRIMATELA	2025-10-09	S	1111437262	mm9a66x3tqtxja160	2026-04-18 11:03:58.640154	2026-04-18 11:03:58.640154
+10192cc6-769a-4971-9fd0-b063bd11828b	DASHIELLY	COLORES	M	\N	15989.9160	3038.0800	\N	19027.9960	MANUFACTURAS ELIOT	2025-09-29	S	2312115317	mm9a66x3tqtxja160	2026-04-18 11:03:58.642153	2026-04-18 11:03:58.642153
+c5614bb9-9f5c-4613-8d56-d3398a81c0d8	DESTELLANTE	COLORES	K	3.4000	59990.0000	11398.1000	71388.1000	20996.5000	MANUFACTURAS ELIOT	2025-09-24	S	2312114347	mm9a66x3tqtxja160	2026-04-18 11:03:58.643507	2026-04-18 11:03:58.643507
+2521d70d-3940-4fd8-bf37-9c8b417039d3	NEWCOQUETE	COLORES	M	\N	6900.0000	1311.0000	\N	8211.0000	PRIMATELA	2025-09-24	S	1111434338	mm9a66x3tqtxja160	2026-04-18 11:03:58.644807	2026-04-18 11:03:58.644807
+c51d4aba-54fb-4dde-b37d-b8012d23301d	BRILLO LENTEJUELAS COLORES	COLORES	M	\N	21000.0000	3990.0000	\N	24990.0000	TEXTILES EL GATO	2025-09-25	S	TGAT 11514	mm9a66x3tqtxja160	2026-04-18 11:03:58.646122	2026-04-18 11:03:58.646122
+9f1dacaa-e1a4-46ca-af81-4220b2fcd26c	MAYATEX FONDO ENTERO	COLORES	M	\N	5462.0000	1037.7800	\N	6499.7800	TEXTILES EL GATO	2025-09-25	S	TGAT 11514	mm9a66x3tqtxja160	2026-04-18 11:03:58.648024	2026-04-18 11:03:58.648024
+dfb4e021-4d4a-463f-bc25-d36dafca4e59	DRILL ZARA	COLORES	M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-09-25	S	FETP6183	mm9a66x3tqtxja160	2026-04-18 11:03:58.649365	2026-04-18 11:03:58.649365
+65b7feae-e8a3-4143-b5d5-ca9d127a9f65	NOCHE VIENA	COLORES	M	\N	9747.8992	1852.1000	\N	11599.9992	MN TEXTIL_ MELISA CANO (FRANK)	2025-09-24	S	FEV911	mm9a66x3tqtxja160	2026-04-18 11:03:58.650812	2026-04-18 11:03:58.650812
+4089153c-c387-480e-b8c4-4a00817377ce	MIAMI	COLORES	M	\N	11000.0000	2090.0000	\N	13090.0000	ARGATEX	2025-09-23	S	FE6042	mm9a66x3tqtxja160	2026-04-18 11:03:58.652642	2026-04-18 11:03:58.652642
+22172dc4-3bd8-4868-a4ec-cde5539ff4eb	BENGALINA TWILL	COLORES	M	\N	9900.0000	1881.0000	\N	11781.0000	PRONTAMODA	2025-09-23	S	FETP6169	mm9a66x3tqtxja160	2026-04-18 11:03:58.654129	2026-04-18 11:03:58.654129
+7f583a7a-e4d1-40d8-b567-17345afac836	FAIRYRAYON	COLORES	M	\N	17500.0000	3325.0000	\N	20825.0000	PRIMATELA	2025-09-10	S	1111431504	mm9a66x3tqtxja160	2026-04-18 11:03:58.655673	2026-04-18 11:03:58.655673
+0a2f1859-d72f-4381-aaa6-1be8430f0284	KLOSS	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112673	mm9a66x3tqtxja160	2026-04-18 11:03:58.6572	2026-04-18 11:03:58.6572
+c6371cbe-4313-44fd-8dd9-fa38bffc871c	TEABALNCK	BEIGE	M	\N	13489.9160	2563.0800	\N	16052.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112427	mm9a66x3tqtxja160	2026-04-18 11:03:58.65875	2026-04-18 11:03:58.65875
+ce095014-7276-45b7-ac34-a464c3475d12	NAKOMA	COLORES	M	\N	6989.9160	1328.0800	\N	8317.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112427	mm9a66x3tqtxja160	2026-04-18 11:03:58.660254	2026-04-18 11:03:58.660254
+30404632-e27d-4213-92c4-ee464e1ef687	CRISALDA	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-09-19	S	2312112214	mm9a66x3tqtxja160	2026-04-18 11:03:58.66178	2026-04-18 11:03:58.66178
+5af38778-45f4-4fc5-96ce-8ffd506ea88c	CUMBRE LER	COLORES	M	\N	15989.9160	3038.0800	\N	19027.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112400	mm9a66x3tqtxja160	2026-04-18 11:03:58.663273	2026-04-18 11:03:58.663273
+3ee6cca7-191b-419d-a3a4-72a79bd30e99	MILANNOFOIL	COLORES	M	\N	15989.9160	3038.0800	\N	19027.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112256	mm9a66x3tqtxja160	2026-04-18 11:03:58.664916	2026-04-18 11:03:58.664916
+fefe6b9c-a240-4972-a20b-e2ba07fa5083	MIARAI PACK	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-09-18	S	2312112256	mm9a66x3tqtxja160	2026-04-18 11:03:58.666327	2026-04-18 11:03:58.666327
+14c6f987-1dd9-4d37-a0d5-8e4ebb9247a3	JABON	BEIGE	K	3.5000	24989.9160	4748.0800	29738.0000	8496.5700	MANUFACTURAS ELIOT	2025-09-03	S	2312107726	mm9a66x3tqtxja160	2026-04-18 11:03:58.667689	2026-04-18 11:03:58.667689
+b5f831d6-7ece-4e3b-abd1-a1ce0e049a0b	FLORALUNI	COLORES	M	\N	8500.0000	1615.0000	\N	10115.0000	PRIMATELA	2025-10-07	S	1111436628	mm9a66x3tqtxja160	2026-04-18 11:03:58.669016	2026-04-18 11:03:58.669016
+f13729d1-3674-467e-bf4d-6f8dbdaba55b	VICTORIA RAYA	COLORES	K	2.2000	39900.0000	7581.0000	47481.0000	21582.2700	TEXTILES ESTACION	2025-10-07	S	F22003	mm9a66x3tqtxja160	2026-04-18 11:03:58.670556	2026-04-18 11:03:58.670556
+8178937f-e91b-489b-b686-fd1b53754ede	MICHELLA	COLORES	M	\N	12989.9160	2468.0800	\N	15457.9960	MANUFACTURAS ELIOT	2025-10-07	S	2312117682	mm9a66x3tqtxja160	2026-04-18 11:03:58.672557	2026-04-18 11:03:58.672557
+6c96fe95-8149-4da0-893f-a4c22a0adfcd	POLILICRA	COLORES	K	3.0000	18907.5546	3592.4400	22499.9900	7500.0000	MN TEXTIL_ MELISA CANO (FRANK)	2025-10-07	S	FEV928	mm9a66x3tqtxja160	2026-04-18 11:03:58.67555	2026-04-18 11:03:58.67555
+1f09bb5b-694f-4028-94b2-acd2ab36f7f5	TIFANY(MAYA P ROMBOS)	COLORES	M	\N	7000.0000	1330.0000	\N	8330.0000	ARGATEX	2025-10-03	S	FE6083	mm9a66x3tqtxja160	2026-04-18 11:03:58.677063	2026-04-18 11:03:58.677063
+91464515-31e4-4c98-a6c6-9ade4d0f6810	ANDRE(MALLA PUNTOS)	COLORES	M	\N	7100.0000	1349.0000	\N	8449.0000	ARGATEX	2025-10-03	S	FE6083	mm9a66x3tqtxja160	2026-04-18 11:03:58.678575	2026-04-18 11:03:58.678575
+553c3658-0b89-4e75-a11f-ca30296a1a9b	MINIWAFER	COLORES	M	\N	10990.0000	2088.1000	\N	13078.1000	MANUFACTURAS ELIOT	2025-09-26	S	2312114824	mm9a66x3tqtxja160	2026-04-18 11:03:58.680096	2026-04-18 11:03:58.680096
+f1a5c5a1-7876-4f18-8099-2d3cca495a6e	LICRA FRIA	COLORES	K	2.5000	31092.0000	5907.4800	36999.4800	14799.7900	TEXTILES EL GATO	2025-09-30	S	TGAT 11528	mm9a66x3tqtxja160	2026-04-18 11:03:58.681591	2026-04-18 11:03:58.681591
+2e568d0f-72eb-4371-9b43-9b5b332da618	RIBB PITILLO		K	2.4000	28571.4286	5428.5700	34000.0000	14166.6700		\N	S		mm9a66x3tqtxja160	2026-04-18 11:03:58.683107	2026-04-18 11:03:58.683107
+c61ede7a-11ae-42d6-b151-b94adee2304a	KLOSS	COLORES	M	\N	10989.9160	2088.0800	\N	13077.9960	MANUFACTURAS ELIOT	2025-09-22	S	2312113529	mm9a66x3tqtxja160	2026-04-18 11:03:58.684574	2026-04-18 11:03:58.684574
+5b4d7f81-faeb-4150-bd65-af9b6bcc61ac	MESALINA	COLORES	K	4.0000	36989.9160	7028.0800	44018.0000	11004.5000	MANUFACTURAS ELIOT	2025-09-09	S	2312109406	mm9a66x3tqtxja160	2026-04-18 11:03:58.686146	2026-04-18 11:03:58.686146
+3683ac7a-0391-47e8-b96a-25daa8e51dfb	MALLA CROCHE 4	COLORES	K	2.1000	39900.0000	7581.0000	47481.0000	22610.0000	TEXTILES ESTACION	2025-09-12	S	F21847	mm9a66x3tqtxja160	2026-04-18 11:03:58.688192	2026-04-18 11:03:58.688192
+bec2ec8b-4a7d-4586-8cb0-bfa0ccf65c78	SUPERJACK	COLORES	K	2.9000	30000.0000	5700.0000	35700.0000	12310.3400	ARGATEX	2025-08-19	S	FE 5878	mm9a66x3tqtxja160	2026-04-18 11:03:58.689521	2026-04-18 11:03:58.689521
+d2450794-c675-404e-957d-559b42903a56	BYRON	COLORES	K	2.6000	43989.9160	8358.0800	52348.0000	20133.8500	MANUFACTURAS ELIOT	2025-09-02	S	2312107215	mm9a66x3tqtxja160	2026-04-18 11:03:58.690792	2026-04-18 11:03:58.690792
+7e7b6a5f-b398-44f0-b0b3-a7f70452e9f2	SAHARA	BLANCO	M	\N	10500.0000	1995.0000	\N	12495.0000	PRONTAMODA	2025-09-03	S	FETP6078	mm9a66x3tqtxja160	2026-04-18 11:03:58.692153	2026-04-18 11:03:58.692153
+121d8f39-3285-4edc-aae5-c1378e4a51c9	BLONDA IMPORTADA	BEIGE	M	\N	15126.0504	2873.9500	\N	18000.0004	TEXTILES EL GATO	2025-09-02	S	TGAT11415	mm9a66x3tqtxja160	2026-04-18 11:03:58.693562	2026-04-18 11:03:58.693562
+c1de8295-9003-41a0-aa33-1ef2bae856f1	CROCHE APT	APT	M	\N	12605.0420	2394.9600	\N	15000.0020	TEXTILES EL GATO	2025-09-08	S	TGAT11440	mm9a66x3tqtxja160	2026-04-18 11:03:58.694991	2026-04-18 11:03:58.694991
+82c03b2e-3033-4c34-ada3-d2b465b7c4f6	ARUBA	COLORES	K	2.4000	41900.0000	7961.0000	49861.0000	20775.4200	TEXTILES ESTACION	2025-09-03	S	F21776	mm9a66x3tqtxja160	2026-04-18 11:03:58.696421	2026-04-18 11:03:58.696421
+cb9cc194-85fc-43aa-baa4-7114f22a2407	AMELIA-180	COLORES	K	3.4000	20500.0000	3895.0000	24395.0000	7175.0000	ARGATEX	2025-09-29	S	FE6068	mm9a66x3tqtxja160	2026-04-18 11:03:58.697814	2026-04-18 11:03:58.697814
+be96ba89-70e3-4236-99fa-d579475bacb7	MAYATEX	COLORES	K	6.5000	34700.0000	6593.0000	41293.0000	6352.7700	ARGATEX	2025-08-23	S	FE 5901	mm9a66x3tqtxja160	2026-04-18 11:03:58.699231	2026-04-18 11:03:58.699231
+f5183d78-b82e-4841-9c79-774814e02fc3	ROSI	COLORES	K	8.0000	49200.0000	9348.0000	58548.0000	7318.5000	ARGATEX	2025-08-22	S	FE 5901	mm9a66x3tqtxja160	2026-04-18 11:03:58.700621	2026-04-18 11:03:58.700621
+628683c5-04f9-42f5-aeae-b68e8f5f15b9	RIBB POLIESTER	COLORES	K	3.1000	20924.3697	3975.6300	24900.0000	8032.2600	MN TEXTIL_ MELISA CANO (FRANK)	2025-08-29	S	FEV858	mm9a66x3tqtxja160	2026-04-18 11:03:58.702078	2026-04-18 11:03:58.702078
+43390833-9970-48e5-8e67-08604587bc2b	JANE SOFT	COLORES	K	3.3000	33964.7059	6453.2900	40418.0000	12247.8800	MANUFACTURAS ELIOT	2025-08-25	S	2312104776	mm9a66x3tqtxja160	2026-04-18 11:03:58.704209	2026-04-18 11:03:58.704209
+9b4e545f-e1d4-4083-88ec-34e0679ebb10	AMORELA	COLORES	K	4.2000	37989.9160	7218.0800	45208.0000	10763.8100	MANUFACTURAS ELIOT	2025-08-27	S	2312105369	mm9a66x3tqtxja160	2026-04-18 11:03:58.70564	2026-04-18 11:03:58.70564
+b83fba97-6186-4bf8-9a5e-a3e52b0c7b46	VALIANA	COLORES	K	6.4000	43900.0000	8341.0000	52241.0000	8162.6600	MANUFACTURAS ELIOT	2025-08-23	S	2312104333	mm9a66x3tqtxja160	2026-04-18 11:03:58.707073	2026-04-18 11:03:58.707073
+10f1f620-2e1a-4db0-9441-a43ba1f08f9a	LICRA DESTELLANTE	COLORES	K	3.2000	40336.1345	7663.8700	48000.0000	15000.0000	MN TEXTIL_ MELISA CANO (FRANK)	2025-09-24	S	FEV911	mm9a66x3tqtxja160	2026-04-18 11:03:58.708535	2026-04-18 11:03:58.708535
+5176bf21-49fc-406b-8244-a22080128a46	NATURELLE	BEIGE	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-08-16	S	2312102266	mm9a66x3tqtxja160	2026-04-18 11:03:58.709958	2026-04-18 11:03:58.709958
+b6d5c977-50da-4068-8153-b77ca9f0dfab	BENGALINA PANA	COLORES	M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-08-21	S	FETP6024	mm9a66x3tqtxja160	2026-04-18 11:03:58.711364	2026-04-18 11:03:58.711364
+39a29ffd-e191-458f-9202-9a4988a8b34c	TIKILUX	COLORES	M	\N	19989.9160	3798.0800	\N	23787.9960	MANUFACTURAS ELIOT	2025-08-21	S	2312103384	mm9a66x3tqtxja160	2026-04-18 11:03:58.712777	2026-04-18 11:03:58.712777
+f98bf437-8a86-4a15-8480-45549289ccb3	SANDLUX DORADO	COLORES	M	\N	16989.9160	3228.0800	\N	20217.9960	MANUFACTURAS ELIOT	2025-08-21	S	2312103384	mm9a66x3tqtxja160	2026-04-18 11:03:58.714187	2026-04-18 11:03:58.714187
+8d59c304-e447-4ccb-9c45-d2be09317c4f	CORTEZA	COLORES	K	2.5000	42989.9160	8168.0800	51158.0000	20463.2000	MANUFACTURAS ELIOT	2025-08-21	S	2312103384	mm9a66x3tqtxja160	2026-04-18 11:03:58.715607	2026-04-18 11:03:58.715607
+9fffa493-ab38-4efa-ad10-1fbff0f3c132	RIB CARTIER	COLORES	K	3.0000	29900.0000	5681.0000	35581.0000	11860.3300	PRONTAMODA	2025-08-13	S	FETP5968	mm9a66x3tqtxja160	2026-04-18 11:03:58.71703	2026-04-18 11:03:58.71703
+5edd4c7d-5043-45ae-b297-13087a19d9f3	KASPIRO	COLORES	M	\N	16989.9160	3228.0800	\N	20217.9960	MANUFACTURAS ELIOT	2025-08-12	S	2312100913	mm9a66x3tqtxja160	2026-04-18 11:03:58.718459	2026-04-18 11:03:58.718459
+11391531-4ffc-4b11-a0b4-9ff2321a9e97	KENIA	BEIGE	K	5.0000	58700.0000	11153.0000	69853.0000	13970.6000	ARGATEX	2025-08-06	S	FE5837	mm9a66x3tqtxja160	2026-04-18 11:03:58.71993	2026-04-18 11:03:58.71993
+9f1cca68-f54a-4036-b1da-7bcc4a84c71a	AMELIA-180	BEIGE	K	3.4000	20500.0000	3895.0000	24395.0000	7175.0000	ARGATEX	2025-08-06	S	FE5837	mm9a66x3tqtxja160	2026-04-18 11:03:58.721338	2026-04-18 11:03:58.721338
+33f45fdc-c02b-4cfb-a30f-4f6e3d4592d0	GEN MARYNAS	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-08-08	S	2312100018	mm9a66x3tqtxja160	2026-04-18 11:03:58.722767	2026-04-18 11:03:58.722767
+c498fa38-23a6-47da-81c8-23e4257764ca	SIERRA GAUCHA	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-08-08	S	2312100018	mm9a66x3tqtxja160	2026-04-18 11:03:58.724218	2026-04-18 11:03:58.724218
+071990f9-615f-4fdd-ba21-0c0b9f856fed	SIERRA ALTA	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-08-08	S	2312099983	mm9a66x3tqtxja160	2026-04-18 11:03:58.725463	2026-04-18 11:03:58.725463
+ee21c7ae-db6b-4a06-963d-71eaa05c614a	MOHIKA BRIGTH	COLORES	K	2.4000	34989.9160	6648.0800	41638.0000	17349.1700	MANUFACTURAS ELIOT	2025-08-08	S	2312100001	mm9a66x3tqtxja160	2026-04-18 11:03:58.726704	2026-04-18 11:03:58.726704
+d2a602d4-2e04-4f60-bc8e-cb06b9c49e7f	FREEMAN	COLORES	K	2.9000	36989.9160	7028.0800	44018.0000	15178.6200	MANUFACTURAS ELIOT	2025-08-08	S	2312100001	mm9a66x3tqtxja160	2026-04-18 11:03:58.729026	2026-04-18 11:03:58.729026
+9124c5ce-a9ea-4d0d-bf31-436f83822934	BOSTONY	COLORES	K	2.1000	26989.9160	5128.0800	32118.0000	15294.2900	MANUFACTURAS ELIOT	2025-08-09	S	2312100248	mm9a66x3tqtxja160	2026-04-18 11:03:58.730316	2026-04-18 11:03:58.730316
+65d0e3c8-5a5b-4c41-9583-bd1aeae84aae	GEN AMELYAS	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-08-08	S	2312100018	mm9a66x3tqtxja160	2026-04-18 11:03:58.731537	2026-04-18 11:03:58.731537
+94763d6b-5bac-4d67-9100-93dfba7fb8c0	LYCRA ALGODÓN	BLANCO	K	3.1000	21184.9412	4025.1400	25210.0800	8132.2800	MN TEXTIL_ MELISA CANO (FRANK)	2025-08-05	S	FEV816	mm9a66x3tqtxja160	2026-04-18 11:03:58.732756	2026-04-18 11:03:58.732756
+341a3a52-d3d3-4452-ba5e-58287630e4f3	JABON	BEIGE	K	3.5000	26989.9160	5128.0800	32118.0000	9176.5700	MANUFACTURAS ELIOT	2025-08-02	S	2312098203	mm9a66x3tqtxja160	2026-04-18 11:03:58.733992	2026-04-18 11:03:58.733992
+80c7bf44-e218-43a4-90d3-0ff12f4ba80f	SAHARA	COLORES	M	\N	11900.0000	2261.0000	\N	14161.0000	PRONTAMODA	2025-08-01	S	FETP5895	mm9a66x3tqtxja160	2026-04-18 11:03:58.735693	2026-04-18 11:03:58.735693
+0e9dc655-5758-40b8-8705-f6d13389c504	BENGALINA BLUZZ	BEIGE	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2025-08-01	S	FETP5895	mm9a66x3tqtxja160	2026-04-18 11:03:58.736994	2026-04-18 11:03:58.736994
+80321601-fabb-461a-a768-ce6fe27c6f6a	CHENEY	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-30	S	2312096935	mm9a66x3tqtxja160	2026-04-18 11:03:58.739619	2026-04-18 11:03:58.739619
+d8eb0c57-d4bc-4c0b-93d7-f3a74162905f	LATINA	COLORES	M	\N	7989.9160	1518.0800	\N	9507.9960	MANUFACTURAS ELIOT	2025-07-29	S	2312096908	mm9a66x3tqtxja160	2026-04-18 11:03:58.740818	2026-04-18 11:03:58.740818
+2f409da5-84d2-4188-b30b-db9741327985	DAISY OJALILLO	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-07-29	S	2312096908	mm9a66x3tqtxja160	2026-04-18 11:03:58.742003	2026-04-18 11:03:58.742003
+bbed196c-183a-4af8-bee1-5e9ac7584379	RUSTIKE	COLORES	K	3.1000	36989.9160	7028.0800	44018.0000	14199.3500	MANUFACTURAS ELIOT	2025-07-29	S	2312096834	mm9a66x3tqtxja160	2026-04-18 11:03:58.74331	2026-04-18 11:03:58.74331
+42b2610a-bf4a-44f5-b4a4-e2eed8933370	MINIWAFER	COLORES	M	\N	12489.9160	2373.0800	\N	14862.9960	MANUFACTURAS ELIOT	2025-07-29	S	2312096834	mm9a66x3tqtxja160	2026-04-18 11:03:58.744535	2026-04-18 11:03:58.744535
+94e55305-6345-43a6-9cb8-a4baa51bfc9c	LINO MILAN	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-07-29	S	2312096834	mm9a66x3tqtxja160	2026-04-18 11:03:58.74575	2026-04-18 11:03:58.74575
+8d0cfc1e-78fd-4c8d-b06e-67d187b7d5db	FLATY	COLORES	K	3.7000	39989.9160	7598.0800	47588.0000	12861.6200	MANUFACTURAS ELIOT	2025-07-22	S	2312093748	mm9a66x3tqtxja160	2026-04-18 11:03:58.746983	2026-04-18 11:03:58.746983
+31ab33cc-6ff5-47d1-9909-0374bf02d431	RIO 2	COLORES	K	2.4000	37900.0000	7201.0000	45101.0000	18792.0800	TEXTILES ESTACION	2025-07-25	S	F21447	mm9a66x3tqtxja160	2026-04-18 11:03:58.748272	2026-04-18 11:03:58.748272
+a11f9b6c-4b29-43bf-af7c-07e9e707d3a7	LYCRA ALGODÓN	BLANCO	K	3.1000	25210.0840	4789.9200	30000.0000	9677.4200	MN TEXTIL_ MELISA CANO (FRANK)	2025-07-24	S	FEV 797	mm9a66x3tqtxja160	2026-04-18 11:03:58.749482	2026-04-18 11:03:58.749482
+72034fbf-1e43-4129-84a4-fec0f8837471	LINO MILAN	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-07-22	S	2312094609	mm9a66x3tqtxja160	2026-04-18 11:03:58.751312	2026-04-18 11:03:58.751312
+65ad6119-f391-471e-a38b-5d3a21d99f16	SIERRA ALTA	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-21	S	2312094602	mm9a66x3tqtxja160	2026-04-18 11:03:58.752423	2026-04-18 11:03:58.752423
+d66767f9-82c3-47af-8a88-4fedf737b671	RUSTIKE	COLORES	K	3.1000	36989.9160	7028.0800	44018.0000	14199.3500	MANUFACTURAS ELIOT	2025-07-18	S	2312093748	mm9a66x3tqtxja160	2026-04-18 11:03:58.753666	2026-04-18 11:03:58.753666
+ae36075b-cbfe-4688-a75a-a946ee9094ad	CHACAL	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312093748	mm9a66x3tqtxja160	2026-04-18 11:03:58.754983	2026-04-18 11:03:58.754983
+97edca37-c20e-49f5-b636-350149e7f341	LINO PRAGA	COLORES	M	\N	12689.9160	2411.0800	\N	15100.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312093749	mm9a66x3tqtxja160	2026-04-18 11:03:58.756228	2026-04-18 11:03:58.756228
+d97c0421-9485-4690-9e02-4b2a5200b376	LENOVOFLEX ELIT	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312093879	mm9a66x3tqtxja160	2026-04-18 11:03:58.757418	2026-04-18 11:03:58.757418
+828aa83c-ad71-4eaa-b622-6b6f664e0eda	MINIWAFER	COLORES	M	\N	12489.9160	2373.0800	\N	14862.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312093878	mm9a66x3tqtxja160	2026-04-18 11:03:58.75858	2026-04-18 11:03:58.75858
+e6f02eb8-ea8d-4db9-b147-a2d54bf1d59e	LATINA	COLORES	M	\N	7989.9160	1518.0800	\N	9507.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312094091	mm9a66x3tqtxja160	2026-04-18 11:03:58.760035	2026-04-18 11:03:58.760035
+eaca325b-b7e7-42ba-a6c9-3bcdabb15088	LIASWEET	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-18	S	2312093892	mm9a66x3tqtxja160	2026-04-18 11:03:58.761245	2026-04-18 11:03:58.761245
+3dca191b-6f9d-4cc2-a3bf-23b189243061	GER PARIS	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-09	S	2312090445	mm9a66x3tqtxja160	2026-04-18 11:03:58.762471	2026-04-18 11:03:58.762471
+13f6cd7d-7683-48cb-adad-6fa8d0ad3aac	OJALMILA	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-07-09	S	2312090446	mm9a66x3tqtxja160	2026-04-18 11:03:58.763678	2026-04-18 11:03:58.763678
+1f03d07e-bafe-4ed7-ba20-636943836249	BELLASPLU	COLORES	M	\N	8500.0000	1615.0000	\N	10115.0000	MANUFACTURAS ELIOT	2025-07-08	S	2312090330	mm9a66x3tqtxja160	2026-04-18 11:03:58.764875	2026-04-18 11:03:58.764875
+48f00e49-6af8-48d6-baab-f280063d6640	CHACAL	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-07	S	2312090140	mm9a66x3tqtxja160	2026-04-18 11:03:58.766123	2026-04-18 11:03:58.766123
+ba87ee53-2db9-4040-bbe6-b24992f71655	BURDA MONACO	COLORES	M	\N	15126.0504	2873.9500	\N	18000.0004	TEXTILES EL GATO	2025-07-03	S	TGAT11155	mm9a66x3tqtxja160	2026-04-18 11:03:58.767446	2026-04-18 11:03:58.767446
+1919f411-3624-4425-8d34-598565f46650	POPELINA	COLORES	M	\N	8823.5294	1676.4700	\N	10499.9994	MN TEXTIL_ MELISA CANO (FRANK)	2025-07-04	S	FEV 746	mm9a66x3tqtxja160	2026-04-18 11:03:58.768611	2026-04-18 11:03:58.768611
+79664081-72aa-45b3-986c-b14f71c9b204	AMELIA-180	COLORES	K	3.5000	20500.0000	3895.0000	24395.0000	6970.0000	ARGATEX	2025-07-02	S	FE 5659	mm9a66x3tqtxja160	2026-04-18 11:03:58.769711	2026-04-18 11:03:58.769711
+0199dbc9-ea55-41e7-8881-aa19aaf8546f	SUPERJACK	COLORES	K	2.9000	36000.0000	6840.0000	42840.0000	14772.4100	ARGATEX	2025-07-04	S	FE 5675	mm9a66x3tqtxja160	2026-04-18 11:03:58.770895	2026-04-18 11:03:58.770895
+e80bec16-08f7-48e7-b2e6-a99792d0901d	LIAGEN	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-07	S	2312090089	mm9a66x3tqtxja160	2026-04-18 11:03:58.772049	2026-04-18 11:03:58.772049
+92b845f3-856d-43d9-9f90-f892265b3888	GER BLANQUI	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-07-07	S	2312090089	mm9a66x3tqtxja160	2026-04-18 11:03:58.773177	2026-04-18 11:03:58.773177
+0e85f46b-53b8-4841-87cf-93104c0aa009	PRAGA	COLORES	K	2.7000	31932.7731	6067.2300	38000.0000	14074.0700	TEXTILES EL GATO	2025-06-25	S	TGAT11120	mm9a66x3tqtxja160	2026-04-18 11:03:58.774483	2026-04-18 11:03:58.774483
+7a640794-9ae3-4f1e-8bc1-7a2389fb7410	FANNING	COLORES	K	2.8000	42989.9160	8168.0800	51158.0000	18270.7100	MANUFACTURAS ELIOT	2025-06-24	S	2312086443	mm9a66x3tqtxja160	2026-04-18 11:03:58.775809	2026-04-18 11:03:58.775809
+8662de61-f070-44e3-84aa-b2cd81f56740	NEW HAKIM	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-06-16	S	2312084498	mm9a66x3tqtxja160	2026-04-18 11:03:58.777069	2026-04-18 11:03:58.777069
+0c7cc638-e5fd-4a29-acb9-f807f9c396e7	APOLONIAS	COLORES	K	2.3000	38989.9160	7408.0800	46398.0000	20173.0400	MANUFACTURAS ELIOT	2025-06-16	S	2312084498	mm9a66x3tqtxja160	2026-04-18 11:03:58.778362	2026-04-18 11:03:58.778362
+9f2dbe08-e565-45ff-b3ff-7d670abb19bc	RUSTIKE	COLORES	K	3.1000	36989.9160	7028.0800	44018.0000	14199.3500	MANUFACTURAS ELIOT	2025-06-16	S	2312084612	mm9a66x3tqtxja160	2026-04-18 11:03:58.779509	2026-04-18 11:03:58.779509
+83a6fcb4-7993-4462-8a0b-d0480e2d31e1	LINO PRAGA	COLORES	M	\N	12689.9160	2411.0800	\N	15100.9960	MANUFACTURAS ELIOT	2025-06-16	S	2312084613	mm9a66x3tqtxja160	2026-04-18 11:03:58.780655	2026-04-18 11:03:58.780655
+72263d1d-834e-4458-b952-e27878000874	FROZEN RAYA	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-06-17	S	2312084662	mm9a66x3tqtxja160	2026-04-18 11:03:58.781989	2026-04-18 11:03:58.781989
+2ffd5eeb-cae3-4b2e-bbc5-2ada6085bc5e	CRISPY	COLORES	M	\N	16989.9160	3228.0800	\N	20217.9960	MANUFACTURAS ELIOT	2025-06-17	S	2312084662	mm9a66x3tqtxja160	2026-04-18 11:03:58.783124	2026-04-18 11:03:58.783124
+07d208e3-de5b-4d29-a488-c56b85d9e327	CHENEY	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-06-17	S	2312084662	mm9a66x3tqtxja160	2026-04-18 11:03:58.784266	2026-04-18 11:03:58.784266
+af403f39-44c3-4b12-ba29-7e7cd80d2c78	EYE LUPITA	COLORES	M	\N	13489.9160	2563.0800	\N	16052.9960	MANUFACTURAS ELIOT	2025-06-19	S	2312085332	mm9a66x3tqtxja160	2026-04-18 11:03:58.785392	2026-04-18 11:03:58.785392
+7262e64c-eca7-4490-8a7c-7ba71c8ed7e5	LINO MILAN	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-06-19	S	2312085333	mm9a66x3tqtxja160	2026-04-18 11:03:58.786515	2026-04-18 11:03:58.786515
+009ad7c7-8200-4cb5-8552-3c6be6a56f40	MILANNOFOIL	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-06-19	S	2312085649	mm9a66x3tqtxja160	2026-04-18 11:03:58.787618	2026-04-18 11:03:58.787618
+ba7d5a72-a233-4fba-8366-ea0945d6c328	CORAL	COLORES	M	\N	5917.0000	1124.2300	\N	7041.2300	ARGATEX	2025-06-16	S	FE5581	mm9a66x3tqtxja160	2026-04-18 11:03:58.788721	2026-04-18 11:03:58.788721
+3a6cf241-c9f7-4f5c-9e11-d0cfae3f7cd6	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2025-06-16	S	FETP5726	mm9a66x3tqtxja160	2026-04-18 11:03:58.789789	2026-04-18 11:03:58.789789
+020490f8-9029-48dd-a0ae-bb3757593d41	ARIDA	COLORES	M	\N	11500.0000	2185.0000	\N	13685.0000	PRIMATELA	2025-06-16	S	1111415309	mm9a66x3tqtxja160	2026-04-18 11:03:58.790891	2026-04-18 11:03:58.790891
+4c932f8d-d6d1-4d24-b49b-40ff4839507c	APOLONIAS	COLORES	K	2.3000	38989.9160	7408.0800	46398.0000	20173.0400	MANUFACTURAS ELIOT	2025-06-17	S	2312084859	mm9a66x3tqtxja160	2026-04-18 11:03:58.792013	2026-04-18 11:03:58.792013
+04190d1a-bbc5-4c19-b86b-38b1785350c7	RIB 2X1	COLORES	K	3.0000	28571.4286	5428.5700	34000.0000	11333.3300	MN TEXTIL_ MELISA CANO (FRANK)	2025-06-18	S	FEV725	mm9a66x3tqtxja160	2026-04-18 11:03:58.793146	2026-04-18 11:03:58.793146
+aa153d0a-da0b-4a4d-abc7-e2b2458c1bc1	TAFETA MANGO	COLORES	M	\N	6500.0000	1235.0000	\N	7735.0000	PRONTAMODA	2025-06-18	S	FETP5734	mm9a66x3tqtxja160	2026-04-18 11:03:58.794262	2026-04-18 11:03:58.794262
+a3138fa1-cd1f-4a8e-a98d-ecf1f2812788	FUJI	COLORES	K	2.7000	43900.0000	8341.0000	52241.0000	19348.5200	TEXTILES ESTACION	2025-06-10	S	FE 5599	mm9a66x3tqtxja160	2026-04-18 11:03:58.796487	2026-04-18 11:03:58.796487
+4c20ba17-afc9-40da-87f8-6135f4cfa470	FREEMAN	COLORES	K	2.9000	35989.9160	6838.0800	42828.0000	14768.2800	MANUFACTURAS ELIOT	2025-06-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.79761	2026-04-18 11:03:58.79761
+3c7e3cee-a31b-48b4-ab3e-cfc8870f73f1	IDALIA	COLORES	K	3.9000	31900.0000	6061.0000	37961.0000	9733.5900	TEXTILES ESTACION	2025-06-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.798777	2026-04-18 11:03:58.798777
+1e763ba2-9e9b-4032-8ee5-9786309555d0	VICTORIA RAYA	COLORES	K	2.2000	39900.0000	7581.0000	47481.0000	21582.2700	TEXTILES ESTACION	2025-06-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.79991	2026-04-18 11:03:58.79991
+a56c94d0-8acd-4c0a-a461-b54fbf218591	IRIS	COLORES	K	2.3000	36900.0000	7011.0000	43911.0000	19091.7400	TEXTILES ESTACION	2025-06-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.801046	2026-04-18 11:03:58.801046
+7d924894-b3e9-4a8a-a4e5-9fe7040555d6	RUSTIKE	COLORES	K	3.1000	35989.9160	6838.0800	42828.0000	13815.4800	MANUFACTURAS ELIOT	2025-05-28	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.802645	2026-04-18 11:03:58.802645
+fa9393f8-594e-4f85-bcd4-dd55aa187510	CHAIRA	COLORES	M	\N	23989.9160	4558.0800	\N	28547.9960	MANUFACTURAS ELIOT	2025-05-27	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.803766	2026-04-18 11:03:58.803766
+95d0d668-d8fc-46a0-90ef-28024372f9c8	MARA SUTIL	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-05-24	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.804886	2026-04-18 11:03:58.804886
+5f4427b7-c83f-4f98-92ad-1ad1e70407c6	SAHARA	COLORES	M	\N	10500.0000	1995.0000	\N	12495.0000	PRONTAMODA	2025-05-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.806004	2026-04-18 11:03:58.806004
+13c9e76f-19f4-40f9-ba31-861ff5c1b3b7	LINO RAYON BORDADO	BEIGE	M	\N	15900.0000	3021.0000	\N	18921.0000	PRONTAMODA	2025-05-02	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.807132	2026-04-18 11:03:58.807132
+68de8aeb-242e-4c84-9cdb-5cb4366de413	LINO LINPO POLIESTER	BEIGE	M	\N	7700.0000	1463.0000	\N	9163.0000	ARGATEX	2025-03-20	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.80833	2026-04-18 11:03:58.80833
+23c36a11-fc95-4d05-9dac-d6eab4cf7f10	MINIPERLA	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-04-02	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.809669	2026-04-18 11:03:58.809669
+f5755139-d17b-45b3-a087-a3eb10163003	EYE LUPITA	COLORES	M	\N	13489.9160	2563.0800	\N	16052.9960	MANUFACTURAS ELIOT	2025-04-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.811105	2026-04-18 11:03:58.811105
+70229e70-f664-43cd-b386-131e62a0da11	RIB 2X1	COLORES	K	3.0000	28571.4286	5428.5700	34000.0000	11333.3300	MN TEXTIL_ MELISA CANO (FRANK)	2025-04-21	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.812303	2026-04-18 11:03:58.812303
+3ad9da37-324d-4cb0-974c-61854eb3f8d8	BORALINA	COLORES	M	\N	16989.9160	3228.0800	\N	20217.9960	MANUFACTURAS ELIOT	2025-04-16	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.813445	2026-04-18 11:03:58.813445
+bc04dcdd-43f0-4105-9622-470fc3c36855	MARTINELLI	COLORES	M	\N	19989.9160	3798.0800	\N	23787.9960	MANUFACTURAS ELIOT	2025-04-23	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.814575	2026-04-18 11:03:58.814575
+6d98cfe8-de0a-4c78-bc97-80feff6cc20a	DONCELLA	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-04-23	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.815762	2026-04-18 11:03:58.815762
+594a2568-b62b-473d-8740-02c778c3c67d	RUSTIKE	COLORES	K	3.1000	35989.9160	6838.0800	42828.0000	13815.4800	MANUFACTURAS ELIOT	2025-04-23	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.817535	2026-04-18 11:03:58.817535
+49465606-5d44-49fe-a159-f9a2dfb888b6	IDALIA	BEIGE	K	3.9000	31900.0000	6061.0000	37961.0000	9733.5900	TEXTILES ESTACION	2025-04-25	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.818701	2026-04-18 11:03:58.818701
+39966fa6-5b2a-48ce-afd9-ff793b1d1d8a	PITILLO HEAVY	COLORES	K	2.2000	26974.7899	5125.2100	32100.0000	14590.9100	PRONTAMODA	2025-04-29	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.819849	2026-04-18 11:03:58.819849
+32d640f9-6597-41ff-8b29-8fb6bbce0ba4	FULL JACQUARD	COLORES	K	3.3000	37900.0000	7201.0000	45101.0000	13666.9700	PRONTAMODA	2025-04-26	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.820982	2026-04-18 11:03:58.820982
+14621852-666d-4231-bdb6-e466de090de2	ASPEN	COLORES	K	3.0000	36134.4538	6865.5500	43000.0000	14333.3300	PRONTAMODA	2025-04-25	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.822115	2026-04-18 11:03:58.822115
+22590da0-3405-4157-9b2c-20fa69a890b9	IDALIA	COLORES	K	3.9000	31900.0000	6061.0000	37961.0000	9733.5900	TEXTILES ESTACION	2025-04-25	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.823248	2026-04-18 11:03:58.823248
+7e2fcc1e-8356-4cfe-a012-10fa65e929a0	LINO CREPE	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2025-04-28	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.824379	2026-04-18 11:03:58.824379
+d9e6edf7-3447-4306-bfcf-1edc9673712d	MARTINELLI	COLORES	M	\N	19989.9160	3798.0800	\N	23787.9960	MANUFACTURAS ELIOT	2025-04-24	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.825658	2026-04-18 11:03:58.825658
+caa58655-c464-4b4a-842a-bc367212d272	FLATY	NEGRO	K	3.7000	37989.9160	7218.0800	45208.0000	12218.3800	MANUFACTURAS ELIOT	2025-04-24	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.826775	2026-04-18 11:03:58.826775
+b7109dec-369c-4b5e-b496-7e56fe6ba91b	PIEL DE DURAZNO	BEIGE	K	3.8000	16806.7227	3193.2800	20000.0000	5263.1600	MN TEXTIL_ MELISA CANO (FRANK)	2025-04-15	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.827957	2026-04-18 11:03:58.827957
+7ba65908-b5a9-43dc-a793-c5eb857ba464	EGIPTO	COLORES	M	\N	4900.0000	931.0000	\N	5831.0000	TEXTILES ESTACION	2025-04-08	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.830286	2026-04-18 11:03:58.830286
+0787b3be-654b-417c-b871-5a577e140e73	MALLA CROCHET	COLORES	K	3.1000	39900.0000	7581.0000	47481.0000	15316.4500	TEXTILES ESTACION	2025-04-07	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.831447	2026-04-18 11:03:58.831447
+4b78cd02-e3bf-484f-99d6-ab2408e28da8	SIBERIA	COLORES	K	2.8000	44900.0000	8531.0000	53431.0000	19082.5000	TEXTILES ESTACION	2025-04-07	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.832786	2026-04-18 11:03:58.832786
+90e04356-c31e-49a0-ab49-55b7bd5f9f72	EVEREST	COLORES	K	2.1000	43900.0000	8341.0000	52241.0000	24876.6700	TEXTILES ESTACION	2025-04-07	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.833941	2026-04-18 11:03:58.833941
+ff7eff9a-45d5-4642-b353-a552e62ed569	BURDA VISCOSA	COLORES	K	2.2000	22268.9076	4231.0900	26500.0000	12045.4500	MN TEXTIL_ MELISA CANO (FRANK)	2025-04-09	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.835062	2026-04-18 11:03:58.835062
+71f4af63-7fb2-4b7f-9719-5515fa335429	MOHIKA MAT	COLORES	K	2.6000	34989.9160	6648.0800	41638.0000	16014.6200	MANUFACTURAS ELIOT	2025-05-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.836148	2026-04-18 11:03:58.836148
+092a2d39-5080-4eca-8d44-5d791d8c020c	RIBB POLIESTER	COLORES	K	3.1000	20588.2353	3911.7600	24500.0000	7903.2300	MN TEXTIL_ MELISA CANO (FRANK)	2025-07-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.837255	2026-04-18 11:03:58.837255
+6b72cfb4-9af4-4e69-bedb-4785016432d4	ONDA	COLORES	K	2.5000	30900.0000	5871.0000	36771.0000	14708.4000	PRONTAMODA	2025-04-15	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.83835	2026-04-18 11:03:58.83835
+37005dce-0731-4ecc-957e-96423feb4762	VALIANA	COLORES	K	6.4000	38900.0000	7391.0000	46291.0000	7232.9700	MANUFACTURAS ELIOT	2025-04-01	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.839432	2026-04-18 11:03:58.839432
+9b899e48-292f-42f9-a493-78bac28bea12	BYRON	COLORES	K	2.6000	43989.9160	8358.0800	52348.0000	20133.8500	MANUFACTURAS ELIOT	2025-04-01	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.840509	2026-04-18 11:03:58.840509
+3b73c168-de53-439a-a567-e0ac810ffdc5	BENGALINA BLUZZ	COLORES	M	\N	8900.0000	1691.0000	\N	10591.0000	PRONTAMODA	2025-04-09	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.841582	2026-04-18 11:03:58.841582
+1531e891-15cc-4a24-b8b8-83bd25af2e3c	MINIWAFER	CREMA	M	\N	11989.9160	2278.0800	\N	14267.9960	MANUFACTURAS ELIOT	2025-03-22	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.842646	2026-04-18 11:03:58.842646
+d65e3904-89d4-4cbe-83e1-dd7f2ed16c6f	RIB TUBULAR	COLORES	K	5.5000	30000.0000	5700.0000	35700.0000	6490.9100	TOLL FASHION	2025-03-11	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.84372	2026-04-18 11:03:58.84372
+2357d37a-7545-4de4-8d66-ad26a69d08d6	RUSTIKE	COLORES	K	3.1000	35989.9160	6838.0800	42828.0000	13815.4800	MANUFACTURAS ELIOT	2025-03-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.846018	2026-04-18 11:03:58.846018
+6a73650b-b225-4466-a90f-212904ce0fb8	LINO MILAN	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-03-15	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.847147	2026-04-18 11:03:58.847147
+ff3d1096-94e7-4fe4-b7eb-35b6e269c18c	KLO FELICI	COLORES	M	\N	12989.9160	2468.0800	\N	15457.9960	MANUFACTURAS ELIOT	2025-03-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.848258	2026-04-18 11:03:58.848258
+67f6ff3d-9e43-4c67-91cb-6ab17e7b76d9	GER FLOWERTRIP	COLORES	M	\N	14989.9160	2848.0800	\N	17837.9960	MANUFACTURAS ELIOT	2025-03-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.849388	2026-04-18 11:03:58.849388
+cba71be7-3b8f-406e-ade3-3c05ab47432b	AMYWATER	COLORES	M	\N	13489.9160	2563.0800	\N	16052.9960	MANUFACTURAS ELIOT	2025-03-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.850567	2026-04-18 11:03:58.850567
+596317e8-c2fa-484c-bf35-2136d7b880bf	SUPERJACK	COLORES	K	2.7000	36000.0000	6840.0000	42840.0000	15866.6700	ARGATEX	2025-03-13	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.851702	2026-04-18 11:03:58.851702
+35c1f536-72ab-4434-b958-1ae289a3fdfd	MAUI RAYON	COLORES	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2025-03-13	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.852816	2026-04-18 11:03:58.852816
+0768b0b0-609f-417a-a020-8536dbe5af52	MINIWAFER	COLORES	K	2.8000	28571.4286	5428.5700	34000.0000	12142.8600	MN TEXTIL_ MELISA CANO (FRANK)	2025-01-27	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.853946	2026-04-18 11:03:58.853946
+94636ec7-7d07-4a28-9b80-55f2c0926db6	NEWCOQUETE	BEIGE	M	\N	7300.0000	1387.0000	\N	8687.0000	PRIMATELA	2025-01-21	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.855074	2026-04-18 11:03:58.855074
+63d2accb-740d-474c-ad9b-3a9dc38989b7	DONCELLA	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.857426	2026-04-18 11:03:58.857426
+cb0668bd-77a8-4b48-97cf-052cd19abbd8	FLATY	COLORES	K	3.7000	36989.9160	7028.0800	44018.0000	11896.7600	MANUFACTURAS ELIOT	2025-03-05	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.859076	2026-04-18 11:03:58.859076
+3c6e94a0-0073-4bff-ba36-b72489bb7e4a	LATINA	COLORES	M	\N	7889.9160	1499.0800	\N	9388.9960	MANUFACTURAS ELIOT	2025-03-01	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.860267	2026-04-18 11:03:58.860267
+38a1f560-d739-44bf-80fb-c159debdcb8d	VARGAS LLOSA	COLORES	M	\N	11989.9160	2278.0800	\N	14267.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.861404	2026-04-18 11:03:58.861404
+7629117c-8c04-49b7-bc93-0ba8591ddf58	SONDER	COLORES	M	\N	16989.9160	3228.0800	\N	20217.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.862565	2026-04-18 11:03:58.862565
+a16fab9f-d08e-481e-b423-90d874ab275a	MICHELLA	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.863751	2026-04-18 11:03:58.863751
+8917637b-4093-4e2d-936e-d0c37895061c	LINO PRAGA	COLORES	M	\N	12689.9160	2411.0800	\N	15100.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.864865	2026-04-18 11:03:58.864865
+414b18d5-4840-43d2-abe5-d744d3772b74	LINO AMORINO	COLORES	M	\N	13989.9160	2658.0800	\N	16647.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.866588	2026-04-18 11:03:58.866588
+2863cb34-27c8-4a1d-beab-0004cbbd34de	DONCELLA	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.867817	2026-04-18 11:03:58.867817
+1ce5a5f2-8102-4430-8564-733b0e30619e	LINO JULIETTE	COLORES	M	\N	19989.9160	3798.0800	\N	23787.9960	MANUFACTURAS ELIOT	2025-03-04	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.868981	2026-04-18 11:03:58.868981
+73fff784-5146-4741-b6b0-5faa9b8b904d	FLATY	COLORES	K	3.7000	35989.9160	6838.0800	42828.0000	11575.1400	MANUFACTURAS ELIOT	2025-02-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.870147	2026-04-18 11:03:58.870147
+13a2bcb5-addf-4c9c-98fe-401230ea5354	JABON	COLORES	K	3.5000	22989.9160	4368.0800	27358.0000	7816.5700	MANUFACTURAS ELIOT	2025-02-13	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.871327	2026-04-18 11:03:58.871327
+a8b69826-d099-44f2-8d1e-c34dddd57026	RUSTIKE	COLORES	K	3.1000	33989.9160	6458.0800	40448.0000	13047.7400	MANUFACTURAS ELIOT	2025-01-28	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.872495	2026-04-18 11:03:58.872495
+3ae982a7-c012-4e1b-909a-6252e8f69890	LATINA	COLORES	M	\N	7889.9160	1499.0800	\N	9388.9960	MANUFACTURAS ELIOT	2025-01-28	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.873657	2026-04-18 11:03:58.873657
+8edc1151-3877-453d-89a1-5c6a9db0403d	DONCELLA	COLORES	M	\N	8989.9160	1708.0800	\N	10697.9960	MANUFACTURAS ELIOT	2025-01-25	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.874758	2026-04-18 11:03:58.874758
+602895af-39bd-41df-a98c-70af3f9ae210	BURDA VISCOSA	COLORES	K	2.2000	22268.9076	4231.0900	26500.0000	12045.4500	MN TEXTIL_ MELISA CANO (FRANK)	2025-02-27	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.875877	2026-04-18 11:03:58.875877
+d2b15b4e-6560-4b28-80f0-587fddeca099	SUPERJACK	COLORES	K	2.7000	36000.0000	6840.0000	42840.0000	15866.6700	ARGATEX	2025-02-20	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.878211	2026-04-18 11:03:58.878211
+98b469ef-cf38-4f25-9baf-aef62da5d57b	MAUI RAYON	COLORES	M	\N	9200.0000	1748.0000	\N	10948.0000	ARGATEX	2025-01-29	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.880398	2026-04-18 11:03:58.880398
+197e6638-75a4-496c-947b-4cc0a8a500ff	POPELINA	COLORES	M	\N	7983.1933	\N	\N	7983.1933	MN TEXTIL_ MELISA CANO (FRANK)	2025-03-11	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.856208	2026-04-28 09:31:14.750317
+bb64a605-5b30-4b45-ae18-b987a7ae4582	RIB TUBULAR	COLORES	K	5.5000	25210.0840	\N	25210.0800	4583.6500	TOLL FASHION	2025-03-11	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.844916	2026-04-28 09:31:14.755901
+d11b35f5-126d-49b7-b53b-e414380da150	LYCRA FRIA	COLORES	K	3.2000	35294.1176	\N	35294.1200	11029.4100	TIENDA TEXTIL GGL	2025-02-24	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.877097	2026-04-28 09:31:14.758323
+531b2da9-fbb3-4cee-a078-b2354001b454	BABILONIA	COLORES	K	4.0000	24701.6807	\N	24701.6800	6175.4200	GAMA COLOR	2025-02-07	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.879301	2026-04-28 09:31:14.760001
+9aacef63-6759-4d55-b55f-33e1b32a89c6	ROMABELLA	COLORES	M	\N	9989.9160	1898.0800	\N	11887.9960	MANUFACTURAS ELIOT	2025-02-03	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.881623	2026-04-18 11:03:58.881623
+1dc196bc-9066-4272-a9e4-b39c68642098	FINCH	COLORES	K	3.2000	46989.9160	8928.0800	55918.0000	17474.3800	MANUFACTURAS ELIOT	2025-02-14	S	FE	mm9a66x3tqtxja160	2026-04-18 11:03:58.882887	2026-04-18 11:03:58.882887
+cda0d79c-6ed4-4c93-9793-d493b185695d	LINOLIP	ESTAMPADO	M	\N	10989.9160	2088.0800	\N	13077.9960	MANUFACTURAS ELIOT	2026-04-17	S	2312151326	mm9a66x3tqtxja160	2026-04-18 11:03:58.522045	2026-04-27 12:25:48.722624
+ea3fbac0-1115-4d27-9f47-f223bda8e512	LICRA DESTELLANTE	BEIGE	K	3.2000	40336.1300	7663.8600	47999.9900	15000.0000	MN TEXTIL_ MELISA CANO (FRANK)	2026-04-20	S	FEV1167	mmze56k4iwquqhbul	2026-04-23 12:52:13.267983	2026-04-28 08:59:48.62933
+c81597cd-4f67-44dd-9b73-6fef8cb84d22	CALI RIB	COLORES	K	3.0000	35294.1100	6705.8800	41999.9900	14000.0000	SUPER NOVA TEXTIL	2026-01-31	S	FE1894	mm9a66x3tqtxja160	2026-04-18 11:03:58.576569	2026-04-28 08:59:48.63271
+0846b175-7d71-44e5-a457-56d693a6e511	CORAPUNTICO	COLORES	K	10.0000	79000.0000	15010.0000	94010.0000	9401.0000	ARGATEX	2025-10-07	S	FE5901	mm9a66x3tqtxja160	2026-04-18 11:03:58.674083	2026-04-28 08:59:48.696424
+f83606a4-3896-476f-a8c3-c17db67109cd	BABILONIA (FRANELA)	BLANCO	K	3.8000	25210.0840	\N	25210.0800	6634.2300	GAMA COLOR	2025-08-09	N	RM 1629	mm9a66x3tqtxja160	2026-04-18 11:03:58.738209	2026-04-28 08:59:48.698129
+5ff52355-c184-41ab-8c33-bb577c2a1907	RIB 2X1	COLORES	K	3.0000	27310.9244	\N	27310.9200	9103.6400	MN TEXTIL_ MELISA CANO (FRANK)	2025-06-18	N	RM 117	mm9a66x3tqtxja160	2026-04-18 11:03:58.79537	2026-04-28 08:59:48.699818
+160208b1-91cf-478f-ae58-b0f887e8c914	LYCRA ALGODÓN	COLORES	K	3.2000	24643.9916	\N	24643.9900	7701.2500	TEXTILES GAMACOLOR	2025-04-09	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.829105	2026-04-28 08:59:48.701547
+72b5835c-d036-4c33-ae6a-0ae7f9e978d6	LYCRA ALGODÓN	COLORES	K	3.2000	25210.0840	\N	25210.0800	7878.1500	TIENDA TEXTIL GGL	2025-01-16	N	RM	mm9a66x3tqtxja160	2026-04-18 11:03:58.884268	2026-04-28 09:31:14.761568
+2b960bf6-c2ea-4a95-8b0a-29f70105baf9	VICTORIA RIB 1X1	COLORES	K	2.1000	29243.0000	5556.1700	34799.1700	16571.0300	SUPER NOVA TEXTIL	2026-04-27	S	FE2325	mmze56k4iwquqhbul	2026-04-27 12:25:48.665288	2026-04-28 10:56:28.061325
+f878df0f-9763-4e98-b1d1-6d3dbaf1d349	VICTORIA RAYA 1	ARENA	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	S	F23293	mmze56k4iwquqhbul	2026-05-05 12:04:38.370041	2026-05-05 12:04:38.370041
+3fe2d861-88d3-4594-a8b8-6e505ccea3fa	VICTORIA RAYA 1	AZUL CLARO	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	S	F23293	mmze56k4iwquqhbul	2026-05-05 12:04:38.426546	2026-05-05 12:04:38.426546
+1d11e509-8859-4c48-b881-ca0bb7a0d8ca	VICTORIA RAYA 1	CRUDE/NEGRO	K	2.2000	35900.0000	6821.0000	42721.0000	19418.6400	TEXTILES ESTACION	2026-05-05	S	F23293	mmze56k4iwquqhbul	2026-05-05 12:04:38.428818	2026-05-05 12:04:38.428818
 \.
 
 
 --
--- TOC entry 5590 (class 0 OID 29751)
+-- TOC entry 5599 (class 0 OID 29751)
 -- Dependencies: 223
--- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: correria_catalog; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correria_catalog (id, correria_id, reference_id, added_at) FROM stdin;
@@ -2238,20 +2894,28 @@ mllajbf3jpf1h8tmi	mljjqn48zbxhtg0yw	12961	2026-02-13 19:38:46
 
 
 --
--- TOC entry 5591 (class 0 OID 29759)
+-- TOC entry 5600 (class 0 OID 29759)
 -- Dependencies: 224
--- Data for Name: correria_novedades; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: correria_novedades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correria_novedades (id, correria_id, contenido, created_at) FROM stdin;
 1	mljjqn48zbxhtg0yw	Pedido de Yubernei Largacha de Raul no se despacho porque no se autoriz├│ nunca el despacho por parte del vendedor.	2026-03-13 15:18:34.368158
+4	mljjqn48zbxhtg0yw	Pedido de Yubernei Largacha de Raul no se despacho porque no se autorizó nunca el despacho por parte del vendedor. - Se autoriza mandar el 01/04/2026	2026-03-31 12:23:18.704612
+31	mljjrcujmtckild4r	Granada cancela pedido el 16/04/2026	2026-05-06 13:56:28.776982
+32	mljjrcujmtckild4r	JAMBO cancela pedido el 15/04/2026	2026-05-06 13:56:28.776982
+33	mljjrcujmtckild4r	La Porfia se aplaza despacho para el 15 de mayo.	2026-05-06 13:56:28.776982
+34	mljjrcujmtckild4r	Yolanda cañaveral y Alejandro arboleda cancelan el 28/04/2026	2026-05-06 13:56:28.776982
+35	mljjrcujmtckild4r	Maria Mercedes Gomez cancela 29/04/2026	2026-05-06 13:56:28.776982
+36	mljjrcujmtckild4r	Marta Nelly Zuluaga cancela 30/04/2026	2026-05-06 13:56:28.776982
+37	mljjrcujmtckild4r	La Porfia cancela 06/05/2026	2026-05-06 13:56:28.776982
 \.
 
 
 --
--- TOC entry 5593 (class 0 OID 29769)
+-- TOC entry 5602 (class 0 OID 29769)
 -- Dependencies: 226
--- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: correrias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.correrias (id, name, year, active, created_at) FROM stdin;
@@ -2261,9 +2925,9 @@ mljjqn48zbxhtg0yw	Inicio de año	2026	1	2026-02-12 14:20:52
 
 
 --
--- TOC entry 5641 (class 0 OID 32122)
+-- TOC entry 5650 (class 0 OID 32122)
 -- Dependencies: 274
--- Data for Name: corte_registros; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: corte_registros; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.corte_registros (id, numero_ficha, fecha_corte, referencia, descripcion, cantidad_cortada, created_by, updated_by, created_at, updated_at) FROM stdin;
@@ -2286,18 +2950,183 @@ de8a5e30-1bb3-459a-b815-143fa224b877	1496	2026-04-16	12877	BLUSA DAMA	201	mm9a66
 f4eb1caf-3520-441f-a0a6-d7b648c0d132	1498	2026-04-16	12744	BODY DAMA	246	mm9a66x3tqtxja160	\N	2026-04-22 12:33:54.706892	2026-04-22 12:33:54.706892
 25bfeafb-bfd6-47f6-99e3-3f04e292aca4	1499	2026-04-16	12984	BODY DAMA	180	mm9a66x3tqtxja160	\N	2026-04-22 12:33:54.719486	2026-04-22 12:33:54.719486
 25d8f70d-937d-4e74-b23f-2ff2363fa77d	1500	2026-04-16	12965	BLUSA DAMA	75	mm9a66x3tqtxja160	\N	2026-04-22 12:33:54.734525	2026-04-22 12:33:54.734525
-7197eb3b-5ea1-4db4-bc2a-15f8a21c4c0f	1601	2026-04-23	13121	CAMISILLA RAYA	120	mm3x7j6m4p6s4g2zz	\N	2026-04-23 07:50:34.866295	2026-04-23 07:50:34.866295
-2e613d2d-f679-40eb-a422-a7cc5f09434e	1602	2026-04-23	13120	ESTRAPLE BOLERO	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 07:54:46.717706	2026-04-23 07:54:46.717706
-68fec097-82e3-4a86-a779-df222d860f1b	1601	2026-04-16	13129	TOP THE BESTIS	120	mm3x7j6m4p6s4g2zz	mm3x7j6m4p6s4g2zz	2026-04-23 07:48:44.267764	2026-04-23 07:58:31.767149
-e3888be4-c45b-4517-a6a0-4ca46c3b5a7f	1601	2026-04-10	13122	CAMISILLA RAYA DOBLE	120	mm3x7j6m4p6s4g2zz	mm3x7j6m4p6s4g2zz	2026-04-23 07:52:50.761454	2026-04-23 08:05:57.956903
-4d19a356-4057-4176-a7dd-b2370935bd1c	1600	2026-04-15	13129	TOP THE BESTIS	85	mm3x7j6m4p6s4g2zz	mm3x7j6m4p6s4g2zz	2026-04-23 07:44:22.298667	2026-04-23 08:06:38.278468
+5e810ad0-2551-4c7e-a447-3789a031331d	1519	2026-04-22	13148		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.332982	2026-04-22 15:33:29.332982
+8d45eae1-0c1e-4f18-9f34-33c4432b2d57	1518	2026-04-22	13137		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.354627	2026-04-22 15:33:29.354627
+ad4c5f04-bdbf-4dea-b616-e08d526685a2	1517	2026-04-21	13144		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.36468	2026-04-22 15:33:29.36468
+d57e8423-e8aa-4f01-897d-9ae4582a3e61	1516	2026-04-18	13113		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.375577	2026-04-22 15:33:29.375577
+032b6049-ce0c-444d-9a88-98cbe0e3849c	1515	2026-04-18	13254		123	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.386314	2026-04-22 15:33:29.386314
+60d88da3-cf39-4fa7-b67e-9e9937973c46	1514	2026-04-20	13102		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.39627	2026-04-22 15:33:29.39627
+2262b8fe-f5cf-4565-8c92-219332385144	1513	2026-04-17	13120		300	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.408807	2026-04-22 15:33:29.408807
+14703ff7-a983-4634-9a55-52919f69f9dd	1512	2026-04-17	13029		81	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.419091	2026-04-22 15:33:29.419091
+43d0ed6c-8184-4747-b40b-9227f9ddb0df	1511	2026-04-16	12987		108	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.428293	2026-04-22 15:33:29.428293
+ceacb977-8efb-441c-87cc-4914e18b8d40	1510	2026-04-16	13100		192	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.436954	2026-04-22 15:33:29.436954
+dcd05119-f94e-4db6-b711-d9ac96425b7f	1509	2026-04-15	13003		144	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.447069	2026-04-22 15:33:29.447069
+f0bcea8e-cbb8-44d9-8996-0bbdf274d918	1508	2026-04-15	13048		99	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.455995	2026-04-22 15:33:29.455995
+c4d23bdd-1056-4406-bb45-224fbad3470b	1507	2026-04-13	13047		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.466734	2026-04-22 15:33:29.466734
+62ca089f-097a-4efa-b024-43e55a1c7330	1506	2026-04-13	13121		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:29.475822	2026-04-22 15:33:29.475822
+3b189fa6-d33f-4378-baff-e8405ef14c2c	1505	2026-04-13	13112		87	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.081362	2026-04-22 15:33:30.081362
+f2214e47-fd69-4c9b-8495-2a14d501127d	1504	2026-04-10	13013		252	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.092355	2026-04-22 15:33:30.092355
+236ce3e5-4c6c-48fe-b73b-b8f67038aece	1503	2026-04-09	13078		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.103285	2026-04-22 15:33:30.103285
+7f4ae4e7-bc24-448a-a577-77c1462de96b	1502	2026-04-09	13118		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.127711	2026-04-22 15:33:30.127711
+362de6ff-7d7a-4e6a-b5e2-3f2742050ab2	1501	2026-04-09	13094		300	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.153092	2026-04-22 15:33:30.153092
+e0c0f3da-0b67-4e2b-90ab-a7ca4e6e8c6f	1500	2026-04-09	12965	BLUSA DAMA	75	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.175043	2026-04-22 15:33:30.175043
+b007f868-017f-4f6b-9144-f9eb866975b8	1499	2026-04-09	12984	BODY DAMA	180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.18535	2026-04-22 15:33:30.18535
+bfca8ebd-328b-48b8-8558-2281ee9f1890	1498	2026-04-09	12744	BODY DAMA	246	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.194929	2026-04-22 15:33:30.194929
+5eb243eb-ede3-4fe6-b5d7-572f249b6df8	1497	2026-04-09	13042	BLUSA DAMA	144	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.204713	2026-04-22 15:33:30.204713
+0d3cfc16-fad8-4461-bd07-38d93c89828e	1496	2026-04-08	12877	BLUSA DAMA	201	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.215713	2026-04-22 15:33:30.215713
+dc0b91f0-917b-4729-9383-c5124ceef814	1495	2026-04-08	13065	BLUSA DAMA	102	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.238006	2026-04-22 15:33:30.238006
+f6725cf6-7380-425e-b313-3eb7c7ce5b51	1494	2026-04-08	13041	BLUSA DAMA	120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.249888	2026-04-22 15:33:30.249888
+8d24ffe3-08ad-46b6-9701-b8c7c137942a	1493	2026-04-08	13117	BLUSA DAMA	150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.260335	2026-04-22 15:33:30.260335
+97aae6aa-eeec-45fa-b2f0-327cd221de80	1492	2026-04-06	12908	BODY DAMA	120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.269508	2026-04-22 15:33:30.269508
+09d125c2-f998-4235-8fd2-9a797283bcc0	1491	2026-04-06	12881	BODY DAMA	186	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.279334	2026-04-22 15:33:30.279334
+941c7152-fa70-4bd2-bd03-041ad9294be9	1490	2026-04-06	12907	BODY DAMA	210	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.288732	2026-04-22 15:33:30.288732
+7e569d62-9e5e-4484-abf6-e45044272b66	1489	2026-04-06	12975	BODY DAMA	90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.299655	2026-04-22 15:33:30.299655
+32b240fb-c916-4255-93e1-3a8c9d02fe18	1488	2026-04-07	13036	BLUSA DAMA	117	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.323566	2026-04-22 15:33:30.323566
+712f6e99-39d4-4392-8302-5d3d5dc94385	1487	2026-04-07	12943	BLUSA DAMA	288	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.336552	2026-04-22 15:33:30.336552
+dc6c6661-65b0-457f-ba2a-d868919cfba5	1486	2026-04-07	13097	BLUSA DAMA	288	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.348178	2026-04-22 15:33:30.348178
+b1cdb34e-7133-4e17-b164-a1cc8cbde9af	1485	2026-04-07	13131	BLUSA DAMA	153	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.359051	2026-04-22 15:33:30.359051
+0e657e3b-d716-47bf-a51f-b2027bd009aa	1484	2026-03-31	13040	BLUSA DAMA	147	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.370411	2026-04-22 15:33:30.370411
+91453406-ebf5-4f7f-8942-7316a1b3a0ac	1483	2026-03-31	12895	BLUSA DAMA	171	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.38152	2026-04-22 15:33:30.38152
+3a6e1e11-85b4-494f-bc45-d6a8b178ea96	1482	2026-03-31	13101	BLUSA DAMA	123	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.390907	2026-04-22 15:33:30.390907
+6e69f1c0-6506-475b-a3c3-6982af3c708d	1481	2026-03-26	13028		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.411183	2026-04-22 15:33:30.411183
+b75f54e5-256f-4d28-a958-e7b1b1d40df6	1480	2026-03-26	13115		114	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.431381	2026-04-22 15:33:30.431381
+dc84f574-e8fa-43d4-b42a-b53aadd46c16	1479	2026-03-26	13102		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.442148	2026-04-22 15:33:30.442148
+a66cb8eb-fbb6-4a71-b343-db63dc556332	1478	2026-03-25	13079		384	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.452399	2026-04-22 15:33:30.452399
+a34c61f5-3cc2-4241-8b02-f826505abd91	1477	2026-03-25	13023		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.461724	2026-04-22 15:33:30.461724
+1fae5d25-6ae5-482e-908e-3c78eb41d86f	1476	2026-03-24	12972		135	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.470329	2026-04-22 15:33:30.470329
+45bf0aed-bc75-4179-a846-c47226a16236	1475	2026-03-24	13055		204	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.479781	2026-04-22 15:33:30.479781
+4e787356-b862-4bae-a9f4-b5863593610b	1474	2026-03-24	13076		99	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.488483	2026-04-22 15:33:30.488483
+1b2acd72-0dac-4499-b371-95a3fae16153	1473	2026-03-24	12909		462	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.497479	2026-04-22 15:33:30.497479
+94ad5eea-8e97-443a-a48a-5c1fd26a822d	1472	2026-03-24	12686		180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.507749	2026-04-22 15:33:30.507749
+6fb4d3d6-8e64-47c4-839c-3883a94e88c2	1471	2026-03-19	13033		180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.517423	2026-04-22 15:33:30.517423
+ddcf2ac3-9748-4435-8231-582ee129b9fd	1470	2026-03-19	13098		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.526666	2026-04-22 15:33:30.526666
+40dbbc7f-c998-46b5-b5a6-dab892d21909	1469	2026-03-18	12975	BODY DAMA	120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.536614	2026-04-22 15:33:30.536614
+2df3c53e-dc1a-4a49-bb1a-a3355d5c2540	1468	2026-03-18	13110		252	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.545978	2026-04-22 15:33:30.545978
+1a98aab0-d1ce-428e-8c32-41d69f384ffd	1467	2026-03-18	13068		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.556299	2026-04-22 15:33:30.556299
+7c3a3904-0335-41db-a6c6-4dfb8376431b	1466	2026-03-17	12909		162	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.577038	2026-04-22 15:33:30.577038
+6112acde-c674-4888-b3b7-6351e20684b8	1465	2026-03-17	13118		147	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.609115	2026-04-22 15:33:30.609115
+13a5615e-b811-4f0e-8cca-4e32eddd1b67	1464	2026-03-16	13083		282	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.619609	2026-04-22 15:33:30.619609
+55070bb6-7c83-492b-ae03-ce2a5c71e9cb	1463	2026-03-16	13081		183	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.62899	2026-04-22 15:33:30.62899
+ac4e0b62-53cd-4458-9bd7-e62f91353aef	1462	2026-03-16	13116		201	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.639112	2026-04-22 15:33:30.639112
+818d2d99-ed15-4985-b98d-270f4184beb0	1461	2026-03-13	12976		111	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.660203	2026-04-22 15:33:30.660203
+df9e4234-0483-4127-8cda-e6020988121f	1460	2026-03-13	13064		180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.669739	2026-04-22 15:33:30.669739
+71299651-2df4-4e5e-8ce8-9a9a3b506eca	1459	2026-03-12	12864		279	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.678908	2026-04-22 15:33:30.678908
+d2f22e1e-e745-4917-bb9b-e33f58ccbc5b	1458	2026-03-12	13058		138	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.687502	2026-04-22 15:33:30.687502
+dff0801c-5d31-4611-ab6f-294975fcb07e	1457	2026-03-10	13084		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.696164	2026-04-22 15:33:30.696164
+1fada6fd-ef5f-4234-be36-bf1015758359	1456	2026-03-10	13002		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.705183	2026-04-22 15:33:30.705183
+b54a53dc-8835-4aa9-a81c-d7d20792af3a	1455	2026-03-10	13005		168	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.713461	2026-04-22 15:33:30.713461
+f8f7d810-21db-4d52-9292-1ba8346346ec	1454	2026-03-09	13077		123	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.721512	2026-04-22 15:33:30.721512
+bee13e81-8492-48c9-8860-31095615af27	1453	2026-03-07	13100		180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.729134	2026-04-22 15:33:30.729134
+4694f8bf-f8b0-4d6c-b642-b8bc16bf03fd	1452	2026-03-09	12877	BLUSA DAMA	192	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.737365	2026-04-22 15:33:30.737365
+014836ee-43a1-4053-8a71-51a219a864a5	1451	2026-03-09	13067		258	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.745378	2026-04-22 15:33:30.745378
+800f0542-cfe2-40e7-8891-61f2340b565f	1450	2026-03-06	13109		201	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.753102	2026-04-22 15:33:30.753102
+cb16671e-f2a1-4ea7-b69b-dfd05c39805b	1449	2026-03-02	13015		201	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.762621	2026-04-22 15:33:30.762621
+d553ce9c-f1bb-4b18-9b7b-ca8b49ff4c92	1448	2026-03-06	13090		252	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.773613	2026-04-22 15:33:30.773613
+5ba1106b-b044-48be-beed-c9fd74f2d288	1447	2026-03-05	13036	BLUSA DAMA	120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.790953	2026-04-22 15:33:30.790953
+e2779d1c-c52c-4bb5-b65b-0f3995983a07	1446	2026-03-05	12931		138	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.808021	2026-04-22 15:33:30.808021
+04177b05-c515-488d-9272-8752d99a68b8	1445	2026-03-05	13074		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.817305	2026-04-22 15:33:30.817305
+dae1c4bf-439e-40ea-a6e1-7980a24bcb18	1444	2026-03-04	13094		201	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.835668	2026-04-22 15:33:30.835668
+a972c7b8-4a6b-4ebb-bfbf-a140051ec978	1443	2026-03-04	13016		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.843745	2026-04-22 15:33:30.843745
+64b7350f-62da-4fd3-a73d-83e21d047220	1442	2026-03-04	13010		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.860462	2026-04-22 15:33:30.860462
+ce170750-8923-425d-be9f-b3d0a81bd0a5	1441	2026-03-03	13095		300	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.867916	2026-04-22 15:33:30.867916
+fc76cfc3-f4c4-4d44-862e-8b7943c77fde	1440	2026-03-03	12869		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.874938	2026-04-22 15:33:30.874938
+d673dc8c-0957-4a0a-9c8d-c9ea98815966	1439	2026-03-03	12782		54	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.882139	2026-04-22 15:33:30.882139
+4332e6f4-d58b-460d-84fc-6ef4c00baa42	1438	2026-03-03	12963		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.892638	2026-04-22 15:33:30.892638
+1163d255-8bf6-4d2e-a8f9-c2c9fe8ee427	1436	2026-02-26	12964		123	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.901401	2026-04-22 15:33:30.901401
+4e1c6fac-04fb-45aa-a8b8-13a0f85ab058	1435	2026-02-26	12907	BODY DAMA	54	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.908582	2026-04-22 15:33:30.908582
+562dbf21-d20b-4ce1-ad31-9680c27dfe76	1434	2026-02-26	12908	BODY DAMA	60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.91619	2026-04-22 15:33:30.91619
+5d9c60b0-07fb-45ab-9aea-937fc397e7e6	1432	2026-02-24	13014		123	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.923349	2026-04-22 15:33:30.923349
+ea9df5e9-b698-442c-a267-edc7826f8914	1431	2026-02-24	12990		111	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.930465	2026-04-22 15:33:30.930465
+dd181c4d-340e-410a-b72c-26478a5982b0	1430	2026-02-23	12971		102	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.938488	2026-04-22 15:33:30.938488
+6ee13f71-676f-4362-bca3-66252fceeccb	1429	2026-02-24	12986	BODY DAMA	120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.945891	2026-04-22 15:33:30.945891
+3e3d3910-0162-4396-9fdc-95fd3839d46e	1428	2026-02-23	12966		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.953412	2026-04-22 15:33:30.953412
+efb2b715-7eb1-4602-9e57-1d87078418f7	1427	2026-02-23	12869		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.960225	2026-04-22 15:33:30.960225
+6f334c64-04ef-4d56-be09-bbc70d6aa7bf	1426	2026-02-23	12962		117	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.967457	2026-04-22 15:33:30.967457
+ee39a0f0-3cef-4196-a35f-747c360b43fc	1424	2026-02-20	12980		54	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.974534	2026-04-22 15:33:30.974534
+6eb4aeb9-55c5-412b-966a-97df5397a105	1423	2026-02-20	13010		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:30.997953	2026-04-22 15:33:30.997953
+97593be1-92af-4e4e-9fb0-eb2d91793360	1422	2026-02-20	13011		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.006263	2026-04-22 15:33:31.006263
+16c59f38-583b-4f0d-ad9a-2281e43751e5	1421	2026-02-19	12980		141	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.014764	2026-04-22 15:33:31.014764
+4ef720b1-439d-402e-9a3f-86a55e15ff08	1420	2026-02-19	12936		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.032655	2026-04-22 15:33:31.032655
+09677a64-70f1-475b-87e4-05592a302fd0	1419	2026-02-18	12969		174	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.040726	2026-04-22 15:33:31.040726
+f1045281-e995-4aff-a9a1-5ad30bc89c04	1418	2026-02-18	13012		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.048247	2026-04-22 15:33:31.048247
+93a2c3b5-e57b-4849-be8d-93a73b628b06	1417	2026-02-17	12968		117	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.055844	2026-04-22 15:33:31.055844
+69f5f2c9-5206-40cf-aabe-4e714cb77f33	1416	2026-02-16	12965	BLUSA DAMA	135	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.066265	2026-04-22 15:33:31.066265
+43f0c73f-2c1f-4ebd-8189-681ce42c53c5	1415	2026-02-16	12970		138	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.083837	2026-04-22 15:33:31.083837
+6ed7d7cd-cfb5-47b1-8c7c-da4b397da660	1414	2026-02-16	12935		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.091947	2026-04-22 15:33:31.091947
+3b4a0fc8-31f7-4d76-acdb-2ae498011e30	1413	2026-02-13	12917		126	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.100623	2026-04-22 15:33:31.100623
+be042bcd-9bb7-4512-83f6-d894e0b01ee2	1412	2026-02-12	12910		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.109177	2026-04-22 15:33:31.109177
+95e38aae-8e79-40c1-9bcf-85797f884f3e	1411	2026-02-12	13002		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.128161	2026-04-22 15:33:31.128161
+d9864f2e-deca-4b8d-8a11-2c82b16de303	1410	2026-02-12	12920		225	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.140428	2026-04-22 15:33:31.140428
+ede80023-48d0-4278-8e7d-ee47f3e414b6	1409	2026-02-10	12937		180	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.150265	2026-04-22 15:33:31.150265
+da2f52da-2c43-4ebd-b8d3-656abc091e45	1408	2026-02-10	12906		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.168423	2026-04-22 15:33:31.168423
+88aef392-a4b8-415d-a89c-ee0982fe652c	1407	2026-02-10	12934		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.17657	2026-04-22 15:33:31.17657
+71de496e-efbe-4f75-bc25-538cfde6fb1b	1406	2026-02-09	12923		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.184614	2026-04-22 15:33:31.184614
+82746b03-6cc2-426b-be5e-944ec8bbe07c	1405	2026-02-09	12922		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.192887	2026-04-22 15:33:31.192887
+842e2cd3-d4d1-4018-9f07-8a91eb8f0000	1404	2026-02-09	12898		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.200737	2026-04-22 15:33:31.200737
+54aa2905-0064-4d64-b31e-599bb33ace96	1403	2026-02-09	12921		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.208733	2026-04-22 15:33:31.208733
+3a28bbab-ed2c-4768-9f48-10584ce44aff	1402	2026-02-09	12892		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.217701	2026-04-22 15:33:31.217701
+c6936c19-eb7b-4819-9eb2-bc8658328d73	1401	2026-02-04	12952		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.23563	2026-04-22 15:33:31.23563
+0de4ef41-a9be-4208-930e-249ae5ea7e91	1400	2026-02-04	12926		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.244255	2026-04-22 15:33:31.244255
+58be0489-13bd-4198-99e0-94e6f0c081c0	1399	2026-02-04	12943	BLUSA DAMA	252	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.261141	2026-04-22 15:33:31.261141
+151c9b16-a2f4-44cb-8c26-2ec1a925186a	1398	2026-02-03	12893		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.268965	2026-04-22 15:33:31.268965
+58618bf8-b434-4641-b3e9-8ae1a91a6b8d	1397	2026-02-03	12950		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.277106	2026-04-22 15:33:31.277106
+4ea08ad8-687e-4382-8dee-a9e96fe4ae0d	1396	2026-02-02	12959		114	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.285293	2026-04-22 15:33:31.285293
+2927774c-c074-46c3-a107-4189dfe291b9	1395	2026-01-30	12881	BODY DAMA	66	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.30206	2026-04-22 15:33:31.30206
+29117730-ef66-49ef-bfe1-3612e860988f	1394	2026-01-30	12870		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.317119	2026-04-22 15:33:31.317119
+a1ee2228-90e1-47da-a9e2-18982ec2a9c2	1393	2026-01-30	12907	BODY DAMA	42	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.331481	2026-04-22 15:33:31.331481
+b8838858-7bff-4cc7-8699-ff68179d7f98	1392	2026-01-26	12864		99	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.338299	2026-04-22 15:33:31.338299
+8b5a34f7-d5a6-4298-9b88-364f8777394a	1391	2026-01-26	12945		264	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.352864	2026-04-22 15:33:31.352864
+8f169a1f-9df6-4710-904a-ba40ed21286f	1390	2026-01-26	12924		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.359839	2026-04-22 15:33:31.359839
+4c8dbcf1-8372-46bf-a6de-b8e99c5f3b83	1389	2026-01-26	12860		132	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.367715	2026-04-22 15:33:31.367715
+95ea770e-1e45-49d9-8e45-f6698477fd83	1388	2026-01-23	12871		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.37541	2026-04-22 15:33:31.37541
+eeb99dfd-1f58-4fb0-b694-c5801e2208d8	1387	2026-01-23	12876		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.393259	2026-04-22 15:33:31.393259
+26d5f5c7-d6d0-4a79-bc8c-e9a409d7409b	1386	2026-01-23	12888		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.408647	2026-04-22 15:33:31.408647
+ac8ed56e-8dbe-48a3-876d-f7a5c9e4f15a	1385	2026-01-21	12909		198	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.417612	2026-04-22 15:33:31.417612
+8c107e2b-f7bd-4d16-bb31-6636b583eed5	1384	2026-01-21	12913		90	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.425039	2026-04-22 15:33:31.425039
+126a670c-5e8e-4da8-af81-1aeb3e461bfa	1383	2026-01-21	12955		48	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.431827	2026-04-22 15:33:31.431827
+0f97d253-95e8-471a-aaab-91c2c9d61ae5	1382	2026-01-20	12911		342	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.438537	2026-04-22 15:33:31.438537
+befeab8c-c323-4908-93db-025243d55fc8	1380	2026-01-15	12896		60	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.444946	2026-04-22 15:33:31.444946
+5fff74c5-62c8-4dea-ae2f-100a7088c838	1378	2026-01-09	12890		105	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.452432	2026-04-22 15:33:31.452432
+cc57842d-cdf3-471c-949e-66e9d5b1eb35	1377	2026-01-09	12894		168	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.459422	2026-04-22 15:33:31.459422
+44ed2259-ebfb-410d-9188-4d4ff1186b90	1376	2026-01-06	12894		150	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.466426	2026-04-22 15:33:31.466426
+52fb0f5b-2c3d-4191-a3f7-fc1de46e9ea7	1375	2026-01-06	12901		147	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.473873	2026-04-22 15:33:31.473873
+eb93c6f5-cfe9-40b2-b357-97967379a246	1374	2026-01-07	12873		120	mm9a66x3tqtxja160	\N	2026-04-22 15:33:31.484797	2026-04-22 15:33:31.484797
+5fdda7db-c73e-4828-87e9-75cc1711a963	1506	2026-04-13	13129	TOP THE BESTIS	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:01:18.496507	2026-04-23 10:01:18.496507
+c2f9d9cb-1e14-423d-b904-2356bfa55df1	1503	2026-04-09	13128	BL CENTO BOTON	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:02:10.536274	2026-04-23 10:02:10.536274
+46bd8a54-52be-461e-bc97-f09fb70f128a	1502	2026-04-09	13119	CROP TOP PUNTOS	120	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:14:41.076527	2026-04-23 10:14:41.076527
+95ea223e-e736-4c0d-9e68-d1227f5a3586	1501	2026-04-09	13122	CAMISILLA RAYA DOBLE	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:15:06.708891	2026-04-23 10:15:06.708891
+a9887995-8086-46d2-8862-f92ff6a6ac8e	1496	2026-04-08	13091	TOP 1981	201	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:15:51.743026	2026-04-23 10:15:51.743026
+d53ed568-adb6-4a36-b0cf-837bc137a0b4	1489	2026-04-06	12986	BODY DECORATIVO	90	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:16:22.10915	2026-04-23 10:16:22.10915
+3b35d9d5-7daa-4de3-b94b-ed693edb666d	1482	2026-03-31	13101	BLUSA PLUSS CORPIÑO BOLERO	123	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:16:51.771358	2026-04-23 10:16:51.771358
+b69cfe12-1ecf-407c-856a-be0651a9ee82	1467	2026-03-18	13117	BLUSON RAYAS FLORES	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:18:17.507872	2026-04-23 10:18:17.507872
+4d1436e0-d830-4dd6-bf67-d716da185e73	1466	2026-03-17	13129	TOP THE BESTIS	81	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:19:32.776015	2026-04-23 10:19:32.776015
+de13ddad-3dd7-4848-9a85-9d4ab77db06f	1466	2026-03-17	13121	CAMISILLA RAYA	81	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:19:32.796798	2026-04-23 10:19:32.796798
+9661f472-a7d1-439a-bd15-99feba284e9a	1462	2026-03-16	13074	CAMISILLA COMBINADOA BURDA BOLAS TEXTO	201	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:20:13.004927	2026-04-23 10:20:13.004927
+d67af4e4-9473-4899-a591-98fca71f34a5	1448	2026-03-06	13091	TOP 1981	252	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:21:07.714767	2026-04-23 10:21:07.714767
+527dc17f-3b43-48ee-925c-71beeb12d331	1447	2026-03-05	13081	CAMISETA MGA CORTA TEXTO ALTA CON MIRELLA	120	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:21:38.592746	2026-04-23 10:21:38.592746
+c3ff3711-a751-4b16-8590-2aac79dbec24	1443	2026-03-04	13086	CAMISETA RECOGIDO MANGAS	120	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:22:40.914814	2026-04-23 10:22:40.914814
+24fd974e-a9c1-4adf-b6cf-0c63e1752d33	1445	2026-03-05	13093	BL CUELL ESTA BOLA	120	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:22:40.929637	2026-04-23 10:22:40.929637
+8f2e9934-3d18-4a10-bbf9-5af875aeab46	1421	2026-02-19	13013	BL AMARR ANGELIT	141	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:23:47.864363	2026-04-23 10:23:47.864363
+7eb1e8a8-224e-4882-b744-9ccd0b42d2f7	1424	2026-02-20	12980	BL BOL CUELLO ESTAM RAYA	54	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:23:47.879505	2026-04-23 10:23:47.879505
+3bce1047-d179-4e9c-b4df-194a96533abc	1424	2026-02-20	13013	BL AMARR ANGELIT	54	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:23:47.914674	2026-04-23 10:23:47.914674
+a81580f9-1354-4752-8f19-ac4bbb0c0f6d	1416	2026-02-16	12973	DUO CHALECO	135	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:24:28.182446	2026-04-23 10:24:28.182446
+09f8e4ce-8e54-4e14-80be-19397520f52c	1412	2026-02-12	12918	TOP ESTAMPAT PL	60	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:24:52.254536	2026-04-23 10:24:52.254536
+b303d209-a6aa-4226-b0f3-79eca8be136a	1409	2026-02-10	12875	BLUSA CRUZADA CON HERRAJE	90	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:25:14.125465	2026-04-23 10:25:14.125465
+ab9ef62b-39d8-4bb4-9587-d8d5d0056969	1402	2026-02-09	12905	BODY ESPALDA DESTAPADA FORRADO	60	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:25:38.84352	2026-04-23 10:25:38.84352
+f4745827-97f4-4473-904b-69c3e357b293	1400	2026-02-04	12951	CAMISE LATERA EN ENCAJE	90	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:25:59.709091	2026-04-23 10:25:59.709091
+cd8c75aa-cdaa-4e43-9bcb-7dd66ba53d34	1387	2026-01-23	12877	CAMISILLA PUNTILLA CUELLO	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.311535	2026-04-23 10:28:33.311535
+351cf463-283a-43f2-9553-e1f7a15b4747	1388	2026-01-23	12919	CAM FOND ALT FLOR	150	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.327199	2026-04-23 10:28:33.327199
+033d5bf1-cf10-41b9-aa0c-5a00b6056c37	1392	2026-01-26	12897	STRAPLE AMERR FRENT	198	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.347344	2026-04-23 10:28:33.347344
+a2ed7e2b-e022-48a3-9304-66f6f07af899	1394	2026-01-30	12933	BODY TIRAS	60	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.37622	2026-04-23 10:28:33.37622
+a6d86167-ccc2-4202-b6cd-ee9c390f3828	1395	2026-01-30	12908	BODY BASIC	66	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.408617	2026-04-23 10:28:33.408617
+b82f32de-674d-44e0-94df-7e7f1004a53f	1396	2026-02-02	12960	CAMISETA ENCAJE FTE	114	mm3x7j6m4p6s4g2zz	\N	2026-04-23 10:28:33.433505	2026-04-23 10:28:33.433505
 \.
 
 
 --
--- TOC entry 5629 (class 0 OID 30303)
+-- TOC entry 5638 (class 0 OID 30303)
 -- Dependencies: 262
--- Data for Name: cuentas_bancarias; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: cuentas_bancarias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.cuentas_bancarias (id, cedula, nombre, cuenta, created_at, updated_at) FROM stdin;
@@ -2674,9 +3503,9 @@ COPY public.cuentas_bancarias (id, cedula, nombre, cuenta, created_at, updated_a
 
 
 --
--- TOC entry 5594 (class 0 OID 29778)
+-- TOC entry 5603 (class 0 OID 29778)
 -- Dependencies: 227
--- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: delivery_dates; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.delivery_dates (id, confeccionista_id, reference_id, quantity, send_date, expected_date, delivery_date, process, observation, created_at, created_by, rem) FROM stdin;
@@ -2946,9 +3775,9 @@ import_1773954086631_36	CAMILO HOYOS	13109	201	2026-03-13	2026-03-19	2026-03-25	
 
 
 --
--- TOC entry 5633 (class 0 OID 30349)
+-- TOC entry 5642 (class 0 OID 30349)
 -- Dependencies: 266
--- Data for Name: descuentos_pago; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: descuentos_pago; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.descuentos_pago (id, pago_id, tipo, etiqueta, monto, orden, created_at) FROM stdin;
@@ -2956,13 +3785,19 @@ COPY public.descuentos_pago (id, pago_id, tipo, etiqueta, monto, orden, created_
 4	3	ML	Transp 1	16000.00	0	2026-04-13 16:47:41.01973
 5	4	ML	Transp 1	16000.00	0	2026-04-13 16:54:47.052354
 6	5	OF	RTE FTE	9710.00	0	2026-05-04 15:09:03.45165
+20	14	OF	RTE FTE	12096.00	0	2026-05-04 16:38:15.920537
+21	14	ML	TRANSP 2	35500.00	0	2026-05-04 16:38:15.920537
+22	15	OF	RTE FTE	8554.00	0	2026-05-04 16:38:59.682491
+23	16	OF	RTE FTE	6336.00	0	2026-05-05 15:35:37.467776
+24	16	ML	TRANSP 1	16000.00	0	2026-05-05 15:35:37.467776
+25	17	OF	RTE FTE	20822.00	0	2026-05-05 15:56:46.55497
 \.
 
 
 --
--- TOC entry 5595 (class 0 OID 29790)
+-- TOC entry 5604 (class 0 OID 29790)
 -- Dependencies: 228
--- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: disenadoras; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.disenadoras (id, nombre, cedula, telefono, activa, created_at, updated_at) FROM stdin;
@@ -2975,9 +3810,9 @@ d7b10d30-2d16-40b1-890a-3c1543ddbc8a	Martha Ramirez	43556171	3203837430	t	2026-0
 
 
 --
--- TOC entry 5597 (class 0 OID 29800)
+-- TOC entry 5606 (class 0 OID 29800)
 -- Dependencies: 230
--- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: dispatch_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FROM stdin;
@@ -3544,9 +4379,9 @@ COPY public.dispatch_items (id, dispatch_id, reference, quantity, sale_price) FR
 
 
 --
--- TOC entry 5598 (class 0 OID 29811)
+-- TOC entry 5607 (class 0 OID 29811)
 -- Dependencies: 231
--- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: dispatches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.dispatches (id, client_id, correria_id, invoice_no, remission_no, dispatched_by, created_at, checked_by) FROM stdin;
@@ -3662,9 +4497,9 @@ moa8wr5cqbiniecxb	109	mljjrcujmtckild4r	11	11	Jhon Montoya	2026-04-22 16:06:53.0
 
 
 --
--- TOC entry 5599 (class 0 OID 29824)
+-- TOC entry 5608 (class 0 OID 29824)
 -- Dependencies: 232
--- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: fichas_cortes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_cortes (id, ficha_costo_id, numero_corte, fecha_corte, cantidad_cortada, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_real, precio_venta, rentabilidad, costo_proyectado, diferencia, margen_utilidad, created_by, created_at, ficha_corte) FROM stdin;
@@ -3675,9 +4510,9 @@ b4c656a7-5c64-45b1-be0b-a31f2d745ad3	cabfb75f-4e2c-42ab-bda2-bcbaba31a0c2	2	2026
 
 
 --
--- TOC entry 5600 (class 0 OID 29851)
+-- TOC entry 5609 (class 0 OID 29851)
 -- Dependencies: 233
--- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: fichas_costo; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_costo (id, referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, precio_venta, rentabilidad, margen_ganancia, costo_contabilizar, desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent, cantidad_total_cortada, created_by, created_at, updated_at, estado_revision) FROM stdin;
@@ -3697,9 +4532,9 @@ e36e8284-da20-4b99-a3c5-eccdc5fc7e19	13132	39984bb8-8797-47ba-a2bd-dfb8525bb970	
 
 
 --
--- TOC entry 5601 (class 0 OID 29885)
+-- TOC entry 5610 (class 0 OID 29885)
 -- Dependencies: 234
--- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: fichas_diseno; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.fichas_diseno (id, referencia, disenadora_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones, foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones, total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total, importada, created_by, created_at, updated_at) FROM stdin;
@@ -3806,9 +4641,9 @@ b01691af-bf2f-4dbe-9a68-ff6e6d149608	13105	d7b10d30-2d16-40b1-890a-3c1543ddbc8a	
 
 
 --
--- TOC entry 5602 (class 0 OID 29907)
+-- TOC entry 5611 (class 0 OID 29907)
 -- Dependencies: 235
--- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: inventory_movements; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_total, proveedor, referencia_destino, remision_factura, movimiento, compra_id, fecha_creacion, created_at, updated_at) FROM stdin;
@@ -3818,9 +4653,9 @@ COPY public.inventory_movements (id, insumo, cantidad, valor_unitario, valor_tot
 
 
 --
--- TOC entry 5603 (class 0 OID 29923)
+-- TOC entry 5612 (class 0 OID 29923)
 -- Dependencies: 236
--- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: maletas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at) FROM stdin;
@@ -3829,9 +4664,9 @@ COPY public.maletas (id, nombre, correria_id, created_by, created_at, updated_at
 
 
 --
--- TOC entry 5604 (class 0 OID 29933)
+-- TOC entry 5613 (class 0 OID 29933)
 -- Dependencies: 237
--- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: maletas_referencias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) FROM stdin;
@@ -3839,9 +4674,9 @@ COPY public.maletas_referencias (id, maleta_id, referencia, orden, created_at) F
 
 
 --
--- TOC entry 5605 (class 0 OID 29942)
+-- TOC entry 5614 (class 0 OID 29942)
 -- Dependencies: 238
--- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: messages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FROM stdin;
@@ -3850,12 +4685,1522 @@ COPY public.messages (id, sender_id, receiver_id, content, read, created_at) FRO
 
 
 --
--- TOC entry 5607 (class 0 OID 29955)
+-- TOC entry 5616 (class 0 OID 29955)
 -- Dependencies: 240
--- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: order_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.order_items (order_id, reference, quantity, sale_price) FROM stdin;
+mm25qs8bzb9btrgvw	12923	18	23900.00
+mm25qs8bzb9btrgvw	12882	18	23900.00
+mm25qs8bzb9btrgvw	12909	18	23900.00
+mm25qs8bzb9btrgvw	12872	18	23900.00
+mm25qs8bzb9btrgvw	12911	18	18900.00
+mm25qs8bzb9btrgvw	12919	18	24900.00
+mm25qs8bzb9btrgvw	12926	18	26900.00
+mm25qs8bzb9btrgvw	12835	12	19900.00
+mm25qs8bzb9btrgvw	12831	12	23900.00
+mm25qs8bzb9btrgvw	12836	12	20900.00
+mm25qs8bzb9btrgvw	12855	12	23900.00
+mm25qs8bzb9btrgvw	12129	12	26900.00
+mm25qs8bzb9btrgvw	12841	12	19900.00
+mm25qs8bzb9btrgvw	12834	12	16900.00
+mm25qs8bzb9btrgvw	12825	12	21900.00
+mm25qs8bzb9btrgvw	12818	12	40900.00
+mm25qs8bzb9btrgvw	12821	12	33900.00
+mm25qs8bzb9btrgvw	12840	12	33900.00
+mmpgxr0cmqouvxsuz	13118	24	21900.00
+mmph0ntzrz5dgbf7e	12990	6	32400.00
+mmph0ntzrz5dgbf7e	13012	6	39400.00
+mmph0ntzrz5dgbf7e	13103	6	45400.00
+mmph0ntzrz5dgbf7e	12964	6	46400.00
+mmph0ntzrz5dgbf7e	12959	6	37400.00
+mmph0ntzrz5dgbf7e	12960	6	39400.00
+mmph0ntzrz5dgbf7e	13076	6	27400.00
+mmph0ntzrz5dgbf7e	13113	6	49400.00
+mmph0ntzrz5dgbf7e	13102	6	29400.00
+mmph0ntzrz5dgbf7e	13016	6	32400.00
+mmph0ntzrz5dgbf7e	13077	6	42400.00
+mmph0ntzrz5dgbf7e	13112	6	37400.00
+mmph0ntzrz5dgbf7e	13002	6	41400.00
+mmph0ntzrz5dgbf7e	13055	6	29400.00
+mmph0ntzrz5dgbf7e	13117	6	23400.00
+mmph0ntzrz5dgbf7e	13116	6	21400.00
+mmph0ntzrz5dgbf7e	13118	6	21400.00
+mmph0ntzrz5dgbf7e	13094	6	21400.00
+mmph0ntzrz5dgbf7e	12709	6	19400.00
+mmph0ntzrz5dgbf7e	13068	6	21400.00
+mmph0ntzrz5dgbf7e	13008	6	33400.00
+mmph0ntzrz5dgbf7e	13036	6	29400.00
+mmph0ntzrz5dgbf7e	13100	6	25400.00
+mmph0ntzrz5dgbf7e	12747	6	31400.00
+mmph0ntzrz5dgbf7e	12783	6	17400.00
+mmph0ntzrz5dgbf7e	13079	6	19400.00
+mmph0ntzrz5dgbf7e	12968	6	44400.00
+mmph0ntzrz5dgbf7e	13014	6	29400.00
+mmph0ntzrz5dgbf7e	13015	6	37400.00
+mmph0ntzrz5dgbf7e	12973	6	42400.00
+mmph0ntzrz5dgbf7e	13023	6	34400.00
+mmph0ntzrz5dgbf7e	13254	6	34400.00
+mmph0ntzrz5dgbf7e	12966	6	43400.00
+mmph224zawpf1wfbp	13023	6	34400.00
+mmph224zawpf1wfbp	13254	6	34400.00
+mmph224zawpf1wfbp	12966	6	43400.00
+mmph2vwqtgig74spi	13002	12	41900.00
+mmph2vwqtgig74spi	12960	12	39900.00
+mmt9cg4gbu5dnloup	13066	12	45900.00
+mmt9cg4gbu5dnloup	12990	12	32900.00
+mmt9cg4gbu5dnloup	12960	12	39900.00
+mmt9cg4gbu5dnloup	13103	12	45900.00
+mmt9cg4gbu5dnloup	12972	12	48900.00
+mmt9cg4gbu5dnloup	12747	12	31900.00
+mmt9cg4gbu5dnloup	13033	12	29900.00
+mmt9cg4gbu5dnloup	13010	12	29900.00
+mmt9cg4gbu5dnloup	13100	12	25900.00
+mmt9cg4gbu5dnloup	13068	12	21900.00
+mmt9cg4gbu5dnloup	13005	12	20900.00
+mmt9cg4gbu5dnloup	12980	12	22900.00
+mmt9cg4gbu5dnloup	13074	12	19900.00
+mmt9cg4gbu5dnloup	13118	12	21900.00
+mmt9cg4gbu5dnloup	13079	12	19900.00
+mmt9cg4gbu5dnloup	12576	12	19900.00
+mmt9cg4gbu5dnloup	13043	12	34900.00
+mmt9cg4gbu5dnloup	13040	12	32900.00
+mmt9cg4gbu5dnloup	12574	12	25900.00
+mmt9cg4gbu5dnloup	12943	12	19900.00
+mmt9f0zv75r8qf1g9	13012	6	39900.00
+mmt9f0zv75r8qf1g9	12963	6	35900.00
+mmt9f0zv75r8qf1g9	13103	3	45900.00
+mmt9f0zv75r8qf1g9	12972	3	48900.00
+mmt9f0zv75r8qf1g9	12980	6	22900.00
+mmt9f0zv75r8qf1g9	13008	6	33900.00
+mmt9f0zv75r8qf1g9	13128	6	23900.00
+mmt9f0zv75r8qf1g9	13123	6	19900.00
+mmt9f0zv75r8qf1g9	13079	6	19900.00
+mmt9f0zv75r8qf1g9	12884	6	21900.00
+mmt9f0zv75r8qf1g9	13094	6	21900.00
+mmt9f0zv75r8qf1g9	13118	6	21900.00
+mmt9f0zv75r8qf1g9	13055	6	29900.00
+mmt9f0zv75r8qf1g9	13129	6	22900.00
+mmt9f0zv75r8qf1g9	12973	6	42900.00
+mmt9f0zv75r8qf1g9	12895	6	30900.00
+mmt9f0zv75r8qf1g9	12671	6	24900.00
+mmt9f0zv75r8qf1g9	12970	6	34900.00
+mmt9f0zv75r8qf1g9	13042	6	29900.00
+mmt9f0zv75r8qf1g9	12943	6	19900.00
+mmt9f0zv75r8qf1g9	13131	6	19900.00
+mmt9f0zv75r8qf1g9	13040	6	32900.00
+mmt9f0zv75r8qf1g9	13122	6	18900.00
+mmt9f0zv75r8qf1g9	13120	6	18900.00
+mmt9f0zv75r8qf1g9	12877	6	19900.00
+mmpgtfe31h7o4pg3g	12771	36	14000.00
+mmpgtfe31h7o4pg3g	12683	36	14000.00
+mmpgtfe31h7o4pg3g	13095	108	14000.00
+mmpgtfe31h7o4pg3g	12782	108	14000.00
+mmpgtfe31h7o4pg3g	12783	108	14000.00
+mmpgtfe31h7o4pg3g	12877	126	16000.00
+mmpgtfe31h7o4pg3g	13091	204	16000.00
+mmpgtfe31h7o4pg3g	13074	204	16000.00
+mmpgtfe31h7o4pg3g	12864	204	16000.00
+mmpgtfe31h7o4pg3g	13083	204	16000.00
+mmpgtfe31h7o4pg3g	13079	204	16000.00
+mmpgtfe31h7o4pg3g	12686	204	16000.00
+mmpgtfe31h7o4pg3g	13005	204	16000.00
+mmpgtfe31h7o4pg3g	12909	204	16000.00
+mmpgtfe31h7o4pg3g	13081	204	16000.00
+mmpgtfe31h7o4pg3g	13098	36	19000.00
+mmpgtfe31h7o4pg3g	12737	36	19000.00
+mmpgtfe31h7o4pg3g	13093	36	19000.00
+mmpgtfe31h7o4pg3g	12692	36	19000.00
+mmpgtfe31h7o4pg3g	12640	36	19000.00
+mmpgtfe31h7o4pg3g	13094	36	19000.00
+mmpgtfe31h7o4pg3g	12885	36	19000.00
+mmpgtfe31h7o4pg3g	12883	36	19000.00
+mmpgtfe31h7o4pg3g	13086	36	19000.00
+mm25z1dbniegbh1m6	12909	4	23900.00
+mm25z1dbniegbh1m6	12911	4	18900.00
+mm25z1dbniegbh1m6	12882	4	23900.00
+mm25z1dbniegbh1m6	12941	4	20900.00
+mm25z1dbniegbh1m6	12885	4	23900.00
+mm25z1dbniegbh1m6	12782	4	17900.00
+mm25z1dbniegbh1m6	12871	4	19900.00
+mm25z1dbniegbh1m6	12931	4	29900.00
+mm25z1dbniegbh1m6	12805	4	19900.00
+mm25z1dbniegbh1m6	12892	4	24900.00
+mm25z1dbniegbh1m6	12876	4	19900.00
+mm25z1dbniegbh1m6	12945	4	19900.00
+mm25z1dbniegbh1m6	12897	4	19900.00
+mm25z1dbniegbh1m6	12943	4	19900.00
+mm25z1dbniegbh1m6	12920	4	21900.00
+mm25z1dbniegbh1m6	12898	4	24900.00
+mm25z1dbniegbh1m6	12951	4	27900.00
+mm25z1dbniegbh1m6	12952	4	26900.00
+mm25z1dbniegbh1m6	12919	4	25900.00
+mm25z1dbniegbh1m6	12880	4	24900.00
+mm25z1dbniegbh1m6	12937	4	14900.00
+mm25z1dbniegbh1m6	12873	4	22900.00
+mm25z1dbniegbh1m6	12923	4	24900.00
+mm25z1dbniegbh1m6	12913	4	29900.00
+mm25z1dbniegbh1m6	12699	4	24900.00
+mm25z1dbniegbh1m6	12744	4	19900.00
+mm25z1dbniegbh1m6	12907	4	28900.00
+mm25z1dbniegbh1m6	12906	4	28900.00
+mm25z1dbniegbh1m6	12889	4	28900.00
+mm25z1dbniegbh1m6	12875	4	19900.00
+mm25yurfvl3ytrp78	12366	24	19900.00
+mm25yurfvl3ytrp78	12871	24	19900.00
+mm25yurfvl3ytrp78	12922	24	21900.00
+mm25yurfvl3ytrp78	12860	24	16900.00
+mm25yurfvl3ytrp78	12888	24	19900.00
+mm25yurfvl3ytrp78	12782	24	17900.00
+mm25yurfvl3ytrp78	12893	24	24900.00
+mm25yurfvl3ytrp78	12920	24	21900.00
+mm25yurfvl3ytrp78	12917	24	19900.00
+mm25yurfvl3ytrp78	12943	24	19900.00
+mm25yurfvl3ytrp78	12950	24	27900.00
+mm25yurfvl3ytrp78	12883	24	24900.00
+mm25yurfvl3ytrp78	12913	24	29900.00
+mm25yurfvl3ytrp78	12873	24	22900.00
+mm25yurfvl3ytrp78	12951	24	27900.00
+mm25yurfvl3ytrp78	12926	24	27900.00
+mm25yurfvl3ytrp78	12875	24	19900.00
+mm25yurfvl3ytrp78	12911	24	18900.00
+mm25yurfvl3ytrp78	12952	24	26900.00
+mm25yurfvl3ytrp78	12937	24	14900.00
+mm25x0trsopvohrgo	12782	12	17900.00
+mm25x0trsopvohrgo	12870	11	35900.00
+mm25x0trsopvohrgo	12871	12	19900.00
+mm25x0trsopvohrgo	12876	12	19900.00
+mm25x0trsopvohrgo	12880	12	24900.00
+mm25x0trsopvohrgo	12882	12	23900.00
+mm25x0trsopvohrgo	12885	12	23900.00
+mm25x0trsopvohrgo	12889	12	28900.00
+mm25x0trsopvohrgo	12905	12	34900.00
+mm25x0trsopvohrgo	12907	11	28900.00
+mm25x0trsopvohrgo	12908	12	28900.00
+mm25x0trsopvohrgo	12909	12	23900.00
+mm25x0trsopvohrgo	12910	12	22900.00
+mm25x0trsopvohrgo	12916	12	20900.00
+mm25x0trsopvohrgo	12931	12	29900.00
+mm25x0trsopvohrgo	12937	12	14900.00
+mm25wkgeaqmr6b8un	12129	11	27900.00
+mm25wkgeaqmr6b8un	12694	11	24900.00
+mm25wkgeaqmr6b8un	12825	11	22900.00
+mm25wkgeaqmr6b8un	12828	11	14900.00
+mm25wkgeaqmr6b8un	12834	11	17900.00
+mm25wkgeaqmr6b8un	12835	11	20900.00
+mm25wkgeaqmr6b8un	12836	11	21900.00
+mm25wkgeaqmr6b8un	12837	11	27900.00
+mm25wkgeaqmr6b8un	12841	13	20900.00
+mm25wans5fy2ikncb	12129	12	27900.00
+mm25wans5fy2ikncb	12694	12	24900.00
+mm25wans5fy2ikncb	12825	12	22900.00
+mm25wans5fy2ikncb	12828	12	14900.00
+mm25wans5fy2ikncb	12834	12	17900.00
+mm25wans5fy2ikncb	12835	12	20900.00
+mm25wans5fy2ikncb	12836	11	21900.00
+mm25wans5fy2ikncb	12837	12	27900.00
+mm25wans5fy2ikncb	12841	14	20900.00
+mm25v4aqgkqzh9j40	12704	10	29900.00
+mm25v4aqgkqzh9j40	12782	10	17900.00
+mm25v4aqgkqzh9j40	12870	9	35900.00
+mm25v4aqgkqzh9j40	12871	10	19900.00
+mm25v4aqgkqzh9j40	12876	10	19900.00
+mm25v4aqgkqzh9j40	12880	10	24900.00
+mm25v4aqgkqzh9j40	12882	10	23900.00
+mm25v4aqgkqzh9j40	12885	10	23900.00
+mm25v4aqgkqzh9j40	12889	10	28900.00
+mm25v4aqgkqzh9j40	12905	10	34900.00
+mm25v4aqgkqzh9j40	12907	9	28900.00
+mm25v4aqgkqzh9j40	12908	10	28900.00
+mm25v4aqgkqzh9j40	12909	10	23900.00
+mm25v4aqgkqzh9j40	12910	10	22900.00
+mm25v4aqgkqzh9j40	12916	10	20900.00
+mm25v4aqgkqzh9j40	12931	10	29900.00
+mm25v4aqgkqzh9j40	12937	10	14900.00
+mm25teuw5s5a06njw	12129	11	27900.00
+mm25teuw5s5a06njw	12694	11	24900.00
+mm25teuw5s5a06njw	12825	11	22900.00
+mm25teuw5s5a06njw	12828	11	14900.00
+mm25teuw5s5a06njw	12834	11	17900.00
+mm25teuw5s5a06njw	12835	11	20900.00
+mm25teuw5s5a06njw	12836	11	21900.00
+mm25teuw5s5a06njw	12837	11	27900.00
+mm25teuw5s5a06njw	12841	13	20900.00
+mm2c7uonjxqwkjpf5	12945	168	14000.00
+mm2c7uonjxqwkjpf5	12860	168	14000.00
+mm2c7uonjxqwkjpf5	12665	168	14000.00
+mm2c7uonjxqwkjpf5	12897	138	16000.00
+mm2c7uonjxqwkjpf5	12876	168	16000.00
+mm2c7uonjxqwkjpf5	12943	138	16000.00
+mm2c7uonjxqwkjpf5	12877	168	16000.00
+mm2c7uonjxqwkjpf5	12864	138	16000.00
+mm2c7uonjxqwkjpf5	12888	168	16000.00
+mm2c7uonjxqwkjpf5	12871	138	16000.00
+mm2c7uonjxqwkjpf5	12911	168	16000.00
+mm2c7uonjxqwkjpf5	12861	168	16000.00
+mm2c7uonjxqwkjpf5	12920	48	19000.00
+mm2c7uonjxqwkjpf5	12893	48	19000.00
+mm2c7uonjxqwkjpf5	12924	48	19000.00
+mm2c7uonjxqwkjpf5	12955	48	19000.00
+mm2c7uonjxqwkjpf5	12919	48	19000.00
+mm2c7uonjxqwkjpf5	12959	60	35000.00
+mm2c7uonjxqwkjpf5	12960	60	35000.00
+mmpgtfe31h7o4pg3g	13100	36	19000.00
+mmpgtfe31h7o4pg3g	13090	36	19000.00
+mmpgtfe31h7o4pg3g	12862	36	19000.00
+mmpgtfe31h7o4pg3g	13096	36	21000.00
+mmpgtfe31h7o4pg3g	13013	36	21000.00
+mmpgtfe31h7o4pg3g	12704	36	21000.00
+mmpgtfe31h7o4pg3g	12685	48	24000.00
+mmpgtfe31h7o4pg3g	12644	48	24000.00
+mmpgtfe31h7o4pg3g	13033	36	24000.00
+mmpgtfe31h7o4pg3g	12889	48	27000.00
+mmpgtfe31h7o4pg3g	13003	36	29000.00
+mmpgtfe31h7o4pg3g	13084	48	29000.00
+mmpgtfe31h7o4pg3g	12747	48	29000.00
+mmpgtfe31h7o4pg3g	13010	36	29000.00
+mmpgtfe31h7o4pg3g	13036	36	29000.00
+mmpgtfe31h7o4pg3g	13067	48	32000.00
+mmpgtfe31h7o4pg3g	13065	48	35000.00
+mmpgtfe31h7o4pg3g	13058	48	30000.00
+mmpgtfe31h7o4pg3g	12976	48	35000.00
+mmpgtfe31h7o4pg3g	12986	48	29900.00
+mmpgtfe31h7o4pg3g	13029	48	29900.00
+mmpgtfe31h7o4pg3g	12581	36	29900.00
+mmpgtfe31h7o4pg3g	13076	54	28000.00
+mmpgtfe31h7o4pg3g	13101	54	35000.00
+mmpgtfe31h7o4pg3g	13064	54	33000.00
+mmpgtfe31h7o4pg3g	12869	54	32000.00
+mmpgtfe31h7o4pg3g	12962	54	42000.00
+mmpgtfe31h7o4pg3g	13077	54	42000.00
+mmpgtfe31h7o4pg3g	13109	54	32000.00
+mm261ih80nzxoq1lv	12698	12	21900.00
+mm261ih80nzxoq1lv	12936	12	14900.00
+mm261ih80nzxoq1lv	12917	12	19900.00
+mm261ih80nzxoq1lv	12950	12	27900.00
+mm261ih80nzxoq1lv	12777	12	14900.00
+mm261ih80nzxoq1lv	12679	12	23900.00
+mm261ih80nzxoq1lv	12737	12	22900.00
+mm261ih80nzxoq1lv	12704	12	29900.00
+mm261ih80nzxoq1lv	12694	12	24900.00
+mm261ih80nzxoq1lv	12915	12	28900.00
+mm261ih80nzxoq1lv	12934	12	24900.00
+mm261ih80nzxoq1lv	12574	12	25900.00
+mm261ih80nzxoq1lv	12920	12	21900.00
+mm261ih80nzxoq1lv	12898	12	24900.00
+mm261ih80nzxoq1lv	12754	12	16900.00
+mm261ih80nzxoq1lv	12865	12	16900.00
+mm261ih80nzxoq1lv	12922	12	21900.00
+mm261ih80nzxoq1lv	12943	12	19900.00
+mm261ih80nzxoq1lv	12805	12	19900.00
+mm261ih80nzxoq1lv	12893	12	24900.00
+mm261ih80nzxoq1lv	12747	12	31900.00
+mm261ih80nzxoq1lv	12926	12	27900.00
+mm261ih80nzxoq1lv	12955	12	22900.00
+mm261ih80nzxoq1lv	12914	12	33900.00
+mm261ih80nzxoq1lv	12885	12	23900.00
+mm261ih80nzxoq1lv	12883	12	24900.00
+mm261ih80nzxoq1lv	12699	12	24900.00
+mm261ih80nzxoq1lv	12909	12	23900.00
+mm261ih80nzxoq1lv	12911	12	18900.00
+mm261ih80nzxoq1lv	12882	12	23900.00
+mm261ih80nzxoq1lv	12875	12	19900.00
+mm261ih80nzxoq1lv	12873	12	22900.00
+mm261ih80nzxoq1lv	12871	12	19900.00
+mm261ih80nzxoq1lv	12860	12	16900.00
+mm261ih80nzxoq1lv	12884	12	21900.00
+mm261ih80nzxoq1lv	12939	12	20900.00
+mm261ih80nzxoq1lv	12640	12	24900.00
+mm261ih80nzxoq1lv	12868	8	69900.00
+mm261ih80nzxoq1lv	12878	8	64900.00
+mm261ih80nzxoq1lv	12881	18	33900.00
+mm261ih80nzxoq1lv	12907	18	28900.00
+mm261ih80nzxoq1lv	12908	18	28900.00
+mm261ih80nzxoq1lv	12581	18	32900.00
+mm261ih80nzxoq1lv	12933	18	34900.00
+mm261ih80nzxoq1lv	12744	18	19900.00
+mm261ih80nzxoq1lv	12617	18	35900.00
+mm261ih80nzxoq1lv	12870	18	35900.00
+mm261ih80nzxoq1lv	12889	18	28900.00
+mm261bh9kjzjbs3n3	12906	12	28900.00
+mm261bh9kjzjbs3n3	12881	12	33900.00
+mm261bh9kjzjbs3n3	12880	12	24900.00
+mm261bh9kjzjbs3n3	12950	12	27900.00
+mm261bh9kjzjbs3n3	12693	12	25900.00
+mm261bh9kjzjbs3n3	12698	12	21900.00
+mm261bh9kjzjbs3n3	12936	12	14900.00
+mm25zlnrm0l8pxyk3	12679	24	23900.00
+mm25zlnrm0l8pxyk3	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12680	24	16900.00
+mm25zlnrm0l8pxyk3	12943	24	19900.00
+mm25zlnrm0l8pxyk3	12936	24	14900.00
+mm25zlnrm0l8pxyk3	12877	24	19900.00
+mm25zlnrm0l8pxyk3	12920	24	21900.00
+mm25zlnrm0l8pxyk3	12934	24	24900.00
+mm25zlnrm0l8pxyk3	12898	24	24900.00
+mm25zlnrm0l8pxyk3	12881	24	33900.00
+mm25zlnrm0l8pxyk3	12907	24	28900.00
+mm25zlnrm0l8pxyk3	12933	24	34900.00
+mm25zlnrm0l8pxyk3	12906	24	28900.00
+mm25zlnrm0l8pxyk3	12935	24	35900.00
+mm25zlnrm0l8pxyk3	12908	24	28900.00
+mm25zlnrm0l8pxyk3	12889	24	28900.00
+mm25zlnrm0l8pxyk3	12747	24	31900.00
+mm25zlnrm0l8pxyk3	12872	24	24900.00
+mm25zlnrm0l8pxyk3	12919	24	25900.00
+mm25zlnrm0l8pxyk3	12951	24	27900.00
+mm25zlnrm0l8pxyk3	12909	24	23900.00
+mm25zlnrm0l8pxyk3	12913	24	29900.00
+mm25zlnrm0l8pxyk3	12942	24	24900.00
+mm25zlnrm0l8pxyk3	12923	24	24900.00
+mm25zlnrm0l8pxyk3	12862	24	23900.00
+mm25zlnrm0l8pxyk3	12941	24	20900.00
+mm25zlnrm0l8pxyk3	12875	24	19900.00
+mm25zlnrm0l8pxyk3	12879	24	38900.00
+mm25zlnrm0l8pxyk3	12914	24	33900.00
+mm25zlnrm0l8pxyk3	12880	24	24900.00
+mm25zlnrm0l8pxyk3	12873	24	22900.00
+mm25zlnrm0l8pxyk3	12882	24	23900.00
+mm25zlnrm0l8pxyk3	12952	24	26900.00
+mm25zlnrm0l8pxyk3	12937	24	14900.00
+mm25zlnrm0l8pxyk3	12893	24	24900.00
+mm25shroo1oy81pds	12906	24	28900.00
+mm25shroo1oy81pds	12933	24	34900.00
+mm25shroo1oy81pds	12889	24	28900.00
+mm25shroo1oy81pds	12708	24	24900.00
+mm25shroo1oy81pds	12919	24	25900.00
+mm25shroo1oy81pds	12951	24	27900.00
+mm25shroo1oy81pds	12937	24	14900.00
+mm25shroo1oy81pds	12862	24	23900.00
+mm25shroo1oy81pds	12911	24	18900.00
+mm25shroo1oy81pds	12882	24	23900.00
+mm25shroo1oy81pds	12952	24	26900.00
+mm25shroo1oy81pds	12913	24	29900.00
+mm25shroo1oy81pds	12880	24	24900.00
+mm25shroo1oy81pds	12883	24	24900.00
+mm25shroo1oy81pds	12885	24	23900.00
+mm25shroo1oy81pds	12892	24	24900.00
+mm25shroo1oy81pds	12704	24	29900.00
+mm25shroo1oy81pds	12888	24	19900.00
+mm25shroo1oy81pds	12939	24	20900.00
+mm25shroo1oy81pds	12366	24	19900.00
+mm25shroo1oy81pds	12893	24	24900.00
+mm25shroo1oy81pds	12921	24	24900.00
+mm25shroo1oy81pds	12860	24	16900.00
+mm25shroo1oy81pds	12754	24	16900.00
+mm25shroo1oy81pds	12000	24	49900.00
+mm25shroo1oy81pds	12771	24	16900.00
+mm25shroo1oy81pds	12574	24	25900.00
+mm25shroo1oy81pds	12876	24	19900.00
+mm25shroo1oy81pds	12950	24	27900.00
+mm25shroo1oy81pds	12877	24	19900.00
+mm25shroo1oy81pds	12917	24	19900.00
+mm25shroo1oy81pds	12680	24	16900.00
+mm25shroo1oy81pds	12897	24	19900.00
+mm25shroo1oy81pds	12945	24	19900.00
+mm25shroo1oy81pds	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12885	24	23900.00
+mm25zlnrm0l8pxyk3	12884	24	21900.00
+mm25zlnrm0l8pxyk3	12860	24	16900.00
+mm25zlnrm0l8pxyk3	12910	24	22900.00
+mm25zlnrm0l8pxyk3	12782	24	17900.00
+mm25zlnrm0l8pxyk3	12915	24	28900.00
+mm25zlnrm0l8pxyk3	12783	24	17900.00
+mm25zlnrm0l8pxyk3	12921	24	24900.00
+mm25zlnrm0l8pxyk3	12924	24	21900.00
+mm25zlnrm0l8pxyk3	12888	24	19900.00
+mm25zlnrm0l8pxyk3	12939	24	20900.00
+mm25zlnrm0l8pxyk3	12871	24	19900.00
+mm25zlnrm0l8pxyk3	12931	24	29900.00
+mm25zlnrm0l8pxyk3	12950	24	27900.00
+mm25zlnrm0l8pxyk3	12912	24	18900.00
+mm25zlnrm0l8pxyk3	12876	24	19900.00
+mm25zlnrm0l8pxyk3	12917	24	19900.00
+mm25shroo1oy81pds	12920	24	21900.00
+mm25shroo1oy81pds	12934	24	24900.00
+mm25zgt5curej417m	12951	9	27900.00
+mm25zgt5curej417m	12909	9	23900.00
+mm25zgt5curej417m	12926	8	27900.00
+mm25zgt5curej417m	12919	8	25900.00
+mm25zgt5curej417m	12873	8	22900.00
+mm25zgt5curej417m	12937	15	14900.00
+mm25zgt5curej417m	12893	9	24900.00
+mm25zgt5curej417m	12883	9	24900.00
+mm25zgt5curej417m	12924	9	21900.00
+mm25zgt5curej417m	12871	8	19900.00
+mm25zgt5curej417m	12931	8	29900.00
+mm25zgt5curej417m	12920	8	21900.00
+mm25shroo1oy81pds	12943	24	19900.00
+mm25shroo1oy81pds	12898	24	24900.00
+mm25rzt79inviirmd	12923	18	23900.00
+mm25rzt79inviirmd	12882	18	23900.00
+mm25rzt79inviirmd	12909	18	23900.00
+mm25rzt79inviirmd	12872	18	23900.00
+mm261zsok2g1m5dod	12640	8	24900.00
+mm261zsok2g1m5dod	12884	8	21900.00
+mm261zsok2g1m5dod	12783	8	17900.00
+mm261zsok2g1m5dod	12860	8	16900.00
+mm261zsok2g1m5dod	12692	8	21900.00
+mm261zsok2g1m5dod	12918	8	19900.00
+mm261zsok2g1m5dod	12912	8	18900.00
+mm261zsok2g1m5dod	12754	8	16900.00
+mm261zsok2g1m5dod	12907	6	28900.00
+mm261zsok2g1m5dod	12908	6	28900.00
+mm261zsok2g1m5dod	12935	6	35900.00
+mm261zsok2g1m5dod	12744	6	19900.00
+mm261zsok2g1m5dod	12885	8	23900.00
+mm261zsok2g1m5dod	12909	8	23900.00
+mm261zsok2g1m5dod	12914	8	33900.00
+mm261zsok2g1m5dod	12911	8	18900.00
+mm261zsok2g1m5dod	12880	8	24900.00
+mm261zsok2g1m5dod	12937	8	14900.00
+mm25rzt79inviirmd	12911	18	18900.00
+mm25rzt79inviirmd	12919	18	24900.00
+mm25rzt79inviirmd	12926	18	26900.00
+mm25rzt79inviirmd	12835	12	19900.00
+mm25rzt79inviirmd	12831	12	23900.00
+mm25rzt79inviirmd	12836	12	20900.00
+mm25rzt79inviirmd	12855	12	23900.00
+mm25rzt79inviirmd	12129	12	26900.00
+mm25rzt79inviirmd	12841	12	19900.00
+mm25rzt79inviirmd	12834	12	16900.00
+mm25rzt79inviirmd	12825	12	21900.00
+mm25rzt79inviirmd	12818	12	40900.00
+mm25rzt79inviirmd	12821	12	33900.00
+mm25rzt79inviirmd	12840	12	33900.00
+mmpgtfe31h7o4pg3g	13016	54	32000.00
+mmpgtfe31h7o4pg3g	13002	54	42000.00
+mmpgtfe31h7o4pg3g	13015	54	35000.00
+mmph224zawpf1wfbp	12990	6	32400.00
+mm261wafiiiwwshld	12933	12	34900.00
+mm261wafiiiwwshld	12908	12	28900.00
+mm261wafiiiwwshld	12870	12	35900.00
+mm261wafiiiwwshld	12881	12	33900.00
+mm261wafiiiwwshld	12920	12	21900.00
+mm261wafiiiwwshld	12892	12	24900.00
+mm261wafiiiwwshld	12943	12	19900.00
+mm261wafiiiwwshld	12640	12	24900.00
+mm261wafiiiwwshld	12910	12	22900.00
+mm261wafiiiwwshld	12922	12	21900.00
+mm261wafiiiwwshld	12921	12	24900.00
+mm261wafiiiwwshld	12884	12	21900.00
+mm261wafiiiwwshld	12871	12	19900.00
+mm261wafiiiwwshld	12888	12	19900.00
+mm261wafiiiwwshld	12917	12	19900.00
+mm261wafiiiwwshld	12771	12	16900.00
+mm261wafiiiwwshld	12877	12	19900.00
+mm261wafiiiwwshld	12893	12	24900.00
+mm261sicytqircpx5	12698	12	21900.00
+mm261sicytqircpx5	12737	12	22900.00
+mm261sicytqircpx5	12754	12	16900.00
+mm261sicytqircpx5	12876	12	19900.00
+mm261sicytqircpx5	12805	12	19900.00
+mm261sicytqircpx5	12893	12	24900.00
+mm261sicytqircpx5	12931	12	29900.00
+mm261sicytqircpx5	12911	12	18900.00
+mm261sicytqircpx5	12908	12	28900.00
+mm261sicytqircpx5	12933	12	34900.00
+mm261sicytqircpx5	12744	12	19900.00
+mm261sicytqircpx5	12907	12	28900.00
+mm261sicytqircpx5	12935	12	35900.00
+mmph224zawpf1wfbp	13012	6	39400.00
+mmph224zawpf1wfbp	13103	6	45400.00
+mmph224zawpf1wfbp	12964	6	46400.00
+mmph224zawpf1wfbp	12959	6	37400.00
+mmph224zawpf1wfbp	12960	6	39400.00
+mmph224zawpf1wfbp	13076	6	27400.00
+mmph224zawpf1wfbp	13113	6	49400.00
+mmph224zawpf1wfbp	13102	6	29400.00
+mmph224zawpf1wfbp	13016	6	32400.00
+mmph224zawpf1wfbp	13077	6	42400.00
+mmph224zawpf1wfbp	13112	6	37400.00
+mmph224zawpf1wfbp	13002	6	41400.00
+mmph224zawpf1wfbp	13055	6	29400.00
+mmph224zawpf1wfbp	13117	6	23400.00
+mmph224zawpf1wfbp	13116	6	21400.00
+mmph224zawpf1wfbp	13118	6	21400.00
+mmph224zawpf1wfbp	13094	6	21400.00
+mmph224zawpf1wfbp	12709	6	19400.00
+mmph224zawpf1wfbp	13068	6	21400.00
+mmph224zawpf1wfbp	13008	6	33400.00
+mmph224zawpf1wfbp	13036	6	29400.00
+mmph224zawpf1wfbp	13100	6	25400.00
+mmph224zawpf1wfbp	12747	6	31400.00
+mmph224zawpf1wfbp	12783	6	17400.00
+mmph224zawpf1wfbp	13079	6	19400.00
+mmph224zawpf1wfbp	12968	6	44400.00
+mmph224zawpf1wfbp	13014	6	29400.00
+mmph224zawpf1wfbp	13015	6	37400.00
+mmph224zawpf1wfbp	12973	6	42400.00
+mm25zbho4eabh3lh4	12951	4	27900.00
+mm25zbho4eabh3lh4	12909	4	23900.00
+mm25zbho4eabh3lh4	12747	4	31900.00
+mm25zbho4eabh3lh4	12872	6	24900.00
+mm25zbho4eabh3lh4	12926	4	27900.00
+mm25zbho4eabh3lh4	12919	4	25900.00
+mm25zbho4eabh3lh4	12873	4	22900.00
+mm25zbho4eabh3lh4	12923	4	24900.00
+mm25zbho4eabh3lh4	12882	4	23900.00
+mm25zbho4eabh3lh4	12862	4	23900.00
+mm25zbho4eabh3lh4	12952	4	26900.00
+mm25zbho4eabh3lh4	12911	4	18900.00
+mm261ny1d0yfufg6p	12878	6	64900.00
+mm261ny1d0yfufg6p	12868	6	69900.00
+mm261ny1d0yfufg6p	12698	12	21900.00
+mm261ny1d0yfufg6p	12936	12	14900.00
+mm261ny1d0yfufg6p	12917	12	19900.00
+mm261ny1d0yfufg6p	12897	12	19900.00
+mm261ny1d0yfufg6p	12876	12	19900.00
+mm261ny1d0yfufg6p	12945	12	19900.00
+mm261ny1d0yfufg6p	12771	12	16900.00
+mm261ny1d0yfufg6p	12912	12	18900.00
+mm261ny1d0yfufg6p	12877	12	19900.00
+mm261ny1d0yfufg6p	12704	12	29900.00
+mm261ny1d0yfufg6p	12754	12	16900.00
+mm261ny1d0yfufg6p	12865	12	16900.00
+mm261ny1d0yfufg6p	12805	12	19900.00
+mm261ny1d0yfufg6p	12921	12	24900.00
+mm261ny1d0yfufg6p	12924	12	21900.00
+mm261ny1d0yfufg6p	12884	12	21900.00
+mm261ny1d0yfufg6p	12860	12	16900.00
+mm261ny1d0yfufg6p	12871	12	19900.00
+mm261ny1d0yfufg6p	12943	12	19900.00
+mm261ny1d0yfufg6p	12934	12	24900.00
+mm261ny1d0yfufg6p	12920	12	21900.00
+mm261ny1d0yfufg6p	12644	12	24900.00
+mm261ny1d0yfufg6p	12951	12	27900.00
+mm261ny1d0yfufg6p	12882	12	23900.00
+mm261ny1d0yfufg6p	12880	12	24900.00
+mm261ny1d0yfufg6p	12913	12	29900.00
+mm261ny1d0yfufg6p	12911	12	18900.00
+mm261ny1d0yfufg6p	12883	12	24900.00
+mm261ny1d0yfufg6p	12909	12	23900.00
+mm261ny1d0yfufg6p	12875	12	19900.00
+mm261ny1d0yfufg6p	12937	12	14900.00
+mm261ny1d0yfufg6p	12879	12	38900.00
+mm261ny1d0yfufg6p	12870	12	35900.00
+mm261ny1d0yfufg6p	12906	12	28900.00
+mm261ny1d0yfufg6p	12744	12	19900.00
+mm261ny1d0yfufg6p	12907	12	28900.00
+mm261ny1d0yfufg6p	12881	12	33900.00
+mm261ny1d0yfufg6p	12905	12	34900.00
+mm261ny1d0yfufg6p	12908	12	28900.00
+mm25zbho4eabh3lh4	12937	4	14900.00
+mm25zbho4eabh3lh4	12941	4	20900.00
+mm25zbho4eabh3lh4	12885	4	23900.00
+mm25zbho4eabh3lh4	12883	4	24900.00
+mm25zbho4eabh3lh4	12877	4	19900.00
+mm25zbho4eabh3lh4	12898	4	24900.00
+mm25zbho4eabh3lh4	12920	4	21900.00
+mm25zbho4eabh3lh4	12945	4	19900.00
+mm25zbho4eabh3lh4	12934	4	24900.00
+mm25zbho4eabh3lh4	12936	4	14900.00
+mm25zbho4eabh3lh4	12897	4	19900.00
+mm25zbho4eabh3lh4	12870	4	35900.00
+mm25zbho4eabh3lh4	12805	4	19900.00
+mm25zbho4eabh3lh4	12892	4	24900.00
+mm25zbho4eabh3lh4	12931	4	29900.00
+mm25zbho4eabh3lh4	12924	4	21900.00
+mm25zbho4eabh3lh4	12860	4	16900.00
+mm25zbho4eabh3lh4	12884	4	21900.00
+mm25zbho4eabh3lh4	12640	4	24900.00
+mm25zbho4eabh3lh4	12921	4	24900.00
+mm25zbho4eabh3lh4	12692	4	21900.00
+mm25zbho4eabh3lh4	12871	4	19900.00
+mm25zbho4eabh3lh4	12783	4	17900.00
+mm25z6898ea5cmw0f	12898	6	24900.00
+mm25z6898ea5cmw0f	12920	6	21900.00
+mm25z6898ea5cmw0f	12945	6	19900.00
+mm25z6898ea5cmw0f	12934	6	24900.00
+mm25z6898ea5cmw0f	12805	6	19900.00
+mm25z6898ea5cmw0f	12907	6	28900.00
+mm25z6898ea5cmw0f	12744	6	19900.00
+mm25z6898ea5cmw0f	12906	6	28900.00
+mm25z6898ea5cmw0f	12935	6	35900.00
+mm25z6898ea5cmw0f	12908	6	28900.00
+mm25z6898ea5cmw0f	12881	6	33900.00
+mm25z6898ea5cmw0f	12924	6	21900.00
+mm25z6898ea5cmw0f	12937	6	14900.00
+mm25z6898ea5cmw0f	12913	6	29900.00
+mm25z6898ea5cmw0f	12911	6	18900.00
+mm25z6898ea5cmw0f	12952	6	26900.00
+mm25z6898ea5cmw0f	12919	6	25900.00
+mm25z6898ea5cmw0f	12926	6	27900.00
+mm25z6898ea5cmw0f	12872	6	24900.00
+mmpgxr0cmqouvxsuz	13023	24	34900.00
+mmpgxr0cmqouvxsuz	12959	24	37900.00
+mmpgxr0cmqouvxsuz	13002	24	41900.00
+mmpgxr0cmqouvxsuz	12498	24	21900.00
+mmpgxr0cmqouvxsuz	13067	24	39900.00
+mmpgxr0cmqouvxsuz	12617	36	35900.00
+mmpgxr0cmqouvxsuz	12975	36	34900.00
+mmpgxr0cmqouvxsuz	12581	36	32900.00
+mmpgxr0cmqouvxsuz	13028	36	35900.00
+mmpgxr0cmqouvxsuz	12984	36	24900.00
+mmpgxr0cmqouvxsuz	13029	36	32900.00
+mmpgxr0cmqouvxsuz	12986	36	34900.00
+mmpgxr0cmqouvxsuz	13039	24	30900.00
+mmpgxr0cmqouvxsuz	13055	24	29900.00
+mmpgxr0cmqouvxsuz	13100	24	25900.00
+mmpgxr0cmqouvxsuz	13033	24	29900.00
+mmpgxr0cmqouvxsuz	13010	24	29900.00
+mmpgxr0cmqouvxsuz	12909	24	23900.00
+mmpgxr0cmqouvxsuz	13116	24	21900.00
+mmpgxr0cmqouvxsuz	12980	24	20900.00
+mmpgxr0cmqouvxsuz	13110	24	19900.00
+mmpgxr0cmqouvxsuz	13083	24	19900.00
+mmpgxr0cmqouvxsuz	13079	24	19900.00
+mmpgxr0cmqouvxsuz	13091	24	18900.00
+mmpgxr0cmqouvxsuz	13121	24	22900.00
+mmt9f0zv75r8qf1g9	13098	6	22900.00
+mmt9f0zv75r8qf1g9	13013	6	23900.00
+mmt9f0zv75r8qf1g9	12609	6	24900.00
+mmt9f0zv75r8qf1g9	13029	3	32900.00
+mmt9f0zv75r8qf1g9	12905	6	34900.00
+mmt9f0zv75r8qf1g9	12881	6	33900.00
+mmt9f0zv75r8qf1g9	12907	6	28900.00
+mmt9f0zv75r8qf1g9	12986	6	34900.00
+mmt9f0zv75r8qf1g9	12908	6	28900.00
+mmt9gf24g1f0g2km0	12692	21	21900.00
+mmt9gf24g1f0g2km0	13029	9	32900.00
+mmt9gf24g1f0g2km0	12617	15	35900.00
+mmt9gf24g1f0g2km0	12907	15	28900.00
+mmt9gf24g1f0g2km0	13047	8	25900.00
+mmt9gf24g1f0g2km0	12579	12	39900.00
+mmt9gf24g1f0g2km0	13077	8	42900.00
+mmt9gf24g1f0g2km0	13094	24	21900.00
+mmt9gf24g1f0g2km0	12931	8	29900.00
+mmt9gf24g1f0g2km0	12971	10	36900.00
+mmt9gf24g1f0g2km0	13116	15	21900.00
+mmt9gf24g1f0g2km0	13128	30	23900.00
+mmt9gf24g1f0g2km0	12747	12	31900.00
+mmt9gf24g1f0g2km0	13068	12	21900.00
+mmt9gf24g1f0g2km0	13110	12	19900.00
+mmt9gf24g1f0g2km0	12943	9	19900.00
+mmt9gf24g1f0g2km0	13120	15	17900.00
+mmt9gf24g1f0g2km0	13081	27	19900.00
+mmt9gf24g1f0g2km0	12877	18	19900.00
+mmt9gf24g1f0g2km0	12771	15	16900.00
+mmt9gf24g1f0g2km0	13122	6	18900.00
+mmt9gf24g1f0g2km0	12754	21	16900.00
+mmt9gf24g1f0g2km0	13079	15	19900.00
+mmt9gf24g1f0g2km0	12909	18	19900.00
+mmt9gf24g1f0g2km0	12972	6	48900.00
+mmt9gf24g1f0g2km0	13067	12	39900.00
+mmt9hjj6xd4mpipig	13122	18	18900.00
+mmt9hjj6xd4mpipig	13078	18	22900.00
+mmt9hjj6xd4mpipig	13096	18	24900.00
+mmt9hjj6xd4mpipig	13047	18	27900.00
+mmt9hjj6xd4mpipig	12965	18	27900.00
+mmt9hjj6xd4mpipig	13119	18	19900.00
+mmt9hjj6xd4mpipig	13013	18	23900.00
+mmt9hjj6xd4mpipig	13036	18	29900.00
+mmt9hjj6xd4mpipig	13033	18	29900.00
+mmt9hjj6xd4mpipig	13010	18	29900.00
+mmt9hjj6xd4mpipig	13100	18	25900.00
+mmt9hjj6xd4mpipig	13116	18	21900.00
+mmt9hjj6xd4mpipig	13117	18	24900.00
+mmt9hjj6xd4mpipig	13091	18	18900.00
+mmt9hjj6xd4mpipig	13121	18	22900.00
+mmt9hjj6xd4mpipig	13110	18	19900.00
+mmt9hjj6xd4mpipig	13129	18	22900.00
+mmt9hjj6xd4mpipig	13079	18	19900.00
+mmt9hjj6xd4mpipig	12884	18	21900.00
+mmt9hjj6xd4mpipig	13094	18	21900.00
+mmt9hjj6xd4mpipig	12895	18	30900.00
+mmt9ijwvjz21wl7nq	13074	18	19900.00
+mmt9ijwvjz21wl7nq	13091	18	19900.00
+mmt9ijwvjz21wl7nq	13121	18	19900.00
+mmt9ijwvjz21wl7nq	13110	18	19900.00
+mmt9ijwvjz21wl7nq	13129	18	19900.00
+mmt9ijwvjz21wl7nq	13079	18	19900.00
+mmt9ijwvjz21wl7nq	12884	18	19900.00
+mmt9ijwvjz21wl7nq	13094	18	19900.00
+mmt9ijwvjz21wl7nq	13068	18	21900.00
+mmt9ijwvjz21wl7nq	13116	18	21900.00
+mmt9ijwvjz21wl7nq	13117	18	21900.00
+mmt9ijwvjz21wl7nq	13100	18	24900.00
+mmt9ijwvjz21wl7nq	13011	18	27900.00
+mmt9ijwvjz21wl7nq	13036	18	27900.00
+mmt9ijwvjz21wl7nq	13033	18	27900.00
+mmt9ijwvjz21wl7nq	13010	18	27900.00
+mmt9ijwvjz21wl7nq	13013	18	21900.00
+mmt9ijwvjz21wl7nq	13004	18	19900.00
+mmt9ijwvjz21wl7nq	12943	18	19900.00
+mmt9ijwvjz21wl7nq	13119	18	19900.00
+mmt9ijwvjz21wl7nq	13131	18	19900.00
+mmt9ijwvjz21wl7nq	13047	18	27900.00
+mmt9ijwvjz21wl7nq	12965	18	27900.00
+mmt9ijwvjz21wl7nq	13041	18	29900.00
+mmt9ijwvjz21wl7nq	13028	18	34900.00
+mmt9ijwvjz21wl7nq	13027	18	33900.00
+mmt9ijwvjz21wl7nq	12974	18	34900.00
+mmt9ka1qt9uumiqoj	13002	8	41900.00
+mmt9ka1qt9uumiqoj	12402	8	39900.00
+mmt9ka1qt9uumiqoj	13102	8	29900.00
+mmt9ka1qt9uumiqoj	13113	8	49900.00
+mmt9ka1qt9uumiqoj	12692	12	22900.00
+mmt9ka1qt9uumiqoj	12869	8	31900.00
+mmt9ka1qt9uumiqoj	13104	8	39900.00
+mmt9ka1qt9uumiqoj	12969	12	21900.00
+mmt9ka1qt9uumiqoj	12704	8	29900.00
+mmt9ka1qt9uumiqoj	12971	8	36900.00
+mmt9ka1qt9uumiqoj	13039	8	30900.00
+mmt9ka1qt9uumiqoj	12744	12	19900.00
+mmt9ka1qt9uumiqoj	12986	8	34900.00
+mmt9ka1qt9uumiqoj	13094	12	21900.00
+mmt9ka1qt9uumiqoj	13117	12	23900.00
+mmt9ka1qt9uumiqoj	12965	8	27900.00
+mmt9ka1qt9uumiqoj	13040	8	32900.00
+mmt9ka1qt9uumiqoj	13048	8	25900.00
+mmt9ka1qt9uumiqoj	13013	12	23900.00
+mmt9ka1qt9uumiqoj	12623	8	29900.00
+mmt9ka1qt9uumiqoj	12909	12	19900.00
+mmt9ka1qt9uumiqoj	12877	12	19900.00
+mmt9ka1qt9uumiqoj	12771	12	16900.00
+mmt9ka1qt9uumiqoj	13120	12	17900.00
+mmt9ka1qt9uumiqoj	13110	12	19900.00
+mmt9ka1qt9uumiqoj	12943	12	19900.00
+mmt9ka1qt9uumiqoj	13131	12	19900.00
+mmt9ka1qt9uumiqoj	13091	12	18900.00
+mmt9nlw0bj2eouw27	13103	5	45900.00
+mmt9nlw0bj2eouw27	12972	5	48900.00
+mmt9nlw0bj2eouw27	12966	5	43900.00
+mmt9nlw0bj2eouw27	13104	5	39900.00
+mmt9nlw0bj2eouw27	12964	5	46900.00
+mmt9nlw0bj2eouw27	12412	5	34900.00
+mmt9nlw0bj2eouw27	13002	5	41900.00
+mmt9nlw0bj2eouw27	13065	5	32900.00
+mmt9nlw0bj2eouw27	13076	5	27900.00
+mmt9nlw0bj2eouw27	13064	5	32900.00
+mmt9nlw0bj2eouw27	13102	5	29900.00
+mmt9nlw0bj2eouw27	13077	5	42900.00
+mmt9nlw0bj2eouw27	12990	5	32900.00
+mmt9nlw0bj2eouw27	12963	5	35900.00
+mmt9nlw0bj2eouw27	13015	5	37900.00
+mmt9nlw0bj2eouw27	13115	5	49900.00
+mmt9nlw0bj2eouw27	13035	5	38900.00
+mmt9nlw0bj2eouw27	13036	5	29900.00
+mmt9nlw0bj2eouw27	13117	5	24900.00
+mmt9nlw0bj2eouw27	13116	5	21900.00
+mmt9nlw0bj2eouw27	13094	5	21900.00
+mmt9nlw0bj2eouw27	13129	5	22900.00
+mmt9nlw0bj2eouw27	13110	5	19900.00
+mmt9nlw0bj2eouw27	13078	5	22900.00
+mmt9nlw0bj2eouw27	13119	5	19900.00
+mmt9nlw0bj2eouw27	13073	5	15900.00
+mmt9nlw0bj2eouw27	13131	5	19900.00
+mmt9nlw0bj2eouw27	13041	5	29900.00
+mmt9nlw0bj2eouw27	13047	5	27900.00
+mmt9nlw0bj2eouw27	13120	5	18900.00
+mmt9nlw0bj2eouw27	13042	5	29900.00
+mmt9nlw0bj2eouw27	12969	5	21900.00
+mmt9nlw0bj2eouw27	13084	5	29900.00
+mmt9nlw0bj2eouw27	13043	5	34900.00
+mmt9nlw0bj2eouw27	12895	5	30900.00
+mmt9nlw0bj2eouw27	12967	5	24900.00
+mmt9nlw0bj2eouw27	13001	5	32900.00
+mmt9nlw0bj2eouw27	13040	5	32900.00
+mmt9nlw0bj2eouw27	12709	5	19900.00
+mmt9nlw0bj2eouw27	12976	5	37900.00
+mmt9nlw0bj2eouw27	12987	5	27900.00
+mmt9nlw0bj2eouw27	12975	5	34900.00
+mmt9nlw0bj2eouw27	12986	5	34900.00
+mmt9nlw0bj2eouw27	12965	5	34900.00
+mmt9nlw0bj2eouw27	12984	5	24900.00
+mmt9nlw0bj2eouw27	12744	5	19900.00
+mmt9nlw0bj2eouw27	13029	5	32900.00
+mmt9omzsn8q7wdcw0	13014	24	30000.00
+mmt9omzsn8q7wdcw0	12579	24	38000.00
+mmt9omzsn8q7wdcw0	13112	24	36000.00
+mmt9omzsn8q7wdcw0	12976	24	36000.00
+mmt9omzsn8q7wdcw0	12975	24	33000.00
+mmt9omzsn8q7wdcw0	13048	24	23000.00
+mmt9omzsn8q7wdcw0	13039	24	29000.00
+mmt9omzsn8q7wdcw0	12973	24	41000.00
+mmt9omzsn8q7wdcw0	12970	24	34900.00
+mmt9omzsn8q7wdcw0	12712	24	26900.00
+mmt9omzsn8q7wdcw0	13057	24	23000.00
+mmt9omzsn8q7wdcw0	13042	24	28000.00
+mmt9omzsn8q7wdcw0	13047	24	26000.00
+mmt9omzsn8q7wdcw0	12965	24	26000.00
+mmt9omzsn8q7wdcw0	12971	24	35000.00
+mmt9omzsn8q7wdcw0	12969	24	21900.00
+mmt9omzsn8q7wdcw0	12895	24	29900.00
+mmt9omzsn8q7wdcw0	13040	24	31000.00
+mmt9omzsn8q7wdcw0	13078	24	21000.00
+mmt9omzsn8q7wdcw0	13121	24	21000.00
+mmt9omzsn8q7wdcw0	13074	24	18000.00
+mmt9omzsn8q7wdcw0	13094	24	20000.00
+mmt9omzsn8q7wdcw0	13091	24	18000.00
+mmt9omzsn8q7wdcw0	13129	24	21000.00
+mmt9omzsn8q7wdcw0	13083	24	19000.00
+mmt9omzsn8q7wdcw0	13118	24	20000.00
+mmt9omzsn8q7wdcw0	13131	24	19000.00
+mmt9omzsn8q7wdcw0	13120	24	17000.00
+mmt9omzsn8q7wdcw0	12777	24	13900.00
+mmt9omzsn8q7wdcw0	13013	24	22000.00
+mmt9omzsn8q7wdcw0	13116	24	20000.00
+mmt9omzsn8q7wdcw0	12909	24	22000.00
+mmt9omzsn8q7wdcw0	13077	24	41000.00
+mmt9omzsn8q7wdcw0	12963	24	34000.00
+mmt9omzsn8q7wdcw0	13115	24	48000.00
+mmt9pnknmcc4u2twt	12964	6	46900.00
+mmt9pnknmcc4u2twt	13002	6	41900.00
+mmt9pnknmcc4u2twt	13115	6	49900.00
+mmt9pnknmcc4u2twt	13112	6	37900.00
+mmt9pnknmcc4u2twt	13036	6	29900.00
+mmt9pnknmcc4u2twt	12980	6	22900.00
+mmt9pnknmcc4u2twt	13067	6	33900.00
+mmt9pnknmcc4u2twt	13117	6	24900.00
+mmt9pnknmcc4u2twt	13033	6	29900.00
+mmt9pnknmcc4u2twt	13128	6	23900.00
+mmt9pnknmcc4u2twt	12909	6	19900.00
+mmt9pnknmcc4u2twt	13095	6	17900.00
+mmt9pnknmcc4u2twt	13094	6	21900.00
+mmt9pnknmcc4u2twt	13042	6	29900.00
+mmt9pnknmcc4u2twt	12973	6	42900.00
+mmt9pnknmcc4u2twt	13043	6	34900.00
+mmt9pnknmcc4u2twt	13254	6	34900.00
+mmt9pnknmcc4u2twt	13058	6	29900.00
+mmt9pnknmcc4u2twt	13055	6	29900.00
+mmt9pnknmcc4u2twt	12965	6	27900.00
+mmt9pnknmcc4u2twt	12976	6	37900.00
+mmt9pnknmcc4u2twt	12987	6	27900.00
+mmt9pnknmcc4u2twt	12975	6	34900.00
+mmt9pnknmcc4u2twt	13028	6	35900.00
+mmt9pnknmcc4u2twt	12744	6	19900.00
+mmt9pnknmcc4u2twt	12935	6	35900.00
+mmt9pnknmcc4u2twt	12986	6	34900.00
+mmt9qjskej5ms6x1x	12895	18	29900.00
+mmt9qjskej5ms6x1x	12965	18	26900.00
+mmt9qjskej5ms6x1x	13048	18	23900.00
+mmt9qjskej5ms6x1x	12967	18	23900.00
+mmt9qjskej5ms6x1x	13045	18	24900.00
+mmt9qjskej5ms6x1x	13096	18	23900.00
+mmt9qjskej5ms6x1x	12987	12	26900.00
+mmt9qjskej5ms6x1x	12744	18	18900.00
+mmt9qjskej5ms6x1x	12984	18	24900.00
+mmt9qjskej5ms6x1x	12907	18	28900.00
+mmt9qjskej5ms6x1x	12877	18	18900.00
+mmt9qjskej5ms6x1x	13097	18	23900.00
+mmt9qjskej5ms6x1x	12920	18	20900.00
+mmt9qjskej5ms6x1x	13013	18	22900.00
+mmt9qjskej5ms6x1x	12609	18	23900.00
+mmt9qjskej5ms6x1x	12888	18	18900.00
+mmt9qjskej5ms6x1x	13094	18	20900.00
+mmt9qjskej5ms6x1x	13083	18	18900.00
+mmt9qjskej5ms6x1x	13129	18	21900.00
+mmt9qjskej5ms6x1x	12909	12	19900.00
+mmt9qjskej5ms6x1x	13068	12	21900.00
+mmt9qjskej5ms6x1x	13116	12	21900.00
+mmt9qjskej5ms6x1x	13128	12	22900.00
+mmt9qjskej5ms6x1x	13033	12	28900.00
+mmt9qjskej5ms6x1x	13014	12	31900.00
+mmt9qjskej5ms6x1x	12579	12	39900.00
+mmt9qjskej5ms6x1x	13104	12	35900.00
+mmt9qjskej5ms6x1x	12972	12	46900.00
+mmt9qjskej5ms6x1x	12869	12	31900.00
+mmt9qjskej5ms6x1x	13112	12	36900.00
+mmt9qjskej5ms6x1x	12990	12	37900.00
+mmt9r6b2q007ajtnt	13102	6	29900.00
+mmt9r6b2q007ajtnt	12959	6	37900.00
+mmt9r6b2q007ajtnt	13023	6	34900.00
+mmt9r6b2q007ajtnt	13077	4	42900.00
+mmt9r6b2q007ajtnt	13113	4	49900.00
+mmt9r6b2q007ajtnt	13115	4	49900.00
+mmt9r6b2q007ajtnt	13014	4	29900.00
+mmt9r6b2q007ajtnt	12964	4	46900.00
+mmt9r6b2q007ajtnt	12966	4	43900.00
+mmt9r6b2q007ajtnt	13033	4	29900.00
+mmt9r6b2q007ajtnt	13100	4	25900.00
+mmt9r6b2q007ajtnt	12909	6	19900.00
+mmt9r6b2q007ajtnt	12671	4	29900.00
+mmt9r6b2q007ajtnt	13040	4	32900.00
+mmt9r6b2q007ajtnt	12895	4	30900.00
+mmt9r6b2q007ajtnt	12609	4	24900.00
+mmt9r6b2q007ajtnt	12965	4	27900.00
+mmt9r6b2q007ajtnt	13058	4	29900.00
+mmt9r6b2q007ajtnt	12973	4	42900.00
+mmt9r6b2q007ajtnt	13042	4	29900.00
+mmt9r6b2q007ajtnt	13013	4	23900.00
+mmt9r6b2q007ajtnt	13097	4	24900.00
+mmt9s8xtkyhxxqxvt	13077	12	41900.00
+mmt9s8xtkyhxxqxvt	13076	12	26900.00
+mmt9s8xtkyhxxqxvt	12963	12	34900.00
+mmt9s8xtkyhxxqxvt	12962	12	43900.00
+mmt9s8xtkyhxxqxvt	13113	12	48900.00
+mmt9s8xtkyhxxqxvt	13065	12	31900.00
+mmt9s8xtkyhxxqxvt	13120	12	17900.00
+mmt9s8xtkyhxxqxvt	13119	12	18900.00
+mmt9s8xtkyhxxqxvt	12964	12	45900.00
+mmt9s8xtkyhxxqxvt	13055	12	28900.00
+mmt9s8xtkyhxxqxvt	13046	12	26900.00
+mmt9s8xtkyhxxqxvt	12931	12	28900.00
+mmt9s8xtkyhxxqxvt	13001	12	31900.00
+mmt9s8xtkyhxxqxvt	13028	12	34900.00
+mmt9s8xtkyhxxqxvt	13029	12	31900.00
+mmt9s8xtkyhxxqxvt	12972	12	46900.00
+mmt9s8xtkyhxxqxvt	13107	12	28900.00
+mmt9s8xtkyhxxqxvt	13014	12	31900.00
+mmt9s8xtkyhxxqxvt	13013	12	22900.00
+mmt9s8xtkyhxxqxvt	12967	12	23900.00
+mmt9s8xtkyhxxqxvt	13048	12	23900.00
+mmt9s8xtkyhxxqxvt	12895	12	29900.00
+mmt9s8xtkyhxxqxvt	12609	12	23900.00
+mmt9s8xtkyhxxqxvt	13045	12	24900.00
+mmt9s8xtkyhxxqxvt	12908	12	28900.00
+mmt9s8xtkyhxxqxvt	12984	12	24900.00
+mmt9s8xtkyhxxqxvt	12744	12	18900.00
+mmt9s8xtkyhxxqxvt	12987	12	26900.00
+mmt9tei8ytk1h00vz	13077	9	41900.00
+mmt9tei8ytk1h00vz	13076	6	26900.00
+mmt9tei8ytk1h00vz	12963	9	34900.00
+mmt9tei8ytk1h00vz	12962	9	43900.00
+mmt9tei8ytk1h00vz	13113	9	48900.00
+mmt9tei8ytk1h00vz	13065	9	31900.00
+mmt9tei8ytk1h00vz	12964	9	45900.00
+mmt9tei8ytk1h00vz	12972	9	46900.00
+mmt9tei8ytk1h00vz	13107	9	28900.00
+mmt9tei8ytk1h00vz	13014	9	31900.00
+mmt9tei8ytk1h00vz	13119	12	18900.00
+mmt9tei8ytk1h00vz	13120	12	17900.00
+mmt9tei8ytk1h00vz	13001	9	31900.00
+mmt9tei8ytk1h00vz	13013	9	22900.00
+mmt9tei8ytk1h00vz	12967	9	23900.00
+mmt9tei8ytk1h00vz	13048	9	23900.00
+mmt9tei8ytk1h00vz	12895	9	29900.00
+mmt9tei8ytk1h00vz	12609	9	23900.00
+mmt9tei8ytk1h00vz	13045	9	24900.00
+mmt9tei8ytk1h00vz	13046	9	26900.00
+mmt9tei8ytk1h00vz	12931	9	28900.00
+mmt9tei8ytk1h00vz	13055	6	28900.00
+mmt9tei8ytk1h00vz	12908	9	28900.00
+mmt9tei8ytk1h00vz	12984	9	24900.00
+mmt9tei8ytk1h00vz	12744	9	18900.00
+mmt9tei8ytk1h00vz	13028	9	34900.00
+mmt9tei8ytk1h00vz	13029	9	31900.00
+mmt9tei8ytk1h00vz	12987	9	26900.00
+mmt9ud7lqklo7j0pc	12964	6	45900.00
+mmt9ud7lqklo7j0pc	13055	6	29900.00
+mmt9ud7lqklo7j0pc	13254	6	34900.00
+mmt9ud7lqklo7j0pc	13058	6	29900.00
+mmt9ud7lqklo7j0pc	13078	6	22900.00
+mmt9ud7lqklo7j0pc	13129	6	22900.00
+mmt9ud7lqklo7j0pc	13094	6	21900.00
+mmt9ud7lqklo7j0pc	13067	6	33900.00
+mmt9ud7lqklo7j0pc	12980	6	22900.00
+mmt9ud7lqklo7j0pc	12909	6	19900.00
+mmt9ud7lqklo7j0pc	13116	6	21900.00
+mmt9ud7lqklo7j0pc	13013	6	23900.00
+mmt9ud7lqklo7j0pc	12920	6	21900.00
+mmt9ud7lqklo7j0pc	12744	6	19900.00
+mmun9a0vcpsv8yiiw	12959	6	36900.00
+mmun9a0vcpsv8yiiw	13002	6	40900.00
+mmun9a0vcpsv8yiiw	13115	6	48900.00
+mmun9a0vcpsv8yiiw	13104	6	35900.00
+mmun9a0vcpsv8yiiw	13103	6	39900.00
+mmun9a0vcpsv8yiiw	12972	6	47900.00
+mmun9a0vcpsv8yiiw	12964	6	45900.00
+mmun9a0vcpsv8yiiw	13036	6	28900.00
+mmun9a0vcpsv8yiiw	13011	6	28900.00
+mmun9a0vcpsv8yiiw	13068	6	20900.00
+mmun9a0vcpsv8yiiw	13040	6	31900.00
+mmun9a0vcpsv8yiiw	12973	6	41900.00
+mmun9a0vcpsv8yiiw	13042	6	28900.00
+mmun9a0vcpsv8yiiw	12965	6	26900.00
+mmun9a0vcpsv8yiiw	12671	6	23900.00
+mmun9a0vcpsv8yiiw	13003	6	31900.00
+mmun9a0vcpsv8yiiw	13094	6	20900.00
+mmun9a0vcpsv8yiiw	13120	6	18900.00
+mmun9a0vcpsv8yiiw	13041	6	28900.00
+mmun9a0vcpsv8yiiw	12693	6	24900.00
+mmun9a0vcpsv8yiiw	12943	6	18900.00
+mmun9a0vcpsv8yiiw	12905	6	33900.00
+mmun9a0vcpsv8yiiw	12881	6	32900.00
+mmun9a0vcpsv8yiiw	12935	6	34900.00
+mmun9a0vcpsv8yiiw	12907	6	28900.00
+mmun9a0vcpsv8yiiw	12744	6	19900.00
+mmuz2vh288k4e59ve	13041	12	29900.00
+mmuz2vh288k4e59ve	13001	12	32900.00
+mmuz2vh288k4e59ve	13107	12	29900.00
+mmuz2vh288k4e59ve	12972	12	48900.00
+mmuz2vh288k4e59ve	13002	24	41900.00
+mmuz2vh288k4e59ve	12652	24	29900.00
+mmuz2vh288k4e59ve	12579	24	39900.00
+mmuz2vh288k4e59ve	12968	24	44900.00
+mmuz2vh288k4e59ve	13014	24	29900.00
+mmuz2vh288k4e59ve	13068	24	21900.00
+mmuz2vh288k4e59ve	13011	24	29900.00
+mmuz2vh288k4e59ve	13036	24	29900.00
+mmuz2vh288k4e59ve	13086	24	24900.00
+mmuz2vh288k4e59ve	13116	24	21900.00
+mmuz2vh288k4e59ve	13120	24	17900.00
+mmuz2vh288k4e59ve	13029	24	32900.00
+mmuz2vh288k4e59ve	12907	24	28900.00
+mmuz2vh288k4e59ve	12986	24	34900.00
+mmuz2vh288k4e59ve	12744	24	19900.00
+mmuz2vh288k4e59ve	12984	24	24900.00
+mmuz2vh288k4e59ve	12881	24	33900.00
+mmuz2vh288k4e59ve	12905	24	34900.00
+mmuz2vh288k4e59ve	12908	24	28900.00
+mmuz2vh288k4e59ve	12935	24	35900.00
+mmuz2vh288k4e59ve	12987	24	27900.00
+mmuz2vh288k4e59ve	13042	24	29900.00
+mmuz2vh288k4e59ve	13003	24	32900.00
+mmuz2vh288k4e59ve	12965	24	27900.00
+mmuz2vh288k4e59ve	13047	24	25900.00
+mmuz2vh288k4e59ve	12971	24	36900.00
+mmuz2vh288k4e59ve	13040	24	32900.00
+mmuz2vh288k4e59ve	12712	24	25900.00
+mmuz2vh288k4e59ve	13098	24	22900.00
+mmuz2vh288k4e59ve	13129	24	22900.00
+mmuz2vh288k4e59ve	13122	24	18900.00
+mmuz2vh288k4e59ve	12963	24	35900.00
+mmuz2vh288k4e59ve	13015	24	37900.00
+mmuz2vh288k4e59ve	13023	24	34900.00
+mmuz2vh288k4e59ve	13012	24	39900.00
+mmuz2vh288k4e59ve	13016	24	32900.00
+mmuz2vh288k4e59ve	12990	24	32900.00
+mmuz2vh288k4e59ve	12869	24	31900.00
+mmuz2vh288k4e59ve	13115	24	49900.00
+mmuz2vh288k4e59ve	13102	36	29900.00
+mmuz2vh288k4e59ve	12960	36	39900.00
+mmuz2vh288k4e59ve	12962	36	44900.00
+mmuz2vh288k4e59ve	13065	36	32900.00
+mmuz2vh288k4e59ve	13104	36	35900.00
+mmuz2vh288k4e59ve	13103	36	39900.00
+mmuz2vh288k4e59ve	13100	36	25900.00
+mmuz2vh288k4e59ve	13117	36	23900.00
+mmuz2vh288k4e59ve	13090	36	21900.00
+mmuz2vh288k4e59ve	13110	36	19900.00
+mmuz2vh288k4e59ve	13074	36	19900.00
+mmuz2vh288k4e59ve	13118	36	21900.00
+mmuz2vh288k4e59ve	13094	36	21900.00
+mmuz2vh288k4e59ve	13079	36	19900.00
+mmuz2vh288k4e59ve	13078	36	22900.00
+mmuz2vh288k4e59ve	13084	36	29900.00
+mmuz2vh288k4e59ve	12969	36	21900.00
+mmuz2vh288k4e59ve	12920	36	21900.00
+mmuz2vh288k4e59ve	13013	36	23900.00
+mmuz2vh288k4e59ve	12877	36	19900.00
+mmuz2vh288k4e59ve	13097	36	24900.00
+mmuz2vh288k4e59ve	12943	36	19900.00
+mmuz3v4f45k1zx63o	12395	18	29900.00
+mmuz3v4f45k1zx63o	12402	18	39900.00
+mmuz3v4f45k1zx63o	13002	18	41900.00
+mmuz3v4f45k1zx63o	13090	18	21900.00
+mmuz3v4f45k1zx63o	13116	18	21900.00
+mmuz3v4f45k1zx63o	12980	18	20900.00
+mmuz3v4f45k1zx63o	13055	18	29900.00
+mmuz3v4f45k1zx63o	13254	18	34900.00
+mmuz3v4f45k1zx63o	13039	18	30900.00
+mmuz3v4f45k1zx63o	13118	18	21900.00
+mmuz3v4f45k1zx63o	13091	18	18900.00
+mmuz3v4f45k1zx63o	13110	18	19900.00
+mmuz3v4f45k1zx63o	13121	18	22900.00
+mmuz3v4f45k1zx63o	12771	18	16900.00
+mmuz3v4f45k1zx63o	12877	18	19900.00
+mmuz3v4f45k1zx63o	13122	18	18900.00
+mmuz3v4f45k1zx63o	12943	18	19900.00
+mmuz3v4f45k1zx63o	12895	18	30900.00
+mmuz3v4f45k1zx63o	13084	18	29900.00
+mm25qs8bzb9btrgvw	12923	18	23900.00
+mm25qs8bzb9btrgvw	12882	18	23900.00
+mm25qs8bzb9btrgvw	12909	18	23900.00
+mm25qs8bzb9btrgvw	12872	18	23900.00
+mm25qs8bzb9btrgvw	12911	18	18900.00
+mm25qs8bzb9btrgvw	12919	18	24900.00
+mm25qs8bzb9btrgvw	12926	18	26900.00
+mm25qs8bzb9btrgvw	12835	12	19900.00
+mm25qs8bzb9btrgvw	12831	12	23900.00
+mm25qs8bzb9btrgvw	12836	12	20900.00
+mm25qs8bzb9btrgvw	12855	12	23900.00
+mm25qs8bzb9btrgvw	12129	12	26900.00
+mm25qs8bzb9btrgvw	12841	12	19900.00
+mm25qs8bzb9btrgvw	12834	12	16900.00
+mm25qs8bzb9btrgvw	12825	12	21900.00
+mm25qs8bzb9btrgvw	12818	12	40900.00
+mm25qs8bzb9btrgvw	12821	12	33900.00
+mm25qs8bzb9btrgvw	12840	12	33900.00
+mmpgxr0cmqouvxsuz	13118	24	21900.00
+mmph0ntzrz5dgbf7e	12990	6	32400.00
+mmph0ntzrz5dgbf7e	13012	6	39400.00
+mmph0ntzrz5dgbf7e	13103	6	45400.00
+mmph0ntzrz5dgbf7e	12964	6	46400.00
+mmph0ntzrz5dgbf7e	12959	6	37400.00
+mmph0ntzrz5dgbf7e	12960	6	39400.00
+mmph0ntzrz5dgbf7e	13076	6	27400.00
+mmph0ntzrz5dgbf7e	13113	6	49400.00
+mmph0ntzrz5dgbf7e	13102	6	29400.00
+mmph0ntzrz5dgbf7e	13016	6	32400.00
+mmph0ntzrz5dgbf7e	13077	6	42400.00
+mmph0ntzrz5dgbf7e	13112	6	37400.00
+mmph0ntzrz5dgbf7e	13002	6	41400.00
+mmph0ntzrz5dgbf7e	13055	6	29400.00
+mn4oik827frvi7oiz	13115	5	49900.00
+mn4oik827frvi7oiz	13113	5	49900.00
+mn4oik827frvi7oiz	12963	5	35900.00
+mn4oik827frvi7oiz	12869	5	31900.00
+mn4oik827frvi7oiz	13033	6	29900.00
+mn4oik827frvi7oiz	13067	6	39900.00
+mn4oik827frvi7oiz	12909	6	19900.00
+mn4oik827frvi7oiz	13100	6	25900.00
+mn4oik827frvi7oiz	13128	6	23900.00
+mn4oik827frvi7oiz	12671	6	24900.00
+mn4oik827frvi7oiz	13122	6	18900.00
+mn4oik827frvi7oiz	12609	6	24900.00
+mn4oik827frvi7oiz	13097	6	24900.00
+mn4oik827frvi7oiz	13120	6	17900.00
+mn4oik827frvi7oiz	13094	6	21900.00
+mn4oik827frvi7oiz	13129	6	22900.00
+mn4oik827frvi7oiz	13091	6	18900.00
+mn4oik827frvi7oiz	13118	6	21900.00
+mn4oik827frvi7oiz	12970	6	34900.00
+mn4oik827frvi7oiz	12907	6	28900.00
+mn4oik827frvi7oiz	12881	6	33900.00
+mn4oik827frvi7oiz	12744	12	19900.00
+mn4oik827frvi7oiz	12975	6	34900.00
+mn4oik827frvi7oiz	13001	6	32900.00
+mn4oik827frvi7oiz	13254	6	34900.00
+mn4oik827frvi7oiz	13096	6	24900.00
+mn4oik827frvi7oiz	13047	6	25900.00
+mn4oik827frvi7oiz	13041	6	29900.00
+mn4oik827frvi7oiz	12971	6	36900.00
+mn4oik827frvi7oiz	13042	6	29900.00
+mn4oik827frvi7oiz	13084	6	29900.00
+mn4oik827frvi7oiz	13040	6	32900.00
+mn4oik827frvi7oiz	12895	6	30900.00
+mn0aqu2v5u1mcja3f	12909	12	19900.00
+mn0aqu2v5u1mcja3f	13095	6	17900.00
+mn0aqu2v5u1mcja3f	13094	6	21900.00
+mn0aqu2v5u1mcja3f	13079	6	19900.00
+mn0aqu2v5u1mcja3f	13118	6	21900.00
+mn0aqu2v5u1mcja3f	12671	6	24900.00
+mmwi1or2y1lmz89j1	13117	36	22900.00
+mmwi1or2y1lmz89j1	13100	36	24900.00
+mmwi1or2y1lmz89j1	13094	36	19900.00
+mmwi1or2y1lmz89j1	13013	36	21900.00
+mmwi1or2y1lmz89j1	12877	36	19900.00
+mmwi1or2y1lmz89j1	13097	36	22900.00
+mmwi1or2y1lmz89j1	12943	36	18900.00
+mmwi1or2y1lmz89j1	12881	36	29900.00
+mmwi1or2y1lmz89j1	12907	36	28900.00
+mmwi22ybmtlp3xmn4	13117	18	22900.00
+mmwi22ybmtlp3xmn4	13100	18	24900.00
+mmwi22ybmtlp3xmn4	13094	18	19900.00
+mmwi22ybmtlp3xmn4	13013	18	21900.00
+mmwi22ybmtlp3xmn4	12877	18	19900.00
+mmwi22ybmtlp3xmn4	13097	18	22900.00
+mmwi22ybmtlp3xmn4	12943	18	18900.00
+mmwi22ybmtlp3xmn4	12881	18	29900.00
+mmwi22ybmtlp3xmn4	12907	18	28900.00
+mmwi2g8gthkv4t76s	13117	18	22900.00
+mmwi2g8gthkv4t76s	13100	18	24900.00
+mmwi2g8gthkv4t76s	13094	18	19900.00
+mmwi2g8gthkv4t76s	13013	18	21900.00
+mmwi2g8gthkv4t76s	12877	18	19900.00
+mmwi2g8gthkv4t76s	13097	18	22900.00
+mmwi2g8gthkv4t76s	12943	18	18900.00
+mmwi2g8gthkv4t76s	12881	18	29900.00
+mmwi2g8gthkv4t76s	12907	18	28900.00
+mmwi2xc7yi4fpkkkm	13117	12	22900.00
+mmwi2xc7yi4fpkkkm	13094	12	19900.00
+mmwi2xc7yi4fpkkkm	13013	12	21900.00
+mmwi2xc7yi4fpkkkm	12877	12	19900.00
+mmwi2xc7yi4fpkkkm	13097	12	22900.00
+mmwi2xc7yi4fpkkkm	12881	12	29900.00
+mmwi2xc7yi4fpkkkm	12907	12	28900.00
+mmph0ntzrz5dgbf7e	13117	6	23400.00
+mmph0ntzrz5dgbf7e	13116	6	21400.00
+mmph0ntzrz5dgbf7e	13118	6	21400.00
+mmph0ntzrz5dgbf7e	13094	6	21400.00
+mmph0ntzrz5dgbf7e	12709	6	19400.00
+mmph0ntzrz5dgbf7e	13068	6	21400.00
+mmph0ntzrz5dgbf7e	13008	6	33400.00
+mmph0ntzrz5dgbf7e	13036	6	29400.00
+mmph0ntzrz5dgbf7e	13100	6	25400.00
+mmph0ntzrz5dgbf7e	12747	6	31400.00
+mmph0ntzrz5dgbf7e	12783	6	17400.00
+mmph0ntzrz5dgbf7e	13079	6	19400.00
+mmph0ntzrz5dgbf7e	12968	6	44400.00
+mmph0ntzrz5dgbf7e	13014	6	29400.00
+mmph0ntzrz5dgbf7e	13015	6	37400.00
+mmph0ntzrz5dgbf7e	12973	6	42400.00
+mmph0ntzrz5dgbf7e	13023	6	34400.00
+mmph0ntzrz5dgbf7e	13254	6	34400.00
+mmph0ntzrz5dgbf7e	12966	6	43400.00
+mmph224zawpf1wfbp	13023	6	34400.00
+mmph224zawpf1wfbp	13254	6	34400.00
+mmph224zawpf1wfbp	12966	6	43400.00
+mmph2vwqtgig74spi	13002	12	41900.00
+mmph2vwqtgig74spi	12960	12	39900.00
+mmt9cg4gbu5dnloup	13066	12	45900.00
+mmt9cg4gbu5dnloup	12990	12	32900.00
+mmt9cg4gbu5dnloup	12960	12	39900.00
+mmt9cg4gbu5dnloup	13103	12	45900.00
+mmt9cg4gbu5dnloup	12972	12	48900.00
+mmt9cg4gbu5dnloup	12747	12	31900.00
+mmt9cg4gbu5dnloup	13033	12	29900.00
+mmt9cg4gbu5dnloup	13010	12	29900.00
+mn0aqu2v5u1mcja3f	12895	5	30900.00
+mn0aqu2v5u1mcja3f	12971	4	36900.00
+mn0aqu2v5u1mcja3f	12931	4	29900.00
+mn0aqu2v5u1mcja3f	13055	6	29900.00
+mn0aqu2v5u1mcja3f	12744	6	19900.00
+mn0aqu2v5u1mcja3f	12986	6	34900.00
+mn0aqu2v5u1mcja3f	12908	6	28900.00
+mmxfucvhrv09phu8u	13104	12	35900.00
+mmxfucvhrv09phu8u	13100	12	25900.00
+mmxfucvhrv09phu8u	13011	12	29900.00
+mmxfucvhrv09phu8u	13036	12	29900.00
+mmxfucvhrv09phu8u	13116	12	21900.00
+mmxfucvhrv09phu8u	13128	12	23900.00
+mmxfucvhrv09phu8u	13117	12	24900.00
+mmxfucvhrv09phu8u	12909	12	19900.00
+mmxfucvhrv09phu8u	13079	12	19900.00
+mmxfucvhrv09phu8u	13118	12	21900.00
+mmxfucvhrv09phu8u	13091	12	18900.00
+mmxfucvhrv09phu8u	13094	12	21900.00
+mmxfucvhrv09phu8u	13013	12	23900.00
+mmxfucvhrv09phu8u	13097	12	24900.00
+mmxfucvhrv09phu8u	12877	12	19900.00
+mmxfucvhrv09phu8u	13058	12	29900.00
+mmxfucvhrv09phu8u	13042	12	29900.00
+mmxfucvhrv09phu8u	13055	12	29900.00
+mmxfucvhrv09phu8u	13003	12	32900.00
+mmxfucvhrv09phu8u	12965	12	27900.00
+mmxfucvhrv09phu8u	12935	12	35900.00
+mmxfucvhrv09phu8u	12975	12	34900.00
+mmxfucvhrv09phu8u	12744	12	19900.00
+mmwi4lq7py8arrw07	13117	36	22900.00
+mmwi4lq7py8arrw07	13100	36	25900.00
+mmwi4lq7py8arrw07	12909	36	19900.00
+mmwi4lq7py8arrw07	13094	36	19900.00
+mmwi4lq7py8arrw07	13013	36	21900.00
+mmwi4lq7py8arrw07	12877	36	19900.00
+mmwi4lq7py8arrw07	13097	36	22900.00
+mmwi4lq7py8arrw07	12943	36	18900.00
+mmwi4lq7py8arrw07	12965	36	25900.00
+mmwi4lq7py8arrw07	12969	36	20900.00
+mmwi4lq7py8arrw07	12973	36	39900.00
+mmwi4lq7py8arrw07	12881	36	29900.00
+mmwi4lq7py8arrw07	12907	36	28900.00
+mmwi4lq7py8arrw07	12744	36	18900.00
+mmwi4lq7py8arrw07	12975	36	32900.00
+mn4nmkwyia7f4pjvh	13115	6	49900.00
+mn4nmkwyia7f4pjvh	12412	6	34900.00
+mn4nmkwyia7f4pjvh	13015	6	35900.00
+mn4nmkwyia7f4pjvh	13077	6	42900.00
+mn4nmkwyia7f4pjvh	12962	6	44900.00
+mn4nmkwyia7f4pjvh	13118	6	21900.00
+mn4nmkwyia7f4pjvh	12909	6	19900.00
+mn4nmkwyia7f4pjvh	13036	6	29900.00
+mn4nmkwyia7f4pjvh	13068	6	21900.00
+mn4nmkwyia7f4pjvh	13116	6	21900.00
+mn4nmkwyia7f4pjvh	13117	6	23900.00
+mn4nmkwyia7f4pjvh	12980	6	20900.00
+mn4nmkwyia7f4pjvh	13067	6	33900.00
+mn4nmkwyia7f4pjvh	13010	6	29900.00
+mn4nmkwyia7f4pjvh	13100	6	25900.00
+mn4nmkwyia7f4pjvh	13128	6	23900.00
+mn4nmkwyia7f4pjvh	13131	6	19900.00
+mn4nmkwyia7f4pjvh	13013	6	23900.00
+mn4nmkwyia7f4pjvh	12671	6	24900.00
+mn4nmkwyia7f4pjvh	12971	6	36900.00
+mn4nmkwyia7f4pjvh	13043	6	34900.00
+mn4nmkwyia7f4pjvh	13055	6	29900.00
+mn4nmkwyia7f4pjvh	12970	6	34900.00
+mn4nmkwyia7f4pjvh	12973	6	42900.00
+mn4nmkwyia7f4pjvh	13040	6	32900.00
+mn4nmkwyia7f4pjvh	13084	6	29900.00
+mn4nmkwyia7f4pjvh	13041	6	29900.00
+mn4nmkwyia7f4pjvh	13045	6	25900.00
+mn4nmkwyia7f4pjvh	12617	9	35900.00
+mn4nmkwyia7f4pjvh	12976	6	37900.00
+mn4nmkwyia7f4pjvh	12987	6	27900.00
+mn4nmkwyia7f4pjvh	12975	9	34900.00
+mn4nmkwyia7f4pjvh	12984	6	24900.00
+mn4nmkwyia7f4pjvh	12935	6	35900.00
+mn4nmkwyia7f4pjvh	12907	6	28900.00
+mn4nmkwyia7f4pjvh	12908	6	28900.00
+mn4nmkwyia7f4pjvh	12986	6	34900.00
+mn4nmkwyia7f4pjvh	12744	6	19900.00
+mn4nmkwyia7f4pjvh	12881	6	33900.00
+mn4nmkwyia7f4pjvh	13028	12	35900.00
+mn4nmkwyia7f4pjvh	13029	6	32900.00
+mn4nmkwyia7f4pjvh	13012	6	39900.00
+mn51a0p5j06q8ekab	12869	12	31900.00
+mn51a0p5j06q8ekab	13101	12	35900.00
+mn51a0p5j06q8ekab	12907	12	28900.00
+mn51a0p5j06q8ekab	12908	12	28900.00
+mn51a0p5j06q8ekab	12895	12	30900.00
+mn51a0p5j06q8ekab	13096	12	24900.00
+mn51a0p5j06q8ekab	13040	12	32900.00
+mn51a0p5j06q8ekab	12971	12	36900.00
+mn51a0p5j06q8ekab	13047	12	25900.00
+mn51a0p5j06q8ekab	12712	12	27900.00
+mn51a0p5j06q8ekab	13118	12	21900.00
+mn51a0p5j06q8ekab	13120	12	17900.00
+mmyzdhro97mizxlhk	13116	18	21900.00
+mmyzdhro97mizxlhk	13117	18	24900.00
+mmyzdhro97mizxlhk	13068	18	21900.00
+mmyzdhro97mizxlhk	13010	18	29900.00
+mmyzdhro97mizxlhk	13067	18	33900.00
+mmyzdhro97mizxlhk	12980	18	22900.00
+mmyzdhro97mizxlhk	13100	18	25900.00
+mmyzdhro97mizxlhk	13011	18	29900.00
+mmyzdhro97mizxlhk	13036	18	29900.00
+mmyzdhro97mizxlhk	12747	18	31900.00
+mmyzdhro97mizxlhk	13033	18	29900.00
+mmyzdhro97mizxlhk	13086	18	24900.00
+mmyzdhro97mizxlhk	13112	12	37900.00
+mmyzdhro97mizxlhk	13113	12	49900.00
+mmyzdhro97mizxlhk	12962	12	44900.00
+mmyzdhro97mizxlhk	13102	18	29900.00
+mmyzdhro97mizxlhk	13077	12	42900.00
+mmyzdhro97mizxlhk	13115	12	49900.00
+mmyzdhro97mizxlhk	12963	12	35900.00
+mmyzdhro97mizxlhk	13016	12	32900.00
+mmyzdhro97mizxlhk	13002	12	41900.00
+mmyzdhro97mizxlhk	12395	18	29900.00
+mmyzdhro97mizxlhk	13029	12	32900.00
+mmyzdhro97mizxlhk	12987	18	27900.00
+mmyzdhro97mizxlhk	13042	18	29900.00
+mmyzdhro97mizxlhk	13055	18	29900.00
+mmyzdhro97mizxlhk	12965	18	27900.00
+mmyzdhro97mizxlhk	13058	18	29900.00
+mmyzdhro97mizxlhk	13084	18	29900.00
+mmyzdhro97mizxlhk	13001	18	32900.00
+mmyzdhro97mizxlhk	13041	18	29900.00
+mmyzdhro97mizxlhk	13254	12	34900.00
+mmyzdhro97mizxlhk	12964	12	46900.00
+mmyzdhro97mizxlhk	12986	12	34900.00
+mmyzdhro97mizxlhk	12972	12	48900.00
+mmyzdhro97mizxlhk	13120	18	18900.00
+mmyzdhro97mizxlhk	13097	18	24900.00
+mmyzdhro97mizxlhk	12920	18	21900.00
+mmyzdhro97mizxlhk	13079	18	19900.00
+mmyzdhro97mizxlhk	13129	18	22900.00
+mmyzdhro97mizxlhk	13094	18	21900.00
+mmyzdhro97mizxlhk	13091	18	18900.00
+mmyzdhro97mizxlhk	13118	18	21900.00
+mmyzdhro97mizxlhk	12692	18	22900.00
+mmyzdhro97mizxlhk	13121	18	22900.00
+mmyzdhro97mizxlhk	12640	18	24900.00
+mmyzdhro97mizxlhk	13083	18	19900.00
+mmyzdhro97mizxlhk	13074	18	19900.00
+mmyzdhro97mizxlhk	13110	18	19900.00
+mmyzdhro97mizxlhk	13095	18	17900.00
+mmyzdhro97mizxlhk	12909	18	19900.00
+gfrmg3vvb	13115	6	49900.00
+gfrmg3vvb	12412	6	34900.00
+gfrmg3vvb	13015	6	35900.00
+gfrmg3vvb	13077	6	42900.00
+gfrmg3vvb	12962	6	44900.00
+gfrmg3vvb	13118	6	21900.00
+gfrmg3vvb	12909	6	19900.00
+gfrmg3vvb	13036	6	29900.00
+gfrmg3vvb	13068	6	21900.00
+gfrmg3vvb	13116	6	21900.00
+gfrmg3vvb	13117	6	23900.00
+gfrmg3vvb	12980	6	20900.00
+gfrmg3vvb	13067	6	39900.00
+gfrmg3vvb	13010	6	29900.00
+gfrmg3vvb	13100	6	25900.00
+gfrmg3vvb	13128	6	23900.00
+gfrmg3vvb	13131	6	19900.00
+gfrmg3vvb	13013	6	23900.00
+gfrmg3vvb	12671	6	24900.00
+gfrmg3vvb	12971	6	36900.00
+gfrmg3vvb	13043	6	34900.00
+gfrmg3vvb	13055	6	29900.00
+gfrmg3vvb	12970	6	34900.00
+gfrmg3vvb	12973	6	42900.00
+gfrmg3vvb	13040	6	32900.00
+gfrmg3vvb	13084	6	29900.00
+gfrmg3vvb	13041	6	29900.00
+gfrmg3vvb	13045	6	25900.00
+gfrmg3vvb	12617	9	35900.00
+gfrmg3vvb	12976	6	37900.00
+gfrmg3vvb	12987	6	27900.00
+gfrmg3vvb	12975	9	34900.00
+gfrmg3vvb	12984	6	24900.00
+gfrmg3vvb	12935	6	35900.00
+gfrmg3vvb	12907	6	28900.00
+gfrmg3vvb	12908	6	28900.00
+gfrmg3vvb	12986	6	34900.00
+gfrmg3vvb	12744	6	19900.00
+gfrmg3vvb	12881	6	33900.00
+gfrmg3vvb	13028	12	35900.00
+gfrmg3vvb	13029	6	32900.00
+gfrmg3vvb	13012	6	39900.00
+mmz6ste278jak610v	12984	12	24000.00
+mmz6ste278jak610v	12744	12	19000.00
+mmz6ste278jak610v	12975	6	34000.00
+mmz6ste278jak610v	12617	12	35000.00
+mmz6ste278jak610v	13081	24	19000.00
+mmz6ste278jak610v	12909	24	19000.00
+mmz6ste278jak610v	13011	12	29000.00
+mmz6ste278jak610v	13036	12	29000.00
+mmz6ste278jak610v	12747	12	31000.00
+mmz6ste278jak610v	13068	24	21000.00
+mmz6ste278jak610v	13100	24	25000.00
+mmz6ste278jak610v	13128	12	23000.00
+mmz6ste278jak610v	13090	24	21000.00
+mmz6ste278jak610v	13116	24	21000.00
+mmz6ste278jak610v	13094	24	21000.00
+mmz6ste278jak610v	13129	24	22000.00
+mmz6ste278jak610v	13079	24	19000.00
+mmz6ste278jak610v	13095	24	17000.00
+mmz6ste278jak610v	12692	24	21000.00
+mmz6ste278jak610v	12640	12	24000.00
+mmz6ste278jak610v	13083	24	19000.00
+mmz6ste278jak610v	13074	24	19000.00
+mmz6ste278jak610v	13121	24	22000.00
+mmz6ste278jak610v	13110	24	19000.00
+mmz6ste278jak610v	13091	24	18000.00
+mmz6ste278jak610v	13118	24	21000.00
+mmz6ste278jak610v	13122	24	18000.00
+mmz6ste278jak610v	12943	24	19000.00
+mmz6ste278jak610v	13119	24	19000.00
+mmz6ste278jak610v	13013	24	23000.00
+mmz6ste278jak610v	12920	24	21000.00
+mmz6ste278jak610v	13097	24	24000.00
+mmz6ste278jak610v	13120	24	17000.00
+mn4koe8esfolub6mf	13028	6	35900.00
+mn4koe8esfolub6mf	13029	6	32900.00
+mn4koe8esfolub6mf	12881	6	33900.00
+mn4koe8esfolub6mf	12744	6	19900.00
+mn4koe8esfolub6mf	12986	6	34900.00
+mn4koe8esfolub6mf	12908	6	28900.00
+mn4koe8esfolub6mf	12935	6	35900.00
+mn4koe8esfolub6mf	12907	6	28900.00
+mn4koe8esfolub6mf	12984	6	24900.00
+mn4koe8esfolub6mf	12975	6	34900.00
+mn4koe8esfolub6mf	12987	6	27900.00
+mn4koe8esfolub6mf	12976	6	37900.00
+mn4koe8esfolub6mf	12617	6	35900.00
+mn4koe8esfolub6mf	13045	6	25900.00
+mn4koe8esfolub6mf	13041	6	29900.00
+mn4koe8esfolub6mf	13084	6	29900.00
+mn4koe8esfolub6mf	13040	6	32900.00
+mn4koe8esfolub6mf	12973	6	42900.00
+mn4koe8esfolub6mf	12970	6	34900.00
+mn4koe8esfolub6mf	13055	6	29900.00
+mn4koe8esfolub6mf	12971	6	36900.00
+mn4koe8esfolub6mf	13013	6	23900.00
+mn4koe8esfolub6mf	13131	6	19900.00
+mn4koe8esfolub6mf	13128	6	23900.00
+mn4koe8esfolub6mf	13010	6	29900.00
+mn4koe8esfolub6mf	13067	6	39900.00
+mn4koe8esfolub6mf	13116	6	21900.00
+mn4koe8esfolub6mf	13036	6	29900.00
+mn4koe8esfolub6mf	12962	6	44900.00
+mn4koe8esfolub6mf	13015	6	37900.00
+mn4koe8esfolub6mf	13077	6	42900.00
+mn4koe8esfolub6mf	13115	6	49900.00
 mm25qs8bzb9btrgvw	12923	18	23900.00
 mm25qs8bzb9btrgvw	12882	18	23900.00
 mm25qs8bzb9btrgvw	12909	18	23900.00
@@ -5301,13 +7646,3697 @@ mn4koe8esfolub6mf	12962	6	44900.00
 mn4koe8esfolub6mf	13015	6	37900.00
 mn4koe8esfolub6mf	13077	6	42900.00
 mn4koe8esfolub6mf	13115	6	49900.00
+mmt9cg4gbu5dnloup	13100	12	25900.00
+mmt9cg4gbu5dnloup	13068	12	21900.00
+mmt9cg4gbu5dnloup	13005	12	20900.00
+mmt9cg4gbu5dnloup	12980	12	22900.00
+mmt9cg4gbu5dnloup	13074	12	19900.00
+mmt9cg4gbu5dnloup	13118	12	21900.00
+mmt9cg4gbu5dnloup	13079	12	19900.00
+mmt9cg4gbu5dnloup	12576	12	19900.00
+mmt9cg4gbu5dnloup	13043	12	34900.00
+mmt9cg4gbu5dnloup	13040	12	32900.00
+mmt9cg4gbu5dnloup	12574	12	25900.00
+mmt9cg4gbu5dnloup	12943	12	19900.00
+mmt9f0zv75r8qf1g9	13012	6	39900.00
+mmt9f0zv75r8qf1g9	12963	6	35900.00
+mmt9f0zv75r8qf1g9	13103	3	45900.00
+mmt9f0zv75r8qf1g9	12972	3	48900.00
+mmt9f0zv75r8qf1g9	12980	6	22900.00
+mmt9f0zv75r8qf1g9	13008	6	33900.00
+mmt9f0zv75r8qf1g9	13128	6	23900.00
+mmt9f0zv75r8qf1g9	13123	6	19900.00
+mmt9f0zv75r8qf1g9	13079	6	19900.00
+mmt9f0zv75r8qf1g9	12884	6	21900.00
+mmt9f0zv75r8qf1g9	13094	6	21900.00
+mmt9f0zv75r8qf1g9	13118	6	21900.00
+mmt9f0zv75r8qf1g9	13055	6	29900.00
+mmt9f0zv75r8qf1g9	13129	6	22900.00
+mmt9f0zv75r8qf1g9	12973	6	42900.00
+mmt9f0zv75r8qf1g9	12895	6	30900.00
+mmt9f0zv75r8qf1g9	12671	6	24900.00
+mmt9f0zv75r8qf1g9	12970	6	34900.00
+mmt9f0zv75r8qf1g9	13042	6	29900.00
+mmt9f0zv75r8qf1g9	12943	6	19900.00
+mmt9f0zv75r8qf1g9	13131	6	19900.00
+mmt9f0zv75r8qf1g9	13040	6	32900.00
+mmt9f0zv75r8qf1g9	13122	6	18900.00
+mmt9f0zv75r8qf1g9	13120	6	18900.00
+mmt9f0zv75r8qf1g9	12877	6	19900.00
+mmpgtfe31h7o4pg3g	12771	36	14000.00
+mmpgtfe31h7o4pg3g	12683	36	14000.00
+mmpgtfe31h7o4pg3g	13095	108	14000.00
+mmpgtfe31h7o4pg3g	12782	108	14000.00
+mmpgtfe31h7o4pg3g	12783	108	14000.00
+mmpgtfe31h7o4pg3g	12877	126	16000.00
+mmpgtfe31h7o4pg3g	13091	204	16000.00
+mmpgtfe31h7o4pg3g	13074	204	16000.00
+mmpgtfe31h7o4pg3g	12864	204	16000.00
+mmpgtfe31h7o4pg3g	13083	204	16000.00
+mmpgtfe31h7o4pg3g	13079	204	16000.00
+mmpgtfe31h7o4pg3g	12686	204	16000.00
+mmpgtfe31h7o4pg3g	13005	204	16000.00
+mmpgtfe31h7o4pg3g	12909	204	16000.00
+mmpgtfe31h7o4pg3g	13081	204	16000.00
+mmpgtfe31h7o4pg3g	13098	36	19000.00
+mmpgtfe31h7o4pg3g	12737	36	19000.00
+mmpgtfe31h7o4pg3g	13093	36	19000.00
+mmpgtfe31h7o4pg3g	12692	36	19000.00
+mmpgtfe31h7o4pg3g	12640	36	19000.00
+mmpgtfe31h7o4pg3g	13094	36	19000.00
+mmpgtfe31h7o4pg3g	12885	36	19000.00
+mmpgtfe31h7o4pg3g	12883	36	19000.00
+mmpgtfe31h7o4pg3g	13086	36	19000.00
+mm25z1dbniegbh1m6	12909	4	23900.00
+mm25z1dbniegbh1m6	12911	4	18900.00
+mm25z1dbniegbh1m6	12882	4	23900.00
+mm25z1dbniegbh1m6	12941	4	20900.00
+mm25z1dbniegbh1m6	12885	4	23900.00
+mm25z1dbniegbh1m6	12782	4	17900.00
+mm25z1dbniegbh1m6	12871	4	19900.00
+mm25z1dbniegbh1m6	12931	4	29900.00
+mm25z1dbniegbh1m6	12805	4	19900.00
+mm25z1dbniegbh1m6	12892	4	24900.00
+mm25z1dbniegbh1m6	12876	4	19900.00
+mm25z1dbniegbh1m6	12945	4	19900.00
+mm25z1dbniegbh1m6	12897	4	19900.00
+mm25z1dbniegbh1m6	12943	4	19900.00
+mm25z1dbniegbh1m6	12920	4	21900.00
+mm25z1dbniegbh1m6	12898	4	24900.00
+mm25z1dbniegbh1m6	12951	4	27900.00
+mm25z1dbniegbh1m6	12952	4	26900.00
+mm25z1dbniegbh1m6	12919	4	25900.00
+mm25z1dbniegbh1m6	12880	4	24900.00
+mm25z1dbniegbh1m6	12937	4	14900.00
+mm25z1dbniegbh1m6	12873	4	22900.00
+mm25z1dbniegbh1m6	12923	4	24900.00
+mm25z1dbniegbh1m6	12913	4	29900.00
+mm25z1dbniegbh1m6	12699	4	24900.00
+mm25z1dbniegbh1m6	12744	4	19900.00
+mm25z1dbniegbh1m6	12907	4	28900.00
+mm25z1dbniegbh1m6	12906	4	28900.00
+mm25z1dbniegbh1m6	12889	4	28900.00
+mm25z1dbniegbh1m6	12875	4	19900.00
+mm25yurfvl3ytrp78	12366	24	19900.00
+mm25yurfvl3ytrp78	12871	24	19900.00
+mm25yurfvl3ytrp78	12922	24	21900.00
+mm25yurfvl3ytrp78	12860	24	16900.00
+mm25yurfvl3ytrp78	12888	24	19900.00
+mm25yurfvl3ytrp78	12782	24	17900.00
+mm25yurfvl3ytrp78	12893	24	24900.00
+mm25yurfvl3ytrp78	12920	24	21900.00
+mm25yurfvl3ytrp78	12917	24	19900.00
+mm25yurfvl3ytrp78	12943	24	19900.00
+mm25yurfvl3ytrp78	12950	24	27900.00
+mm25yurfvl3ytrp78	12883	24	24900.00
+mm25yurfvl3ytrp78	12913	24	29900.00
+mm25yurfvl3ytrp78	12873	24	22900.00
+mm25yurfvl3ytrp78	12951	24	27900.00
+mm25yurfvl3ytrp78	12926	24	27900.00
+mm25yurfvl3ytrp78	12875	24	19900.00
+mm25yurfvl3ytrp78	12911	24	18900.00
+mm25yurfvl3ytrp78	12952	24	26900.00
+mm25yurfvl3ytrp78	12937	24	14900.00
+mm25x0trsopvohrgo	12782	12	17900.00
+mm25x0trsopvohrgo	12870	11	35900.00
+mm25x0trsopvohrgo	12871	12	19900.00
+mm25x0trsopvohrgo	12876	12	19900.00
+mm25x0trsopvohrgo	12880	12	24900.00
+mm25x0trsopvohrgo	12882	12	23900.00
+mm25x0trsopvohrgo	12885	12	23900.00
+mm25x0trsopvohrgo	12889	12	28900.00
+mm25x0trsopvohrgo	12905	12	34900.00
+mm25x0trsopvohrgo	12907	11	28900.00
+mm25x0trsopvohrgo	12908	12	28900.00
+mm25x0trsopvohrgo	12909	12	23900.00
+mm25x0trsopvohrgo	12910	12	22900.00
+mm25x0trsopvohrgo	12916	12	20900.00
+mm25x0trsopvohrgo	12931	12	29900.00
+mm25x0trsopvohrgo	12937	12	14900.00
+mm25wkgeaqmr6b8un	12129	11	27900.00
+mm25wkgeaqmr6b8un	12694	11	24900.00
+mm25wkgeaqmr6b8un	12825	11	22900.00
+mm25wkgeaqmr6b8un	12828	11	14900.00
+mm25wkgeaqmr6b8un	12834	11	17900.00
+mm25wkgeaqmr6b8un	12835	11	20900.00
+mm25wkgeaqmr6b8un	12836	11	21900.00
+mm25wkgeaqmr6b8un	12837	11	27900.00
+mm25wkgeaqmr6b8un	12841	13	20900.00
+mm25wans5fy2ikncb	12129	12	27900.00
+mm25wans5fy2ikncb	12694	12	24900.00
+mm25wans5fy2ikncb	12825	12	22900.00
+mm25wans5fy2ikncb	12828	12	14900.00
+mm25wans5fy2ikncb	12834	12	17900.00
+mm25wans5fy2ikncb	12835	12	20900.00
+mm25wans5fy2ikncb	12836	11	21900.00
+mm25wans5fy2ikncb	12837	12	27900.00
+mm25wans5fy2ikncb	12841	14	20900.00
+mm25v4aqgkqzh9j40	12704	10	29900.00
+mm25v4aqgkqzh9j40	12782	10	17900.00
+mm25v4aqgkqzh9j40	12870	9	35900.00
+mm25v4aqgkqzh9j40	12871	10	19900.00
+mm25v4aqgkqzh9j40	12876	10	19900.00
+mm25v4aqgkqzh9j40	12880	10	24900.00
+mm25v4aqgkqzh9j40	12882	10	23900.00
+mm25v4aqgkqzh9j40	12885	10	23900.00
+mm25v4aqgkqzh9j40	12889	10	28900.00
+mm25v4aqgkqzh9j40	12905	10	34900.00
+mm25v4aqgkqzh9j40	12907	9	28900.00
+mm25v4aqgkqzh9j40	12908	10	28900.00
+mm25v4aqgkqzh9j40	12909	10	23900.00
+mm25v4aqgkqzh9j40	12910	10	22900.00
+mm25v4aqgkqzh9j40	12916	10	20900.00
+mm25v4aqgkqzh9j40	12931	10	29900.00
+mm25v4aqgkqzh9j40	12937	10	14900.00
+mm25teuw5s5a06njw	12129	11	27900.00
+mm25teuw5s5a06njw	12694	11	24900.00
+mm25teuw5s5a06njw	12825	11	22900.00
+mm25teuw5s5a06njw	12828	11	14900.00
+mm25teuw5s5a06njw	12834	11	17900.00
+mm25teuw5s5a06njw	12835	11	20900.00
+mm25teuw5s5a06njw	12836	11	21900.00
+mm25teuw5s5a06njw	12837	11	27900.00
+mm25teuw5s5a06njw	12841	13	20900.00
+mm2c7uonjxqwkjpf5	12945	168	14000.00
+mm2c7uonjxqwkjpf5	12860	168	14000.00
+mm2c7uonjxqwkjpf5	12665	168	14000.00
+mm2c7uonjxqwkjpf5	12897	138	16000.00
+mm2c7uonjxqwkjpf5	12876	168	16000.00
+mm2c7uonjxqwkjpf5	12943	138	16000.00
+mm2c7uonjxqwkjpf5	12877	168	16000.00
+mm2c7uonjxqwkjpf5	12864	138	16000.00
+mm2c7uonjxqwkjpf5	12888	168	16000.00
+mm2c7uonjxqwkjpf5	12871	138	16000.00
+mm2c7uonjxqwkjpf5	12911	168	16000.00
+mm2c7uonjxqwkjpf5	12861	168	16000.00
+mm2c7uonjxqwkjpf5	12920	48	19000.00
+mm2c7uonjxqwkjpf5	12893	48	19000.00
+mm2c7uonjxqwkjpf5	12924	48	19000.00
+mm2c7uonjxqwkjpf5	12955	48	19000.00
+mm2c7uonjxqwkjpf5	12919	48	19000.00
+mm2c7uonjxqwkjpf5	12959	60	35000.00
+mm2c7uonjxqwkjpf5	12960	60	35000.00
+mmpgtfe31h7o4pg3g	13100	36	19000.00
+mmpgtfe31h7o4pg3g	13090	36	19000.00
+mmpgtfe31h7o4pg3g	12862	36	19000.00
+mmpgtfe31h7o4pg3g	13096	36	21000.00
+mmpgtfe31h7o4pg3g	13013	36	21000.00
+mmpgtfe31h7o4pg3g	12704	36	21000.00
+mmpgtfe31h7o4pg3g	12685	48	24000.00
+mmpgtfe31h7o4pg3g	12644	48	24000.00
+mmpgtfe31h7o4pg3g	13033	36	24000.00
+mmpgtfe31h7o4pg3g	12889	48	27000.00
+mmpgtfe31h7o4pg3g	13003	36	29000.00
+mmpgtfe31h7o4pg3g	13084	48	29000.00
+mmpgtfe31h7o4pg3g	12747	48	29000.00
+mmpgtfe31h7o4pg3g	13010	36	29000.00
+mmpgtfe31h7o4pg3g	13036	36	29000.00
+mmpgtfe31h7o4pg3g	13067	48	32000.00
+mmpgtfe31h7o4pg3g	13065	48	35000.00
+mmpgtfe31h7o4pg3g	13058	48	30000.00
+mmpgtfe31h7o4pg3g	12976	48	35000.00
+mmpgtfe31h7o4pg3g	12986	48	29900.00
+mmpgtfe31h7o4pg3g	13029	48	29900.00
+mmpgtfe31h7o4pg3g	12581	36	29900.00
+mmpgtfe31h7o4pg3g	13076	54	28000.00
+mmpgtfe31h7o4pg3g	13101	54	35000.00
+mmpgtfe31h7o4pg3g	13064	54	33000.00
+mmpgtfe31h7o4pg3g	12869	54	32000.00
+mmpgtfe31h7o4pg3g	12962	54	42000.00
+mmpgtfe31h7o4pg3g	13077	54	42000.00
+mmpgtfe31h7o4pg3g	13109	54	32000.00
+mm261ih80nzxoq1lv	12698	12	21900.00
+mm261ih80nzxoq1lv	12936	12	14900.00
+mm261ih80nzxoq1lv	12917	12	19900.00
+mm261ih80nzxoq1lv	12950	12	27900.00
+mm261ih80nzxoq1lv	12777	12	14900.00
+mm261ih80nzxoq1lv	12679	12	23900.00
+mm261ih80nzxoq1lv	12737	12	22900.00
+mm261ih80nzxoq1lv	12704	12	29900.00
+mm261ih80nzxoq1lv	12694	12	24900.00
+mm261ih80nzxoq1lv	12915	12	28900.00
+mm261ih80nzxoq1lv	12934	12	24900.00
+mm261ih80nzxoq1lv	12574	12	25900.00
+mm261ih80nzxoq1lv	12920	12	21900.00
+mm261ih80nzxoq1lv	12898	12	24900.00
+mm261ih80nzxoq1lv	12754	12	16900.00
+mm261ih80nzxoq1lv	12865	12	16900.00
+mm261ih80nzxoq1lv	12922	12	21900.00
+mm261ih80nzxoq1lv	12943	12	19900.00
+mm261ih80nzxoq1lv	12805	12	19900.00
+mm261ih80nzxoq1lv	12893	12	24900.00
+mm261ih80nzxoq1lv	12747	12	31900.00
+mm261ih80nzxoq1lv	12926	12	27900.00
+mm261ih80nzxoq1lv	12955	12	22900.00
+mm261ih80nzxoq1lv	12914	12	33900.00
+mm261ih80nzxoq1lv	12885	12	23900.00
+mm261ih80nzxoq1lv	12883	12	24900.00
+mm261ih80nzxoq1lv	12699	12	24900.00
+mm261ih80nzxoq1lv	12909	12	23900.00
+mm261ih80nzxoq1lv	12911	12	18900.00
+mm261ih80nzxoq1lv	12882	12	23900.00
+mm261ih80nzxoq1lv	12875	12	19900.00
+mm261ih80nzxoq1lv	12873	12	22900.00
+mm261ih80nzxoq1lv	12871	12	19900.00
+mm261ih80nzxoq1lv	12860	12	16900.00
+mm261ih80nzxoq1lv	12884	12	21900.00
+mm261ih80nzxoq1lv	12939	12	20900.00
+mm261ih80nzxoq1lv	12640	12	24900.00
+mm261ih80nzxoq1lv	12868	8	69900.00
+mm261ih80nzxoq1lv	12878	8	64900.00
+mm261ih80nzxoq1lv	12881	18	33900.00
+mm261ih80nzxoq1lv	12907	18	28900.00
+mm261ih80nzxoq1lv	12908	18	28900.00
+mm261ih80nzxoq1lv	12581	18	32900.00
+mm261ih80nzxoq1lv	12933	18	34900.00
+mm261ih80nzxoq1lv	12744	18	19900.00
+mm261ih80nzxoq1lv	12617	18	35900.00
+mm261ih80nzxoq1lv	12870	18	35900.00
+mm261ih80nzxoq1lv	12889	18	28900.00
+mm261bh9kjzjbs3n3	12906	12	28900.00
+mm261bh9kjzjbs3n3	12881	12	33900.00
+mm261bh9kjzjbs3n3	12880	12	24900.00
+mm261bh9kjzjbs3n3	12950	12	27900.00
+mm261bh9kjzjbs3n3	12693	12	25900.00
+mm261bh9kjzjbs3n3	12698	12	21900.00
+mm261bh9kjzjbs3n3	12936	12	14900.00
+mm25zlnrm0l8pxyk3	12679	24	23900.00
+mm25zlnrm0l8pxyk3	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12680	24	16900.00
+mm25zlnrm0l8pxyk3	12943	24	19900.00
+mm25zlnrm0l8pxyk3	12936	24	14900.00
+mm25zlnrm0l8pxyk3	12877	24	19900.00
+mm25zlnrm0l8pxyk3	12920	24	21900.00
+mm25zlnrm0l8pxyk3	12934	24	24900.00
+mm25zlnrm0l8pxyk3	12898	24	24900.00
+mm25zlnrm0l8pxyk3	12881	24	33900.00
+mm25zlnrm0l8pxyk3	12907	24	28900.00
+mm25zlnrm0l8pxyk3	12933	24	34900.00
+mm25zlnrm0l8pxyk3	12906	24	28900.00
+mm25zlnrm0l8pxyk3	12935	24	35900.00
+mm25zlnrm0l8pxyk3	12908	24	28900.00
+mm25zlnrm0l8pxyk3	12889	24	28900.00
+mm25zlnrm0l8pxyk3	12747	24	31900.00
+mm25zlnrm0l8pxyk3	12872	24	24900.00
+mm25zlnrm0l8pxyk3	12919	24	25900.00
+mm25zlnrm0l8pxyk3	12951	24	27900.00
+mm25zlnrm0l8pxyk3	12909	24	23900.00
+mm25zlnrm0l8pxyk3	12913	24	29900.00
+mm25zlnrm0l8pxyk3	12942	24	24900.00
+mm25zlnrm0l8pxyk3	12923	24	24900.00
+mm25zlnrm0l8pxyk3	12862	24	23900.00
+mm25zlnrm0l8pxyk3	12941	24	20900.00
+mm25zlnrm0l8pxyk3	12875	24	19900.00
+mm25zlnrm0l8pxyk3	12879	24	38900.00
+mm25zlnrm0l8pxyk3	12914	24	33900.00
+mm25zlnrm0l8pxyk3	12880	24	24900.00
+mm25zlnrm0l8pxyk3	12873	24	22900.00
+mm25zlnrm0l8pxyk3	12882	24	23900.00
+mm25zlnrm0l8pxyk3	12952	24	26900.00
+mm25zlnrm0l8pxyk3	12937	24	14900.00
+mm25zlnrm0l8pxyk3	12893	24	24900.00
+mm25shroo1oy81pds	12906	24	28900.00
+mm25shroo1oy81pds	12933	24	34900.00
+mm25shroo1oy81pds	12889	24	28900.00
+mm25shroo1oy81pds	12708	24	24900.00
+mm25shroo1oy81pds	12919	24	25900.00
+mm25shroo1oy81pds	12951	24	27900.00
+mm25shroo1oy81pds	12937	24	14900.00
+mm25shroo1oy81pds	12862	24	23900.00
+mm25shroo1oy81pds	12911	24	18900.00
+mm25shroo1oy81pds	12882	24	23900.00
+mm25shroo1oy81pds	12952	24	26900.00
+mm25shroo1oy81pds	12913	24	29900.00
+mm25shroo1oy81pds	12880	24	24900.00
+mm25shroo1oy81pds	12883	24	24900.00
+mm25shroo1oy81pds	12885	24	23900.00
+mm25shroo1oy81pds	12892	24	24900.00
+mm25shroo1oy81pds	12704	24	29900.00
+mm25shroo1oy81pds	12888	24	19900.00
+mm25shroo1oy81pds	12939	24	20900.00
+mm25shroo1oy81pds	12366	24	19900.00
+mm25shroo1oy81pds	12893	24	24900.00
+mm25shroo1oy81pds	12921	24	24900.00
+mm25shroo1oy81pds	12860	24	16900.00
+mm25shroo1oy81pds	12754	24	16900.00
+mm25shroo1oy81pds	12000	24	49900.00
+mm25shroo1oy81pds	12771	24	16900.00
+mm25shroo1oy81pds	12574	24	25900.00
+mm25shroo1oy81pds	12876	24	19900.00
+mm25shroo1oy81pds	12950	24	27900.00
+mm25shroo1oy81pds	12877	24	19900.00
+mm25shroo1oy81pds	12917	24	19900.00
+mm25shroo1oy81pds	12680	24	16900.00
+mm25shroo1oy81pds	12897	24	19900.00
+mm25shroo1oy81pds	12945	24	19900.00
+mm25shroo1oy81pds	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12885	24	23900.00
+mm25zlnrm0l8pxyk3	12884	24	21900.00
+mm25zlnrm0l8pxyk3	12860	24	16900.00
+mm25zlnrm0l8pxyk3	12910	24	22900.00
+mm25zlnrm0l8pxyk3	12782	24	17900.00
+mm25zlnrm0l8pxyk3	12915	24	28900.00
+mm25zlnrm0l8pxyk3	12783	24	17900.00
+mm25zlnrm0l8pxyk3	12921	24	24900.00
+mm25zlnrm0l8pxyk3	12924	24	21900.00
+mm25zlnrm0l8pxyk3	12888	24	19900.00
+mm25zlnrm0l8pxyk3	12939	24	20900.00
+mm25zlnrm0l8pxyk3	12871	24	19900.00
+mm25zlnrm0l8pxyk3	12931	24	29900.00
+mm25zlnrm0l8pxyk3	12950	24	27900.00
+mm25zlnrm0l8pxyk3	12912	24	18900.00
+mm25zlnrm0l8pxyk3	12876	24	19900.00
+mm25zlnrm0l8pxyk3	12917	24	19900.00
+mm25shroo1oy81pds	12920	24	21900.00
+mm25shroo1oy81pds	12934	24	24900.00
+mm25zgt5curej417m	12951	9	27900.00
+mm25zgt5curej417m	12909	9	23900.00
+mm25zgt5curej417m	12926	8	27900.00
+mm25zgt5curej417m	12919	8	25900.00
+mm25zgt5curej417m	12873	8	22900.00
+mm25zgt5curej417m	12937	15	14900.00
+mm25zgt5curej417m	12893	9	24900.00
+mm25zgt5curej417m	12883	9	24900.00
+mm25zgt5curej417m	12924	9	21900.00
+mm25zgt5curej417m	12871	8	19900.00
+mm25zgt5curej417m	12931	8	29900.00
+mm25zgt5curej417m	12920	8	21900.00
+mm25shroo1oy81pds	12943	24	19900.00
+mm25shroo1oy81pds	12898	24	24900.00
+mm25rzt79inviirmd	12923	18	23900.00
+mm25rzt79inviirmd	12882	18	23900.00
+mm25rzt79inviirmd	12909	18	23900.00
+mm25rzt79inviirmd	12872	18	23900.00
+mm261zsok2g1m5dod	12640	8	24900.00
+mm261zsok2g1m5dod	12884	8	21900.00
+mm261zsok2g1m5dod	12783	8	17900.00
+mm261zsok2g1m5dod	12860	8	16900.00
+mm261zsok2g1m5dod	12692	8	21900.00
+mm261zsok2g1m5dod	12918	8	19900.00
+mm261zsok2g1m5dod	12912	8	18900.00
+mm261zsok2g1m5dod	12754	8	16900.00
+mm261zsok2g1m5dod	12907	6	28900.00
+mm261zsok2g1m5dod	12908	6	28900.00
+mm261zsok2g1m5dod	12935	6	35900.00
+mm261zsok2g1m5dod	12744	6	19900.00
+mm261zsok2g1m5dod	12885	8	23900.00
+mm261zsok2g1m5dod	12909	8	23900.00
+mm261zsok2g1m5dod	12914	8	33900.00
+mm261zsok2g1m5dod	12911	8	18900.00
+mm261zsok2g1m5dod	12880	8	24900.00
+mm261zsok2g1m5dod	12937	8	14900.00
+mm25rzt79inviirmd	12911	18	18900.00
+mm25rzt79inviirmd	12919	18	24900.00
+mm25rzt79inviirmd	12926	18	26900.00
+mm25rzt79inviirmd	12835	12	19900.00
+mm25rzt79inviirmd	12831	12	23900.00
+mm25rzt79inviirmd	12836	12	20900.00
+mm25rzt79inviirmd	12855	12	23900.00
+mm25rzt79inviirmd	12129	12	26900.00
+mm25rzt79inviirmd	12841	12	19900.00
+mm25rzt79inviirmd	12834	12	16900.00
+mm25rzt79inviirmd	12825	12	21900.00
+mm25rzt79inviirmd	12818	12	40900.00
+mm25rzt79inviirmd	12821	12	33900.00
+mm25rzt79inviirmd	12840	12	33900.00
+mmpgtfe31h7o4pg3g	13016	54	32000.00
+mmpgtfe31h7o4pg3g	13002	54	42000.00
+mmpgtfe31h7o4pg3g	13015	54	35000.00
+mmph224zawpf1wfbp	12990	6	32400.00
+mm261wafiiiwwshld	12933	12	34900.00
+mm261wafiiiwwshld	12908	12	28900.00
+mm261wafiiiwwshld	12870	12	35900.00
+mm261wafiiiwwshld	12881	12	33900.00
+mm261wafiiiwwshld	12920	12	21900.00
+mm261wafiiiwwshld	12892	12	24900.00
+mm261wafiiiwwshld	12943	12	19900.00
+mm261wafiiiwwshld	12640	12	24900.00
+mm261wafiiiwwshld	12910	12	22900.00
+mm261wafiiiwwshld	12922	12	21900.00
+mm261wafiiiwwshld	12921	12	24900.00
+mm261wafiiiwwshld	12884	12	21900.00
+mm261wafiiiwwshld	12871	12	19900.00
+mm261wafiiiwwshld	12888	12	19900.00
+mm261wafiiiwwshld	12917	12	19900.00
+mm261wafiiiwwshld	12771	12	16900.00
+mm261wafiiiwwshld	12877	12	19900.00
+mm261wafiiiwwshld	12893	12	24900.00
+mm261sicytqircpx5	12698	12	21900.00
+mm261sicytqircpx5	12737	12	22900.00
+mm261sicytqircpx5	12754	12	16900.00
+mm261sicytqircpx5	12876	12	19900.00
+mm261sicytqircpx5	12805	12	19900.00
+mm261sicytqircpx5	12893	12	24900.00
+mm261sicytqircpx5	12931	12	29900.00
+mm261sicytqircpx5	12911	12	18900.00
+mm261sicytqircpx5	12908	12	28900.00
+mm261sicytqircpx5	12933	12	34900.00
+mm261sicytqircpx5	12744	12	19900.00
+mm261sicytqircpx5	12907	12	28900.00
+mm261sicytqircpx5	12935	12	35900.00
+mmph224zawpf1wfbp	13012	6	39400.00
+mmph224zawpf1wfbp	13103	6	45400.00
+mmph224zawpf1wfbp	12964	6	46400.00
+mmph224zawpf1wfbp	12959	6	37400.00
+mmph224zawpf1wfbp	12960	6	39400.00
+mmph224zawpf1wfbp	13076	6	27400.00
+mmph224zawpf1wfbp	13113	6	49400.00
+mmph224zawpf1wfbp	13102	6	29400.00
+mmph224zawpf1wfbp	13016	6	32400.00
+mmph224zawpf1wfbp	13077	6	42400.00
+mmph224zawpf1wfbp	13112	6	37400.00
+mmph224zawpf1wfbp	13002	6	41400.00
+mmph224zawpf1wfbp	13055	6	29400.00
+mmph224zawpf1wfbp	13117	6	23400.00
+mmph224zawpf1wfbp	13116	6	21400.00
+mmph224zawpf1wfbp	13118	6	21400.00
+mmph224zawpf1wfbp	13094	6	21400.00
+mmph224zawpf1wfbp	12709	6	19400.00
+mmph224zawpf1wfbp	13068	6	21400.00
+mmph224zawpf1wfbp	13008	6	33400.00
+mmph224zawpf1wfbp	13036	6	29400.00
+mmph224zawpf1wfbp	13100	6	25400.00
+mmph224zawpf1wfbp	12747	6	31400.00
+mmph224zawpf1wfbp	12783	6	17400.00
+mmph224zawpf1wfbp	13079	6	19400.00
+mmph224zawpf1wfbp	12968	6	44400.00
+mmph224zawpf1wfbp	13014	6	29400.00
+mmph224zawpf1wfbp	13015	6	37400.00
+mmph224zawpf1wfbp	12973	6	42400.00
+mm25zbho4eabh3lh4	12951	4	27900.00
+mm25zbho4eabh3lh4	12909	4	23900.00
+mm25zbho4eabh3lh4	12747	4	31900.00
+mm25zbho4eabh3lh4	12872	6	24900.00
+mm25zbho4eabh3lh4	12926	4	27900.00
+mm25zbho4eabh3lh4	12919	4	25900.00
+mm25zbho4eabh3lh4	12873	4	22900.00
+mm25zbho4eabh3lh4	12923	4	24900.00
+mm25zbho4eabh3lh4	12882	4	23900.00
+mm25zbho4eabh3lh4	12862	4	23900.00
+mm25zbho4eabh3lh4	12952	4	26900.00
+mm25zbho4eabh3lh4	12911	4	18900.00
+mm261ny1d0yfufg6p	12878	6	64900.00
+mm261ny1d0yfufg6p	12868	6	69900.00
+mm261ny1d0yfufg6p	12698	12	21900.00
+mm261ny1d0yfufg6p	12936	12	14900.00
+mm261ny1d0yfufg6p	12917	12	19900.00
+mm261ny1d0yfufg6p	12897	12	19900.00
+mm261ny1d0yfufg6p	12876	12	19900.00
+mm261ny1d0yfufg6p	12945	12	19900.00
+mm261ny1d0yfufg6p	12771	12	16900.00
+mm261ny1d0yfufg6p	12912	12	18900.00
+mm261ny1d0yfufg6p	12877	12	19900.00
+mm261ny1d0yfufg6p	12704	12	29900.00
+mm261ny1d0yfufg6p	12754	12	16900.00
+mm261ny1d0yfufg6p	12865	12	16900.00
+mm261ny1d0yfufg6p	12805	12	19900.00
+mm261ny1d0yfufg6p	12921	12	24900.00
+mm261ny1d0yfufg6p	12924	12	21900.00
+mm261ny1d0yfufg6p	12884	12	21900.00
+mm261ny1d0yfufg6p	12860	12	16900.00
+mm261ny1d0yfufg6p	12871	12	19900.00
+mm261ny1d0yfufg6p	12943	12	19900.00
+mm261ny1d0yfufg6p	12934	12	24900.00
+mm261ny1d0yfufg6p	12920	12	21900.00
+mm261ny1d0yfufg6p	12644	12	24900.00
+mm261ny1d0yfufg6p	12951	12	27900.00
+mm261ny1d0yfufg6p	12882	12	23900.00
+mm261ny1d0yfufg6p	12880	12	24900.00
+mm261ny1d0yfufg6p	12913	12	29900.00
+mm261ny1d0yfufg6p	12911	12	18900.00
+mm261ny1d0yfufg6p	12883	12	24900.00
+mm261ny1d0yfufg6p	12909	12	23900.00
+mm261ny1d0yfufg6p	12875	12	19900.00
+mm261ny1d0yfufg6p	12937	12	14900.00
+mm261ny1d0yfufg6p	12879	12	38900.00
+mm261ny1d0yfufg6p	12870	12	35900.00
+mm261ny1d0yfufg6p	12906	12	28900.00
+mm261ny1d0yfufg6p	12744	12	19900.00
+mm261ny1d0yfufg6p	12907	12	28900.00
+mm261ny1d0yfufg6p	12881	12	33900.00
+mm261ny1d0yfufg6p	12905	12	34900.00
+mm261ny1d0yfufg6p	12908	12	28900.00
+mm25zbho4eabh3lh4	12937	4	14900.00
+mm25zbho4eabh3lh4	12941	4	20900.00
+mm25zbho4eabh3lh4	12885	4	23900.00
+mm25zbho4eabh3lh4	12883	4	24900.00
+mm25zbho4eabh3lh4	12877	4	19900.00
+mm25zbho4eabh3lh4	12898	4	24900.00
+mm25zbho4eabh3lh4	12920	4	21900.00
+mm25zbho4eabh3lh4	12945	4	19900.00
+mm25zbho4eabh3lh4	12934	4	24900.00
+mm25zbho4eabh3lh4	12936	4	14900.00
+mm25zbho4eabh3lh4	12897	4	19900.00
+mm25zbho4eabh3lh4	12870	4	35900.00
+mm25zbho4eabh3lh4	12805	4	19900.00
+mm25zbho4eabh3lh4	12892	4	24900.00
+mm25zbho4eabh3lh4	12931	4	29900.00
+mm25zbho4eabh3lh4	12924	4	21900.00
+mm25zbho4eabh3lh4	12860	4	16900.00
+mm25zbho4eabh3lh4	12884	4	21900.00
+mm25zbho4eabh3lh4	12640	4	24900.00
+mm25zbho4eabh3lh4	12921	4	24900.00
+mm25zbho4eabh3lh4	12692	4	21900.00
+mm25zbho4eabh3lh4	12871	4	19900.00
+mm25zbho4eabh3lh4	12783	4	17900.00
+mm25z6898ea5cmw0f	12898	6	24900.00
+mm25z6898ea5cmw0f	12920	6	21900.00
+mm25z6898ea5cmw0f	12945	6	19900.00
+mm25z6898ea5cmw0f	12934	6	24900.00
+mm25z6898ea5cmw0f	12805	6	19900.00
+mm25z6898ea5cmw0f	12907	6	28900.00
+mm25z6898ea5cmw0f	12744	6	19900.00
+mm25z6898ea5cmw0f	12906	6	28900.00
+mm25z6898ea5cmw0f	12935	6	35900.00
+mm25z6898ea5cmw0f	12908	6	28900.00
+mm25z6898ea5cmw0f	12881	6	33900.00
+mm25z6898ea5cmw0f	12924	6	21900.00
+mm25z6898ea5cmw0f	12937	6	14900.00
+mm25z6898ea5cmw0f	12913	6	29900.00
+mm25z6898ea5cmw0f	12911	6	18900.00
+mm25z6898ea5cmw0f	12952	6	26900.00
+mm25z6898ea5cmw0f	12919	6	25900.00
+mm25z6898ea5cmw0f	12926	6	27900.00
+mm25z6898ea5cmw0f	12872	6	24900.00
+mmpgxr0cmqouvxsuz	13023	24	34900.00
+mmpgxr0cmqouvxsuz	12959	24	37900.00
+mmpgxr0cmqouvxsuz	13002	24	41900.00
+mmpgxr0cmqouvxsuz	12498	24	21900.00
+mmpgxr0cmqouvxsuz	13067	24	39900.00
+mmpgxr0cmqouvxsuz	12617	36	35900.00
+mmpgxr0cmqouvxsuz	12975	36	34900.00
+mmpgxr0cmqouvxsuz	12581	36	32900.00
+mmpgxr0cmqouvxsuz	13028	36	35900.00
+mmpgxr0cmqouvxsuz	12984	36	24900.00
+mmpgxr0cmqouvxsuz	13029	36	32900.00
+mmpgxr0cmqouvxsuz	12986	36	34900.00
+mmpgxr0cmqouvxsuz	13039	24	30900.00
+mmpgxr0cmqouvxsuz	13055	24	29900.00
+mmpgxr0cmqouvxsuz	13100	24	25900.00
+mmpgxr0cmqouvxsuz	13033	24	29900.00
+mmpgxr0cmqouvxsuz	13010	24	29900.00
+mmpgxr0cmqouvxsuz	12909	24	23900.00
+mmpgxr0cmqouvxsuz	13116	24	21900.00
+mmpgxr0cmqouvxsuz	12980	24	20900.00
+mmpgxr0cmqouvxsuz	13110	24	19900.00
+mmpgxr0cmqouvxsuz	13083	24	19900.00
+mmpgxr0cmqouvxsuz	13079	24	19900.00
+mmpgxr0cmqouvxsuz	13091	24	18900.00
+mmpgxr0cmqouvxsuz	13121	24	22900.00
+mmt9f0zv75r8qf1g9	13098	6	22900.00
+mmt9f0zv75r8qf1g9	13013	6	23900.00
+mmt9f0zv75r8qf1g9	12609	6	24900.00
+mmt9f0zv75r8qf1g9	13029	3	32900.00
+mmt9f0zv75r8qf1g9	12905	6	34900.00
+mmt9f0zv75r8qf1g9	12881	6	33900.00
+mmt9f0zv75r8qf1g9	12907	6	28900.00
+mmt9f0zv75r8qf1g9	12986	6	34900.00
+mmt9f0zv75r8qf1g9	12908	6	28900.00
+mmt9gf24g1f0g2km0	12692	21	21900.00
+mmt9gf24g1f0g2km0	13029	9	32900.00
+mmt9gf24g1f0g2km0	12617	15	35900.00
+mmt9gf24g1f0g2km0	12907	15	28900.00
+mmt9gf24g1f0g2km0	13047	8	25900.00
+mmt9gf24g1f0g2km0	12579	12	39900.00
+mmt9gf24g1f0g2km0	13077	8	42900.00
+mmt9gf24g1f0g2km0	13094	24	21900.00
+mmt9gf24g1f0g2km0	12931	8	29900.00
+mmt9gf24g1f0g2km0	12971	10	36900.00
+mmt9gf24g1f0g2km0	13116	15	21900.00
+mmt9gf24g1f0g2km0	13128	30	23900.00
+mmt9gf24g1f0g2km0	12747	12	31900.00
+mmt9gf24g1f0g2km0	13068	12	21900.00
+mmt9gf24g1f0g2km0	13110	12	19900.00
+mmt9gf24g1f0g2km0	12943	9	19900.00
+mmt9gf24g1f0g2km0	13120	15	17900.00
+mmt9gf24g1f0g2km0	13081	27	19900.00
+mmt9gf24g1f0g2km0	12877	18	19900.00
+mmt9gf24g1f0g2km0	12771	15	16900.00
+mmt9gf24g1f0g2km0	13122	6	18900.00
+mmt9gf24g1f0g2km0	12754	21	16900.00
+mmt9gf24g1f0g2km0	13079	15	19900.00
+mmt9gf24g1f0g2km0	12909	18	19900.00
+mmt9gf24g1f0g2km0	12972	6	48900.00
+mmt9gf24g1f0g2km0	13067	12	39900.00
+mmt9ijwvjz21wl7nq	13074	18	19900.00
+mmt9ijwvjz21wl7nq	13091	18	19900.00
+mmt9ijwvjz21wl7nq	13121	18	19900.00
+mmt9ijwvjz21wl7nq	13110	18	19900.00
+mmt9ijwvjz21wl7nq	13129	18	19900.00
+mmt9ijwvjz21wl7nq	13079	18	19900.00
+mmt9ijwvjz21wl7nq	12884	18	19900.00
+mmt9ijwvjz21wl7nq	13094	18	19900.00
+mmt9ijwvjz21wl7nq	13068	18	21900.00
+mmt9ijwvjz21wl7nq	13116	18	21900.00
+mmt9ijwvjz21wl7nq	13117	18	21900.00
+mmt9ijwvjz21wl7nq	13100	18	24900.00
+mmt9ijwvjz21wl7nq	13011	18	27900.00
+mmt9ijwvjz21wl7nq	13036	18	27900.00
+mmt9ijwvjz21wl7nq	13033	18	27900.00
+mmt9ijwvjz21wl7nq	13010	18	27900.00
+mmt9ijwvjz21wl7nq	13013	18	21900.00
+mmt9ijwvjz21wl7nq	13004	18	19900.00
+mmt9ijwvjz21wl7nq	12943	18	19900.00
+mmt9ijwvjz21wl7nq	13119	18	19900.00
+mmt9ijwvjz21wl7nq	13131	18	19900.00
+mmt9ijwvjz21wl7nq	13047	18	27900.00
+mmt9ijwvjz21wl7nq	12965	18	27900.00
+mmt9ijwvjz21wl7nq	13041	18	29900.00
+mmt9ijwvjz21wl7nq	13028	18	34900.00
+mmt9ijwvjz21wl7nq	13027	18	33900.00
+mmt9ijwvjz21wl7nq	12974	18	34900.00
+mmt9ka1qt9uumiqoj	13002	8	41900.00
+mmt9ka1qt9uumiqoj	12402	8	39900.00
+mmt9ka1qt9uumiqoj	13102	8	29900.00
+mmt9ka1qt9uumiqoj	13113	8	49900.00
+mmt9ka1qt9uumiqoj	12692	12	22900.00
+mmt9ka1qt9uumiqoj	12869	8	31900.00
+mmt9ka1qt9uumiqoj	13104	8	39900.00
+mmt9ka1qt9uumiqoj	12969	12	21900.00
+mmt9ka1qt9uumiqoj	12704	8	29900.00
+mmt9ka1qt9uumiqoj	12971	8	36900.00
+mmt9ka1qt9uumiqoj	13039	8	30900.00
+mmt9ka1qt9uumiqoj	12744	12	19900.00
+mmt9ka1qt9uumiqoj	12986	8	34900.00
+mmt9ka1qt9uumiqoj	13094	12	21900.00
+mmt9ka1qt9uumiqoj	13117	12	23900.00
+mmt9ka1qt9uumiqoj	12965	8	27900.00
+mmt9ka1qt9uumiqoj	13040	8	32900.00
+mmt9ka1qt9uumiqoj	13048	8	25900.00
+mmt9ka1qt9uumiqoj	13013	12	23900.00
+mmt9ka1qt9uumiqoj	12623	8	29900.00
+mmt9ka1qt9uumiqoj	12909	12	19900.00
+mmt9ka1qt9uumiqoj	12877	12	19900.00
+mmt9ka1qt9uumiqoj	12771	12	16900.00
+mmt9ka1qt9uumiqoj	13120	12	17900.00
+mmt9ka1qt9uumiqoj	13110	12	19900.00
+mmt9ka1qt9uumiqoj	12943	12	19900.00
+mmt9ka1qt9uumiqoj	13131	12	19900.00
+mmt9ka1qt9uumiqoj	13091	12	18900.00
+mmt9nlw0bj2eouw27	13103	5	45900.00
+mmt9nlw0bj2eouw27	12972	5	48900.00
+mmt9nlw0bj2eouw27	12966	5	43900.00
+mmt9nlw0bj2eouw27	13104	5	39900.00
+mmt9nlw0bj2eouw27	12964	5	46900.00
+mmt9nlw0bj2eouw27	12412	5	34900.00
+mmt9nlw0bj2eouw27	13002	5	41900.00
+mmt9nlw0bj2eouw27	13065	5	32900.00
+mmt9nlw0bj2eouw27	13076	5	27900.00
+mmt9nlw0bj2eouw27	13064	5	32900.00
+mmt9nlw0bj2eouw27	13102	5	29900.00
+mmt9nlw0bj2eouw27	13077	5	42900.00
+mmt9nlw0bj2eouw27	12990	5	32900.00
+mmt9nlw0bj2eouw27	12963	5	35900.00
+mmt9nlw0bj2eouw27	13015	5	37900.00
+mmt9nlw0bj2eouw27	13115	5	49900.00
+mmt9nlw0bj2eouw27	13035	5	38900.00
+mmt9nlw0bj2eouw27	13036	5	29900.00
+mmt9nlw0bj2eouw27	13117	5	24900.00
+mmt9nlw0bj2eouw27	13116	5	21900.00
+mmt9nlw0bj2eouw27	13094	5	21900.00
+mmt9nlw0bj2eouw27	13129	5	22900.00
+mmt9nlw0bj2eouw27	13110	5	19900.00
+mmt9nlw0bj2eouw27	13078	5	22900.00
+mmt9nlw0bj2eouw27	13119	5	19900.00
+mmt9nlw0bj2eouw27	13073	5	15900.00
+mmt9nlw0bj2eouw27	13131	5	19900.00
+mmt9nlw0bj2eouw27	13041	5	29900.00
+mmt9nlw0bj2eouw27	13047	5	27900.00
+mmt9nlw0bj2eouw27	13120	5	18900.00
+mmt9nlw0bj2eouw27	13042	5	29900.00
+mmt9nlw0bj2eouw27	12969	5	21900.00
+mmt9nlw0bj2eouw27	13084	5	29900.00
+mmt9nlw0bj2eouw27	13043	5	34900.00
+mmt9nlw0bj2eouw27	12895	5	30900.00
+mmt9nlw0bj2eouw27	12967	5	24900.00
+mmt9nlw0bj2eouw27	13001	5	32900.00
+mmt9nlw0bj2eouw27	13040	5	32900.00
+mmt9nlw0bj2eouw27	12709	5	19900.00
+mmt9nlw0bj2eouw27	12976	5	37900.00
+mmt9nlw0bj2eouw27	12987	5	27900.00
+mmt9nlw0bj2eouw27	12975	5	34900.00
+mmt9nlw0bj2eouw27	12986	5	34900.00
+mmt9nlw0bj2eouw27	12965	5	34900.00
+mmt9nlw0bj2eouw27	12984	5	24900.00
+mmt9nlw0bj2eouw27	12744	5	19900.00
+mmt9nlw0bj2eouw27	13029	5	32900.00
+mmt9pnknmcc4u2twt	12964	6	46900.00
+mmt9pnknmcc4u2twt	13002	6	41900.00
+mmt9pnknmcc4u2twt	13115	6	49900.00
+mmt9pnknmcc4u2twt	13112	6	37900.00
+mmt9pnknmcc4u2twt	13036	6	29900.00
+mmt9pnknmcc4u2twt	12980	6	22900.00
+mmt9pnknmcc4u2twt	13067	6	33900.00
+mmt9pnknmcc4u2twt	13117	6	24900.00
+mmt9pnknmcc4u2twt	13033	6	29900.00
+mmt9pnknmcc4u2twt	13128	6	23900.00
+mmt9pnknmcc4u2twt	12909	6	19900.00
+mmt9pnknmcc4u2twt	13095	6	17900.00
+mmt9pnknmcc4u2twt	13094	6	21900.00
+mmt9pnknmcc4u2twt	13042	6	29900.00
+mmt9pnknmcc4u2twt	12973	6	42900.00
+mmt9pnknmcc4u2twt	13043	6	34900.00
+mmt9pnknmcc4u2twt	13254	6	34900.00
+mmt9pnknmcc4u2twt	13058	6	29900.00
+mmt9pnknmcc4u2twt	13055	6	29900.00
+mmt9pnknmcc4u2twt	12965	6	27900.00
+mmt9pnknmcc4u2twt	12976	6	37900.00
+mmt9pnknmcc4u2twt	12987	6	27900.00
+mmt9pnknmcc4u2twt	12975	6	34900.00
+mmt9pnknmcc4u2twt	13028	6	35900.00
+mmt9pnknmcc4u2twt	12744	6	19900.00
+mmt9pnknmcc4u2twt	12935	6	35900.00
+mmt9pnknmcc4u2twt	12986	6	34900.00
+mmt9qjskej5ms6x1x	12895	18	29900.00
+mmt9qjskej5ms6x1x	12965	18	26900.00
+mmt9qjskej5ms6x1x	13048	18	23900.00
+mmt9qjskej5ms6x1x	12967	18	23900.00
+mmt9qjskej5ms6x1x	13045	18	24900.00
+mmt9qjskej5ms6x1x	13096	18	23900.00
+mmt9qjskej5ms6x1x	12987	12	26900.00
+mmt9qjskej5ms6x1x	12744	18	18900.00
+mmt9qjskej5ms6x1x	12984	18	24900.00
+mmt9qjskej5ms6x1x	12907	18	28900.00
+mmt9qjskej5ms6x1x	12877	18	18900.00
+mmt9qjskej5ms6x1x	13097	18	23900.00
+mmt9qjskej5ms6x1x	12920	18	20900.00
+mmt9qjskej5ms6x1x	13013	18	22900.00
+mmt9qjskej5ms6x1x	12609	18	23900.00
+mmt9qjskej5ms6x1x	12888	18	18900.00
+mmt9qjskej5ms6x1x	13094	18	20900.00
+mmt9qjskej5ms6x1x	13083	18	18900.00
+mmt9qjskej5ms6x1x	13129	18	21900.00
+mmt9qjskej5ms6x1x	12909	12	19900.00
+mmt9qjskej5ms6x1x	13068	12	21900.00
+mmt9qjskej5ms6x1x	13116	12	21900.00
+mmt9qjskej5ms6x1x	13128	12	22900.00
+mmt9qjskej5ms6x1x	13033	12	28900.00
+mmt9qjskej5ms6x1x	13014	12	31900.00
+mmt9qjskej5ms6x1x	12579	12	39900.00
+mmt9qjskej5ms6x1x	13104	12	35900.00
+mmt9qjskej5ms6x1x	12972	12	46900.00
+mmt9qjskej5ms6x1x	12869	12	31900.00
+mmt9qjskej5ms6x1x	13112	12	36900.00
+mmt9qjskej5ms6x1x	12990	12	37900.00
+mmt9r6b2q007ajtnt	13102	6	29900.00
+mmt9r6b2q007ajtnt	12959	6	37900.00
+mmt9r6b2q007ajtnt	13023	6	34900.00
+mmt9r6b2q007ajtnt	13077	4	42900.00
+mmt9r6b2q007ajtnt	13113	4	49900.00
+mmt9r6b2q007ajtnt	13115	4	49900.00
+mmt9r6b2q007ajtnt	13014	4	29900.00
+mmt9r6b2q007ajtnt	12964	4	46900.00
+mmt9r6b2q007ajtnt	12966	4	43900.00
+mmt9r6b2q007ajtnt	13033	4	29900.00
+mmt9r6b2q007ajtnt	13100	4	25900.00
+mmt9r6b2q007ajtnt	12909	6	19900.00
+mmt9r6b2q007ajtnt	12671	4	29900.00
+mmt9r6b2q007ajtnt	13040	4	32900.00
+mmt9r6b2q007ajtnt	12895	4	30900.00
+mmt9r6b2q007ajtnt	12609	4	24900.00
+mmt9r6b2q007ajtnt	12965	4	27900.00
+mmt9r6b2q007ajtnt	13058	4	29900.00
+mmt9r6b2q007ajtnt	12973	4	42900.00
+mmt9r6b2q007ajtnt	13042	4	29900.00
+mmt9r6b2q007ajtnt	13013	4	23900.00
+mmt9r6b2q007ajtnt	13097	4	24900.00
+mmt9s8xtkyhxxqxvt	13077	12	41900.00
+mmt9s8xtkyhxxqxvt	13076	12	26900.00
+mmt9s8xtkyhxxqxvt	12963	12	34900.00
+mmt9s8xtkyhxxqxvt	12962	12	43900.00
+mmt9s8xtkyhxxqxvt	13113	12	48900.00
+mmt9s8xtkyhxxqxvt	13065	12	31900.00
+mmt9s8xtkyhxxqxvt	13120	12	17900.00
+mmt9s8xtkyhxxqxvt	13119	12	18900.00
+mmt9s8xtkyhxxqxvt	12964	12	45900.00
+mmt9s8xtkyhxxqxvt	13055	12	28900.00
+mmt9s8xtkyhxxqxvt	13046	12	26900.00
+mmt9s8xtkyhxxqxvt	12931	12	28900.00
+mmt9s8xtkyhxxqxvt	13001	12	31900.00
+mmt9s8xtkyhxxqxvt	13028	12	34900.00
+mmt9s8xtkyhxxqxvt	13029	12	31900.00
+mmt9s8xtkyhxxqxvt	12972	12	46900.00
+mmt9s8xtkyhxxqxvt	13107	12	28900.00
+mmt9s8xtkyhxxqxvt	13014	12	31900.00
+mmt9s8xtkyhxxqxvt	13013	12	22900.00
+mmt9s8xtkyhxxqxvt	12967	12	23900.00
+mmt9s8xtkyhxxqxvt	13048	12	23900.00
+mmt9s8xtkyhxxqxvt	12895	12	29900.00
+mmt9s8xtkyhxxqxvt	12609	12	23900.00
+mmt9s8xtkyhxxqxvt	13045	12	24900.00
+mmt9s8xtkyhxxqxvt	12908	12	28900.00
+mmt9s8xtkyhxxqxvt	12984	12	24900.00
+mmt9s8xtkyhxxqxvt	12744	12	18900.00
+mmt9s8xtkyhxxqxvt	12987	12	26900.00
+mmt9tei8ytk1h00vz	13077	9	41900.00
+mmt9tei8ytk1h00vz	13076	6	26900.00
+mmt9tei8ytk1h00vz	12963	9	34900.00
+mmt9tei8ytk1h00vz	12962	9	43900.00
+mmt9tei8ytk1h00vz	13113	9	48900.00
+mmt9tei8ytk1h00vz	13065	9	31900.00
+mmt9tei8ytk1h00vz	12964	9	45900.00
+mmt9tei8ytk1h00vz	12972	9	46900.00
+mmt9tei8ytk1h00vz	13107	9	28900.00
+mmt9tei8ytk1h00vz	13014	9	31900.00
+mmt9tei8ytk1h00vz	13119	12	18900.00
+mmt9tei8ytk1h00vz	13120	12	17900.00
+mmt9tei8ytk1h00vz	13001	9	31900.00
+mmt9tei8ytk1h00vz	13013	9	22900.00
+mmt9tei8ytk1h00vz	12967	9	23900.00
+mmt9tei8ytk1h00vz	13048	9	23900.00
+mmt9tei8ytk1h00vz	12895	9	29900.00
+mmt9tei8ytk1h00vz	12609	9	23900.00
+mmt9tei8ytk1h00vz	13045	9	24900.00
+mmt9tei8ytk1h00vz	13046	9	26900.00
+mmt9tei8ytk1h00vz	12931	9	28900.00
+mmt9tei8ytk1h00vz	13055	6	28900.00
+mmt9tei8ytk1h00vz	12908	9	28900.00
+mmt9tei8ytk1h00vz	12984	9	24900.00
+mmt9tei8ytk1h00vz	12744	9	18900.00
+mmt9tei8ytk1h00vz	13028	9	34900.00
+mmt9tei8ytk1h00vz	13029	9	31900.00
+mmt9tei8ytk1h00vz	12987	9	26900.00
+mmt9ud7lqklo7j0pc	12964	6	45900.00
+mmt9ud7lqklo7j0pc	13055	6	29900.00
+mmt9ud7lqklo7j0pc	13254	6	34900.00
+mmt9ud7lqklo7j0pc	13058	6	29900.00
+mmt9ud7lqklo7j0pc	13078	6	22900.00
+mmt9ud7lqklo7j0pc	13129	6	22900.00
+mmt9ud7lqklo7j0pc	13094	6	21900.00
+mmt9ud7lqklo7j0pc	13067	6	33900.00
+mmt9ud7lqklo7j0pc	12980	6	22900.00
+mmt9ud7lqklo7j0pc	12909	6	19900.00
+mmt9ud7lqklo7j0pc	13116	6	21900.00
+mmt9ud7lqklo7j0pc	13013	6	23900.00
+mmt9ud7lqklo7j0pc	12920	6	21900.00
+mmt9ud7lqklo7j0pc	12744	6	19900.00
+mmun9a0vcpsv8yiiw	12959	6	36900.00
+mmun9a0vcpsv8yiiw	13002	6	40900.00
+mmun9a0vcpsv8yiiw	13115	6	48900.00
+mmun9a0vcpsv8yiiw	13104	6	35900.00
+mmun9a0vcpsv8yiiw	13103	6	39900.00
+mmun9a0vcpsv8yiiw	12972	6	47900.00
+mmun9a0vcpsv8yiiw	12964	6	45900.00
+mmun9a0vcpsv8yiiw	13036	6	28900.00
+mmun9a0vcpsv8yiiw	13011	6	28900.00
+mmun9a0vcpsv8yiiw	13068	6	20900.00
+mmun9a0vcpsv8yiiw	13040	6	31900.00
+mmun9a0vcpsv8yiiw	12973	6	41900.00
+mmun9a0vcpsv8yiiw	13042	6	28900.00
+mmun9a0vcpsv8yiiw	12965	6	26900.00
+mmun9a0vcpsv8yiiw	12671	6	23900.00
+mmun9a0vcpsv8yiiw	13003	6	31900.00
+mmun9a0vcpsv8yiiw	13094	6	20900.00
+mmun9a0vcpsv8yiiw	13120	6	18900.00
+mmun9a0vcpsv8yiiw	13041	6	28900.00
+mmun9a0vcpsv8yiiw	12693	6	24900.00
+mmun9a0vcpsv8yiiw	12943	6	18900.00
+mmun9a0vcpsv8yiiw	12905	6	33900.00
+mmun9a0vcpsv8yiiw	12881	6	32900.00
+mmun9a0vcpsv8yiiw	12935	6	34900.00
+mmun9a0vcpsv8yiiw	12907	6	28900.00
+mmun9a0vcpsv8yiiw	12744	6	19900.00
+mmuz2vh288k4e59ve	13041	12	29900.00
+mmuz2vh288k4e59ve	13001	12	32900.00
+mmuz2vh288k4e59ve	13107	12	29900.00
+mmuz2vh288k4e59ve	12972	12	48900.00
+mmuz2vh288k4e59ve	13002	24	41900.00
+mmuz2vh288k4e59ve	12652	24	29900.00
+mmuz2vh288k4e59ve	12579	24	39900.00
+mmuz2vh288k4e59ve	12968	24	44900.00
+mmuz2vh288k4e59ve	13014	24	29900.00
+mmuz2vh288k4e59ve	13068	24	21900.00
+mmuz2vh288k4e59ve	13011	24	29900.00
+mmuz2vh288k4e59ve	13036	24	29900.00
+mmuz2vh288k4e59ve	13086	24	24900.00
+mmuz2vh288k4e59ve	13116	24	21900.00
+mmuz2vh288k4e59ve	13120	24	17900.00
+mmuz2vh288k4e59ve	13029	24	32900.00
+mmuz2vh288k4e59ve	12907	24	28900.00
+mmuz2vh288k4e59ve	12986	24	34900.00
+mmuz2vh288k4e59ve	12744	24	19900.00
+mmuz2vh288k4e59ve	12984	24	24900.00
+mmuz2vh288k4e59ve	12881	24	33900.00
+mmuz2vh288k4e59ve	12905	24	34900.00
+mmuz2vh288k4e59ve	12908	24	28900.00
+mmuz2vh288k4e59ve	12935	24	35900.00
+mmuz2vh288k4e59ve	12987	24	27900.00
+mmuz2vh288k4e59ve	13042	24	29900.00
+mmuz2vh288k4e59ve	13003	24	32900.00
+mmuz2vh288k4e59ve	12965	24	27900.00
+mmuz2vh288k4e59ve	13047	24	25900.00
+mmuz2vh288k4e59ve	12971	24	36900.00
+mmuz2vh288k4e59ve	13040	24	32900.00
+mmuz2vh288k4e59ve	12712	24	25900.00
+mmuz2vh288k4e59ve	13098	24	22900.00
+mmuz2vh288k4e59ve	13129	24	22900.00
+mmuz2vh288k4e59ve	13122	24	18900.00
+mmuz2vh288k4e59ve	12963	24	35900.00
+mmuz2vh288k4e59ve	13015	24	37900.00
+mmuz2vh288k4e59ve	13023	24	34900.00
+mmuz2vh288k4e59ve	13012	24	39900.00
+mmuz2vh288k4e59ve	13016	24	32900.00
+mmuz2vh288k4e59ve	12990	24	32900.00
+mmuz2vh288k4e59ve	12869	24	31900.00
+mmuz2vh288k4e59ve	13115	24	49900.00
+mmuz2vh288k4e59ve	13102	36	29900.00
+mmuz2vh288k4e59ve	12960	36	39900.00
+mmuz2vh288k4e59ve	12962	36	44900.00
+mmuz2vh288k4e59ve	13065	36	32900.00
+mmuz2vh288k4e59ve	13104	36	35900.00
+mmuz2vh288k4e59ve	13103	36	39900.00
+mmuz2vh288k4e59ve	13100	36	25900.00
+mmuz2vh288k4e59ve	13117	36	23900.00
+mmuz2vh288k4e59ve	13090	36	21900.00
+mmuz2vh288k4e59ve	13110	36	19900.00
+mmuz2vh288k4e59ve	13074	36	19900.00
+mmuz2vh288k4e59ve	13118	36	21900.00
+mmuz2vh288k4e59ve	13094	36	21900.00
+mmuz2vh288k4e59ve	13079	36	19900.00
+mmuz2vh288k4e59ve	13078	36	22900.00
+mmuz2vh288k4e59ve	13084	36	29900.00
+mmuz2vh288k4e59ve	12969	36	21900.00
+mmuz2vh288k4e59ve	12920	36	21900.00
+mmuz2vh288k4e59ve	13013	36	23900.00
+mmuz2vh288k4e59ve	12877	36	19900.00
+mmuz2vh288k4e59ve	13097	36	24900.00
+mmuz2vh288k4e59ve	12943	36	19900.00
+mmuz3v4f45k1zx63o	12395	18	29900.00
+mmuz3v4f45k1zx63o	12402	18	39900.00
+mmuz3v4f45k1zx63o	13002	18	41900.00
+mmuz3v4f45k1zx63o	13090	18	21900.00
+mmuz3v4f45k1zx63o	13116	18	21900.00
+mmuz3v4f45k1zx63o	12980	18	20900.00
+mmuz3v4f45k1zx63o	13055	18	29900.00
+mmuz3v4f45k1zx63o	13254	18	34900.00
+mmuz3v4f45k1zx63o	13039	18	30900.00
+mmuz3v4f45k1zx63o	13118	18	21900.00
+mmuz3v4f45k1zx63o	13091	18	18900.00
+mmuz3v4f45k1zx63o	13110	18	19900.00
+mmuz3v4f45k1zx63o	13121	18	22900.00
+mmuz3v4f45k1zx63o	12771	18	16900.00
+mmuz3v4f45k1zx63o	12877	18	19900.00
+mmuz3v4f45k1zx63o	13122	18	18900.00
+mmuz3v4f45k1zx63o	12943	18	19900.00
+mmuz3v4f45k1zx63o	12895	18	30900.00
+mmuz3v4f45k1zx63o	13084	18	29900.00
+mmz6ste278jak610v	12984	12	24000.00
+mmz6ste278jak610v	12744	12	19000.00
+mmz6ste278jak610v	12975	6	34000.00
+mmz6ste278jak610v	12617	12	35000.00
+mmz6ste278jak610v	13081	24	19000.00
+mmz6ste278jak610v	12909	24	19000.00
+mmz6ste278jak610v	13011	12	29000.00
+mmz6ste278jak610v	13036	12	29000.00
+mmz6ste278jak610v	12747	12	31000.00
+mmz6ste278jak610v	13068	24	21000.00
+mmz6ste278jak610v	13100	24	25000.00
+mmz6ste278jak610v	13128	12	23000.00
+mmz6ste278jak610v	13090	24	21000.00
+mmz6ste278jak610v	13116	24	21000.00
+mmz6ste278jak610v	13094	24	21000.00
+mmz6ste278jak610v	13129	24	22000.00
+mmz6ste278jak610v	13079	24	19000.00
+mmz6ste278jak610v	13095	24	17000.00
+mmz6ste278jak610v	12692	24	21000.00
+mmz6ste278jak610v	12640	12	24000.00
+mmz6ste278jak610v	13083	24	19000.00
+mmz6ste278jak610v	13074	24	19000.00
+mmz6ste278jak610v	13121	24	22000.00
+mmz6ste278jak610v	13110	24	19000.00
+mmz6ste278jak610v	13091	24	18000.00
+mmz6ste278jak610v	13118	24	21000.00
+mmz6ste278jak610v	13122	24	18000.00
+mmz6ste278jak610v	12943	24	19000.00
+mmz6ste278jak610v	13119	24	19000.00
+mmz6ste278jak610v	13013	24	23000.00
+mmz6ste278jak610v	12920	24	21000.00
+mmz6ste278jak610v	13097	24	24000.00
+mmz6ste278jak610v	13120	24	17000.00
+mn4oik827frvi7oiz	13115	5	49900.00
+mn4oik827frvi7oiz	13113	5	49900.00
+mn4oik827frvi7oiz	12963	5	35900.00
+mn4oik827frvi7oiz	12869	5	31900.00
+mn4oik827frvi7oiz	13033	6	29900.00
+mn4oik827frvi7oiz	13067	6	39900.00
+mn4oik827frvi7oiz	12909	6	19900.00
+mn4oik827frvi7oiz	13100	6	25900.00
+mn4oik827frvi7oiz	13128	6	23900.00
+mn4oik827frvi7oiz	12671	6	24900.00
+mn4oik827frvi7oiz	13122	6	18900.00
+mn4oik827frvi7oiz	12609	6	24900.00
+mn4oik827frvi7oiz	13097	6	24900.00
+mn4oik827frvi7oiz	13120	6	17900.00
+mn4oik827frvi7oiz	13094	6	21900.00
+mn4oik827frvi7oiz	13129	6	22900.00
+mn4oik827frvi7oiz	13091	6	18900.00
+mn4oik827frvi7oiz	13118	6	21900.00
+mn4oik827frvi7oiz	12970	6	34900.00
+mn4oik827frvi7oiz	12907	6	28900.00
+mn4oik827frvi7oiz	12881	6	33900.00
+mn4oik827frvi7oiz	12744	12	19900.00
+mn4oik827frvi7oiz	12975	6	34900.00
+mn4oik827frvi7oiz	13001	6	32900.00
+mn4oik827frvi7oiz	13254	6	34900.00
+mn4oik827frvi7oiz	13096	6	24900.00
+mn4oik827frvi7oiz	13047	6	25900.00
+mn4oik827frvi7oiz	13041	6	29900.00
+mn4oik827frvi7oiz	12971	6	36900.00
+mn4oik827frvi7oiz	13042	6	29900.00
+mn4oik827frvi7oiz	13084	6	29900.00
+mn4oik827frvi7oiz	13040	6	32900.00
+mn4oik827frvi7oiz	12895	6	30900.00
+mn0aqu2v5u1mcja3f	12909	12	19900.00
+mn0aqu2v5u1mcja3f	13095	6	17900.00
+mn0aqu2v5u1mcja3f	13094	6	21900.00
+mn0aqu2v5u1mcja3f	13079	6	19900.00
+mn0aqu2v5u1mcja3f	13118	6	21900.00
+mn0aqu2v5u1mcja3f	12671	6	24900.00
+mmwi1or2y1lmz89j1	13117	36	22900.00
+mmwi1or2y1lmz89j1	13100	36	24900.00
+mmwi1or2y1lmz89j1	13094	36	19900.00
+mmwi1or2y1lmz89j1	13013	36	21900.00
+mmwi1or2y1lmz89j1	12877	36	19900.00
+mmwi1or2y1lmz89j1	13097	36	22900.00
+mmwi1or2y1lmz89j1	12943	36	18900.00
+mmwi1or2y1lmz89j1	12881	36	29900.00
+mmwi1or2y1lmz89j1	12907	36	28900.00
+mmwi22ybmtlp3xmn4	13117	18	22900.00
+mmwi22ybmtlp3xmn4	13100	18	24900.00
+mmwi22ybmtlp3xmn4	13094	18	19900.00
+mmwi22ybmtlp3xmn4	13013	18	21900.00
+mmwi22ybmtlp3xmn4	12877	18	19900.00
+mmwi22ybmtlp3xmn4	13097	18	22900.00
+mmwi22ybmtlp3xmn4	12943	18	18900.00
+mmwi22ybmtlp3xmn4	12881	18	29900.00
+mmwi22ybmtlp3xmn4	12907	18	28900.00
+mmwi2g8gthkv4t76s	13117	18	22900.00
+mmwi2g8gthkv4t76s	13100	18	24900.00
+mmwi2g8gthkv4t76s	13094	18	19900.00
+mmwi2g8gthkv4t76s	13013	18	21900.00
+mmwi2g8gthkv4t76s	12877	18	19900.00
+mmwi2g8gthkv4t76s	13097	18	22900.00
+mmwi2g8gthkv4t76s	12943	18	18900.00
+mmwi2g8gthkv4t76s	12881	18	29900.00
+mmwi2g8gthkv4t76s	12907	18	28900.00
+mmwi2xc7yi4fpkkkm	13117	12	22900.00
+mmwi2xc7yi4fpkkkm	13094	12	19900.00
+mmwi2xc7yi4fpkkkm	13013	12	21900.00
+mmwi2xc7yi4fpkkkm	12877	12	19900.00
+mmwi2xc7yi4fpkkkm	13097	12	22900.00
+mmwi2xc7yi4fpkkkm	12881	12	29900.00
+mmwi2xc7yi4fpkkkm	12907	12	28900.00
+mn0aqu2v5u1mcja3f	12895	5	30900.00
+mn0aqu2v5u1mcja3f	12971	4	36900.00
+mn0aqu2v5u1mcja3f	12931	4	29900.00
+mn0aqu2v5u1mcja3f	13055	6	29900.00
+mn0aqu2v5u1mcja3f	12744	6	19900.00
+mn0aqu2v5u1mcja3f	12986	6	34900.00
+mn0aqu2v5u1mcja3f	12908	6	28900.00
+mn7giycyxyobgvhp2	12963	12	35900.00
+mn7giycyxyobgvhp2	13016	12	32900.00
+mn7giycyxyobgvhp2	13012	12	39900.00
+mn7giycyxyobgvhp2	13015	12	37900.00
+mmt9hjj6xd4mpipig	13122	18	18900.00
+mmt9hjj6xd4mpipig	13078	18	22900.00
+mmt9hjj6xd4mpipig	13096	18	24900.00
+mmt9hjj6xd4mpipig	13047	18	27900.00
+mmt9hjj6xd4mpipig	12965	18	27900.00
+mmt9hjj6xd4mpipig	13119	18	19900.00
+mmt9hjj6xd4mpipig	13013	18	21900.00
+mmt9hjj6xd4mpipig	13036	18	27900.00
+mmt9hjj6xd4mpipig	13033	18	27900.00
+mmt9hjj6xd4mpipig	13010	18	27900.00
+mmt9hjj6xd4mpipig	13100	18	24900.00
+mmt9hjj6xd4mpipig	13116	18	21900.00
+mmt9hjj6xd4mpipig	13117	18	21900.00
+mmt9hjj6xd4mpipig	13091	18	19900.00
+mmt9hjj6xd4mpipig	13121	18	19900.00
+mmt9hjj6xd4mpipig	13110	18	19900.00
+mmt9hjj6xd4mpipig	13129	18	19900.00
+mmt9hjj6xd4mpipig	13079	18	19900.00
+mmt9hjj6xd4mpipig	12884	18	19900.00
+mmt9hjj6xd4mpipig	13094	18	19900.00
+mmt9hjj6xd4mpipig	12895	18	30900.00
+mn7ulw128xqmshwb1	13120	12	17900.00
+mn7ulw128xqmshwb1	13122	12	18900.00
+mn7ulw128xqmshwb1	13079	12	19900.00
+mn7ulw128xqmshwb1	13095	12	17900.00
+mn7ulw128xqmshwb1	13003	12	32900.00
+mn7ulw128xqmshwb1	12907	12	28900.00
+mn7ulw128xqmshwb1	12984	12	24900.00
+mn7ulw128xqmshwb1	12986	12	34900.00
+mn7ulw128xqmshwb1	13117	12	23900.00
+mn7ulw128xqmshwb1	13106	12	41900.00
+mn7ulw128xqmshwb1	13102	12	29900.00
+mn7ulw128xqmshwb1	12920	12	21900.00
+mn7ulw128xqmshwb1	13131	12	19900.00
+mn7ulw128xqmshwb1	13094	12	21900.00
+mn7ulw128xqmshwb1	13064	12	32900.00
+mn7ulw128xqmshwb1	13033	12	29900.00
+mn7ulw128xqmshwb1	13081	12	19900.00
+mn7ulw128xqmshwb1	13036	12	29900.00
+mn8xtx9kl6c0ac0v9	13003	12	32900.00
+mn8xtx9kl6c0ac0v9	13131	12	19900.00
+mn8xtx9kl6c0ac0v9	12777	12	14900.00
+mn8xtx9kl6c0ac0v9	13120	12	17900.00
+mmxfucvhrv09phu8u	13104	12	35900.00
+mmxfucvhrv09phu8u	13100	12	25900.00
+mmxfucvhrv09phu8u	13011	12	29900.00
+mmxfucvhrv09phu8u	13036	12	29900.00
+mmxfucvhrv09phu8u	13116	12	21900.00
+mmxfucvhrv09phu8u	13128	12	23900.00
+mmxfucvhrv09phu8u	13117	12	24900.00
+mmxfucvhrv09phu8u	12909	12	19900.00
+mmxfucvhrv09phu8u	13079	12	19900.00
+mmxfucvhrv09phu8u	13118	12	21900.00
+mmxfucvhrv09phu8u	13091	12	18900.00
+mmxfucvhrv09phu8u	13094	12	21900.00
+mmxfucvhrv09phu8u	13013	12	23900.00
+mmxfucvhrv09phu8u	13097	12	24900.00
+mmxfucvhrv09phu8u	12877	12	19900.00
+mmxfucvhrv09phu8u	13058	12	29900.00
+mmxfucvhrv09phu8u	13042	12	29900.00
+mmxfucvhrv09phu8u	13055	12	29900.00
+mmxfucvhrv09phu8u	13003	12	32900.00
+mmxfucvhrv09phu8u	12965	12	27900.00
+mmxfucvhrv09phu8u	12935	12	35900.00
+mmxfucvhrv09phu8u	12975	12	34900.00
+mmxfucvhrv09phu8u	12744	12	19900.00
+mn4nmkwyia7f4pjvh	13115	6	49900.00
+mn4nmkwyia7f4pjvh	12412	6	34900.00
+mn4nmkwyia7f4pjvh	13015	6	35900.00
+mn4nmkwyia7f4pjvh	13077	6	42900.00
+mn4nmkwyia7f4pjvh	12962	6	44900.00
+mn4nmkwyia7f4pjvh	13118	6	21900.00
+mn4nmkwyia7f4pjvh	12909	6	19900.00
+mn4nmkwyia7f4pjvh	13036	6	29900.00
+mn4nmkwyia7f4pjvh	13068	6	21900.00
+mn4nmkwyia7f4pjvh	13116	6	21900.00
+mn4nmkwyia7f4pjvh	13117	6	23900.00
+mn4nmkwyia7f4pjvh	12980	6	20900.00
+mn4nmkwyia7f4pjvh	13067	6	33900.00
+mn4nmkwyia7f4pjvh	13010	6	29900.00
+mn4nmkwyia7f4pjvh	13100	6	25900.00
+mn4nmkwyia7f4pjvh	13128	6	23900.00
+mn4nmkwyia7f4pjvh	13131	6	19900.00
+mn4nmkwyia7f4pjvh	13013	6	23900.00
+mn4nmkwyia7f4pjvh	12671	6	24900.00
+mn4nmkwyia7f4pjvh	12971	6	36900.00
+mn4nmkwyia7f4pjvh	13043	6	34900.00
+mn4nmkwyia7f4pjvh	13055	6	29900.00
+mn4nmkwyia7f4pjvh	12970	6	34900.00
+mn4nmkwyia7f4pjvh	12973	6	42900.00
+mn4nmkwyia7f4pjvh	13040	6	32900.00
+mn4nmkwyia7f4pjvh	13084	6	29900.00
+mn4nmkwyia7f4pjvh	13041	6	29900.00
+mn4nmkwyia7f4pjvh	13045	6	25900.00
+mn4nmkwyia7f4pjvh	12617	9	35900.00
+mn4nmkwyia7f4pjvh	12976	6	37900.00
+mn4nmkwyia7f4pjvh	12987	6	27900.00
+mn4nmkwyia7f4pjvh	12975	9	34900.00
+mn4nmkwyia7f4pjvh	12984	6	24900.00
+mn4nmkwyia7f4pjvh	12935	6	35900.00
+mn4nmkwyia7f4pjvh	12907	6	28900.00
+mn4nmkwyia7f4pjvh	12908	6	28900.00
+mn4nmkwyia7f4pjvh	12986	6	34900.00
+mn4nmkwyia7f4pjvh	12744	6	19900.00
+mn4nmkwyia7f4pjvh	12881	6	33900.00
+mn4nmkwyia7f4pjvh	13028	12	35900.00
+mn4nmkwyia7f4pjvh	13029	6	32900.00
+mn4nmkwyia7f4pjvh	13012	6	39900.00
+mn51a0p5j06q8ekab	12869	12	31900.00
+mn51a0p5j06q8ekab	13101	12	35900.00
+mn51a0p5j06q8ekab	12907	12	28900.00
+mn51a0p5j06q8ekab	12908	12	28900.00
+mn51a0p5j06q8ekab	12895	12	30900.00
+mn51a0p5j06q8ekab	13096	12	24900.00
+mn51a0p5j06q8ekab	13040	12	32900.00
+mn51a0p5j06q8ekab	12971	12	36900.00
+mn51a0p5j06q8ekab	13047	12	25900.00
+mn51a0p5j06q8ekab	12712	12	27900.00
+mn51a0p5j06q8ekab	13118	12	21900.00
+mn51a0p5j06q8ekab	13120	12	17900.00
+mn7gi3p0t232fsqsv	12969	12	21900.00
+mn7gi3p0t232fsqsv	12965	12	27900.00
+mn7gi3p0t232fsqsv	12931	10	29900.00
+mn7gi3p0t232fsqsv	13047	8	25900.00
+mn7gi3p0t232fsqsv	13131	12	19900.00
+mn7gi3p0t232fsqsv	13036	12	29900.00
+mn7gi3p0t232fsqsv	13081	12	19900.00
+mn7gi3p0t232fsqsv	13091	12	19900.00
+mn7gi3p0t232fsqsv	13094	12	21900.00
+mn7gi3p0t232fsqsv	13013	12	23900.00
+mn7gi3p0t232fsqsv	13120	12	17900.00
+mn7gi3p0t232fsqsv	12907	12	28900.00
+mn7gi3p0t232fsqsv	12975	12	34900.00
+mn7gi3p0t232fsqsv	13112	6	37900.00
+mn7gi3p0t232fsqsv	12869	12	31900.00
+mn7gi3p0t232fsqsv	13101	12	35900.00
+mn7gi3p0t232fsqsv	13076	12	27900.00
+mn7gi3p0t232fsqsv	13113	12	49900.00
+mn7gi3p0t232fsqsv	13065	12	32900.00
+mn7gi3p0t232fsqsv	13102	12	29900.00
+mn7gi3p0t232fsqsv	12963	12	35900.00
+mn7gi3p0t232fsqsv	13015	12	37900.00
+mn7giycyxyobgvhp2	13094	12	21900.00
+mn7giycyxyobgvhp2	13131	12	19900.00
+mn7giycyxyobgvhp2	12965	12	27900.00
+mn7giycyxyobgvhp2	12895	12	30900.00
+mn7giycyxyobgvhp2	13048	12	25900.00
+mn7giycyxyobgvhp2	13041	12	28900.00
+mmyzdhro97mizxlhk	13116	18	21900.00
+mmyzdhro97mizxlhk	13117	18	24900.00
+mmyzdhro97mizxlhk	13068	18	21900.00
+mmyzdhro97mizxlhk	13010	18	29900.00
+mmyzdhro97mizxlhk	13067	18	33900.00
+mmyzdhro97mizxlhk	12980	18	22900.00
+mmyzdhro97mizxlhk	13100	18	25900.00
+mmyzdhro97mizxlhk	13011	18	29900.00
+mmyzdhro97mizxlhk	13036	18	29900.00
+mmyzdhro97mizxlhk	12747	18	31900.00
+mmyzdhro97mizxlhk	13033	18	29900.00
+mmyzdhro97mizxlhk	13086	18	24900.00
+mmyzdhro97mizxlhk	13112	12	37900.00
+mmyzdhro97mizxlhk	13113	12	49900.00
+mmyzdhro97mizxlhk	12962	12	44900.00
+mmyzdhro97mizxlhk	13102	18	29900.00
+mmyzdhro97mizxlhk	13077	12	42900.00
+mmyzdhro97mizxlhk	13115	12	49900.00
+mmyzdhro97mizxlhk	12963	12	35900.00
+mmyzdhro97mizxlhk	13016	12	32900.00
+mmyzdhro97mizxlhk	13002	12	41900.00
+mmyzdhro97mizxlhk	12395	18	29900.00
+mmyzdhro97mizxlhk	13029	12	32900.00
+mmyzdhro97mizxlhk	12987	18	27900.00
+mmyzdhro97mizxlhk	13042	18	29900.00
+mmyzdhro97mizxlhk	13055	18	29900.00
+mmyzdhro97mizxlhk	12965	18	27900.00
+mmyzdhro97mizxlhk	13058	18	29900.00
+mmyzdhro97mizxlhk	13084	18	29900.00
+mmyzdhro97mizxlhk	13001	18	32900.00
+mmyzdhro97mizxlhk	13041	18	29900.00
+mmyzdhro97mizxlhk	13254	12	34900.00
+mmyzdhro97mizxlhk	12964	12	46900.00
+mmyzdhro97mizxlhk	12986	12	34900.00
+mmyzdhro97mizxlhk	12972	12	48900.00
+mmyzdhro97mizxlhk	13120	18	18900.00
+mmyzdhro97mizxlhk	13097	18	24900.00
+mmyzdhro97mizxlhk	12920	18	21900.00
+mmyzdhro97mizxlhk	13079	18	19900.00
+mmyzdhro97mizxlhk	13129	18	22900.00
+mmyzdhro97mizxlhk	13094	18	21900.00
+mmyzdhro97mizxlhk	13091	18	18900.00
+mmyzdhro97mizxlhk	13118	18	21900.00
+mmyzdhro97mizxlhk	12692	18	22900.00
+mmyzdhro97mizxlhk	13121	18	22900.00
+mmyzdhro97mizxlhk	12640	18	24900.00
+mmyzdhro97mizxlhk	13083	18	19900.00
+mmyzdhro97mizxlhk	13074	18	19900.00
+mmyzdhro97mizxlhk	13110	18	19900.00
+mmyzdhro97mizxlhk	13095	18	17900.00
+mmyzdhro97mizxlhk	12909	18	19900.00
+gfrmg3vvb	13115	6	49900.00
+gfrmg3vvb	12412	6	34900.00
+gfrmg3vvb	13015	6	35900.00
+gfrmg3vvb	13077	6	42900.00
+gfrmg3vvb	12962	6	44900.00
+gfrmg3vvb	13118	6	21900.00
+gfrmg3vvb	12909	6	19900.00
+gfrmg3vvb	13036	6	29900.00
+gfrmg3vvb	13068	6	21900.00
+gfrmg3vvb	13116	6	21900.00
+gfrmg3vvb	13117	6	23900.00
+gfrmg3vvb	12980	6	20900.00
+gfrmg3vvb	13067	6	39900.00
+gfrmg3vvb	13010	6	29900.00
+gfrmg3vvb	13100	6	25900.00
+gfrmg3vvb	13128	6	23900.00
+gfrmg3vvb	13131	6	19900.00
+gfrmg3vvb	13013	6	23900.00
+gfrmg3vvb	12671	6	24900.00
+gfrmg3vvb	12971	6	36900.00
+gfrmg3vvb	13043	6	34900.00
+gfrmg3vvb	13055	6	29900.00
+gfrmg3vvb	12970	6	34900.00
+gfrmg3vvb	12973	6	42900.00
+gfrmg3vvb	13040	6	32900.00
+gfrmg3vvb	13084	6	29900.00
+gfrmg3vvb	13041	6	29900.00
+gfrmg3vvb	13045	6	25900.00
+gfrmg3vvb	12617	9	35900.00
+gfrmg3vvb	12976	6	37900.00
+gfrmg3vvb	12987	6	27900.00
+gfrmg3vvb	12975	9	34900.00
+gfrmg3vvb	12984	6	24900.00
+gfrmg3vvb	12935	6	35900.00
+gfrmg3vvb	12907	6	28900.00
+gfrmg3vvb	12908	6	28900.00
+gfrmg3vvb	12986	6	34900.00
+gfrmg3vvb	12744	6	19900.00
+gfrmg3vvb	12881	6	33900.00
+gfrmg3vvb	13028	12	35900.00
+gfrmg3vvb	13029	6	32900.00
+gfrmg3vvb	13012	6	39900.00
+mn7giycyxyobgvhp2	13001	12	32900.00
+mn7giycyxyobgvhp2	12984	12	24900.00
+mn7giycyxyobgvhp2	12943	12	19900.00
+mn7giycyxyobgvhp2	12920	12	21900.00
+mn7giycyxyobgvhp2	13110	12	19900.00
+mn7giycyxyobgvhp2	13095	12	17900.00
+mn7giycyxyobgvhp2	13074	12	19900.00
+mn7giycyxyobgvhp2	13121	12	22900.00
+mn7giycyxyobgvhp2	12975	12	34900.00
+mn7giycyxyobgvhp2	12744	12	19900.00
+mn7giycyxyobgvhp2	12908	12	28900.00
+mn7giycyxyobgvhp2	13120	12	17900.00
+mn7giycyxyobgvhp2	13013	12	23900.00
+mn7giycyxyobgvhp2	13097	12	24900.00
+mn7giycyxyobgvhp2	12973	12	42900.00
+mn7giycyxyobgvhp2	12967	12	24900.00
+mn7giycyxyobgvhp2	12970	12	34900.00
+mn7giycyxyobgvhp2	13254	12	34900.00
+mn7giycyxyobgvhp2	12712	12	27900.00
+mn7giycyxyobgvhp2	13045	12	25900.00
+mn7giycyxyobgvhp2	13042	12	29900.00
+mn7giycyxyobgvhp2	13055	12	29900.00
+mn7giycyxyobgvhp2	13078	12	22900.00
+mn7giycyxyobgvhp2	12971	12	36900.00
+mn7giycyxyobgvhp2	12969	12	21900.00
+mn7giycyxyobgvhp2	12931	12	29900.00
+mn7giycyxyobgvhp2	12869	12	31900.00
+mn7giycyxyobgvhp2	13102	12	29900.00
+mn7giycyxyobgvhp2	13065	12	32900.00
+mn7giycyxyobgvhp2	13076	12	27900.00
+mn8xtx9kl6c0ac0v9	13122	12	18900.00
+mn8xtx9kl6c0ac0v9	12865	12	16900.00
+mn8xtx9kl6c0ac0v9	13090	12	21900.00
+mn8xtx9kl6c0ac0v9	12747	12	29900.00
+mn8xtx9kl6c0ac0v9	13086	12	24900.00
+mn8xtx9kl6c0ac0v9	13011	12	29900.00
+mn8xtx9kl6c0ac0v9	12909	12	19900.00
+mn8xtx9kl6c0ac0v9	13116	12	21900.00
+mn8xtx9kl6c0ac0v9	13128	12	23900.00
+mn8xtx9kl6c0ac0v9	13068	12	21900.00
+mn8xtx9kl6c0ac0v9	13117	12	23900.00
+mn8xtx9kl6c0ac0v9	13081	12	19900.00
+mnadiddtk74omdj4e	13003	12	32900.00
+mnadiddtk74omdj4e	13254	12	34900.00
+mnadiddtk74omdj4e	13120	12	17900.00
+mnadiddtk74omdj4e	13013	12	23900.00
+mnadiddtk74omdj4e	12920	12	21900.00
+mnadiddtk74omdj4e	12943	12	19900.00
+mnadiddtk74omdj4e	13097	12	24900.00
+mnadiddtk74omdj4e	12754	12	16900.00
+mnadiddtk74omdj4e	13040	12	32900.00
+mnadiddtk74omdj4e	13098	12	22900.00
+mnadiddtk74omdj4e	13091	12	18900.00
+mnadiddtk74omdj4e	12640	12	24900.00
+mnadiddtk74omdj4e	13110	12	19900.00
+mnadiddtk74omdj4e	13074	12	19900.00
+mnadiddtk74omdj4e	13121	12	22900.00
+mnadiddtk74omdj4e	13079	12	19900.00
+mnadiddtk74omdj4e	13094	12	21900.00
+mnadiddtk74omdj4e	12986	12	34900.00
+mnadiddtk74omdj4e	12984	12	24900.00
+mnadiddtk74omdj4e	12907	12	28900.00
+mnadiddtk74omdj4e	12744	12	19900.00
+mnadiddtk74omdj4e	12975	12	34900.00
+mnadiddtk74omdj4e	12617	12	35900.00
+mnadiddtk74omdj4e	12971	12	36900.00
+mnadiddtk74omdj4e	12969	12	21900.00
+mnadiddtk74omdj4e	13078	12	22900.00
+mnadiddtk74omdj4e	12704	12	29900.00
+mnadiddtk74omdj4e	12712	12	27900.00
+mnadiddtk74omdj4e	12970	12	34900.00
+mnadiddtk74omdj4e	12973	12	42900.00
+mnadiddtk74omdj4e	13047	12	25900.00
+mnadiddtk74omdj4e	13100	12	25900.00
+mnadiddtk74omdj4e	13067	12	39900.00
+mnadiddtk74omdj4e	13090	12	21900.00
+mnadiddtk74omdj4e	12909	12	19900.00
+mnadiddtk74omdj4e	13128	12	23900.00
+mnadiddtk74omdj4e	13116	12	21900.00
+mnadiddtk74omdj4e	13068	12	21900.00
+mnadiddtk74omdj4e	13081	12	19900.00
+mnadiddtk74omdj4e	13033	12	29900.00
+mnadiddtk74omdj4e	13102	12	29900.00
+mnadiddtk74omdj4e	13113	12	49900.00
+mnadiddtk74omdj4e	13077	12	42900.00
+mnadiddtk74omdj4e	12869	12	31900.00
+mnadiddtk74omdj4e	13002	12	41900.00
+mnadiddtk74omdj4e	12963	12	35900.00
+mndkevncdu5l3l86h	13040	12	32900.00
+mndkevncdu5l3l86h	12920	12	21900.00
+mndkevncdu5l3l86h	12965	12	27900.00
+mndkevncdu5l3l86h	13131	12	19900.00
+mndkevncdu5l3l86h	13003	12	32900.00
+mndkevncdu5l3l86h	13120	12	17900.00
+mndkevncdu5l3l86h	13118	12	21900.00
+mndkevncdu5l3l86h	13094	12	21900.00
+mndkevncdu5l3l86h	13078	12	22900.00
+mndkevncdu5l3l86h	13116	12	21900.00
+mndkevncdu5l3l86h	13113	6	49900.00
+mndkeggvwx21xj6pc	12869	12	31900.00
+mndkeggvwx21xj6pc	13102	12	29900.00
+mndkeggvwx21xj6pc	12909	12	19900.00
+mndkeggvwx21xj6pc	13128	12	23900.00
+mndkeggvwx21xj6pc	13036	12	29900.00
+mndkeggvwx21xj6pc	13117	12	23900.00
+mndkeggvwx21xj6pc	12908	12	28900.00
+mndkeggvwx21xj6pc	12975	12	34900.00
+mndkeggvwx21xj6pc	12984	12	24900.00
+mndkeggvwx21xj6pc	12907	12	28900.00
+mndkeggvwx21xj6pc	12986	12	34900.00
+mndkeggvwx21xj6pc	12931	12	29900.00
+mndkeggvwx21xj6pc	12694	12	24900.00
+mndkeggvwx21xj6pc	13078	12	22900.00
+mndkeggvwx21xj6pc	12704	12	29900.00
+mndkeggvwx21xj6pc	13121	12	22900.00
+mndkeggvwx21xj6pc	13079	12	19900.00
+mndkeggvwx21xj6pc	13094	12	21900.00
+mndkeggvwx21xj6pc	13118	12	21900.00
+mndkeggvwx21xj6pc	12895	12	30900.00
+mndkeggvwx21xj6pc	13040	12	32900.00
+mndkeggvwx21xj6pc	13098	12	22900.00
+mndkeggvwx21xj6pc	13097	12	24900.00
+mndkeggvwx21xj6pc	12920	12	21900.00
+mndkeggvwx21xj6pc	13013	12	23900.00
+mn4koe8esfolub6mf	13028	6	35900.00
+mn4koe8esfolub6mf	13029	6	32900.00
+mn4koe8esfolub6mf	12881	6	33900.00
+mn4koe8esfolub6mf	12744	6	19900.00
+mn4koe8esfolub6mf	12986	6	34900.00
+mn4koe8esfolub6mf	12908	6	28900.00
+mn4koe8esfolub6mf	12935	6	35900.00
+mn4koe8esfolub6mf	12907	6	28900.00
+mn4koe8esfolub6mf	12984	6	24900.00
+mn4koe8esfolub6mf	12975	6	34900.00
+mn4koe8esfolub6mf	12987	6	27900.00
+mn4koe8esfolub6mf	12976	6	37900.00
+mn4koe8esfolub6mf	12617	6	35900.00
+mn4koe8esfolub6mf	13045	6	25900.00
+mn4koe8esfolub6mf	13041	6	29900.00
+mn4koe8esfolub6mf	13084	6	29900.00
+mn4koe8esfolub6mf	13040	6	32900.00
+mn4koe8esfolub6mf	12973	6	42900.00
+mn4koe8esfolub6mf	12970	6	34900.00
+mn4koe8esfolub6mf	13055	6	29900.00
+mn4koe8esfolub6mf	12971	6	36900.00
+mn4koe8esfolub6mf	13013	6	23900.00
+mn4koe8esfolub6mf	13131	6	19900.00
+mn4koe8esfolub6mf	13128	6	23900.00
+mn4koe8esfolub6mf	13010	6	29900.00
+mn4koe8esfolub6mf	13067	6	39900.00
+mn4koe8esfolub6mf	13116	6	21900.00
+mn4koe8esfolub6mf	13036	6	29900.00
+mn4koe8esfolub6mf	12962	6	44900.00
+mn4koe8esfolub6mf	13015	6	37900.00
+mn4koe8esfolub6mf	13077	6	42900.00
+mn4koe8esfolub6mf	13115	6	49900.00
+mnq55ob4yq8bkcvqj	13023	6	34900.00
+mnq55ob4yq8bkcvqj	12990	6	32900.00
+mnq55ob4yq8bkcvqj	13012	6	39900.00
+mnq55ob4yq8bkcvqj	13002	6	41900.00
+mnq55ob4yq8bkcvqj	13102	6	29900.00
+mnq55ob4yq8bkcvqj	13115	6	49900.00
+mnq55ob4yq8bkcvqj	13065	6	32900.00
+mnq55ob4yq8bkcvqj	13077	6	42900.00
+mnq55ob4yq8bkcvqj	13112	6	37900.00
+mnq55ob4yq8bkcvqj	12869	6	31900.00
+mnq55ob4yq8bkcvqj	13113	6	49900.00
+mnq55ob4yq8bkcvqj	13104	3	39900.00
+mnq55ob4yq8bkcvqj	13106	3	45900.00
+mnq55ob4yq8bkcvqj	12972	3	48900.00
+mnq55ob4yq8bkcvqj	13055	3	29900.00
+mnq55ob4yq8bkcvqj	12969	3	21900.00
+mnq55ob4yq8bkcvqj	12704	3	29900.00
+mnq55ob4yq8bkcvqj	13039	3	30900.00
+mnq55ob4yq8bkcvqj	13058	3	29900.00
+mnq55ob4yq8bkcvqj	12970	3	34900.00
+mnq55ob4yq8bkcvqj	13254	3	34900.00
+mnq55ob4yq8bkcvqj	13047	3	25900.00
+mnq55ob4yq8bkcvqj	13135	3	29900.00
+mnq55ob4yq8bkcvqj	13144	3	28900.00
+mnq55ob4yq8bkcvqj	13136	3	23900.00
+mnq55ob4yq8bkcvqj	12617	3	35900.00
+mnq55ob4yq8bkcvqj	13029	3	32900.00
+mnq55ob4yq8bkcvqj	12907	3	28900.00
+mnq55ob4yq8bkcvqj	12908	3	28900.00
+mnq55ob4yq8bkcvqj	13036	3	29900.00
+mnq55ob4yq8bkcvqj	13139	3	25900.00
+mnq55ob4yq8bkcvqj	13137	3	24900.00
+mnq55ob4yq8bkcvqj	13148	3	25900.00
+mnq55ob4yq8bkcvqj	13033	3	29900.00
+mnq55ob4yq8bkcvqj	13090	3	21900.00
+mnq55ob4yq8bkcvqj	13081	3	19900.00
+mnq55ob4yq8bkcvqj	12909	3	19900.00
+mnq55ob4yq8bkcvqj	13068	3	21900.00
+mnq55ob4yq8bkcvqj	13117	3	23900.00
+mnq55ob4yq8bkcvqj	13116	3	21900.00
+mnq55ob4yq8bkcvqj	13079	3	19900.00
+mnq55ob4yq8bkcvqj	13094	3	21900.00
+mnq55ob4yq8bkcvqj	13118	3	21900.00
+mnq55ob4yq8bkcvqj	13095	3	17900.00
+mnq55ob4yq8bkcvqj	13093	3	23900.00
+mnq55ob4yq8bkcvqj	13129	3	22900.00
+mnq55ob4yq8bkcvqj	13110	3	19900.00
+mnq55ob4yq8bkcvqj	13121	3	22900.00
+mnq55ob4yq8bkcvqj	13040	3	32900.00
+mnq55ob4yq8bkcvqj	13098	3	22900.00
+mnq55ob4yq8bkcvqj	12623	3	29900.00
+mnq55ob4yq8bkcvqj	13048	3	25900.00
+mnq55ob4yq8bkcvqj	13096	3	24900.00
+mnq55ob4yq8bkcvqj	13013	3	23900.00
+mnq55ob4yq8bkcvqj	13097	3	24900.00
+mnq55ob4yq8bkcvqj	12694	3	24900.00
+mnq55ob4yq8bkcvqj	13138	3	18900.00
+mnq55ob4yq8bkcvqj	12877	3	19900.00
+mnq55ob4yq8bkcvqj	13120	3	17900.00
+mnq55ob4yq8bkcvqj	13122	3	18900.00
+mnq56buplctredgo0	13023	12	34900.00
+mnq56buplctredgo0	13002	12	41900.00
+mnq56buplctredgo0	13015	12	37900.00
+mnq56buplctredgo0	13113	12	49900.00
+mnq56buplctredgo0	12869	12	31900.00
+mnq56buplctredgo0	13102	12	29900.00
+mnq56buplctredgo0	13109	12	30900.00
+mnq56buplctredgo0	12969	12	21900.00
+mnq56buplctredgo0	13039	12	30900.00
+mnq56buplctredgo0	13055	12	29900.00
+mnq56buplctredgo0	12931	12	29900.00
+mnq56buplctredgo0	13058	12	29900.00
+mnq56buplctredgo0	12744	12	19900.00
+mnq56buplctredgo0	12984	12	24900.00
+mnq56buplctredgo0	13144	12	28900.00
+mnq56buplctredgo0	13136	12	23900.00
+mnq56buplctredgo0	12617	12	35900.00
+mnq56buplctredgo0	12908	12	28900.00
+mnq56buplctredgo0	12907	12	28900.00
+mnq56buplctredgo0	13028	12	35900.00
+mnq56buplctredgo0	13036	12	29900.00
+mnq56buplctredgo0	13148	12	25900.00
+mnq56buplctredgo0	12909	12	19900.00
+mnq56buplctredgo0	13116	12	21900.00
+mnq56buplctredgo0	13100	12	25900.00
+mnq56buplctredgo0	13079	12	19900.00
+mnq56buplctredgo0	13118	12	21900.00
+mnq56buplctredgo0	13095	12	17900.00
+mnq56buplctredgo0	13110	12	19900.00
+mnq56buplctredgo0	13129	12	22900.00
+mnq56buplctredgo0	13121	6	22900.00
+mnq56buplctredgo0	13003	12	32900.00
+mnq56buplctredgo0	12877	12	19900.00
+mnq56buplctredgo0	12943	12	19900.00
+mnq56buplctredgo0	12965	12	27900.00
+mnq9ibrzsv4df2q79	13012	4	39900.00
+mnq9ibrzsv4df2q79	13002	4	41900.00
+mnq9ibrzsv4df2q79	13102	4	29900.00
+mnq9ibrzsv4df2q79	13113	4	49900.00
+mnq9ibrzsv4df2q79	13104	4	39900.00
+mnq9ibrzsv4df2q79	13254	4	34900.00
+mnq9ibrzsv4df2q79	13135	4	29900.00
+mnq9ibrzsv4df2q79	12907	4	28900.00
+mnq9ibrzsv4df2q79	12617	4	35900.00
+mnq9ibrzsv4df2q79	12744	4	19900.00
+mnq9ibrzsv4df2q79	13117	4	23900.00
+mnq9ibrzsv4df2q79	13144	4	28900.00
+mnq9ibrzsv4df2q79	13068	4	21900.00
+mnq9ibrzsv4df2q79	13148	4	25900.00
+mnq9ibrzsv4df2q79	12909	4	19900.00
+mnq9ibrzsv4df2q79	13036	4	29900.00
+mnq9ibrzsv4df2q79	12943	4	19900.00
+mnq9ibrzsv4df2q79	12877	4	19900.00
+mnq9irx3nhdxqwlkm	13012	6	39900.00
+mnq9irx3nhdxqwlkm	13002	6	41900.00
+mnq9irx3nhdxqwlkm	13102	6	29900.00
+mnq9irx3nhdxqwlkm	13113	4	49900.00
+mnq9irx3nhdxqwlkm	13104	6	39900.00
+mnq9irx3nhdxqwlkm	13254	6	34900.00
+mnq9irx3nhdxqwlkm	13135	6	29900.00
+mnq9irx3nhdxqwlkm	12907	6	28900.00
+mnq9irx3nhdxqwlkm	12617	4	35900.00
+mnq9irx3nhdxqwlkm	12744	6	19900.00
+mnq9irx3nhdxqwlkm	13117	6	23900.00
+mnq9irx3nhdxqwlkm	13144	6	28900.00
+mnq9irx3nhdxqwlkm	13068	4	21900.00
+mnq9irx3nhdxqwlkm	13148	6	25900.00
+mnq9irx3nhdxqwlkm	12909	6	19900.00
+mnq9irx3nhdxqwlkm	13036	6	29900.00
+mnq9irx3nhdxqwlkm	12943	6	19900.00
+mnq9irx3nhdxqwlkm	12877	6	19900.00
+mnri2xoppmhuniccx	12877	6	19900.00
+mnri2xoppmhuniccx	13120	6	17900.00
+mnri2xoppmhuniccx	12895	6	30900.00
+mnri2xoppmhuniccx	12920	6	21900.00
+mnri2xoppmhuniccx	12777	6	14900.00
+mnri2xoppmhuniccx	13121	6	22900.00
+mnri2xoppmhuniccx	13118	6	21900.00
+mnri2xoppmhuniccx	13129	6	22900.00
+mnri2xoppmhuniccx	13137	6	24900.00
+mnri2xoppmhuniccx	13254	6	34900.00
+mnri2xoppmhuniccx	13101	6	35900.00
+mnri2xoppmhuniccx	13002	6	41900.00
+mnri3aubiv5y0zj7u	13055	6	29900.00
+mnri3aubiv5y0zj7u	13254	6	34900.00
+mnri3aubiv5y0zj7u	13137	6	24900.00
+mnri3aubiv5y0zj7u	13129	6	22900.00
+mnri3aubiv5y0zj7u	13118	6	21900.00
+mnri3aubiv5y0zj7u	13121	6	22900.00
+mnri3aubiv5y0zj7u	12777	6	14900.00
+mnri3aubiv5y0zj7u	12920	6	21900.00
+mnri3aubiv5y0zj7u	12895	6	30900.00
+mnri3aubiv5y0zj7u	13120	6	17900.00
+mnri3aubiv5y0zj7u	12877	6	19900.00
+mnri3lo36vcjpassv	12877	6	19900.00
+mnri3lo36vcjpassv	13120	6	17900.00
+mnri3lo36vcjpassv	12895	6	30900.00
+mnri3lo36vcjpassv	12920	6	21900.00
+mnri3lo36vcjpassv	12777	6	14900.00
+mnri3lo36vcjpassv	13121	6	22900.00
+mnri3lo36vcjpassv	13118	6	21900.00
+mnri3lo36vcjpassv	13129	6	22900.00
+mnri3lo36vcjpassv	13137	6	24900.00
+mnri3lo36vcjpassv	13254	6	34900.00
+mnri3lo36vcjpassv	13055	6	29900.00
+mnri3znyvcsccm02m	13101	6	35900.00
+mnri3znyvcsccm02m	13002	6	41900.00
+mnx5p08onet529j0u	13148	12	25900.00
+mnx5p08onet529j0u	13081	12	19900.00
+mnx5p08onet529j0u	13100	12	25900.00
+mnx5p08onet529j0u	13137	12	24900.00
+mnx5p08onet529j0u	13110	12	19900.00
+mnx5p08onet529j0u	13094	12	21900.00
+mnx5p08onet529j0u	13118	12	21900.00
+mnx5p08onet529j0u	13129	12	22900.00
+mnx5p08onet529j0u	13013	12	23900.00
+mnx5p08onet529j0u	13119	12	19900.00
+mnx5p08onet529j0u	13122	12	18900.00
+mnx5p08onet529j0u	12943	12	19900.00
+mnx5p08onet529j0u	12965	12	27900.00
+mnx5p08onet529j0u	13120	12	17900.00
+mnx5p08onet529j0u	12877	12	19900.00
+mnx5p08onet529j0u	12895	12	30900.00
+mnx5p08onet529j0u	13065	12	32900.00
+mnx5p08onet529j0u	13102	12	29900.00
+mnx5p08onet529j0u	13002	12	41900.00
+mnx5p08onet529j0u	13115	12	49900.00
+mnx5p08onet529j0u	12869	12	31900.00
+mnx5p08onet529j0u	13113	12	49900.00
+mnx5p08onet529j0u	12990	12	32900.00
+mmwi4lq7py8arrw07	13117	36	22900.00
+mmwi4lq7py8arrw07	13100	36	25900.00
+mmwi4lq7py8arrw07	12909	36	19900.00
+mmwi4lq7py8arrw07	13094	36	19900.00
+mmwi4lq7py8arrw07	13013	36	21900.00
+mmwi4lq7py8arrw07	12877	36	19900.00
+mmwi4lq7py8arrw07	13097	36	22900.00
+mmwi4lq7py8arrw07	12943	36	18900.00
+mmwi4lq7py8arrw07	12965	36	25900.00
+mmwi4lq7py8arrw07	12969	36	20900.00
+mmwi4lq7py8arrw07	12973	36	39900.00
+mmwi4lq7py8arrw07	12881	36	29900.00
+mmwi4lq7py8arrw07	12907	36	28900.00
+mmwi4lq7py8arrw07	12744	36	18900.00
+mmwi4lq7py8arrw07	12975	36	32900.00
+mmwi4lq7py8arrw07	12968	24	43900.00
+mmt9omzsn8q7wdcw0	13014	24	30000.00
+mmt9omzsn8q7wdcw0	12579	24	38000.00
+mmt9omzsn8q7wdcw0	13112	24	36000.00
+mmt9omzsn8q7wdcw0	12976	24	36000.00
+mmt9omzsn8q7wdcw0	12975	24	33000.00
+mmt9omzsn8q7wdcw0	13048	24	23000.00
+mmt9omzsn8q7wdcw0	13039	24	29000.00
+mmt9omzsn8q7wdcw0	12973	24	41000.00
+mmt9omzsn8q7wdcw0	12970	24	34900.00
+mmt9omzsn8q7wdcw0	12712	24	26900.00
+mmt9omzsn8q7wdcw0	13057	24	23000.00
+mmt9omzsn8q7wdcw0	13042	24	28000.00
+mmt9omzsn8q7wdcw0	13047	24	26000.00
+mmt9omzsn8q7wdcw0	12965	24	26000.00
+mmt9omzsn8q7wdcw0	12971	24	35000.00
+mmt9omzsn8q7wdcw0	12969	24	21900.00
+mmt9omzsn8q7wdcw0	12895	24	29900.00
+mmt9omzsn8q7wdcw0	13040	24	31000.00
+mmt9omzsn8q7wdcw0	13078	24	21000.00
+mmt9omzsn8q7wdcw0	13121	24	21000.00
+mmt9omzsn8q7wdcw0	13074	24	18000.00
+mmt9omzsn8q7wdcw0	13094	24	20000.00
+mmt9omzsn8q7wdcw0	13091	24	18000.00
+mmt9omzsn8q7wdcw0	13129	24	21000.00
+mmt9omzsn8q7wdcw0	13083	24	19000.00
+mmt9omzsn8q7wdcw0	13118	24	20000.00
+mmt9omzsn8q7wdcw0	13131	24	19000.00
+mmt9omzsn8q7wdcw0	13120	24	17000.00
+mmt9omzsn8q7wdcw0	12777	24	13900.00
+mmt9omzsn8q7wdcw0	13013	24	22000.00
+mmt9omzsn8q7wdcw0	13116	24	20000.00
+mmt9omzsn8q7wdcw0	12909	24	22000.00
+mmt9omzsn8q7wdcw0	13077	24	41000.00
+mmt9omzsn8q7wdcw0	12963	24	34000.00
+mmt9omzsn8q7wdcw0	13115	24	48000.00
+mmt9omzsn8q7wdcw0	13058	9	29900.00
+morf51dhftye8od22	13011	20	29900.00
+morf51dhftye8od22	13148	20	25900.00
+morf51dhftye8od22	12862	20	19900.00
+morf51dhftye8od22	12909	20	19900.00
+morf51dhftye8od22	12980	20	22900.00
+morf51dhftye8od22	13169	20	24900.00
+morf51dhftye8od22	13150	20	22900.00
+morf51dhftye8od22	13128	20	23900.00
+morf51dhftye8od22	13137	20	24900.00
+morf51dhftye8od22	13067	20	33900.00
+morf51dhftye8od22	13162	20	29900.00
+morf51dhftye8od22	13159	20	29900.00
+morf51dhftye8od22	13129	20	19900.00
+morf51dhftye8od22	13110	20	19900.00
+morf51dhftye8od22	13095	20	17900.00
+morf51dhftye8od22	13091	20	18900.00
+morf51dhftye8od22	13121	20	22900.00
+morf51dhftye8od22	12864	20	14900.00
+morf51dhftye8od22	13096	20	24900.00
+morf51dhftye8od22	13013	20	23900.00
+morf51dhftye8od22	13098	20	22900.00
+morf51dhftye8od22	13120	20	17900.00
+morf51dhftye8od22	13041	20	29900.00
+morf51dhftye8od22	13055	20	29900.00
+morf51dhftye8od22	13105	20	35900.00
+morf51dhftye8od22	13104	20	35900.00
+morf51dhftye8od22	12964	12	46900.00
+morf51dhftye8od22	12986	20	34900.00
+morf51dhftye8od22	13175	20	24900.00
+morf51dhftye8od22	13144	20	28900.00
+morf51dhftye8od22	13172	20	32900.00
+morf51dhftye8od22	13109	20	30900.00
+morf8mup94t2jnvip	13012	18	39900.00
+morf8mup94t2jnvip	12869	18	32900.00
+morf8mup94t2jnvip	13112	18	37900.00
+morf8mup94t2jnvip	13100	18	25900.00
+morf8mup94t2jnvip	12862	18	19900.00
+morf8mup94t2jnvip	12909	18	19900.00
+morf8mup94t2jnvip	12968	18	43900.00
+morf8mup94t2jnvip	13104	18	35900.00
+morf8mup94t2jnvip	13105	18	35900.00
+morf8mup94t2jnvip	13058	18	29900.00
+morf8mup94t2jnvip	12931	18	29900.00
+morf8mup94t2jnvip	13047	18	27900.00
+morf8mup94t2jnvip	13029	18	32900.00
+morf8mup94t2jnvip	13182	18	32900.00
+morf8mup94t2jnvip	13149	18	24900.00
+morf8mup94t2jnvip	13168	18	27900.00
+morf8mup94t2jnvip	13167	18	25900.00
+morf8mup94t2jnvip	13169	18	28900.00
+morf8mup94t2jnvip	13165	18	24900.00
+morf8mup94t2jnvip	13172	18	32900.00
+morf8mup94t2jnvip	13175	18	32900.00
+morf8mup94t2jnvip	13177	18	34900.00
+mm25qs8bzb9btrgvw	12923	18	23900.00
+mm25qs8bzb9btrgvw	12882	18	23900.00
+mm25qs8bzb9btrgvw	12909	18	23900.00
+mm25qs8bzb9btrgvw	12872	18	23900.00
+mm25qs8bzb9btrgvw	12911	18	18900.00
+mm25qs8bzb9btrgvw	12919	18	24900.00
+mm25qs8bzb9btrgvw	12926	18	26900.00
+mm25qs8bzb9btrgvw	12835	12	19900.00
+mm25qs8bzb9btrgvw	12831	12	23900.00
+mm25qs8bzb9btrgvw	12836	12	20900.00
+mm25qs8bzb9btrgvw	12855	12	23900.00
+mm25qs8bzb9btrgvw	12129	12	26900.00
+mm25qs8bzb9btrgvw	12841	12	19900.00
+mm25qs8bzb9btrgvw	12834	12	16900.00
+mm25qs8bzb9btrgvw	12825	12	21900.00
+mm25qs8bzb9btrgvw	12818	12	40900.00
+mm25qs8bzb9btrgvw	12821	12	33900.00
+mm25qs8bzb9btrgvw	12840	12	33900.00
+mmpgxr0cmqouvxsuz	13118	24	21900.00
+mmph0ntzrz5dgbf7e	12990	6	32400.00
+mmph0ntzrz5dgbf7e	13012	6	39400.00
+mmph0ntzrz5dgbf7e	13103	6	45400.00
+mmph0ntzrz5dgbf7e	12964	6	46400.00
+mmph0ntzrz5dgbf7e	12959	6	37400.00
+mmph0ntzrz5dgbf7e	12960	6	39400.00
+mmph0ntzrz5dgbf7e	13076	6	27400.00
+mmph0ntzrz5dgbf7e	13113	6	49400.00
+mmph0ntzrz5dgbf7e	13102	6	29400.00
+mmph0ntzrz5dgbf7e	13016	6	32400.00
+mmph0ntzrz5dgbf7e	13077	6	42400.00
+mmph0ntzrz5dgbf7e	13112	6	37400.00
+mmph0ntzrz5dgbf7e	13002	6	41400.00
+mmph0ntzrz5dgbf7e	13055	6	29400.00
+mmph0ntzrz5dgbf7e	13117	6	23400.00
+mmph0ntzrz5dgbf7e	13116	6	21400.00
+mmph0ntzrz5dgbf7e	13118	6	21400.00
+mmph0ntzrz5dgbf7e	13094	6	21400.00
+mmph0ntzrz5dgbf7e	12709	6	19400.00
+mmph0ntzrz5dgbf7e	13068	6	21400.00
+mmph0ntzrz5dgbf7e	13008	6	33400.00
+mmph0ntzrz5dgbf7e	13036	6	29400.00
+mmph0ntzrz5dgbf7e	13100	6	25400.00
+mmph0ntzrz5dgbf7e	12747	6	31400.00
+mmph0ntzrz5dgbf7e	12783	6	17400.00
+mmph0ntzrz5dgbf7e	13079	6	19400.00
+mmph0ntzrz5dgbf7e	12968	6	44400.00
+mmph0ntzrz5dgbf7e	13014	6	29400.00
+mmph0ntzrz5dgbf7e	13015	6	37400.00
+mmph0ntzrz5dgbf7e	12973	6	42400.00
+mmph0ntzrz5dgbf7e	13023	6	34400.00
+mmph0ntzrz5dgbf7e	13254	6	34400.00
+mmph0ntzrz5dgbf7e	12966	6	43400.00
+mmph224zawpf1wfbp	13023	6	34400.00
+mmph224zawpf1wfbp	13254	6	34400.00
+mmph224zawpf1wfbp	12966	6	43400.00
+mmph2vwqtgig74spi	13002	12	41900.00
+mmph2vwqtgig74spi	12960	12	39900.00
+mmt9cg4gbu5dnloup	13066	12	45900.00
+mmt9cg4gbu5dnloup	12990	12	32900.00
+mmt9cg4gbu5dnloup	12960	12	39900.00
+mmt9cg4gbu5dnloup	13103	12	45900.00
+mmt9cg4gbu5dnloup	12972	12	48900.00
+mmt9cg4gbu5dnloup	12747	12	31900.00
+mmt9cg4gbu5dnloup	13033	12	29900.00
+mmt9cg4gbu5dnloup	13010	12	29900.00
+mmt9cg4gbu5dnloup	13100	12	25900.00
+mmt9cg4gbu5dnloup	13068	12	21900.00
+mmt9cg4gbu5dnloup	13005	12	20900.00
+mmt9cg4gbu5dnloup	12980	12	22900.00
+mmt9cg4gbu5dnloup	13074	12	19900.00
+mmt9cg4gbu5dnloup	13118	12	21900.00
+mmt9cg4gbu5dnloup	13079	12	19900.00
+mmt9cg4gbu5dnloup	12576	12	19900.00
+mmt9cg4gbu5dnloup	13043	12	34900.00
+mmt9cg4gbu5dnloup	13040	12	32900.00
+mmt9cg4gbu5dnloup	12574	12	25900.00
+mmt9cg4gbu5dnloup	12943	12	19900.00
+mmt9f0zv75r8qf1g9	13012	6	39900.00
+mmt9f0zv75r8qf1g9	12963	6	35900.00
+mmt9f0zv75r8qf1g9	13103	3	45900.00
+mmt9f0zv75r8qf1g9	12972	3	48900.00
+mmt9f0zv75r8qf1g9	12980	6	22900.00
+mmt9f0zv75r8qf1g9	13008	6	33900.00
+mmt9f0zv75r8qf1g9	13128	6	23900.00
+mmt9f0zv75r8qf1g9	13123	6	19900.00
+mmt9f0zv75r8qf1g9	13079	6	19900.00
+mmt9f0zv75r8qf1g9	12884	6	21900.00
+mmt9f0zv75r8qf1g9	13094	6	21900.00
+mmt9f0zv75r8qf1g9	13118	6	21900.00
+mmt9f0zv75r8qf1g9	13055	6	29900.00
+mmt9f0zv75r8qf1g9	13129	6	22900.00
+mmt9f0zv75r8qf1g9	12973	6	42900.00
+mmt9f0zv75r8qf1g9	12895	6	30900.00
+mmt9f0zv75r8qf1g9	12671	6	24900.00
+mmt9f0zv75r8qf1g9	12970	6	34900.00
+mmt9f0zv75r8qf1g9	13042	6	29900.00
+mmt9f0zv75r8qf1g9	12943	6	19900.00
+mmt9f0zv75r8qf1g9	13131	6	19900.00
+mmt9f0zv75r8qf1g9	13040	6	32900.00
+mmt9f0zv75r8qf1g9	13122	6	18900.00
+mmt9f0zv75r8qf1g9	13120	6	18900.00
+mmt9f0zv75r8qf1g9	12877	6	19900.00
+mmpgtfe31h7o4pg3g	12771	36	14000.00
+mmpgtfe31h7o4pg3g	12683	36	14000.00
+mmpgtfe31h7o4pg3g	13095	108	14000.00
+mmpgtfe31h7o4pg3g	12782	108	14000.00
+mmpgtfe31h7o4pg3g	12783	108	14000.00
+mmpgtfe31h7o4pg3g	12877	126	16000.00
+mmpgtfe31h7o4pg3g	13091	204	16000.00
+mmpgtfe31h7o4pg3g	13074	204	16000.00
+mmpgtfe31h7o4pg3g	12864	204	16000.00
+mmpgtfe31h7o4pg3g	13083	204	16000.00
+mmpgtfe31h7o4pg3g	13079	204	16000.00
+mmpgtfe31h7o4pg3g	12686	204	16000.00
+mmpgtfe31h7o4pg3g	13005	204	16000.00
+mmpgtfe31h7o4pg3g	12909	204	16000.00
+mmpgtfe31h7o4pg3g	13081	204	16000.00
+mmpgtfe31h7o4pg3g	13098	36	19000.00
+mmpgtfe31h7o4pg3g	12737	36	19000.00
+mmpgtfe31h7o4pg3g	13093	36	19000.00
+mmpgtfe31h7o4pg3g	12692	36	19000.00
+mmpgtfe31h7o4pg3g	12640	36	19000.00
+mmpgtfe31h7o4pg3g	13094	36	19000.00
+mmpgtfe31h7o4pg3g	12885	36	19000.00
+mmpgtfe31h7o4pg3g	12883	36	19000.00
+mmpgtfe31h7o4pg3g	13086	36	19000.00
+mm25z1dbniegbh1m6	12909	4	23900.00
+mm25z1dbniegbh1m6	12911	4	18900.00
+mm25z1dbniegbh1m6	12882	4	23900.00
+mm25z1dbniegbh1m6	12941	4	20900.00
+mm25z1dbniegbh1m6	12885	4	23900.00
+mm25z1dbniegbh1m6	12782	4	17900.00
+mm25z1dbniegbh1m6	12871	4	19900.00
+mm25z1dbniegbh1m6	12931	4	29900.00
+mm25z1dbniegbh1m6	12805	4	19900.00
+mm25z1dbniegbh1m6	12892	4	24900.00
+mm25z1dbniegbh1m6	12876	4	19900.00
+mm25z1dbniegbh1m6	12945	4	19900.00
+mm25z1dbniegbh1m6	12897	4	19900.00
+mm25z1dbniegbh1m6	12943	4	19900.00
+mm25z1dbniegbh1m6	12920	4	21900.00
+mm25z1dbniegbh1m6	12898	4	24900.00
+mm25z1dbniegbh1m6	12951	4	27900.00
+mm25z1dbniegbh1m6	12952	4	26900.00
+mm25z1dbniegbh1m6	12919	4	25900.00
+mm25z1dbniegbh1m6	12880	4	24900.00
+mm25z1dbniegbh1m6	12937	4	14900.00
+mm25z1dbniegbh1m6	12873	4	22900.00
+mm25z1dbniegbh1m6	12923	4	24900.00
+mm25z1dbniegbh1m6	12913	4	29900.00
+mm25z1dbniegbh1m6	12699	4	24900.00
+mm25z1dbniegbh1m6	12744	4	19900.00
+mm25z1dbniegbh1m6	12907	4	28900.00
+mm25z1dbniegbh1m6	12906	4	28900.00
+mm25z1dbniegbh1m6	12889	4	28900.00
+mm25z1dbniegbh1m6	12875	4	19900.00
+mm25yurfvl3ytrp78	12366	24	19900.00
+mm25yurfvl3ytrp78	12871	24	19900.00
+mm25yurfvl3ytrp78	12922	24	21900.00
+mm25yurfvl3ytrp78	12860	24	16900.00
+mm25yurfvl3ytrp78	12888	24	19900.00
+mm25yurfvl3ytrp78	12782	24	17900.00
+mm25yurfvl3ytrp78	12893	24	24900.00
+mm25yurfvl3ytrp78	12920	24	21900.00
+mm25yurfvl3ytrp78	12917	24	19900.00
+mm25yurfvl3ytrp78	12943	24	19900.00
+mm25yurfvl3ytrp78	12950	24	27900.00
+mm25yurfvl3ytrp78	12883	24	24900.00
+mm25yurfvl3ytrp78	12913	24	29900.00
+mm25yurfvl3ytrp78	12873	24	22900.00
+mm25yurfvl3ytrp78	12951	24	27900.00
+mm25yurfvl3ytrp78	12926	24	27900.00
+mm25yurfvl3ytrp78	12875	24	19900.00
+mm25yurfvl3ytrp78	12911	24	18900.00
+mm25yurfvl3ytrp78	12952	24	26900.00
+mm25yurfvl3ytrp78	12937	24	14900.00
+mm25x0trsopvohrgo	12782	12	17900.00
+mm25x0trsopvohrgo	12870	11	35900.00
+mm25x0trsopvohrgo	12871	12	19900.00
+mm25x0trsopvohrgo	12876	12	19900.00
+mm25x0trsopvohrgo	12880	12	24900.00
+mm25x0trsopvohrgo	12882	12	23900.00
+mm25x0trsopvohrgo	12885	12	23900.00
+mm25x0trsopvohrgo	12889	12	28900.00
+mm25x0trsopvohrgo	12905	12	34900.00
+mm25x0trsopvohrgo	12907	11	28900.00
+mm25x0trsopvohrgo	12908	12	28900.00
+mm25x0trsopvohrgo	12909	12	23900.00
+mm25x0trsopvohrgo	12910	12	22900.00
+mm25x0trsopvohrgo	12916	12	20900.00
+mm25x0trsopvohrgo	12931	12	29900.00
+mm25x0trsopvohrgo	12937	12	14900.00
+mm25wkgeaqmr6b8un	12129	11	27900.00
+mm25wkgeaqmr6b8un	12694	11	24900.00
+mm25wkgeaqmr6b8un	12825	11	22900.00
+mm25wkgeaqmr6b8un	12828	11	14900.00
+mm25wkgeaqmr6b8un	12834	11	17900.00
+mm25wkgeaqmr6b8un	12835	11	20900.00
+mm25wkgeaqmr6b8un	12836	11	21900.00
+mm25wkgeaqmr6b8un	12837	11	27900.00
+mm25wkgeaqmr6b8un	12841	13	20900.00
+mm25wans5fy2ikncb	12129	12	27900.00
+mm25wans5fy2ikncb	12694	12	24900.00
+mm25wans5fy2ikncb	12825	12	22900.00
+mm25wans5fy2ikncb	12828	12	14900.00
+mm25wans5fy2ikncb	12834	12	17900.00
+mm25wans5fy2ikncb	12835	12	20900.00
+mm25wans5fy2ikncb	12836	11	21900.00
+mm25wans5fy2ikncb	12837	12	27900.00
+mm25wans5fy2ikncb	12841	14	20900.00
+mm25v4aqgkqzh9j40	12704	10	29900.00
+mm25v4aqgkqzh9j40	12782	10	17900.00
+mm25v4aqgkqzh9j40	12870	9	35900.00
+mm25v4aqgkqzh9j40	12871	10	19900.00
+mm25v4aqgkqzh9j40	12876	10	19900.00
+mm25v4aqgkqzh9j40	12880	10	24900.00
+mm25v4aqgkqzh9j40	12882	10	23900.00
+mm25v4aqgkqzh9j40	12885	10	23900.00
+mm25v4aqgkqzh9j40	12889	10	28900.00
+mm25v4aqgkqzh9j40	12905	10	34900.00
+mm25v4aqgkqzh9j40	12907	9	28900.00
+mm25v4aqgkqzh9j40	12908	10	28900.00
+mm25v4aqgkqzh9j40	12909	10	23900.00
+mm25v4aqgkqzh9j40	12910	10	22900.00
+mm25v4aqgkqzh9j40	12916	10	20900.00
+mm25v4aqgkqzh9j40	12931	10	29900.00
+mm25v4aqgkqzh9j40	12937	10	14900.00
+mm25teuw5s5a06njw	12129	11	27900.00
+mm25teuw5s5a06njw	12694	11	24900.00
+mm25teuw5s5a06njw	12825	11	22900.00
+mm25teuw5s5a06njw	12828	11	14900.00
+mm25teuw5s5a06njw	12834	11	17900.00
+mm25teuw5s5a06njw	12835	11	20900.00
+mm25teuw5s5a06njw	12836	11	21900.00
+mm25teuw5s5a06njw	12837	11	27900.00
+mm25teuw5s5a06njw	12841	13	20900.00
+mm2c7uonjxqwkjpf5	12945	168	14000.00
+mm2c7uonjxqwkjpf5	12860	168	14000.00
+mm2c7uonjxqwkjpf5	12665	168	14000.00
+mm2c7uonjxqwkjpf5	12897	138	16000.00
+mm2c7uonjxqwkjpf5	12876	168	16000.00
+mm2c7uonjxqwkjpf5	12943	138	16000.00
+mm2c7uonjxqwkjpf5	12877	168	16000.00
+mm2c7uonjxqwkjpf5	12864	138	16000.00
+mm2c7uonjxqwkjpf5	12888	168	16000.00
+mm2c7uonjxqwkjpf5	12871	138	16000.00
+mm2c7uonjxqwkjpf5	12911	168	16000.00
+mm2c7uonjxqwkjpf5	12861	168	16000.00
+mm2c7uonjxqwkjpf5	12920	48	19000.00
+mm2c7uonjxqwkjpf5	12893	48	19000.00
+mm2c7uonjxqwkjpf5	12924	48	19000.00
+mm2c7uonjxqwkjpf5	12955	48	19000.00
+mm2c7uonjxqwkjpf5	12919	48	19000.00
+mm2c7uonjxqwkjpf5	12959	60	35000.00
+mm2c7uonjxqwkjpf5	12960	60	35000.00
+mmpgtfe31h7o4pg3g	13100	36	19000.00
+mmpgtfe31h7o4pg3g	13090	36	19000.00
+mmpgtfe31h7o4pg3g	12862	36	19000.00
+mmpgtfe31h7o4pg3g	13096	36	21000.00
+mmpgtfe31h7o4pg3g	13013	36	21000.00
+mmpgtfe31h7o4pg3g	12704	36	21000.00
+mmpgtfe31h7o4pg3g	12685	48	24000.00
+mmpgtfe31h7o4pg3g	12644	48	24000.00
+mmpgtfe31h7o4pg3g	13033	36	24000.00
+mmpgtfe31h7o4pg3g	12889	48	27000.00
+mmpgtfe31h7o4pg3g	13003	36	29000.00
+mmpgtfe31h7o4pg3g	13084	48	29000.00
+mmpgtfe31h7o4pg3g	12747	48	29000.00
+mmpgtfe31h7o4pg3g	13010	36	29000.00
+mmpgtfe31h7o4pg3g	13036	36	29000.00
+mmpgtfe31h7o4pg3g	13067	48	32000.00
+mmpgtfe31h7o4pg3g	13065	48	35000.00
+mmpgtfe31h7o4pg3g	13058	48	30000.00
+mmpgtfe31h7o4pg3g	12976	48	35000.00
+mmpgtfe31h7o4pg3g	12986	48	29900.00
+mmpgtfe31h7o4pg3g	13029	48	29900.00
+mmpgtfe31h7o4pg3g	12581	36	29900.00
+mmpgtfe31h7o4pg3g	13076	54	28000.00
+mmpgtfe31h7o4pg3g	13101	54	35000.00
+mmpgtfe31h7o4pg3g	13064	54	33000.00
+mmpgtfe31h7o4pg3g	12869	54	32000.00
+mmpgtfe31h7o4pg3g	12962	54	42000.00
+mmpgtfe31h7o4pg3g	13077	54	42000.00
+mmpgtfe31h7o4pg3g	13109	54	32000.00
+mm261ih80nzxoq1lv	12698	12	21900.00
+mm261ih80nzxoq1lv	12936	12	14900.00
+mm261ih80nzxoq1lv	12917	12	19900.00
+mm261ih80nzxoq1lv	12950	12	27900.00
+mm261ih80nzxoq1lv	12777	12	14900.00
+mm261ih80nzxoq1lv	12679	12	23900.00
+mm261ih80nzxoq1lv	12737	12	22900.00
+mm261ih80nzxoq1lv	12704	12	29900.00
+mm261ih80nzxoq1lv	12694	12	24900.00
+mm261ih80nzxoq1lv	12915	12	28900.00
+mm261ih80nzxoq1lv	12934	12	24900.00
+mm261ih80nzxoq1lv	12574	12	25900.00
+mm261ih80nzxoq1lv	12920	12	21900.00
+mm261ih80nzxoq1lv	12898	12	24900.00
+mm261ih80nzxoq1lv	12754	12	16900.00
+mm261ih80nzxoq1lv	12865	12	16900.00
+mm261ih80nzxoq1lv	12922	12	21900.00
+mm261ih80nzxoq1lv	12943	12	19900.00
+mm261ih80nzxoq1lv	12805	12	19900.00
+mm261ih80nzxoq1lv	12893	12	24900.00
+mm261ih80nzxoq1lv	12747	12	31900.00
+mm261ih80nzxoq1lv	12926	12	27900.00
+mm261ih80nzxoq1lv	12955	12	22900.00
+mm261ih80nzxoq1lv	12914	12	33900.00
+mm261ih80nzxoq1lv	12885	12	23900.00
+mm261ih80nzxoq1lv	12883	12	24900.00
+mm261ih80nzxoq1lv	12699	12	24900.00
+mm261ih80nzxoq1lv	12909	12	23900.00
+mm261ih80nzxoq1lv	12911	12	18900.00
+mm261ih80nzxoq1lv	12882	12	23900.00
+mm261ih80nzxoq1lv	12875	12	19900.00
+mm261ih80nzxoq1lv	12873	12	22900.00
+mm261ih80nzxoq1lv	12871	12	19900.00
+mm261ih80nzxoq1lv	12860	12	16900.00
+mm261ih80nzxoq1lv	12884	12	21900.00
+mm261ih80nzxoq1lv	12939	12	20900.00
+mm261ih80nzxoq1lv	12640	12	24900.00
+mm261ih80nzxoq1lv	12868	8	69900.00
+mm261ih80nzxoq1lv	12878	8	64900.00
+mm261ih80nzxoq1lv	12881	18	33900.00
+mm261ih80nzxoq1lv	12907	18	28900.00
+mm261ih80nzxoq1lv	12908	18	28900.00
+mm261ih80nzxoq1lv	12581	18	32900.00
+mm261ih80nzxoq1lv	12933	18	34900.00
+mm261ih80nzxoq1lv	12744	18	19900.00
+mm261ih80nzxoq1lv	12617	18	35900.00
+mm261ih80nzxoq1lv	12870	18	35900.00
+mm261ih80nzxoq1lv	12889	18	28900.00
+mm261bh9kjzjbs3n3	12906	12	28900.00
+mm261bh9kjzjbs3n3	12881	12	33900.00
+mm261bh9kjzjbs3n3	12880	12	24900.00
+mm261bh9kjzjbs3n3	12950	12	27900.00
+mm261bh9kjzjbs3n3	12693	12	25900.00
+mm261bh9kjzjbs3n3	12698	12	21900.00
+mm261bh9kjzjbs3n3	12936	12	14900.00
+mm25zlnrm0l8pxyk3	12679	24	23900.00
+mm25zlnrm0l8pxyk3	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12680	24	16900.00
+mm25zlnrm0l8pxyk3	12943	24	19900.00
+mm25zlnrm0l8pxyk3	12936	24	14900.00
+mm25zlnrm0l8pxyk3	12877	24	19900.00
+mm25zlnrm0l8pxyk3	12920	24	21900.00
+mm25zlnrm0l8pxyk3	12934	24	24900.00
+mm25zlnrm0l8pxyk3	12898	24	24900.00
+mm25zlnrm0l8pxyk3	12881	24	33900.00
+mm25zlnrm0l8pxyk3	12907	24	28900.00
+mm25zlnrm0l8pxyk3	12933	24	34900.00
+mm25zlnrm0l8pxyk3	12906	24	28900.00
+mm25zlnrm0l8pxyk3	12935	24	35900.00
+mm25zlnrm0l8pxyk3	12908	24	28900.00
+mm25zlnrm0l8pxyk3	12889	24	28900.00
+mm25zlnrm0l8pxyk3	12747	24	31900.00
+mm25zlnrm0l8pxyk3	12872	24	24900.00
+mm25zlnrm0l8pxyk3	12919	24	25900.00
+mm25zlnrm0l8pxyk3	12951	24	27900.00
+mm25zlnrm0l8pxyk3	12909	24	23900.00
+mm25zlnrm0l8pxyk3	12913	24	29900.00
+mm25zlnrm0l8pxyk3	12942	24	24900.00
+mm25zlnrm0l8pxyk3	12923	24	24900.00
+mm25zlnrm0l8pxyk3	12862	24	23900.00
+mm25zlnrm0l8pxyk3	12941	24	20900.00
+mm25zlnrm0l8pxyk3	12875	24	19900.00
+mm25zlnrm0l8pxyk3	12879	24	38900.00
+mm25zlnrm0l8pxyk3	12914	24	33900.00
+mm25zlnrm0l8pxyk3	12880	24	24900.00
+mm25zlnrm0l8pxyk3	12873	24	22900.00
+mm25zlnrm0l8pxyk3	12882	24	23900.00
+mm25zlnrm0l8pxyk3	12952	24	26900.00
+mm25zlnrm0l8pxyk3	12937	24	14900.00
+mm25zlnrm0l8pxyk3	12893	24	24900.00
+mm25shroo1oy81pds	12906	24	28900.00
+mm25shroo1oy81pds	12933	24	34900.00
+mm25shroo1oy81pds	12889	24	28900.00
+mm25shroo1oy81pds	12708	24	24900.00
+mm25shroo1oy81pds	12919	24	25900.00
+mm25shroo1oy81pds	12951	24	27900.00
+mm25shroo1oy81pds	12937	24	14900.00
+mm25shroo1oy81pds	12862	24	23900.00
+mm25shroo1oy81pds	12911	24	18900.00
+mm25shroo1oy81pds	12882	24	23900.00
+mm25shroo1oy81pds	12952	24	26900.00
+mm25shroo1oy81pds	12913	24	29900.00
+mm25shroo1oy81pds	12880	24	24900.00
+mm25shroo1oy81pds	12883	24	24900.00
+mm25shroo1oy81pds	12885	24	23900.00
+mm25shroo1oy81pds	12892	24	24900.00
+mm25shroo1oy81pds	12704	24	29900.00
+mm25shroo1oy81pds	12888	24	19900.00
+mm25shroo1oy81pds	12939	24	20900.00
+mm25shroo1oy81pds	12366	24	19900.00
+mm25shroo1oy81pds	12893	24	24900.00
+mm25shroo1oy81pds	12921	24	24900.00
+mm25shroo1oy81pds	12860	24	16900.00
+mm25shroo1oy81pds	12754	24	16900.00
+mm25shroo1oy81pds	12000	24	49900.00
+mm25shroo1oy81pds	12771	24	16900.00
+mm25shroo1oy81pds	12574	24	25900.00
+mm25shroo1oy81pds	12876	24	19900.00
+mm25shroo1oy81pds	12950	24	27900.00
+mm25shroo1oy81pds	12877	24	19900.00
+mm25shroo1oy81pds	12917	24	19900.00
+mm25shroo1oy81pds	12680	24	16900.00
+mm25shroo1oy81pds	12897	24	19900.00
+mm25shroo1oy81pds	12945	24	19900.00
+mm25shroo1oy81pds	12918	24	19900.00
+mm25zlnrm0l8pxyk3	12885	24	23900.00
+mm25zlnrm0l8pxyk3	12884	24	21900.00
+mm25zlnrm0l8pxyk3	12860	24	16900.00
+mm25zlnrm0l8pxyk3	12910	24	22900.00
+mm25zlnrm0l8pxyk3	12782	24	17900.00
+mm25zlnrm0l8pxyk3	12915	24	28900.00
+mm25zlnrm0l8pxyk3	12783	24	17900.00
+mm25zlnrm0l8pxyk3	12921	24	24900.00
+mm25zlnrm0l8pxyk3	12924	24	21900.00
+mm25zlnrm0l8pxyk3	12888	24	19900.00
+mm25zlnrm0l8pxyk3	12939	24	20900.00
+mm25zlnrm0l8pxyk3	12871	24	19900.00
+mm25zlnrm0l8pxyk3	12931	24	29900.00
+mm25zlnrm0l8pxyk3	12950	24	27900.00
+mm25zlnrm0l8pxyk3	12912	24	18900.00
+mm25zlnrm0l8pxyk3	12876	24	19900.00
+mm25zlnrm0l8pxyk3	12917	24	19900.00
+mm25shroo1oy81pds	12920	24	21900.00
+mm25shroo1oy81pds	12934	24	24900.00
+mm25zgt5curej417m	12951	9	27900.00
+mm25zgt5curej417m	12909	9	23900.00
+mm25zgt5curej417m	12926	8	27900.00
+mm25zgt5curej417m	12919	8	25900.00
+mm25zgt5curej417m	12873	8	22900.00
+mm25zgt5curej417m	12937	15	14900.00
+mm25zgt5curej417m	12893	9	24900.00
+mm25zgt5curej417m	12883	9	24900.00
+mm25zgt5curej417m	12924	9	21900.00
+mm25zgt5curej417m	12871	8	19900.00
+mm25zgt5curej417m	12931	8	29900.00
+mm25zgt5curej417m	12920	8	21900.00
+mm25shroo1oy81pds	12943	24	19900.00
+mm25shroo1oy81pds	12898	24	24900.00
+mm25rzt79inviirmd	12923	18	23900.00
+mm25rzt79inviirmd	12882	18	23900.00
+mm25rzt79inviirmd	12909	18	23900.00
+mm25rzt79inviirmd	12872	18	23900.00
+mm261zsok2g1m5dod	12640	8	24900.00
+mm261zsok2g1m5dod	12884	8	21900.00
+mm261zsok2g1m5dod	12783	8	17900.00
+mm261zsok2g1m5dod	12860	8	16900.00
+mm261zsok2g1m5dod	12692	8	21900.00
+mm261zsok2g1m5dod	12918	8	19900.00
+mm261zsok2g1m5dod	12912	8	18900.00
+mm261zsok2g1m5dod	12754	8	16900.00
+mm261zsok2g1m5dod	12907	6	28900.00
+mm261zsok2g1m5dod	12908	6	28900.00
+mm261zsok2g1m5dod	12935	6	35900.00
+mm261zsok2g1m5dod	12744	6	19900.00
+mm261zsok2g1m5dod	12885	8	23900.00
+mm261zsok2g1m5dod	12909	8	23900.00
+mm261zsok2g1m5dod	12914	8	33900.00
+mm261zsok2g1m5dod	12911	8	18900.00
+mm261zsok2g1m5dod	12880	8	24900.00
+mm261zsok2g1m5dod	12937	8	14900.00
+mm25rzt79inviirmd	12911	18	18900.00
+mm25rzt79inviirmd	12919	18	24900.00
+mm25rzt79inviirmd	12926	18	26900.00
+mm25rzt79inviirmd	12835	12	19900.00
+mm25rzt79inviirmd	12831	12	23900.00
+mm25rzt79inviirmd	12836	12	20900.00
+mm25rzt79inviirmd	12855	12	23900.00
+mm25rzt79inviirmd	12129	12	26900.00
+mm25rzt79inviirmd	12841	12	19900.00
+mm25rzt79inviirmd	12834	12	16900.00
+mm25rzt79inviirmd	12825	12	21900.00
+mm25rzt79inviirmd	12818	12	40900.00
+mm25rzt79inviirmd	12821	12	33900.00
+mm25rzt79inviirmd	12840	12	33900.00
+mmpgtfe31h7o4pg3g	13016	54	32000.00
+mmpgtfe31h7o4pg3g	13002	54	42000.00
+mmpgtfe31h7o4pg3g	13015	54	35000.00
+mmph224zawpf1wfbp	12990	6	32400.00
+mm261wafiiiwwshld	12933	12	34900.00
+mm261wafiiiwwshld	12908	12	28900.00
+mm261wafiiiwwshld	12870	12	35900.00
+mm261wafiiiwwshld	12881	12	33900.00
+mm261wafiiiwwshld	12920	12	21900.00
+mm261wafiiiwwshld	12892	12	24900.00
+mm261wafiiiwwshld	12943	12	19900.00
+mm261wafiiiwwshld	12640	12	24900.00
+mm261wafiiiwwshld	12910	12	22900.00
+mm261wafiiiwwshld	12922	12	21900.00
+mm261wafiiiwwshld	12921	12	24900.00
+mm261wafiiiwwshld	12884	12	21900.00
+mm261wafiiiwwshld	12871	12	19900.00
+mm261wafiiiwwshld	12888	12	19900.00
+mm261wafiiiwwshld	12917	12	19900.00
+mm261wafiiiwwshld	12771	12	16900.00
+mm261wafiiiwwshld	12877	12	19900.00
+mm261wafiiiwwshld	12893	12	24900.00
+mm261sicytqircpx5	12698	12	21900.00
+mm261sicytqircpx5	12737	12	22900.00
+mm261sicytqircpx5	12754	12	16900.00
+mm261sicytqircpx5	12876	12	19900.00
+mm261sicytqircpx5	12805	12	19900.00
+mm261sicytqircpx5	12893	12	24900.00
+mm261sicytqircpx5	12931	12	29900.00
+mm261sicytqircpx5	12911	12	18900.00
+mm261sicytqircpx5	12908	12	28900.00
+mm261sicytqircpx5	12933	12	34900.00
+mm261sicytqircpx5	12744	12	19900.00
+mm261sicytqircpx5	12907	12	28900.00
+mm261sicytqircpx5	12935	12	35900.00
+mmph224zawpf1wfbp	13012	6	39400.00
+mmph224zawpf1wfbp	13103	6	45400.00
+mmph224zawpf1wfbp	12964	6	46400.00
+mmph224zawpf1wfbp	12959	6	37400.00
+mmph224zawpf1wfbp	12960	6	39400.00
+mmph224zawpf1wfbp	13076	6	27400.00
+mmph224zawpf1wfbp	13113	6	49400.00
+mmph224zawpf1wfbp	13102	6	29400.00
+mmph224zawpf1wfbp	13016	6	32400.00
+mmph224zawpf1wfbp	13077	6	42400.00
+mmph224zawpf1wfbp	13112	6	37400.00
+mmph224zawpf1wfbp	13002	6	41400.00
+mmph224zawpf1wfbp	13055	6	29400.00
+mmph224zawpf1wfbp	13117	6	23400.00
+mmph224zawpf1wfbp	13116	6	21400.00
+mmph224zawpf1wfbp	13118	6	21400.00
+mmph224zawpf1wfbp	13094	6	21400.00
+mmph224zawpf1wfbp	12709	6	19400.00
+mmph224zawpf1wfbp	13068	6	21400.00
+mmph224zawpf1wfbp	13008	6	33400.00
+mmph224zawpf1wfbp	13036	6	29400.00
+mmph224zawpf1wfbp	13100	6	25400.00
+mmph224zawpf1wfbp	12747	6	31400.00
+mmph224zawpf1wfbp	12783	6	17400.00
+mmph224zawpf1wfbp	13079	6	19400.00
+mmph224zawpf1wfbp	12968	6	44400.00
+mmph224zawpf1wfbp	13014	6	29400.00
+mmph224zawpf1wfbp	13015	6	37400.00
+mmph224zawpf1wfbp	12973	6	42400.00
+mm25zbho4eabh3lh4	12951	4	27900.00
+mm25zbho4eabh3lh4	12909	4	23900.00
+mm25zbho4eabh3lh4	12747	4	31900.00
+mm25zbho4eabh3lh4	12872	6	24900.00
+mm25zbho4eabh3lh4	12926	4	27900.00
+mm25zbho4eabh3lh4	12919	4	25900.00
+mm25zbho4eabh3lh4	12873	4	22900.00
+mm25zbho4eabh3lh4	12923	4	24900.00
+mm25zbho4eabh3lh4	12882	4	23900.00
+mm25zbho4eabh3lh4	12862	4	23900.00
+mm25zbho4eabh3lh4	12952	4	26900.00
+mm25zbho4eabh3lh4	12911	4	18900.00
+mm261ny1d0yfufg6p	12878	6	64900.00
+mm261ny1d0yfufg6p	12868	6	69900.00
+mm261ny1d0yfufg6p	12698	12	21900.00
+mm261ny1d0yfufg6p	12936	12	14900.00
+mm261ny1d0yfufg6p	12917	12	19900.00
+mm261ny1d0yfufg6p	12897	12	19900.00
+mm261ny1d0yfufg6p	12876	12	19900.00
+mm261ny1d0yfufg6p	12945	12	19900.00
+mm261ny1d0yfufg6p	12771	12	16900.00
+mm261ny1d0yfufg6p	12912	12	18900.00
+mm261ny1d0yfufg6p	12877	12	19900.00
+mm261ny1d0yfufg6p	12704	12	29900.00
+mm261ny1d0yfufg6p	12754	12	16900.00
+mm261ny1d0yfufg6p	12865	12	16900.00
+mm261ny1d0yfufg6p	12805	12	19900.00
+mm261ny1d0yfufg6p	12921	12	24900.00
+mm261ny1d0yfufg6p	12924	12	21900.00
+mm261ny1d0yfufg6p	12884	12	21900.00
+mm261ny1d0yfufg6p	12860	12	16900.00
+mm261ny1d0yfufg6p	12871	12	19900.00
+mm261ny1d0yfufg6p	12943	12	19900.00
+mm261ny1d0yfufg6p	12934	12	24900.00
+mm261ny1d0yfufg6p	12920	12	21900.00
+mm261ny1d0yfufg6p	12644	12	24900.00
+mm261ny1d0yfufg6p	12951	12	27900.00
+mm261ny1d0yfufg6p	12882	12	23900.00
+mm261ny1d0yfufg6p	12880	12	24900.00
+mm261ny1d0yfufg6p	12913	12	29900.00
+mm261ny1d0yfufg6p	12911	12	18900.00
+mm261ny1d0yfufg6p	12883	12	24900.00
+mm261ny1d0yfufg6p	12909	12	23900.00
+mm261ny1d0yfufg6p	12875	12	19900.00
+mm261ny1d0yfufg6p	12937	12	14900.00
+mm261ny1d0yfufg6p	12879	12	38900.00
+mm261ny1d0yfufg6p	12870	12	35900.00
+mm261ny1d0yfufg6p	12906	12	28900.00
+mm261ny1d0yfufg6p	12744	12	19900.00
+mm261ny1d0yfufg6p	12907	12	28900.00
+mm261ny1d0yfufg6p	12881	12	33900.00
+mm261ny1d0yfufg6p	12905	12	34900.00
+mm261ny1d0yfufg6p	12908	12	28900.00
+mm25zbho4eabh3lh4	12937	4	14900.00
+mm25zbho4eabh3lh4	12941	4	20900.00
+mm25zbho4eabh3lh4	12885	4	23900.00
+mm25zbho4eabh3lh4	12883	4	24900.00
+mm25zbho4eabh3lh4	12877	4	19900.00
+mm25zbho4eabh3lh4	12898	4	24900.00
+mm25zbho4eabh3lh4	12920	4	21900.00
+mm25zbho4eabh3lh4	12945	4	19900.00
+mm25zbho4eabh3lh4	12934	4	24900.00
+mm25zbho4eabh3lh4	12936	4	14900.00
+mm25zbho4eabh3lh4	12897	4	19900.00
+mm25zbho4eabh3lh4	12870	4	35900.00
+mm25zbho4eabh3lh4	12805	4	19900.00
+mm25zbho4eabh3lh4	12892	4	24900.00
+mm25zbho4eabh3lh4	12931	4	29900.00
+mm25zbho4eabh3lh4	12924	4	21900.00
+mm25zbho4eabh3lh4	12860	4	16900.00
+mm25zbho4eabh3lh4	12884	4	21900.00
+mm25zbho4eabh3lh4	12640	4	24900.00
+mm25zbho4eabh3lh4	12921	4	24900.00
+mm25zbho4eabh3lh4	12692	4	21900.00
+mm25zbho4eabh3lh4	12871	4	19900.00
+mm25zbho4eabh3lh4	12783	4	17900.00
+mm25z6898ea5cmw0f	12898	6	24900.00
+mm25z6898ea5cmw0f	12920	6	21900.00
+mm25z6898ea5cmw0f	12945	6	19900.00
+mm25z6898ea5cmw0f	12934	6	24900.00
+mm25z6898ea5cmw0f	12805	6	19900.00
+mm25z6898ea5cmw0f	12907	6	28900.00
+mm25z6898ea5cmw0f	12744	6	19900.00
+mm25z6898ea5cmw0f	12906	6	28900.00
+mm25z6898ea5cmw0f	12935	6	35900.00
+mm25z6898ea5cmw0f	12908	6	28900.00
+mm25z6898ea5cmw0f	12881	6	33900.00
+mm25z6898ea5cmw0f	12924	6	21900.00
+mm25z6898ea5cmw0f	12937	6	14900.00
+mm25z6898ea5cmw0f	12913	6	29900.00
+mm25z6898ea5cmw0f	12911	6	18900.00
+mm25z6898ea5cmw0f	12952	6	26900.00
+mm25z6898ea5cmw0f	12919	6	25900.00
+mm25z6898ea5cmw0f	12926	6	27900.00
+mm25z6898ea5cmw0f	12872	6	24900.00
+mmpgxr0cmqouvxsuz	13023	24	34900.00
+mmpgxr0cmqouvxsuz	12959	24	37900.00
+mmpgxr0cmqouvxsuz	13002	24	41900.00
+mmpgxr0cmqouvxsuz	12498	24	21900.00
+mmpgxr0cmqouvxsuz	13067	24	39900.00
+mmpgxr0cmqouvxsuz	12617	36	35900.00
+mmpgxr0cmqouvxsuz	12975	36	34900.00
+mmpgxr0cmqouvxsuz	12581	36	32900.00
+mmpgxr0cmqouvxsuz	13028	36	35900.00
+mmpgxr0cmqouvxsuz	12984	36	24900.00
+mmpgxr0cmqouvxsuz	13029	36	32900.00
+mmpgxr0cmqouvxsuz	12986	36	34900.00
+mmpgxr0cmqouvxsuz	13039	24	30900.00
+mmpgxr0cmqouvxsuz	13055	24	29900.00
+mmpgxr0cmqouvxsuz	13100	24	25900.00
+mmpgxr0cmqouvxsuz	13033	24	29900.00
+mmpgxr0cmqouvxsuz	13010	24	29900.00
+mmpgxr0cmqouvxsuz	12909	24	23900.00
+mmpgxr0cmqouvxsuz	13116	24	21900.00
+mmpgxr0cmqouvxsuz	12980	24	20900.00
+mmpgxr0cmqouvxsuz	13110	24	19900.00
+mmpgxr0cmqouvxsuz	13083	24	19900.00
+mmpgxr0cmqouvxsuz	13079	24	19900.00
+mmpgxr0cmqouvxsuz	13091	24	18900.00
+mmpgxr0cmqouvxsuz	13121	24	22900.00
+mmt9f0zv75r8qf1g9	13098	6	22900.00
+mmt9f0zv75r8qf1g9	13013	6	23900.00
+mmt9f0zv75r8qf1g9	12609	6	24900.00
+mmt9f0zv75r8qf1g9	13029	3	32900.00
+mmt9f0zv75r8qf1g9	12905	6	34900.00
+mmt9f0zv75r8qf1g9	12881	6	33900.00
+mmt9f0zv75r8qf1g9	12907	6	28900.00
+mmt9f0zv75r8qf1g9	12986	6	34900.00
+mmt9f0zv75r8qf1g9	12908	6	28900.00
+mmt9gf24g1f0g2km0	12692	21	21900.00
+mmt9gf24g1f0g2km0	13029	9	32900.00
+mmt9gf24g1f0g2km0	12617	15	35900.00
+mmt9gf24g1f0g2km0	12907	15	28900.00
+mmt9gf24g1f0g2km0	13047	8	25900.00
+mmt9gf24g1f0g2km0	12579	12	39900.00
+mmt9gf24g1f0g2km0	13077	8	42900.00
+mmt9gf24g1f0g2km0	13094	24	21900.00
+mmt9gf24g1f0g2km0	12931	8	29900.00
+mmt9gf24g1f0g2km0	12971	10	36900.00
+mmt9gf24g1f0g2km0	13116	15	21900.00
+mmt9gf24g1f0g2km0	13128	30	23900.00
+mmt9gf24g1f0g2km0	12747	12	31900.00
+mmt9gf24g1f0g2km0	13068	12	21900.00
+mmt9gf24g1f0g2km0	13110	12	19900.00
+mmt9gf24g1f0g2km0	12943	9	19900.00
+mmt9gf24g1f0g2km0	13120	15	17900.00
+mmt9gf24g1f0g2km0	13081	27	19900.00
+mmt9gf24g1f0g2km0	12877	18	19900.00
+mmt9gf24g1f0g2km0	12771	15	16900.00
+mmt9gf24g1f0g2km0	13122	6	18900.00
+mmt9gf24g1f0g2km0	12754	21	16900.00
+mmt9gf24g1f0g2km0	13079	15	19900.00
+mmt9gf24g1f0g2km0	12909	18	19900.00
+mmt9gf24g1f0g2km0	12972	6	48900.00
+mmt9gf24g1f0g2km0	13067	12	39900.00
+mmt9ijwvjz21wl7nq	13074	18	19900.00
+mmt9ijwvjz21wl7nq	13091	18	19900.00
+mmt9ijwvjz21wl7nq	13121	18	19900.00
+mmt9ijwvjz21wl7nq	13110	18	19900.00
+mmt9ijwvjz21wl7nq	13129	18	19900.00
+mmt9ijwvjz21wl7nq	13079	18	19900.00
+mmt9ijwvjz21wl7nq	12884	18	19900.00
+mmt9ijwvjz21wl7nq	13094	18	19900.00
+mmt9ijwvjz21wl7nq	13068	18	21900.00
+mmt9ijwvjz21wl7nq	13116	18	21900.00
+mmt9ijwvjz21wl7nq	13117	18	21900.00
+mmt9ijwvjz21wl7nq	13100	18	24900.00
+mmt9ijwvjz21wl7nq	13011	18	27900.00
+mmt9ijwvjz21wl7nq	13036	18	27900.00
+mmt9ijwvjz21wl7nq	13033	18	27900.00
+mmt9ijwvjz21wl7nq	13010	18	27900.00
+mmt9ijwvjz21wl7nq	13013	18	21900.00
+mmt9ijwvjz21wl7nq	13004	18	19900.00
+mmt9ijwvjz21wl7nq	12943	18	19900.00
+mmt9ijwvjz21wl7nq	13119	18	19900.00
+mmt9ijwvjz21wl7nq	13131	18	19900.00
+mmt9ijwvjz21wl7nq	13047	18	27900.00
+mmt9ijwvjz21wl7nq	12965	18	27900.00
+mmt9ijwvjz21wl7nq	13041	18	29900.00
+mmt9ijwvjz21wl7nq	13028	18	34900.00
+mmt9ijwvjz21wl7nq	13027	18	33900.00
+mmt9ijwvjz21wl7nq	12974	18	34900.00
+mmt9ka1qt9uumiqoj	13002	8	41900.00
+mmt9ka1qt9uumiqoj	12402	8	39900.00
+mmt9ka1qt9uumiqoj	13102	8	29900.00
+mmt9ka1qt9uumiqoj	13113	8	49900.00
+mmt9ka1qt9uumiqoj	12692	12	22900.00
+mmt9ka1qt9uumiqoj	12869	8	31900.00
+mmt9ka1qt9uumiqoj	13104	8	39900.00
+mmt9ka1qt9uumiqoj	12969	12	21900.00
+mmt9ka1qt9uumiqoj	12704	8	29900.00
+mmt9ka1qt9uumiqoj	12971	8	36900.00
+mmt9ka1qt9uumiqoj	13039	8	30900.00
+mmt9ka1qt9uumiqoj	12744	12	19900.00
+mmt9ka1qt9uumiqoj	12986	8	34900.00
+mmt9ka1qt9uumiqoj	13094	12	21900.00
+mmt9ka1qt9uumiqoj	13117	12	23900.00
+mmt9ka1qt9uumiqoj	12965	8	27900.00
+mmt9ka1qt9uumiqoj	13040	8	32900.00
+mmt9ka1qt9uumiqoj	13048	8	25900.00
+mmt9ka1qt9uumiqoj	13013	12	23900.00
+mmt9ka1qt9uumiqoj	12623	8	29900.00
+mmt9ka1qt9uumiqoj	12909	12	19900.00
+mmt9ka1qt9uumiqoj	12877	12	19900.00
+mmt9ka1qt9uumiqoj	12771	12	16900.00
+mmt9ka1qt9uumiqoj	13120	12	17900.00
+mmt9ka1qt9uumiqoj	13110	12	19900.00
+mmt9ka1qt9uumiqoj	12943	12	19900.00
+mmt9ka1qt9uumiqoj	13131	12	19900.00
+mmt9ka1qt9uumiqoj	13091	12	18900.00
+mmt9nlw0bj2eouw27	13103	5	45900.00
+mmt9nlw0bj2eouw27	12972	5	48900.00
+mmt9nlw0bj2eouw27	12966	5	43900.00
+mmt9nlw0bj2eouw27	13104	5	39900.00
+mmt9nlw0bj2eouw27	12964	5	46900.00
+mmt9nlw0bj2eouw27	12412	5	34900.00
+mmt9nlw0bj2eouw27	13002	5	41900.00
+mmt9nlw0bj2eouw27	13065	5	32900.00
+mmt9nlw0bj2eouw27	13076	5	27900.00
+mmt9nlw0bj2eouw27	13064	5	32900.00
+mmt9nlw0bj2eouw27	13102	5	29900.00
+mmt9nlw0bj2eouw27	13077	5	42900.00
+mmt9nlw0bj2eouw27	12990	5	32900.00
+mmt9nlw0bj2eouw27	12963	5	35900.00
+mmt9nlw0bj2eouw27	13015	5	37900.00
+mmt9nlw0bj2eouw27	13115	5	49900.00
+mmt9nlw0bj2eouw27	13035	5	38900.00
+mmt9nlw0bj2eouw27	13036	5	29900.00
+mmt9nlw0bj2eouw27	13117	5	24900.00
+mmt9nlw0bj2eouw27	13116	5	21900.00
+mmt9nlw0bj2eouw27	13094	5	21900.00
+mmt9nlw0bj2eouw27	13129	5	22900.00
+mmt9nlw0bj2eouw27	13110	5	19900.00
+mmt9nlw0bj2eouw27	13078	5	22900.00
+mmt9nlw0bj2eouw27	13119	5	19900.00
+mmt9nlw0bj2eouw27	13073	5	15900.00
+mmt9nlw0bj2eouw27	13131	5	19900.00
+mmt9nlw0bj2eouw27	13041	5	29900.00
+mmt9nlw0bj2eouw27	13047	5	27900.00
+mmt9nlw0bj2eouw27	13120	5	18900.00
+mmt9nlw0bj2eouw27	13042	5	29900.00
+mmt9nlw0bj2eouw27	12969	5	21900.00
+mmt9nlw0bj2eouw27	13084	5	29900.00
+mmt9nlw0bj2eouw27	13043	5	34900.00
+mmt9nlw0bj2eouw27	12895	5	30900.00
+mmt9nlw0bj2eouw27	12967	5	24900.00
+mmt9nlw0bj2eouw27	13001	5	32900.00
+mmt9nlw0bj2eouw27	13040	5	32900.00
+mmt9nlw0bj2eouw27	12709	5	19900.00
+mmt9nlw0bj2eouw27	12976	5	37900.00
+mmt9nlw0bj2eouw27	12987	5	27900.00
+mmt9nlw0bj2eouw27	12975	5	34900.00
+mmt9nlw0bj2eouw27	12986	5	34900.00
+mmt9nlw0bj2eouw27	12965	5	34900.00
+mmt9nlw0bj2eouw27	12984	5	24900.00
+mmt9nlw0bj2eouw27	12744	5	19900.00
+mmt9nlw0bj2eouw27	13029	5	32900.00
+mmt9pnknmcc4u2twt	12964	6	46900.00
+mmt9pnknmcc4u2twt	13002	6	41900.00
+mmt9pnknmcc4u2twt	13115	6	49900.00
+mmt9pnknmcc4u2twt	13112	6	37900.00
+mmt9pnknmcc4u2twt	13036	6	29900.00
+mmt9pnknmcc4u2twt	12980	6	22900.00
+mmt9pnknmcc4u2twt	13067	6	33900.00
+mmt9pnknmcc4u2twt	13117	6	24900.00
+mmt9pnknmcc4u2twt	13033	6	29900.00
+mmt9pnknmcc4u2twt	13128	6	23900.00
+mmt9pnknmcc4u2twt	12909	6	19900.00
+mmt9pnknmcc4u2twt	13095	6	17900.00
+mmt9pnknmcc4u2twt	13094	6	21900.00
+mmt9pnknmcc4u2twt	13042	6	29900.00
+mmt9pnknmcc4u2twt	12973	6	42900.00
+mmt9pnknmcc4u2twt	13043	6	34900.00
+mmt9pnknmcc4u2twt	13254	6	34900.00
+mmt9pnknmcc4u2twt	13058	6	29900.00
+mmt9pnknmcc4u2twt	13055	6	29900.00
+mmt9pnknmcc4u2twt	12965	6	27900.00
+mmt9pnknmcc4u2twt	12976	6	37900.00
+mmt9pnknmcc4u2twt	12987	6	27900.00
+mmt9pnknmcc4u2twt	12975	6	34900.00
+mmt9pnknmcc4u2twt	13028	6	35900.00
+mmt9pnknmcc4u2twt	12744	6	19900.00
+mmt9pnknmcc4u2twt	12935	6	35900.00
+mmt9pnknmcc4u2twt	12986	6	34900.00
+mmt9qjskej5ms6x1x	12895	18	29900.00
+mmt9qjskej5ms6x1x	12965	18	26900.00
+mmt9qjskej5ms6x1x	13048	18	23900.00
+mmt9qjskej5ms6x1x	12967	18	23900.00
+mmt9qjskej5ms6x1x	13045	18	24900.00
+mmt9qjskej5ms6x1x	13096	18	23900.00
+mmt9qjskej5ms6x1x	12987	12	26900.00
+mmt9qjskej5ms6x1x	12744	18	18900.00
+mmt9qjskej5ms6x1x	12984	18	24900.00
+mmt9qjskej5ms6x1x	12907	18	28900.00
+mmt9qjskej5ms6x1x	12877	18	18900.00
+mmt9qjskej5ms6x1x	13097	18	23900.00
+mmt9qjskej5ms6x1x	12920	18	20900.00
+mmt9qjskej5ms6x1x	13013	18	22900.00
+mmt9qjskej5ms6x1x	12609	18	23900.00
+mmt9qjskej5ms6x1x	12888	18	18900.00
+mmt9qjskej5ms6x1x	13094	18	20900.00
+mmt9qjskej5ms6x1x	13083	18	18900.00
+mmt9qjskej5ms6x1x	13129	18	21900.00
+mmt9qjskej5ms6x1x	12909	12	19900.00
+mmt9qjskej5ms6x1x	13068	12	21900.00
+mmt9qjskej5ms6x1x	13116	12	21900.00
+mmt9qjskej5ms6x1x	13128	12	22900.00
+mmt9qjskej5ms6x1x	13033	12	28900.00
+mmt9qjskej5ms6x1x	13014	12	31900.00
+mmt9qjskej5ms6x1x	12579	12	39900.00
+mmt9qjskej5ms6x1x	13104	12	35900.00
+mmt9qjskej5ms6x1x	12972	12	46900.00
+mmt9qjskej5ms6x1x	12869	12	31900.00
+mmt9qjskej5ms6x1x	13112	12	36900.00
+mmt9qjskej5ms6x1x	12990	12	37900.00
+mmt9r6b2q007ajtnt	13102	6	29900.00
+mmt9r6b2q007ajtnt	12959	6	37900.00
+mmt9r6b2q007ajtnt	13023	6	34900.00
+mmt9r6b2q007ajtnt	13077	4	42900.00
+mmt9r6b2q007ajtnt	13113	4	49900.00
+mmt9r6b2q007ajtnt	13115	4	49900.00
+mmt9r6b2q007ajtnt	13014	4	29900.00
+mmt9r6b2q007ajtnt	12964	4	46900.00
+mmt9r6b2q007ajtnt	12966	4	43900.00
+mmt9r6b2q007ajtnt	13033	4	29900.00
+mmt9r6b2q007ajtnt	13100	4	25900.00
+mmt9r6b2q007ajtnt	12909	6	19900.00
+mmt9r6b2q007ajtnt	12671	4	29900.00
+mmt9r6b2q007ajtnt	13040	4	32900.00
+mmt9r6b2q007ajtnt	12895	4	30900.00
+mmt9r6b2q007ajtnt	12609	4	24900.00
+mmt9r6b2q007ajtnt	12965	4	27900.00
+mmt9r6b2q007ajtnt	13058	4	29900.00
+mmt9r6b2q007ajtnt	12973	4	42900.00
+mmt9r6b2q007ajtnt	13042	4	29900.00
+mmt9r6b2q007ajtnt	13013	4	23900.00
+mmt9r6b2q007ajtnt	13097	4	24900.00
+mmt9s8xtkyhxxqxvt	13077	12	41900.00
+mmt9s8xtkyhxxqxvt	13076	12	26900.00
+mmt9s8xtkyhxxqxvt	12963	12	34900.00
+mmt9s8xtkyhxxqxvt	12962	12	43900.00
+mmt9s8xtkyhxxqxvt	13113	12	48900.00
+mmt9s8xtkyhxxqxvt	13065	12	31900.00
+mmt9s8xtkyhxxqxvt	13120	12	17900.00
+mmt9s8xtkyhxxqxvt	13119	12	18900.00
+mmt9s8xtkyhxxqxvt	12964	12	45900.00
+mmt9s8xtkyhxxqxvt	13055	12	28900.00
+mmt9s8xtkyhxxqxvt	13046	12	26900.00
+mmt9s8xtkyhxxqxvt	12931	12	28900.00
+mmt9s8xtkyhxxqxvt	13001	12	31900.00
+mmt9s8xtkyhxxqxvt	13028	12	34900.00
+mmt9s8xtkyhxxqxvt	13029	12	31900.00
+mmt9s8xtkyhxxqxvt	12972	12	46900.00
+mmt9s8xtkyhxxqxvt	13107	12	28900.00
+mmt9s8xtkyhxxqxvt	13014	12	31900.00
+mmt9s8xtkyhxxqxvt	13013	12	22900.00
+mmt9s8xtkyhxxqxvt	12967	12	23900.00
+mmt9s8xtkyhxxqxvt	13048	12	23900.00
+mmt9s8xtkyhxxqxvt	12895	12	29900.00
+mmt9s8xtkyhxxqxvt	12609	12	23900.00
+mmt9s8xtkyhxxqxvt	13045	12	24900.00
+mmt9s8xtkyhxxqxvt	12908	12	28900.00
+mmt9s8xtkyhxxqxvt	12984	12	24900.00
+mmt9s8xtkyhxxqxvt	12744	12	18900.00
+mmt9s8xtkyhxxqxvt	12987	12	26900.00
+mmt9tei8ytk1h00vz	13077	9	41900.00
+mmt9tei8ytk1h00vz	13076	6	26900.00
+mmt9tei8ytk1h00vz	12963	9	34900.00
+mmt9tei8ytk1h00vz	12962	9	43900.00
+mmt9tei8ytk1h00vz	13113	9	48900.00
+mmt9tei8ytk1h00vz	13065	9	31900.00
+mmt9tei8ytk1h00vz	12964	9	45900.00
+mmt9tei8ytk1h00vz	12972	9	46900.00
+mmt9tei8ytk1h00vz	13107	9	28900.00
+mmt9tei8ytk1h00vz	13014	9	31900.00
+mmt9tei8ytk1h00vz	13119	12	18900.00
+mmt9tei8ytk1h00vz	13120	12	17900.00
+mmt9tei8ytk1h00vz	13001	9	31900.00
+mmt9tei8ytk1h00vz	13013	9	22900.00
+mmt9tei8ytk1h00vz	12967	9	23900.00
+mmt9tei8ytk1h00vz	13048	9	23900.00
+mmt9tei8ytk1h00vz	12895	9	29900.00
+mmt9tei8ytk1h00vz	12609	9	23900.00
+mmt9tei8ytk1h00vz	13045	9	24900.00
+mmt9tei8ytk1h00vz	13046	9	26900.00
+mmt9tei8ytk1h00vz	12931	9	28900.00
+mmt9tei8ytk1h00vz	13055	6	28900.00
+mmt9tei8ytk1h00vz	12908	9	28900.00
+mmt9tei8ytk1h00vz	12984	9	24900.00
+mmt9tei8ytk1h00vz	12744	9	18900.00
+mmt9tei8ytk1h00vz	13028	9	34900.00
+mmt9tei8ytk1h00vz	13029	9	31900.00
+mmt9tei8ytk1h00vz	12987	9	26900.00
+mmt9ud7lqklo7j0pc	12964	6	45900.00
+mmt9ud7lqklo7j0pc	13055	6	29900.00
+mmt9ud7lqklo7j0pc	13254	6	34900.00
+mmt9ud7lqklo7j0pc	13058	6	29900.00
+mmt9ud7lqklo7j0pc	13078	6	22900.00
+mmt9ud7lqklo7j0pc	13129	6	22900.00
+mmt9ud7lqklo7j0pc	13094	6	21900.00
+mmt9ud7lqklo7j0pc	13067	6	33900.00
+mmt9ud7lqklo7j0pc	12980	6	22900.00
+mmt9ud7lqklo7j0pc	12909	6	19900.00
+mmt9ud7lqklo7j0pc	13116	6	21900.00
+mmt9ud7lqklo7j0pc	13013	6	23900.00
+mmt9ud7lqklo7j0pc	12920	6	21900.00
+mmt9ud7lqklo7j0pc	12744	6	19900.00
+mmun9a0vcpsv8yiiw	12959	6	36900.00
+mmun9a0vcpsv8yiiw	13002	6	40900.00
+mmun9a0vcpsv8yiiw	13115	6	48900.00
+mmun9a0vcpsv8yiiw	13104	6	35900.00
+mmun9a0vcpsv8yiiw	13103	6	39900.00
+mmun9a0vcpsv8yiiw	12972	6	47900.00
+mmun9a0vcpsv8yiiw	12964	6	45900.00
+mmun9a0vcpsv8yiiw	13036	6	28900.00
+mmun9a0vcpsv8yiiw	13011	6	28900.00
+mmun9a0vcpsv8yiiw	13068	6	20900.00
+mmun9a0vcpsv8yiiw	13040	6	31900.00
+mmun9a0vcpsv8yiiw	12973	6	41900.00
+mmun9a0vcpsv8yiiw	13042	6	28900.00
+mmun9a0vcpsv8yiiw	12965	6	26900.00
+mmun9a0vcpsv8yiiw	12671	6	23900.00
+mmun9a0vcpsv8yiiw	13003	6	31900.00
+mmun9a0vcpsv8yiiw	13094	6	20900.00
+mmun9a0vcpsv8yiiw	13120	6	18900.00
+mmun9a0vcpsv8yiiw	13041	6	28900.00
+mmun9a0vcpsv8yiiw	12693	6	24900.00
+mmun9a0vcpsv8yiiw	12943	6	18900.00
+mmun9a0vcpsv8yiiw	12905	6	33900.00
+mmun9a0vcpsv8yiiw	12881	6	32900.00
+mmun9a0vcpsv8yiiw	12935	6	34900.00
+mmun9a0vcpsv8yiiw	12907	6	28900.00
+mmun9a0vcpsv8yiiw	12744	6	19900.00
+mmuz2vh288k4e59ve	13041	12	29900.00
+mmuz2vh288k4e59ve	13001	12	32900.00
+mmuz2vh288k4e59ve	13107	12	29900.00
+mmuz2vh288k4e59ve	12972	12	48900.00
+mmuz2vh288k4e59ve	13002	24	41900.00
+mmuz2vh288k4e59ve	12652	24	29900.00
+mmuz2vh288k4e59ve	12579	24	39900.00
+mmuz2vh288k4e59ve	12968	24	44900.00
+mmuz2vh288k4e59ve	13014	24	29900.00
+mmuz2vh288k4e59ve	13068	24	21900.00
+mmuz2vh288k4e59ve	13011	24	29900.00
+mmuz2vh288k4e59ve	13036	24	29900.00
+mmuz2vh288k4e59ve	13086	24	24900.00
+mmuz2vh288k4e59ve	13116	24	21900.00
+mmuz2vh288k4e59ve	13120	24	17900.00
+mmuz2vh288k4e59ve	13029	24	32900.00
+mmuz2vh288k4e59ve	12907	24	28900.00
+mmuz2vh288k4e59ve	12986	24	34900.00
+mmuz2vh288k4e59ve	12744	24	19900.00
+mmuz2vh288k4e59ve	12984	24	24900.00
+mmuz2vh288k4e59ve	12881	24	33900.00
+mmuz2vh288k4e59ve	12905	24	34900.00
+mmuz2vh288k4e59ve	12908	24	28900.00
+mmuz2vh288k4e59ve	12935	24	35900.00
+mmuz2vh288k4e59ve	12987	24	27900.00
+mmuz2vh288k4e59ve	13042	24	29900.00
+mmuz2vh288k4e59ve	13003	24	32900.00
+mmuz2vh288k4e59ve	12965	24	27900.00
+mmuz2vh288k4e59ve	13047	24	25900.00
+mmuz2vh288k4e59ve	12971	24	36900.00
+mmuz2vh288k4e59ve	13040	24	32900.00
+mmuz2vh288k4e59ve	12712	24	25900.00
+mmuz2vh288k4e59ve	13098	24	22900.00
+mmuz2vh288k4e59ve	13129	24	22900.00
+mmuz2vh288k4e59ve	13122	24	18900.00
+mmuz2vh288k4e59ve	12963	24	35900.00
+mmuz2vh288k4e59ve	13015	24	37900.00
+mmuz2vh288k4e59ve	13023	24	34900.00
+mmuz2vh288k4e59ve	13012	24	39900.00
+mmuz2vh288k4e59ve	13016	24	32900.00
+mmuz2vh288k4e59ve	12990	24	32900.00
+mmuz2vh288k4e59ve	12869	24	31900.00
+mmuz2vh288k4e59ve	13115	24	49900.00
+mmuz2vh288k4e59ve	13102	36	29900.00
+mmuz2vh288k4e59ve	12960	36	39900.00
+mmuz2vh288k4e59ve	12962	36	44900.00
+mmuz2vh288k4e59ve	13065	36	32900.00
+mmuz2vh288k4e59ve	13104	36	35900.00
+mmuz2vh288k4e59ve	13103	36	39900.00
+mmuz2vh288k4e59ve	13100	36	25900.00
+mmuz2vh288k4e59ve	13117	36	23900.00
+mmuz2vh288k4e59ve	13090	36	21900.00
+mmuz2vh288k4e59ve	13110	36	19900.00
+mmuz2vh288k4e59ve	13074	36	19900.00
+mmuz2vh288k4e59ve	13118	36	21900.00
+mmuz2vh288k4e59ve	13094	36	21900.00
+mmuz2vh288k4e59ve	13079	36	19900.00
+mmuz2vh288k4e59ve	13078	36	22900.00
+mmuz2vh288k4e59ve	13084	36	29900.00
+mmuz2vh288k4e59ve	12969	36	21900.00
+mmuz2vh288k4e59ve	12920	36	21900.00
+mmuz2vh288k4e59ve	13013	36	23900.00
+mmuz2vh288k4e59ve	12877	36	19900.00
+mmuz2vh288k4e59ve	13097	36	24900.00
+mmuz2vh288k4e59ve	12943	36	19900.00
+mmuz3v4f45k1zx63o	12395	18	29900.00
+mmuz3v4f45k1zx63o	12402	18	39900.00
+mmuz3v4f45k1zx63o	13002	18	41900.00
+mmuz3v4f45k1zx63o	13090	18	21900.00
+mmuz3v4f45k1zx63o	13116	18	21900.00
+mmuz3v4f45k1zx63o	12980	18	20900.00
+mmuz3v4f45k1zx63o	13055	18	29900.00
+mmuz3v4f45k1zx63o	13254	18	34900.00
+mmuz3v4f45k1zx63o	13039	18	30900.00
+mmuz3v4f45k1zx63o	13118	18	21900.00
+mmuz3v4f45k1zx63o	13091	18	18900.00
+mmuz3v4f45k1zx63o	13110	18	19900.00
+mmuz3v4f45k1zx63o	13121	18	22900.00
+mmuz3v4f45k1zx63o	12771	18	16900.00
+mmuz3v4f45k1zx63o	12877	18	19900.00
+mmuz3v4f45k1zx63o	13122	18	18900.00
+mmuz3v4f45k1zx63o	12943	18	19900.00
+mmuz3v4f45k1zx63o	12895	18	30900.00
+mmuz3v4f45k1zx63o	13084	18	29900.00
+mmz6ste278jak610v	12984	12	24000.00
+mmz6ste278jak610v	12744	12	19000.00
+mmz6ste278jak610v	12975	6	34000.00
+mmz6ste278jak610v	12617	12	35000.00
+mmz6ste278jak610v	13081	24	19000.00
+mmz6ste278jak610v	12909	24	19000.00
+mmz6ste278jak610v	13011	12	29000.00
+mmz6ste278jak610v	13036	12	29000.00
+mmz6ste278jak610v	12747	12	31000.00
+mmz6ste278jak610v	13068	24	21000.00
+mmz6ste278jak610v	13100	24	25000.00
+mmz6ste278jak610v	13128	12	23000.00
+mmz6ste278jak610v	13090	24	21000.00
+mmz6ste278jak610v	13116	24	21000.00
+mmz6ste278jak610v	13094	24	21000.00
+mmz6ste278jak610v	13129	24	22000.00
+mmz6ste278jak610v	13079	24	19000.00
+mmz6ste278jak610v	13095	24	17000.00
+mmz6ste278jak610v	12692	24	21000.00
+mmz6ste278jak610v	12640	12	24000.00
+mmz6ste278jak610v	13083	24	19000.00
+mmz6ste278jak610v	13074	24	19000.00
+mmz6ste278jak610v	13121	24	22000.00
+mmz6ste278jak610v	13110	24	19000.00
+mmz6ste278jak610v	13091	24	18000.00
+mmz6ste278jak610v	13118	24	21000.00
+mmz6ste278jak610v	13122	24	18000.00
+mmz6ste278jak610v	12943	24	19000.00
+mmz6ste278jak610v	13119	24	19000.00
+mmz6ste278jak610v	13013	24	23000.00
+mmz6ste278jak610v	12920	24	21000.00
+mmz6ste278jak610v	13097	24	24000.00
+mmz6ste278jak610v	13120	24	17000.00
+mn4oik827frvi7oiz	13115	5	49900.00
+mn4oik827frvi7oiz	13113	5	49900.00
+mn4oik827frvi7oiz	12963	5	35900.00
+mn4oik827frvi7oiz	12869	5	31900.00
+mn4oik827frvi7oiz	13033	6	29900.00
+mn4oik827frvi7oiz	13067	6	39900.00
+mn4oik827frvi7oiz	12909	6	19900.00
+mn4oik827frvi7oiz	13100	6	25900.00
+mn4oik827frvi7oiz	13128	6	23900.00
+mn4oik827frvi7oiz	12671	6	24900.00
+mn4oik827frvi7oiz	13122	6	18900.00
+mn4oik827frvi7oiz	12609	6	24900.00
+mn4oik827frvi7oiz	13097	6	24900.00
+mn4oik827frvi7oiz	13120	6	17900.00
+mn4oik827frvi7oiz	13094	6	21900.00
+mn4oik827frvi7oiz	13129	6	22900.00
+mn4oik827frvi7oiz	13091	6	18900.00
+mn4oik827frvi7oiz	13118	6	21900.00
+mn4oik827frvi7oiz	12970	6	34900.00
+mn4oik827frvi7oiz	12907	6	28900.00
+mn4oik827frvi7oiz	12881	6	33900.00
+mn4oik827frvi7oiz	12744	12	19900.00
+mn4oik827frvi7oiz	12975	6	34900.00
+mn4oik827frvi7oiz	13001	6	32900.00
+mn4oik827frvi7oiz	13254	6	34900.00
+mn4oik827frvi7oiz	13096	6	24900.00
+mn4oik827frvi7oiz	13047	6	25900.00
+mn4oik827frvi7oiz	13041	6	29900.00
+mn4oik827frvi7oiz	12971	6	36900.00
+mn4oik827frvi7oiz	13042	6	29900.00
+mn4oik827frvi7oiz	13084	6	29900.00
+mn4oik827frvi7oiz	13040	6	32900.00
+mn4oik827frvi7oiz	12895	6	30900.00
+mn0aqu2v5u1mcja3f	12909	12	19900.00
+mn0aqu2v5u1mcja3f	13095	6	17900.00
+mn0aqu2v5u1mcja3f	13094	6	21900.00
+mn0aqu2v5u1mcja3f	13079	6	19900.00
+mn0aqu2v5u1mcja3f	13118	6	21900.00
+mn0aqu2v5u1mcja3f	12671	6	24900.00
+mmwi1or2y1lmz89j1	13117	36	22900.00
+mmwi1or2y1lmz89j1	13100	36	24900.00
+mmwi1or2y1lmz89j1	13094	36	19900.00
+mmwi1or2y1lmz89j1	13013	36	21900.00
+mmwi1or2y1lmz89j1	12877	36	19900.00
+mmwi1or2y1lmz89j1	13097	36	22900.00
+mmwi1or2y1lmz89j1	12943	36	18900.00
+mmwi1or2y1lmz89j1	12881	36	29900.00
+mmwi1or2y1lmz89j1	12907	36	28900.00
+mmwi22ybmtlp3xmn4	13117	18	22900.00
+mmwi22ybmtlp3xmn4	13100	18	24900.00
+mmwi22ybmtlp3xmn4	13094	18	19900.00
+mmwi22ybmtlp3xmn4	13013	18	21900.00
+mmwi22ybmtlp3xmn4	12877	18	19900.00
+mmwi22ybmtlp3xmn4	13097	18	22900.00
+mmwi22ybmtlp3xmn4	12943	18	18900.00
+mmwi22ybmtlp3xmn4	12881	18	29900.00
+mmwi22ybmtlp3xmn4	12907	18	28900.00
+mmwi2g8gthkv4t76s	13117	18	22900.00
+mmwi2g8gthkv4t76s	13100	18	24900.00
+mmwi2g8gthkv4t76s	13094	18	19900.00
+mmwi2g8gthkv4t76s	13013	18	21900.00
+mmwi2g8gthkv4t76s	12877	18	19900.00
+mmwi2g8gthkv4t76s	13097	18	22900.00
+mmwi2g8gthkv4t76s	12943	18	18900.00
+mmwi2g8gthkv4t76s	12881	18	29900.00
+mmwi2g8gthkv4t76s	12907	18	28900.00
+mmwi2xc7yi4fpkkkm	13117	12	22900.00
+mmwi2xc7yi4fpkkkm	13094	12	19900.00
+mmwi2xc7yi4fpkkkm	13013	12	21900.00
+mmwi2xc7yi4fpkkkm	12877	12	19900.00
+mmwi2xc7yi4fpkkkm	13097	12	22900.00
+mmwi2xc7yi4fpkkkm	12881	12	29900.00
+mmwi2xc7yi4fpkkkm	12907	12	28900.00
+mn0aqu2v5u1mcja3f	12895	5	30900.00
+mn0aqu2v5u1mcja3f	12971	4	36900.00
+mn0aqu2v5u1mcja3f	12931	4	29900.00
+mn0aqu2v5u1mcja3f	13055	6	29900.00
+mn0aqu2v5u1mcja3f	12744	6	19900.00
+mn0aqu2v5u1mcja3f	12986	6	34900.00
+mn0aqu2v5u1mcja3f	12908	6	28900.00
+mn7giycyxyobgvhp2	12963	12	35900.00
+mn7giycyxyobgvhp2	13016	12	32900.00
+mn7giycyxyobgvhp2	13012	12	39900.00
+mn7giycyxyobgvhp2	13015	12	37900.00
+mmt9hjj6xd4mpipig	13122	18	18900.00
+mmt9hjj6xd4mpipig	13078	18	22900.00
+mmt9hjj6xd4mpipig	13096	18	24900.00
+mmt9hjj6xd4mpipig	13047	18	27900.00
+mmt9hjj6xd4mpipig	12965	18	27900.00
+mmt9hjj6xd4mpipig	13119	18	19900.00
+mmt9hjj6xd4mpipig	13013	18	21900.00
+mmt9hjj6xd4mpipig	13036	18	27900.00
+mmt9hjj6xd4mpipig	13033	18	27900.00
+mmt9hjj6xd4mpipig	13010	18	27900.00
+mmt9hjj6xd4mpipig	13100	18	24900.00
+mmt9hjj6xd4mpipig	13116	18	21900.00
+mmt9hjj6xd4mpipig	13117	18	21900.00
+mmt9hjj6xd4mpipig	13091	18	19900.00
+mmt9hjj6xd4mpipig	13121	18	19900.00
+mmt9hjj6xd4mpipig	13110	18	19900.00
+mmt9hjj6xd4mpipig	13129	18	19900.00
+mmt9hjj6xd4mpipig	13079	18	19900.00
+mmt9hjj6xd4mpipig	12884	18	19900.00
+mmt9hjj6xd4mpipig	13094	18	19900.00
+mmt9hjj6xd4mpipig	12895	18	30900.00
+mn7ulw128xqmshwb1	13120	12	17900.00
+mn7ulw128xqmshwb1	13122	12	18900.00
+mn7ulw128xqmshwb1	13079	12	19900.00
+mn7ulw128xqmshwb1	13095	12	17900.00
+mn7ulw128xqmshwb1	13003	12	32900.00
+mn7ulw128xqmshwb1	12907	12	28900.00
+mn7ulw128xqmshwb1	12984	12	24900.00
+mn7ulw128xqmshwb1	12986	12	34900.00
+mn7ulw128xqmshwb1	13117	12	23900.00
+mn7ulw128xqmshwb1	13106	12	41900.00
+mn7ulw128xqmshwb1	13102	12	29900.00
+mn7ulw128xqmshwb1	12920	12	21900.00
+mn7ulw128xqmshwb1	13131	12	19900.00
+mn7ulw128xqmshwb1	13094	12	21900.00
+mn7ulw128xqmshwb1	13064	12	32900.00
+mn7ulw128xqmshwb1	13033	12	29900.00
+mn7ulw128xqmshwb1	13081	12	19900.00
+mn7ulw128xqmshwb1	13036	12	29900.00
+mn8xtx9kl6c0ac0v9	13003	12	32900.00
+mn8xtx9kl6c0ac0v9	13131	12	19900.00
+mn8xtx9kl6c0ac0v9	12777	12	14900.00
+mn8xtx9kl6c0ac0v9	13120	12	17900.00
+mmxfucvhrv09phu8u	13104	12	35900.00
+mmxfucvhrv09phu8u	13100	12	25900.00
+mmxfucvhrv09phu8u	13011	12	29900.00
+mmxfucvhrv09phu8u	13036	12	29900.00
+mmxfucvhrv09phu8u	13116	12	21900.00
+mmxfucvhrv09phu8u	13128	12	23900.00
+mmxfucvhrv09phu8u	13117	12	24900.00
+mmxfucvhrv09phu8u	12909	12	19900.00
+mmxfucvhrv09phu8u	13079	12	19900.00
+mmxfucvhrv09phu8u	13118	12	21900.00
+mmxfucvhrv09phu8u	13091	12	18900.00
+mmxfucvhrv09phu8u	13094	12	21900.00
+mmxfucvhrv09phu8u	13013	12	23900.00
+mmxfucvhrv09phu8u	13097	12	24900.00
+mmxfucvhrv09phu8u	12877	12	19900.00
+mmxfucvhrv09phu8u	13058	12	29900.00
+mmxfucvhrv09phu8u	13042	12	29900.00
+mmxfucvhrv09phu8u	13055	12	29900.00
+mmxfucvhrv09phu8u	13003	12	32900.00
+mmxfucvhrv09phu8u	12965	12	27900.00
+mmxfucvhrv09phu8u	12935	12	35900.00
+mmxfucvhrv09phu8u	12975	12	34900.00
+mmxfucvhrv09phu8u	12744	12	19900.00
+mn4nmkwyia7f4pjvh	13115	6	49900.00
+mn4nmkwyia7f4pjvh	12412	6	34900.00
+mn4nmkwyia7f4pjvh	13015	6	35900.00
+mn4nmkwyia7f4pjvh	13077	6	42900.00
+mn4nmkwyia7f4pjvh	12962	6	44900.00
+mn4nmkwyia7f4pjvh	13118	6	21900.00
+mn4nmkwyia7f4pjvh	12909	6	19900.00
+mn4nmkwyia7f4pjvh	13036	6	29900.00
+mn4nmkwyia7f4pjvh	13068	6	21900.00
+mn4nmkwyia7f4pjvh	13116	6	21900.00
+mn4nmkwyia7f4pjvh	13117	6	23900.00
+mn4nmkwyia7f4pjvh	12980	6	20900.00
+mn4nmkwyia7f4pjvh	13067	6	33900.00
+mn4nmkwyia7f4pjvh	13010	6	29900.00
+mn4nmkwyia7f4pjvh	13100	6	25900.00
+mn4nmkwyia7f4pjvh	13128	6	23900.00
+mn4nmkwyia7f4pjvh	13131	6	19900.00
+mn4nmkwyia7f4pjvh	13013	6	23900.00
+mn4nmkwyia7f4pjvh	12671	6	24900.00
+mn4nmkwyia7f4pjvh	12971	6	36900.00
+mn4nmkwyia7f4pjvh	13043	6	34900.00
+mn4nmkwyia7f4pjvh	13055	6	29900.00
+mn4nmkwyia7f4pjvh	12970	6	34900.00
+mn4nmkwyia7f4pjvh	12973	6	42900.00
+mn4nmkwyia7f4pjvh	13040	6	32900.00
+mn4nmkwyia7f4pjvh	13084	6	29900.00
+mn4nmkwyia7f4pjvh	13041	6	29900.00
+mn4nmkwyia7f4pjvh	13045	6	25900.00
+mn4nmkwyia7f4pjvh	12617	9	35900.00
+mn4nmkwyia7f4pjvh	12976	6	37900.00
+mn4nmkwyia7f4pjvh	12987	6	27900.00
+mn4nmkwyia7f4pjvh	12975	9	34900.00
+mn4nmkwyia7f4pjvh	12984	6	24900.00
+mn4nmkwyia7f4pjvh	12935	6	35900.00
+mn4nmkwyia7f4pjvh	12907	6	28900.00
+mn4nmkwyia7f4pjvh	12908	6	28900.00
+mn4nmkwyia7f4pjvh	12986	6	34900.00
+mn4nmkwyia7f4pjvh	12744	6	19900.00
+mn4nmkwyia7f4pjvh	12881	6	33900.00
+mn4nmkwyia7f4pjvh	13028	12	35900.00
+mn4nmkwyia7f4pjvh	13029	6	32900.00
+mn4nmkwyia7f4pjvh	13012	6	39900.00
+mn51a0p5j06q8ekab	12869	12	31900.00
+mn51a0p5j06q8ekab	13101	12	35900.00
+mn51a0p5j06q8ekab	12907	12	28900.00
+mn51a0p5j06q8ekab	12908	12	28900.00
+mn51a0p5j06q8ekab	12895	12	30900.00
+mn51a0p5j06q8ekab	13096	12	24900.00
+mn51a0p5j06q8ekab	13040	12	32900.00
+mn51a0p5j06q8ekab	12971	12	36900.00
+mn51a0p5j06q8ekab	13047	12	25900.00
+mn51a0p5j06q8ekab	12712	12	27900.00
+mn51a0p5j06q8ekab	13118	12	21900.00
+mn51a0p5j06q8ekab	13120	12	17900.00
+mn7gi3p0t232fsqsv	12969	12	21900.00
+mn7gi3p0t232fsqsv	12965	12	27900.00
+mn7gi3p0t232fsqsv	12931	10	29900.00
+mn7gi3p0t232fsqsv	13047	8	25900.00
+mn7gi3p0t232fsqsv	13131	12	19900.00
+mn7gi3p0t232fsqsv	13036	12	29900.00
+mn7gi3p0t232fsqsv	13081	12	19900.00
+mn7gi3p0t232fsqsv	13091	12	19900.00
+mn7gi3p0t232fsqsv	13094	12	21900.00
+mn7gi3p0t232fsqsv	13013	12	23900.00
+mn7gi3p0t232fsqsv	13120	12	17900.00
+mn7gi3p0t232fsqsv	12907	12	28900.00
+mn7gi3p0t232fsqsv	12975	12	34900.00
+mn7gi3p0t232fsqsv	13112	6	37900.00
+mn7gi3p0t232fsqsv	12869	12	31900.00
+mn7gi3p0t232fsqsv	13101	12	35900.00
+mn7gi3p0t232fsqsv	13076	12	27900.00
+mn7gi3p0t232fsqsv	13113	12	49900.00
+mn7gi3p0t232fsqsv	13065	12	32900.00
+mn7gi3p0t232fsqsv	13102	12	29900.00
+mn7gi3p0t232fsqsv	12963	12	35900.00
+mn7gi3p0t232fsqsv	13015	12	37900.00
+mn7giycyxyobgvhp2	13094	12	21900.00
+mn7giycyxyobgvhp2	13131	12	19900.00
+mn7giycyxyobgvhp2	12965	12	27900.00
+mn7giycyxyobgvhp2	12895	12	30900.00
+mn7giycyxyobgvhp2	13048	12	25900.00
+mn7giycyxyobgvhp2	13041	12	28900.00
+mmyzdhro97mizxlhk	13116	18	21900.00
+mmyzdhro97mizxlhk	13117	18	24900.00
+mmyzdhro97mizxlhk	13068	18	21900.00
+mmyzdhro97mizxlhk	13010	18	29900.00
+mmyzdhro97mizxlhk	13067	18	33900.00
+mmyzdhro97mizxlhk	12980	18	22900.00
+mmyzdhro97mizxlhk	13100	18	25900.00
+mmyzdhro97mizxlhk	13011	18	29900.00
+mmyzdhro97mizxlhk	13036	18	29900.00
+mmyzdhro97mizxlhk	12747	18	31900.00
+mmyzdhro97mizxlhk	13033	18	29900.00
+mmyzdhro97mizxlhk	13086	18	24900.00
+mmyzdhro97mizxlhk	13112	12	37900.00
+mmyzdhro97mizxlhk	13113	12	49900.00
+mmyzdhro97mizxlhk	12962	12	44900.00
+mmyzdhro97mizxlhk	13102	18	29900.00
+mmyzdhro97mizxlhk	13077	12	42900.00
+mmyzdhro97mizxlhk	13115	12	49900.00
+mmyzdhro97mizxlhk	12963	12	35900.00
+mmyzdhro97mizxlhk	13016	12	32900.00
+mmyzdhro97mizxlhk	13002	12	41900.00
+mmyzdhro97mizxlhk	12395	18	29900.00
+mmyzdhro97mizxlhk	13029	12	32900.00
+mmyzdhro97mizxlhk	12987	18	27900.00
+mmyzdhro97mizxlhk	13042	18	29900.00
+mmyzdhro97mizxlhk	13055	18	29900.00
+mmyzdhro97mizxlhk	12965	18	27900.00
+mmyzdhro97mizxlhk	13058	18	29900.00
+mmyzdhro97mizxlhk	13084	18	29900.00
+mmyzdhro97mizxlhk	13001	18	32900.00
+mmyzdhro97mizxlhk	13041	18	29900.00
+mmyzdhro97mizxlhk	13254	12	34900.00
+mmyzdhro97mizxlhk	12964	12	46900.00
+mmyzdhro97mizxlhk	12986	12	34900.00
+mmyzdhro97mizxlhk	12972	12	48900.00
+mmyzdhro97mizxlhk	13120	18	18900.00
+mmyzdhro97mizxlhk	13097	18	24900.00
+mmyzdhro97mizxlhk	12920	18	21900.00
+mmyzdhro97mizxlhk	13079	18	19900.00
+mmyzdhro97mizxlhk	13129	18	22900.00
+mmyzdhro97mizxlhk	13094	18	21900.00
+mmyzdhro97mizxlhk	13091	18	18900.00
+mmyzdhro97mizxlhk	13118	18	21900.00
+mmyzdhro97mizxlhk	12692	18	22900.00
+mmyzdhro97mizxlhk	13121	18	22900.00
+mmyzdhro97mizxlhk	12640	18	24900.00
+mmyzdhro97mizxlhk	13083	18	19900.00
+mmyzdhro97mizxlhk	13074	18	19900.00
+mmyzdhro97mizxlhk	13110	18	19900.00
+mmyzdhro97mizxlhk	13095	18	17900.00
+mmyzdhro97mizxlhk	12909	18	19900.00
+gfrmg3vvb	13115	6	49900.00
+gfrmg3vvb	12412	6	34900.00
+gfrmg3vvb	13015	6	35900.00
+gfrmg3vvb	13077	6	42900.00
+gfrmg3vvb	12962	6	44900.00
+gfrmg3vvb	13118	6	21900.00
+gfrmg3vvb	12909	6	19900.00
+gfrmg3vvb	13036	6	29900.00
+gfrmg3vvb	13068	6	21900.00
+gfrmg3vvb	13116	6	21900.00
+gfrmg3vvb	13117	6	23900.00
+gfrmg3vvb	12980	6	20900.00
+gfrmg3vvb	13067	6	39900.00
+gfrmg3vvb	13010	6	29900.00
+gfrmg3vvb	13100	6	25900.00
+gfrmg3vvb	13128	6	23900.00
+gfrmg3vvb	13131	6	19900.00
+gfrmg3vvb	13013	6	23900.00
+gfrmg3vvb	12671	6	24900.00
+gfrmg3vvb	12971	6	36900.00
+gfrmg3vvb	13043	6	34900.00
+gfrmg3vvb	13055	6	29900.00
+gfrmg3vvb	12970	6	34900.00
+gfrmg3vvb	12973	6	42900.00
+gfrmg3vvb	13040	6	32900.00
+gfrmg3vvb	13084	6	29900.00
+gfrmg3vvb	13041	6	29900.00
+gfrmg3vvb	13045	6	25900.00
+gfrmg3vvb	12617	9	35900.00
+gfrmg3vvb	12976	6	37900.00
+gfrmg3vvb	12987	6	27900.00
+gfrmg3vvb	12975	9	34900.00
+gfrmg3vvb	12984	6	24900.00
+gfrmg3vvb	12935	6	35900.00
+gfrmg3vvb	12907	6	28900.00
+gfrmg3vvb	12908	6	28900.00
+gfrmg3vvb	12986	6	34900.00
+gfrmg3vvb	12744	6	19900.00
+gfrmg3vvb	12881	6	33900.00
+gfrmg3vvb	13028	12	35900.00
+gfrmg3vvb	13029	6	32900.00
+gfrmg3vvb	13012	6	39900.00
+mn7giycyxyobgvhp2	13001	12	32900.00
+mn7giycyxyobgvhp2	12984	12	24900.00
+mn7giycyxyobgvhp2	12943	12	19900.00
+mn7giycyxyobgvhp2	12920	12	21900.00
+mn7giycyxyobgvhp2	13110	12	19900.00
+mn7giycyxyobgvhp2	13095	12	17900.00
+mn7giycyxyobgvhp2	13074	12	19900.00
+mn7giycyxyobgvhp2	13121	12	22900.00
+mn7giycyxyobgvhp2	12975	12	34900.00
+mn7giycyxyobgvhp2	12744	12	19900.00
+mn7giycyxyobgvhp2	12908	12	28900.00
+mn7giycyxyobgvhp2	13120	12	17900.00
+mn7giycyxyobgvhp2	13013	12	23900.00
+mn7giycyxyobgvhp2	13097	12	24900.00
+mn7giycyxyobgvhp2	12973	12	42900.00
+mn7giycyxyobgvhp2	12967	12	24900.00
+mn7giycyxyobgvhp2	12970	12	34900.00
+mn7giycyxyobgvhp2	13254	12	34900.00
+mn7giycyxyobgvhp2	12712	12	27900.00
+mn7giycyxyobgvhp2	13045	12	25900.00
+mn7giycyxyobgvhp2	13042	12	29900.00
+mn7giycyxyobgvhp2	13055	12	29900.00
+mn7giycyxyobgvhp2	13078	12	22900.00
+mn7giycyxyobgvhp2	12971	12	36900.00
+mn7giycyxyobgvhp2	12969	12	21900.00
+mn7giycyxyobgvhp2	12931	12	29900.00
+mn7giycyxyobgvhp2	12869	12	31900.00
+mn7giycyxyobgvhp2	13102	12	29900.00
+mn7giycyxyobgvhp2	13065	12	32900.00
+mn7giycyxyobgvhp2	13076	12	27900.00
+mn8xtx9kl6c0ac0v9	13122	12	18900.00
+mn8xtx9kl6c0ac0v9	12865	12	16900.00
+mn8xtx9kl6c0ac0v9	13090	12	21900.00
+mn8xtx9kl6c0ac0v9	12747	12	29900.00
+mn8xtx9kl6c0ac0v9	13086	12	24900.00
+mn8xtx9kl6c0ac0v9	13011	12	29900.00
+mn8xtx9kl6c0ac0v9	12909	12	19900.00
+mn8xtx9kl6c0ac0v9	13116	12	21900.00
+mn8xtx9kl6c0ac0v9	13128	12	23900.00
+mn8xtx9kl6c0ac0v9	13068	12	21900.00
+mn8xtx9kl6c0ac0v9	13117	12	23900.00
+mn8xtx9kl6c0ac0v9	13081	12	19900.00
+mnadiddtk74omdj4e	13003	12	32900.00
+mnadiddtk74omdj4e	13254	12	34900.00
+mnadiddtk74omdj4e	13120	12	17900.00
+mnadiddtk74omdj4e	13013	12	23900.00
+mnadiddtk74omdj4e	12920	12	21900.00
+mnadiddtk74omdj4e	12943	12	19900.00
+mnadiddtk74omdj4e	13097	12	24900.00
+mnadiddtk74omdj4e	12754	12	16900.00
+mnadiddtk74omdj4e	13040	12	32900.00
+mnadiddtk74omdj4e	13098	12	22900.00
+mnadiddtk74omdj4e	13091	12	18900.00
+mnadiddtk74omdj4e	12640	12	24900.00
+mnadiddtk74omdj4e	13110	12	19900.00
+mnadiddtk74omdj4e	13074	12	19900.00
+mnadiddtk74omdj4e	13121	12	22900.00
+mnadiddtk74omdj4e	13079	12	19900.00
+mnadiddtk74omdj4e	13094	12	21900.00
+mnadiddtk74omdj4e	12986	12	34900.00
+mnadiddtk74omdj4e	12984	12	24900.00
+mnadiddtk74omdj4e	12907	12	28900.00
+mnadiddtk74omdj4e	12744	12	19900.00
+mnadiddtk74omdj4e	12975	12	34900.00
+mnadiddtk74omdj4e	12617	12	35900.00
+mnadiddtk74omdj4e	12971	12	36900.00
+mnadiddtk74omdj4e	12969	12	21900.00
+mnadiddtk74omdj4e	13078	12	22900.00
+mnadiddtk74omdj4e	12704	12	29900.00
+mnadiddtk74omdj4e	12712	12	27900.00
+mnadiddtk74omdj4e	12970	12	34900.00
+mnadiddtk74omdj4e	12973	12	42900.00
+mnadiddtk74omdj4e	13047	12	25900.00
+mnadiddtk74omdj4e	13100	12	25900.00
+mnadiddtk74omdj4e	13067	12	39900.00
+mnadiddtk74omdj4e	13090	12	21900.00
+mnadiddtk74omdj4e	12909	12	19900.00
+mnadiddtk74omdj4e	13128	12	23900.00
+mnadiddtk74omdj4e	13116	12	21900.00
+mnadiddtk74omdj4e	13068	12	21900.00
+mnadiddtk74omdj4e	13081	12	19900.00
+mnadiddtk74omdj4e	13033	12	29900.00
+mnadiddtk74omdj4e	13102	12	29900.00
+mnadiddtk74omdj4e	13113	12	49900.00
+mnadiddtk74omdj4e	13077	12	42900.00
+mnadiddtk74omdj4e	12869	12	31900.00
+mnadiddtk74omdj4e	13002	12	41900.00
+mnadiddtk74omdj4e	12963	12	35900.00
+mndkevncdu5l3l86h	13040	12	32900.00
+mndkevncdu5l3l86h	12920	12	21900.00
+mndkevncdu5l3l86h	12965	12	27900.00
+mndkevncdu5l3l86h	13131	12	19900.00
+mndkevncdu5l3l86h	13003	12	32900.00
+mndkevncdu5l3l86h	13120	12	17900.00
+mndkevncdu5l3l86h	13118	12	21900.00
+mndkevncdu5l3l86h	13094	12	21900.00
+mndkevncdu5l3l86h	13078	12	22900.00
+mndkevncdu5l3l86h	13116	12	21900.00
+mndkevncdu5l3l86h	13113	6	49900.00
+mndkeggvwx21xj6pc	12869	12	31900.00
+mndkeggvwx21xj6pc	13102	12	29900.00
+mndkeggvwx21xj6pc	12909	12	19900.00
+mndkeggvwx21xj6pc	13128	12	23900.00
+mndkeggvwx21xj6pc	13036	12	29900.00
+mndkeggvwx21xj6pc	13117	12	23900.00
+mndkeggvwx21xj6pc	12908	12	28900.00
+mndkeggvwx21xj6pc	12975	12	34900.00
+mndkeggvwx21xj6pc	12984	12	24900.00
+mndkeggvwx21xj6pc	12907	12	28900.00
+mndkeggvwx21xj6pc	12986	12	34900.00
+mndkeggvwx21xj6pc	12931	12	29900.00
+mndkeggvwx21xj6pc	12694	12	24900.00
+mndkeggvwx21xj6pc	13078	12	22900.00
+mndkeggvwx21xj6pc	12704	12	29900.00
+mndkeggvwx21xj6pc	13121	12	22900.00
+mndkeggvwx21xj6pc	13079	12	19900.00
+mndkeggvwx21xj6pc	13094	12	21900.00
+mndkeggvwx21xj6pc	13118	12	21900.00
+mndkeggvwx21xj6pc	12895	12	30900.00
+mndkeggvwx21xj6pc	13040	12	32900.00
+mndkeggvwx21xj6pc	13098	12	22900.00
+mndkeggvwx21xj6pc	13097	12	24900.00
+mndkeggvwx21xj6pc	12920	12	21900.00
+mndkeggvwx21xj6pc	13013	12	23900.00
+mn4koe8esfolub6mf	13028	6	35900.00
+mn4koe8esfolub6mf	13029	6	32900.00
+mn4koe8esfolub6mf	12881	6	33900.00
+mn4koe8esfolub6mf	12744	6	19900.00
+mn4koe8esfolub6mf	12986	6	34900.00
+mn4koe8esfolub6mf	12908	6	28900.00
+mn4koe8esfolub6mf	12935	6	35900.00
+mn4koe8esfolub6mf	12907	6	28900.00
+mn4koe8esfolub6mf	12984	6	24900.00
+mn4koe8esfolub6mf	12975	6	34900.00
+mn4koe8esfolub6mf	12987	6	27900.00
+mn4koe8esfolub6mf	12976	6	37900.00
+mn4koe8esfolub6mf	12617	6	35900.00
+mn4koe8esfolub6mf	13045	6	25900.00
+mn4koe8esfolub6mf	13041	6	29900.00
+mn4koe8esfolub6mf	13084	6	29900.00
+mn4koe8esfolub6mf	13040	6	32900.00
+mn4koe8esfolub6mf	12973	6	42900.00
+mn4koe8esfolub6mf	12970	6	34900.00
+mn4koe8esfolub6mf	13055	6	29900.00
+mn4koe8esfolub6mf	12971	6	36900.00
+mn4koe8esfolub6mf	13013	6	23900.00
+mn4koe8esfolub6mf	13131	6	19900.00
+mn4koe8esfolub6mf	13128	6	23900.00
+mn4koe8esfolub6mf	13010	6	29900.00
+mn4koe8esfolub6mf	13067	6	39900.00
+mn4koe8esfolub6mf	13116	6	21900.00
+mn4koe8esfolub6mf	13036	6	29900.00
+mn4koe8esfolub6mf	12962	6	44900.00
+mn4koe8esfolub6mf	13015	6	37900.00
+mn4koe8esfolub6mf	13077	6	42900.00
+mn4koe8esfolub6mf	13115	6	49900.00
+mnq55ob4yq8bkcvqj	13023	6	34900.00
+mnq55ob4yq8bkcvqj	12990	6	32900.00
+mnq55ob4yq8bkcvqj	13012	6	39900.00
+mnq55ob4yq8bkcvqj	13002	6	41900.00
+mnq55ob4yq8bkcvqj	13102	6	29900.00
+mnq55ob4yq8bkcvqj	13115	6	49900.00
+mnq55ob4yq8bkcvqj	13065	6	32900.00
+mnq55ob4yq8bkcvqj	13077	6	42900.00
+mnq55ob4yq8bkcvqj	13112	6	37900.00
+mnq55ob4yq8bkcvqj	12869	6	31900.00
+mnq55ob4yq8bkcvqj	13113	6	49900.00
+mnq55ob4yq8bkcvqj	13104	3	39900.00
+mnq55ob4yq8bkcvqj	13106	3	45900.00
+mnq55ob4yq8bkcvqj	12972	3	48900.00
+mnq55ob4yq8bkcvqj	13055	3	29900.00
+mnq55ob4yq8bkcvqj	12969	3	21900.00
+mnq55ob4yq8bkcvqj	12704	3	29900.00
+mnq55ob4yq8bkcvqj	13039	3	30900.00
+mnq55ob4yq8bkcvqj	13058	3	29900.00
+mnq55ob4yq8bkcvqj	12970	3	34900.00
+mnq55ob4yq8bkcvqj	13254	3	34900.00
+mnq55ob4yq8bkcvqj	13047	3	25900.00
+mnq55ob4yq8bkcvqj	13135	3	29900.00
+mnq55ob4yq8bkcvqj	13144	3	28900.00
+mnq55ob4yq8bkcvqj	13136	3	23900.00
+mnq55ob4yq8bkcvqj	12617	3	35900.00
+mnq55ob4yq8bkcvqj	13029	3	32900.00
+mnq55ob4yq8bkcvqj	12907	3	28900.00
+mnq55ob4yq8bkcvqj	12908	3	28900.00
+mnq55ob4yq8bkcvqj	13036	3	29900.00
+mnq55ob4yq8bkcvqj	13139	3	25900.00
+mnq55ob4yq8bkcvqj	13137	3	24900.00
+mnq55ob4yq8bkcvqj	13148	3	25900.00
+mnq55ob4yq8bkcvqj	13033	3	29900.00
+mnq55ob4yq8bkcvqj	13090	3	21900.00
+mnq55ob4yq8bkcvqj	13081	3	19900.00
+mnq55ob4yq8bkcvqj	12909	3	19900.00
+mnq55ob4yq8bkcvqj	13068	3	21900.00
+mnq55ob4yq8bkcvqj	13117	3	23900.00
+mnq55ob4yq8bkcvqj	13116	3	21900.00
+mnq55ob4yq8bkcvqj	13079	3	19900.00
+mnq55ob4yq8bkcvqj	13094	3	21900.00
+mnq55ob4yq8bkcvqj	13118	3	21900.00
+mnq55ob4yq8bkcvqj	13095	3	17900.00
+mnq55ob4yq8bkcvqj	13093	3	23900.00
+mnq55ob4yq8bkcvqj	13129	3	22900.00
+mnq55ob4yq8bkcvqj	13110	3	19900.00
+mnq55ob4yq8bkcvqj	13121	3	22900.00
+mnq55ob4yq8bkcvqj	13040	3	32900.00
+mnq55ob4yq8bkcvqj	13098	3	22900.00
+mnq55ob4yq8bkcvqj	12623	3	29900.00
+mnq55ob4yq8bkcvqj	13048	3	25900.00
+mnq55ob4yq8bkcvqj	13096	3	24900.00
+mnq55ob4yq8bkcvqj	13013	3	23900.00
+mnq55ob4yq8bkcvqj	13097	3	24900.00
+mnq55ob4yq8bkcvqj	12694	3	24900.00
+mnq55ob4yq8bkcvqj	13138	3	18900.00
+mnq55ob4yq8bkcvqj	12877	3	19900.00
+mnq55ob4yq8bkcvqj	13120	3	17900.00
+mnq55ob4yq8bkcvqj	13122	3	18900.00
+mnq56buplctredgo0	13023	12	34900.00
+mnq56buplctredgo0	13002	12	41900.00
+mnq56buplctredgo0	13015	12	37900.00
+mnq56buplctredgo0	13113	12	49900.00
+mnq56buplctredgo0	12869	12	31900.00
+mnq56buplctredgo0	13102	12	29900.00
+mnq56buplctredgo0	13109	12	30900.00
+mnq56buplctredgo0	12969	12	21900.00
+mnq56buplctredgo0	13039	12	30900.00
+mnq56buplctredgo0	13055	12	29900.00
+mnq56buplctredgo0	12931	12	29900.00
+mnq56buplctredgo0	13058	12	29900.00
+mnq56buplctredgo0	12744	12	19900.00
+mnq56buplctredgo0	12984	12	24900.00
+mnq56buplctredgo0	13144	12	28900.00
+mnq56buplctredgo0	13136	12	23900.00
+mnq56buplctredgo0	12617	12	35900.00
+mnq56buplctredgo0	12908	12	28900.00
+mnq56buplctredgo0	12907	12	28900.00
+mnq56buplctredgo0	13028	12	35900.00
+mnq56buplctredgo0	13036	12	29900.00
+mnq56buplctredgo0	13148	12	25900.00
+mnq56buplctredgo0	12909	12	19900.00
+mnq56buplctredgo0	13116	12	21900.00
+mnq56buplctredgo0	13100	12	25900.00
+mnq56buplctredgo0	13079	12	19900.00
+mnq56buplctredgo0	13118	12	21900.00
+mnq56buplctredgo0	13095	12	17900.00
+mnq56buplctredgo0	13110	12	19900.00
+mnq56buplctredgo0	13129	12	22900.00
+mnq56buplctredgo0	13121	6	22900.00
+mnq56buplctredgo0	13003	12	32900.00
+mnq56buplctredgo0	12877	12	19900.00
+mnq56buplctredgo0	12943	12	19900.00
+mnq56buplctredgo0	12965	12	27900.00
+mnq9ibrzsv4df2q79	13012	4	39900.00
+mnq9ibrzsv4df2q79	13002	4	41900.00
+mnq9ibrzsv4df2q79	13102	4	29900.00
+mnq9ibrzsv4df2q79	13113	4	49900.00
+mnq9ibrzsv4df2q79	13104	4	39900.00
+mnq9ibrzsv4df2q79	13254	4	34900.00
+mnq9ibrzsv4df2q79	13135	4	29900.00
+mnq9ibrzsv4df2q79	12907	4	28900.00
+mnq9ibrzsv4df2q79	12617	4	35900.00
+mnq9ibrzsv4df2q79	12744	4	19900.00
+mnq9ibrzsv4df2q79	13117	4	23900.00
+mnq9ibrzsv4df2q79	13144	4	28900.00
+mnq9ibrzsv4df2q79	13068	4	21900.00
+mnq9ibrzsv4df2q79	13148	4	25900.00
+mnq9ibrzsv4df2q79	12909	4	19900.00
+mnq9ibrzsv4df2q79	13036	4	29900.00
+mnq9ibrzsv4df2q79	12943	4	19900.00
+mnq9ibrzsv4df2q79	12877	4	19900.00
+mnq9irx3nhdxqwlkm	13012	6	39900.00
+mnq9irx3nhdxqwlkm	13002	6	41900.00
+mnq9irx3nhdxqwlkm	13102	6	29900.00
+mnq9irx3nhdxqwlkm	13113	4	49900.00
+mnq9irx3nhdxqwlkm	13104	6	39900.00
+mnq9irx3nhdxqwlkm	13254	6	34900.00
+mnq9irx3nhdxqwlkm	13135	6	29900.00
+mnq9irx3nhdxqwlkm	12907	6	28900.00
+mnq9irx3nhdxqwlkm	12617	4	35900.00
+mnq9irx3nhdxqwlkm	12744	6	19900.00
+mnq9irx3nhdxqwlkm	13117	6	23900.00
+mnq9irx3nhdxqwlkm	13144	6	28900.00
+mnq9irx3nhdxqwlkm	13068	4	21900.00
+mnq9irx3nhdxqwlkm	13148	6	25900.00
+mnq9irx3nhdxqwlkm	12909	6	19900.00
+mnq9irx3nhdxqwlkm	13036	6	29900.00
+mnq9irx3nhdxqwlkm	12943	6	19900.00
+mnq9irx3nhdxqwlkm	12877	6	19900.00
+mnri2xoppmhuniccx	12877	6	19900.00
+mnri2xoppmhuniccx	13120	6	17900.00
+mnri2xoppmhuniccx	12895	6	30900.00
+mnri2xoppmhuniccx	12920	6	21900.00
+mnri2xoppmhuniccx	12777	6	14900.00
+mnri2xoppmhuniccx	13121	6	22900.00
+mnri2xoppmhuniccx	13118	6	21900.00
+mnri2xoppmhuniccx	13129	6	22900.00
+mnri2xoppmhuniccx	13137	6	24900.00
+mnri2xoppmhuniccx	13254	6	34900.00
+mnri2xoppmhuniccx	13101	6	35900.00
+mnri2xoppmhuniccx	13002	6	41900.00
+mnri3aubiv5y0zj7u	13055	6	29900.00
+mnri3aubiv5y0zj7u	13254	6	34900.00
+mnri3aubiv5y0zj7u	13137	6	24900.00
+mnri3aubiv5y0zj7u	13129	6	22900.00
+mnri3aubiv5y0zj7u	13118	6	21900.00
+mnri3aubiv5y0zj7u	13121	6	22900.00
+mnri3aubiv5y0zj7u	12777	6	14900.00
+mnri3aubiv5y0zj7u	12920	6	21900.00
+mnri3aubiv5y0zj7u	12895	6	30900.00
+mnri3aubiv5y0zj7u	13120	6	17900.00
+mnri3aubiv5y0zj7u	12877	6	19900.00
+mnri3lo36vcjpassv	12877	6	19900.00
+mnri3lo36vcjpassv	13120	6	17900.00
+mnri3lo36vcjpassv	12895	6	30900.00
+mnri3lo36vcjpassv	12920	6	21900.00
+mnri3lo36vcjpassv	12777	6	14900.00
+mnri3lo36vcjpassv	13121	6	22900.00
+mnri3lo36vcjpassv	13118	6	21900.00
+mnri3lo36vcjpassv	13129	6	22900.00
+mnri3lo36vcjpassv	13137	6	24900.00
+mnri3lo36vcjpassv	13254	6	34900.00
+mnri3lo36vcjpassv	13055	6	29900.00
+mnri3znyvcsccm02m	13101	6	35900.00
+mnri3znyvcsccm02m	13002	6	41900.00
+mnx5p08onet529j0u	13148	12	25900.00
+mnx5p08onet529j0u	13081	12	19900.00
+mnx5p08onet529j0u	13100	12	25900.00
+mnx5p08onet529j0u	13137	12	24900.00
+mnx5p08onet529j0u	13110	12	19900.00
+mnx5p08onet529j0u	13094	12	21900.00
+mnx5p08onet529j0u	13118	12	21900.00
+mnx5p08onet529j0u	13129	12	22900.00
+mnx5p08onet529j0u	13013	12	23900.00
+mnx5p08onet529j0u	13119	12	19900.00
+mnx5p08onet529j0u	13122	12	18900.00
+mnx5p08onet529j0u	12943	12	19900.00
+mnx5p08onet529j0u	12965	12	27900.00
+mnx5p08onet529j0u	13120	12	17900.00
+mnx5p08onet529j0u	12877	12	19900.00
+mnx5p08onet529j0u	12895	12	30900.00
+mnx5p08onet529j0u	13065	12	32900.00
+mnx5p08onet529j0u	13102	12	29900.00
+mnx5p08onet529j0u	13002	12	41900.00
+mnx5p08onet529j0u	13115	12	49900.00
+mnx5p08onet529j0u	12869	12	31900.00
+mnx5p08onet529j0u	13113	12	49900.00
+mnx5p08onet529j0u	12990	12	32900.00
+mmwi4lq7py8arrw07	13117	36	22900.00
+mmwi4lq7py8arrw07	13100	36	25900.00
+mmwi4lq7py8arrw07	12909	36	19900.00
+mmwi4lq7py8arrw07	13094	36	19900.00
+mmwi4lq7py8arrw07	13013	36	21900.00
+mmwi4lq7py8arrw07	12877	36	19900.00
+mmwi4lq7py8arrw07	13097	36	22900.00
+mmwi4lq7py8arrw07	12943	36	18900.00
+mmwi4lq7py8arrw07	12965	36	25900.00
+mmwi4lq7py8arrw07	12969	36	20900.00
+mmwi4lq7py8arrw07	12973	36	39900.00
+mmwi4lq7py8arrw07	12881	36	29900.00
+mmwi4lq7py8arrw07	12907	36	28900.00
+mmwi4lq7py8arrw07	12744	36	18900.00
+mmwi4lq7py8arrw07	12975	36	32900.00
+mmwi4lq7py8arrw07	12968	24	43900.00
+mmt9omzsn8q7wdcw0	13014	24	30000.00
+mmt9omzsn8q7wdcw0	12579	24	38000.00
+mmt9omzsn8q7wdcw0	13112	24	36000.00
+mmt9omzsn8q7wdcw0	12976	24	36000.00
+mmt9omzsn8q7wdcw0	12975	24	33000.00
+mmt9omzsn8q7wdcw0	13048	24	23000.00
+mmt9omzsn8q7wdcw0	13039	24	29000.00
+mmt9omzsn8q7wdcw0	12973	24	41000.00
+mmt9omzsn8q7wdcw0	12970	24	34900.00
+mmt9omzsn8q7wdcw0	12712	24	26900.00
+mmt9omzsn8q7wdcw0	13057	24	23000.00
+mmt9omzsn8q7wdcw0	13042	24	28000.00
+mmt9omzsn8q7wdcw0	13047	24	26000.00
+mmt9omzsn8q7wdcw0	12965	24	26000.00
+mmt9omzsn8q7wdcw0	12971	24	35000.00
+mmt9omzsn8q7wdcw0	12969	24	21900.00
+mmt9omzsn8q7wdcw0	12895	24	29900.00
+mmt9omzsn8q7wdcw0	13040	24	31000.00
+mmt9omzsn8q7wdcw0	13078	24	21000.00
+mmt9omzsn8q7wdcw0	13121	24	21000.00
+mmt9omzsn8q7wdcw0	13074	24	18000.00
+mmt9omzsn8q7wdcw0	13094	24	20000.00
+mmt9omzsn8q7wdcw0	13091	24	18000.00
+mmt9omzsn8q7wdcw0	13129	24	21000.00
+mmt9omzsn8q7wdcw0	13083	24	19000.00
+mmt9omzsn8q7wdcw0	13118	24	20000.00
+mmt9omzsn8q7wdcw0	13131	24	19000.00
+mmt9omzsn8q7wdcw0	13120	24	17000.00
+mmt9omzsn8q7wdcw0	12777	24	13900.00
+mmt9omzsn8q7wdcw0	13013	24	22000.00
+mmt9omzsn8q7wdcw0	13116	24	20000.00
+mmt9omzsn8q7wdcw0	12909	24	22000.00
+mmt9omzsn8q7wdcw0	13077	24	41000.00
+mmt9omzsn8q7wdcw0	12963	24	34000.00
+mmt9omzsn8q7wdcw0	13115	24	48000.00
+mmt9omzsn8q7wdcw0	13058	9	29900.00
+morf51dhftye8od22	13011	20	29900.00
+morf51dhftye8od22	13148	20	25900.00
+morf51dhftye8od22	12862	20	19900.00
+morf51dhftye8od22	12909	20	19900.00
+morf51dhftye8od22	12980	20	22900.00
+morf51dhftye8od22	13169	20	24900.00
+morf51dhftye8od22	13150	20	22900.00
+morf51dhftye8od22	13128	20	23900.00
+morf51dhftye8od22	13137	20	24900.00
+morf51dhftye8od22	13067	20	33900.00
+morf51dhftye8od22	13162	20	29900.00
+morf51dhftye8od22	13159	20	29900.00
+morf51dhftye8od22	13129	20	19900.00
+morf51dhftye8od22	13110	20	19900.00
+morf51dhftye8od22	13095	20	17900.00
+morf51dhftye8od22	13091	20	18900.00
+morf51dhftye8od22	13121	20	22900.00
+morf51dhftye8od22	12864	20	14900.00
+morf51dhftye8od22	13096	20	24900.00
+morf51dhftye8od22	13013	20	23900.00
+morf51dhftye8od22	13098	20	22900.00
+morf51dhftye8od22	13120	20	17900.00
+morf51dhftye8od22	13041	20	29900.00
+morf51dhftye8od22	13055	20	29900.00
+morf51dhftye8od22	13105	20	35900.00
+morf51dhftye8od22	13104	20	35900.00
+morf51dhftye8od22	12964	12	46900.00
+morf51dhftye8od22	12986	20	34900.00
+morf51dhftye8od22	13175	20	24900.00
+morf51dhftye8od22	13144	20	28900.00
+morf51dhftye8od22	13172	20	32900.00
+morf51dhftye8od22	13109	20	30900.00
+morf8mup94t2jnvip	13012	18	39900.00
+morf8mup94t2jnvip	12869	18	32900.00
+morf8mup94t2jnvip	13112	18	37900.00
+morf8mup94t2jnvip	13100	18	25900.00
+morf8mup94t2jnvip	12862	18	19900.00
+morf8mup94t2jnvip	12909	18	19900.00
+morf8mup94t2jnvip	12968	18	43900.00
+morf8mup94t2jnvip	13104	18	35900.00
+morf8mup94t2jnvip	13105	18	35900.00
+morf8mup94t2jnvip	13058	18	29900.00
+morf8mup94t2jnvip	12931	18	29900.00
+morf8mup94t2jnvip	13047	18	27900.00
+morf8mup94t2jnvip	13029	18	32900.00
+morf8mup94t2jnvip	13182	18	32900.00
+morf8mup94t2jnvip	13149	18	24900.00
+morf8mup94t2jnvip	13168	18	27900.00
+morf8mup94t2jnvip	13167	18	25900.00
+morf8mup94t2jnvip	13169	18	28900.00
+morf8mup94t2jnvip	13165	18	24900.00
+morf8mup94t2jnvip	13172	18	32900.00
+morf8mup94t2jnvip	13175	18	32900.00
+morf8mup94t2jnvip	13177	18	34900.00
 \.
 
 
 --
--- TOC entry 5608 (class 0 OID 29965)
+-- TOC entry 5652 (class 0 OID 32190)
+-- Dependencies: 276
+-- Data for Name: order_notes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.order_notes (order_id, contacto, novedad, updated_at, updated_by) FROM stdin;
+mmwi2xc7yi4fpkkkm	\N	DESPACHAR A CALLE 34 # 43-42 BARRANQUILLA	2026-05-06 13:07:44.502118	Soporte
+\.
+
+
+--
+-- TOC entry 5617 (class 0 OID 29965)
 -- Dependencies: 241
--- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.orders (id, client_id, seller_id, correria_id, total_value, created_at, settled_by, order_number, start_date, end_date, porcentaje_oficial, porcentaje_remision) FROM stdin;
@@ -5371,9 +11400,9 @@ mn4koe8esfolub6mf	161	mlia6sxbdfmbvlex0	mljjrcujmtckild4r	6244800.00	2026-03-24T
 
 
 --
--- TOC entry 5627 (class 0 OID 30286)
+-- TOC entry 5636 (class 0 OID 30286)
 -- Dependencies: 260
--- Data for Name: pago_lotes_config; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: pago_lotes_config; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.pago_lotes_config (id, clave, valor, descripcion, updated_at, updated_by) FROM stdin;
@@ -5384,22 +11413,26 @@ COPY public.pago_lotes_config (id, clave, valor, descripcion, updated_at, update
 
 
 --
--- TOC entry 5631 (class 0 OID 30319)
+-- TOC entry 5640 (class 0 OID 30319)
 -- Dependencies: 264
--- Data for Name: pagos_programados; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: pagos_programados; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.pagos_programados (id, fecha, fecha_original, cuenta_bancaria_id, cedula, nombre, cuenta, detalle_inicial, bruto_of, bruto_ml, orden, created_at, updated_at) FROM stdin;
 3	2026-01-08	\N	\N	-	LEIDY VIVIANA JARAMILLO	313-552723-73	REF. 12943	342720.00	514080.00	0	2026-04-13 16:47:41.01973	2026-04-13 16:47:41.01973
 4	2026-04-20	\N	\N	1017140262	ALEJANDRA CHAVERRA	313-00023633	REF. 12943	72000.00	108000.00	0	2026-04-13 16:54:47.052354	2026-04-13 16:54:47.052354
 5	2026-04-13	\N	\N	-	LEIDY VIVIANA JARAMILLO	313-552723-73	REF. 13098	161840.00	242760.00	0	2026-05-04 15:09:03.45165	2026-05-04 15:09:03.45165
+15	2026-05-11	\N	\N	71223381	ELKIN EMILIO RESTREPO (NANCY)	272-64127161	REF. 13029	142560.00	213840.00	0	2026-05-04 16:38:59.682491	2026-05-04 16:38:59.682491
+14	2026-05-11	\N	\N	43668259	LIDA ESTELLA LONDOÑO LOPEZ	3007828445 (NEQUI)	REF. 13113	201600.00	302400.00	1	2026-05-04 16:38:15.920537	2026-05-04 16:38:15.920537
+16	2026-05-12	\N	\N	700530400	MARIU EUGENIA CUBILLAN CONTRERAS	253-00007419	REF. 13148	105600.00	158400.00	0	2026-05-05 15:35:37.467776	2026-05-05 15:35:37.467776
+17	2026-05-11	\N	\N	71279486	JUAN CAMILO HOYOS	292-05770702	REF. 13144 - 13122 - 13254	347040.00	520560.00	2	2026-05-05 15:56:46.55497	2026-05-05 15:56:46.55497
 \.
 
 
 --
--- TOC entry 5609 (class 0 OID 29977)
+-- TOC entry 5618 (class 0 OID 29977)
 -- Dependencies: 242
--- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: product_references; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.product_references (id, description, price, designer, cloth1, avg_cloth1, cloth2, avg_cloth2, active, created_at) FROM stdin;
@@ -5669,9 +11702,9 @@ COPY public.product_references (id, description, price, designer, cloth1, avg_cl
 
 
 --
--- TOC entry 5610 (class 0 OID 29987)
+-- TOC entry 5619 (class 0 OID 29987)
 -- Dependencies: 243
--- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: production_tracking; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades) FROM stdin;
@@ -5935,21 +11968,484 @@ COPY public.production_tracking (ref_id, correria_id, programmed, cut, inventory
 
 
 --
--- TOC entry 5638 (class 0 OID 32024)
+-- TOC entry 5647 (class 0 OID 32024)
 -- Dependencies: 271
--- Data for Name: producto_en_proceso; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: producto_en_proceso; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.producto_en_proceso (id, confeccionista, remision, ref, salida, fecha_remision, entrega, segundas, vta, cobrado, incompleto, fecha_llegada, talegos_salida, talegos_entrega, muestras_salida, muestras_entrega, row_highlight, cell_highlights, cell_comments, created_by, created_at, updated_at) FROM stdin;
 f67e52f6-cab1-4923-a730-2faa9a1c2256				\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm3x7j6m4p6s4g2zz	2026-04-23 08:07:39.120664	2026-04-23 08:07:39.120664
 918d49fb-8c82-4204-a47a-140175f6ec6f	pedro llanez	4746	13129	120.00	2026-04-10	120.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mm3x7j6m4p6s4g2zz	2026-04-23 08:07:39.134385	2026-04-23 08:10:25.567953
+dd5af6d9-6bea-41ba-9a80-5a1ff492f842	GLOBO CREATIVO	7924	47320	4.50	2026-04-10	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.468306	2026-04-14 15:38:37.468306
+e3ec36c7-fd34-4694-bdc5-cc17d2e671a9	GLOBO CREATIVO	7924	47320	10.70	2026-04-10	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.470075	2026-04-14 15:38:37.470075
+b2c76e1f-4496-4904-b2ff-6b6891199cc9	LINA PULGARIN	7923	13093	120.00	2026-04-10	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.471732	2026-04-14 15:38:37.471732
+c6ffcd88-a73d-4440-91e8-c3a2e87e0889	LINA PULGARIN	7923	13058	138.00	2026-04-10	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.473489	2026-04-14 15:38:37.473489
+7b15fa1d-301f-4ade-b767-430d0f0f61d0	HERNAN LONDOÑO	7910	13131	144.00	2026-04-08	144.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.502289	2026-04-14 15:38:37.502289
+0893c252-e356-46bf-a822-7c98d7fa92c8	HERNAN LONDOÑO	7910	12943	288.00	2026-04-08	288.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.504114	2026-04-14 15:38:37.504114
+9ade1491-b330-4ba5-958b-d42a49577aa2	HERNAN LONDOÑO	7910	13097	288.00	2026-04-08	288.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.505947	2026-04-14 15:38:37.505947
+12d9dbba-240a-4ccf-b8ca-c096b9767a60	HERNAN LONDOÑO	7910	12986	90.00	2026-04-08	90.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.507759	2026-04-14 15:38:37.507759
+82e25474-d622-4334-9309-b2ff9bf1cf5a	HERNAN LONDOÑO	7910	12908	120.00	2026-04-08	120.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.509486	2026-04-14 15:38:37.509486
+b528aafc-91c0-4d6d-8d62-b664c6783455	HERNAN LONDOÑO	7910	12881	186.00	2026-04-08	186.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.511325	2026-04-14 15:38:37.511325
+dc217297-ba16-41c7-b630-af9f08f53651	HERNAN LONDOÑO	7910	12907	210.00	2026-04-08	210.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.51309	2026-04-14 15:38:37.51309
+5ec93652-6e20-43b4-8094-99df3a56697e	ELVIA MUÑOZ	7902	13039	123.00	2026-04-06	\N	\N	\N	\N	\N	\N	1.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.525894	2026-04-14 15:38:37.525894
+5ab95ed9-8350-4f26-9885-88d004169b0f	ELIANA ZAPATA	7899	12972	135.00	2026-04-01	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.527927	2026-04-14 15:38:37.527927
+c1536410-e81e-46c6-b470-fdc209aa4fa8	MARIU CUBILLON	7896	13028	120.00	2026-04-01	120.00	\N	\N	\N	\N	2026-04-10	2.00	2.00	\N	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.533408	2026-04-14 15:38:37.533408
+69c6ee89-b55f-4c39-af38-47fede1b0612	DIANA CORREA	7894	13033	180.00	2026-04-01	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.535167	2026-04-14 15:38:37.535167
+a8a4bf87-34d8-48bb-8a55-655d0a42cec2	AURA OSPINA	7893	13093	118.00	2026-03-31	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.538097	2026-04-14 15:38:37.538097
+699000c5-189b-4d85-b449-2dd42a73ff74	ALEJANDRA CHAVERRA	7891	13079	384.00	2026-03-31	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.541834	2026-04-14 15:38:37.541834
+50d2e5dc-82ca-4a6e-9ac5-9b6bd31e65a9	CLARA HERRERA	7890	13058	138.00	2026-03-31	138.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.543345	2026-04-14 15:38:37.543345
+5fc3d35f-9410-4e8e-b686-658f9bf9c8b0	LIDA LONDOÑO	7888	13115	114.00	2026-03-30	114.00	\N	\N	\N	\N	2026-04-08	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.546689	2026-04-14 15:38:37.546689
+821bb8c3-a30d-4df4-adbf-fb8f351c87fe	AURA OSPINA	7887	13084	150.00	2026-03-28	150.00	\N	\N	\N	\N	2026-03-31	2.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.548217	2026-04-14 15:38:37.548217
+159eaefd-0c42-4197-ad8a-a415295ca733	HERNAN LONDOÑO	7886	13028	120.00	2026-03-27	120.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.549726	2026-04-14 15:38:37.549726
+42ccafbf-3e11-49c5-ba87-f3b64426a261	HERNAN LONDOÑO	7886	13102	120.00	2026-03-27	120.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.551242	2026-04-14 15:38:37.551242
+21ea7d45-05ef-428f-9c82-55fbc3092ee2	HERNAN LONDOÑO	7886	13115	114.00	2026-03-27	114.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.552747	2026-04-14 15:38:37.552747
+33dad60a-96e3-4818-af9a-6139aacf3a34	CLARA HERRERA	7885	13084	150.00	2026-03-27	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.554272	2026-04-14 15:38:37.554272
+56d7a3d4-d228-4489-9548-a7acedefc59e	MICHEL CANO	7884	12909	231.00	2026-03-27	231.00	\N	\N	\N	\N	2026-04-08	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.556799	2026-04-14 15:38:37.556799
+64732e79-cd2c-42b0-9ba2-c78442a65330	ELIANA ZAPATA	7883	12909	231.00	2026-03-27	230.00	1.00	\N	\N	\N	2026-04-06	2.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.558652	2026-04-14 15:38:37.558652
+ad180971-f95b-4fc6-8927-e87b82e5b235	DIANA CORREA	7882	13076	99.00	2026-03-27	99.00	\N	\N	\N	\N	2026-04-08	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.560424	2026-04-14 15:38:37.560424
+1fa2aaa2-a785-4a6b-a770-f576af78da4f	HERNAN LONDOÑO	7916	13117	150.00	2026-04-10	150.00	\N	\N	\N	\N	2026-04-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.493062	2026-04-14 16:37:35.141296
+16ee50a6-dc9f-4af7-83de-380013c37f77	HERNAN LONDOÑO	7916	13041	120.00	2026-04-10	120.00	\N	\N	\N	\N	2026-04-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.489637	2026-04-14 16:37:35.147157
+4cc83c83-4665-4734-a2e7-52beadb62ebc	HERNAN LONDOÑO	7916	12877	201.00	2026-04-10	201.00	\N	\N	\N	\N	2026-04-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.487864	2026-04-14 16:37:35.148753
+788576d4-848f-4656-8cc9-0d437e70ecb2	VIVIANA OLAYA	7892	13116	201.00	2026-03-31	200.00	1.00	\N	\N	\N	2026-04-08	2.00	2.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.540234	2026-04-14 16:42:05.168794
+65bd2f9d-87cc-4e6a-b9b0-b1b8ee799f40	MARLENY RAMIREZ	7889	13102	120.00	2026-03-31	113.00	7.00	\N	\N	\N	2026-04-14	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.545169	2026-04-15 10:18:58.643257
+1c144104-8216-4e29-9b16-bf3a445ce51e	MELVA GALLEGO	7897	13055	204.00	2026-04-01	203.00	1.00	\N	\N	\N	2026-04-15	2.00	3.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.531826	2026-04-16 10:46:12.026317
+529e46b9-5266-45ee-acd1-5e330d54bb5d	MARGARITA VASQUEZ	7905	13068	150.00	2026-04-07	150.00	\N	\N	\N	\N	2026-04-15	2.00	2.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.520408	2026-04-16 10:47:08.870932
+e42ef330-645b-4957-99eb-e0b8cd52812a	JOSEFINA PULGARIN	7904	13079	192.00	2026-04-07	191.00	1.00	\N	\N	\N	2026-04-13	1.00	2.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.522188	2026-04-16 10:48:55.655891
+72793676-b32d-4835-adf3-a483403b9046	LIDA LONDOÑO	7909	13040	147.00	2026-04-08	114.00	\N	\N	\N	33.00	2026-04-15	1.00	1.00	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.515017	2026-04-16 10:53:07.884054
+94b1cb55-1a1b-4d17-8616-41c0f711ec6d	MICHEL CANO	7912	13110	252.00	2026-04-08	252.00	\N	\N	\N	\N	2026-04-16	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.498197	2026-04-16 12:03:06.378463
+77d925ec-9162-40e2-b247-4ef364c509fe	CLARA HERRERA	7906	12895	171.00	2026-04-07	171.00	\N	\N	\N	\N	2026-04-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.518662	2026-04-17 11:16:53.526817
+ee513571-7f91-4efc-a7c2-b659f2077100	VIVIANA OLAYA	7919	12943	144.00	2026-04-10	138.00	\N	\N	\N	6.00	2026-04-16	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.478785	2026-04-17 11:33:09.273849
+b28cb15d-86f9-4020-b575-e6c0acbb94f4	NANCY ARBOLEDA	7928	12908	120.00	2026-04-10	120.00	\N	\N	\N	\N	2026-04-20	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.392249	2026-04-20 11:48:45.681622
+794d3256-2a48-4550-a3f9-21443d58f697	CAMILO HOYOS	7914	13131	144.00	2026-04-08	144.00	\N	\N	\N	\N	2026-04-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.496485	2026-04-20 07:13:23.337898
+b89f33cc-9980-4bad-b369-a79f899e5af4	ELIANA ZAPATA	7927	12907	210.00	2026-04-10	161.00	\N	\N	\N	\N	2026-04-20	2.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.461862	2026-04-20 12:52:33.179318
+8e2bde29-478a-4030-ba0b-dc8a1d707e9d	PEDRO LLANEZ	7925	13117	150.00	2026-04-10	150.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.465794	2026-04-20 13:50:13.427988
+f8fae611-0937-4036-8c92-75b260e48d4e	ALEJANDRA CHAVERRA	7917	13041	120.00	2026-04-10	120.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.484439	2026-04-21 08:21:34.548889
+7280af2a-05fc-40d2-85d2-1bedbfc7bdfa	ALEJANDRA CHAVERRA	7917	13116	200.00	2026-04-10	199.00	\N	\N	1.00	\N	2026-04-12	\N	\N	\N	\N	\N	{}	{"cobrado": "RM-7885"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.482727	2026-04-21 10:47:06.298224
+a874f62f-1140-4f4b-93c9-686410be39a6	MARCELA GRACIANO	7898	13023	90.00	2026-04-01	89.00	\N	1.00	\N	\N	2026-04-16	1.00	\N	\N	\N	\N	{}	{"vta": "RM-7902"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.529677	2026-04-21 10:51:09.944211
+c4a789af-59fd-4322-b748-aacc250487fb	RAMON CANO	7926	12877	55.00	2026-04-10	55.00	\N	\N	\N	\N	2026-04-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.463837	2026-04-22 08:33:49.379308
+9ce864b5-8d10-4b80-aec5-35603d865c36	HERNAN LONDOÑO	7916	13065	99.00	2026-04-10	99.00	\N	\N	\N	\N	2026-04-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.491339	2026-04-23 11:04:30.592636
+a8effb96-efe0-4df8-82b5-435b50dbba00	MARIU CUBILLON	7920	13097	144.00	2026-04-10	138.00	6.00	\N	\N	\N	2026-04-16	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.476996	2026-04-24 08:17:30.005131
+230e826a-f2f8-4b1f-b2a6-e0819596cbce	EBETH BELEÑO	7907	13101	123.00	2026-04-07	98.00	\N	\N	\N	25.00	2026-04-23	\N	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.516884	2026-04-24 10:34:48.24068
+799db29a-b36e-4977-ba57-7c1240acaa8e	MARLENY RAMIREZ	7921	12943	144.00	2026-04-10	134.00	3.00	\N	\N	7.00	2026-04-24	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.47525	2026-04-27 07:53:48.532555
+5d1b9eae-7752-4ee4-bece-6729eba1edb0	MELVA GALLEGO	7881	13074	201.00	2026-03-27	201.00	\N	\N	\N	\N	2026-04-09	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.562763	2026-04-14 15:38:37.562763
+624da5b5-3ac8-4903-9f73-d4f273540c11	RETEX	7879	12972	135.00	2026-03-26	135.00	\N	\N	\N	\N	2026-03-31	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.576896	2026-04-14 15:38:37.576896
+80df2929-9a8c-475d-8a2a-996de1c450d2	HERNAN LONDOÑO	7878	13023	90.00	2026-03-26	90.00	\N	\N	\N	\N	2026-04-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.579469	2026-04-14 15:38:37.579469
+ecdf1494-293b-486b-8969-6e28723a07ba	HERNAN LONDOÑO	7878	13079	384.00	2026-03-26	384.00	\N	\N	\N	\N	2026-04-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.581324	2026-04-14 15:38:37.581324
+03ae68a1-976e-4a88-a7e9-9668f194e51d	NANCY ARBOLEDA	7877	13129	81.00	2026-03-26	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.583193	2026-04-14 15:38:37.583193
+1ff75d9c-4812-4b94-b65c-912f7e9f601f	CAMILO HOYOS	7876	12972	135.00	2026-03-26	135.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.585067	2026-04-14 15:38:37.585067
+1594ed02-1b4d-4a7d-a794-b170b1307d64	CLARA HERRERA	7875	12990	111.00	2026-03-26	111.00	\N	\N	\N	\N	2026-03-27	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.587009	2026-04-14 15:38:37.587009
+a9d0bcc7-755b-4556-9809-9430b53ce96c	CLARA HERRERA	7875	12968	117.00	2026-03-26	117.00	\N	\N	\N	\N	2026-03-27	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.588881	2026-04-14 15:38:37.588881
+9fe5443e-5ec2-4e0b-8790-3dcc49f8808e	MARIU CUBILLON	7874	12686	180.00	2026-03-26	180.00	\N	\N	\N	\N	2026-04-06	1.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.590739	2026-04-14 15:38:37.590739
+3087bb4e-7c57-4616-a62f-ae588cb62fea	ALEJANDRA CHAVERRA	7870	13055	204.00	2026-03-25	204.00	\N	\N	\N	\N	2026-03-31	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.596197	2026-04-14 15:38:37.596197
+9bc73d91-06fa-445c-b29d-c97a29a34dec	HERNAN LONDOÑO	7869	13055	204.00	2026-03-25	204.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.598077	2026-04-14 15:38:37.598077
+608188c6-32fd-4899-b00e-7aa2a12a7178	HERNAN LONDOÑO	7869	12972	135.00	2026-03-25	135.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.599953	2026-04-14 15:38:37.599953
+a18f3a26-be92-4298-a6a9-b3ab451721a3	HERNAN LONDOÑO	7869	12909	462.00	2026-03-25	462.00	\N	\N	\N	\N	2026-03-30	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.60186	2026-04-14 15:38:37.60186
+3189dc7f-f2e3-4441-8499-dc120ba8d778	CAROLINA GALLEGO	7868	13109	201.00	2026-03-25	201.00	\N	\N	\N	\N	2026-04-10	2.00	3.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.603709	2026-04-14 15:38:37.603709
+2bd19c76-9afc-4bd3-8dfa-24eb512f0ff4	ELVIA MUÑOZ	7864	12976	111.00	2026-03-24	111.00	\N	\N	\N	\N	2026-03-31	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.609672	2026-04-14 15:38:37.609672
+6c59ac25-c145-4d52-929d-bda097a471f6	MERY ALZATE	7863	13064	180.00	2026-03-24	180.00	\N	\N	\N	\N	2026-04-10	1.00	1.00	\N	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.61167	2026-04-14 15:38:37.61167
+8285d80f-23de-46a6-b5e4-7663e5f6cb84	MARGARITA VASQUEZ	7862	12909	162.00	2026-03-21	161.00	1.00	\N	\N	\N	2026-03-28	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.613397	2026-04-14 15:38:37.613397
+64bc448d-2d6f-4189-ab96-04ddd3174acd	CLAUDIA ARISMENDI	7860	13081	183.00	2026-03-21	183.00	\N	\N	\N	\N	2026-03-26	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.617397	2026-04-14 15:38:37.617397
+b9959a18-79b5-4f95-b604-985207557bf4	ALEJANDRA CHAVERRA	7859	13033	180.00	2026-03-21	179.00	1.00	\N	\N	\N	2026-03-31	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.620902	2026-04-14 15:38:37.620902
+7ef8cd3d-3303-4dcc-beee-9dc496986bd0	HERNAN LONDOÑO	7858	12975	140.00	2026-03-20	140.00	\N	\N	\N	\N	2026-03-24	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.622719	2026-04-14 15:38:37.622719
+9e0a543f-8702-4f09-bdb3-0ff5b6d0748e	HERNAN LONDOÑO	7858	13098	120.00	2026-03-20	120.00	\N	\N	\N	\N	2026-03-24	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.625011	2026-04-14 15:38:37.625011
+c528f179-faef-4756-8296-9f6f9290a16b	MARIA TERESA QUICENO	7857	13058	138.00	2026-03-20	138.00	\N	\N	\N	\N	2026-03-30	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.626687	2026-04-14 15:38:37.626687
+af3ea4f5-7c13-49d5-9e6a-d70f4b6acbc7	PEDRO LLANEZ	7856	12864	279.00	2026-03-20	279.00	\N	\N	\N	\N	2026-03-30	2.00	3.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.628352	2026-04-14 15:38:37.628352
+9e0ae2b8-e1bf-4eb8-b80f-91c6ab715cf2	ALEJANDRA CHAVERRA	7855	13016	120.00	2026-03-20	120.00	\N	\N	\N	\N	2026-03-24	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.630033	2026-04-14 15:38:37.630033
+99f73d36-4b22-45aa-ae6e-e82a99ffae92	EBETH BELEÑO	7854	12973	135.00	2026-03-20	134.00	1.00	\N	\N	\N	2026-04-06	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.631882	2026-04-14 15:38:37.631882
+c255cabc-5446-45e6-b198-4b94360080ed	CAMILO HOYOS	7853	13068	150.00	2026-03-19	150.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.633778	2026-04-14 15:38:37.633778
+4c220653-22a2-485c-9146-e22eb1acd48b	CAMILO HOYOS	7853	13110	252.00	2026-03-19	252.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.63561	2026-04-14 15:38:37.63561
+a012265b-20cb-4799-96a7-00a9bf8677de	VIVIANA OLAYA	7851	13067	258.00	2026-03-19	250.00	2.00	\N	\N	6.00	2026-03-31	2.00	2.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.639376	2026-04-14 15:38:37.639376
+69dde702-da57-485c-93eb-d96f59f4ad7b	HERNAN LONDOÑO	7850	13068	150.00	2026-03-19	150.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.641703	2026-04-14 15:38:37.641703
+80506d57-c9ea-4d8c-be7f-148738ce4615	HERNAN LONDOÑO	7850	13110	252.00	2026-03-19	252.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.643421	2026-04-14 15:38:37.643421
+0404606c-7f9e-4b0c-90f1-19c53f744b9a	HERNAN LONDOÑO	7850	13117	150.00	2026-03-19	150.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.645153	2026-04-14 15:38:37.645153
+c06c63c8-a4dc-4960-ae8c-76084bc75660	HERNAN LONDOÑO	7850	13118	147.00	2026-03-19	147.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.646883	2026-04-14 15:38:37.646883
+78981b53-8adb-4df3-9a18-049ed730096f	HERNAN LONDOÑO	7850	12909	162.00	2026-03-19	162.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.648616	2026-04-14 15:38:37.648616
+983ac9f0-9578-4e40-a95e-cc0b80813aed	HERNAN LONDOÑO	7850	13129	81.00	2026-03-19	81.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.65034	2026-04-14 15:38:37.65034
+a490be32-159a-4287-a1c7-f04d9bfd9f91	HERNAN LONDOÑO	7850	13121	81.00	2026-03-19	81.00	\N	\N	\N	\N	2026-03-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.652117	2026-04-14 15:38:37.652117
+67d6f4f3-52a3-4a38-8298-2271fc3b2f43	MARIU CUBILLON	7849	13084	150.00	2026-03-19	150.00	\N	\N	\N	\N	2026-03-26	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.653842	2026-04-14 15:38:37.653842
+33df17ea-068a-4064-b6ed-bcb1968cd186	MICHEL CANO	7848	13074	120.00	2026-03-19	120.00	\N	\N	\N	\N	2026-03-27	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.65559	2026-04-14 15:38:37.65559
+35a427ad-d130-4e94-b4ec-e1daf3705386	CAMILO HOYOS	7847	13118	147.00	2026-03-19	147.00	\N	\N	\N	\N	2026-03-25	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.657254	2026-04-14 15:38:37.657254
+d20f0c46-d409-430f-a933-52f6a4f5c324	ALEJANDRA CHAVERRA	7846	13129	81.00	2026-03-18	81.00	\N	\N	\N	\N	2026-03-25	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.659016	2026-04-14 15:38:37.659016
+e63e0e22-6452-4df9-b03c-4c077c5980ee	CLARA HERRERA	7843	12964	123.00	2026-03-18	123.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.662482	2026-04-14 15:38:37.662482
+6be79217-ac50-4c0d-b50b-ef52b3270d7d	ALEJANDRA CHAVERRA	7842	13083	282.00	2026-03-17	282.00	\N	\N	\N	\N	2026-03-24	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.66417	2026-04-14 15:38:37.66417
+e4c49dff-9dae-4d05-a250-3c64600009ec	MARCELA GRACIANO	7841	13091	252.00	2026-03-17	252.00	\N	\N	\N	\N	2026-03-26	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.665913	2026-04-14 15:38:37.665913
+aab67eeb-3721-4559-891f-d1fd0fb31acb	CLARA HERRERA	7840	13095	300.00	2026-03-17	300.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.667656	2026-04-14 15:38:37.667656
+c71c7c0e-32a3-4fcb-9eea-909ba7f3b5dc	LIDA LONDOÑO	7839	12963	120.00	2026-03-17	120.00	\N	\N	\N	\N	2026-03-30	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.669445	2026-04-14 15:38:37.669445
+1a951ac3-16ef-46f1-adc4-05941ce9a9e0	DIANA CORREA	7838	13090	252.00	2026-03-17	252.00	\N	\N	\N	\N	2026-03-27	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.671159	2026-04-14 15:38:37.671159
+77d5a64d-fdbc-45cf-8e37-29cab18f4341	ELIANA ZAPATA	7837	12968	117.00	2026-03-17	116.00	\N	\N	1.00	\N	2026-03-25	1.00	2.00	\N	0.00	\N	{}	{"cobrado": "RM-7782"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.672959	2026-04-14 15:41:40.546944
+023575ea-d2f3-45bb-809f-14ef3b77cdfd	MARCELA GRACIANO	7872	13118	147.00	2026-03-26	145.00	\N	\N	2.00	\N	2026-04-06	1.00	\N	\N	\N	\N	{}	{"cobrado": "RM-7846"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.594485	2026-04-15 08:09:11.607859
+67f1ff47-6173-4718-ba95-665ec8d8dec4	JOSEFINA PULGARIN	7861	13083	282.00	2026-03-24	281.00	\N	1.00	\N	\N	2026-04-06	2.00	\N	\N	\N	\N	{}	{"vta": "RM-7847"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.615066	2026-04-15 08:12:47.930166
+736be0bd-ff9a-4cf5-abd7-71eebc1cb3cf	CLAUDIA ARISMENDI	7873	13098	120.00	2026-03-26	119.00	\N	\N	\N	1.00	2026-04-06	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.592641	2026-04-15 09:00:48.667252
+9263ead9-c91c-4c9f-a33b-01565fdc6296	DORIS GONSALEZ	7867	12975	120.00	2026-03-25	120.00	\N	\N	\N	\N	2026-04-14	2.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.605595	2026-04-15 10:20:14.068621
+9b898e7a-d50f-4c51-8cbb-d2a74142b37a	CAMILO HOYOS	7853	13117	150.00	2026-03-19	150.00	\N	\N	\N	\N	2026-04-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.637454	2026-04-20 07:13:23.339909
+201751e3-e2bf-470a-9668-c0f3f03ae8d2	PEDRO LLANEZ	7836	12936	39.00	2026-03-17	39.00	\N	\N	\N	\N	2026-03-20	1.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.674741	2026-04-14 15:38:37.674741
+fad9beb1-8c73-4e0c-af8c-2adc21f8249b	HERNAN LONDOÑO	7835	13064	180.00	2026-03-17	180.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.676707	2026-04-14 15:38:37.676707
+309dd828-7b68-4d68-9eb0-7a480b2017fd	HERNAN LONDOÑO	7835	13116	201.00	2026-03-17	201.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.678428	2026-04-14 15:38:37.678428
+63eaece6-2dfd-4477-9051-d336232f0bfd	HERNAN LONDOÑO	7835	13074	201.00	2026-03-17	201.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.680142	2026-04-14 15:38:37.680142
+7fe40057-5575-49d7-be9d-7ce2371d8c2e	HERNAN LONDOÑO	7835	13081	183.00	2026-03-17	183.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.681861	2026-04-14 15:38:37.681861
+0b18f2b8-2032-4e44-ba21-83c1052681bf	HERNAN LONDOÑO	7835	13083	282.00	2026-03-17	282.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.683634	2026-04-14 15:38:37.683634
+b7fcedbe-ef07-4805-be43-1e3d30a05f1c	CAMILO HOYOS	7834	12864	279.00	2026-03-17	279.00	\N	\N	\N	\N	2026-03-18	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.685347	2026-04-14 15:38:37.685347
+f98b44df-8db0-43a6-a300-1d7a0bb51c4c	CAMILO HOYOS	7834	13116	201.00	2026-03-17	201.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.687586	2026-04-14 15:38:37.687586
+262ac6bf-0f90-4e8c-8678-868982f1d5a6	CAMILO HOYOS	7834	13074	201.00	2026-03-17	201.00	\N	\N	\N	\N	2026-03-25	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.689647	2026-04-14 15:38:37.689647
+8c6b5f9a-942c-4fa7-bf25-5f11ccf7ba20	CAMILO HOYOS	7834	13081	183.00	2026-03-17	183.00	\N	\N	\N	\N	2026-03-18	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.691303	2026-04-14 15:38:37.691303
+0ce76524-574c-4459-98b5-48b76376adfd	MELVA GALLEGO	7832	13096	201.00	2026-03-16	200.00	1.00	\N	\N	\N	2026-03-27	2.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.693032	2026-04-14 15:38:37.693032
+88d9cfb3-c9d7-4c57-b151-47bff6f4625f	JOSEFINA PULGARIN	7830	13002	120.00	2026-03-16	120.00	\N	\N	\N	\N	2026-03-24	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.696517	2026-04-14 15:38:37.696517
+82c7f667-b4a2-4c59-90f4-8a301596eb94	CARMEN USUGA	7829	13093	120.00	2026-03-14	119.00	\N	\N	\N	1.00	2026-03-28	2.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.698317	2026-04-14 15:38:37.698317
+dd8f0698-8c03-4b8d-aa62-f4ec7dcb1bd2	PEDRO LLANEZ	7828	12973	138.00	2026-03-13	138.00	\N	\N	\N	\N	2026-03-20	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.700067	2026-04-14 15:38:37.700067
+4f702852-6ba9-4292-b6ba-a0c3ee548d87	PEDRO LLANEZ	7827	13077	123.00	2026-03-13	123.00	\N	\N	\N	\N	2026-03-25	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.701798	2026-04-14 15:38:37.701798
+f1edab75-c304-4fae-b909-74d57d237e02	RAMON CANO	7826	12877	55.00	2026-03-13	55.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.70365	2026-04-14 15:38:37.70365
+1616bf96-bf30-4a6d-bc4c-e2fd4866d26f	CAMILO HOYOS	7824	12864	279.00	2026-03-13	279.00	\N	\N	\N	\N	2026-03-18	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.705402	2026-04-14 15:38:37.705402
+db963afe-f603-4b0d-922d-257d06fe5d60	CAMILO HOYOS	7824	13109	201.00	2026-03-13	201.00	\N	\N	\N	\N	2026-03-25	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.707134	2026-04-14 15:38:37.707134
+c21d1067-1440-4acd-b741-d84f74e0caaf	MARIA TERESA QUICENO	7823	13086	120.00	2026-03-13	120.00	\N	\N	\N	\N	2026-03-24	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.708893	2026-04-14 15:38:37.708893
+a3c659d8-9a14-4b55-977d-66914ec628ee	RETEX	7822	13058	138.00	2026-03-12	138.00	\N	\N	\N	\N	2026-03-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.710605	2026-04-14 15:38:37.710605
+73351fab-2eaa-452f-932c-6ed103a0aed1	EBETH BELEÑO	7821	13005	168.00	2026-03-12	167.00	1.00	\N	\N	\N	2026-03-21	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.712305	2026-04-14 15:38:37.712305
+d978ecf2-0e8d-44d4-9b9e-39352dcbcc47	CLAUDIA ARISMENDI	7820	12782	54.00	2026-03-12	54.00	\N	\N	\N	\N	2026-03-21	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.714023	2026-04-14 15:38:37.714023
+eba1d69e-7d8b-461a-b312-4c59ccf51fd3	CLAUDIA ARISMENDI	7819	13081	120.00	2026-03-12	120.00	\N	\N	\N	\N	2026-03-21	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.7159	2026-04-14 15:38:37.7159
+388c7cab-39ec-4349-b2c4-9dc9e9aa396a	MARIU CUBILLON	7818	13016	120.00	2026-03-12	120.00	\N	\N	\N	\N	2026-03-19	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.718223	2026-04-14 15:38:37.718223
+e16cbbbd-9462-45ed-8a0b-68d53dced36c	NANCY ARBOLEDA	7817	13077	123.00	2026-03-11	123.00	\N	\N	\N	\N	2026-03-26	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.719946	2026-04-14 15:38:37.719946
+3531725d-08a4-4142-a9b7-28700a7b57e9	HERNAN LONDOÑO	7816	13100	180.00	2026-03-11	180.00	\N	\N	\N	\N	2026-03-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.721674	2026-04-14 15:38:37.721674
+e086e441-ec1a-4f06-bef2-10af583ab619	HERNAN LONDOÑO	7816	13084	150.00	2026-03-11	150.00	\N	\N	\N	\N	2026-03-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.723367	2026-04-14 15:38:37.723367
+f04d692e-425a-4d48-8f30-42f35fe46a9f	HERNAN LONDOÑO	7816	13002	120.00	2026-03-11	120.00	\N	\N	\N	\N	2026-03-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.725066	2026-04-14 15:38:37.725066
+e374d836-147a-41f4-b1d0-51a711f0dd91	ALEJANDRA CHAVERRA	7815	13036	120.00	2026-03-11	120.00	\N	\N	\N	\N	2026-03-18	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.726952	2026-04-14 15:38:37.726952
+89e30dc0-21ea-4005-9fe6-dc79c167e084	FANEIRA ARBOLEDA	7814	12973	135.00	2026-03-11	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.728645	2026-04-14 15:38:37.728645
+de0a3e5d-b4c8-4caf-a8b6-498c1a74c66d	JOSEFINA PULGARIN	7813	13010	90.00	2026-03-11	90.00	\N	\N	\N	\N	2026-03-16	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.730313	2026-04-14 15:38:37.730313
+54cd02c3-fdf1-42ed-8b82-51a7e6086127	ADRIANA TABORDA	7811	12869	120.00	2026-03-10	118.00	\N	\N	\N	2.00	2026-03-26	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.73202	2026-04-14 15:38:37.73202
+685f21e7-3d4a-4392-b391-f5cb62e293fe	MARGARITA VASQUEZ	7809	13094	201.00	2026-03-10	201.00	\N	\N	\N	\N	2026-03-24	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.734334	2026-04-14 15:38:37.734334
+06942c7c-435a-4beb-82ed-85ada81268e4	HERNAN LONDOÑO	7808	13090	252.00	2026-03-10	252.00	\N	\N	\N	\N	2026-03-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.736031	2026-04-14 15:38:37.736031
+85118b29-338f-43ce-a943-63647071ec1d	HERNAN LONDOÑO	7808	13091	252.00	2026-03-10	252.00	\N	\N	\N	\N	2026-03-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.73773	2026-04-14 15:38:37.73773
+7ae9790e-9ff3-4bcc-aac2-a4be7c430017	HERNAN LONDOÑO	7808	13016	120.00	2026-03-10	120.00	\N	\N	\N	\N	2026-03-11	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.739397	2026-04-14 15:38:37.739397
+3f85e9b1-962a-4bde-9049-1b5ae684c8a2	HERNAN LONDOÑO	7808	12877	192.00	2026-03-10	192.00	\N	\N	\N	\N	2026-03-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.741069	2026-04-14 15:38:37.741069
+6eb894fd-e338-4989-96c0-af46a7b86be8	CAROLINA GALLEGO	7805	12931	138.00	2026-03-09	138.00	\N	\N	\N	\N	2026-03-24	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.742737	2026-04-14 15:38:37.742737
+e8791277-5431-4d43-a12e-b48865985c27	MELVA GALLEGO	7804	13095	300.00	2026-03-09	300.00	\N	\N	\N	\N	2026-03-15	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.744429	2026-04-14 15:38:37.744429
+9f17383d-6a74-466e-9bf2-d3400d7dc1a4	VIVIANA OLAYA	7803	13015	201.00	2026-03-07	201.00	\N	\N	\N	\N	2026-03-19	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.746094	2026-04-14 15:38:37.746094
+c8d78234-facd-40e2-8921-3ee70739513b	ALEJANDRA CHAVERRA	7802	13086	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.747921	2026-04-14 15:38:37.747921
+b0335b10-ab43-477d-9cab-d420905b8c22	CAMILO HOYOS	7801	13081	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.749721	2026-04-14 15:38:37.749721
+f2e507dd-2d73-4c9b-9ed5-fc99c1f055e4	CAMILO HOYOS	7801	13096	201.00	2026-03-06	201.00	\N	\N	\N	\N	2026-03-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.751558	2026-04-14 15:38:37.751558
+c1900081-81e7-49ca-b2dc-667b76671915	CAMILO HOYOS	7801	13074	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-18	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.753397	2026-04-14 15:38:37.753397
+2718f0f2-5d26-4b88-a09d-202f3e19f225	JOSEFINA PULGARIN	7800	13036	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-26	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.755252	2026-04-14 15:38:37.755252
+c72569bb-30a6-4740-9712-b7c81feb852e	PEDRO LLANEZ	7799	12980	195.00	2026-03-06	195.00	\N	\N	\N	\N	2026-03-13	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.75711	2026-04-14 15:38:37.75711
+d0daf362-bc93-4070-9afd-85233d2d96ed	ELIANA ZAPATA	7798	12964	123.00	2026-03-06	120.00	2.00	\N	\N	1.00	2026-03-17	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.758972	2026-04-14 15:38:37.758972
+e2eb51b2-674e-4205-bde0-9c933838b7ee	CLARA HERRERA	7797	12917	126.00	2026-03-06	126.00	\N	\N	\N	\N	2026-03-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.760884	2026-04-14 15:38:37.760884
+19ee3ad1-6fcb-4f0f-9cf8-5e7328bf5da8	CLARA HERRERA	7797	12920	222.00	2026-03-06	222.00	\N	\N	\N	\N	2026-03-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.762705	2026-04-14 15:38:37.762705
+a588c05b-f62a-475f-99d8-4179531915f6	CLARA HERRERA	7797	12935	59.00	2026-03-06	59.00	\N	\N	\N	\N	2026-03-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.764523	2026-04-14 15:38:37.764523
+5c5a881c-cd57-4ff9-9886-47aca881c3b3	HERNAN LONDOÑO	7796	13094	201.00	2026-03-06	201.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.766394	2026-04-14 15:38:37.766394
+d21b8f29-9584-4f93-84fa-8b8f5767a775	HERNAN LONDOÑO	7796	13086	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.768222	2026-04-14 15:38:37.768222
+4556f8bf-69ca-4b8a-b876-fd2e26d28387	HERNAN LONDOÑO	7796	13081	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.770057	2026-04-14 15:38:37.770057
+ed0092a3-36fc-4d12-aec7-4bb9645982b3	HERNAN LONDOÑO	7796	13093	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-11	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.771997	2026-04-14 15:38:37.771997
+1ce0a35d-b4ac-4e0d-b493-3b7526567a67	HERNAN LONDOÑO	7796	13074	120.00	2026-03-06	120.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.773843	2026-04-14 15:38:37.773843
+ea8303ce-9504-401c-b1a6-61d07f906beb	HERNAN LONDOÑO	7796	12931	138.00	2026-03-06	138.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.775635	2026-04-14 15:38:37.775635
+9bbe8007-93ce-4882-a893-e38e52e15ecb	HERNAN LONDOÑO	7796	13096	201.00	2026-03-06	201.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.777525	2026-04-14 15:38:37.777525
+bff47ac9-d334-4375-aca6-e8a3c799186e	MILENA SALAZAR	7795	12965	135.00	2026-03-06	135.00	\N	\N	\N	\N	2026-03-20	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.779361	2026-04-14 15:38:37.779361
+5ea44321-2b0a-4bdf-a48a-157235d87bbe	GLOBO CREATIVO	7792	12976	85.00	2026-03-05	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.781891	2026-04-14 15:38:37.781891
+f391c760-499e-44ab-b0e4-b88c159abd70	GLOBO CREATIVO	7792	13070	55.00	2026-03-05	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.783697	2026-04-14 15:38:37.783697
+6a9ebf6b-c7e2-4d5c-8e77-e73a6c148eec	ALEJANDRA CHAVERRA	7791	13010	90.00	2026-03-03	90.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.785526	2026-04-14 15:38:37.785526
+85bb4c2d-bd5e-4bd0-88c6-83e77fbd2687	ELVIA MUÑOZ	7790	12971	102.00	2026-03-05	102.00	\N	\N	\N	\N	2026-03-13	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.787399	2026-04-14 15:38:37.787399
+304c45de-a28a-4f00-bade-44847381ac90	CLAUDIA ARISMENDI	7789	13011	120.00	2026-03-05	118.00	2.00	\N	\N	\N	2026-03-12	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.789293	2026-04-14 15:38:37.789293
+3db97db2-8c3e-4289-8502-46b302622848	LIDA LONDOÑO	7788	13014	123.00	2026-03-05	123.00	\N	\N	\N	\N	2026-03-18	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.791143	2026-04-14 15:38:37.791143
+9536af0c-6fb2-47aa-a03a-25c27f829708	CLARA CANO	7787	12966	120.00	2026-03-05	120.00	\N	\N	\N	\N	2026-03-18	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.793043	2026-04-14 15:38:37.793043
+fbd91008-9d09-4197-b867-d057a5de931c	MERY ALZATE	7786	12990	111.00	2026-03-05	111.00	\N	\N	\N	\N	2026-03-25	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.794805	2026-04-14 15:38:37.794805
+4a5077ea-3a0e-44eb-ae3f-827b4e5e486c	ALBA ARCILA	7784	12936	60.00	2026-03-05	21.00	\N	\N	\N	39.00	2026-03-20	1.00	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.797132	2026-04-14 15:38:37.797132
+e7bbb58a-4f16-4d07-bdc1-2c552d1caa91	ERICA GIL	7783	12918	60.00	2026-03-05	60.00	\N	\N	\N	\N	2026-03-10	\N	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.798822	2026-04-14 15:38:37.798822
+8ede13ba-b802-4701-b6dd-6373ed9133c2	AURA RODRIGUEZ/HERNAN	7782	12869	120.00	2026-03-04	120.00	\N	\N	\N	\N	2026-03-24	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.800614	2026-04-14 15:38:37.800614
+272bd918-539a-4d1c-8388-142d9cca4620	CAMILO HOYOS	7781	12782	54.00	2026-03-04	54.00	\N	\N	\N	\N	2026-03-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.802393	2026-04-14 15:38:37.802393
+3bf4cf87-e06f-43fa-beaf-41a7eeae6856	HERNAN LONDOÑO	7780	12963	120.00	2026-03-04	120.00	\N	\N	\N	\N	2026-03-11	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.804156	2026-04-14 15:38:37.804156
+89eeac48-7233-4a17-8c15-e001ca513fce	HERNAN LONDOÑO	7780	12869	120.00	2026-03-04	120.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.805875	2026-04-14 15:38:37.805875
+e19f295b-7c9b-4911-8aa0-e812ff6dae6f	HERNAN LONDOÑO	7780	13095	300.00	2026-03-04	300.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.807633	2026-04-14 15:38:37.807633
+a9aa354c-9ed2-46b9-960d-2ed3f8453541	HERNAN LONDOÑO	7780	12782	54.00	2026-03-04	54.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.809359	2026-04-14 15:38:37.809359
+eb74000c-b8d9-4aea-99e7-53fa2967b7d9	HERNAN LONDOÑO	7780	13010	90.00	2026-03-04	90.00	\N	\N	\N	\N	2026-03-10	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.811089	2026-04-14 15:38:37.811089
+98aa2501-8533-4df0-990f-72258d65b342	JOSEFINA PULGARIN	7779	12962	117.00	2026-03-04	115.00	2.00	\N	\N	\N	2026-03-11	3.00	3.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.812801	2026-04-14 15:38:37.812801
+5ec1306b-768c-4ac0-8c5e-dc60060a8372	DIANA CORREA	7778	13012	120.00	2026-03-04	120.00	\N	\N	\N	\N	2026-03-20	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.814931	2026-04-14 15:38:37.814931
+f8547cef-d014-4b42-8fc6-1035699ee2ee	CLARA HERRERA	7776	MUESTRAS	3.00	2026-03-03	3.00	\N	\N	\N	\N	2026-03-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.816626	2026-04-14 15:38:37.816626
+77830c5f-98ae-4031-ad2b-fd7665bdc312	RETEX	7775	12964	123.00	2026-03-03	123.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.818411	2026-04-14 15:38:37.818411
+65a1e7da-34c7-4ccf-871f-b4f6dd6e8768	MARLENY RAMIREZ	7772	12970	138.00	2026-03-03	136.00	\N	\N	\N	2.00	2026-03-24	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.821981	2026-04-14 15:38:37.821981
+1a173ba6-2f1a-45ad-ba72-ae67f225e77d	MARIU CUBILLON	7770	13013	195.00	2026-03-03	195.00	\N	\N	\N	\N	2026-03-13	2.00	2.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.825557	2026-04-14 15:38:37.825557
+afcebfe4-6c4d-4f67-bc5f-6275bf043822	ELVIA MUÑOZ	7769	12908	60.00	2026-03-02	60.00	\N	\N	\N	\N	2026-03-03	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.827314	2026-04-14 15:38:37.827314
+3a75dbce-be8e-4341-a989-3e009e529132	LIDA LONDOÑO	7768	12907	54.00	2026-03-02	54.00	\N	\N	\N	\N	2026-03-06	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.829006	2026-04-14 15:38:37.829006
+e5595a09-8c80-49c7-89f5-44835b7549fc	NANCY ARBOLEDA	7767	12892	60.00	2026-03-02	60.00	\N	\N	\N	\N	2026-03-11	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.830689	2026-04-14 15:38:37.830689
+8d5de437-6c59-4085-bf35-67a80a338ddc	HERNAN LONDOÑO	7766	12908	60.00	2026-02-28	60.00	\N	\N	\N	\N	2026-03-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.832427	2026-04-14 15:38:37.832427
+9dfffda7-147e-4d22-894d-b0f9581f5186	HERNAN LONDOÑO	7766	12907	54.00	2026-02-28	54.00	\N	\N	\N	\N	2026-03-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.834149	2026-04-14 15:38:37.834149
+4fefc8a6-9892-4f5b-9344-fc3b1b0873bf	GLOBO CREATIVO	7765	MUESTRA	2.00	2026-02-27	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.835896	2026-04-14 15:38:37.835896
+b3ddd48a-2419-4ff9-b0c7-483d3f674646	HERNAN LONDOÑO	7764	12962	117.00	2026-02-25	117.00	\N	\N	\N	\N	2026-02-28	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.837601	2026-04-14 15:38:37.837601
+7e3b4248-1422-4e61-88fe-311d27273bb0	HERNAN LONDOÑO	7764	12869	120.00	2026-02-25	120.00	\N	\N	\N	\N	2026-02-28	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.839326	2026-04-14 15:38:37.839326
+ddabb79d-4b79-47d9-9283-fdeded1cd58c	HERNAN LONDOÑO	7764	12986	120.00	2026-02-25	120.00	\N	\N	\N	\N	2026-02-28	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.841033	2026-04-14 15:38:37.841033
+ef18146e-192d-42eb-a686-53bffa1636e0	CLAUDIA ARISMENDI	7762	12935	60.00	2026-02-24	60.00	\N	\N	\N	0.00	2026-03-03	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.843265	2026-04-14 15:38:37.843265
+3c37e06f-664e-4545-87dc-21412fbbb7e9	DIANA CORREA	7761	12923	60.00	2026-02-24	60.00	\N	\N	\N	\N	2026-02-27	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.845088	2026-04-14 15:38:37.845088
+5bf12f49-925c-4dde-bfa8-705df6e71e44	MARIU CUBILLON	7760	12969	174.00	2026-02-24	156.00	18.00	\N	\N	\N	2026-02-28	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.846882	2026-04-14 15:38:37.846882
+7bdf28c8-7e2a-46ea-903c-3af990b7c76b	NANCY ARBOLEDA	7758	12921	60.00	2026-02-23	59.00	1.00	\N	\N	\N	2026-03-02	0.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.848659	2026-04-14 15:38:37.848659
+829826bd-d608-455d-b524-2af95928a615	CAMILO HOYOS	7757	12980	195.00	2026-02-23	195.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.850397	2026-04-14 15:38:37.850397
+c0517d4d-7820-493d-bc65-034c54534839	CAMILO HOYOS	7757	12936	60.00	2026-02-23	60.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.852094	2026-04-14 15:38:37.852094
+d820461f-ac1e-48bc-bea8-2e8a8d77c0d4	CAMILO HOYOS	7757	13011	120.00	2026-02-23	120.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.853824	2026-04-14 15:38:37.853824
+953d3bcb-e51a-4724-959e-714bfe4835e1	ALEJANDRA CHAVERRA	7756	12910	60.00	2026-02-21	60.00	\N	\N	\N	\N	2026-02-28	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.855542	2026-04-14 15:38:37.855542
+d8b5b195-bb1a-491a-9db2-b6ef007bdaf0	ALEJANDRA CHAVERRA	7756	13010	120.00	2026-02-21	120.00	\N	\N	\N	\N	2026-02-27	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.85728	2026-04-14 15:38:37.85728
+3e221899-7770-4cd2-bf48-08c577277dbc	HERNAN LONDOÑO	7755	13010	120.00	2026-02-21	120.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.859589	2026-04-14 15:38:37.859589
+0ed7868a-c8f3-4fa8-89da-6f3d6d1a1857	HERNAN LONDOÑO	7755	12980	195.00	2026-02-21	195.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.861276	2026-04-14 15:38:37.861276
+974013b5-ec7b-46c4-9cfb-2410ca1fad5d	HERNAN LONDOÑO	7755	12936	60.00	2026-02-21	60.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.863272	2026-04-14 15:38:37.863272
+50f9c5df-6097-41a3-8cfb-81393db0d3b3	HERNAN LONDOÑO	7755	13013	195.00	2026-02-21	195.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.865093	2026-04-14 15:38:37.865093
+7b142e50-2e66-432a-b41e-b243c30f5311	VIVIANA OLAYA	7771	12986	120.00	2026-03-03	119.00	\N	1.00	\N	\N	2026-03-09	1.00	1.00	\N	0.00	\N	{}	{"vta": "RM-7726"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.823745	2026-04-14 15:41:40.550559
+8d71f20d-eb54-4e4b-a98d-a2d0dfcbafab	HERNAN LONDOÑO	7755	13011	120.00	2026-02-21	120.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.867037	2026-04-14 15:38:37.867037
+ba3a09c0-8500-4f99-9905-367a60498c09	VIVIANA OLAYA	7754	12950	90.00	2026-02-21	90.00	\N	\N	\N	\N	2026-03-03	1.00	1.00	0.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.869173	2026-04-14 15:38:37.869173
+1d4e82da-60ae-452e-8bd6-126ed2a1687d	GLOBO CREATIVO	7752	HAWAI	1.60	2026-02-20	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.870957	2026-04-14 15:38:37.870957
+897a4820-ee9f-4a66-a548-fb8a65e5b947	RAMON CANO	7750	12970	185.00	2026-02-20	185.00	\N	\N	\N	\N	2026-02-24	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.872735	2026-04-14 15:38:37.872735
+b10d9851-451b-4875-918a-6fae2059c535	LIDA LONDOÑO	7749	MUESTRAS	6.00	2026-02-20	6.00	\N	\N	\N	\N	2026-02-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.87457	2026-04-14 15:38:37.87457
+3298a94a-8bd7-4a7e-9aa4-0eb04401e376	ALEJANDRA CHAVERRA	7748	12959	114.00	2026-02-20	114.00	\N	\N	\N	\N	2026-02-24	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.876426	2026-04-14 15:38:37.876426
+394b26d2-8913-4444-8d6d-259d8dae68ce	GLOBO CREATIVO	7747	MUESTRA	3.00	2026-02-19	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.87826	2026-04-14 15:38:37.87826
+4ce287a8-fcb5-4bb1-85e4-be4a96148a6c	GLOBO CREATIVO	7747	MUESTRA	3.00	2026-02-19	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.880111	2026-04-14 15:38:37.880111
+f66abe7a-0a44-4eeb-9769-20d5d9a8ae72	RETEX	7746	13012	120.00	2026-02-19	120.00	\N	\N	\N	\N	2026-02-27	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.881931	2026-04-14 15:38:37.881931
+ff59d2e8-4bca-4bea-8a73-2cca257b000e	HERNAN LONDOÑO	7745	13012	120.00	2026-02-19	120.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.88382	2026-04-14 15:38:37.88382
+af7d862f-2c0f-46c3-a323-dd962d7072d1	HERNAN LONDOÑO	7745	12968	117.00	2026-02-19	117.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.885593	2026-04-14 15:38:37.885593
+f1ca9525-adcc-4af2-b1d6-c016cbd73626	HERNAN LONDOÑO	7745	12935	60.00	2026-02-19	60.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.887445	2026-04-14 15:38:37.887445
+cf50ff03-dba2-41d6-a4fe-8ebcccc3e326	HERNAN LONDOÑO	7745	12969	174.00	2026-02-19	174.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.889381	2026-04-14 15:38:37.889381
+c0555cad-7046-4ded-92ca-4652d4840c1a	PEDRO LLANEZ	7744	12875	90.00	2026-02-18	90.00	\N	\N	\N	\N	2026-02-27	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.891242	2026-04-14 15:38:37.891242
+2af61809-3200-4783-a4bc-c712e573a421	CAMILO HOYOS	7743	12968	117.00	2026-02-17	117.00	\N	\N	\N	\N	2026-03-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.893081	2026-04-14 15:38:37.893081
+0cbb6897-0daf-42de-9f01-8065a3ff8414	LIDA LONDOÑO	7742	12917	126.00	2026-02-17	126.00	\N	\N	\N	\N	2026-02-27	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.895445	2026-04-14 15:38:37.895445
+13665245-7752-4f21-b3b2-b77062a11d39	FANEIRA ARBOLEDA	7741	MUESTRAS	11.00	2026-02-17	11.00	\N	\N	\N	\N	2026-02-23	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.897177	2026-04-14 15:38:37.897177
+2467f049-2c27-4bb3-ad4f-24bfa21526fc	JOSEFINA PULGARIN	7740	13002	120.00	2026-02-17	120.00	\N	\N	\N	\N	2026-02-26	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.899054	2026-04-14 15:38:37.899054
+c938f7a0-8b46-4a8d-9547-ae21e5a27d26	ELVIA MUÑOZ	7739	12910	60.00	2026-02-17	60.00	\N	\N	\N	\N	2026-02-20	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.900882	2026-04-14 15:38:37.900882
+b46abf8f-ded7-472a-b651-7146b1aebb30	MICHEL CANO	7737	12937	180.00	2026-02-17	180.00	\N	\N	\N	\N	2026-02-25	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.902749	2026-04-14 15:38:37.902749
+826dccfc-02f6-4c02-a224-cb1c049f38d4	ALEJANDRA CHAVERRA	7735	12921	60.00	2026-02-16	60.00	\N	\N	\N	\N	2026-02-19	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.904627	2026-04-14 15:38:37.904627
+590ec1fc-41f4-4363-a55f-5cff7ad51f8a	NANCY ARBOLEDA	7732	12905	60.00	2026-02-14	60.00	\N	\N	\N	\N	2026-02-23	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.910294	2026-04-14 15:38:37.910294
+09503fa4-ced0-47bd-8c65-66b4ebb0866b	MARIU CUBILLON	7731	12922	60.00	2026-02-14	60.00	\N	\N	\N	\N	2026-02-20	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.912153	2026-04-14 15:38:37.912153
+e6535ad9-3e24-4b94-a747-61f85f5316a9	VIVIANA OLAYA	7729	12898	60.00	2026-02-14	60.00	\N	\N	\N	\N	2026-02-20	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.914024	2026-04-14 15:38:37.914024
+ab95ce35-9d76-4f9d-b77f-afb1d18eaa6c	VIVIANA OLAYA	7728	12934	60.00	2026-02-14	60.00	\N	\N	\N	\N	2026-02-23	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.915879	2026-04-14 15:38:37.915879
+292b2bc6-886b-4b1d-bfb2-bb8f517c3ccc	CAMILO HOYOS	7727	12918	60.00	2026-02-13	60.00	\N	\N	\N	\N	2026-03-05	\N	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.917737	2026-04-14 15:38:37.917737
+c35bd724-268d-4b05-b12d-49f2ff26a458	HERNAN LONDOÑO	7726	12918	60.00	2026-02-13	60.00	\N	\N	\N	\N	2026-02-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.920594	2026-04-14 15:38:37.920594
+fd444ab6-b368-4375-9d4d-27943ab247a4	HERNAN LONDOÑO	7726	13002	120.00	2026-02-13	120.00	\N	\N	\N	\N	2026-02-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.922339	2026-04-14 15:38:37.922339
+6d955b94-7c5b-4da0-a88b-f841e88b51c8	HERNAN LONDOÑO	7726	12917	126.00	2026-02-13	126.00	\N	\N	\N	\N	2026-02-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.924097	2026-04-14 15:38:37.924097
+c37906e7-efcd-45cb-9949-0ea7f05d78c8	HERNAN LONDOÑO	7724	12875	90.00	2026-02-12	90.00	\N	\N	\N	\N	2026-02-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.925906	2026-04-14 15:38:37.925906
+a7f9a7f0-83fc-4f4a-83b7-59eb3953e77c	HERNAN LONDOÑO	7724	12937	180.00	2026-02-12	180.00	\N	\N	\N	\N	2026-02-16	\N	\N	1.00	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.927655	2026-04-14 15:38:37.927655
+4d3fe68f-588b-43ed-b89d-811e722dfe41	HERNAN LONDOÑO	7724	12920	225.00	2026-02-12	225.00	\N	\N	\N	\N	2026-02-16	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.929432	2026-04-14 15:38:37.929432
+10ac5688-8cb5-4517-8acc-2bd5780550d7	ALEJANDRA CHAVERRA	7723	12960	114.00	2026-02-12	114.00	\N	\N	\N	\N	2026-02-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.931175	2026-04-14 15:38:37.931175
+fd60e873-f535-48da-9dd3-3e4e59b32367	CLAUDIA ARISMENDI	7722	12906	60.00	2026-02-12	60.00	\N	\N	\N	\N	2026-02-17	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.93289	2026-04-14 15:38:37.93289
+6f142f61-a5a4-431a-b26f-1cf98b1de370	MARIU CUBILLON	7720	12893	150.00	2026-02-12	148.00	2.00	\N	\N	\N	2026-02-24	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.934663	2026-04-14 15:38:37.934663
+0f7a3262-e2e8-4195-9e6c-24d96c25764c	DIANA CORREA	7719	12926	90.00	2026-02-11	89.00	1.00	\N	\N	\N	2026-02-20	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.93647	2026-04-14 15:38:37.93647
+8c72ba11-5bbd-42bd-bd8e-1e2e627be46a	MARGARITA VASQUEZ	7718	12952	90.00	2026-02-11	90.00	\N	\N	\N	\N	2026-02-24	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.938212	2026-04-14 15:38:37.938212
+35038281-0972-40f5-877a-c54ff101f250	JOSEFINA PULGARIN	7717	12951	90.00	2026-02-11	90.00	\N	\N	\N	\N	2026-02-17	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.940225	2026-04-14 15:38:37.940225
+4166de5d-ae54-4866-9cc0-7b6f33cd65c0	ELVIA MUÑOZ	7716	12933	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-17	\N	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.942084	2026-04-14 15:38:37.942084
+d9f25e67-a47a-4cad-a63f-c5059d4533e4	CAMILO HOYOS	7715	12923	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.943928	2026-04-14 15:38:37.943928
+46f8d2aa-eceb-4e3c-9995-5cd9625de475	CAMILO HOYOS	7715	12892	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.945737	2026-04-14 15:38:37.945737
+1bb0f26a-051e-4f10-a6f5-31497aae0891	CAMILO HOYOS	7715	12921	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.94754	2026-04-14 15:38:37.94754
+e5e8b03c-7685-4802-832e-d04759ca18ae	HERNAN LONDOÑO	7714	12905	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.949371	2026-04-14 15:38:37.949371
+affd91b8-14be-48e6-bbcb-d4f69618b064	HERNAN LONDOÑO	7714	12892	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.951183	2026-04-14 15:38:37.951183
+fd8daebb-02b0-4970-a3e4-925addadfd0e	HERNAN LONDOÑO	7714	12922	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.953453	2026-04-14 15:38:37.953453
+f850a7f4-1e7d-4828-8aad-2c1ba884d956	HERNAN LONDOÑO	7714	12921	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.955252	2026-04-14 15:38:37.955252
+c02c8152-7ec7-4eb1-9d0f-eb9e5dbbf219	HERNAN LONDOÑO	7714	12923	60.00	2026-02-10	60.00	\N	\N	\N	\N	2026-02-12	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.95703	2026-04-14 15:38:37.95703
+3e77c256-b556-4632-abd2-02d4fd4d871b	MARIU CUBILLON	7711	12860	132.00	2026-02-09	128.00	3.00	\N	\N	1.00	2026-02-11	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.958901	2026-04-14 15:38:37.958901
+18523109-e0e9-41a4-b85f-b8862b3a669a	MARLENY RAMIREZ	7709	12943	252.00	2026-02-09	252.00	\N	\N	\N	\N	2026-02-25	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.960643	2026-04-14 15:38:37.960643
+c829fec1-2c29-4ce9-a576-d5769f63bc20	HOIBER TORO	7707	12871	150.00	2026-02-06	150.00	\N	\N	\N	\N	2026-02-16	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.962436	2026-04-14 15:38:37.962436
+c8599757-7105-430f-a961-7bea7bf6fedc	ALEJANDRA CHAVERRA	7733	12893	150.00	2026-02-14	150.00	\N	\N	\N	\N	2026-02-20	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.908352	2026-04-15 09:01:39.504953
+a67d5f96-685f-49ac-8672-a99e0a266f4e	MELVA GALLEGO	7706	12960	114.00	2026-02-06	110.00	4.00	\N	\N	\N	2026-02-19	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.966922	2026-04-14 15:38:37.966922
+c3deffc1-bc5d-4ec9-a243-20cfde284158	MELVA GALLEGO	7705	12959	114.00	2026-02-06	114.00	\N	\N	\N	\N	2026-02-19	\N	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.969431	2026-04-14 15:38:37.969431
+750fa5b0-1304-4916-85ad-43288a15d382	LIDA LONDOÑO	7704	12907	42.00	2026-02-06	42.00	\N	\N	\N	\N	2026-02-17	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.971112	2026-04-14 15:38:37.971112
+31357e9d-6285-40df-91bc-6335121c655a	LIDA LONDOÑO	7703	12870	60.00	2026-02-06	60.00	\N	\N	\N	\N	2026-02-17	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.973013	2026-04-14 15:38:37.973013
+10c525de-f193-4360-9374-427eaf0f28ae	CLAUDIA ARISMENDI	7702	12908	66.00	2026-02-06	66.00	\N	\N	\N	\N	2026-02-12	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.974858	2026-04-14 15:38:37.974858
+d158b3ab-02c5-45f4-9d23-e9f1a6b4efdd	ELVIA MUÑOZ	7701	12881	66.00	2026-02-06	66.00	\N	\N	\N	\N	2026-02-09	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.976712	2026-04-14 15:38:37.976712
+ad6487ce-c86f-474a-bc72-24a1f03e22c4	CAMILO HOYOS	7700	12926	90.00	2026-02-06	90.00	\N	\N	\N	\N	2026-02-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.978552	2026-04-14 15:38:37.978552
+1080e71f-dadf-4050-b762-73cabe1311f0	CAMILO HOYOS	7700	12951	90.00	2026-02-06	90.00	\N	\N	\N	\N	2026-02-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.980403	2026-04-14 15:38:37.980403
+3a416d15-348b-42a7-a557-cf523038485d	CAMILO HOYOS	7700	12952	90.00	2026-02-06	90.00	\N	\N	\N	\N	2026-02-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.9823	2026-04-14 15:38:37.9823
+f63b63af-e3fa-4a93-8335-b1396007f967	HERNAN LONDOÑO	7699	12926	90.00	2026-02-05	90.00	\N	\N	\N	\N	2026-02-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.984134	2026-04-14 15:38:37.984134
+7b0ca81f-78fa-4874-848b-81d9f25d6d46	HERNAN LONDOÑO	7699	12952	90.00	2026-02-05	90.00	\N	\N	\N	\N	2026-02-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.98599	2026-04-14 15:38:37.98599
+282a3e9b-f204-449d-b07c-151185cab7e0	HERNAN LONDOÑO	7699	12951	90.00	2026-02-05	90.00	\N	\N	\N	\N	2026-02-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.987849	2026-04-14 15:38:37.987849
+c15d5e6d-468b-4a01-b7c0-5f520a9703a1	HERNAN LONDOÑO	7699	12943	252.00	2026-02-05	252.00	\N	\N	\N	\N	2026-02-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.989716	2026-04-14 15:38:37.989716
+18b2b40c-7b4d-48ee-a512-bddf7b1669da	CAMILO HOYOS	7697	12950	90.00	2026-02-04	90.00	\N	\N	\N	\N	2026-03-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.991544	2026-04-14 15:38:37.991544
+dd454505-cf21-460d-9ea7-ce9f2f67e0d8	MILENA SALAZAR	7695	12864	99.00	2026-02-04	99.00	\N	\N	\N	\N	2026-02-14	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.993385	2026-04-14 15:38:37.993385
+794c5470-95de-4b35-b0e8-25e687f84d3a	CLARA HERRERA	7694	12894	317.00	2026-02-03	317.00	\N	\N	\N	\N	2026-02-06	2.00	2.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.995237	2026-04-14 15:38:37.995237
+06edd50e-704f-42ba-9847-bb3043640240	HERNAN LONDOÑO	7693	12959	114.00	2026-02-04	114.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.997051	2026-04-14 15:38:37.997051
+b0b78804-034b-4b8e-919c-d43101b64c9e	HERNAN LONDOÑO	7693	12960	114.00	2026-02-04	114.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.998855	2026-04-14 15:38:37.998855
+d93d0a25-e217-4db6-b06e-70b452ecb56d	HERNAN LONDOÑO	7693	12893	150.00	2026-02-04	150.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.000692	2026-04-14 15:38:38.000692
+ebe71e91-d751-42e0-b053-432d32494907	HERNAN LONDOÑO	7693	12950	90.00	2026-02-04	90.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.002505	2026-04-14 15:38:38.002505
+647f14e1-7952-4e46-bcb1-abd3880d9ab7	NANCY ARBOLEDA	7690	12924	90.00	2026-02-03	90.00	\N	\N	\N	\N	2026-02-11	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.004334	2026-04-14 15:38:38.004334
+e47432d1-65bd-4d70-bf4d-59d2f6103915	CAMILO HOYOS	7689	12933	60.00	2026-02-03	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.006183	2026-04-14 15:38:38.006183
+75e104ad-dbfd-474d-8553-6328c4541dd1	MICHEL CANO	7688	12919	150.00	2026-02-03	150.00	\N	\N	\N	\N	2026-02-11	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.00804	2026-04-14 15:38:38.00804
+2d4f8165-6879-4175-bf33-e436a196dca6	HERNAN LONDOÑO	7685	12933	60.00	2026-02-02	60.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.011768	2026-04-14 15:38:38.011768
+39fbda74-ef16-4c56-80e0-df834a096ee0	HERNAN LONDOÑO	7685	12908	66.00	2026-02-02	66.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.013621	2026-04-14 15:38:38.013621
+732b7017-5275-4715-8a86-7e9e6b435d29	HERNAN LONDOÑO	7685	12881	66.00	2026-02-02	66.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.016039	2026-04-14 15:38:38.016039
+98c80de3-50c2-48b2-b829-bf25c549b78b	HERNAN LONDOÑO	7685	12907	42.00	2026-02-02	42.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.017889	2026-04-14 15:38:38.017889
+e820b22f-155f-4892-9875-99462e36d1a2	HERNAN LONDOÑO	7685	12870	60.00	2026-02-02	60.00	\N	\N	\N	\N	2026-02-05	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.019712	2026-04-14 15:38:38.019712
+b63e4b27-f8e6-401a-a02b-08d5a5d53e75	LIDA LONDOÑO	7684	12876	150.00	2026-02-02	150.00	\N	\N	\N	\N	2026-02-06	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.021565	2026-04-14 15:38:38.021565
+dfc0a35f-8b12-4621-8ef1-030b4623f956	MARIU CUBILLON	7682	12897	198.00	2026-02-02	198.00	\N	\N	\N	\N	2026-02-09	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.025355	2026-04-14 15:38:38.025355
+07eed7dd-7c4a-49fb-af0c-901cee080bba	MELVA GALLEGO	7680	5000	131.00	2026-01-31	131.00	\N	\N	\N	\N	2026-02-07	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.027125	2026-04-14 15:38:38.027125
+f74b0834-da22-4c60-8315-b13341784873	MARGARITA VASQUEZ	7679	12913	90.00	2026-01-30	90.00	\N	\N	\N	\N	2026-02-05	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.029022	2026-04-14 15:38:38.029022
+b7110a9f-beb7-4355-a28a-7d3b692835cf	ELVIA MUÑOZ	7678	12877	150.00	2026-01-30	149.00	\N	\N	\N	1.00	2026-02-05	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.030885	2026-04-14 15:38:38.030885
+ddd64f8e-e041-4241-8811-d103b14bc844	DIANA CORREA	7677	CAMISETA DAMA	10.00	2026-01-29	10.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.032744	2026-04-14 15:38:38.032744
+c8532661-d091-4b76-8a9e-4242e71744e4	HERNAN LONDOÑO	7674	12888	150.00	2026-01-29	150.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.040149	2026-04-14 15:38:38.040149
+a74be373-4fb9-4717-b7da-309727365a42	HERNAN LONDOÑO	7674	12864	99.00	2026-01-29	99.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.041955	2026-04-14 15:38:38.041955
+6f63f534-9870-4e4a-bade-7230726e00a1	HERNAN LONDOÑO	7674	12897	198.00	2026-01-29	198.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.043792	2026-04-14 15:38:38.043792
+b78c7bcb-92b7-46c1-8513-2ac38b05aee7	HERNAN LONDOÑO	7674	12924	90.00	2026-01-29	90.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.046159	2026-04-14 15:38:38.046159
+dab64041-27c1-4949-b7e8-81b4d7e5d69c	HERNAN LONDOÑO	7674	12860	132.00	2026-01-29	132.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.047938	2026-04-14 15:38:38.047938
+e1cae3d7-6a66-447b-9608-731d4244a2cf	VIVIANA OLAYA	7673	12945	264.00	2026-01-30	264.00	\N	\N	\N	\N	2026-02-11	2.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.049753	2026-04-14 15:38:38.049753
+13aec962-68b8-4b17-8a41-75fc243bc0ca	HERNAN LONDOÑO	7672	12871	150.00	2026-01-27	150.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.051619	2026-04-14 15:38:38.051619
+721bbf0e-2ef1-4aa3-8fe9-f73e03cc88c6	HERNAN LONDOÑO	7672	12945	264.00	2026-01-27	264.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.053541	2026-04-14 15:38:38.053541
+d6d6014a-f13d-45f0-afe1-0a922571f56a	GLOBO CREATIVO	7671	MAYATEX	3.00	2026-01-27	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.055309	2026-04-14 15:38:38.055309
+2432ef7d-83ab-4f09-9e17-ae5cab0a752b	CAMILO HOYOS	7669	CAMISETA HOMBRE	107.00	2026-01-27	107.00	\N	\N	\N	\N	2026-02-03	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.056905	2026-04-14 15:38:38.056905
+4e6cc81f-5dd9-423f-a55d-efd6f8bc1ba1	CAMILO HOYOS	7669	12864	99.00	2026-01-27	99.00	\N	\N	\N	\N	2026-02-03	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.058601	2026-04-14 15:38:38.058601
+dd966d9b-44fa-4e2d-a428-eee186fc8b78	CAMILO HOYOS	7669	12860	132.00	2026-01-27	132.00	\N	\N	\N	\N	2026-02-03	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.060357	2026-04-14 15:38:38.060357
+d79d36c5-5169-4215-a60b-6c85d2872fc3	ALBA ARCILA	7668	12911	171.00	2026-01-27	171.00	\N	\N	\N	\N	2026-02-11	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.062617	2026-04-14 15:38:38.062617
+e33199f3-4f68-4291-9ea3-0f9bd0d1e823	JOSEFINA PULGARIN	7683	12888	150.00	2026-02-02	149.00	\N	1.00	\N	\N	2026-02-05	1.00	1.00	0.00	0.00	\N	{}	{"vta": "RM-7673"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.023431	2026-04-14 15:41:40.555569
+ce0c2488-4053-44c5-a5e5-f9d153e3ca1d	DIANA CORREA	7676	12909	198.00	2026-01-26	197.00	\N	1.00	\N	\N	2026-02-02	1.00	1.00	\N	0.00	\N	{}	{"vta": "RM-7672"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.034567	2026-04-14 15:41:40.557188
+34c653a3-58f8-43ce-a472-d833e082766f	MELVA GALLEGO	7675	5002	242.00	2026-01-29	242.00	\N	\N	\N	\N	2026-02-07	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.036446	2026-04-15 09:00:22.23043
+0d55bf43-e57d-44b9-86f5-8ab9f0aedf23	MELVA GALLEGO	7675	5002	332.00	2026-01-29	326.00	\N	6.00	\N	\N	2026-02-07	1.00	1.00	\N	\N	\N	{}	{"vta": "RM-7760"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.038285	2026-04-15 09:00:09.177148
+ae60da87-b23d-4a3e-b29a-8c26e7dce956	MARLENY RAMIREZ	7667	12911	171.00	2026-01-27	171.00	\N	\N	\N	\N	2026-02-09	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.064418	2026-04-14 15:38:38.064418
+c27467e8-4bb6-43b8-acb9-e7eeada9bf88	RAMON CANO	7666	12924	24.00	2026-01-27	24.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.066057	2026-04-14 15:38:38.066057
+4949a462-51ae-4491-a0e3-102bcb03d158	RAMON CANO	7666	12877	39.00	2026-01-27	39.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.084068	2026-04-14 15:38:38.084068
+6c572813-47e5-484c-abfd-0bbf210d6f11	ALEJANDRA CHAVERRA	7665	12888	150.00	2026-01-27	150.00	\N	\N	\N	\N	2026-01-28	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.085941	2026-04-14 15:38:38.085941
+887edfba-6d2e-4d7e-972a-e0fb5019a409	CAMILO HOYOS	7664	12871	150.00	2026-01-26	150.00	\N	\N	\N	\N	2026-02-13	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.087689	2026-04-14 15:38:38.087689
+8787b22a-977e-48af-98c5-2087db25b268	CAMILO HOYOS	7664	12876	150.00	2026-01-26	150.00	\N	\N	\N	\N	2026-02-03	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.089393	2026-04-14 15:38:38.089393
+3ca9420f-c416-4eea-ba84-1110d847394b	NANCY ARBOLEDA	7663	12955	48.00	2026-01-26	48.00	\N	\N	\N	\N	2026-02-03	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.09106	2026-04-14 15:38:38.09106
+4118b4f7-d608-475d-b534-76eb5c53bdde	HERNAN LONDOÑO	7662	12919	150.00	2026-01-26	150.00	\N	\N	\N	\N	2026-02-02	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.092783	2026-04-14 15:38:38.092783
+331113cb-9ada-49e2-85a2-873befb0cdb4	HERNAN LONDOÑO	7662	12909	198.00	2026-01-26	198.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.094514	2026-04-14 15:38:38.094514
+355ca637-4090-461a-b9c2-19f94c3ad9c5	HERNAN LONDOÑO	7662	12877	150.00	2026-01-26	150.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.096269	2026-04-14 15:38:38.096269
+5f7efadd-fa38-4c7d-aa38-3776ef12d907	HERNAN LONDOÑO	7662	12913	90.00	2026-01-26	90.00	\N	\N	\N	\N	2026-01-29	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.097965	2026-04-14 15:38:38.097965
+c915966c-5f5e-4b85-81ca-3bd96b6d39e8	ALEJANDRA CHAVERRA	7659	12913	90.00	2026-01-23	90.00	\N	\N	\N	\N	2026-01-25	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.099765	2026-04-14 15:38:38.099765
+919c515c-9609-4c6d-9a18-fbd1e7b4f53c	ELVIA MUÑOZ	7658	12877	120.00	2026-01-22	120.00	\N	\N	\N	\N	2026-01-28	0.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.101445	2026-04-14 15:38:38.101445
+8fd479ed-aaa9-41bc-8cea-62dcc89f5e7a	HOIBER TORO	7657	12871	84.00	2026-01-21	84.00	\N	\N	\N	\N	2026-01-28	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.103714	2026-04-14 15:38:38.103714
+d3e73d4e-168b-43fe-b4c2-03a9b0ae4624	ERICA GIL	7656	5001	135.00	2026-01-21	135.00	\N	\N	\N	\N	2026-01-31	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.105493	2026-04-14 15:38:38.105493
+cd2b7a2a-f05e-444c-bb4e-3c21bd2a53b8	JOSEFINA PULGARIN	7655	12890	105.00	2026-01-21	105.00	\N	\N	\N	0.00	2026-01-27	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.109016	2026-04-14 15:38:38.109016
+0efbdec0-29b2-446d-a904-a1da4b561d84	JOSEFINA PULGARIN	7655	12896	60.00	2026-01-21	58.00	\N	\N	\N	2.00	2026-01-30	\N	\N	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.110736	2026-04-14 15:38:38.110736
+9ab35707-b5b0-45ee-9620-66882cabd7c6	HERNAN LONDOÑO	7654	12911	342.00	2026-01-20	342.00	\N	\N	\N	\N	2026-01-26	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.11246	2026-04-14 15:38:38.11246
+81cccc60-6cb5-40e9-9ae4-585179ea3d2b	GLOBO CREATIVO	7653	PIEL DURAZNO	2.00	2026-01-19	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.114078	2026-04-14 15:38:38.114078
+9e44eb85-c0a9-4b9a-a5e8-57367f6e8f05	MARIA VICTORIA JARAMILLO	7652	DOTACIÓN	38.00	2026-01-19	38.00	\N	\N	\N	\N	2026-01-21	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.115801	2026-04-14 15:38:38.115801
+78408f7f-f87b-488e-b20f-21ed8a18046a	MARIU CUBILLON	7651	12901	147.00	2026-01-16	147.00	\N	\N	\N	\N	2026-01-26	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.118057	2026-04-14 15:38:38.118057
+188b5f53-116e-4e4c-937d-cdd9314f91b0	GLOBO CREATIVO	7650	LINO LIMPO	40.00	2026-01-16	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.119669	2026-04-14 15:38:38.119669
+45559eb3-3305-4075-bebd-fc2c7e58f3ab	MARIA TERESA QUICENO	7648	12891	120.00	2026-01-15	120.00	\N	\N	\N	\N	2026-01-26	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.121195	2026-04-14 15:38:38.121195
+999b33a5-1d3b-4050-9879-0807a9ad7733	LIDA LONDOÑO	7647	12894	318.00	2026-01-15	318.00	\N	\N	\N	0.00	2026-01-29	2.00	2.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.12288	2026-04-14 15:38:38.12288
+f4ac04a3-3bfd-468f-b3cc-a24c5ceb7183	GLOBO CREATIVO	7646	MAYATEX	6.00	2026-01-14	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.124568	2026-04-14 15:38:38.124568
+8470eee1-20c2-4782-a810-4f2996ffd334	RAMON CANO	7645	12877	30.00	2026-01-13	30.00	\N	\N	\N	\N	2026-01-20	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.126233	2026-04-14 15:38:38.126233
+5af470ac-4b8a-48b0-834a-62977bd6fdcd	CLARA HERRERA	7644	12754	120.00	2026-01-13	120.00	\N	\N	\N	\N	2026-01-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.127926	2026-04-14 15:38:38.127926
+ce997535-f141-416c-8054-0da82e008682	JOSEFINA PULGARIN	7643	12497	173.00	2026-01-09	173.00	\N	\N	\N	0.00	2026-01-16	0.00	0.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.12963	2026-04-14 15:38:38.12963
+8bd979dc-14b7-4577-b58a-b2d23ffede82	MARGARITA VASQUEZ	7642	12782	120.00	2026-01-08	120.00	\N	\N	\N	\N	2026-01-16	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.131357	2026-04-14 15:38:38.131357
+4ea946c5-1ed7-4447-b247-ae2abe17d480	VIVIANA OLAYA	7641	12882	120.00	2026-01-07	120.00	\N	\N	\N	\N	2026-01-14	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.133022	2026-04-14 15:38:38.133022
+f24f454d-0157-47dd-933e-0ae7ab7ea0ce	MILENA SALAZAR	7640	12771	120.00	2026-01-07	120.00	\N	\N	\N	\N	2026-01-13	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.135255	2026-04-14 15:38:38.135255
+c2f026b4-c126-4a85-afd8-24896d5e0710	NANCY ARBOLEDA	7639	12783	120.00	2026-01-07	120.00	\N	\N	\N	\N	2026-01-15	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.136983	2026-04-14 15:38:38.136983
+f74863cf-34c2-4903-97be-2f074ec75333	MELVA GALLEGO	7638	12885	117.00	2026-01-07	117.00	\N	\N	\N	\N	2026-01-19	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.138734	2026-04-14 15:38:38.138734
+932003b6-63a9-428c-aa11-03cfd7e9ef26	MELVA GALLEGO	7637	12889	117.00	2026-01-07	117.00	\N	\N	\N	\N	2026-01-19	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.140384	2026-04-14 15:38:38.140384
+b325a192-a194-4cd9-996a-79569e99c2ea	MARLENY RAMIREZ	7633	12880	120.00	2026-01-06	120.00	\N	\N	\N	\N	2026-01-16	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.145616	2026-04-14 15:38:38.145616
+9e14be18-84eb-4bb2-b4e7-201e65737eca	LIDA LONDOÑO	7628	12754	120.00	2026-01-05	120.00	\N	\N	\N	\N	2026-01-10	1.00	1.00	0.00	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.147339	2026-04-14 15:38:38.147339
+2fcf3cce-963a-48b5-8c5e-e173f0a4e86d	HERNAN LONDOÑO	7625	12862	147.00	2025-12-29	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.149581	2026-04-14 15:38:38.149581
+35acba5a-86aa-43dc-82fe-27f5f5d1d3cf	ELVIA MUÑOZ	7624	12876	120.00	2025-12-29	120.00	\N	\N	\N	\N	2026-01-05	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.151153	2026-04-14 15:38:38.151153
+046c0046-5711-478c-9e2a-72d69bb5576d	HERNAN LONDOÑO	7623	12771	120.00	2025-12-29	120.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.152727	2026-04-14 15:38:38.152727
+23f6f8b1-3879-4dc7-abcb-309e27dbcad1	HERNAN LONDOÑO	7623	12877	120.00	2025-12-29	120.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.154275	2026-04-14 15:38:38.154275
+02165b27-35ef-40fd-bb98-c38a5c64d6e7	HERNAN LONDOÑO	7623	12782	120.00	2025-12-29	120.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.155873	2026-04-14 15:38:38.155873
+c24d9067-538c-4ae5-bd97-290e809e25e8	HERNAN LONDOÑO	7623	12885	117.00	2025-12-29	117.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.157453	2026-04-14 15:38:38.157453
+08cb79f9-fb62-4b93-a61b-cf30a3947711	HERNAN LONDOÑO	7623	12783	120.00	2025-12-29	120.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.159053	2026-04-14 15:38:38.159053
+c064a060-f22f-455c-a08d-704fd578f00b	HERNAN LONDOÑO	7623	12889	117.00	2025-12-29	117.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.16069	2026-04-14 15:38:38.16069
+d3fedb23-7ccf-4108-988e-afd0ee654211	MARIU CUBILLON	7620	12872	84.00	2025-12-29	80.00	4.00	\N	\N	\N	2026-01-05	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.162633	2026-04-14 15:38:38.162633
+657d6855-9264-4623-8d9a-1999260c5c0f	DIANA CORREA	7619	12884	120.00	2025-12-24	120.00	\N	\N	\N	\N	2026-01-10	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.164245	2026-04-14 15:38:38.164245
+a08366af-ae99-4567-9c38-0ec2d1de0bf8	CAMILO HOYOS	7617	12782	120.00	2025-12-23	120.00	\N	\N	\N	\N	2026-04-09	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.165826	2026-04-14 15:38:38.165826
+8e1c9f04-94f4-44ef-8e2a-c4ffde9b9e08	ERICA GIL	7611	12873	84.00	2025-12-22	84.00	\N	\N	\N	\N	2026-01-06	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.167459	2026-04-14 15:38:38.167459
+693cff16-3db3-4557-9689-b1732ac2a07b	YACKELINE ARDILA	7606	12846	201.00	2025-12-20	201.00	\N	\N	\N	\N	2026-01-05	1.00	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.169043	2026-04-14 15:38:38.169043
+044a57b9-7bf6-44f8-8e0a-166854192208	MARIU CUBILLON	7605	12883	120.00	2025-12-20	120.00	\N	\N	\N	\N	2025-12-29	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.170663	2026-04-14 15:38:38.170663
+fd859ded-56b2-4892-beaf-450e0d78d569	PEDRO LLANEZ	7635	12486	143.00	2026-01-06	142.00	\N	\N	1.00	0.00	2026-01-19	2.00	1.00	0.00	0.00	\N	{}	{"cobrado": "RM-7606"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.143844	2026-04-14 16:04:16.967111
+d2e5d915-9c00-461c-bbf5-c5b5dfe6aaa5	CAMILO HOYOS	7590	12871	84.00	2025-12-15	84.00	\N	\N	\N	\N	2026-02-03	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.172269	2026-04-14 15:38:38.172269
+9602231e-17de-4010-8e0f-f20b3ec96153	MICHEL CANO	7579	12777	209.00	2025-12-12	209.00	\N	\N	\N	\N	2026-01-05	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.175521	2026-04-14 15:38:38.175521
+dc9dd0ba-d74e-49f0-af2a-37efec2f377c	GLOBO CREATIVO	7548	MOMA	5.50	2025-12-06	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.177137	2026-04-14 15:38:38.177137
+94b9ffa9-9ca3-442b-a026-34cb673343c7	HERNAN LONDOÑO	7491	12862	147.00	2025-11-21	147.00	\N	\N	\N	\N	2026-01-06	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.178715	2026-04-14 15:38:38.178715
+1ec89e6a-5dc0-44a2-874f-77f8751cbe2f	GLOBO CREATIVO	7481	AMELIA	180.25	2025-11-20	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.180424	2026-04-14 15:38:38.180424
+b1c522db-f70a-4eda-b9f8-fe5c5f6332bc	GLOBO CREATIVO	7481	LINPO	441.85	2025-11-20	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.181941	2026-04-14 15:38:38.181941
+d9032c26-2d1d-4c10-bc92-0eda3d79958c	GLOBO CREATIVO	7480	BENGALINA	210.00	2025-11-19	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.183647	2026-04-14 15:38:38.183647
+5ea8463c-fc22-4d62-982c-b186796f9443	GLOBO CREATIVO	7480	JABON	43.58	2025-11-19	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:38.185203	2026-04-14 15:38:38.185203
+ef2b4b9a-8946-470b-bcaa-a27cee306315	MILENA SALAZAR	7865	13121	81.00	2026-03-24	80.00	\N	1.00	\N	\N	2026-03-31	1.00	1.00	\N	0.00	\N	{}	{"vta": "RM-7784"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.607699	2026-04-14 15:41:40.501063
+9c437092-859a-4733-866f-8cf5c206b959	ALBA ARCILA	7773	13010	120.00	2026-03-03	118.00	\N	1.00	\N	1.00	2026-03-18	1.00	1.00	\N	0.00	\N	{}	{"vta": "RM-7781"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.820176	2026-04-14 15:41:40.548817
+bbbfd37a-5422-4225-b309-1f8b2f465751	MILENA SALAZAR	7734	12920	225.00	2026-02-14	224.00	\N	1.00	\N	\N	2026-03-06	1.00	1.00	1.00	1.00	\N	{}	{"vta": "RM-7725"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.906493	2026-04-14 15:41:40.552153
+833ad2db-5185-4128-b2cf-2529ba6c5c59	DIANA CORREA	7686	CAMISETA HOMBRE	107.00	2026-02-03	103.00	\N	4.00	\N	0.00	2026-02-07	2.00	1.00	0.00	0.00	\N	{}	{"vta": "RM-7674"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.009915	2026-04-14 15:41:40.553848
+c496bb12-df33-4fc9-a1f1-dc895e0ec52d	MICHEL CANO	7636	12862	145.00	2026-01-07	143.00	\N	2.00	\N	\N	2026-01-20	1.00	1.00	0.00	0.00	\N	{}	{"vta": "RM-7605"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.142101	2026-04-14 15:41:40.560369
+d1917ab6-a2b2-4a8c-91dd-12e32cdf4301	ALBA ARCILA	7584	12888	129.00	2025-12-16	127.00	\N	\N	2.00	\N	2026-01-06	1.00	1.00	1.00	0.00	\N	{}	{"cobrado": "RM-7604"}	mm9a66x3tqtxja160	2026-04-14 15:38:38.173946	2026-04-14 15:41:40.563932
+e47da4b1-910d-4aad-8f07-6602d660ee14	ELVIA MUÑOZ	7831	12877	198.00	2026-03-16	198.00	\N	\N	\N	\N	2026-03-26	1.00	1.00	\N	0.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.694794	2026-04-14 16:03:57.107571
+14b4c0fc-9487-4283-a265-4e7a7a997a22	HERNAN LONDOÑO	7916	13091	201.00	2026-04-10	201.00	\N	\N	\N	\N	2026-04-14	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.486158	2026-04-14 16:37:35.150309
+17632ac2-6237-41b5-b747-32840fa1f656	CLAUDIA ARISMENDI	7903	13079	192.00	2026-04-07	192.00	\N	\N	\N	\N	2026-04-11	1.00	1.00	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.524019	2026-04-14 16:41:44.228789
+f7df3e19-7309-4f8a-9b35-bbb6df0b53a4	MARLENY RAMIREZ	7845	13100	180.00	2026-03-18	170.00	8.00	2.00	\N	\N	2026-04-01	1.00	\N	\N	\N	\N	{}	{"vta": "RM-7845"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.660734	2026-04-15 08:04:58.665457
+56942c94-617d-4335-8f5f-b7dfc1398cee				\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:01:49.992868	2026-04-17 14:01:49.992868
+b4d8c280-bd8c-4c97-9679-77f71f1ef816				\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.141425	2026-04-17 14:14:16.141425
+7a06f440-e9c5-461b-8fa9-c95711db36a8	HERNAN LONDOÑO	7948	13078	150.00	2026-04-15	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.565828	2026-04-17 14:24:19.565828
+bcfa92e4-9bea-4427-bb95-76cb3de12a11	CAMILO HOYOS	7938	13119	120.00	2026-04-13	120.00	\N	\N	\N	\N	2026-04-16	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.162781	2026-04-20 07:13:23.333925
+125e7fde-1f3a-406d-9155-bd1f75d0c9aa	CLARA HERRERA	7958	13097	138.00	2026-04-17	138.00	\N	\N	\N	\N	2026-04-17	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.248936	2026-04-20 07:35:39.495873
+b4b14d4a-4195-4cdb-85ef-99ca1770dbb3	CLARA HERRERA	7937	12972	135.00	2026-04-13	135.00	\N	\N	\N	\N	2026-04-14	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.164646	2026-04-20 07:37:12.470785
+98983606-13ad-4a4e-af37-27810ef139e9	DIANA CORREA	7932	12895	171.00	2026-04-11	171.00	\N	\N	\N	\N	2026-04-20	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:01:50.059474	2026-04-20 11:39:00.069026
+defc668e-74eb-45c4-b310-aca6d12eff6f	HERNAN LONDOÑO	7956	13100	192.00	2026-04-17	192.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.252895	2026-04-21 08:20:04.38439
+5c845fc4-2f5b-45ae-b95f-5e257b5f4055	HERNAN LONDOÑO	7948	13128	150.00	2026-04-15	150.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.560364	2026-04-21 08:20:04.490224
+ea206565-3248-4f69-afb2-34b987b940af	HERNAN LONDOÑO	7948	13129	150.00	2026-04-15	150.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.562071	2026-04-21 08:20:04.492272
+38bb39c2-de1d-49f6-9131-e96793560f8b	HERNAN LONDOÑO	7939	13078	150.00	2026-04-14	150.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.146978	2026-04-21 08:20:04.503922
+56c6cc19-f5ef-41fa-85e8-14c7733a1758	HERNAN LONDOÑO	7939	13013	252.00	2026-04-14	252.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.149071	2026-04-21 08:20:04.50621
+b13172be-a136-4469-adcd-99a9ebc4a4a3	HERNAN LONDOÑO	7939	13118	120.00	2026-04-14	120.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.150989	2026-04-21 08:20:04.508164
+d3e7bbac-1aa3-48a1-a16b-3a231f2bc5e9	HERNAN LONDOÑO	7939	13122	150.00	2026-04-14	150.00	\N	\N	\N	\N	2026-04-18	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.152855	2026-04-21 08:20:04.510035
+e65d15eb-0f16-4dc9-b675-527b2ae55183	CAROLINA GALLEGO	7934	12881	186.00	2026-04-11	186.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.16837	2026-04-22 14:14:30.288976
+2ea35fca-7d46-4728-9eb5-0351389f4eab	ELVIA MUÑOZ	7941	12877	201.00	2026-04-14	201.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.575872	2026-04-22 14:16:20.601081
+b57e5cc5-3d68-4467-bd48-30f385f3c15d	MARIA TERESA QUICENO	7955	13121	150.00	2026-04-17	150.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.254795	2026-04-22 14:17:59.612345
+27c56576-8586-4f9f-8686-5dd9b7c6fe46	MICHEL CANO	7945	13091	201.00	2026-04-15	201.00	\N	\N	\N	\N	2026-04-21	\N	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.570321	2026-04-22 14:19:33.882642
+1f90b4fe-c3ab-4ea6-9190-786a58683f84	DIANA CORREA	7961	13048	99.00	2026-04-18	99.00	\N	\N	\N	\N	2026-04-28	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.1057	2026-04-28 12:00:36.663063
+61b8022e-ccfc-4e3d-9ec8-ce77d4af74cc	MARIU CUBILLON	7951	13047	120.00	2026-04-16	120.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.26051	2026-04-23 11:13:42.881344
+a8b2e7b6-1b67-4f1d-b111-8cec5dfd7906	MILENA SALAZAR	7946	12965	75.00	2026-04-15	75.00	\N	\N	\N	\N	2026-04-23	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.567655	2026-04-23 11:07:55.9698
+13f05ce2-f6de-470f-a86a-91cc94cf5817	LIDA LONDOÑO	7931	12744	246.00	2026-04-11	245.00	\N	\N	\N	1.00	2026-04-23	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:01:50.061688	2026-04-23 13:08:14.947968
+3420b1c6-cd87-453d-af53-cb3868a05641	JAKELINE ARDILA	7933	13079	383.00	2026-04-11	383.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	\N	\N	{}	{"entrega": "PRIMERA ENTREGA DE 192 17/04"}	mmze56k4iwquqhbul	2026-04-17 14:14:16.170279	2026-04-23 13:10:23.404594
+bffc1b1c-07d0-424f-afbb-b0f8b3054d9d	MERY ALZATE	7935	13097	144.00	2026-04-11	144.00	\N	\N	\N	\N	2026-04-23	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.1665	2026-04-24 08:17:29.999591
+331d0ad4-27b6-4af1-8731-90bb1a0ffce9	ALEJANDRA CHAVERRA	7950	13129	150.00	2026-04-16	149.00	1.00	\N	\N	\N	2026-04-23	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:25:19.413074	2026-04-24 10:43:38.561413
+3ba86836-caf6-46a0-898d-e88e16aef95c	JOSEFINA PULGARIN	7944	13013	252.00	2026-04-14	251.00	\N	1.00	\N	\N	2026-04-28	1.00	3.00	1.00	1.00	\N	{}	{"vta": "RM-7961"}	mmze56k4iwquqhbul	2026-04-17 14:24:19.572152	2026-04-28 12:53:45.295044
+2b0ff8ca-3d5a-4129-a3dd-fd8b7f30bc30	HERNAN LONDOÑO	7948	13094	300.00	2026-04-15	300.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.563981	2026-04-29 11:00:29.77634
+294ef65f-23ca-495f-bf38-c85ae4e71d38	HERNAN LONDOÑO	7939	13094	300.00	2026-04-14	300.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.15516	2026-04-29 11:00:50.37666
+82d4ca4e-7877-4d37-88c9-14f7c784cc12	MELVA GALLEGO	7943	13042	144.00	2026-04-14	144.00	\N	\N	\N	\N	2026-04-30	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.574007	2026-04-30 13:08:59.586962
+40a2184c-9f8c-4440-8483-1fdc63fcf029	CLARA HERRERA	7957	13003	144.00	2026-04-17	144.00	\N	\N	\N	\N	2026-04-30	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.251041	2026-05-04 08:55:50.799262
+c30e502b-80e9-4f43-9eff-3c319a3686eb	CAMILO HOYOS	7938	13122	150.00	2026-04-13	150.00	\N	\N	\N	\N	2026-05-04	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.160861	2026-05-05 15:50:50.209253
+ca98d48d-6f62-47ea-a7c7-41203e2c6968	CAMILO HOYOS	7938	13118	120.00	2026-04-13	120.00	\N	\N	\N	\N	2026-04-16	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.159046	2026-04-20 07:13:23.114104
+50fcb710-2047-48c8-8b73-5060ab2e9da3	CAMILO HOYOS	7918	13117	150.00	2026-04-10	150.00	\N	\N	\N	\N	2026-04-17	\N	\N	\N	\N	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.48088	2026-04-20 07:18:01.728126
+54fc5813-1555-435b-b4cf-5c77a17a204a	CAMILO HOYOS	7938	13078	150.00	2026-04-13	150.00	\N	\N	\N	\N	2026-04-17	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:14:16.157218	2026-04-20 10:51:27.096724
+59c2d816-553d-4931-b979-abaef3b1edfd	MARGARITA VASQUEZ	7947	13112	87.00	2026-04-13	87.00	\N	\N	\N	\N	2026-04-20	\N	\N	1.00	1.00	\N	{}	{}	mm3x7j6m4p6s4g2zz	2026-04-20 13:51:39.653614	2026-04-20 13:51:39.653614
+07fe0e34-034e-4aa9-84b7-7e57e02ae83c	ALEJANDRA CHAVERRA	7929	13036	117.00	2026-04-10	117.00	\N	\N	\N	\N	2026-04-20	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:01:50.065844	2026-04-21 08:21:34.487142
+2cc90d40-85a0-4d67-acbd-02c32a82e3af	ALEJANDRA CHAVERRA	7929	13028	120.00	2026-04-10	120.00	\N	\N	\N	\N	2026-04-20	\N	\N	\N	\N	\N	{}	{}	mm3x7j6m4p6s4g2zz	2026-04-21 08:24:49.292572	2026-04-21 08:25:21.952184
+174665b6-3602-4aa1-ab00-99b45e0b3977	CARMEN USUGA	7915	12975	90.00	2026-04-08	89.00	\N	1.00	\N	\N	2026-04-20	1.00	\N	1.00	\N	\N	{}	{"vta": "RM-7901"}	mm9a66x3tqtxja160	2026-04-14 15:38:37.494809	2026-04-21 10:49:03.459778
+794fd4fd-dd4a-49c2-ab0e-de9090135bdc	MILENA MUÑOZ	7966	13112	75.00	2026-04-20	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.173054	2026-04-22 08:16:17.173054
+daec406e-7ccd-42e9-bf1e-9e29c075cc2d	MERY ALZATE	7980	12990	14.00	2026-04-22	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-23 10:30:21.701166	2026-04-23 10:30:21.701166
+b8b40654-25fa-4548-bdf8-0aed8240aa16	CLAUDIA ARISMENDI	7940	13065	99.00	2026-04-14	99.00	\N	\N	\N	\N	2026-04-23	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-17 14:24:19.577828	2026-04-23 11:04:30.589237
+24673920-4cb7-4f11-88d8-822d45f3b2a3	VIVIANA OLAYA	7952	12986	90.00	2026-04-16	90.00	\N	\N	\N	\N	2026-04-22	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-18 10:14:38.258534	2026-04-23 11:08:07.109946
+37636b11-9e6a-43bd-b33b-5a48690145ad	EBETH BELEÑO	7981	13120	114.00	2026-04-23	\N	\N	\N	\N	\N	\N	2.00	\N	1.00	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:44:38.629539	2026-04-24 08:44:38.629539
+ecfe6076-8c7e-400c-9e8a-1a3a7ed82363	MERY ALZATE	7983	13120	186.00	2026-04-23	\N	\N	\N	\N	\N	\N	2.00	\N	1.00	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:47:03.859026	2026-04-24 08:47:03.859026
+0c45ff59-769b-4511-a4e3-82de55efc5b0	PEDRO LLANEZ	7963	13118	120.00	2026-04-20	120.00	\N	\N	\N	\N	2026-04-25	1.00	1.00	\N	0.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.17828	2026-04-27 09:28:05.119109
+1f2a6b5b-4b78-4b05-b4a4-0a2b5b060243	NANCY ARBOLEDA	7911	13036	117.00	2026-04-08	116.00	1.00	\N	\N	\N	2026-04-25	1.00	1.00	1.00	1.00	\N	{}	{}	mm9a66x3tqtxja160	2026-04-14 15:38:37.500457	2026-04-27 09:29:00.629706
+c0b752ab-3d50-4944-9e7d-d2f7ed8ee598	JENIFER LOAIZA	7954	13117	0.00	2026-04-17	\N	\N	\N	\N	\N	\N	2.00	\N	1.00	\N	\N	{"salida": "yellow"}	{"salida": "LOTE RETIRADO Y REASIGANDO A CARMEN USUGA RM 7971"}	mmze56k4iwquqhbul	2026-04-18 10:14:38.256652	2026-05-05 15:20:36.73148
+4ea69109-ab70-4e3d-9185-6c5194ae1a48	ELIANA ZAPATA	7989	13129	150.00	2026-04-24	149.00	1.00	\N	\N	\N	2026-04-27	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-27 09:33:55.552821	2026-04-27 12:13:00.082337
+34c2627e-5a99-4e88-b598-42fb6bcb84de	CLARA HERRERA	7987	13097	144.00	2026-04-24	144.00	\N	\N	\N	\N	2026-04-27	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:50:20.00151	2026-04-28 11:57:04.6795
+186e8f79-cea9-4490-aa0f-2b50cdd8dbe1	HERNAN LONDOÑO	7984	13148	120.00	2026-04-23	120.00	\N	\N	\N	\N	2026-04-27	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:47:03.854428	2026-04-28 11:57:04.701293
+74f55e52-0ca0-4ce8-b0a3-0800c4e45c80	HERNAN LONDOÑO	7984	13137	120.00	2026-04-23	120.00	\N	\N	\N	\N	2026-04-27	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:47:03.857033	2026-04-28 11:57:04.703195
+54d414c1-a81d-4416-b018-cb59ea9d98d2	HERNAN LONDOÑO	7974	13113	120.00	2026-04-21	120.00	\N	\N	\N	\N	2026-04-27	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.161017	2026-04-28 11:57:35.971302
+39971ce2-56a2-44d5-b591-ed0413d397cb	MELVA GALLEGO	7964	13094	300.00	2026-04-20	300.00	\N	\N	\N	\N	2026-04-28	1.00	2.00	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.176223	2026-04-28 12:06:04.991088
+337dba9a-90cf-4f3a-a735-be8a1e5b4f30	ELVIA MUÑOZ	7967	12987	108.00	2026-04-21	108.00	\N	\N	\N	\N	2026-04-28	1.00	1.00	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.1712	2026-04-28 12:11:23.377771
+0c6dd782-3c45-4302-86af-0f877b1b7c76	VIVIANA OLAYA	8001	13137	120.00	2026-04-28	\N	\N	\N	\N	\N	\N	2.00	\N	1.00	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:20:15.119599	2026-04-28 12:20:15.119599
+b8ce3710-5342-435f-9598-ca4a940c3f1e	DIANA CORREA	7999	13254	123.00	2026-04-28	\N	\N	\N	\N	\N	\N	2.00	\N	1.00	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:20:15.123382	2026-04-28 12:20:15.123382
+ab89cae7-887f-4511-9ceb-60420f091898	ERICA GIL	7965	13119	120.00	2026-04-20	119.00	\N	1.00	\N	\N	2026-04-26	1.00	1.00	1.00	1.00	\N	{}	{"vta": "RM-7960"}	mmze56k4iwquqhbul	2026-04-22 08:16:17.174687	2026-04-28 12:50:26.686461
+ea79a752-fe9d-4b86-a443-387bbdcb988a	MARIA TERESA QUICENO	7970	13078	150.00	2026-04-21	150.00	\N	\N	\N	\N	2026-04-28	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.16805	2026-04-29 07:28:16.070904
+df014ce5-28bf-4762-86e3-4b8fd0bda543	RETEX	7982	13137	120.00	2026-04-23	120.00	\N	\N	\N	\N	2026-04-28	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:44:38.581862	2026-04-29 07:30:10.62557
+9d29a18c-e28a-4c7d-8c9d-e415b34ac041	VIVIANA OLAYA	7978	13128	150.00	2026-04-22	150.00	\N	\N	\N	\N	2026-04-29	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-23 10:30:21.812759	2026-04-29 09:13:01.702915
+92dde442-198a-470f-89ad-141f058ebf39	CARMEN USUGA	7971	13117	150.00	2026-04-21	150.00	\N	\N	\N	\N	2026-04-29	1.00	3.00	1.00	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.164698	2026-04-29 11:25:17.424265
+f3d2883e-0b92-4e11-ac6f-f1c4c064f4ea	LIDA LONDOÑO	7976	13003	144.00	2026-04-22	144.00	\N	\N	\N	\N	2026-04-29	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-23 10:30:21.814714	2026-04-29 12:25:07.547834
+10069b20-07f3-4429-9504-c75a7b6190f9	MILENA SALAZAR	7986	13102	60.00	2026-04-23	60.00	\N	\N	\N	\N	2026-04-29	1.00	1.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:50:20.004709	2026-04-29 12:27:45.104292
+30464059-063e-4b58-aed2-5ff9ed885a10	CLAUDIA ARISMENDI	7968	13100	192.00	2026-04-21	187.00	4.00	\N	\N	1.00	2026-04-29	2.00	2.00	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.169649	2026-04-29 12:56:15.460088
+f90c81c8-e0c2-4f59-aa76-f6fa3a533960	LIDA LONDOÑO	7997	MUESTRAS	12.00	2026-04-28	12.00	\N	\N	\N	\N	2026-04-29	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:12:12.925854	2026-04-29 13:07:20.192924
+dad7e122-3194-4452-b7e1-c7f7917d4259	ELIANA ZAPATA	7993	13122	150.00	2026-04-27	150.00	\N	\N	\N	\N	2026-04-30	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:12:12.927878	2026-04-30 13:03:12.907656
+e61a5beb-39da-4b1b-bb84-63dcbd38cc0a	ELIANA ZAPATA	7969	13041	120.00	2026-04-21	119.00	\N	\N	\N	1.00	2026-04-30	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.166471	2026-04-30 13:04:05.720897
+f75274cb-fd6c-4732-8b53-f5aea154e6f3	MARIU CUBILLON	7972	13131	144.00	2026-04-21	142.00	2.00	\N	\N	\N	2026-04-30	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.163025	2026-04-30 13:10:01.246535
+66e95eb7-9fe7-4b23-b510-4f43f45b70a8	CLARA HERRERA	8002	13048	99.00	2026-04-28	99.00	\N	\N	\N	\N	2026-04-29	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:20:15.117048	2026-04-30 13:16:00.368744
+de4609b1-c014-43fc-a428-ab09990079f8	MARIU CUBILLON	8000	MUESTRAS	16.00	2026-04-28	16.00	\N	\N	\N	\N	2026-04-30	\N	\N	\N	\N	\N	{}	{"ref": "13154:2\\n13176:2\\n13182:2\\n13177:2\\n13135:2\\n13180:2\\n13175:2\\nINICIALES:2 BODY CUELLO CORAZÓN"}	mmze56k4iwquqhbul	2026-04-28 12:20:15.121532	2026-05-04 08:54:42.821355
+7d57ef2e-f9e6-4c45-9838-22e44904773a	ALEJANDRA CHAVERRA	7985	13148	120.00	2026-04-23	120.00	\N	\N	\N	\N	2026-04-30	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-24 08:50:20.006803	2026-05-04 09:05:39.371353
+4945f4d7-7eeb-4924-b090-0b8975d595c1	MARCELA GRACIANO	7949	12984	180.00	2026-04-16	177.00	\N	2.00	\N	1.00	2026-04-30	1.00	1.00	1.00	1.00	\N	{}	{"vta": "RM-7989", "entrega": "PRIMER PARCIAL 41 UND 20/04"}	mmze56k4iwquqhbul	2026-04-17 14:24:19.557849	2026-05-04 10:27:17.807657
+07b69019-f4e0-4012-afbc-639abaca81f8	ELIANA ZAPATA	8008	13184	140.00	2026-04-30	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:18:13.401424	2026-05-04 11:18:13.401424
+4ba50018-00b4-417c-9384-89698dc8d3b1	JOSEFINA PULGARIN	8007	13185	260.00	2026-04-29	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:18:13.403433	2026-05-04 11:18:13.403433
+9a14284f-a6db-43ae-8dea-31d876e605c9	CLARA HERRERA	8006	13003	114.00	2026-04-29	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:18:13.405172	2026-05-04 11:18:13.405172
+6b9d5e04-06c4-4c4e-bd87-180b2dd80462	CLARA HERRERA	8006	13128	114.00	2026-04-29	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:18:13.406949	2026-05-04 11:18:13.406949
+903958fd-c59e-4b91-ba90-337ec16ba7c8	NANCY ARBOLEDA	7992	13029	81.00	2026-04-25	81.00	\N	\N	\N	\N	2026-05-04	2.00	3.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-27 09:33:55.550304	2026-05-04 14:22:55.060258
+a0b44a01-f6dc-4593-b8ed-a1c5d232ba13	MARIU CUBILLON	8009	13148	120.00	2026-04-30	113.00	7.00	\N	\N	\N	2026-05-05	2.00	2.00	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:18:13.333593	2026-05-05 15:32:51.60884
+a312ccdc-0379-4876-9a76-a497f61f90fa	CAMILO HOYOS	7979	13144	120.00	2026-04-22	120.00	\N	\N	\N	\N	2026-05-04	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-23 10:30:21.810602	2026-05-05 15:50:50.203204
+24553517-367b-4e80-9985-7803188364df	CAMILO HOYOS	7975	13254	123.00	2026-04-21	123.00	\N	\N	\N	\N	2026-05-04	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-04-22 08:16:17.016285	2026-05-05 15:50:50.20711
+bbf7df65-2303-4236-ac65-e5bb989008f2	MARIA TERESA QUICENO	8010	13144	120.00	2026-04-30	\N	\N	\N	\N	\N	\N	2.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-04 11:24:49.533437	2026-05-04 11:24:49.533437
+5083346d-5d76-463f-8c1d-4a7e744ac33c	LIDA LONDOÑO	7998	13113	120.00	2026-04-28	120.00	\N	\N	\N	\N	2026-05-04	2.00	2.00	1.00	1.00	\N	{}	{}	mmze56k4iwquqhbul	2026-04-28 12:12:12.818594	2026-05-04 13:48:11.048248
+bed11da1-f450-46c3-9475-6359d5487b95	VIVIANA OLAYA	8016	13128	47.00	2026-05-06	\N	\N	\N	\N	\N	\N	1.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-06 15:13:04.670938	2026-05-06 15:13:04.670938
+6593c5f9-ebfa-4848-bed6-b22a467f0219	MARIU CUBILLON	8014	13186	282.00	2026-05-05	\N	\N	\N	\N	\N	\N	2.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-06 15:13:04.735355	2026-05-06 15:13:04.735355
+e624e36d-b566-4a0c-adfd-87037cb7ccd3	LIDA LONDOÑO	8013	13224	360.00	2026-05-05	\N	\N	\N	\N	\N	\N	3.00	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-06 15:13:04.737561	2026-05-06 15:13:04.737561
+0c6038bd-5a02-4c3b-b4bf-d10550202bf3	CLARA HERRERA	8012	13113	120.00	2026-05-04	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	{}	{}	mmze56k4iwquqhbul	2026-05-06 15:13:04.739486	2026-05-06 15:13:04.739486
 \.
 
 
 --
--- TOC entry 5611 (class 0 OID 29997)
+-- TOC entry 5620 (class 0 OID 29997)
 -- Dependencies: 244
--- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
@@ -6039,9 +12535,9 @@ COPY public.reception_items (id, reception_id, reference, quantity) FROM stdin;
 
 
 --
--- TOC entry 5613 (class 0 OID 30007)
+-- TOC entry 5622 (class 0 OID 30007)
 -- Dependencies: 246
--- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.receptions (id, batch_code, confeccionista, has_seconds, charge_type, charge_units, received_by, created_at, affects_inventory, incomplete_units, is_packed, bag_quantity, arrival_date, has_muestra, observacion, segundas_units) FROM stdin;
@@ -6131,9 +12627,9 @@ mnouslu9oip8vouyr	7873	42843342	0	\N	0	Jhon Montoya	2026-04-07T11:48:35.220-05:0
 
 
 --
--- TOC entry 5614 (class 0 OID 30026)
+-- TOC entry 5623 (class 0 OID 30026)
 -- Dependencies: 247
--- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: return_reception_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.return_reception_items (id, return_reception_id, reference, quantity, unit_price) FROM stdin;
@@ -6146,9 +12642,9 @@ COPY public.return_reception_items (id, return_reception_id, reference, quantity
 
 
 --
--- TOC entry 5616 (class 0 OID 30036)
+-- TOC entry 5625 (class 0 OID 30036)
 -- Dependencies: 249
--- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: return_receptions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.return_receptions (id, client_id, credit_note_number, total_value, received_by, created_at) FROM stdin;
@@ -6158,9 +12654,9 @@ mmus2t8njmqmbax7y	231	000	872400.00	Jhon Montoya	2026-03-17T10:39:27.245-05:00
 
 
 --
--- TOC entry 5636 (class 0 OID 30412)
+-- TOC entry 5645 (class 0 OID 30412)
 -- Dependencies: 269
--- Data for Name: rutas_transporte; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: rutas_transporte; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.rutas_transporte (id, fecha, transportista_id, created_at, updated_at) FROM stdin;
@@ -6168,16 +12664,84 @@ COPY public.rutas_transporte (id, fecha, transportista_id, created_at, updated_a
 1776201728221d	2026-04-13	1775831540780	2026-04-14 16:22:08.396777	2026-04-14 16:22:08.396777
 1776949903897r	2026-04-14	1775831540780	2026-04-23 08:11:44.01453	2026-04-23 08:11:44.01453
 1776949917876r	2026-04-22	1775831586590	2026-04-23 08:11:58.084191	2026-04-23 08:11:58.084191
+1776113614245r	2026-04-13	1775834940034	2026-04-13 15:53:34.247368	2026-04-13 15:53:34.247368
+1776113676299r	2026-04-11	1775834940034	2026-04-13 15:54:36.271494	2026-04-13 15:54:36.271494
+1776113795946r	2026-04-10	1775834940034	2026-04-13 15:56:35.907447	2026-04-13 15:56:35.907447
+1776114193158r	2026-04-10	1775834987396	2026-04-13 16:03:13.103814	2026-04-13 16:03:13.103814
+1776114276453r	2026-04-09	1775834940034	2026-04-13 16:04:36.392596	2026-04-13 16:04:36.392596
+1776114328129r	2026-04-08	1775834987396	2026-04-13 16:05:28.081206	2026-04-13 16:05:28.081206
+1776114397250r	2026-04-07	1775834940034	2026-04-13 16:06:37.208289	2026-04-13 16:06:37.208289
+1776114440539r	2026-04-07	1775834987396	2026-04-13 16:07:20.479475	2026-04-13 16:07:20.479475
+1776114500663r	2026-04-06	1775834940034	2026-04-13 16:08:20.598803	2026-04-13 16:08:20.598803
+1776114553688r	2026-04-01	1775834940034	2026-04-13 16:09:13.635045	2026-04-13 16:09:13.635045
+1776114605840r	2026-04-01	1775834987396	2026-04-13 16:10:05.785604	2026-04-13 16:10:05.785604
+1776190228714r	2026-04-14	1775834940034	2026-04-14 13:10:28.776946	2026-04-14 13:10:28.776946
+1776262585134r	2026-04-15	1776262553732	2026-04-15 09:16:24.822662	2026-04-15 09:16:24.822662
+1776370267454d	2026-04-16	1775834940034	2026-04-16 15:11:07.934923	2026-04-16 15:11:07.934923
+1776373857398r	2026-04-17	1775834987396	2026-04-16 16:10:58.496282	2026-04-16 16:10:58.496282
+1776456090630r	2026-04-17	1775834940034	2026-04-17 15:01:31.064194	2026-04-17 15:01:31.064194
+1776514973290r	2026-04-18	1775834987396	2026-04-18 07:22:54.084639	2026-04-18 07:22:54.084639
+1776515038034r	2026-04-18	1775834940034	2026-04-18 07:23:58.617499	2026-04-18 07:23:58.617499
+1776529468731r	2026-04-20	1775834940034	2026-04-18 11:24:28.981121	2026-04-18 11:24:28.981121
+1776721750173r	2026-04-21	1775834987396	2026-04-20 16:49:11.937934	2026-04-20 16:49:11.937934
+1776775934541r	2026-04-21	1775834940034	2026-04-21 07:52:14.116838	2026-04-21 07:52:14.116838
+1776864471707r	2026-04-22	1775834987396	2026-04-22 08:27:54.71089	2026-04-22 08:27:54.71089
+1776890570524r	2026-04-23	1775834940034	2026-04-22 15:42:52.312184	2026-04-22 15:42:52.312184
+1777053089095r	2026-04-24	1775834940034	2026-04-24 12:51:32.057166	2026-04-24 12:51:32.057166
+1777295814578r	2026-04-27	1775834940034	2026-04-27 08:16:54.709891	2026-04-27 08:16:54.709891
+1777319668409r	2026-04-28	1775834987396	2026-04-27 14:54:28.450965	2026-04-27 14:54:28.450965
+1777382977883r	2026-04-28	1775834940034	2026-04-28 08:29:37.840443	2026-04-28 08:29:37.840443
+1777468725888r	2026-04-29	1775834987396	2026-04-29 08:18:46.125528	2026-04-29 08:18:46.125528
+1777499309691r	2026-04-30	1775834987396	2026-04-29 16:48:30.146413	2026-04-29 16:48:30.146413
+1777499469883r	2026-04-30	1775834940034	2026-04-29 16:51:10.470761	2026-04-29 16:51:10.470761
+1777900575143r	2026-05-04	1775834940034	2026-05-04 08:16:15.245732	2026-05-04 08:16:15.245732
+1777986994806r	2026-05-05	1775834940034	2026-05-05 08:16:33.732941	2026-05-05 08:16:33.732941
+1777987786530r	2026-05-05	1775834987396	2026-05-05 08:29:45.440632	2026-05-05 08:29:45.440632
 \.
 
 
 --
--- TOC entry 5637 (class 0 OID 30430)
+-- TOC entry 5646 (class 0 OID 30430)
 -- Dependencies: 270
--- Data for Name: rutas_transporte_items; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: rutas_transporte_items; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.rutas_transporte_items (id, ruta_id, taller, celular, direccion, sector, detalle, servicio, created_at) FROM stdin;
+1777900575143	1777900575143r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER REF 13113	1 VUELTA 	2026-05-05 08:31:31.03415
+1777580864872	1777499469883r	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	LLEVAR RE4F 13144	1 VUELTA 	2026-05-05 08:31:31.036985
+1777902936885	1777900575143r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	LLEVAR REF 13113	1 VUELTA 	2026-05-05 08:31:31.03415
+1777580838896	1777499469883r	JEFE				RECOGER HUEVOS 	1 VUELTA 	2026-05-05 08:31:31.036985
+1777580896520	1777499469883r	MARIU CUBILLON	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	LLEVAR REF 13048	1 VUELTA 	2026-05-05 08:31:31.036985
+1777902887117	1777900575143r	EBETH BELEÑO ARIZA	3205268697	CALL 45D # 16C 30	LOS CERROS BUENOS AIRES	RECOGER REF 13120	1 VUELTA 	2026-05-05 08:31:31.03415
+1777499749311	1777499469883r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	LLEVAR REF 13184 APROVECHAMIENTO 	1 VUELTA 	2026-05-05 08:31:31.036985
+1777499492415	1777499469883r	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	RECOGER REF 12984	1 VUELTA 	2026-05-05 08:31:31.036985
+1776515074469	1776515038034r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	RECOGER PARCIAL REF 13065	1 VUELTA 	2026-05-05 08:31:31.118381
+1776515038034	1776515038034r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER REF 13097	1 VUELTA 	2026-05-05 08:31:31.118381
+1776515139902	1776515038034r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	LLEVAR REF 13048	1 VUELTA 	2026-05-05 08:31:31.118381
+1776515004053	1776514973290r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	RECOGER ESPALDAS 	1 VUELTA 	2026-05-05 08:31:31.118381
+1776514973290	1776514973290r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER PARCIAL REF 12744	1 VUELTA  SERVICIO DE MOTO 	2026-05-05 08:31:31.118381
+1776192015869	1776113614245r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	LLEVAR REF 12972	1 VUELTA 	2026-05-05 08:31:31.151836
+1776113614245	1776113614245r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER REF 12972	1 VUELTA 	2026-05-05 08:31:31.151836
+1776113630508	1776113614245r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	RECOGER REF 13033	1 VUELTA	2026-05-05 08:31:31.151836
+1776192056701	1776113614245r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	RECOGER 	1 VUELTA 	2026-05-05 08:31:31.151836
+1776113646564	1776113614245r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	RECOGER REF 13097	1 VUELTA	2026-05-05 08:31:31.151836
+1776114370312	1776114328129r	MEDIA NARANJA	-	-	BELLO	LLEVAR	1 VUELTA	2026-05-05 08:31:31.17403
+1776114343025	1776114328129r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER REF 13115, LLEVAR REF 13040	2 VUELTAS	2026-05-05 08:31:31.17403
+1776114328129	1776114328129r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	LLEVAR	1 VUELTA	2026-05-05 08:31:31.17403
+1776114521079	1776114500663r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER REF 12909	1 VUELTA	2026-05-05 08:31:31.185678
+1776114500663	1776114500663r	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	RECOGER REF 13118	1 VUELTA	2026-05-05 08:31:31.185678
+1776114510959	1776114500663r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	RECOGER REF 13098	1 VUELTA	2026-05-05 08:31:31.185678
+1776114532143	1776114500663r	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 12686	1 VUELTA	2026-05-05 08:31:31.185678
+1777468815701	1777468725888r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER 13048 LLEVAR REF 13003,  13128	2 VUELTA 	2026-05-05 08:31:31.034259
+1777468764119	1777468725888r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	RECOGER REF 13100	1 VUELTA 	2026-05-05 08:31:31.034259
+1777468725888	1777468725888r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER REF 13003	1 VUELTA 	2026-05-05 08:31:31.034259
+1777483067935	1777468725888r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	LLEVAR REF 13185 APROVECHAMIENTO 	1 VUELTA 	2026-05-05 08:31:31.034259
+1777499469882	1777499469883r	MARIU CUBILLON	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 1131	1 VUELTA 	2026-05-05 08:31:31.036985
+1777499348215	1777499309691r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER REF 13003, REF 13128	1 VUELTA 	2026-05-05 08:31:31.036985
+1777499309691	1777499309691r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER  REF 13122  Y REF 13041	1 VUELTA 	2026-05-05 08:31:31.036985
+1777053089095	1777053089095r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	LLEVAR REF13097	1 VUELTA 	2026-05-05 08:31:31.10388
+1777053227103	1777053089095r	ANDRES FELIPE 			LOPEZ DE MESA 	LLEVAR MUETRAS PARA FOTOS  	1 VUELTA 	2026-05-05 08:31:31.10388
+1777053116521	1777053089095r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	LLEVAR REF 13129	1 VUELTA 	2026-05-05 08:31:31.10388
 1776949903897	1776949903897r	ADRIANA TABORDA	3172819579	CALLE 110 B # 43 AA 16	POPULAR 1	llevar 13129		2026-04-23 08:11:58.086292
 1776201728221	1776201728221d	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 13028 Y LEVAR REF 13097	2 vueltas	2026-04-23 08:11:58.090189
 1776949917876	1776949917876r	ADRIANA TABORDA	3172819579	CALLE 110 B # 43 AA 16	POPULAR 1	recoger 13129		2026-04-23 08:11:58.084191
@@ -6186,13 +12750,106 @@ COPY public.rutas_transporte_items (id, ruta_id, taller, celular, direccion, sec
 1776115146067	1776115109978r	NANCY ARBOLEDA	3116940715	UNBANIZACION VILLA DEL PARQUE NO HAY NOMENCLATURA VARRIO PORVENIR CALLE 14 SUR # 58 B 05 VIVIENDAS DEL SUR	BARRIO EL PORVENIR	RECOGER ESPALDAS REF 13036 Y LLEVAR REF 12908	2 vueltas	2026-04-23 08:11:58.241445
 1776115158166	1776115109978r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	LLEVAR REF 12907	1 vuelta	2026-04-23 08:11:58.241445
 1776115174493	1776115109978r	ramon tintoreria 	1132132	dfsdf		LLEVAR BOLILLO A TEÑIR REF 12877	1 vuelta	2026-04-23 08:11:58.241445
+1776785947070	1776775934541r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	LLEVAR REF FRENTES REF 13254. 13113	1 VUELTA 	2026-05-05 08:31:31.11041
+1776806874452	1776775934541r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER RESORTADO 13003	1 VUELTA 	2026-05-05 08:31:31.11041
+1776776450446	1776775934541r	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	LLEVAR REF 13131	1 VUELTA 	2026-05-05 08:31:31.11041
+1776775934541	1776775934541r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER REF 12908 Y LLEVAR REF 13041	2 VUELTA 	2026-05-05 08:31:31.11041
+1776776023333	1776775934541r	CARMEN USUGA	3116715114	TRANSVERSAL 48 C SUR # 61 A 54 BARRIO	LIMONAR  2	LLEVAR REF 13117	1 VUELTA 	2026-05-05 08:31:31.11041
+1776372472047	1776370267454d	YAKELINE ARDILA INSUMOS	3007217550	CARRERA 97 A #48C 16  TERCER PISO	SAN JAVIER	LLEVAR REF 13079 192 UNDS	1 VUELTA 	2026-05-05 08:31:31.132124
+1776372882440	1776370267454d	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	LLEVAR ABROCHADURAS REF 12744	1 VUELTA 	2026-05-05 08:31:31.132124
+1776370356190	1776370267454d	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	RECOGER REF 13039	1 VUELTA	2026-05-05 08:31:31.132124
+1776372845288	1776370267454d	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	LLEVAR REF 13047 Y RECOGER REF 13097	2 VUELTAS 	2026-05-05 08:31:31.132124
+1776372915072	1776370267454d	EBETH BELEÑO ARIZA	3205268697	CALL 45D # 16C 30	LOS CERROS BUENOS AIRES	LLEVAR SESGO FALTANTE REF 13101	1 VUELTA 	2026-05-05 08:31:31.132124
+1776370267454	1776370267454d	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER REF 12972	1 VUELTA 	2026-05-05 08:31:31.132124
+1776370471014	1776370267454d	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	RECOGER REF 13023 Y LLEVAR REF 12984	2 VUELTA 	2026-05-05 08:31:31.132124
+1776373178176	1776370267454d	VARIOS	-	-	-	COMPRAR AREPAS 	1 VUELTA 	2026-05-05 08:31:31.132124
+1776113715218	1776113676299r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	LLEVAR REF 12744	1 VUELTA	2026-05-05 08:31:31.148104
+1776113695123	1776113676299r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	LLEVAR REF 12895	1 VUELTA	2026-05-05 08:31:31.148104
+1776113676299	1776113676299r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	RECOGER REF 13079	1 VUELTA	2026-05-05 08:31:31.148104
+1777986994806	1777986994806r	MARIU CUBILLON	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 13148 Y LLEVAR REF 13186	2 VUELTAS 	2026-05-05 08:31:31.02942
+1777987786530	1777987786530r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER REF 13113	1 VUELTA 	2026-05-05 08:31:31.02942
+1777987892242	1777987786530r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	LLEVAR REF 13224 APROVECHAMIENTO 	1 VUELTA 	2026-05-05 08:31:31.02942
+1776864471706	1776864471707r	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	RECOGER REF 13121	1 VUELTA 	2026-05-05 08:31:31.107049
+1776890363182	1776864471707r	VARIOS	-	-	-	LLEVAR A DOÑA CECILIA 	1 VUELTA 	2026-05-05 08:31:31.107049
+1776864604709	1776864471707r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	RECOGER REF 13065	1 VUELTA 	2026-05-05 08:31:31.107049
+1776864577581	1776864471707r	YAKELINE ARDILA INSUMOS	3007217550	CARRERA 97 A #48C 16  TERCER PISO	SAN JAVIER	RECOGER REF 13079 	1 VUELTA 	2026-05-05 08:31:31.107049
+1776864629869	1776864471707r	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	RECOGER REF 12877	1 VUELTA	2026-05-05 08:31:31.107049
+1776864651549	1776864471707r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	LLEVAR REF 13003	1 VUELTA 	2026-05-05 08:31:31.107049
+1776790164103	1776721750173r	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	LLEVAR REF 13078	1 VUELTA 	2026-05-05 08:31:31.11041
+1776721986432	1776721750173r	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	LLEVAR REF 	1 VUELTA 	2026-05-05 08:31:31.11041
+1776456153886	1776456090630r	ALEJANDRA CHAVERRA	3148683039	CLL 25 # 65 a 50 piso 302	GUAYABAL	RECOGER MUESTRAS 	1 VUELTA	2026-05-05 08:31:31.126363
+1776456090630	1776456090630r	YAKELINE ARDILA INSUMOS	3007217550	CARRERA 97 A #48C 16  TERCER PISO	SAN JAVIER	RECOGER PARCIAL REF 13079	1 VUELTA 	2026-05-05 08:31:31.126363
+1776721917120	1776721750173r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	LLEVAR REF 13100	1 VUELTA 	2026-05-05 08:31:31.11041
+1776456390758	1776456090630r	JENIFER LOAIZA	3016290611	CARRERA 69 # 35 SUR 157 SEGUNDO PISO CASA PREFABRICADA	SAN ANTONIO DE PRADO	LLEVAR REF 13117	1 VUELTA 	2026-05-05 08:31:31.126363
+1776374011681	1776373857398r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	LLEVAR ESPALDAS REF 13013	1 VUELTA TARIFA DE MOTO 	2026-05-05 08:31:31.126363
+1776374038409	1776373857398r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	LLEVAR REF 13100	1 VUELTA 	2026-05-05 08:31:31.126363
+1776373957481	1776373857398r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	LLEVAR REF 13097 - 13003	1 VUELTA 	2026-05-05 08:31:31.126363
+1776373857398	1776373857398r	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	LLEVAR REF 13121	1 VUELTA 	2026-05-05 08:31:31.126363
+1776191672421	1776190228714r	DORIS GONZALEZ	32256991506	CARRERA 89 B # 89-101 TORRE 16 APT 338 UNIDAD RECIDENCIAL ROBLEDO 2	BARRIO ROBLEDO VILLA SOFIA	RECOGER REF 12975	1 VUELTA 	2026-05-05 08:31:31.147902
+1776191734741	1776190228714r	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	LLEVAR REF 12877	1 VUELTA 	2026-05-05 08:31:31.147902
+1776190299387	1776190228714r	RAMON CANO TINTORERIA	3104307071	CRR 95 # 79A 12	ROBLEDO AURES	RECOGER BOLILLO REF 12877	1 VUELTA 	2026-05-05 08:31:31.147902
+1776113905985	1776113795946r	ALEJANDRA CHAVERRA	3148683039	CLL 25 # 65 a 50 piso 302	GUAYABAL	RECOGER MUESTRA	1 VUELTA	2026-05-05 08:31:31.154801
+1776113795946	1776113795946r	RAMON CANO TINTORERIA	3104307071	CRR 95 # 79A 12	ROBLEDO AURES	LLEVAR BOLILLO A TEÑIR REF 12877	1 VUELTA	2026-05-05 08:31:31.154801
+1776190342419	1776190228714r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	LLEVAR REF 13013	1 VUELTA 	2026-05-05 08:31:31.147902
+1776113918833	1776113795946r	VIVIANA OLAYA	3218855166	VEREDA SAN ESTEBAN  LLEGANDO POR	GIRARDOTA	LLEVAR REF 12943	1 VUELTA	2026-05-05 08:31:31.154801
+1776190228714	1776190228714r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	LLEVAR REF 13065	1 VUELTA	2026-05-05 08:31:31.147902
+1776113930724	1776113795946r	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 13028 Y LEVAR REF 13097	2 VUELTAS	2026-05-05 08:31:31.154801
+1776113808538	1776113795946r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	LLEVAR REF 12907	1 VUELTA	2026-05-05 08:31:31.154801
+1776113823598	1776113795946r	NANCY ARBOLEDA	3116940715	UNBANIZACION VILLA DEL PARQUE NO HAY NOMENCLATURA VARRIO PORVENIR CALLE 14 SUR # 58 B 05 VIVIENDAS DEL SUR	BARRIO EL PORVENIR	RECOGER ESPALDAS REF 13036 Y LLEVAR REF 12908	2 VUELTAS	2026-05-05 08:31:31.154801
+1776114234936	1776114193158r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	RECOGER Y LLEVAR 	2 VUELTAS	2026-05-05 08:31:31.154801
+1776114193158	1776114193158r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER 	1 VUELTA	2026-05-05 08:31:31.154801
+1776114408051	1776114397250r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	LLEVAR RESORTADO REF 	1 VUELTA	2026-05-05 08:31:31.174767
+1776114397250	1776114397250r	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	LLEVAR REF 13079	1 VUELTA	2026-05-05 08:31:31.174767
+1776114420716	1776114397250r	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	RECOGER CONTRA MUESTRA REF 13039	1 VUELTA	2026-05-05 08:31:31.174767
+1776114462848	1776114440539r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	RECOGER REF 13083 Y LLEVAR REF 13079	2 VUELTAS	2026-05-05 08:31:31.174767
+1776114440539	1776114440539r	MARGARITA VASQUEZ	3227257501	DIAGONAL 59 # 38-90 MANZANA 1 CACIQUE  APT 138 BLOQUE 4	NIQUIA	LLEVAR REF 13068	1 VUELTA	2026-05-05 08:31:31.174767
+1776114451008	1776114440539r	EBETH BELEÑO ARIZA	3205268697	CALL 45D # 16C 30	LOS CERROS BUENOS AIRES	RECOGER REF 12973 Y LLEVAR REF 13101	2 VUELTAS	2026-05-05 08:31:31.174767
+1777383211768	1777382977883r	ELVIA MUÑOZ	3146819597	CALLE 42 N 86 - 38	BARRIO LA AMERICA	RECOGER REF 12987	1 VUELTA 	2026-05-05 08:31:31.041919
+1777382977883	1777382977883r	RETEX	3052408193	CALLE 21A  54-49	SANTA FE POR EL ZOOLOGICO	RECOGER REF 13137	1 SERVICIO 	2026-05-05 08:31:31.041919
+1777581097032	1777382977883r	MARIU CUBILLON	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	LLEVAR MUESTRAS 	1 VUELTA 	2026-05-05 08:31:31.041919
+1777581177728	1777382977883r	VIVIANA OLAYA	3218855166	VEREDA SAN ESTEBAN  LLEGANDO POR	GIRARDOTA	LLEVAR REF 13137 Y RECOGER REF 13128	2 VUELTAS	2026-05-05 08:31:31.041919
+1777319728610	1777319668409r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	RECOGER REF 13013	1 VUELTA 	2026-05-05 08:31:31.041919
+1777394236661	1777319668409r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	LLEVAR REF 13113	1 VUELTA 	2026-05-05 08:31:31.041919
+1777394205110	1777319668409r	MEDIA NARANJA	-	-	CENTRO	LLEVAR MERCANCIA 	1 VUELTA 	2026-05-05 08:31:31.041919
+1777319668409	1777319668409r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	RECOGER  13048 Y LLEVAR  REF 13254	2 VUELTAS 	2026-05-05 08:31:31.041919
+1777320057282	1777319668409r	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	RECOGER A LAS 9️⃣AM  REF 13078  	1 VUELTA 	2026-05-05 08:31:31.041919
+1777320267050	1777319668409r	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	RECOGER REF 13094	1 VUELTA 	2026-05-05 08:31:31.041919
+1776890570524	1776890570524r	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	RECOGER REF 13047	1 VUELTA 	2026-05-05 08:31:31.106478
+1777580747152	1776890570524r	MADELEIN			CENTRO 	RECOGER MUESTRA 	1 VUELTA 	2026-05-05 08:31:31.106478
+1776970461609	1776890570524r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER REF 12744	1 VUELTA 	2026-05-05 08:31:31.106478
+1776890983174	1776890570524r	RETEX	3052408193	CALLE 21A  54-49	SANTA FE POR EL ZOOLOGICO	LLEVAR REF 13137	1 VUELTA 	2026-05-05 08:31:31.106478
+1776890819166	1776890570524r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	LLEVAR ESPALDAS , RECOGER MUESTRAS 	2 VUELTA 	2026-05-05 08:31:31.106478
+1776114287054	1776114276453r	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	RECOGER REF 13074	1 VUELTA	2026-05-05 08:31:31.157471
+1776114276453	1776114276453r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER CONTRA MUESTRA REF 13040	1 VUELTA	2026-05-05 08:31:31.157471
+1776114299877	1776114276453r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	RECOGER REF 13076	1 VUELTA 	2026-05-05 08:31:31.157471
+1776114562503	1776114553688r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	LLEVAR REF 12972	1 VUELTA	2026-05-05 08:31:31.191547
+1776114581967	1776114553688r	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	LLEVAR REF 13055	1 VUELTA	2026-05-05 08:31:31.191547
+1776114572712	1776114553688r	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	LLEVAR REF 13023	1 VUELTA	2026-05-05 08:31:31.191547
+1776114553688	1776114553688r	MARIU CUBILLO	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	LLEVAR REF 13028	1 VUELTA	2026-05-05 08:31:31.191547
+1776114627679	1776114605840r	MEDIA NARANJA	-	-	CENTRO Y BELLO	LLEVAR MERCANCIA 	2 VUELTAS	2026-05-05 08:31:31.191547
+1776114671649	1776114605840r	JEFE	-	-	MAYORISTA / UBER	COMPRAR FLORES	1 VUELTA	2026-05-05 08:31:31.191547
+1776114605840	1776114605840r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	LLEVAR REF  13033	1 VUELTA	2026-05-05 08:31:31.191547
+1777295861638	1777295814578r	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	RECOGER REF 13097	1 VUELTA 	2026-05-05 08:31:31.048231
+1777296988215	1777295814578r	ERICA GIL	3046377165	CALLE 52 ASUR #57-11 BARRIO  ARAGON	SAN ANTONIO DE PRADO	RECOGER REF 13119	1 VUELTA 	2026-05-05 08:31:31.048231
+1777295814577	1777295814578r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER REF 13129 YLLEVAR REF 13122	2 VUELTA 	2026-05-05 08:31:31.048231
+1776722299140	1776529468731r	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	RECOGER PARCIAL REF 12984	1 VUELTA 	2026-05-05 08:31:31.11442
+1776529468731	1776529468731r	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	RECOGER  REF 12895	1 VUELTA 	2026-05-05 08:31:31.11442
+1776722267544	1776529468731r	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	LLEVAR REF 13094	1 VUELTA 	2026-05-05 08:31:31.11442
+1776529605852	1776529468731r	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	RECOGER PARCIAL REF 12907	1 VUELTA 	2026-05-05 08:31:31.11442
+1776722340308	1776529468731r	ERICA GIL	3046377165	CALLE 52 ASUR #57-11 BARRIO  ARAGON	SAN ANTONIO DE PRADO	LLEVAR REF 13119	1 VUELTA 	2026-05-05 08:31:31.11442
+1776529640436	1776529468731r	MARGARITA VASQUEZ	3227257501	DIAGONAL 59 # 38-90 MANZANA 1 CACIQUE  APT 138 BLOQUE 4	NIQUIA	RECOGER REF 13112	1 VUELTA 	2026-05-05 08:31:31.11442
+1776529500764	1776529468731r	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	RECOGER REF 13094	1 VUELTA 	2026-05-05 08:31:31.11442
+1776262658444	1776262585134r	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	RECOGER REF 13040	-	2026-05-05 08:31:31.137966
+1776262585134	1776262585134r	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	RECOGER REF 13055	-	2026-05-05 08:31:31.137966
+1776262612555	1776262585134r	MARGARITA VASQUEZ	3227257501	DIAGONAL 59 # 38-90 MANZANA 1 CACIQUE  APT 138 BLOQUE 4	NIQUIA	RECOGER REF 13068 Y LLEVAR 13112	-	2026-05-05 08:31:31.137966
+1776262622948	1776262585134r	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	RECOGER 13079	-	2026-05-05 08:31:31.137966
 \.
 
 
 --
--- TOC entry 5642 (class 0 OID 32148)
+-- TOC entry 5651 (class 0 OID 32148)
 -- Dependencies: 275
--- Data for Name: salidas_bodega; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: salidas_bodega; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.salidas_bodega (id, fecha, referencia, cantidad, talla, quien_recibe, fecha_devolucion, created_by, created_at, updated_at) FROM stdin;
@@ -6207,13 +12864,74 @@ e75a6489-a8cb-41e1-9ede-fbc74651917b	2026-04-24	12986	1	L	ASD	\N	Soporte	2026-04
 3310d66c-bcbe-437b-9dc2-0c0cf2e4498c	2026-04-20	13010	2	2-4	ASD	\N	Soporte	2026-04-27 11:18:16.818579	2026-04-27 11:18:16.818579
 8ae4c4a6-e074-4892-9bd7-768edc029056	2026-04-18	12894	1	6-8	DAS	\N	Soporte	2026-04-27 11:18:16.84095	2026-04-27 11:18:16.84095
 6247178a-2017-4aeb-bab8-027ffabe63b6	2026-05-04	12893	2	S	adasdasd	\N	Jhon Montoya	2026-05-04 15:49:53.908683	2026-05-04 15:49:53.908683
+58cf91ff-ee1b-4546-9368-8199e32b5264	2026-04-23	13067	1	S	Isabel Henao	\N	Soporte	2026-04-28 11:06:19.736994	2026-04-28 11:06:19.736994
+119427ea-11f2-424a-875e-c6ba9ed8d27d	2026-04-23	12986	1	S	Isabel Henao	\N	Soporte	2026-04-28 11:06:19.892964	2026-04-28 11:06:19.892964
+bbd9dc51-2b3a-488d-8d9a-3c0de156b578	2026-04-23	13067	1	S	Jhon Montoya	\N	Soporte	2026-04-28 11:06:19.984642	2026-04-28 11:06:19.984642
+d1cbb30d-4c53-4736-9b18-40354bba329a	2026-04-23	12964	1	M	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:20.075688	2026-04-28 11:06:20.075688
+497a113a-905d-4e30-bea9-63cc8803d5f4	2026-04-23	13012	1	M	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:20.165616	2026-04-28 11:06:20.165616
+bf7a7b5f-0cb2-438c-a041-8e1d33bcaf9a	2026-04-18	12968	1	M	Maria Mercedes	\N	Soporte	2026-04-28 11:06:20.252945	2026-04-28 11:06:20.252945
+b1b9d773-fda6-4a52-92b5-da54e57affdf	2026-04-18	12968	1	L	Maria Mercedes	\N	Soporte	2026-04-28 11:06:20.365453	2026-04-28 11:06:20.365453
+cf85176a-69cd-4da3-a967-1af77deeea19	2026-04-17	12968	1	L	Amparo	\N	Soporte	2026-04-28 11:06:20.447636	2026-04-28 11:06:20.447636
+f372bc74-ad18-4653-b75e-0775a15d35b2	2026-04-16	13055	1	M	Luisa Marin	\N	Soporte	2026-04-28 11:06:20.520279	2026-04-28 11:06:20.520279
+165e1a33-ffe1-4724-8f7f-83ff8ac98ac4	2026-04-16	12968	1	L	Lina Pulgarin	\N	Soporte	2026-04-28 11:06:20.597716	2026-04-28 11:06:20.597716
+0c76bea0-f954-43d1-bdda-7528586ed886	2026-04-10	12968	1	L	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:20.661115	2026-04-28 11:06:20.661115
+a15163ee-dce4-492a-9963-b7f78823a628	2026-04-10	12744	1	M	Luisa Marin	\N	Soporte	2026-04-28 11:06:20.734836	2026-04-28 11:06:20.734836
+f4ea18c7-bb59-47c6-95ab-0dfaf66a380c	2026-04-08	12969	1	S	Martha Ramirez	\N	Soporte	2026-04-28 11:06:20.91726	2026-04-28 11:06:20.91726
+f27a4c9d-49c5-44c5-b9cc-1c46d08b65aa	2026-04-07	13100	1	S	Sandra Marin	\N	Soporte	2026-04-28 11:06:21.002584	2026-04-28 11:06:21.002584
+8d13e6db-3421-47b6-8e2e-f049d2055018	2026-04-07	13067	1	S	Sandra Marin	\N	Soporte	2026-04-28 11:06:21.068071	2026-04-28 11:06:21.068071
+3e6db9b2-c542-4c06-96a5-26951fe8441c	2026-04-07	12909	1	S	Sandra Marin	\N	Soporte	2026-04-28 11:06:21.146323	2026-04-28 11:06:21.146323
+51dce4f8-af44-4369-a5f7-12dcb18af7a0	2026-04-07	13067	2	M	Martha Ramirez	\N	Soporte	2026-04-28 11:06:21.194	2026-04-28 11:06:21.194
+8fb84658-6c4a-4bcd-8474-669de3a2ba48	2026-04-01	12581	1	L	Yudy Isaza	\N	Soporte	2026-04-28 11:06:21.257279	2026-04-28 11:06:21.257279
+a6a3a572-bf24-4c18-ba41-58746bd3271a	2026-04-01	13100	1	S	Yudy Isaza	\N	Soporte	2026-04-28 11:06:21.306938	2026-04-28 11:06:21.306938
+f3d76c80-1d1f-43f7-be2e-b2bab30e8c65	2026-03-30	12652	1	L	Yudy Isaza	\N	Soporte	2026-04-28 11:06:21.349141	2026-04-28 11:06:21.349141
+59c13e25-cf4e-4667-a334-6f9f3e1949ce	2026-03-25	13002	1	XXL	Isabel Henao	\N	Soporte	2026-04-28 11:06:21.399968	2026-04-28 11:06:21.399968
+22536dba-840f-4718-addd-2a5950436673	2026-03-18	12581	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.445511	2026-04-28 11:06:21.445511
+976ef759-3eed-4c7c-a8d0-e865573ade8c	2026-03-18	12617	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.491697	2026-04-28 11:06:21.491697
+67a9b8ff-d004-4e45-953b-4213670ba117	2026-03-18	12905	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.529336	2026-04-28 11:06:21.529336
+0617c7fc-fd71-4143-910a-4aa11e83c435	2026-03-18	12935	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.580055	2026-04-28 11:06:21.580055
+4b48ca29-f902-4782-b0bc-8506462ccdc5	2026-03-18	12969	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.613556	2026-04-28 11:06:21.613556
+4f5eb927-7f09-4f8f-8643-9a3e82ea9305	2026-03-18	12986	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.646751	2026-04-28 11:06:21.646751
+5b73e6e3-1080-408d-8ff8-2a1bcd1ac40a	2026-03-18	12908	1	S	Alejandra Chaverra	\N	Soporte	2026-04-28 11:06:21.676543	2026-04-28 11:06:21.676543
+7fa89129-128c-4ed0-80e9-083945b65db5	2026-03-18	12962	1	XXL	Martha Ramirez	\N	Soporte	2026-04-28 11:06:21.708395	2026-04-28 11:06:21.708395
+32510051-a4b3-4461-a1e6-79e9284861a6	2026-03-18	13010	1	L	Maria Mercedes	\N	Soporte	2026-04-28 11:06:21.733252	2026-04-28 11:06:21.733252
+470a1bd6-37a2-4f6b-9080-65dcd2d48469	2026-03-18	12894	1	L	Isabel Henao	\N	Soporte	2026-04-28 11:06:21.759822	2026-04-28 11:06:21.759822
+c81c94f2-3952-4323-a18d-978151da1b82	2026-03-17	12980	2	S	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.797769	2026-04-28 11:06:21.797769
+eb003286-69ba-478c-97ab-84438a021d7d	2026-03-17	12901	2	S	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.833462	2026-04-28 11:06:21.833462
+8011ba69-f578-4cfe-b252-d29cf7a26257	2026-03-17	12896	1	S	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.879595	2026-04-28 11:06:21.879595
+e32b9341-3a53-40a8-9f29-d3ce756d2468	2026-03-17	12497	1	S	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.91027	2026-04-28 11:06:21.91027
+a0fb7410-b3cd-4354-9a7e-bfd56ec71fad	2026-03-14	12986	1	M	Maria Mercedes	\N	Soporte	2026-04-28 11:06:21.941691	2026-04-28 11:06:21.941691
+f3c58de4-e074-4647-830f-39b9a760bb39	2026-03-14	6111	1		Fredy Usme	\N	Soporte	2026-04-28 11:06:21.95293	2026-04-28 11:06:21.95293
+538e6dc3-1ef9-4b4a-a2fa-bb7f5caf690e	2026-03-13	6118	1	6-8	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.962712	2026-04-28 11:06:21.962712
+3e8342d2-9899-4ad8-824a-edc86d8a8a2b	2026-03-13	575	1	10-12	Efrain Bolivar	\N	Soporte	2026-04-28 11:06:21.973218	2026-04-28 11:06:21.973218
+e45d57b2-bebd-428e-a27f-8c7f03b41042	2026-03-12	12676	1	L	Claudia Patiño	\N	Soporte	2026-04-28 11:06:21.98287	2026-04-28 11:06:21.98287
+1c31ac92-d2fd-4827-8bdb-2dbab90d85a4	2026-03-07	597	1	10-12	Sandra Marin	\N	Soporte	2026-04-28 11:06:21.993427	2026-04-28 11:06:21.993427
+45a61633-2cdb-4a8a-a7f7-97e6f6658914	2026-03-06	12909	1	L	Fredy Usme	\N	Soporte	2026-04-28 11:06:22.008301	2026-04-28 11:06:22.008301
+8cb55320-e38d-43ac-b9bc-6aabb316c5b6	2026-03-06	12888	1	L	Fredy Usme	\N	Soporte	2026-04-28 11:06:22.023171	2026-04-28 11:06:22.023171
+21897a4d-ee98-4e29-87fd-3b8cde583969	2026-03-03	12909	1	L	Martha Ramirez	\N	Soporte	2026-04-28 11:06:22.033085	2026-04-28 11:06:22.033085
+f9fcd325-fe54-426c-a044-4a954af76136	2026-03-03	12909	1	M	Martha Ramirez	\N	Soporte	2026-04-28 11:06:22.043207	2026-04-28 11:06:22.043207
+34995fe5-1cd7-4b68-bfa8-a7dab2ec2e13	2026-03-03	12686	1	L	Martha Ramirez	\N	Soporte	2026-04-28 11:06:22.061575	2026-04-28 11:06:22.061575
+b3040934-0eba-4d9f-88c3-e26bdb950fcb	2026-02-20	12617	2	L	Luisa Marin	\N	Soporte	2026-04-28 11:06:22.082543	2026-04-28 11:06:22.082543
+5c4c0e02-5438-4b62-b61e-72790ad3ca1a	2026-02-20	12889	1	M	Luisa Marin	\N	Soporte	2026-04-28 11:06:22.099899	2026-04-28 11:06:22.099899
+4820cc95-d64b-4ed0-843c-6ae0214417d5	2026-02-17	12909	1	M	Martha Ramirez	\N	Soporte	2026-04-28 11:06:22.110941	2026-04-28 11:06:22.110941
+fe2d769d-a7ff-40e7-8456-2ce723d88175	2026-02-16	5002	1	L	Isabel Henao	\N	Soporte	2026-04-28 11:06:22.123674	2026-04-28 11:06:22.123674
+10608df5-bd0d-4944-ab4f-f4c6fcda6013	2026-02-12	12686	1	L	Martha Ramirez	\N	Soporte	2026-04-28 11:06:22.133236	2026-04-28 11:06:22.133236
+8b1671e4-df9a-4121-b7bb-f046df852c8f	2026-02-11	12617	1	L	Maria Mercedes	\N	Soporte	2026-04-28 11:06:22.143003	2026-04-28 11:06:22.143003
+a38cd492-b619-40ee-a035-c58d26f4da43	2026-02-11	12617	1	M	Maria Mercedes	\N	Soporte	2026-04-28 11:06:22.156083	2026-04-28 11:06:22.156083
+42cd7b62-3e29-40eb-858e-6b55c04d5258	2026-02-11	12909	1	L	Maria Mercedes	\N	Soporte	2026-04-28 11:06:22.165559	2026-04-28 11:06:22.165559
+a08737bd-994c-46cc-b862-b7427e4fe8df	2026-02-06	12597	1	L	Fredy Usme	\N	Soporte	2026-04-28 11:06:22.176111	2026-04-28 11:06:22.176111
+c576d845-b91c-4914-ac28-b00dc4aab2ec	2026-02-06	12671	1	M	Fredy Usme	\N	Soporte	2026-04-28 11:06:22.189121	2026-04-28 11:06:22.189121
+f6a3db8d-ce49-46c0-8794-f46dc545513f	2026-01-05	12644	1	L	Jackeline Perea	\N	Soporte	2026-04-28 11:06:22.199377	2026-04-28 11:06:22.199377
+82931808-4414-4ca0-be2c-21bda7381d22	2026-04-30	12987	2	L	jhon montoya	\N	Nury	2026-04-30 07:28:54.269214	2026-04-30 07:28:54.269214
+cb759c58-9351-4671-a4ab-0a06d448719d	2026-04-30	12968	1	M	Sandra Marin	\N	Nury	2026-04-30 09:03:00.355492	2026-04-30 09:03:00.355492
+1f8115fd-1f00-4be9-a691-b0434ff78493	2026-05-05	12968	1	L	jhon Fredy Usme	\N	Nury	2026-05-05 11:20:08.609055	2026-05-05 11:20:08.609055
+0da51035-fe02-4e37-83b0-452c3dc859ef	2026-05-05	13055	1	L	jhon Fredy Usme	\N	Nury	2026-05-05 11:20:55.619744	2026-05-05 11:20:55.619744
 \.
 
 
 --
--- TOC entry 5617 (class 0 OID 30046)
+-- TOC entry 5626 (class 0 OID 30046)
 -- Dependencies: 250
--- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.schema_migrations (id, migration_name, applied_at, success, error_message, execution_time_ms) FROM stdin;
@@ -6231,13 +12949,19 @@ COPY public.schema_migrations (id, migration_name, applied_at, success, error_me
 12	010_add_estado_revision_to_fichas_costo.sql	2026-04-20 09:15:49.910381	t	\N	2
 13	011_create_control_telas.sql	2026-04-20 09:15:49.913961	t	\N	2
 14	012_add_consecrem_preciocarro_preciomoto.sql	2026-04-20 09:15:49.917221	t	\N	52
+15	013_create_corte_registros.sql	2026-05-06 12:47:35.00596	t	\N	4
+16	014_add_tipo_vehiculo_to_transportistas.sql	2026-05-06 12:47:35.022737	t	\N	3
+17	014_remove_unique_numero_ficha.sql	2026-05-06 12:47:35.045889	t	\N	2
+18	015_create_salidas_bodega.sql	2026-05-06 12:47:35.050536	t	\N	2
+19	016_create_order_notes.sql	2026-05-06 12:47:35.054024	t	\N	81
+20	017_add_cod_of_cod_rm_to_clients.sql	2026-05-06 12:47:35.137314	t	\N	32
 \.
 
 
 --
--- TOC entry 5619 (class 0 OID 30056)
+-- TOC entry 5628 (class 0 OID 30056)
 -- Dependencies: 252
--- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: sellers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.sellers (id, name, active, created_at) FROM stdin;
@@ -6249,9 +12973,9 @@ mlia7rpjfmtwhg66q	Raul Gonzalez	1	2026-02-11 17:06:28
 
 
 --
--- TOC entry 5635 (class 0 OID 30391)
+-- TOC entry 5644 (class 0 OID 30391)
 -- Dependencies: 268
--- Data for Name: talleres; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: talleres; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.talleres (id, nombre, celular, direccion, sector, estado, created_at, updated_at, "PrecioCarro", "PrecioMoto") FROM stdin;
@@ -6270,6 +12994,7 @@ taller_1776107706508_h28cm	AURA RODRIGUEZ	3215186858	CALLE 49 A CARRERA 56 A -9 
 taller_1776107706509_0ztsv	LAURA LEON	3135520900	CALLE 111 CARRERA 43 AA 29 INTERIOR 110	POPULAR 2	activo	2026-04-13 14:15:06.510549	2026-04-13 14:15:06.510549		
 taller_1776107706514_zwx4s	DOLLY VARGAS	3105924202	CALLE 11 C SUR 54-44  SEGUNDO PISO	COLINITAS	activo	2026-04-13 14:15:06.515838	2026-04-13 14:15:06.515838		
 taller_1776107706518_zw6s8	YORLADIS CARMONA	3225875566	CRA 58A #65-22 FERRARA Y BALCONES DE SEVILLA	ITAGUI	activo	2026-04-13 14:15:06.518852	2026-04-13 14:15:06.518852		
+taller_1775858987949_yxyeh	DORALBA OSPINA	3146383740	CALLE 21 G CARRERA 41 B # 36  APT 9804	ZAMORA SANTA RITA	activo	2026-04-10 17:09:47.949492	2026-04-10 17:09:47.949492		
 taller_1776107706521_yhhmc	YENIFER LOAIZA	3016290611	CARRERA 69 # 35 SUR 157 SEGUNDO PISO CASA PREFABRICADA	SAN ANTONIO DE PRADO	activo	2026-04-13 14:15:06.522332	2026-04-13 14:15:06.522332		
 taller_1776107706523_dvvy7	ESPERANZA ARCILLA VALENCIA	3213763265	CALLE 111 F #64 A 28	TOSCANA	activo	2026-04-13 14:15:06.523561	2026-04-13 14:15:06.523561		
 taller_1776107706524_wrmjl	ANDREA GARNICA	3192376666	CARRERA 71  # 37-350 APARTAMENTOS TERRITORIO VERDE TARRE 1 APT 715	SAN ANTONIO DE PRADO	activo	2026-04-13 14:15:06.524911	2026-04-13 14:15:06.524911		
@@ -6355,25 +13080,140 @@ taller_1776107706722_das0v	LUISA FERNANDA QUIROZ	3244399156	CARR 59D  #41D SUR 2
 taller_1776107706723_1sp2p	NORELVIS HINESTROZA	3053080600	CALL 62 # 109A 12	VALLEJUELOS ROBLEDO	activo	2026-04-13 14:15:06.723944	2026-04-13 14:15:06.723944		
 taller_1776107706724_k2kby	OMAIRA VALDERRAMA	3023194996 - 3196199360	-	ALTAMIRA	activo	2026-04-13 14:15:06.725121	2026-04-13 14:15:06.725121		
 taller_1776107706519_4cdtm	AMPARO PEREZ	3116896314	SANTANA SALENTO 2 CLL 46 N 58 E 08	BELLO	activo	2026-04-13 14:15:06.520406	2026-04-20 09:47:18.922699	22500	16000
+taller_1775858987973_cr1kc	NANCY ARBOLEDA	3116940715	UNBANIZACION VILLA DEL PARQUE NO HAY NOMENCLATURA VARRIO PORVENIR CALLE 14 SUR # 58 B 05 VIVIENDAS DEL SUR	BARRIO EL PORVENIR	activo	2026-04-10 17:09:47.972523	2026-04-10 17:09:47.972523		
+taller_1775858987975_dy8xw	DORIS GONZALEZ	32256991506	CARRERA 89 B # 89-101 TORRE 16 APT 338 UNIDAD RECIDENCIAL ROBLEDO 2	BARRIO ROBLEDO VILLA SOFIA	activo	2026-04-10 17:09:47.974836	2026-04-10 17:09:47.974836		
+taller_1775858987977_sz4cc	ERICA GIL	3046377165	CALLE 52 ASUR #57-11 BARRIO  ARAGON	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:47.977099	2026-04-10 17:09:47.977099		
+taller_1775858987980_odgn7	ALBA ARCILA	3105955757	CALLE 35 A # 32-32 BARRIO EMILIO BOTERO	MARINILLA	activo	2026-04-10 17:09:47.979537	2026-04-10 17:09:47.979537		
+taller_1775858987982_d3ii9	DAMARIS GARCIA	3016081293	CARRERA 50 C # 93 C SUR 38 APT 401   DESPUES DE LOS HOTELES DE MONACO	LA ESTRELLA - ALTO DE LOS OSPINA	activo	2026-04-10 17:09:47.981784	2026-04-10 17:09:47.981784		
+taller_1775858987984_hr4nq	MARCELA GRACEANO	3162449863	CALLE 29 C 110  - 127  GUANTERO	BELEN AGUAS FRIAS	activo	2026-04-10 17:09:47.984231	2026-04-10 17:09:47.984231		
+taller_1775858987987_8c248	JULIAN CARDENAS	3026033654	DIAGONAL 31 D # 32 SUR 15	LA MAGNOLIA - ENVIGADO	activo	2026-04-10 17:09:47.986439	2026-04-10 17:09:47.986439		
+taller_1775858987989_6rptq	CAMILA CARDONA	3245395062	CALLE 53  SUR # 67- 112  BARICHARA	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:47.988798	2026-04-10 17:09:47.988798		
+taller_1775858987991_v6y20	VIVIANA  SEPULVEDA O      YUDIT	3216117240	CALLE 95A #38-41 3 PISO	MANRRIQUE - GUADALUPE	activo	2026-04-10 17:09:47.990752	2026-04-10 17:09:47.990752		
+taller_1775858987993_avms3	MARGARITA VASQUEZ	3227257501	DIAGONAL 59 # 38-90 MANZANA 1 CACIQUE  APT 138 BLOQUE 4	NIQUIA	activo	2026-04-10 17:09:47.9928	2026-04-10 17:09:47.9928		
+taller_1775858987995_98xsz	AURA RODRIGUEZ	3215186858	CALLE 49 A CARRERA 56 A -9 INTE 104 ESPIRITU SANTO	BELLO	activo	2026-04-10 17:09:47.994989	2026-04-10 17:09:47.994989		
+taller_1775858987998_zy1pc	LAURA LEON	3135520900	CALLE 111 CARRERA 43 AA 29 INTERIOR 110	POPULAR 2	activo	2026-04-10 17:09:47.997363	2026-04-10 17:09:47.997363		
+taller_1775858988000_fu8ea	DOLLY VARGAS	3105924202	CALLE 11 C SUR 54-44  SEGUNDO PISO	COLINITAS	activo	2026-04-10 17:09:47.999548	2026-04-10 17:09:47.999548		
+taller_1775858988002_tjfd4	YORLADIS CARMONA	3225875566	CRA 58A #65-22 FERRARA Y BALCONES DE SEVILLA	ITAGUI	activo	2026-04-10 17:09:48.001487	2026-04-10 17:09:48.001487		
+taller_1775858988005_jqdxm	AMPARO PEREZ	3116896314	SANTANA SALENTO 2 CLL 46 N 58 E 08	BELLO	activo	2026-04-10 17:09:48.004301	2026-04-10 17:09:48.004301		
+taller_1775858988009_vv02x	ESPERANZA ARCILLA VALENCIA	3213763265	CALLE 111 F #64 A 28	TOSCANA	activo	2026-04-10 17:09:48.009145	2026-04-10 17:09:48.009145		
+taller_1775858988012_oia7r	ANDREA GARNICA	3192376666	CARRERA 71  # 37-350 APARTAMENTOS TERRITORIO VERDE TARRE 1 APT 715	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:48.011701	2026-04-10 17:09:48.011701		
+taller_1775858988014_29z8p	ARASELY COTERA	3207042688	CALLE 47A  2A65	BUENOS AIRES VIA SANTA ELENA	activo	2026-04-10 17:09:48.013966	2026-04-10 17:09:48.013966		
+taller_1775858988016_9gqcu	CARMEN USUGA	3116715114	TRANSVERSAL 48 C SUR # 61 A 54 BARRIO	LIMONAR  2	activo	2026-04-10 17:09:48.016145	2026-04-10 17:09:48.016145		
+taller_1775858988019_wprpi	CAROLINA GALLEGO	3117920607	CRA 48 # 49-20	SANTUARIO	activo	2026-04-10 17:09:48.018312	2026-04-10 17:09:48.018312		
+taller_1775858988021_9ugvq	CLAUDIA ARISMENDI	3147424587	CALLE 36/N 92/27	SANTAMONICA	activo	2026-04-10 17:09:48.020528	2026-04-10 17:09:48.020528		
+taller_1775858988023_ibr3m	CLAUDIA FLOREZ ESTRADA	3013493275	CALLE 105 A # 48 AA 90 BARRIO VILLA DEL SOCORRO	SANTA CRUZ - ARANJUEZ	activo	2026-04-10 17:09:48.022681	2026-04-10 17:09:48.022681		
+taller_1775858988025_ol20l	CRUZ ELENA ZULUAGA	3144820043	CALLE 30  44-20  BARRIO LAS ACACIAS	MARINILLA	activo	2026-04-10 17:09:48.024835	2026-04-10 17:09:48.024835		
+taller_1775858988027_4fyg9	DEISY JIMENEZ	3216970765	CALLE 48AA # 52A-85 PISO 2	SANTUARIO	activo	2026-04-10 17:09:48.027037	2026-04-10 17:09:48.027037		
+taller_1775858988030_g4o8j	ELIZABETH RAMIREZ	3207320382	DIAGONAL 56  44-125 NIQUIA COMO REGENCIA ANTES DEL COLEGIO CONCEJO DE BELLO	NIQUIA	activo	2026-04-10 17:09:48.029613	2026-04-10 17:09:48.029613		
+taller_1775858988034_9bgth	EMMA JARAMILLO	3015745270	AV 46 # 68 A 68	BELLO	activo	2026-04-10 17:09:48.034329	2026-04-10 17:09:48.034329		
+taller_1775858988037_smxdq	HOIBER TORO	3204532339	CALLE 113 67-108 BARRIO FLORENCIA	CASTILLA	activo	2026-04-10 17:09:48.036324	2026-04-10 17:09:48.036324		
+taller_1775858988039_zamrt	LAURA MONTOYA	3105955757	CALLE 35 A # 32-32 BARRIO EMILIO BOTERO	MARINILLA	activo	2026-04-10 17:09:48.038271	2026-04-10 17:09:48.038271		
+taller_1775858988041_fd2si	LIDA LONDOÑO	3007828445	CALLE 33 # 55 - 05 GRAN AVENIDA	BELLO	activo	2026-04-10 17:09:48.040539	2026-04-10 17:09:48.040539		
+taller_1775858988043_jrsdv	LILIANA GARCIA	3117392750	CARRERA 51  49-27  BARRIO CAMILO TORRES EL SANTUARIO	SANTUARIO	activo	2026-04-10 17:09:48.04249	2026-04-10 17:09:48.04249		
+taller_1775858988045_sofvz	MARLENY RAMIREZ	3194979218	CALLE CALLE 30  # 41-20 MARIA AUXILIADORA AL FRENTE DONDE SALEN LOS MICROS PARA RIO NEGRO  PRIMER PISO	MARINILLA	activo	2026-04-10 17:09:48.044707	2026-04-10 17:09:48.044707		
+taller_1775858988047_okk25	MARY LU ROJO	3105377282	CALLE 32  57-28  LA GRAN AVENIDA	BELLO	activo	2026-04-10 17:09:48.04693	2026-04-10 17:09:48.04693		
+taller_1775858988049_vmrdg	MERY ALZATE	3012503589	CALLE 18 # 33-31 BARRIO BERNA	CARMEN DE VIBORAL	activo	2026-04-10 17:09:48.049071	2026-04-10 17:09:48.049071		
+taller_1775858988052_kgy7e	MARY LOPEZ - HIJA MELVA	3003194787	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	activo	2026-04-10 17:09:48.051303	2026-04-10 17:09:48.051303		
+taller_1775858988054_87918	MELVA GALLEGO	3157713374	CALLE 31 # 109-42 BELEN AGUAS	GUANTEROS	activo	2026-04-10 17:09:48.053389	2026-04-10 17:09:48.053389		
+taller_1775858988056_sdfmx	MICHEL CANO	3206181637	CALLE 49  51-52	SANTUARIO	activo	2026-04-10 17:09:48.055595	2026-04-10 17:09:48.055595		
+taller_1775858988058_smvkb	MILENA SALAZAR	3017311430	CALLE 67B # 55-12 IGLESIA EL GUAYABO Y SENA CALATRAVA	ITAGÜÍ	activo	2026-04-10 17:09:48.057783	2026-04-10 17:09:48.057783		
+taller_1775858988060_nyp05	PEDRO LLANEZ	3186882290	CRA 58 A # 65-27 SEGUNDO PISO  CALATRAVA	ITAGÜÍ	activo	2026-04-10 17:09:48.060128	2026-04-10 17:09:48.060128		
+taller_1775858988063_qivqc	VIVIANA OLAYA	3218855166	VEREDA SAN ESTEBAN  LLEGANDO POR	GIRARDOTA	activo	2026-04-10 17:09:48.0623	2026-04-10 17:09:48.0623		
+taller_1775858988065_ua41s	RUBY GONZALEZ	3104704510	CALLE 21N 71/50 BARRIO PARIS	PARIS	activo	2026-04-10 17:09:48.06443	2026-04-10 17:09:48.06443		
+taller_1775858988067_q5jn8	NIDIA MANRRIQUE	3105384617	CALLE 57C  97-AB40  INTERIOR 340  O INT 131 ALTOS DE CALAZANS	CALASANZ	activo	2026-04-10 17:09:48.067183	2026-04-10 17:09:48.067183		
+taller_1775858988070_zw7zs	MARIA TEREZA QUICENO	3002477189	CALLE 101CD # 83-31	12 DE OCTUBRE	activo	2026-04-10 17:09:48.069344	2026-04-10 17:09:48.069344		
+taller_1775858988072_977l5	ADRIANA TABORDA	3172819579	CALLE 110 B # 43 AA 16	POPULAR 1	activo	2026-04-10 17:09:48.071785	2026-04-10 17:09:48.071785		
+taller_1775858988074_0s6vy	JOSEFINA PULGARIN	3164469208	CALLE 80C N74-188- LOPEZ DE MESA	LOPEZ DE MESA	activo	2026-04-10 17:09:48.073902	2026-04-10 17:09:48.073902		
+taller_1775858988076_as89a	FLOR RAMOS           MASMELAS	3145155697	CARR 86 # 77AB 34 INT 201	ROBLEDO BELLO HORIZONTE	activo	2026-04-10 17:09:48.076028	2026-04-10 17:09:48.076028		
+taller_1775858988078_rbh93	DORIS LOPERA	3017227142	CALL 55 # 46-21 BELLO	LAS GRANJAS - PRADO	activo	2026-04-10 17:09:48.078173	2026-04-10 17:09:48.078173		
+taller_1775858988081_k7l4x	CLAUDIA SIERRA	3146021287	CAR 46  #106 A 28 INT 302	ANDALUCIA LA FRANCIA	activo	2026-04-10 17:09:48.080329	2026-04-10 17:09:48.080329		
+taller_1775858988032_ln13i	ELVIA MUÑOZ	3146819597	CARR 89 # 44B 78	BARRIO LA AMERICA	activo	2026-04-10 17:09:48.03176	2026-05-06 08:31:57.487419		
+taller_1775858988083_6ft3i	YENNY MUÑOZ SALAZAR	3026221102	CALL 40A SUR #59-40 INT 201	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:48.082453	2026-04-10 17:09:48.082453		
+taller_1775858988086_15asi	JADER MAZO	3015703383	CALL 64 #17-85 INTR 119	ENCISO	activo	2026-04-10 17:09:48.086111	2026-04-10 17:09:48.086111		
+taller_1775858988089_nstnj	CAMILA RAMIREZ/ JOERGE BERRIO	3042063599	CARR 81# 54-51 INT 101	CALASANZ	activo	2026-04-10 17:09:48.088278	2026-04-10 17:09:48.088278		
+taller_1775858988091_d5vjv	MARIA EUGENIA COSIO	3003277941	CALL 119 #42C47 INT 103	POPULAR 1	activo	2026-04-10 17:09:48.090438	2026-04-10 17:09:48.090438		
+taller_1775858988093_98hs5	DIANA CORREA	3104665496	CALL 83 #57-22	ARAUCARIAS 1	activo	2026-04-10 17:09:48.092635	2026-04-10 17:09:48.092635		
+taller_1775858988095_fzzv8	ARASELY COTERA	3207042688	CALLE 47A  2A65	BUENOS AIRES VIA SANTA ELENA	activo	2026-04-10 17:09:48.095059	2026-04-10 17:09:48.095059		
+taller_1775858988098_xtzdp	MARIA ISABEL BARTOLO	3011941181	CARR 56 # 46-37	EL ROSARIO -  ITAGUI	activo	2026-04-10 17:09:48.097705	2026-04-10 17:09:48.097705		
+taller_1775858988103_tomxp	ADRIANA AMAYA	3214694146	DIAGONAL 58 # 43-46	NIQUIA	activo	2026-04-10 17:09:48.103053	2026-04-10 17:09:48.103053		
+taller_1775858988106_1b0qk	EBETH BELEÑO ARIZA	3205268697	CALL 45D # 16C 30	LOS CERROS BUENOS AIRES	activo	2026-04-10 17:09:48.105379	2026-04-10 17:09:48.105379		
+taller_1775858988108_z0moq	MARIA JIMENEZ	3246599224	CIUDADELA ARTESANAL CARR 45A # 19-27  INT 101	MARINILLA	activo	2026-04-10 17:09:48.107598	2026-04-10 17:09:48.107598		
+taller_1775858988110_pykcx	LAURA GARCIA	3136078884	CALL 24 # 30-44  NUEVA AVENIDA SEGUNDO PISO	MARINILLA	activo	2026-04-10 17:09:48.109975	2026-04-10 17:09:48.109975		
+taller_1775858988115_9loan	DIANA HERRERA / KEVIN	3136221086 - 3046309187	DIAGONAL 55 # 46-46 PRIM PISO	NIQUIA PARTE BAJA	activo	2026-04-10 17:09:48.114771	2026-04-10 17:09:48.114771		
+taller_1775858988117_ctnlg	YESENIA MEDINA	3015643215	DIAG 69B  # av 39b-96	ALTOS DE NIQUIA	activo	2026-04-10 17:09:48.11689	2026-04-10 17:09:48.11689		
+taller_1775858988119_xcmsd	YOLANDA NARANJO	3165453837	CARR 72A # 98-08	CASTILLA	activo	2026-04-10 17:09:48.118989	2026-04-10 17:09:48.118989		
+taller_1775858988121_v2ffq	MARY LUZ CANO	3022788347	CARR 55 #54-44	BELLO LA OBRA  2000	activo	2026-04-10 17:09:48.12096	2026-04-10 17:09:48.12096		
+taller_1775858988124_7r9w1	JAZMIN MONTOYA	3117761263	CARR 65 #52C 33 INT 102	EL CARMELO BELLO	activo	2026-04-10 17:09:48.123338	2026-04-10 17:09:48.123338		
+taller_1775858988126_3zrvc	OLGA LUCIA ALZATE	3043367407	CALL 53A # 52-15	ARTEX ITAGUI	activo	2026-04-10 17:09:48.125469	2026-04-10 17:09:48.125469		
+taller_1775858988128_d43wl	MARITZA ALVAREZ	3004505802	CARR 66A # 47B 28 LA MISERICORDIA	COPACAVANA	activo	2026-04-10 17:09:48.128095	2026-04-10 17:09:48.128095		
+taller_1775858988130_sb40d	LUZ FANEIRA / ANA ISABEL	3215877450	CALL 103G # 64D 30 PRIMER PISO BARRIO	GIRARDOT	activo	2026-04-10 17:09:48.130228	2026-04-10 17:09:48.130228		
+taller_1775858988133_gtb1r	ANA JULIETA RUA	3045832657	CR 53A # 89-53	ARANJUEZ	activo	2026-04-10 17:09:48.132456	2026-04-10 17:09:48.132456		
+taller_1775858988135_1sxd8	TERESA USUGA	3217035197	CARR 30 # 111- 142	POPULAR 1	activo	2026-04-10 17:09:48.134663	2026-04-10 17:09:48.134663		
+taller_1775858988137_sbxl7	OMAIRA /ASTRID DAHIANY ACEVEDO	3197956268	CARR 76 # 45-40 EDIF GARDEL	MANRRIQUE CENTRAL	activo	2026-04-10 17:09:48.136872	2026-04-10 17:09:48.136872		
+taller_1775858988139_41qds	ADRIANA SIERRA GARCIA	3128372738	CALL 105A # 74-8	PEDREGAL	activo	2026-04-10 17:09:48.139059	2026-04-10 17:09:48.139059		
+taller_1775858988141_etvdr	YALIDES FERNANDEZ DURAN	3002550065	CALL 62 # 109A 12	VALLEJUELOS ROBLEDO	activo	2026-04-10 17:09:48.141244	2026-04-10 17:09:48.141244		
+taller_1775858988144_10up0	SANDRA ALVAREZ	3024448001	CARR 65 #93-115	CASTILLA	activo	2026-04-10 17:09:48.143994	2026-04-10 17:09:48.143994		
+taller_1775858988146_bn5xj	YAMILE VALENCIA/ ALEJANDRO DELGADO	3044286143	CARR 41A  # 86A 49	MANRRIQUE LAS GRANJAS	activo	2026-04-10 17:09:48.14601	2026-04-10 17:09:48.14601		
+taller_1775858988148_17gbl	GLADYS ELENA RIVERA HIGUITA	3233305339	CARR 47 # 76 SUR 12	B/CERAMICA - SABANETA	activo	2026-04-10 17:09:48.148024	2026-04-10 17:09:48.148024		
+taller_1775858988150_tegyw	LEIDY JOHANA RENDON	3028298070	CALL 89 # 54-38 INT 103	ARANJUES	activo	2026-04-10 17:09:48.15005	2026-04-10 17:09:48.15005		
+taller_1775858988152_3514d	LEIDY SELENE SOTO	3108973012	CALL 55 #7- 165 INT 104	CAICEDO LA ARENERA	activo	2026-04-10 17:09:48.152124	2026-04-10 17:09:48.152124		
+taller_1775858988154_c096j	NIDIA ALVAREZ	3126330676	CALL 82 # 50BB 35	CAMPO VALDEZ	activo	2026-04-10 17:09:48.154268	2026-04-10 17:09:48.154268		
+taller_1775858988156_r3mtm	DINA VELASQUEZ	3103683980	CARR 27 # 73SUR 38	SABANETA	activo	2026-04-10 17:09:48.156186	2026-04-10 17:09:48.156186		
+taller_1775858988158_y2cvv	FABIAN HERRERA	3193516277 - 3106908091	CALL 116 # 77- 50	SANTANDER	activo	2026-04-10 17:09:48.158195	2026-04-10 17:09:48.158195		
+taller_1775858988160_yqhgt	DIEGO / KELLY JOHANA SORNO	3013071535	CALL 76CC #90B 07 INT 301	ROBLEDO CURAZAO	activo	2026-04-10 17:09:48.160178	2026-04-10 17:09:48.160178		
+taller_1775858988162_1o3iu	ELISA ZULUAGA	3193310554	AVEN 32A # 42EE 177 INT 102	FONTIDUEÑO LA MINA	activo	2026-04-10 17:09:48.162137	2026-04-10 17:09:48.162137		
+taller_1775858988164_bz44p	ELIANA ZAPATA	3180026969	CARR 55 #95A13	ARANJUEZ PALERMO	activo	2026-04-10 17:09:48.164106	2026-04-10 17:09:48.164106		
+taller_1775858988166_w8aws	ASTRID YANET SOTO	3146747082	DIAGONAL58CC #28-40 2 PISO	CABAÑAS	activo	2026-04-10 17:09:48.166191	2026-04-10 17:09:48.166191		
+taller_1775858988169_7vkae	PATRICIA JARAMILLO	3243638937	CARR89 # 31- 74	BELEN LAS VIOLETAS	activo	2026-04-10 17:09:48.168329	2026-04-10 17:09:48.168329		
+taller_1775858988171_v2pk9	MARTA TORRES	3108430727	CALL 31D # 100B 33 INT 201	BELEN LAS VIOLETAS	activo	2026-04-10 17:09:48.170314	2026-04-10 17:09:48.170314		
+taller_1775858988173_lw230	ANA MAUSA	3147001701	CALL 84 # 50E 53  POR LA QUEBRADA AL FONDO	CAMPO VALDEZ	activo	2026-04-10 17:09:48.172322	2026-04-10 17:09:48.172322		
+taller_1775858988175_secni	ALEJANDRA PEREZ	3218850499	DIAGONAL  60 37-20	NIQUIA	activo	2026-04-10 17:09:48.174358	2026-04-10 17:09:48.174358		
+taller_1775858988177_sq59k	NATALIA GONSALEZ	3137144101	CARR 54 #100-69 INT 150	SANTA CRUZ LA ROSA	activo	2026-04-10 17:09:48.176584	2026-04-10 17:09:48.176584		
+taller_1775858988179_0j37w	EDIER SALZAR	3188201158	CALL 118 # 42B 054	POPULAR 1	activo	2026-04-10 17:09:48.178849	2026-04-10 17:09:48.178849		
+taller_1775858988181_1fmrf	ANGELICA JARAMILLO	3026639387	CARR 97 # 48A63	LA PRADERA SAN JAVIER	activo	2026-04-10 17:09:48.181074	2026-04-10 17:09:48.181074		
+taller_1775858988184_ajsk0	LORENA GOMEZ	3023241110	CARR 50  CALL  107B SUR #50-06	CALDAS	activo	2026-04-10 17:09:48.183299	2026-04-10 17:09:48.183299		
+taller_1775858988186_qeje0	SHIRLEY CASTAÑEDA	3207585487	CALL 124A SUR #50B12	CALDAS	activo	2026-04-10 17:09:48.185512	2026-04-10 17:09:48.185512		
+taller_1775858988188_tra75	JAZMIN CAROLINA GIL	3122746029	CALL 56 #58FF 28 INT 201	ITAGUI EL TABLAZO	activo	2026-04-10 17:09:48.187753	2026-04-10 17:09:48.187753		
+taller_1775858988190_x51fl	LUISA FERNANDA QUIROZ	3244399156	CARR 59D  #41D SUR 23	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:48.189876	2026-04-10 17:09:48.189876		
+taller_1775858988192_30vqs	NORELVIS HINESTROZA	3053080600	CALL 62 # 109A 12	VALLEJUELOS ROBLEDO	activo	2026-04-10 17:09:48.191867	2026-04-10 17:09:48.191867		
+taller_1775858988195_eyhyg	OMAIRA VALDERRAMA	3023194996 - 3196199360	-	ALTAMIRA	activo	2026-04-10 17:09:48.194384	2026-04-10 17:09:48.194384		
+1776113760703	RAMON CANO TINTORERIA	3104307071	CRR 95 # 79A 12	ROBLEDO AURES	activo	2026-04-13 15:56:00.668482	2026-04-13 15:56:00.668482		
+1776113886700	ALEJANDRA CHAVERRA	3148683039	CLL 25 # 65 a 50 piso 302	GUAYABAL	activo	2026-04-13 15:58:06.652768	2026-04-13 15:58:06.652768		
+1776114178467	CLARA HERRERA	3104088906	CRA 53 # 48-28 PISO 3	CENTRO - MEDELLIN	activo	2026-04-13 16:02:58.410055	2026-04-13 16:02:58.410055		
+1776114220371	HERNAN LONDOÑO	3013755299	CALLE 83  43-31	MANRRIQUE CENTRAL	activo	2026-04-13 16:03:40.30794	2026-04-13 16:03:40.30794		
+1776114356366	MEDIA NARANJA	-	-	BELLO	activo	2026-04-13 16:05:56.302655	2026-04-13 16:05:56.302655		
+1776370709907	YAKELINE ARDILA INSUMOS	3007217550	CARRERA 97 A #48C 16  TERCER PISO	SAN JAVIER	activo	2026-04-16 15:18:28.36475	2026-04-16 15:18:28.36475		
+1776370755631	RETEX	3052408193	CALLE 21A  54-49	SANTA FE POR EL ZOOLOGICO	activo	2026-04-16 15:19:14.083324	2026-04-16 15:19:14.083324		
+1776370794065	AURA ANGELICA OSPINA OJAL Y BOTON	3136483932	CALLE 75 # 49 - 111	CARMELO ITAGUI SANTA MARIA	activo	2026-04-16 15:19:52.522733	2026-04-16 15:19:52.522733		
+1776370830727	DIANA IDARRAGA (DIEGO HIDALGO)	3206748963	CARRERA 39  60-54	VILLA HERMOSA	activo	2026-04-16 15:20:29.17999	2026-04-16 15:20:29.17999		
+1776370854666	EDWARD QUINTERO	-	CALLE 55 # 52-53 	CENTRO 	activo	2026-04-16 15:20:53.115255	2026-04-16 15:20:53.115255		
+1776370878159	DORA LAVANDERIA	3137449098	CALLE 67 B 46-29	ITAGUI SIMON BOLIVAR	activo	2026-04-16 15:21:16.610166	2026-04-16 15:21:16.610166		
+1776370909470	MARTHA BOTONES	-	CALLE 76  52D  118	ITAGUI SANTA MARIA	activo	2026-04-16 15:21:47.923675	2026-04-16 15:21:47.923675		
+1776372965040	VARIOS	-	-	-	activo	2026-04-16 15:56:03.481837	2026-04-16 15:56:03.481837		
+taller_1775858988007_s7vmn	JENIFER LOAIZA	3016290611	CARRERA 69 # 35 SUR 157 SEGUNDO PISO CASA PREFABRICADA	SAN ANTONIO DE PRADO	activo	2026-04-10 17:09:48.006864	2026-04-17 10:57:47.206173		
+taller_1775858988113_6v5cj	MARIU CUBILLON	3042872273	BARRIO MARIA     CALL 47 # 29-39  3 PISO	COPACABANA	activo	2026-04-10 17:09:48.112605	2026-04-24 10:45:45.532466		
 \.
 
 
 --
--- TOC entry 5634 (class 0 OID 30375)
+-- TOC entry 5643 (class 0 OID 30375)
 -- Dependencies: 267
--- Data for Name: transportistas; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: transportistas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.transportistas (id, nombre, celular, picoyplaca, color_key, created_at, updated_at, tipo_vehiculo) FROM stdin;
 1775831586590	Jose Luis Bolivar	3113345979	Jueves	purple	2026-04-10 09:33:06.606994	2026-04-10 09:33:06.606994	carro
 1775831540780	Gilberto Marin	3216327607	Martes	green	2026-04-10 09:32:20.840341	2026-04-10 09:48:54.528597	moto
+1775834987396	Jose Luis Bolivar	311 3345979		orange	2026-04-10 10:29:46.782026	2026-04-10 10:29:46.782026	carro
+1776262553732	John Efrain 	314 6318803		blue	2026-04-15 09:15:53.433036	2026-04-15 17:39:40.669782	carro
+1775834940034	Gilberto Marin	321 6327607	Miércoles	green	2026-04-10 10:28:59.597495	2026-04-22 14:12:32.67656	moto
 \.
 
 
 --
--- TOC entry 5620 (class 0 OID 30064)
+-- TOC entry 5629 (class 0 OID 30064)
 -- Dependencies: 253
--- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: user_sessions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_activity) FROM stdin;
@@ -6620,22 +13460,49 @@ COPY public.user_sessions (id, user_id, socket_id, status, connected_at, last_ac
 5072	mm3x7j6m4p6s4g2zz	O5mt-OfykcoN90eNAAAE	online	2026-04-23 08:36:28.384891	2026-04-23 08:36:28.384891
 5073	mm3x7j6m4p6s4g2zz	s5g0FqMjdA-hySpKAAAD	online	2026-04-24 11:56:18.093896	2026-04-24 11:56:18.093896
 5065	mm3x7j6m4p6s4g2zz	04k0tbp-zIFXlUlKAAAL	online	2026-04-23 07:58:38.630967	2026-04-23 07:58:38.630967
+5143	mm9a66x3tqtxja160	KMC2owVSSMD6y_x9AAAL	online	2026-05-06 09:58:33.074719	2026-05-06 09:58:33.074719
+5148	mm9a66x3tqtxja160	EY-02P-gW35Hejs3AAAD	online	2026-05-06 13:28:12.551812	2026-05-06 13:28:12.551812
 5071	mm3x7j6m4p6s4g2zz	4gF32rFfIQEvW6pXAAAX	online	2026-04-23 08:33:49.656365	2026-04-23 08:33:49.656365
 5079	mm9a66x3tqtxja160	33Dl536WLe_mGIJVAAAV	online	2026-04-27 11:15:13.14288	2026-04-27 11:15:13.14288
 5083	mm9a66x3tqtxja160	ZNBoXsQMJlAramd9AAAO	online	2026-04-27 11:47:22.077037	2026-04-27 11:47:22.077037
+6630	mm3x7j6m4p6s4g2zz	3QmxWejJz29mJO7dAAAP	online	2026-05-07 09:20:49.390543	2026-05-07 09:20:49.390543
 5127	mm9a66x3tqtxja160	Jja1f1QOaJWbcP3XAAAS	online	2026-04-28 08:03:30.518436	2026-04-28 08:03:30.518436
 5128	mm3x7j6m4p6s4g2zz	l3y2hjOlwiYr3jmvAAAB	online	2026-04-30 07:54:59.641996	2026-04-30 07:54:59.641996
 5130	mm3x7j6m4p6s4g2zz	xYPJzOEsaVT782ZqAAAH	online	2026-05-04 14:35:12.766931	2026-05-04 14:35:12.766931
 5137	mm3x7j6m4p6s4g2zz	GPFyoUjf252AdQ8MAAAD	online	2026-05-04 15:51:36.178788	2026-05-04 15:51:36.178788
 5140	mm9a66x3tqtxja160	EkiXW8cPwXMNBH8CAAAH	online	2026-05-06 09:50:17.585881	2026-05-06 09:50:17.585881
-5141	mm9a66x3tqtxja160	qqNTyDGHKU4rPP9lAAAD	online	2026-05-06 09:51:28.50051	2026-05-06 09:51:28.50051
+6626	mm9a66x3tqtxja160	i0P5SC6bh1bFVG3zAAAO	online	2026-05-06 16:15:54.820708	2026-05-06 16:15:54.820708
+6567	mo05zneg1t2jzs5xw	81RIYDTs_G2QMkaBAABf	online	2026-05-06 07:12:09.333689	2026-05-06 07:12:09.333689
+6590	mm3wcdhk7ksjtfh97	2-iIdRF7OGm6amPtAAGp	online	2026-05-06 13:47:17.523793	2026-05-06 13:47:17.523793
+6603	mo05zneg1t2jzs5xw	AcggxULAkcmR8mYoAAAd	online	2026-05-06 14:12:15.42951	2026-05-06 14:12:15.42951
+6419	mmtovpuh0hhrz20qp	Z6JL0AjyYrBd5VuKAACG	online	2026-04-30 07:24:58.766232	2026-04-30 07:24:58.766232
+6577	mm3wcdhk7ksjtfh97	dVM_7stvgUqQw17dAABv	online	2026-05-06 12:47:15.127816	2026-05-06 12:47:15.127816
+6484	mmze56k4iwquqhbul	gSJjZD4TiluHLZ3BAABO	online	2026-05-04 13:44:56.172898	2026-05-04 13:44:56.172898
+6456	mmxyjrub7hx690dr8	jnXbVI-FxpCbttwjAAAj	online	2026-05-04 08:11:48.505008	2026-05-04 08:11:48.505008
+6591	mm3wcdhk7ksjtfh97	PADL4ABnuWhT0_HIAAAG	online	2026-05-06 13:47:17.599813	2026-05-06 13:47:17.599813
+6608	mmxyjrub7hx690dr8	AG_SK1g-ReNpMuJcAAHJ	online	2026-05-06 14:32:26.842494	2026-05-06 14:32:26.842494
+6612	mmtovpuh0hhrz20qp	fwX5L1m0W-bzRt01AAA5	online	2026-05-06 14:58:41.146254	2026-05-06 14:58:41.146254
+6614	mmze56k4iwquqhbul	QPLCRBL9DmObssgRAAA9	online	2026-05-06 15:04:52.632608	2026-05-06 15:04:52.632608
+6625	mm9a66x3tqtxja160	LO6csPym2cWDNRHxAABT	online	2026-05-06 15:33:37.891555	2026-05-06 15:33:37.891555
+6426	mmxyjrub7hx690dr8	Dr7yPRjkgb-KSNupAACa	online	2026-04-30 08:06:33.389752	2026-04-30 08:06:33.389752
+6578	mmxyjrub7hx690dr8	UsSE-9DLR52XUanTAABy	online	2026-05-06 13:32:25.066233	2026-05-06 13:32:25.066233
+6596	mm3wcdhk7ksjtfh97	M4hHapzOFfJ62OuUAAAQ	online	2026-05-06 13:57:44.587323	2026-05-06 13:57:44.587323
+6605	mmxyjrub7hx690dr8	rXFowEk7EH0swufOAAAk	online	2026-05-06 14:16:43.815496	2026-05-06 14:16:43.815496
+6609	mo7ajdl6fc9afjka9	N9vK8y4DmZytWhhWAAAq	online	2026-05-06 14:52:39.13389	2026-05-06 14:52:39.13389
+6613	mmze56k4iwquqhbul	dOhCLmiYQ0KSZZsRAAA7	online	2026-05-06 15:04:51.504789	2026-05-06 15:04:51.504789
+6574	mm3wcdhk7ksjtfh97	00dAwz72IzhU9Nq3AABs	online	2026-05-06 09:11:17.676664	2026-05-06 09:11:17.676664
+6492	mmcek5ivcck8np2xg	sRz0gMQVHK_gv6UAAABc	online	2026-05-04 16:26:50.740062	2026-05-04 16:26:50.740062
+6637	mm9a66x3tqtxja160	4Nu-YCgIVldrLbzQAAAK	online	2026-05-08 10:26:27.883371	2026-05-08 10:26:27.883371
+5146	mm9a66x3tqtxja160	lETsWhiUHj1bB7y0AAAH	online	2026-05-06 13:07:52.0313	2026-05-06 13:07:52.0313
+5147	mm9a66x3tqtxja160	_EtiggxzutIk1b9HAAAE	online	2026-05-06 13:09:13.055776	2026-05-06 13:09:13.055776
+6634	mm3x7j6m4p6s4g2zz	qQbzN5MDBvEH8JTlAAAO	online	2026-05-08 09:38:13.496819	2026-05-08 09:38:13.496819
 \.
 
 
 --
--- TOC entry 5622 (class 0 OID 30076)
+-- TOC entry 5631 (class 0 OID 30076)
 -- Dependencies: 255
--- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: user_view_preferences; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_at) FROM stdin;
@@ -6649,9 +13516,9 @@ COPY public.user_view_preferences (id, user_id, view_order, created_at, updated_
 
 
 --
--- TOC entry 5624 (class 0 OID 30088)
+-- TOC entry 5633 (class 0 OID 30088)
 -- Dependencies: 257
--- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.users (id, name, login_code, pin_hash, role, active, created_at, updated_at) FROM stdin;
@@ -6663,131 +13530,131 @@ mmze56k4iwquqhbul	JHON USME	JFG	$2b$10$8fzGakof84VaCnJowzH3X.K5wM4a8H8NM1VhXPdyI
 mnz4dtr7cjkuro4cl	observer	OOO	$2b$10$pxtDBPpDZfxl9trAee1hcOgIau9Zm1v2Y3Mveu3r9oXLzx9U5nP3y	diseñadora	1	\N	2026-04-21 09:58:46.506835
 mnqljykxkrdnn8ip4	asasas	AAA	$2b$10$yfughZOCIkXkCOQbAmQ1h.PiGpYZ.hYKYEYKeocVRUgOyAeZSLAOi	general	1	\N	2026-04-21 14:47:45.654565
 mmznzctvojut4aax3	General	GGG	$2b$10$AZLbemyplVmxJ5uq/NNM4eJ1pdsIlOdVYCwCV8a5be4xXBNRMR9/a	operador	1	\N	2026-04-21 14:48:38.63186
-mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-05-06 09:04:30.196477
-mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-05-06 09:50:14.138432
+mm3x7j6m4p6s4g2zz	Jhon Montoya	JAM	$2b$10$HVWTGPseIo.4.kY81/hl9uBwSz9wZkDsDiXljkIKP1f4goh9OqDhW	admin	1	\N	2026-05-08 07:13:25.195253
+mm9a66x3tqtxja160	Soporte	SOP	$2b$10$B0nqx9NnkI63ADOtIgo9L.A7apvra4LlQkZMG0yE4B1iWWK1QfeVy	soporte	1	2026-03-02 09:35:02.154124	2026-05-08 10:25:51.558915
 \.
 
 
 --
--- TOC entry 5662 (class 0 OID 0)
+-- TOC entry 5674 (class 0 OID 0)
 -- Dependencies: 225
--- Name: correria_novedades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: correria_novedades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.correria_novedades_id_seq', 1, true);
+SELECT pg_catalog.setval('public.correria_novedades_id_seq', 37, true);
 
 
 --
--- TOC entry 5663 (class 0 OID 0)
+-- TOC entry 5675 (class 0 OID 0)
 -- Dependencies: 261
--- Name: cuentas_bancarias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: cuentas_bancarias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cuentas_bancarias_id_seq', 369, true);
+SELECT pg_catalog.setval('public.cuentas_bancarias_id_seq', 370, true);
 
 
 --
--- TOC entry 5664 (class 0 OID 0)
+-- TOC entry 5676 (class 0 OID 0)
 -- Dependencies: 265
--- Name: descuentos_pago_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: descuentos_pago_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.descuentos_pago_id_seq', 6, true);
+SELECT pg_catalog.setval('public.descuentos_pago_id_seq', 25, true);
 
 
 --
--- TOC entry 5665 (class 0 OID 0)
+-- TOC entry 5677 (class 0 OID 0)
 -- Dependencies: 229
--- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: dispatch_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dispatch_items_id_seq', 929, true);
+SELECT pg_catalog.setval('public.dispatch_items_id_seq', 1959, true);
 
 
 --
--- TOC entry 5666 (class 0 OID 0)
+-- TOC entry 5678 (class 0 OID 0)
 -- Dependencies: 239
--- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.messages_id_seq', 137, true);
+SELECT pg_catalog.setval('public.messages_id_seq', 155, true);
 
 
 --
--- TOC entry 5667 (class 0 OID 0)
+-- TOC entry 5679 (class 0 OID 0)
 -- Dependencies: 259
--- Name: pago_lotes_config_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: pago_lotes_config_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.pago_lotes_config_id_seq', 3, true);
 
 
 --
--- TOC entry 5668 (class 0 OID 0)
+-- TOC entry 5680 (class 0 OID 0)
 -- Dependencies: 263
--- Name: pagos_programados_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: pagos_programados_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pagos_programados_id_seq', 5, true);
+SELECT pg_catalog.setval('public.pagos_programados_id_seq', 17, true);
 
 
 --
--- TOC entry 5669 (class 0 OID 0)
+-- TOC entry 5681 (class 0 OID 0)
 -- Dependencies: 245
--- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.reception_items_id_seq', 100, true);
+SELECT pg_catalog.setval('public.reception_items_id_seq', 338, true);
 
 
 --
--- TOC entry 5670 (class 0 OID 0)
+-- TOC entry 5682 (class 0 OID 0)
 -- Dependencies: 248
--- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: return_reception_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.return_reception_items_id_seq', 10, true);
+SELECT pg_catalog.setval('public.return_reception_items_id_seq', 90, true);
 
 
 --
--- TOC entry 5671 (class 0 OID 0)
+-- TOC entry 5683 (class 0 OID 0)
 -- Dependencies: 251
--- Name: schema_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: schema_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.schema_migrations_id_seq', 14, true);
+SELECT pg_catalog.setval('public.schema_migrations_id_seq', 12, true);
 
 
 --
--- TOC entry 5672 (class 0 OID 0)
+-- TOC entry 5684 (class 0 OID 0)
 -- Dependencies: 254
--- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: user_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_sessions_id_seq', 5141, true);
+SELECT pg_catalog.setval('public.user_sessions_id_seq', 6637, true);
 
 
 --
--- TOC entry 5673 (class 0 OID 0)
+-- TOC entry 5685 (class 0 OID 0)
 -- Dependencies: 256
--- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: user_view_preferences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 34, true);
+SELECT pg_catalog.setval('public.user_view_preferences_id_seq', 8, true);
 
 
 --
--- TOC entry 5674 (class 0 OID 0)
+-- TOC entry 5686 (class 0 OID 0)
 -- Dependencies: 258
--- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --
--- TOC entry 5240 (class 2606 OID 30109)
--- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5245 (class 2606 OID 30109)
+-- Name: audit_log audit_log_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.audit_log
@@ -6795,8 +13662,8 @@ ALTER TABLE ONLY public.audit_log
 
 
 --
--- TOC entry 5242 (class 2606 OID 30111)
--- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5247 (class 2606 OID 30111)
+-- Name: clients clients_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.clients
@@ -6804,8 +13671,8 @@ ALTER TABLE ONLY public.clients
 
 
 --
--- TOC entry 5248 (class 2606 OID 30113)
--- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5253 (class 2606 OID 30113)
+-- Name: compras compras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.compras
@@ -6813,8 +13680,8 @@ ALTER TABLE ONLY public.compras
 
 
 --
--- TOC entry 5254 (class 2606 OID 30115)
--- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5259 (class 2606 OID 30115)
+-- Name: confeccionistas confeccionistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.confeccionistas
@@ -6822,8 +13689,8 @@ ALTER TABLE ONLY public.confeccionistas
 
 
 --
--- TOC entry 5409 (class 2606 OID 32108)
--- Name: control_telas_muestras control_telas_muestras_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5414 (class 2606 OID 32108)
+-- Name: control_telas_muestras control_telas_muestras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.control_telas_muestras
@@ -6831,8 +13698,8 @@ ALTER TABLE ONLY public.control_telas_muestras
 
 
 --
--- TOC entry 5404 (class 2606 OID 32080)
--- Name: control_telas_produccion control_telas_produccion_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5409 (class 2606 OID 32080)
+-- Name: control_telas_produccion control_telas_produccion_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.control_telas_produccion
@@ -6840,8 +13707,8 @@ ALTER TABLE ONLY public.control_telas_produccion
 
 
 --
--- TOC entry 5256 (class 2606 OID 30117)
--- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5261 (class 2606 OID 30117)
+-- Name: correria_catalog correria_catalog_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.correria_catalog
@@ -6849,8 +13716,8 @@ ALTER TABLE ONLY public.correria_catalog
 
 
 --
--- TOC entry 5258 (class 2606 OID 30119)
--- Name: correria_novedades correria_novedades_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5263 (class 2606 OID 30119)
+-- Name: correria_novedades correria_novedades_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.correria_novedades
@@ -6858,8 +13725,8 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 5261 (class 2606 OID 30121)
--- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5266 (class 2606 OID 30121)
+-- Name: correrias correrias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.correrias
@@ -6867,8 +13734,8 @@ ALTER TABLE ONLY public.correrias
 
 
 --
--- TOC entry 5414 (class 2606 OID 32137)
--- Name: corte_registros corte_registros_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5419 (class 2606 OID 32137)
+-- Name: corte_registros corte_registros_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.corte_registros
@@ -6876,8 +13743,8 @@ ALTER TABLE ONLY public.corte_registros
 
 
 --
--- TOC entry 5366 (class 2606 OID 30315)
--- Name: cuentas_bancarias cuentas_bancarias_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5371 (class 2606 OID 30315)
+-- Name: cuentas_bancarias cuentas_bancarias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.cuentas_bancarias
@@ -6885,8 +13752,8 @@ ALTER TABLE ONLY public.cuentas_bancarias
 
 
 --
--- TOC entry 5263 (class 2606 OID 30123)
--- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5268 (class 2606 OID 30123)
+-- Name: delivery_dates delivery_dates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.delivery_dates
@@ -6894,8 +13761,8 @@ ALTER TABLE ONLY public.delivery_dates
 
 
 --
--- TOC entry 5375 (class 2606 OID 30365)
--- Name: descuentos_pago descuentos_pago_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5380 (class 2606 OID 30365)
+-- Name: descuentos_pago descuentos_pago_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.descuentos_pago
@@ -6903,8 +13770,8 @@ ALTER TABLE ONLY public.descuentos_pago
 
 
 --
--- TOC entry 5267 (class 2606 OID 30125)
--- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5272 (class 2606 OID 30125)
+-- Name: disenadoras disenadoras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.disenadoras
@@ -6912,8 +13779,8 @@ ALTER TABLE ONLY public.disenadoras
 
 
 --
--- TOC entry 5269 (class 2606 OID 30127)
--- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5274 (class 2606 OID 30127)
+-- Name: dispatch_items dispatch_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.dispatch_items
@@ -6921,8 +13788,8 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5273 (class 2606 OID 30129)
--- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5278 (class 2606 OID 30129)
+-- Name: dispatches dispatches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.dispatches
@@ -6930,8 +13797,8 @@ ALTER TABLE ONLY public.dispatches
 
 
 --
--- TOC entry 5278 (class 2606 OID 30131)
--- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5283 (class 2606 OID 30131)
+-- Name: fichas_cortes fichas_cortes_ficha_costo_id_numero_corte_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_cortes
@@ -6939,8 +13806,8 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5280 (class 2606 OID 30133)
--- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5285 (class 2606 OID 30133)
+-- Name: fichas_cortes fichas_cortes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_cortes
@@ -6948,8 +13815,8 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5283 (class 2606 OID 30135)
--- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5288 (class 2606 OID 30135)
+-- Name: fichas_costo fichas_costo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_costo
@@ -6957,8 +13824,8 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5285 (class 2606 OID 30137)
--- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5290 (class 2606 OID 30137)
+-- Name: fichas_costo fichas_costo_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_costo
@@ -6966,8 +13833,8 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5288 (class 2606 OID 30139)
--- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5293 (class 2606 OID 30139)
+-- Name: fichas_diseno fichas_diseno_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_diseno
@@ -6975,8 +13842,8 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5290 (class 2606 OID 30141)
--- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5295 (class 2606 OID 30141)
+-- Name: fichas_diseno fichas_diseno_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_diseno
@@ -6984,8 +13851,8 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5298 (class 2606 OID 30143)
--- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5303 (class 2606 OID 30143)
+-- Name: inventory_movements inventory_movements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.inventory_movements
@@ -6993,8 +13860,8 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5300 (class 2606 OID 30145)
--- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5305 (class 2606 OID 30145)
+-- Name: maletas maletas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.maletas
@@ -7002,8 +13869,8 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5304 (class 2606 OID 30147)
--- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5309 (class 2606 OID 30147)
+-- Name: maletas_referencias maletas_referencias_maleta_id_referencia_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.maletas_referencias
@@ -7011,8 +13878,8 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5306 (class 2606 OID 30149)
--- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5311 (class 2606 OID 30149)
+-- Name: maletas_referencias maletas_referencias_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.maletas_referencias
@@ -7020,8 +13887,8 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5312 (class 2606 OID 30151)
--- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5317 (class 2606 OID 30151)
+-- Name: messages messages_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.messages
@@ -7029,8 +13896,17 @@ ALTER TABLE ONLY public.messages
 
 
 --
--- TOC entry 5321 (class 2606 OID 30153)
--- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5432 (class 2606 OID 32199)
+-- Name: order_notes order_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_notes
+    ADD CONSTRAINT order_notes_pkey PRIMARY KEY (order_id);
+
+
+--
+-- TOC entry 5326 (class 2606 OID 30153)
+-- Name: orders orders_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.orders
@@ -7038,8 +13914,8 @@ ALTER TABLE ONLY public.orders
 
 
 --
--- TOC entry 5362 (class 2606 OID 30299)
--- Name: pago_lotes_config pago_lotes_config_clave_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5367 (class 2606 OID 30299)
+-- Name: pago_lotes_config pago_lotes_config_clave_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pago_lotes_config
@@ -7047,8 +13923,8 @@ ALTER TABLE ONLY public.pago_lotes_config
 
 
 --
--- TOC entry 5364 (class 2606 OID 30297)
--- Name: pago_lotes_config pago_lotes_config_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5369 (class 2606 OID 30297)
+-- Name: pago_lotes_config pago_lotes_config_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pago_lotes_config
@@ -7056,8 +13932,8 @@ ALTER TABLE ONLY public.pago_lotes_config
 
 
 --
--- TOC entry 5373 (class 2606 OID 30339)
--- Name: pagos_programados pagos_programados_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5378 (class 2606 OID 30339)
+-- Name: pagos_programados pagos_programados_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pagos_programados
@@ -7065,8 +13941,8 @@ ALTER TABLE ONLY public.pagos_programados
 
 
 --
--- TOC entry 5323 (class 2606 OID 30155)
--- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5328 (class 2606 OID 30155)
+-- Name: product_references product_references_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.product_references
@@ -7074,8 +13950,8 @@ ALTER TABLE ONLY public.product_references
 
 
 --
--- TOC entry 5326 (class 2606 OID 30157)
--- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5331 (class 2606 OID 30157)
+-- Name: production_tracking production_tracking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.production_tracking
@@ -7083,8 +13959,8 @@ ALTER TABLE ONLY public.production_tracking
 
 
 --
--- TOC entry 5402 (class 2606 OID 32045)
--- Name: producto_en_proceso producto_en_proceso_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5407 (class 2606 OID 32045)
+-- Name: producto_en_proceso producto_en_proceso_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.producto_en_proceso
@@ -7092,8 +13968,8 @@ ALTER TABLE ONLY public.producto_en_proceso
 
 
 --
--- TOC entry 5329 (class 2606 OID 30159)
--- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5334 (class 2606 OID 30159)
+-- Name: reception_items reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.reception_items
@@ -7101,8 +13977,8 @@ ALTER TABLE ONLY public.reception_items
 
 
 --
--- TOC entry 5333 (class 2606 OID 30161)
--- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5338 (class 2606 OID 30161)
+-- Name: receptions receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.receptions
@@ -7110,8 +13986,8 @@ ALTER TABLE ONLY public.receptions
 
 
 --
--- TOC entry 5335 (class 2606 OID 30163)
--- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5340 (class 2606 OID 30163)
+-- Name: return_reception_items return_reception_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.return_reception_items
@@ -7119,8 +13995,8 @@ ALTER TABLE ONLY public.return_reception_items
 
 
 --
--- TOC entry 5337 (class 2606 OID 30165)
--- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5342 (class 2606 OID 30165)
+-- Name: return_receptions return_receptions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.return_receptions
@@ -7128,8 +14004,8 @@ ALTER TABLE ONLY public.return_receptions
 
 
 --
--- TOC entry 5393 (class 2606 OID 30451)
--- Name: rutas_transporte_items rutas_transporte_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5398 (class 2606 OID 30451)
+-- Name: rutas_transporte_items rutas_transporte_items_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rutas_transporte_items
@@ -7137,8 +14013,8 @@ ALTER TABLE ONLY public.rutas_transporte_items
 
 
 --
--- TOC entry 5390 (class 2606 OID 30421)
--- Name: rutas_transporte rutas_transporte_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5395 (class 2606 OID 30421)
+-- Name: rutas_transporte rutas_transporte_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rutas_transporte
@@ -7146,8 +14022,8 @@ ALTER TABLE ONLY public.rutas_transporte
 
 
 --
--- TOC entry 5424 (class 2606 OID 32170)
--- Name: salidas_bodega salidas_bodega_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5429 (class 2606 OID 32170)
+-- Name: salidas_bodega salidas_bodega_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.salidas_bodega
@@ -7155,8 +14031,8 @@ ALTER TABLE ONLY public.salidas_bodega
 
 
 --
--- TOC entry 5339 (class 2606 OID 30167)
--- Name: schema_migrations schema_migrations_migration_name_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5344 (class 2606 OID 30167)
+-- Name: schema_migrations schema_migrations_migration_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.schema_migrations
@@ -7164,8 +14040,8 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- TOC entry 5341 (class 2606 OID 30169)
--- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5346 (class 2606 OID 30169)
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.schema_migrations
@@ -7173,8 +14049,8 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
--- TOC entry 5343 (class 2606 OID 30171)
--- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5348 (class 2606 OID 30171)
+-- Name: sellers sellers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.sellers
@@ -7182,8 +14058,8 @@ ALTER TABLE ONLY public.sellers
 
 
 --
--- TOC entry 5385 (class 2606 OID 30409)
--- Name: talleres talleres_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5390 (class 2606 OID 30409)
+-- Name: talleres talleres_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.talleres
@@ -7191,8 +14067,8 @@ ALTER TABLE ONLY public.talleres
 
 
 --
--- TOC entry 5381 (class 2606 OID 30389)
--- Name: transportistas transportistas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5386 (class 2606 OID 30389)
+-- Name: transportistas transportistas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.transportistas
@@ -7200,8 +14076,8 @@ ALTER TABLE ONLY public.transportistas
 
 
 --
--- TOC entry 5348 (class 2606 OID 30173)
--- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5353 (class 2606 OID 30173)
+-- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_sessions
@@ -7209,8 +14085,8 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5350 (class 2606 OID 30175)
--- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5355 (class 2606 OID 30175)
+-- Name: user_sessions user_sessions_user_id_socket_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_sessions
@@ -7218,8 +14094,8 @@ ALTER TABLE ONLY public.user_sessions
 
 
 --
--- TOC entry 5353 (class 2606 OID 30177)
--- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5358 (class 2606 OID 30177)
+-- Name: user_view_preferences user_view_preferences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_view_preferences
@@ -7227,8 +14103,8 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5355 (class 2606 OID 30179)
--- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5360 (class 2606 OID 30179)
+-- Name: user_view_preferences user_view_preferences_user_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_view_preferences
@@ -7236,8 +14112,8 @@ ALTER TABLE ONLY public.user_view_preferences
 
 
 --
--- TOC entry 5359 (class 2606 OID 30181)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5364 (class 2606 OID 30181)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users
@@ -7245,688 +14121,696 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 5243 (class 1259 OID 30182)
--- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5248 (class 1259 OID 30182)
+-- Name: idx_clients_active; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_clients_active ON public.clients USING btree (active);
 
 
 --
--- TOC entry 5244 (class 1259 OID 30183)
--- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5249 (class 1259 OID 30183)
+-- Name: idx_clients_name; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_clients_name ON public.clients USING btree (name);
 
 
 --
--- TOC entry 5245 (class 1259 OID 30184)
--- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5250 (class 1259 OID 30184)
+-- Name: idx_clients_nit; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_clients_nit ON public.clients USING btree (nit);
 
 
 --
--- TOC entry 5246 (class 1259 OID 30185)
--- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5251 (class 1259 OID 30185)
+-- Name: idx_clients_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_clients_seller_id ON public.clients USING btree (seller_id);
 
 
 --
--- TOC entry 5249 (class 1259 OID 30186)
--- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5254 (class 1259 OID 30186)
+-- Name: idx_compras_afecta_inventario; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_compras_afecta_inventario ON public.compras USING btree (afecta_inventario);
 
 
 --
--- TOC entry 5250 (class 1259 OID 30187)
--- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5255 (class 1259 OID 30187)
+-- Name: idx_compras_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_compras_fecha ON public.compras USING btree (fecha);
 
 
 --
--- TOC entry 5251 (class 1259 OID 30188)
--- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5256 (class 1259 OID 30188)
+-- Name: idx_compras_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_compras_insumo ON public.compras USING btree (insumo);
 
 
 --
--- TOC entry 5252 (class 1259 OID 30189)
--- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5257 (class 1259 OID 30189)
+-- Name: idx_compras_proveedor; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_compras_proveedor ON public.compras USING btree (proveedor);
 
 
 --
--- TOC entry 5259 (class 1259 OID 30190)
--- Name: idx_correria_novedades_correria_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5264 (class 1259 OID 30190)
+-- Name: idx_correria_novedades_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_correria_novedades_correria_id ON public.correria_novedades USING btree (correria_id);
 
 
 --
--- TOC entry 5415 (class 1259 OID 32143)
--- Name: idx_corte_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5420 (class 1259 OID 32143)
+-- Name: idx_corte_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_corte_created_at ON public.corte_registros USING btree (created_at DESC);
 
 
 --
--- TOC entry 5416 (class 1259 OID 32142)
--- Name: idx_corte_fecha_corte; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5421 (class 1259 OID 32142)
+-- Name: idx_corte_fecha_corte; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_corte_fecha_corte ON public.corte_registros USING btree (fecha_corte);
 
 
 --
--- TOC entry 5417 (class 1259 OID 32141)
--- Name: idx_corte_numero_ficha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5422 (class 1259 OID 32141)
+-- Name: idx_corte_numero_ficha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_corte_numero_ficha ON public.corte_registros USING btree (numero_ficha);
 
 
 --
--- TOC entry 5418 (class 1259 OID 32140)
--- Name: idx_corte_referencia; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5423 (class 1259 OID 32140)
+-- Name: idx_corte_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_corte_referencia ON public.corte_registros USING btree (referencia);
 
 
 --
--- TOC entry 5410 (class 1259 OID 32114)
--- Name: idx_ctm_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5415 (class 1259 OID 32114)
+-- Name: idx_ctm_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctm_fecha ON public.control_telas_muestras USING btree (fecha_compra);
 
 
 --
--- TOC entry 5411 (class 1259 OID 32113)
--- Name: idx_ctm_prov; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5416 (class 1259 OID 32113)
+-- Name: idx_ctm_prov; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctm_prov ON public.control_telas_muestras USING btree (lower((proveedor)::text));
 
 
 --
--- TOC entry 5412 (class 1259 OID 32112)
--- Name: idx_ctm_tela; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5417 (class 1259 OID 32112)
+-- Name: idx_ctm_tela; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctm_tela ON public.control_telas_muestras USING btree (lower((tela)::text));
 
 
 --
--- TOC entry 5405 (class 1259 OID 32111)
--- Name: idx_ctp_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5410 (class 1259 OID 32111)
+-- Name: idx_ctp_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctp_fecha ON public.control_telas_produccion USING btree (fecha_compra);
 
 
 --
--- TOC entry 5406 (class 1259 OID 32110)
--- Name: idx_ctp_prov; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5411 (class 1259 OID 32110)
+-- Name: idx_ctp_prov; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctp_prov ON public.control_telas_produccion USING btree (lower((proveedor)::text));
 
 
 --
--- TOC entry 5407 (class 1259 OID 32109)
--- Name: idx_ctp_tela; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5412 (class 1259 OID 32109)
+-- Name: idx_ctp_tela; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_ctp_tela ON public.control_telas_produccion USING btree (lower((tela)::text));
 
 
 --
--- TOC entry 5367 (class 1259 OID 30317)
--- Name: idx_cuentas_bancarias_cedula; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5372 (class 1259 OID 30317)
+-- Name: idx_cuentas_bancarias_cedula; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_cuentas_bancarias_cedula ON public.cuentas_bancarias USING btree (cedula);
 
 
 --
--- TOC entry 5368 (class 1259 OID 30316)
--- Name: idx_cuentas_bancarias_nombre; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5373 (class 1259 OID 30316)
+-- Name: idx_cuentas_bancarias_nombre; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_cuentas_bancarias_nombre ON public.cuentas_bancarias USING btree (lower((nombre)::text));
 
 
 --
--- TOC entry 5264 (class 1259 OID 30191)
--- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5269 (class 1259 OID 30191)
+-- Name: idx_delivery_dates_confeccionista_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_delivery_dates_confeccionista_id ON public.delivery_dates USING btree (confeccionista_id);
 
 
 --
--- TOC entry 5265 (class 1259 OID 30192)
--- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5270 (class 1259 OID 30192)
+-- Name: idx_delivery_dates_reference_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_delivery_dates_reference_id ON public.delivery_dates USING btree (reference_id);
 
 
 --
--- TOC entry 5376 (class 1259 OID 30371)
--- Name: idx_descuentos_pago_pago_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5381 (class 1259 OID 30371)
+-- Name: idx_descuentos_pago_pago_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_descuentos_pago_pago_id ON public.descuentos_pago USING btree (pago_id);
 
 
 --
--- TOC entry 5377 (class 1259 OID 30372)
--- Name: idx_descuentos_pago_tipo; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5382 (class 1259 OID 30372)
+-- Name: idx_descuentos_pago_tipo; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_descuentos_pago_tipo ON public.descuentos_pago USING btree (tipo);
 
 
 --
--- TOC entry 5270 (class 1259 OID 30193)
--- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5275 (class 1259 OID 30193)
+-- Name: idx_dispatch_items_dispatch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_dispatch_items_dispatch_id ON public.dispatch_items USING btree (dispatch_id);
 
 
 --
--- TOC entry 5271 (class 1259 OID 30194)
--- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5276 (class 1259 OID 30194)
+-- Name: idx_dispatch_items_reference; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_dispatch_items_reference ON public.dispatch_items USING btree (reference);
 
 
 --
--- TOC entry 5274 (class 1259 OID 30195)
--- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5279 (class 1259 OID 30195)
+-- Name: idx_dispatches_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_dispatches_client_id ON public.dispatches USING btree (client_id);
 
 
 --
--- TOC entry 5275 (class 1259 OID 30196)
--- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5280 (class 1259 OID 30196)
+-- Name: idx_dispatches_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_dispatches_correria_id ON public.dispatches USING btree (correria_id);
 
 
 --
--- TOC entry 5276 (class 1259 OID 30197)
--- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5281 (class 1259 OID 30197)
+-- Name: idx_dispatches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_dispatches_created_at ON public.dispatches USING btree (created_at);
 
 
 --
--- TOC entry 5281 (class 1259 OID 30198)
--- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5286 (class 1259 OID 30198)
+-- Name: idx_fichas_cortes_ficha_costo; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_fichas_cortes_ficha_costo ON public.fichas_cortes USING btree (ficha_costo_id);
 
 
 --
--- TOC entry 5286 (class 1259 OID 30199)
--- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5291 (class 1259 OID 30199)
+-- Name: idx_fichas_costo_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_fichas_costo_referencia ON public.fichas_costo USING btree (referencia);
 
 
 --
--- TOC entry 5291 (class 1259 OID 30200)
--- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5296 (class 1259 OID 30200)
+-- Name: idx_fichas_diseno_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_fichas_diseno_referencia ON public.fichas_diseno USING btree (referencia);
 
 
 --
--- TOC entry 5292 (class 1259 OID 30201)
--- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5297 (class 1259 OID 30201)
+-- Name: idx_inventory_movements_compra_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_inventory_movements_compra_id ON public.inventory_movements USING btree (compra_id);
 
 
 --
--- TOC entry 5293 (class 1259 OID 30202)
--- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5298 (class 1259 OID 30202)
+-- Name: idx_inventory_movements_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_inventory_movements_created_at ON public.inventory_movements USING btree (created_at);
 
 
 --
--- TOC entry 5294 (class 1259 OID 30203)
--- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5299 (class 1259 OID 30203)
+-- Name: idx_inventory_movements_insumo; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_inventory_movements_insumo ON public.inventory_movements USING btree (lower((insumo)::text));
 
 
 --
--- TOC entry 5295 (class 1259 OID 30204)
--- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5300 (class 1259 OID 30204)
+-- Name: idx_inventory_movements_movimiento; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_inventory_movements_movimiento ON public.inventory_movements USING btree (movimiento);
 
 
 --
--- TOC entry 5296 (class 1259 OID 30205)
--- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5301 (class 1259 OID 30205)
+-- Name: idx_inventory_movements_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_inventory_movements_referencia ON public.inventory_movements USING btree (lower((referencia_destino)::text));
 
 
 --
--- TOC entry 5301 (class 1259 OID 30206)
--- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5306 (class 1259 OID 30206)
+-- Name: idx_maletas_referencias_maleta; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_maletas_referencias_maleta ON public.maletas_referencias USING btree (maleta_id);
 
 
 --
--- TOC entry 5302 (class 1259 OID 30207)
--- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5307 (class 1259 OID 30207)
+-- Name: idx_maletas_referencias_maleta_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_maletas_referencias_maleta_id ON public.maletas_referencias USING btree (maleta_id);
 
 
 --
--- TOC entry 5307 (class 1259 OID 30208)
--- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5312 (class 1259 OID 30208)
+-- Name: idx_messages_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_messages_created_at ON public.messages USING btree (created_at);
 
 
 --
--- TOC entry 5308 (class 1259 OID 30209)
--- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5313 (class 1259 OID 30209)
+-- Name: idx_messages_read; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_messages_read ON public.messages USING btree (read);
 
 
 --
--- TOC entry 5309 (class 1259 OID 30210)
--- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5314 (class 1259 OID 30210)
+-- Name: idx_messages_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_messages_receiver ON public.messages USING btree (receiver_id);
 
 
 --
--- TOC entry 5310 (class 1259 OID 30211)
--- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5315 (class 1259 OID 30211)
+-- Name: idx_messages_sender_receiver; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_messages_sender_receiver ON public.messages USING btree (sender_id, receiver_id);
 
 
 --
--- TOC entry 5313 (class 1259 OID 30212)
--- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5318 (class 1259 OID 30212)
+-- Name: idx_order_items_order_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_order_items_order_id ON public.order_items USING btree (order_id);
 
 
 --
--- TOC entry 5314 (class 1259 OID 30213)
--- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5430 (class 1259 OID 32205)
+-- Name: idx_order_notes_order_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_order_notes_order_id ON public.order_notes USING btree (order_id);
+
+
+--
+-- TOC entry 5319 (class 1259 OID 30213)
+-- Name: idx_orders_client_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_client_id ON public.orders USING btree (client_id);
 
 
 --
--- TOC entry 5315 (class 1259 OID 30214)
--- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5320 (class 1259 OID 30214)
+-- Name: idx_orders_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_correria_id ON public.orders USING btree (correria_id);
 
 
 --
--- TOC entry 5316 (class 1259 OID 30215)
--- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5321 (class 1259 OID 30215)
+-- Name: idx_orders_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_created_at ON public.orders USING btree (created_at);
 
 
 --
--- TOC entry 5317 (class 1259 OID 30216)
--- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5322 (class 1259 OID 30216)
+-- Name: idx_orders_end_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_end_date ON public.orders USING btree (end_date);
 
 
 --
--- TOC entry 5318 (class 1259 OID 30217)
--- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5323 (class 1259 OID 30217)
+-- Name: idx_orders_seller_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_seller_id ON public.orders USING btree (seller_id);
 
 
 --
--- TOC entry 5319 (class 1259 OID 30218)
--- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5324 (class 1259 OID 30218)
+-- Name: idx_orders_start_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_orders_start_date ON public.orders USING btree (start_date);
 
 
 --
--- TOC entry 5360 (class 1259 OID 30300)
--- Name: idx_pago_lotes_config_clave; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5365 (class 1259 OID 30300)
+-- Name: idx_pago_lotes_config_clave; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pago_lotes_config_clave ON public.pago_lotes_config USING btree (clave);
 
 
 --
--- TOC entry 5369 (class 1259 OID 30347)
--- Name: idx_pagos_programados_cuenta_bancaria_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5374 (class 1259 OID 30347)
+-- Name: idx_pagos_programados_cuenta_bancaria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pagos_programados_cuenta_bancaria_id ON public.pagos_programados USING btree (cuenta_bancaria_id);
 
 
 --
--- TOC entry 5370 (class 1259 OID 30345)
--- Name: idx_pagos_programados_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5375 (class 1259 OID 30345)
+-- Name: idx_pagos_programados_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pagos_programados_fecha ON public.pagos_programados USING btree (fecha);
 
 
 --
--- TOC entry 5371 (class 1259 OID 30346)
--- Name: idx_pagos_programados_nombre; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5376 (class 1259 OID 30346)
+-- Name: idx_pagos_programados_nombre; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pagos_programados_nombre ON public.pagos_programados USING btree (lower((nombre)::text));
 
 
 --
--- TOC entry 5394 (class 1259 OID 32052)
--- Name: idx_pep_conf_llegada; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5399 (class 1259 OID 32052)
+-- Name: idx_pep_conf_llegada; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_conf_llegada ON public.producto_en_proceso USING btree (confeccionista, fecha_llegada);
 
 
 --
--- TOC entry 5395 (class 1259 OID 32046)
--- Name: idx_pep_confeccionista; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5400 (class 1259 OID 32046)
+-- Name: idx_pep_confeccionista; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_confeccionista ON public.producto_en_proceso USING btree (lower((confeccionista)::text));
 
 
 --
--- TOC entry 5396 (class 1259 OID 32050)
--- Name: idx_pep_fecha_llegada; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5401 (class 1259 OID 32050)
+-- Name: idx_pep_fecha_llegada; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_fecha_llegada ON public.producto_en_proceso USING btree (fecha_llegada);
 
 
 --
--- TOC entry 5397 (class 1259 OID 32049)
--- Name: idx_pep_fecha_remision; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5402 (class 1259 OID 32049)
+-- Name: idx_pep_fecha_remision; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_fecha_remision ON public.producto_en_proceso USING btree (fecha_remision);
 
 
 --
--- TOC entry 5398 (class 1259 OID 32051)
--- Name: idx_pep_pendientes; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5403 (class 1259 OID 32051)
+-- Name: idx_pep_pendientes; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_pendientes ON public.producto_en_proceso USING btree (fecha_llegada) WHERE (fecha_llegada IS NULL);
 
 
 --
--- TOC entry 5399 (class 1259 OID 32047)
--- Name: idx_pep_ref; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5404 (class 1259 OID 32047)
+-- Name: idx_pep_ref; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_ref ON public.producto_en_proceso USING btree (ref);
 
 
 --
--- TOC entry 5400 (class 1259 OID 32048)
--- Name: idx_pep_remision; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5405 (class 1259 OID 32048)
+-- Name: idx_pep_remision; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_pep_remision ON public.producto_en_proceso USING btree (remision);
 
 
 --
--- TOC entry 5324 (class 1259 OID 30219)
--- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5329 (class 1259 OID 30219)
+-- Name: idx_production_tracking_correria_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_production_tracking_correria_id ON public.production_tracking USING btree (correria_id);
 
 
 --
--- TOC entry 5327 (class 1259 OID 30220)
--- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5332 (class 1259 OID 30220)
+-- Name: idx_reception_items_reception_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_reception_items_reception_id ON public.reception_items USING btree (reception_id);
 
 
 --
--- TOC entry 5330 (class 1259 OID 30221)
--- Name: idx_receptions_arrival_date; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5335 (class 1259 OID 30221)
+-- Name: idx_receptions_arrival_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_receptions_arrival_date ON public.receptions USING btree (arrival_date);
 
 
 --
--- TOC entry 5331 (class 1259 OID 30222)
--- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5336 (class 1259 OID 30222)
+-- Name: idx_receptions_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_receptions_created_at ON public.receptions USING btree (created_at);
 
 
 --
--- TOC entry 5386 (class 1259 OID 30427)
--- Name: idx_rutas_transporte_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5391 (class 1259 OID 30427)
+-- Name: idx_rutas_transporte_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_rutas_transporte_fecha ON public.rutas_transporte USING btree (fecha);
 
 
 --
--- TOC entry 5391 (class 1259 OID 30457)
--- Name: idx_rutas_transporte_items_ruta; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5396 (class 1259 OID 30457)
+-- Name: idx_rutas_transporte_items_ruta; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_rutas_transporte_items_ruta ON public.rutas_transporte_items USING btree (ruta_id);
 
 
 --
--- TOC entry 5387 (class 1259 OID 30428)
--- Name: idx_rutas_transporte_transportista; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5392 (class 1259 OID 30428)
+-- Name: idx_rutas_transporte_transportista; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_rutas_transporte_transportista ON public.rutas_transporte USING btree (transportista_id);
 
 
 --
--- TOC entry 5388 (class 1259 OID 30429)
--- Name: idx_rutas_transporte_unique; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5393 (class 1259 OID 30429)
+-- Name: idx_rutas_transporte_unique; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE UNIQUE INDEX idx_rutas_transporte_unique ON public.rutas_transporte USING btree (fecha, transportista_id);
 
 
 --
--- TOC entry 5419 (class 1259 OID 32173)
--- Name: idx_sb_devolucion; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5424 (class 1259 OID 32173)
+-- Name: idx_sb_devolucion; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_sb_devolucion ON public.salidas_bodega USING btree (fecha_devolucion);
 
 
 --
--- TOC entry 5420 (class 1259 OID 32172)
--- Name: idx_sb_fecha; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5425 (class 1259 OID 32172)
+-- Name: idx_sb_fecha; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_sb_fecha ON public.salidas_bodega USING btree (fecha);
 
 
 --
--- TOC entry 5421 (class 1259 OID 32174)
--- Name: idx_sb_quien; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5426 (class 1259 OID 32174)
+-- Name: idx_sb_quien; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_sb_quien ON public.salidas_bodega USING btree (lower((quien_recibe)::text));
 
 
 --
--- TOC entry 5422 (class 1259 OID 32171)
--- Name: idx_sb_referencia; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5427 (class 1259 OID 32171)
+-- Name: idx_sb_referencia; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_sb_referencia ON public.salidas_bodega USING btree (lower((referencia)::text));
 
 
 --
--- TOC entry 5382 (class 1259 OID 30411)
--- Name: idx_talleres_estado; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5387 (class 1259 OID 30411)
+-- Name: idx_talleres_estado; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_talleres_estado ON public.talleres USING btree (estado);
 
 
 --
--- TOC entry 5383 (class 1259 OID 30410)
--- Name: idx_talleres_nombre; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5388 (class 1259 OID 30410)
+-- Name: idx_talleres_nombre; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_talleres_nombre ON public.talleres USING btree (lower((nombre)::text));
 
 
 --
--- TOC entry 5378 (class 1259 OID 30390)
--- Name: idx_transportistas_nombre; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5383 (class 1259 OID 30390)
+-- Name: idx_transportistas_nombre; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_transportistas_nombre ON public.transportistas USING btree (lower((nombre)::text));
 
 
 --
--- TOC entry 5379 (class 1259 OID 32147)
--- Name: idx_transportistas_tipo_vehiculo; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5384 (class 1259 OID 32147)
+-- Name: idx_transportistas_tipo_vehiculo; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_transportistas_tipo_vehiculo ON public.transportistas USING btree (tipo_vehiculo);
 
 
 --
--- TOC entry 5344 (class 1259 OID 30223)
--- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5349 (class 1259 OID 30223)
+-- Name: idx_user_sessions_last_activity; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_user_sessions_last_activity ON public.user_sessions USING btree (last_activity);
 
 
 --
--- TOC entry 5345 (class 1259 OID 30224)
--- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5350 (class 1259 OID 30224)
+-- Name: idx_user_sessions_status; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_user_sessions_status ON public.user_sessions USING btree (status);
 
 
 --
--- TOC entry 5346 (class 1259 OID 30225)
--- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5351 (class 1259 OID 30225)
+-- Name: idx_user_sessions_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_user_sessions_user_id ON public.user_sessions USING btree (user_id);
 
 
 --
--- TOC entry 5351 (class 1259 OID 30226)
--- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5356 (class 1259 OID 30226)
+-- Name: idx_user_view_preferences_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_user_view_preferences_user_id ON public.user_view_preferences USING btree (user_id);
 
 
 --
--- TOC entry 5356 (class 1259 OID 30227)
--- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5361 (class 1259 OID 30227)
+-- Name: idx_users_login_code; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_users_login_code ON public.users USING btree (login_code);
 
 
 --
--- TOC entry 5357 (class 1259 OID 30228)
--- Name: idx_users_role; Type: INDEX; Schema: public; Owner: -
+-- TOC entry 5362 (class 1259 OID 30228)
+-- Name: idx_users_role; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_users_role ON public.users USING btree (role);
 
 
 --
--- TOC entry 5438 (class 2620 OID 30229)
--- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: -
+-- TOC entry 5447 (class 2620 OID 30229)
+-- Name: user_view_preferences trigger_update_user_view_preferences_timestamp; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
 CREATE TRIGGER trigger_update_user_view_preferences_timestamp BEFORE UPDATE ON public.user_view_preferences FOR EACH ROW EXECUTE FUNCTION public.update_user_view_preferences_timestamp();
 
 
 --
--- TOC entry 5425 (class 2606 OID 30230)
--- Name: correria_novedades correria_novedades_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5433 (class 2606 OID 30230)
+-- Name: correria_novedades correria_novedades_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.correria_novedades
@@ -7934,8 +14818,8 @@ ALTER TABLE ONLY public.correria_novedades
 
 
 --
--- TOC entry 5435 (class 2606 OID 30366)
--- Name: descuentos_pago descuentos_pago_pago_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5443 (class 2606 OID 30366)
+-- Name: descuentos_pago descuentos_pago_pago_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.descuentos_pago
@@ -7943,8 +14827,8 @@ ALTER TABLE ONLY public.descuentos_pago
 
 
 --
--- TOC entry 5427 (class 2606 OID 30235)
--- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5435 (class 2606 OID 30235)
+-- Name: fichas_cortes fichas_cortes_ficha_costo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_cortes
@@ -7952,8 +14836,8 @@ ALTER TABLE ONLY public.fichas_cortes
 
 
 --
--- TOC entry 5428 (class 2606 OID 30240)
--- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5436 (class 2606 OID 30240)
+-- Name: fichas_costo fichas_costo_ficha_diseno_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_costo
@@ -7961,8 +14845,8 @@ ALTER TABLE ONLY public.fichas_costo
 
 
 --
--- TOC entry 5429 (class 2606 OID 30245)
--- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5437 (class 2606 OID 30245)
+-- Name: fichas_diseno fichas_diseno_disenadora_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.fichas_diseno
@@ -7970,8 +14854,8 @@ ALTER TABLE ONLY public.fichas_diseno
 
 
 --
--- TOC entry 5426 (class 2606 OID 30250)
--- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5434 (class 2606 OID 30250)
+-- Name: dispatch_items fk_dispatch_items_dispatch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.dispatch_items
@@ -7979,8 +14863,8 @@ ALTER TABLE ONLY public.dispatch_items
 
 
 --
--- TOC entry 5430 (class 2606 OID 30255)
--- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5438 (class 2606 OID 30255)
+-- Name: inventory_movements inventory_movements_compra_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.inventory_movements
@@ -7988,8 +14872,8 @@ ALTER TABLE ONLY public.inventory_movements
 
 
 --
--- TOC entry 5431 (class 2606 OID 30260)
--- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5439 (class 2606 OID 30260)
+-- Name: maletas maletas_correria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.maletas
@@ -7997,8 +14881,8 @@ ALTER TABLE ONLY public.maletas
 
 
 --
--- TOC entry 5432 (class 2606 OID 30265)
--- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5440 (class 2606 OID 30265)
+-- Name: maletas_referencias maletas_referencias_maleta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.maletas_referencias
@@ -8006,8 +14890,17 @@ ALTER TABLE ONLY public.maletas_referencias
 
 
 --
--- TOC entry 5434 (class 2606 OID 30340)
--- Name: pagos_programados pagos_programados_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5446 (class 2606 OID 32200)
+-- Name: order_notes order_notes_order_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.order_notes
+    ADD CONSTRAINT order_notes_order_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 5442 (class 2606 OID 30340)
+-- Name: pagos_programados pagos_programados_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.pagos_programados
@@ -8015,8 +14908,8 @@ ALTER TABLE ONLY public.pagos_programados
 
 
 --
--- TOC entry 5437 (class 2606 OID 30452)
--- Name: rutas_transporte_items rutas_transporte_items_ruta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5445 (class 2606 OID 30452)
+-- Name: rutas_transporte_items rutas_transporte_items_ruta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rutas_transporte_items
@@ -8024,8 +14917,8 @@ ALTER TABLE ONLY public.rutas_transporte_items
 
 
 --
--- TOC entry 5436 (class 2606 OID 30422)
--- Name: rutas_transporte rutas_transporte_transportista_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5444 (class 2606 OID 30422)
+-- Name: rutas_transporte rutas_transporte_transportista_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rutas_transporte
@@ -8033,19 +14926,28 @@ ALTER TABLE ONLY public.rutas_transporte
 
 
 --
--- TOC entry 5433 (class 2606 OID 30270)
--- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- TOC entry 5441 (class 2606 OID 30270)
+-- Name: user_view_preferences user_view_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_view_preferences
     ADD CONSTRAINT user_view_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2026-05-06 15:52:25
+--
+-- TOC entry 5660 (class 0 OID 0)
+-- Dependencies: 5
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE USAGE ON SCHEMA public FROM PUBLIC;
+
+
+-- Completed on 2026-05-08 16:26:49
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict lvu7sJdeq47v43aIgbvt1oOsmIRf9XhKxe1Bbzyei9Tv2uMU7pmtno2DAhTwt3O
+\unrestrict 8uMlLfOByKauFCQKR49gkYThbn1D8Sk5Mvns5BkQymqE4avTC2Zgk0wPITY41dc
 

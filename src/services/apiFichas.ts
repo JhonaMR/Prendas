@@ -115,6 +115,18 @@ export const uploadFotoFicha = async (file: File): Promise<ApiResponse> => {
     return r.json();
 };
 
+export const uploadMoldeFicha = async (file: File): Promise<ApiResponse> => {
+    const formData = new FormData();
+    formData.append('psd', file);
+    const token = localStorage.getItem('auth_token');
+    const r = await fetch(`${getApiUrl()}/fichas-diseno/upload-psd`, {
+        method: 'POST',
+        headers: { ...(token && { 'Authorization': `Bearer ${token}` }) },
+        body: formData
+    });
+    return r.json();
+};
+
 // ===== FICHAS DE COSTO =====
 
 export const getFichasCosto = async (): Promise<FichaCosto[]> => {
@@ -143,9 +155,9 @@ export const createFichaCosto = async (ficha: FichaFormData, rentabilidad: numbe
     return r.json();
 };
 
-export const updateFichaCosto = async (referencia: string, ficha: FichaFormData, precioVenta?: number, rentabilidad?: number): Promise<ApiResponse> => {
+export const updateFichaCosto = async (referencia: string, ficha: FichaFormData, precioVenta?: number, rentabilidad?: number, estadoRevision?: string | null): Promise<ApiResponse> => {
     const r = await fetch(`${getApiUrl()}/fichas-costo/${referencia}`, {
-        method: 'PUT', headers: getHeaders(), body: JSON.stringify({ ...ficha, precioVenta, rentabilidad })
+        method: 'PUT', headers: getHeaders(), body: JSON.stringify({ ...ficha, precioVenta, rentabilidad, estadoRevision })
     });
     return r.json();
 };
@@ -214,7 +226,8 @@ export const getReferenciasSinCorreria = async (): Promise<any[]> => {
 
 const apiFichas = {
     getDisenadoras, createDisenadora, updateDisenadora, deleteDisenadora,
-    getFichasDiseno, getFichaDiseno, createFichaDiseno, updateFichaDiseno, deleteFichaDiseno, uploadFotoFicha,
+    getFichasDiseno, getFichaDiseno, createFichaDiseno, updateFichaDiseno, deleteFichaDiseno,
+    uploadFotoFicha, uploadMoldeFicha,
     getFichasCosto, getFichaCosto, importarFichaDiseno, createFichaCosto, updateFichaCosto,
     crearCorte, updateCorte, deleteCorte,
     getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria

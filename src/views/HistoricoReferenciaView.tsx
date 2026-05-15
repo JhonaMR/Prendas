@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, Reference, AppState, Correria, Order, Dispatch, BatchReception, DeliveryDate } from '../types';
 import { api } from '../services/api';
 import { useDarkMode } from '../context/DarkModeContext';
+import { VisorMolde } from '../components/modules/VisorMolde';
 
 interface HistoricoReferenciaViewProps {
   user: User;
@@ -49,6 +50,12 @@ interface FichaCosto {
   referencia: string;
   foto1?: string | null;
   foto2?: string | null;
+  foto3?: string | null;
+  archivoPsd?: string | null;
+  cantidadTotalCortada?: number;
+  costoTotal?: number;
+  rentabilidad?: number;
+  precioVenta?: number;
 }
 
 const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user, onNavigate, state }) => {
@@ -59,6 +66,8 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const [showCorreriaModal, setShowCorreriaModal] = useState(false);
   const [selectedCorreriaDetail, setSelectedCorreriaDetail] = useState<CorreriaDetail | null>(null);
   const [showCortesModal, setShowCortesModal] = useState(false);
+  const [modalFotos, setModalFotos] = useState(false);
+  const [modalMolde, setModalMolde] = useState(false);
   
   // Datos reales de la base de datos
   const [corteRecords, setCorteRecords] = useState<CorteRecord[]>([]);
@@ -316,12 +325,48 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
             </div>
             
             {selectedReference && (
-              <button
-                onClick={handleGoToFichaCosto}
-                className={`px-6 py-2 text-white rounded-xl hover:opacity-90 transition-all shadow-sm font-semibold transition-colors duration-300 ${isDark ? 'bg-violet-600 hover:bg-violet-700' : 'bg-blue-600 hover:bg-blue-700'}`}
-              >
-                Ver Ficha de Costo
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Ver Fotos */}
+                <button
+                  onClick={() => setModalFotos(true)}
+                  title="Ver fotos de la referencia"
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${isDark ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                  <span>Ver Fotos</span>
+                </button>
+
+                {/* Visor Molde */}
+                {(() => {
+                  const ficha = fichasCosto.find(f => f.referencia === selectedReference.id);
+                  const tieneMolde = !!ficha?.archivoPsd;
+                  return (
+                    <button
+                      onClick={() => setModalMolde(true)}
+                      title={tieneMolde ? 'Abrir visor de molde' : 'No hay molde cargado'}
+                      className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${
+                        tieneMolde
+                          ? isDark ? 'border-violet-500 text-violet-300 hover:bg-violet-700/40' : 'border-violet-400 text-violet-600 hover:bg-violet-50'
+                          : isDark ? 'border-slate-600 text-slate-500 hover:border-slate-500' : 'border-slate-300 text-slate-400 hover:border-slate-400'
+                      }`}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                      </svg>
+                      <span>Visor Molde</span>
+                    </button>
+                  );
+                })()}
+
+                <button
+                  onClick={handleGoToFichaCosto}
+                  className={`px-6 py-2 text-white rounded-xl hover:opacity-90 transition-all shadow-sm font-semibold transition-colors duration-300 ${isDark ? 'bg-violet-600 hover:bg-violet-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                >
+                  Ver Ficha de Costo
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -863,6 +908,146 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
           </div>
         </div>
       )}
+
+      {/* ── Modal Ver Fotos ─────────────────────────────────────────────────── */}
+      {modalFotos && selectedReference && (() => {
+        const ficha = fichasCosto.find(f => f.referencia === selectedReference.id);
+        const fotos = [ficha?.foto1, ficha?.foto2, ficha?.foto3]
+          .map((f, i) => ({ src: f ? `${baseUrl}${f}` : null, label: `Foto ${i + 1}` }))
+          .filter(f => f.src !== null) as { src: string; label: string }[];
+
+        if (fotos.length === 0) {
+          return (
+            <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 bg-slate-900/80" onClick={() => setModalFotos(false)}>
+              <div className={`p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-slate-700' : 'bg-slate-100'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-slate-400">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                  </svg>
+                </div>
+                <p className={`font-black text-lg mb-1 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{selectedReference.id}</p>
+                <p className={`font-bold text-sm ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No hay fotos cargadas para esta referencia</p>
+                <button onClick={() => setModalFotos(false)} className={`mt-6 px-6 py-2 rounded-xl font-black text-sm uppercase tracking-wider transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>Cerrar</button>
+              </div>
+            </div>
+          );
+        }
+
+        return <FotosModalHistorico fotos={fotos} referencia={selectedReference.id} isDark={isDark} onClose={() => setModalFotos(false)} />;
+      })()}
+
+      {/* ── Modal Visor Molde ────────────────────────────────────────────────── */}
+      {modalMolde && selectedReference && (() => {
+        const ficha = fichasCosto.find(f => f.referencia === selectedReference.id);
+        const archivoPsd = ficha?.archivoPsd || null;
+        const nombreArchivo = archivoPsd ? archivoPsd.split('/').pop() || archivoPsd : '';
+
+        if (!archivoPsd) {
+          return (
+            <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 bg-slate-900/80" onClick={() => setModalMolde(false)}>
+              <div className={`p-8 rounded-3xl shadow-2xl text-center max-w-sm w-full ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? 'bg-amber-900/40' : 'bg-amber-50'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-9 h-9 text-amber-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                  </svg>
+                </div>
+                <p className={`font-black text-lg mb-2 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{selectedReference.id}</p>
+                <p className={`font-bold text-sm leading-relaxed ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>No hay molde cargado<br />para esta referencia</p>
+                <button onClick={() => setModalMolde(false)} className={`mt-6 px-6 py-2 rounded-xl font-black text-sm uppercase tracking-wider transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>Cerrar</button>
+              </div>
+            </div>
+          );
+        }
+
+        return (
+          <div className="fixed inset-0 pt-20 backdrop-blur-sm z-50 flex items-center justify-center p-4 bg-slate-900/85" onClick={() => setModalMolde(false)}>
+            <div className={`relative w-full max-w-6xl rounded-3xl shadow-2xl overflow-hidden ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} style={{ height: 'calc(90vh - 80px)' }} onClick={e => e.stopPropagation()}>
+              <div className={`flex items-center justify-between px-6 py-4 border-b ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+                <div className="flex items-center gap-3">
+                  <div className={`p-2 rounded-xl ${isDark ? 'bg-violet-700/40' : 'bg-violet-50'}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${isDark ? 'text-violet-300' : 'text-violet-600'}`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className={`font-black text-sm ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{selectedReference.id} — Molde</p>
+                    <p className={`font-bold text-xs ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>{nombreArchivo}</p>
+                  </div>
+                </div>
+                <button onClick={() => setModalMolde(false)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-400' : 'hover:bg-slate-100 text-slate-500'}`}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <div className={isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'}>
+                <VisorMolde
+                  archivoUrl={`${baseUrl}${archivoPsd}`}
+                  nombreArchivo={nombreArchivo}
+                  referencia={selectedReference.id}
+                  isDark={isDark}
+                  altura={Math.round(window.innerHeight * 0.9 - 80 - 60)}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+};
+
+// Subcomponente galería de fotos (necesita useState propio para el índice)
+const FotosModalHistorico: React.FC<{
+  fotos: { src: string; label: string }[];
+  referencia: string;
+  isDark: boolean;
+  onClose: () => void;
+}> = ({ fotos, referencia, isDark, onClose }) => {
+  const [indice, setIndice] = useState(0);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { onClose(); e.stopImmediatePropagation(); }
+      if (e.key === 'ArrowRight') setIndice(i => (i + 1) % fotos.length);
+      if (e.key === 'ArrowLeft') setIndice(i => (i - 1 + fotos.length) % fotos.length);
+    };
+    document.addEventListener('keydown', handler, true);
+    return () => document.removeEventListener('keydown', handler, true);
+  }, [fotos.length]);
+
+  const foto = fotos[indice];
+  return (
+    <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 bg-slate-900/85" onClick={onClose}>
+      <div className="relative flex flex-col items-center max-w-4xl w-full" onClick={e => e.stopPropagation()}>
+        <img src={foto.src} alt={foto.label} className="max-h-[80vh] max-w-full object-contain rounded-2xl shadow-2xl" />
+        <div className={`mt-4 flex items-center gap-3 px-5 py-2 rounded-full font-black text-sm ${isDark ? 'bg-slate-800/80 text-violet-200' : 'bg-white/90 text-slate-700'}`}>
+          <span>{referencia}</span>
+          <span className={isDark ? 'text-violet-500' : 'text-slate-300'}>•</span>
+          <span>{foto.label}</span>
+          {fotos.length > 1 && <><span className={isDark ? 'text-violet-500' : 'text-slate-300'}>•</span><span className={isDark ? 'text-violet-400' : 'text-slate-400'}>{indice + 1} / {fotos.length}</span></>}
+        </div>
+        {fotos.length > 1 && (
+          <>
+            <button onClick={() => setIndice(i => (i - 1 + fotos.length) % fotos.length)} className={`absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 p-3 rounded-full shadow-lg transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-800'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" /></svg>
+            </button>
+            <button onClick={() => setIndice(i => (i + 1) % fotos.length)} className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 p-3 rounded-full shadow-lg transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-600 text-white' : 'bg-white hover:bg-slate-100 text-slate-800'}`}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </>
+        )}
+        <button onClick={onClose} className={`absolute top-0 right-0 -translate-y-2 translate-x-2 p-3 rounded-full shadow-lg transition-colors ${isDark ? 'bg-violet-700 hover:bg-violet-800 text-white' : 'bg-white hover:bg-slate-100 text-slate-800'}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        {fotos.length > 1 && (
+          <div className="flex gap-3 mt-4">
+            {fotos.map((f, i) => (
+              <button key={i} onClick={() => setIndice(i)} className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${i === indice ? (isDark ? 'border-violet-400 scale-110' : 'border-violet-500 scale-110') : (isDark ? 'border-slate-600 opacity-60' : 'border-slate-300 opacity-60')}`}>
+                <img src={f.src} alt={f.label} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

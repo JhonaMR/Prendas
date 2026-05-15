@@ -18,7 +18,7 @@ const getInstanceFolder = () => {
     return 'Plow';
 };
 
-// ============ CONFIGURACIÓN MULTER ============
+// ============ CONFIGURACIÓN MULTER — FOTOS ============
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const instanceFolder = getInstanceFolder();
@@ -42,6 +42,34 @@ const upload = multer({
             return cb(null, true);
         }
         cb(new Error('Solo se permiten imágenes JPG, JPEG, PNG'));
+    }
+});
+
+// ============ CONFIGURACIÓN MULTER — ARCHIVOS PSD ============
+const storagePsd = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const instanceFolder = getInstanceFolder();
+        const uploadDir = path.join(__dirname, '../../../public/images/moldes', instanceFolder);
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    }
+});
+
+const multerPsd = multer({
+    storage: storagePsd,
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
+    fileFilter: (req, file, cb) => {
+        const ext = path.extname(file.originalname).toLowerCase();
+        // Aceptar .dxf (moldería CAD) y .svg (vectorial)
+        if (ext === '.dxf' || ext === '.svg') {
+            return cb(null, true);
+        }
+        cb(new Error('Solo se permiten archivos DXF o SVG'));
     }
 });
 
@@ -126,6 +154,8 @@ const mapFicha = (f) => ({
     observaciones: f.observaciones,
     foto1: f.foto_1,
     foto2: f.foto_2,
+    foto3: f.foto_3 || null,
+    archivoPsd: f.archivo_psd || null,
     materiaPrima: f.materia_prima,
     manoObra: f.mano_obra,
     insumosDirectos: f.insumos_directos,
@@ -191,7 +221,7 @@ const createFichaDiseno = async (req, res) => {
     try {
         const {
             referencia, disenadoraId, descripcion, marca, novedad,
-            muestra1, muestra2, observaciones, foto1, foto2,
+            muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones, createdBy
         } = req.body;
 
@@ -218,18 +248,18 @@ const createFichaDiseno = async (req, res) => {
             const result = await client.query(`
                 INSERT INTO fichas_diseno (
                     referencia, disenadora_id, descripcion, marca, novedad,
-                    muestra_1, muestra_2, observaciones, foto_1, foto_2,
+                    muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_total, created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-                    $11, $12, $13, $14, $15,
-                    $16, $17, $18, $19, $20, $21, $22
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
+                    $13, $14, $15, $16, $17,
+                    $18, $19, $20, $21, $22, $23, $24
                 ) RETURNING id, referencia, costo_total
             `, [
                 referencia, disenadoraId, descripcion, marca, novedad,
-                muestra1, muestra2, observaciones, foto1, foto2,
+                muestra1, muestra2, observaciones, foto1, foto2, foto3 || null, archivoPsd || null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
                 JSON.stringify(secciones.provisiones),
@@ -259,7 +289,7 @@ const updateFichaDiseno = async (req, res) => {
     try {
         const { referencia } = req.params;
         const {
-            descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+            descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones
         } = req.body;
 
@@ -281,14 +311,16 @@ const updateFichaDiseno = async (req, res) => {
             await client.query(`
                 UPDATE fichas_diseno
                 SET descripcion=$1, marca=$2, novedad=$3, muestra_1=$4, muestra_2=$5,
-                    observaciones=$6, foto_1=$7, foto_2=$8,
-                    materia_prima=$9, mano_obra=$10, insumos_directos=$11,
-                    insumos_indirectos=$12, provisiones=$13,
-                    total_materia_prima=$14, total_mano_obra=$15, total_insumos_directos=$16,
-                    total_insumos_indirectos=$17, total_provisiones=$18, costo_total=$19
-                WHERE referencia=$20
+                    observaciones=$6, foto_1=$7, foto_2=$8, foto_3=$9, archivo_psd=$10,
+                    materia_prima=$11, mano_obra=$12, insumos_directos=$13,
+                    insumos_indirectos=$14, provisiones=$15,
+                    total_materia_prima=$16, total_mano_obra=$17, total_insumos_directos=$18,
+                    total_insumos_indirectos=$19, total_provisiones=$20, costo_total=$21
+                WHERE referencia=$22
             `, [
                 descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+                foto3 !== undefined ? foto3 : null,
+                archivoPsd !== undefined ? archivoPsd : null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
                 JSON.stringify(secciones.provisiones),
@@ -364,6 +396,30 @@ const uploadFoto = (req, res) => {
     });
 };
 
+/**
+ * POST /api/fichas-diseno/upload-psd
+ */
+const uploadPsd = (req, res) => {
+    multerPsd.single('psd')(req, res, (err) => {
+        if (err) {
+            console.error('❌ Error subiendo PSD:', err);
+            return res.status(400).json({ success: false, message: err.message });
+        }
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No se recibió archivo' });
+        }
+
+        const instanceFolder = getInstanceFolder();
+        const psdPath = `/images/moldes/${instanceFolder}/${req.file.filename}`;
+        console.log(`✅ PSD subido: ${req.file.filename} → ${psdPath}`);
+        return res.json({
+            success: true,
+            data: { path: psdPath },
+            message: 'Archivo PSD subido exitosamente'
+        });
+    });
+};
+
 module.exports = {
     getFichasDiseno,
     getFichaDiseno,
@@ -371,5 +427,6 @@ module.exports = {
     updateFichaDiseno,
     deleteFichaDiseno,
     uploadFoto,
+    uploadPsd,
     upload
 };

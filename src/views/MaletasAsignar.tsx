@@ -21,6 +21,8 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
     const [seleccionadas, setSeleccionadas] = useState<string[]>([]);
     const [busqueda, setBusqueda] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [refManual, setRefManual] = useState('');
+    const [refsNoExistentes, setRefsNoExistentes] = useState<string[]>([]);
 
     useEffect(() => {
         const cargar = async () => {
@@ -39,6 +41,21 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
         : [];
 
     const toggleRef = (ref: string) => setSeleccionadas(prev => prev.includes(ref) ? prev.filter(r => r !== ref) : [...prev, ref]);
+
+    const handleAgregarManual = () => {
+        const codigo = refManual.trim().toUpperCase();
+        if (!codigo) return;
+        if (seleccionadas.includes(codigo)) {
+            alert(`La referencia "${codigo}" ya está en la maleta.`);
+            return;
+        }
+        const existeEnSistema = (state.references || []).some(r => r.id.toUpperCase() === codigo);
+        if (!existeEnSistema) {
+            setRefsNoExistentes(prev => prev.includes(codigo) ? prev : [...prev, codigo]);
+        }
+        setSeleccionadas(prev => [...prev, codigo]);
+        setRefManual('');
+    };
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('Sin permisos'); return; }
@@ -64,6 +81,7 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
             if (result.success) {
                 alert('✅ Maleta limpiada');
                 setSeleccionadas([]);
+                setRefsNoExistentes([]);
                 const maletas = await apiFichas.getMaletas();
                 updateState(prev => ({ ...prev, maletas }));
                 onNavigate('maletas');
@@ -128,31 +146,78 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                     )}
                 </div>
 
-                {/* Buscar referencias antiguas */}
-                <div className={`p-6 rounded-3xl border shadow-sm transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
-                    <div className="mb-4">
-                        <h3 className={`text-lg font-black mb-1 transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Buscar Referencias Antiguas</h3>
-                        <p className={`text-xs font-bold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Referencias que ya tienen correría</p>
+                {/* Buscar referencias antiguas + Agregar manual */}
+                <div className="flex flex-col gap-6">
+                    <div className={`p-6 rounded-3xl border shadow-sm transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                        <div className="mb-4">
+                            <h3 className={`text-lg font-black mb-1 transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Buscar Referencias Antiguas</h3>
+                            <p className={`text-xs font-bold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Referencias que ya tienen correría</p>
+                        </div>
+                        <div className="mb-4 relative">
+                            <input type="text" value={busqueda} onChange={e => setBusqueda(e.target.value)} placeholder="Mín. 2 caracteres..."
+                                className={`w-full px-4 py-3 border-2 rounded-xl font-bold focus:ring-4 transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500 focus:ring-violet-400 focus:border-violet-500' : 'bg-slate-50 border-slate-200 focus:ring-purple-100 focus:border-purple-500'}`} />
+                        </div>
+                        {busqueda.trim().length < 2 ? (
+                            <div className={`py-12 text-center transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}><p className="font-bold text-sm">Escribe al menos 2 caracteres</p></div>
+                        ) : resultadosBusqueda.length === 0 ? (
+                            <div className={`py-12 text-center transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}><p className="font-bold">Sin resultados</p></div>
+                        ) : (
+                            <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
+                                {resultadosBusqueda.map(ref => (
+                                    <label key={ref.id} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${seleccionadas.includes(ref.id) ? isDark ? 'bg-violet-700/50 border-violet-600' : 'bg-purple-50 border-purple-300' : isDark ? 'bg-violet-700/20 border-violet-700 hover:border-pink-600' : 'bg-slate-50 border-slate-200 hover:border-purple-200'}`}>
+                                        <input type="checkbox" checked={seleccionadas.includes(ref.id)} onChange={() => toggleRef(ref.id)} disabled={!canEdit} className={`w-5 h-5 rounded focus:ring-2 transition-colors ${isDark ? 'text-violet-600 focus:ring-violet-500 bg-[#3d2d52] border-violet-600' : 'text-purple-600 focus:ring-purple-500'}`} />
+                                        <div className="flex-1">
+                                            <p className={`font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{ref.id}</p>
+                                            <p className={`text-xs font-bold truncate transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{ref.description || 'Sin descripción'}</p>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                    <div className="mb-4 relative">
-                        <input type="text" value={busqueda} onChange={e => setBusqueda(e.target.value)} placeholder="Mín. 2 caracteres..."
-                            className={`w-full px-4 py-3 border-2 rounded-xl font-bold focus:ring-4 transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500 focus:ring-violet-400 focus:border-violet-500' : 'bg-slate-50 border-slate-200 focus:ring-purple-100 focus:border-purple-500'}`} />
-                    </div>
-                    {busqueda.trim().length < 2 ? (
-                        <div className={`py-12 text-center transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}><p className="font-bold text-sm">Escribe al menos 2 caracteres</p></div>
-                    ) : resultadosBusqueda.length === 0 ? (
-                        <div className={`py-12 text-center transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}><p className="font-bold">Sin resultados</p></div>
-                    ) : (
-                        <div className="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                            {resultadosBusqueda.map(ref => (
-                                <label key={ref.id} className={`flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${seleccionadas.includes(ref.id) ? isDark ? 'bg-violet-700/50 border-violet-600' : 'bg-purple-50 border-purple-300' : isDark ? 'bg-violet-700/20 border-violet-700 hover:border-pink-600' : 'bg-slate-50 border-slate-200 hover:border-purple-200'}`}>
-                                    <input type="checkbox" checked={seleccionadas.includes(ref.id)} onChange={() => toggleRef(ref.id)} disabled={!canEdit} className={`w-5 h-5 rounded focus:ring-2 transition-colors ${isDark ? 'text-violet-600 focus:ring-violet-500 bg-[#3d2d52] border-violet-600' : 'text-purple-600 focus:ring-purple-500'}`} />
-                                    <div className="flex-1">
-                                        <p className={`font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{ref.id}</p>
-                                        <p className={`text-xs font-bold truncate transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{ref.description || 'Sin descripción'}</p>
+
+                    {/* Agregar referencia manual */}
+                    {canEdit && (
+                        <div className={`p-6 rounded-3xl border shadow-sm transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                            <div className="mb-4">
+                                <h3 className={`text-lg font-black mb-1 transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>Agregar Referencia Manual</h3>
+                                <p className={`text-xs font-bold transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Ingresa un código aunque no exista en el sistema</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <input
+                                    type="text"
+                                    value={refManual}
+                                    onChange={e => setRefManual(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleAgregarManual()}
+                                    placeholder="Ej: REF-9999"
+                                    className={`flex-1 px-4 py-3 border-2 rounded-xl font-bold focus:ring-4 transition-colors uppercase ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-500 focus:ring-violet-400 focus:border-violet-500' : 'bg-slate-50 border-slate-200 focus:ring-orange-100 focus:border-orange-400'}`}
+                                />
+                                <button
+                                    onClick={handleAgregarManual}
+                                    disabled={!refManual.trim()}
+                                    className={`px-5 py-3 font-black rounded-xl transition-all disabled:opacity-40 uppercase tracking-wide text-sm ${isDark ? 'bg-orange-600/80 hover:bg-orange-600 text-white' : 'bg-orange-500 hover:bg-orange-600 text-white'}`}
+                                >
+                                    Agregar
+                                </button>
+                            </div>
+                            {refsNoExistentes.filter(r => seleccionadas.includes(r)).length > 0 && (
+                                <div className={`mt-4 p-3 rounded-xl border-2 transition-colors ${isDark ? 'bg-orange-900/30 border-orange-700' : 'bg-orange-50 border-orange-200'}`}>
+                                    <div className="flex items-start gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-4 h-4 mt-0.5 flex-shrink-0 ${isDark ? 'text-orange-400' : 'text-orange-500'}`}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                        </svg>
+                                        <div>
+                                            <p className={`text-xs font-black uppercase tracking-wide mb-1 ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>Referencias no encontradas en el sistema</p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {refsNoExistentes.filter(r => seleccionadas.includes(r)).map(r => (
+                                                    <span key={r} className={`px-2 py-0.5 rounded-lg text-xs font-bold ${isDark ? 'bg-orange-800/50 text-orange-300' : 'bg-orange-100 text-orange-700'}`}>{r}</span>
+                                                ))}
+                                            </div>
+                                            <p className={`text-xs font-bold mt-1 ${isDark ? 'text-orange-500' : 'text-orange-500'}`}>Se guardarán igual, pero no existen en la base de datos.</p>
+                                        </div>
                                     </div>
-                                </label>
-                            ))}
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -174,7 +239,16 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                     <div className={`mt-4 pt-4 border-t-2 transition-colors ${isDark ? 'border-violet-700' : 'border-purple-300'}`}>
                         <p className={`text-xs font-black uppercase tracking-widest mb-2 transition-colors ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>Seleccionadas:</p>
                         <div className="flex flex-wrap gap-2">
-                            {seleccionadas.slice(0, 20).map(ref => <span key={ref} className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-white text-purple-700'}`}>{ref}</span>)}
+                            {seleccionadas.slice(0, 20).map(ref => (
+                                <span key={ref} className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors ${refsNoExistentes.includes(ref) ? isDark ? 'bg-orange-800/50 text-orange-300 border border-orange-600' : 'bg-orange-100 text-orange-700 border border-orange-300' : isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-white text-purple-700'}`}>
+                                    {ref}
+                                    {refsNoExistentes.includes(ref) && (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                                        </svg>
+                                    )}
+                                </span>
+                            ))}
                             {seleccionadas.length > 20 && <span className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${isDark ? 'bg-violet-700/70 text-violet-200' : 'bg-purple-200 text-purple-700'}`}>+{seleccionadas.length - 20} más</span>}
                         </div>
                     </div>

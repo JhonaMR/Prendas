@@ -356,7 +356,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                             <div>
                                 <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Referencia</label>
                                 <div className="flex gap-2">
-                                    <input type="text" value={referenciaImportar} onChange={e => { setReferenciaImportar(e.target.value.toUpperCase()); setFichaEncontrada(null); }} placeholder="Ej: 13011" autoFocus
+                                    <input type="text" value={referenciaImportar} onChange={e => { setReferenciaImportar(e.target.value.toUpperCase()); setFichaEncontrada(null); }} onKeyDown={e => e.key === 'Enter' && handleBuscar()} placeholder="Ej: 13011" autoFocus
                                         className={`flex-1 px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-green-500/30 focus:border-green-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-green-100 focus:border-green-500'}`} />
                                     <button onClick={handleBuscar} className={`px-6 py-3 font-black rounded-xl transition-colors ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>Buscar</button>
                                 </div>

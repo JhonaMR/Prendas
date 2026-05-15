@@ -34,6 +34,8 @@ export interface FichaDiseno {
     observaciones: string;
     foto1: string | null;
     foto2: string | null;
+    foto3: string | null;
+    archivoPsd: string | null;
     materiaPrima: ConceptoFicha[];
     manoObra: ConceptoFicha[];
     insumosDirectos: ConceptoFicha[];
@@ -65,6 +67,8 @@ export interface FichaCosto {
     observaciones: string;
     foto1: string | null;
     foto2: string | null;
+    foto3: string | null;
+    archivoPsd: string | null;
     materiaPrima: ConceptoFicha[];
     manoObra: ConceptoFicha[];
     insumosDirectos: ConceptoFicha[];
@@ -152,6 +156,8 @@ export interface FichaFormData {
     observaciones: string;
     foto1: string | null;
     foto2: string | null;
+    foto3: string | null;
+    archivoPsd: string | null;
     materiaPrima: ConceptoFicha[];
     manoObra: ConceptoFicha[];
     insumosDirectos: ConceptoFicha[];

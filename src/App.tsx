@@ -52,6 +52,7 @@ import CuentasCobroView from './views/CuentasCobroView';
 import HistoricoReferenciaView from './views/HistoricoReferenciaView';
 import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteView';
 import ClientesPorCorreriaView from './views/ClientesPorCorreriaView';
+import FichaConfeccionContainer from './views/FichaConfeccion/FichaConfeccionContainer';
 import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
@@ -1137,6 +1138,8 @@ const App: React.FC = () => {
         return <ReportsView state={state} user={user} />;
       case 'corte':
         return <RegistroCorteView user={user} referencesMaster={state.references} />;
+      case 'fichas-confeccion':
+        return <FichaConfeccionContainer user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'cuentasCobro':
         return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
       case 'historicoReferencia':

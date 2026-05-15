@@ -262,8 +262,9 @@ router.put('/disenadoras/:id', verifyToken, disenadorasController.updateDisenado
 router.patch('/disenadoras/:id/toggle-activa', verifyToken, disenadorasController.toggleActivaDisenadora);
 router.delete('/disenadoras/:id', verifyToken, disenadorasController.deleteDisenadora);
 
-// Fichas de Diseño - IMPORTANTE: upload-foto ANTES de /:referencia
+// Fichas de Diseño - IMPORTANTE: upload-foto y upload-psd ANTES de /:referencia
 router.post('/fichas-diseno/upload-foto', verifyToken, fichasDisenoController.uploadFoto);
+router.post('/fichas-diseno/upload-psd',  verifyToken, fichasDisenoController.uploadPsd);
 router.get('/fichas-diseno', verifyToken, fichasDisenoController.getFichasDiseno);
 router.get('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.getFichaDiseno);
 router.post('/fichas-diseno', verifyToken, fichasDisenoController.createFichaDiseno);

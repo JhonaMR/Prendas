@@ -150,10 +150,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     },
     {
       id: 'corte',
-      label: 'Corte',
+      label: 'Corte y Fichas',
       icon: <Icons.Scissors />,
       items: [
-        { id: 'corte', label: 'Corte', icon: <Icons.Scissors />, description: 'Módulo de corte' },
+        { id: 'corte',              label: 'Corte',                    icon: <Icons.Scissors />,    description: 'Módulo de corte' },
+        { id: 'fichas-confeccion',  label: 'Fichas de Confección',     icon: <Icons.FichasCosto />, description: 'Fichas técnicas de confección' },
       ],
     },
     {
