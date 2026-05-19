@@ -1,6 +1,6 @@
 // VISTA: Maletas Listado
 import React, { useState } from 'react';
-import { AppState, UserRole } from '../../types';
+import { AppState, UserRole } from '../types';
 import apiFichas from '../services/apiFichas';
 import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 import { useDarkMode } from '../context/DarkModeContext';
@@ -146,8 +146,8 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                     <table className="w-full">
                         <thead>
                             <tr className={`border-b transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
-                                {['Nombre', 'Correría', '# Refs', 'Creada por', 'Acciones'].map(h => (
-                                    <th key={h} className={`px-6 py-4 ${h === 'Acciones' ? 'text-right' : h === '# Refs' ? 'text-center' : 'text-left'}`}>
+                                {['Nombre', 'Correría', '# Refs', 'Recib.', 'Creada por', 'Acciones'].map(h => (
+                                    <th key={h} className={`px-6 py-4 ${h === 'Acciones' ? 'text-right' : h === '# Refs' || h === 'Recib.' ? 'text-center' : 'text-left'}`}>
                                         <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{h}</span>
                                     </th>
                                 ))}
@@ -165,10 +165,13 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                                     <td className="px-6 py-4 text-center">
                                         <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-purple-100 text-purple-700'}`}>{maleta.numReferencias}</span>
                                     </td>
+                                    <td className="px-6 py-4 text-center">
+                                        <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-yellow-700/50 text-yellow-200' : 'bg-yellow-100 text-yellow-700'}`}>{maleta.numReferenciasRecibidas || 0}</span>
+                                    </td>
                                     <td className={`px-6 py-4 font-bold text-sm transition-colors ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{maleta.createdBy}</td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
+                                            <button onClick={() => onNavigate('maletas-recibir')} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
                                             <button onClick={() => handleExportar(maleta)} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-green-700/50 text-green-200 hover:bg-green-700' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>Exportar</button>
                                             <button onClick={() => onNavigate('maletas-asignar', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-violet-700/50 text-violet-200 hover:bg-violet-700' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>Ver / Editar</button>
                                             {canDeleteMaleta && (

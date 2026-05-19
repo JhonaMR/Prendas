@@ -16,7 +16,8 @@ const getMaletas = async (req, res) => {
                 m.*,
                 c.name as correria_nombre,
                 c.year as correria_year,
-                (SELECT COUNT(*) FROM maletas_referencias WHERE maleta_id = m.id) as num_referencias
+                (SELECT COUNT(*) FROM maletas_referencias WHERE maleta_id = m.id) as num_referencias,
+                (SELECT COUNT(*) FROM maletas_referencias_recibidas WHERE maleta_id = m.id) as num_referencias_recibidas
             FROM maletas m
             LEFT JOIN correrias c ON m.correria_id = c.id
             ORDER BY m.created_at DESC
@@ -29,6 +30,7 @@ const getMaletas = async (req, res) => {
             correriaNombre: m.correria_nombre,
             correriaYear: m.correria_year,
             numReferencias: parseInt(m.num_referencias),
+            numReferenciasRecibidas: parseInt(m.num_referencias_recibidas),
             createdBy: m.created_by,
             createdAt: m.created_at,
             updatedAt: m.updated_at
@@ -81,6 +83,12 @@ const getMaleta = async (req, res) => {
             orden: r.orden
         }));
 
+        // Obtener cantidad de referencias recibidas
+        const recibidosResult = await query(`
+            SELECT COUNT(*) as count FROM maletas_referencias_recibidas WHERE maleta_id = $1
+        `, [id]);
+        const numReferenciasRecibidas = parseInt(recibidosResult.rows[0].count) || 0;
+
         return res.json({
             success: true,
             data: {
@@ -90,6 +98,7 @@ const getMaleta = async (req, res) => {
                 correriaNombre: m.correria_nombre,
                 correriaYear: m.correria_year,
                 referencias,
+                numReferenciasRecibidas,
                 createdBy: m.created_by,
                 createdAt: m.created_at,
                 updatedAt: m.updated_at
@@ -163,7 +172,7 @@ const createMaleta = async (req, res) => {
 const updateMaleta = async (req, res) => {
     try {
         const { id } = req.params;
-        const { nombre, correriaId, referencias } = req.body;
+        const { nombre, correriaId, referencias, estado, recibidoPor, fechaRecepcion, numReferenciasRecibidas } = req.body;
 
         const existe = await query('SELECT correria_id FROM maletas WHERE id = $1', [id]);
         if (existe.rows.length === 0) {
@@ -182,8 +191,15 @@ const updateMaleta = async (req, res) => {
 
         await transaction(async (client) => {
             await client.query(`
-                UPDATE maletas SET nombre = COALESCE($1, nombre), correria_id = $2 WHERE id = $3
-            `, [nombre, correriaId, id]);
+                UPDATE maletas SET 
+                    nombre = COALESCE($1, nombre), 
+                    correria_id = $2,
+                    estado = COALESCE($3, estado),
+                    recibido_por = COALESCE($4, recibido_por),
+                    fecha_recepcion = COALESCE($5, fecha_recepcion),
+                    num_referencias_recibidas = COALESCE($6, num_referencias_recibidas)
+                WHERE id = $7
+            `, [nombre, correriaId, estado, recibidoPor, fechaRecepcion, numReferenciasRecibidas, id]);
 
             if (referencias && referencias.length > 0) {
                 // Insertar nuevas referencias
@@ -279,11 +295,62 @@ const getReferenciasSinCorreria = async (req, res) => {
     }
 };
 
+/**
+ * GET /api/maletas/:id/referencias-recibidas
+ */
+const getReferenciasMaletaRecibidas = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const result = await query(`
+            SELECT referencia, recibido_por, fecha_recepcion FROM maletas_referencias_recibidas 
+            WHERE maleta_id = $1 
+            ORDER BY referencia ASC
+        `, [id]);
+
+        return res.json({ success: true, data: result.rows });
+    } catch (error) {
+        console.error('❌ Error obteniendo referencias recibidas:', error);
+        return res.status(500).json({ success: false, message: 'Error al obtener referencias recibidas' });
+    }
+};
+
+/**
+ * POST /api/maletas/:id/referencias-recibidas
+ */
+const createReferenciaRecibida = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { referencia, recibidoPor, fechaRecepcion } = req.body;
+
+        if (!referencia || !recibidoPor || !fechaRecepcion) {
+            return res.status(400).json({ success: false, message: 'Faltan campos requeridos' });
+        }
+
+        const result = await query(`
+            INSERT INTO maletas_referencias_recibidas (maleta_id, referencia, recibido_por, fecha_recepcion)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (maleta_id, referencia) DO UPDATE SET 
+                recibido_por = $3, 
+                fecha_recepcion = $4,
+                updated_at = CURRENT_TIMESTAMP
+            RETURNING id
+        `, [id, referencia, recibidoPor, fechaRecepcion]);
+
+        return res.json({ success: true, message: 'Referencia recibida registrada', data: result.rows[0] });
+    } catch (error) {
+        console.error('❌ Error creando referencia recibida:', error);
+        return res.status(500).json({ success: false, message: 'Error al registrar referencia recibida' });
+    }
+};
+
 module.exports = {
     getMaletas,
     getMaleta,
     createMaleta,
     updateMaleta,
     deleteMaleta,
-    getReferenciasSinCorreria
+    getReferenciasSinCorreria,
+    getReferenciasMaletaRecibidas,
+    createReferenciaRecibida
 };

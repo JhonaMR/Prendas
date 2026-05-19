@@ -11,6 +11,7 @@ import SeccionConceptos from '../components/modules/SeccionConceptos';
 import SubidaFotos from '../components/modules/SubidaFotos';
 import { VisorMolde } from '../components/modules/VisorMolde';
 import { useDarkMode } from '../context/DarkModeContext';
+import { useBrand } from '../hooks/useBrand';
 
 interface Props {
     state: AppState;
@@ -96,6 +97,9 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     // Cargar valores base cuando se crea una nueva ficha
     useEffect(() => {
         if (isNueva && manoObra.length === 0 && insumosDirectos.length === 0 && provisiones.length === 0) {
+            const brand = useBrand();
+            const isMelas = brand.isMelas;
+            
             setManoObra([
                 { concepto: 'CONFECCION / ', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
                 { concepto: 'EMPAQUE', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
@@ -104,28 +108,42 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
             setInsumosDirectos([
                 { concepto: 'MARQUILLA', um: 'UNIDAD', vlr_unit: 70, cant: 1, total: 70 },
                 { concepto: 'MARQUILLA TECNICA', um: 'UNIDAD', vlr_unit: 10, cant: 1, total: 10 },
-                { concepto: 'ETIQUETA', um: 'UNIDAD', vlr_unit: 90, cant: 1, total: 90 },
+                { concepto: 'ETIQUETA', um: 'UNIDAD', vlr_unit: 130, cant: 1, total: 130 },
                 { concepto: 'CODIGO BARRAS', um: 'UNIDAD', vlr_unit: 10, cant: 2, total: 20 },
                 { concepto: 'BOLSA', um: 'UNIDAD', vlr_unit: 94, cant: 1, total: 94 }
             ]);
             
-            // Calcular PROV. DSCTO CCIAL
+            // Calcular TRANSPORTE o COMISIÓN y PROV. DSCTO CCIAL
+            const calcTransporteOComision = () => {
+                const totalMP = 0; // En nueva ficha no hay materia prima aún
+                const totalMO = 200 + 500; // EMPAQUE + CORTE
+                const totalID = 70 + 10 + 130 + 10 * 2 + 94; // Suma de insumos directos
+                const totalII = 0; // En nueva ficha no hay insumos indirectos aún
+                const suma = totalMP + totalMO + totalID + totalII;
+                const porcentaje = isMelas ? 0.05 : 0.02; // 5% para Melas, 2% para Plow
+                return Math.round(suma * porcentaje);
+            };
+            
             const calcDesctoComercial = () => {
                 const totalMP = 0; // En nueva ficha no hay materia prima aún
                 const totalMO = 200 + 500; // EMPAQUE + CORTE
-                const totalID = 70 + 10 + 90 + 10 * 2 + 94; // Suma de insumos directos
+                const totalID = 70 + 10 + 130 + 10 * 2 + 94; // Suma de insumos directos
                 const totalII = 0; // En nueva ficha no hay insumos indirectos aún
-                const suma = totalMP + totalMO + totalID + totalII;
+                const transporteOComision = calcTransporteOComision();
+                const suma = totalMP + totalMO + totalID + totalII + transporteOComision;
                 const conMargen = suma * 1.35;
                 const descto70 = conMargen * 0.70;
                 const desctoFinal = descto70 * 0.19;
                 return Math.round(desctoFinal);
             };
             
+            const transporteOComisionValor = calcTransporteOComision();
+            const conceptoTransporte = isMelas ? 'COMISIÓN' : 'TRANSPORTE';
+            
             setProvisiones([
                 { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
                 { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
-                { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
+                { concepto: conceptoTransporte, um: 'UNIDAD', vlr_unit: transporteOComisionValor, cant: 1, total: transporteOComisionValor },
                 { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
             ]);
         }

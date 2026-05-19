@@ -44,9 +44,9 @@ function dbToRecord(fc: any): FichaConfeccionRecord {
             precioManualidad: fc.precioManualidad || '',
             fotoSeleccionada: (fc.fotoSeleccionada as 1 | 2 | 3) || 1,
             textoPiezas: fc.textoPiezas || '',
-            talla1: fc.talla1 || 'XL',
-            talla2: fc.talla2 || '2XL',
-            talla3: fc.talla3 || '3XL',
+            talla1: fc.talla1 || 'S',
+            talla2: fc.talla2 || 'M',
+            talla3: fc.talla3 || 'L',
             filasMedidas: fc.filasMedidas || [
                 { label: 'Cargaderas', xl: '', xxl: '', xxxl: '' },
                 { label: 'Elastico',   xl: '', xxl: '', xxxl: '' },
@@ -121,9 +121,15 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
         setCargando(true);
         try {
             const data = await apiFichas.getFichasConfeccion();
-            setFichas(data.map(dbToRecord));
+            if (Array.isArray(data)) {
+                setFichas(data.map(dbToRecord));
+            } else {
+                console.error('Datos inválidos recibidos:', data);
+                setFichas([]);
+            }
         } catch (e) {
             console.error('Error cargando fichas confeccion:', e);
+            setFichas([]);
         } finally {
             setCargando(false);
         }
@@ -147,12 +153,21 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
         const existe = fichas.find(f => f.id === record.id);
 
         try {
+            let resultado;
             if (existe) {
-                await apiFichas.updateFichaConfeccion(record.id, payload);
+                resultado = await apiFichas.updateFichaConfeccion(record.id, payload);
             } else {
-                await apiFichas.createFichaConfeccion(payload);
+                resultado = await apiFichas.createFichaConfeccion(payload);
             }
-            // El container navega al histórico y recarga
+            
+            if (resultado.success) {
+                // Recargar fichas después de guardar
+                await cargarFichas();
+                handleNavInterna('fichas-confeccion');
+            } else {
+                console.error('Error guardando ficha:', resultado.message);
+                alert(`Error al guardar: ${resultado.message || 'Error desconocido'}`);
+            }
         } catch (e) {
             console.error('Error guardando ficha confeccion:', e);
             alert('Error al guardar la ficha. Intenta de nuevo.');
@@ -161,8 +176,13 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
 
     const handleEliminar = async (id: string) => {
         try {
-            await apiFichas.deleteFichaConfeccion(id);
-            setFichas(prev => prev.filter(f => f.id !== id));
+            const resultado = await apiFichas.deleteFichaConfeccion(id);
+            if (resultado.success) {
+                setFichas(prev => prev.filter(f => f.id !== id));
+            } else {
+                console.error('Error eliminando ficha:', resultado.message);
+                alert(`Error al eliminar: ${resultado.message || 'Error desconocido'}`);
+            }
         } catch (e) {
             console.error('Error eliminando ficha confeccion:', e);
             alert('Error al eliminar la ficha.');

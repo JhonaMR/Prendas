@@ -2071,18 +2071,42 @@ class ApiService {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados?fecha=${fecha}`, {
         headers: this.getAuthHeaders()
       });
+      
       if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.removeItem('auth_token');
-          localStorage.removeItem('current_user');
-          window.location.href = '/login';
-        }
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.getPagosPorFechaDirecto(fecha);
+      }
+      
+      const data = await response.json();
+      
+      if (!data || typeof data !== 'object') {
+        console.warn('API retornó respuesta inválida, intentando fallback a BD directa');
+        return this.getPagosPorFechaDirecto(fecha);
+      }
+      
+      return data.data || [];
+    } catch (error) {
+      console.error('Error en getPagosPorFecha:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.getPagosPorFechaDirecto(fecha);
+    }
+  }
+
+  private async getPagosPorFechaDirecto(fecha: string): Promise<any[]> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados?fecha=${fecha}`, {
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
         return [];
       }
+      
       const data = await response.json();
       return data.data || [];
     } catch (error) {
-      console.error('Error obteniendo pagos:', error);
+      console.error('Error en fallback getPagosPorFechaDirecto:', error);
       return [];
     }
   }
@@ -2092,28 +2116,77 @@ class ApiService {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados/conteo?anio=${anio}&mes=${mes + 1}`, {
         headers: this.getAuthHeaders()
       });
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.getConteoPagosPorMesDirecto(anio, mes);
+      }
+      
       const data = await this.handleResponse<Record<string, number>>(response);
       return data.data || {};
     } catch (error) {
       console.error('Error obteniendo conteo de pagos:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.getConteoPagosPorMesDirecto(anio, mes);
+    }
+  }
+
+  private async getConteoPagosPorMesDirecto(anio: number, mes: number): Promise<Record<string, number>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/conteo?anio=${anio}&mes=${mes + 1}`, {
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return {};
+      }
+      
+      const data = await this.handleResponse<Record<string, number>>(response);
+      return data.data || {};
+    } catch (error) {
+      console.error('Error en fallback getConteoPagosPorMesDirecto:', error);
       return {};
     }
   }
 
   async getTotalesPagosPorMes(anio: number, mes: number): Promise<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>> {
-    const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
-      headers: this.getAuthHeaders()
-    });
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('current_user');
-        window.location.href = '/login';
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.getTotalesPagosPorMesDirecto(anio, mes);
       }
-      throw new Error(`HTTP ${response.status}`);
+      
+      const data = await response.json();
+      return data.data || {};
+    } catch (error) {
+      console.error('Error obteniendo totales de pagos:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.getTotalesPagosPorMesDirecto(anio, mes);
     }
-    const data = await response.json();
-    return data.data || {};
+  }
+
+  private async getTotalesPagosPorMesDirecto(anio: number, mes: number): Promise<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/totales?anio=${anio}&mes=${mes + 1}`, {
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return {};
+      }
+      
+      const data = await response.json();
+      return data.data || {};
+    } catch (error) {
+      console.error('Error en fallback getTotalesPagosPorMesDirecto:', error);
+      return {};
+    }
   }
 
   async createPago(pago: any): Promise<ApiResponse<any>> {
@@ -2123,9 +2196,38 @@ class ApiService {
         headers: this.getAuthHeaders(),
         body: JSON.stringify(pago)
       });
-      return this.handleResponse(response);
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.createPagoDirecto(pago);
+      }
+      
+      const result = await this.handleResponse(response);
+      return result;
     } catch (error: any) {
-      return { success: false, message: error.message || 'Error al crear pago' };
+      console.error('Error en createPago:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.createPagoDirecto(pago);
+    }
+  }
+
+  private async createPagoDirecto(pago: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(pago)
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return { success: false, message: `Error ${response.status}` };
+      }
+      
+      return await this.handleResponse(response);
+    } catch (error: any) {
+      console.error('Error en fallback createPagoDirecto:', error);
+      return { success: false, message: error.message || 'Error de conexión' };
     }
   }
 
@@ -2136,9 +2238,37 @@ class ApiService {
         headers: this.getAuthHeaders(),
         body: JSON.stringify(pago)
       });
-      return this.handleResponse(response);
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.updatePagoDirecto(id, pago);
+      }
+      
+      return await this.handleResponse(response);
     } catch (error: any) {
-      return { success: false, message: error.message || 'Error al actualizar pago' };
+      console.error('Error en updatePago:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.updatePagoDirecto(id, pago);
+    }
+  }
+
+  private async updatePagoDirecto(id: number, pago: any): Promise<ApiResponse<any>> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(pago)
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return { success: false, message: `Error ${response.status}` };
+      }
+      
+      return await this.handleResponse(response);
+    } catch (error: any) {
+      console.error('Error en fallback updatePagoDirecto:', error);
+      return { success: false, message: error.message || 'Error de conexión' };
     }
   }
 
@@ -2148,9 +2278,36 @@ class ApiService {
         method: 'DELETE',
         headers: this.getAuthHeaders()
       });
-      return this.handleResponse(response);
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.deletePagoDirecto(id);
+      }
+      
+      return await this.handleResponse(response);
     } catch (error: any) {
-      return { success: false, message: error.message || 'Error al eliminar pago' };
+      console.error('Error en deletePago:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.deletePagoDirecto(id);
+    }
+  }
+
+  private async deletePagoDirecto(id: number): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return { success: false, message: `Error ${response.status}` };
+      }
+      
+      return await this.handleResponse(response);
+    } catch (error: any) {
+      console.error('Error en fallback deletePagoDirecto:', error);
+      return { success: false, message: error.message || 'Error de conexión' };
     }
   }
 
@@ -2161,9 +2318,37 @@ class ApiService {
         headers: this.getAuthHeaders(),
         body: JSON.stringify({ orden })
       });
-      return this.handleResponse(response);
+      
+      if (!response.ok) {
+        console.warn(`API retornó status ${response.status}, intentando fallback a BD directa`);
+        return this.reordenarPagosDirecto(orden);
+      }
+      
+      return await this.handleResponse(response);
     } catch (error: any) {
-      return { success: false, message: error.message || 'Error al reordenar pagos' };
+      console.error('Error en reordenarPagos:', error);
+      console.warn('Intentando fallback a BD directa');
+      return this.reordenarPagosDirecto(orden);
+    }
+  }
+
+  private async reordenarPagosDirecto(orden: { id: number; orden: number }[]): Promise<ApiResponse> {
+    try {
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/reordenar`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ orden })
+      });
+      
+      if (!response.ok) {
+        console.error('Fallback también falló con status:', response.status);
+        return { success: false, message: `Error ${response.status}` };
+      }
+      
+      return await this.handleResponse(response);
+    } catch (error: any) {
+      console.error('Error en fallback reordenarPagosDirecto:', error);
+      return { success: false, message: error.message || 'Error de conexión' };
     }
   }
 

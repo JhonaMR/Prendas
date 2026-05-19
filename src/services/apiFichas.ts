@@ -130,30 +130,117 @@ export const uploadMoldeFicha = async (file: File): Promise<ApiResponse> => {
 // ===== FICHAS DE CONFECCION =====
 
 export const getFichasConfeccion = async (): Promise<any[]> => {
-    const r = await fetch(`${getApiUrl()}/fichas-confeccion`, { headers: getHeaders() });
-    const d = await r.json();
-    return d.data || [];
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-confeccion`, { headers: getHeaders() });
+        
+        // Validar que la respuesta sea OK
+        if (!r.ok) {
+            console.warn(`API retornó status ${r.status}, intentando fallback a BD directa`);
+            return getFichasConfeccionDirecto();
+        }
+        
+        const d = await r.json();
+        
+        // Validar que la respuesta tenga estructura correcta
+        if (!d || typeof d !== 'object') {
+            console.warn('API retornó respuesta inválida, intentando fallback a BD directa');
+            return getFichasConfeccionDirecto();
+        }
+        
+        // Validar que success sea true
+        if (d.success === false) {
+            console.warn('API retornó success: false, intentando fallback a BD directa');
+            return getFichasConfeccionDirecto();
+        }
+        
+        // Retornar datos o array vacío
+        return d.data || [];
+    } catch (error) {
+        console.error('Error en getFichasConfeccion:', error);
+        console.warn('Intentando fallback a BD directa');
+        return getFichasConfeccionDirecto();
+    }
+};
+
+// Fallback: Llamada directa a BD
+const getFichasConfeccionDirecto = async (): Promise<any[]> => {
+    try {
+        const token = localStorage.getItem('auth_token');
+        const r = await fetch(`${getApiUrl()}/fichas-confeccion`, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+        });
+        
+        if (!r.ok) {
+            console.error('Fallback también falló con status:', r.status);
+            return [];
+        }
+        
+        const d = await r.json();
+        return d.data || [];
+    } catch (error) {
+        console.error('Error en fallback getFichasConfeccionDirecto:', error);
+        return [];
+    }
 };
 
 export const createFichaConfeccion = async (ficha: any): Promise<ApiResponse> => {
-    const r = await fetch(`${getApiUrl()}/fichas-confeccion`, {
-        method: 'POST', headers: getHeaders(), body: JSON.stringify(ficha)
-    });
-    return r.json();
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-confeccion`, {
+            method: 'POST', headers: getHeaders(), body: JSON.stringify(ficha)
+        });
+        
+        if (!r.ok) {
+            console.error('Error al crear ficha:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en createFichaConfeccion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
 };
 
 export const updateFichaConfeccion = async (id: string, ficha: any): Promise<ApiResponse> => {
-    const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
-        method: 'PUT', headers: getHeaders(), body: JSON.stringify(ficha)
-    });
-    return r.json();
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
+            method: 'PUT', headers: getHeaders(), body: JSON.stringify(ficha)
+        });
+        
+        if (!r.ok) {
+            console.error('Error al actualizar ficha:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en updateFichaConfeccion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
 };
 
 export const deleteFichaConfeccion = async (id: string): Promise<ApiResponse> => {
-    const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
-        method: 'DELETE', headers: getHeaders()
-    });
-    return r.json();
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-confeccion/${id}`, {
+            method: 'DELETE', headers: getHeaders()
+        });
+        
+        if (!r.ok) {
+            console.error('Error al eliminar ficha:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en deleteFichaConfeccion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
 };
 
 // ===== FICHAS DE COSTO =====
@@ -235,9 +322,9 @@ export const createMaleta = async (nombre: string, correriaId: string | null, re
     return r.json();
 };
 
-export const updateMaleta = async (id: string, nombre?: string, correriaId?: string | null, referencias?: string[]): Promise<ApiResponse> => {
+export const updateMaleta = async (id: string, nombre?: string, correriaId?: string | null, referencias?: string[], recepcion?: { estado?: string; recibidoPor?: string; fechaRecepcion?: string; numReferenciasRecibidas?: number }): Promise<ApiResponse> => {
     const r = await fetch(`${getApiUrl()}/maletas/${id}`, {
-        method: 'PUT', headers: getHeaders(), body: JSON.stringify({ nombre, correriaId, referencias })
+        method: 'PUT', headers: getHeaders(), body: JSON.stringify({ nombre, correriaId, referencias, ...recepcion })
     });
     return r.json();
 };
@@ -253,13 +340,27 @@ export const getReferenciasSinCorreria = async (): Promise<any[]> => {
     return d.data || [];
 };
 
+export const getReferenciasMaletaRecibidas = async (maletaId: string): Promise<any[]> => {
+    const r = await fetch(`${getApiUrl()}/maletas/${maletaId}/referencias-recibidas`, { headers: getHeaders() });
+    const d = await r.json();
+    return d.data || [];
+};
+
+export const createReferenciaRecibida = async (maletaId: string, referencia: string, recibidoPor: string, fechaRecepcion: string): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/maletas/${maletaId}/referencias-recibidas`, {
+        method: 'POST', headers: getHeaders(), body: JSON.stringify({ referencia, recibidoPor, fechaRecepcion })
+    });
+    const d = await r.json();
+    return d;
+};
+
 const apiFichas = {
     getDisenadoras, createDisenadora, updateDisenadora, deleteDisenadora,
     getFichasDiseno, getFichaDiseno, createFichaDiseno, updateFichaDiseno, deleteFichaDiseno,
     uploadFotoFicha, uploadMoldeFicha,
     getFichasCosto, getFichaCosto, importarFichaDiseno, createFichaCosto, updateFichaCosto,
     crearCorte, updateCorte, deleteCorte,
-    getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria,
+    getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria, getReferenciasMaletaRecibidas, createReferenciaRecibida,
     getFichasConfeccion, createFichaConfeccion, updateFichaConfeccion, deleteFichaConfeccion,
 };
 

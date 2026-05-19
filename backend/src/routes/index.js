@@ -291,6 +291,8 @@ router.get('/maletas/:id', verifyToken, maletasController.getMaleta);
 router.post('/maletas', verifyToken, maletasController.createMaleta);
 router.put('/maletas/:id', verifyToken, maletasController.updateMaleta);
 router.delete('/maletas/:id', verifyToken, maletasController.deleteMaleta);
+router.get('/maletas/:id/referencias-recibidas', verifyToken, maletasController.getReferenciasMaletaRecibidas);
+router.post('/maletas/:id/referencias-recibidas', verifyToken, maletasController.createReferenciaRecibida);
 
 // ==================== PRODUCTO EN PROCESO ====================
 

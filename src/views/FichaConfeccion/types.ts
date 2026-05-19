@@ -67,9 +67,9 @@ export const FICHA_DEFAULT: FichaConfeccionData = {
     descripcion: '',
     fotoSeleccionada: 1,
     textoPiezas: '',
-    talla1: 'XL',
-    talla2: '2XL',
-    talla3: '3XL',
+    talla1: 'S',
+    talla2: 'M',
+    talla3: 'L',
     filasMedidas: [
         { label: 'Cargaderas', xl: '', xxl: '', xxxl: '' },
         { label: 'Elástico',   xl: '', xxl: '', xxxl: '' },

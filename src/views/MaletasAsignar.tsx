@@ -1,6 +1,6 @@
 // VISTA: Maletas Asignar
 import React, { useState, useEffect } from 'react';
-import { AppState } from '../../types';
+import { AppState } from '../types';
 import apiFichas from '../services/apiFichas';
 import { useDarkMode } from '../context/DarkModeContext';
 

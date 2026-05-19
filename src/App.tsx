@@ -44,6 +44,7 @@ import FichasCostoDetalle from './views/FichasCostoDetalle';
 import FichasCorteDetalle from './views/FichasCorteDetalle';
 import MaletasListado from './views/MaletasListado';
 import MaletasAsignar from './views/MaletasAsignar';
+import MaletasRecibir from './views/MaletasRecibir';
 import RegistroCorteView from './views/Corte/RegistroCorteView';
 import GenerarListaPreciosView from './views/GenerarListaPreciosView';
 import ControlTelasView from './views/ControlTelasView';
@@ -1233,6 +1234,8 @@ const App: React.FC = () => {
         return <MaletasListado state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'maletas-asignar':
         return <MaletasAsignar state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
+      case 'maletas-recibir':
+        return <MaletasRecibir state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       default:
         return null;
     }

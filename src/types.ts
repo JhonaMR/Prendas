@@ -28,6 +28,9 @@ export interface Correria {
   id: string;
   name: string;
   year: string;
+  active?: number;
+  fecha_inicio?: string | null;
+  fecha_fin?: string | null;
 }
 
 export interface Client {

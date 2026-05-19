@@ -12,7 +12,7 @@ const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('
  */
 async function getAllCorrerias() {
   try {
-    const result = await query('SELECT id, name, year, active FROM correrias ORDER BY year DESC, id');
+    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin FROM correrias ORDER BY year DESC, id');
     logger.info('Retrieved all correrias', { count: result.rows.length });
     return result.rows;
   } catch (error) {
@@ -26,7 +26,7 @@ async function getAllCorrerias() {
  */
 async function getCorrieriaById(id) {
   try {
-    const result = await query('SELECT id, name, year, active FROM correrias WHERE id = $1', [id]);
+    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin FROM correrias WHERE id = $1', [id]);
     if (result.rows.length === 0) throw new NotFoundError('Correria', id);
     logger.info('Retrieved correria', { id });
     return result.rows[0];
@@ -42,11 +42,13 @@ async function getCorrieriaById(id) {
  */
 async function createCorreria(data) {
   try {
-    await query('INSERT INTO correrias (id, name, year, active) VALUES ($1, $2, $3, $4)', [
+    await query('INSERT INTO correrias (id, name, year, active, fecha_inicio, fecha_fin) VALUES ($1, $2, $3, $4, $5, $6)', [
       data.id,
       data.name,
       data.year,
-      1
+      1,
+      data.fecha_inicio || null,
+      data.fecha_fin || null
     ]);
     
     // Invalidate cache after creation
@@ -79,6 +81,14 @@ async function updateCorreria(id, data) {
     if (data.year !== undefined) {
       updates.push(`year = $${paramIndex++}`);
       values.push(data.year);
+    }
+    if (data.fecha_inicio !== undefined) {
+      updates.push(`fecha_inicio = $${paramIndex++}`);
+      values.push(data.fecha_inicio || null);
+    }
+    if (data.fecha_fin !== undefined) {
+      updates.push(`fecha_fin = $${paramIndex++}`);
+      values.push(data.fecha_fin || null);
     }
 
     if (updates.length > 0) {

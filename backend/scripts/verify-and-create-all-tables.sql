@@ -4,6 +4,7 @@
 -- Este script verifica que todas las tablas, índices y constraints existan
 -- Si algo no existe, lo crea automáticamente
 -- Útil para sincronizar la BD entre diferentes máquinas
+-- Actualizado: 2026-05-19 - Incluye todas las tablas e índices actuales
 -- ============================================================================
 
 -- ============================================================================
@@ -72,6 +73,9 @@ CREATE TABLE IF NOT EXISTS public.correrias (
     id character varying(255) NOT NULL,
     name character varying(255) NOT NULL,
     year character varying(4),
+    active integer,
+    fecha_inicio date,
+    fecha_fin date,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT correrias_pkey PRIMARY KEY (id)
 );
@@ -846,6 +850,216 @@ CREATE TABLE IF NOT EXISTS public.rutas_transporte_items (
 CREATE INDEX IF NOT EXISTS idx_rutas_transporte_items_ruta ON public.rutas_transporte_items(ruta_id);
 
 -- ============================================================================
+-- 40. TABLA: control_telas_produccion
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.control_telas_produccion (
+    id                  uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
+    tela                varchar(255) NOT NULL DEFAULT '',
+    color               varchar(255) NOT NULL DEFAULT '',
+    und_medida          varchar(1)   NOT NULL DEFAULT 'M' CHECK (und_medida IN ('M','K')),
+    rdmto               numeric(10,4),
+    subtotal            numeric(14,4),
+    iva                 numeric(14,4),
+    precio_total_kilos  numeric(14,4),
+    precio_total_metros numeric(14,4),
+    proveedor           varchar(255) NOT NULL DEFAULT '',
+    fecha_compra        date,
+    iva_incluido        varchar(2)   NOT NULL DEFAULT 'S' CHECK (iva_incluido IN ('S','N')),
+    fe_or_rm            varchar(100) NOT NULL DEFAULT '',
+    created_by          varchar(255),
+    created_at          timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 41. TABLA: control_telas_muestras
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.control_telas_muestras (
+    id                  uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
+    tela                varchar(255) NOT NULL DEFAULT '',
+    color               varchar(255) NOT NULL DEFAULT '',
+    und_medida          varchar(1)   NOT NULL DEFAULT 'M' CHECK (und_medida IN ('M','K')),
+    rdmto               numeric(10,4),
+    subtotal            numeric(14,4),
+    iva                 numeric(14,4),
+    total_precio_kilos  numeric(14,4),
+    total_precio_metros numeric(14,4),
+    proveedor           varchar(255) NOT NULL DEFAULT '',
+    fecha_compra        date,
+    factura_no          varchar(100) NOT NULL DEFAULT '',
+    solicita_recibe     varchar(255) NOT NULL DEFAULT '',
+    usada_en_produccion varchar(255) NOT NULL DEFAULT '',
+    created_by          varchar(255),
+    created_at          timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 42. TABLA: corte_registros
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.corte_registros (
+    id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    numero_ficha      varchar(50) NOT NULL UNIQUE,
+    fecha_corte       date NOT NULL,
+    referencia        varchar(50) NOT NULL,
+    descripcion       varchar(255),
+    cantidad_cortada  integer NOT NULL DEFAULT 0,
+    created_by        varchar(255),
+    updated_by        varchar(255),
+    created_at        timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at        timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 43. TABLA: salidas_bodega
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.salidas_bodega (
+    id               uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
+    fecha            date         NOT NULL DEFAULT CURRENT_DATE,
+    referencia       varchar(100) NOT NULL,
+    cantidad         integer      NOT NULL CHECK (cantidad > 0),
+    talla            varchar(10)  NOT NULL DEFAULT '' CHECK (talla IN ('','2-4','6-8','10-12','14-16','S','M','L','XL','XXL','XXXL')),
+    quien_recibe     varchar(255) NOT NULL DEFAULT '',
+    fecha_devolucion date,
+    created_by       varchar(255),
+    created_at       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at       timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 44. TABLA: order_notes
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.order_notes (
+    order_id    varchar(255) PRIMARY KEY REFERENCES public.orders(id) ON DELETE CASCADE,
+    contacto    varchar(255),
+    novedad     text,
+    updated_at  timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_by  varchar(255)
+);
+
+-- ============================================================================
+-- 45. TABLA: fichas_confeccion
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.fichas_confeccion (
+    id                  varchar(50)  PRIMARY KEY,
+    referencia          varchar(100) NOT NULL,
+    fecha_envio         varchar(50),
+    fecha_entrega       varchar(50),
+    n_corte             varchar(100),
+    cantidad            varchar(50),
+    ficha_realizada_por varchar(255),
+    descripcion         text,
+    precio_confeccion   varchar(50),
+    precio_empaque      varchar(50),
+    empaque_activo      boolean         NOT NULL DEFAULT true,
+    precio_manualidad   varchar(50),
+    foto_seleccionada   smallint        NOT NULL DEFAULT 1,
+    texto_piezas        varchar(500),
+    talla1              varchar(20)     NOT NULL DEFAULT 'S',
+    talla2              varchar(20)     NOT NULL DEFAULT 'M',
+    talla3              varchar(20)     NOT NULL DEFAULT 'L',
+    filas_medidas       jsonb,
+    combinacion_colores text,
+    confeccion          text,
+    nota_verificar      text,
+    consumo_sesgo       text,
+    nota_final          text,
+    created_by          varchar(255),
+    created_at          timestamp       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at          timestamp       NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================================
+-- 46. TABLA: maletas_referencias_recibidas
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS public.maletas_referencias_recibidas (
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
+    maleta_id uuid NOT NULL REFERENCES public.maletas(id) ON DELETE CASCADE,
+    referencia character varying(255) NOT NULL,
+    recibido_por character varying(255),
+    fecha_recepcion timestamp without time zone,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(maleta_id, referencia)
+);
+
+-- ============================================================================
+-- ACTUALIZACIÓN DE COLUMNAS EN TABLAS EXISTENTES
+-- ============================================================================
+
+-- Agregar columnas a confeccionistas si no existen
+ALTER TABLE public.confeccionistas ADD COLUMN IF NOT EXISTS "ConsecRem" INTEGER NOT NULL DEFAULT 0;
+
+-- Agregar columnas a talleres si no existen
+ALTER TABLE public.talleres ADD COLUMN IF NOT EXISTS "PrecioCarro" VARCHAR(100) NOT NULL DEFAULT '';
+ALTER TABLE public.talleres ADD COLUMN IF NOT EXISTS "PrecioMoto"  VARCHAR(100) NOT NULL DEFAULT '';
+ALTER TABLE public.talleres ADD COLUMN IF NOT EXISTS tipo_vehiculo VARCHAR(20) NOT NULL DEFAULT 'carro';
+
+-- Agregar columnas a transportistas si no existen
+ALTER TABLE public.transportistas ADD COLUMN IF NOT EXISTS tipo_vehiculo VARCHAR(20) NOT NULL DEFAULT 'carro';
+
+-- Agregar columnas a maletas si no existen
+ALTER TABLE public.maletas ADD COLUMN IF NOT EXISTS estado character varying(50) DEFAULT 'enviada';
+ALTER TABLE public.maletas ADD COLUMN IF NOT EXISTS recibido_por character varying(255);
+ALTER TABLE public.maletas ADD COLUMN IF NOT EXISTS fecha_recepcion timestamp without time zone;
+ALTER TABLE public.maletas ADD COLUMN IF NOT EXISTS num_referencias_recibidas integer DEFAULT 0;
+
+-- Agregar columnas a clients si no existen
+ALTER TABLE public.clients ADD COLUMN IF NOT EXISTS cod_of varchar(255);
+ALTER TABLE public.clients ADD COLUMN IF NOT EXISTS cod_rm varchar(255);
+
+-- Agregar columnas a fichas_diseno si no existen
+ALTER TABLE public.fichas_diseno ADD COLUMN IF NOT EXISTS foto_3      varchar(500);
+ALTER TABLE public.fichas_diseno ADD COLUMN IF NOT EXISTS archivo_psd varchar(500);
+
+-- Agregar columnas a fichas_costo si no existen
+ALTER TABLE public.fichas_costo ADD COLUMN IF NOT EXISTS foto_3      varchar(500);
+ALTER TABLE public.fichas_costo ADD COLUMN IF NOT EXISTS archivo_psd varchar(500);
+
+-- Agregar columnas a correrias si no existen
+ALTER TABLE public.correrias ADD COLUMN IF NOT EXISTS fecha_inicio DATE;
+ALTER TABLE public.correrias ADD COLUMN IF NOT EXISTS fecha_fin DATE;
+
+-- ============================================================================
+-- ÍNDICES ADICIONALES
+-- ============================================================================
+
+-- Índices para control_telas_produccion
+CREATE INDEX IF NOT EXISTS idx_ctp_tela      ON public.control_telas_produccion(LOWER(tela));
+CREATE INDEX IF NOT EXISTS idx_ctp_prov      ON public.control_telas_produccion(LOWER(proveedor));
+CREATE INDEX IF NOT EXISTS idx_ctp_fecha     ON public.control_telas_produccion(fecha_compra);
+
+-- Índices para control_telas_muestras
+CREATE INDEX IF NOT EXISTS idx_ctm_tela      ON public.control_telas_muestras(LOWER(tela));
+CREATE INDEX IF NOT EXISTS idx_ctm_prov      ON public.control_telas_muestras(LOWER(proveedor));
+CREATE INDEX IF NOT EXISTS idx_ctm_fecha     ON public.control_telas_muestras(fecha_compra);
+
+-- Índices para corte_registros
+CREATE INDEX IF NOT EXISTS idx_corte_referencia    ON public.corte_registros(referencia);
+CREATE INDEX IF NOT EXISTS idx_corte_numero_ficha  ON public.corte_registros(numero_ficha);
+CREATE INDEX IF NOT EXISTS idx_corte_fecha_corte   ON public.corte_registros(fecha_corte);
+CREATE INDEX IF NOT EXISTS idx_corte_created_at    ON public.corte_registros(created_at DESC);
+
+-- Índices para salidas_bodega
+CREATE INDEX IF NOT EXISTS idx_sb_referencia  ON public.salidas_bodega(LOWER(referencia));
+CREATE INDEX IF NOT EXISTS idx_sb_fecha       ON public.salidas_bodega(fecha);
+CREATE INDEX IF NOT EXISTS idx_sb_devolucion  ON public.salidas_bodega(fecha_devolucion);
+CREATE INDEX IF NOT EXISTS idx_sb_quien       ON public.salidas_bodega(LOWER(quien_recibe));
+
+-- Índices para order_notes
+CREATE INDEX IF NOT EXISTS idx_order_notes_order_id ON public.order_notes(order_id);
+
+-- Índices para fichas_confeccion
+CREATE INDEX IF NOT EXISTS idx_fichas_confeccion_referencia ON public.fichas_confeccion(referencia);
+
+-- Índices para maletas_referencias_recibidas
+CREATE INDEX IF NOT EXISTS idx_maletas_referencias_recibidas_maleta_id ON public.maletas_referencias_recibidas(maleta_id);
+CREATE INDEX IF NOT EXISTS idx_maletas_referencias_recibidas_referencia ON public.maletas_referencias_recibidas(referencia);
+
+-- Índices adicionales para transportistas
+CREATE INDEX IF NOT EXISTS idx_transportistas_tipo_vehiculo ON public.transportistas(tipo_vehiculo);
+
+-- ============================================================================
 -- VERIFICACIÓN FINAL
 -- ============================================================================
 
@@ -856,7 +1070,7 @@ SELECT
 FROM information_schema.tables 
 WHERE table_schema = 'public';
 
--- Mostrar todas las tablas (debe haber 39 tablas)
+-- Mostrar todas las tablas (debe haber 46 tablas)
 SELECT table_name 
 FROM information_schema.tables 
 WHERE table_schema = 'public' 

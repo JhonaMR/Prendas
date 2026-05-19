@@ -56,7 +56,7 @@ const TI: React.FC<{
 
 // ── Canvas piezas DXF ─────────────────────────────────────────────────────────
 
-const CanvasPiezas: React.FC<{ datos: DxfParseado; altura: number; ancho: number }> = ({ datos, altura, ancho }) => {
+const CanvasPiezas: React.FC<{ datos: DxfParseado; altura: number; ancho: number; onResetClick?: () => void; zoom?: number }> = ({ datos, altura, ancho, onResetClick, zoom = 1 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [offsets, setOffsets] = useState<{ dx: number; dy: number }[]>([]);
     const escRef = useRef(1);
@@ -64,13 +64,18 @@ const CanvasPiezas: React.FC<{ datos: DxfParseado; altura: number; ancho: number
     const drag = useRef<{ idx: number; sx: number; sy: number; odx: number; ody: number } | null>(null);
     const polys = datos.entidades.filter(e => e.tipo === 'polilinea' && e.cerrada) as DxfPolilinea[];
 
+    // Inicializar offsets cuando cambian datos, ancho o altura
     useEffect(() => {
         setOffsets(polys.map(() => ({ dx: 0, dy: 0 })));
+    }, [datos, ancho, altura, polys.length]);
+
+    // Actualizar escala cuando cambia zoom (sin resetear offsets)
+    useEffect(() => {
         const pad = 16;
-        const esc = Math.min((ancho - pad * 2) / datos.bounds.ancho, (altura - pad * 2) / datos.bounds.alto, 4);
+        const esc = Math.min((ancho - pad * 2) / datos.bounds.ancho, (altura - pad * 2) / datos.bounds.alto, 4) * zoom;
         escRef.current = esc;
         boRef.current = { x: (ancho - datos.bounds.ancho * esc) / 2, y: (altura - datos.bounds.alto * esc) / 2 };
-    }, [datos, ancho, altura]);
+    }, [datos, ancho, altura, zoom]);
 
     const tc = useCallback((x: number, y: number, dx = 0, dy = 0): [number, number] => {
         const e = escRef.current; const b = boRef.current;
@@ -94,7 +99,7 @@ const CanvasPiezas: React.FC<{ datos: DxfParseado; altura: number; ancho: number
             }
             ctx.closePath(); ctx.stroke();
         });
-    }, [datos, offsets, ancho, altura, tc, polys]);
+    }, [datos, offsets, ancho, altura, tc, polys, zoom]);
 
     const hitTest = useCallback((cx: number, cy: number, offs: { dx: number; dy: number }[]) => {
         for (let i = polys.length - 1; i >= 0; i--) {
@@ -116,20 +121,19 @@ const CanvasPiezas: React.FC<{ datos: DxfParseado; altura: number; ancho: number
         return [(e.clientX - r.left) * (ancho / r.width), (e.clientY - r.top) * (altura / r.height)];
     };
 
+    const handleReset = () => {
+        setOffsets(polys.map(() => ({ dx: 0, dy: 0 })));
+        onResetClick?.();
+    };
+
     return (
-        <div className="relative w-full h-full">
-            <canvas ref={canvasRef} width={ancho} height={altura}
-                style={{ cursor: 'grab', display: 'block', width: '100%', height: '100%' }}
-                onMouseDown={e => { const [cx, cy] = pos(e); const idx = hitTest(cx, cy, offsets); if (idx >= 0) { const o = offsets[idx] || { dx: 0, dy: 0 }; drag.current = { idx, sx: cx, sy: cy, odx: o.dx, ody: o.dy }; } }}
-                onMouseMove={e => { if (!drag.current) return; const [cx, cy] = pos(e); const { idx, sx, sy, odx, ody } = drag.current; setOffsets(prev => { const n = [...prev]; n[idx] = { dx: odx + (cx - sx) / escRef.current, dy: ody - (cy - sy) / escRef.current }; return n; }); }}
-                onMouseUp={() => { drag.current = null; }}
-                onMouseLeave={() => { drag.current = null; }}
-            />
-            <button onClick={() => setOffsets(polys.map(() => ({ dx: 0, dy: 0 })))}
-                className="absolute bottom-1 right-1 px-2 py-0.5 rounded text-[9px] font-black uppercase bg-white/90 text-slate-500 hover:bg-white border border-slate-200 shadow-sm">
-                Resetear
-            </button>
-        </div>
+        <canvas ref={canvasRef} width={ancho} height={altura}
+            style={{ cursor: 'grab', display: 'block', width: '100%', height: '100%' }}
+            onMouseDown={e => { const [cx, cy] = pos(e); const idx = hitTest(cx, cy, offsets); if (idx >= 0) { const o = offsets[idx] || { dx: 0, dy: 0 }; drag.current = { idx, sx: cx, sy: cy, odx: o.dx, ody: o.dy }; } }}
+            onMouseMove={e => { if (!drag.current) return; const [cx, cy] = pos(e); const { idx, sx, sy, odx, ody } = drag.current; setOffsets(prev => { const n = [...prev]; n[idx] = { dx: odx + (cx - sx) / escRef.current, dy: ody - (cy - sy) / escRef.current }; return n; }); }}
+            onMouseUp={() => { drag.current = null; }}
+            onMouseLeave={() => { drag.current = null; }}
+        />
     );
 };
 
@@ -139,15 +143,16 @@ interface PreviewProps {
     data: FichaConfeccionData;
     foto1: string | null; foto2: string | null; foto3: string | null;
     dxfDatos: DxfParseado | null;
+    zoomMolde?: number;
 }
 
-const FichaPreview = React.forwardRef<HTMLDivElement, PreviewProps>(({ data, foto1, foto2, foto3, dxfDatos }, ref) => {
+const FichaPreview = React.forwardRef<HTMLDivElement, PreviewProps>(({ data, foto1, foto2, foto3, dxfDatos, zoomMolde = 1 }, ref) => {
     const baseUrl = getBaseUrl();
     const fotoSrc = ([foto1, foto2, foto3][data.fotoSeleccionada - 1]) ? `${baseUrl}${[foto1, foto2, foto3][data.fotoSeleccionada - 1]}` : null;
     const c = 'border border-black px-1 py-0.5';
     const l = 'font-bold text-[8px] uppercase';
     const v = 'font-black text-[10px]';
-    const filasVis = data.filasMedidas.filter(f => f.label || f.xl || f.xxl || f.xxxl);
+    const filasVis = data.filasMedidas.filter(f => f.label || f.S || f.M || f.L);
 
     return (
         <div ref={ref} id="ficha-preview" className="bg-white text-black"
@@ -213,7 +218,7 @@ const FichaPreview = React.forwardRef<HTMLDivElement, PreviewProps>(({ data, fot
                 </div>
                 <div className="flex flex-col">
                     <div className="flex-1 overflow-hidden">
-                        {dxfDatos ? <CanvasPiezas datos={dxfDatos} altura={220} ancho={340} /> : <div className="w-full h-full flex items-center justify-center text-slate-300 text-[9px]">Sin molde</div>}
+                        {dxfDatos ? <CanvasPiezas datos={dxfDatos} altura={220} ancho={340} zoom={zoomMolde} /> : <div className="w-full h-full flex items-center justify-center text-slate-300 text-[9px]">Sin molde</div>}
                     </div>
                     {data.textoPiezas && (
                         <div className="border-t border-black text-center font-black text-[10px] py-0.5 uppercase" style={{ color: '#be185d' }}>
@@ -288,6 +293,8 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
     const [showDropConf, setShowDropConf] = useState(false);
     const [showDropMan, setShowDropMan] = useState(false);
     const [showDropCorte, setShowDropCorte] = useState(false);
+    const [zoomPreview, setZoomPreview] = useState(1);
+    const [zoomMolde, setZoomMolde] = useState(1);
 
     const baseUrl = getBaseUrl();
 
@@ -347,17 +354,45 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
     const foto2 = fichaCostoDetalle?.foto2 || null;
     const foto3 = fichaCostoDetalle?.foto3 || null;
 
-    const handleImprimir = () => {
+    const handleImprimir = async () => {
         const el = document.getElementById('ficha-preview');
         if (!el) return;
-        const html = el.outerHTML;
-        const win = window.open('', '_blank', 'width=900,height=750');
-        if (!win) return;
-        win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ficha de Confeccion</title>
-<script src="https://cdn.tailwindcss.com"><\/script>
-<style>@page{size:letter portrait;margin:0}body{margin:0;padding:0;background:white}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}<\/style>
-</head><body>${html}<script>window.onload=function(){window.print();window.close()}<\/script></body></html>`);
-        win.document.close();
+        
+        try {
+            // Importar html2canvas dinámicamente
+            const html2canvas = (await import('html2canvas')).default;
+            
+            // Convertir el elemento a imagen
+            const canvas = await html2canvas(el, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+                allowTaint: true,
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Crear ventana de impresión
+            const win = window.open('', '_blank', 'width=900,height=750');
+            if (!win) return;
+            
+            win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ficha de Confeccion</title>
+<style>
+@page{size:letter portrait;margin:0;padding:0}
+html,body{margin:0;padding:0;background:white;width:100%;height:100%}
+img{width:100%;height:auto;display:block}
+@media print{
+  body{margin:0;padding:0}
+  img{margin:0;padding:0}
+}
+</style>
+</head><body><img src="${imgData}" style="width:100%;height:auto;display:block;margin:0;padding:0"/><script>window.onload=function(){setTimeout(function(){window.print();window.close()},500)}<\/script></body></html>`);
+            win.document.close();
+        } catch (error) {
+            console.error('Error al imprimir:', error);
+            alert('Error al generar la vista previa para imprimir');
+        }
     };
 
     const handleGuardar = () => {
@@ -626,9 +661,57 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
 
                 {/* Panel derecho: vista previa */}
                 <div className={`flex-1 overflow-auto p-6 ${d ? 'bg-[#2d1f42]' : 'bg-slate-100'}`}>
-                    <div className="flex justify-center">
-                        <div className="shadow-2xl">
-                            <FichaPreview data={data} foto1={foto1} foto2={foto2} foto3={foto3} dxfDatos={dxfDatos} />
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <button onClick={() => {
+                                // Resetear los offsets del canvas - buscar todos los canvas y resetearlos
+                                const previewEl = document.getElementById('ficha-preview');
+                                if (previewEl) {
+                                    const canvases = previewEl.querySelectorAll('canvas');
+                                    canvases.forEach(canvas => {
+                                        // Redibujar el canvas limpio
+                                        const ctx = (canvas as HTMLCanvasElement).getContext('2d');
+                                        if (ctx) {
+                                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                            ctx.fillStyle = '#fff';
+                                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                                        }
+                                    });
+                                }
+                            }}
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider border-2 transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
+                                ↻ Resetear Molde
+                            </button>
+                            <button onClick={() => setZoomPreview(Math.max(0.5, zoomPreview - 0.1))}
+                                className={`px-2.5 py-1.5 rounded-lg text-[12px] font-black border-2 transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
+                                −
+                            </button>
+                            <span className={`text-[10px] font-black w-12 text-center ${d ? 'text-violet-300' : 'text-slate-600'}`}>
+                                {Math.round(zoomPreview * 100)}%
+                            </span>
+                            <button onClick={() => setZoomPreview(Math.min(2, zoomPreview + 0.1))}
+                                className={`px-2.5 py-1.5 rounded-lg text-[12px] font-black border-2 transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
+                                +
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className={`text-[10px] font-black uppercase tracking-wider ${d ? 'text-violet-300' : 'text-slate-600'}`}>
+                                Molde:
+                            </span>
+                            <button onClick={() => setZoomMolde(Math.max(0.5, zoomMolde - 0.1))}
+                                className={`px-2.5 py-1.5 rounded-lg text-[12px] font-black border-2 transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
+                                −
+                            </button>
+                            <span className={`text-[10px] font-black w-12 text-center ${d ? 'text-violet-300' : 'text-slate-600'}`}>
+                                {Math.round(zoomMolde * 100)}%
+                            </span>
+                            <button onClick={() => setZoomMolde(Math.min(2, zoomMolde + 0.1))}
+                                className={`px-2.5 py-1.5 rounded-lg text-[12px] font-black border-2 transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
+                                +
+                            </button>
+                        </div>
+                        <div className="shadow-2xl" style={{ transform: `scale(${zoomPreview})`, transformOrigin: 'top center', transition: 'transform 0.2s ease-out' }}>
+                            <FichaPreview data={data} foto1={foto1} foto2={foto2} foto3={foto3} dxfDatos={dxfDatos} zoomMolde={zoomMolde} />
                         </div>
                     </div>
                 </div>

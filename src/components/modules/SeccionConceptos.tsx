@@ -6,6 +6,7 @@
 import React, { useRef, useState } from 'react';
 import { ConceptoFicha, TipoMaterial } from '../../types/typesFichas';
 import DecimalInput from '../DecimalInput';
+import { useBrand } from '../../hooks/useBrand';
 
 // Input con $ como prefijo visual, type="number" internamente
 const CurrencyInput: React.FC<{ value: number; onChange: (v: number) => void; readOnly: boolean; isDark?: boolean }> = ({ value, onChange, readOnly, isDark = false }) => {
@@ -67,28 +68,66 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
     // Recalcular PROV. DSCTO CCIAL cuando cambien los totales
     React.useEffect(() => {
         if (titulo === 'PROVISIONES' && totalesOtrosCostos && conceptos.length > 0) {
-            const calcDesctoComercial = () => {
+            const brand = useBrand();
+            const isMelas = brand.isMelas;
+            
+            const calcTransporteOComision = () => {
                 const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
                 const suma = totalMP + totalMO + totalID + totalII;
+                const porcentaje = isMelas ? 0.05 : 0.02; // 5% para Melas, 2% para Plow
+                return Math.round(suma * porcentaje);
+            };
+            
+            const calcDesctoComercial = () => {
+                const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
+                const transporteOComision = calcTransporteOComision();
+                const suma = totalMP + totalMO + totalID + totalII + transporteOComision;
                 const conMargen = suma * 1.35;
                 const descto70 = conMargen * 0.70;
                 const desctoFinal = descto70 * 0.19;
                 return Math.round(desctoFinal);
             };
 
+            // Buscar si existe TRANSPORTE o COMISIÓN
+            const conceptoTransporte = isMelas ? 'COMISIÓN' : 'TRANSPORTE';
+            const indexTransporte = conceptos.findIndex(c => c.concepto === 'TRANSPORTE' || c.concepto === 'COMISIÓN');
+            
             // Buscar si existe PROV. DSCTO CCIAL
             const indexDescto = conceptos.findIndex(c => c.concepto === 'PROV. DSCTO CCIAL');
+            
+            let necesitaActualizar = false;
+            const nuevosConceptos = [...conceptos];
+            
+            // Actualizar TRANSPORTE/COMISIÓN
+            if (indexTransporte !== -1) {
+                const nuevoValorTransporte = calcTransporteOComision();
+                if (nuevosConceptos[indexTransporte].concepto !== conceptoTransporte || 
+                    nuevosConceptos[indexTransporte].vlr_unit !== nuevoValorTransporte) {
+                    nuevosConceptos[indexTransporte] = {
+                        ...nuevosConceptos[indexTransporte],
+                        concepto: conceptoTransporte,
+                        vlr_unit: nuevoValorTransporte,
+                        total: nuevoValorTransporte * (nuevosConceptos[indexTransporte].cant || 1)
+                    };
+                    necesitaActualizar = true;
+                }
+            }
+            
+            // Actualizar PROV. DSCTO CCIAL
             if (indexDescto !== -1) {
                 const nuevoValor = calcDesctoComercial();
-                if (conceptos[indexDescto].vlr_unit !== nuevoValor) {
-                    const nuevosConceptos = [...conceptos];
+                if (nuevosConceptos[indexDescto].vlr_unit !== nuevoValor) {
                     nuevosConceptos[indexDescto] = {
                         ...nuevosConceptos[indexDescto],
                         vlr_unit: nuevoValor,
                         total: nuevoValor * (nuevosConceptos[indexDescto].cant || 1)
                     };
-                    onChange(nuevosConceptos);
+                    necesitaActualizar = true;
                 }
+            }
+            
+            if (necesitaActualizar) {
+                onChange(nuevosConceptos);
             }
         }
     }, [totalesOtrosCostos, titulo, conceptos, onChange]);
@@ -120,20 +159,35 @@ const SeccionConceptos: React.FC<SeccionConceptosProps> = ({
             }
         } else if (titulo === 'PROVISIONES') {
             if (conceptos.length === 0) {
-                const calcDesctoComercial = () => {
+                const brand = useBrand();
+                const isMelas = brand.isMelas;
+                
+                const calcTransporteOComision = () => {
                     if (!totalesOtrosCostos) return 0;
                     const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
                     const suma = totalMP + totalMO + totalID + totalII;
+                    const porcentaje = isMelas ? 0.05 : 0.02; // 5% para Melas, 2% para Plow
+                    return Math.round(suma * porcentaje);
+                };
+                
+                const calcDesctoComercial = () => {
+                    if (!totalesOtrosCostos) return 0;
+                    const { totalMP, totalMO, totalID, totalII } = totalesOtrosCostos;
+                    const transporteOComision = calcTransporteOComision();
+                    const suma = totalMP + totalMO + totalID + totalII + transporteOComision;
                     const conMargen = suma * 1.35;
                     const descto70 = conMargen * 0.70;
                     const desctoFinal = descto70 * 0.19;
                     return Math.round(desctoFinal);
                 };
                 
+                const transporteOComisionValor = calcTransporteOComision();
+                const conceptoTransporte = isMelas ? 'COMISIÓN' : 'TRANSPORTE';
+                
                 nuevosConceptos = [
                     { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
                     { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
-                    { concepto: 'TRANSPORTE', um: 'UNIDAD', vlr_unit: 0, cant: 1, total: 0 },
+                    { concepto: conceptoTransporte, um: 'UNIDAD', vlr_unit: transporteOComisionValor, cant: 1, total: transporteOComisionValor },
                     { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
                 ];
             } else {

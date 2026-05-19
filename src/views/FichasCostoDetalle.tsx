@@ -11,6 +11,7 @@ import SeccionConceptos from '../components/modules/SeccionConceptos';
 import SubidaFotos from '../components/modules/SubidaFotos';
 import { VisorMolde } from '../components/modules/VisorMolde';
 import { useDarkMode } from '../context/DarkModeContext';
+import { useBrand } from '../hooks/useBrand';
 
 interface Props {
     state: AppState;
@@ -91,6 +92,47 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             }
             setCostoTotalGuardado(costoGuardado);
             setEstadoRevision(fichaExistente.estadoRevision || null);
+        }
+    }, [fichaExistente?.referencia]);
+
+    // Inicializar provisiones cuando se crea una nueva ficha (sin ficha existente)
+    useEffect(() => {
+        if (!fichaExistente && provisiones.length === 0) {
+            const brand = useBrand();
+            const isMelas = brand.isMelas;
+            
+            const calcTransporteOComision = () => {
+                const totalMP = 0; // En nueva ficha no hay materia prima aún
+                const totalMO = 0; // En nueva ficha no hay mano de obra aún
+                const totalID = 0; // En nueva ficha no hay insumos directos aún
+                const totalII = 0; // En nueva ficha no hay insumos indirectos aún
+                const suma = totalMP + totalMO + totalID + totalII;
+                const porcentaje = isMelas ? 0.05 : 0.02; // 5% para Melas, 2% para Plow
+                return Math.round(suma * porcentaje);
+            };
+            
+            const calcDesctoComercial = () => {
+                const totalMP = 0;
+                const totalMO = 0;
+                const totalID = 0;
+                const totalII = 0;
+                const transporteOComision = calcTransporteOComision();
+                const suma = totalMP + totalMO + totalID + totalII + transporteOComision;
+                const conMargen = suma * 1.35;
+                const descto70 = conMargen * 0.70;
+                const desctoFinal = descto70 * 0.19;
+                return Math.round(desctoFinal);
+            };
+            
+            const transporteOComisionValor = calcTransporteOComision();
+            const conceptoTransporte = isMelas ? 'COMISIÓN' : 'TRANSPORTE';
+            
+            setProvisiones([
+                { concepto: 'PROV. CARTERA', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
+                { concepto: 'SERVICIOS CONFECCIONISTAS', um: 'UNIDAD', vlr_unit: 200, cant: 1, total: 200 },
+                { concepto: conceptoTransporte, um: 'UNIDAD', vlr_unit: transporteOComisionValor, cant: 1, total: transporteOComisionValor },
+                { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
+            ]);
         }
     }, [fichaExistente?.referencia]);
 
