@@ -14,7 +14,7 @@ interface Props {
 const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const { isDark } = useDarkMode();
     const id = params?.id || '';
-    const canEdit = user?.role === 'admin' || user?.role === 'general';
+    const canEdit = user?.role === 'admin' || user?.role === 'general' || user?.role === 'soporte' || user?.role === 'operador';
 
     const [maleta, setMaleta] = useState<any>(null);
     const [refsSinCorreria, setRefsSinCorreria] = useState<any[]>([]);
@@ -23,6 +23,7 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
     const [isLoading, setIsLoading] = useState(false);
     const [refManual, setRefManual] = useState('');
     const [refsNoExistentes, setRefsNoExistentes] = useState<string[]>([]);
+    const [refsMarcadasEliminar, setRefsMarcadasEliminar] = useState<string[]>([]);
 
     useEffect(() => {
         const cargar = async () => {
@@ -41,6 +42,8 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
         : [];
 
     const toggleRef = (ref: string) => setSeleccionadas(prev => prev.includes(ref) ? prev.filter(r => r !== ref) : [...prev, ref]);
+
+    const toggleMarcarEliminar = (ref: string) => setRefsMarcadasEliminar(prev => prev.includes(ref) ? prev.filter(r => r !== ref) : [...prev, ref]);
 
     const handleAgregarManual = () => {
         const codigo = refManual.trim().toUpperCase();
@@ -65,6 +68,7 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
             const result = await apiFichas.updateMaleta(id, maleta?.nombre, maleta?.correriaId, seleccionadas);
             if (result.success) {
                 alert('✅ Maleta guardada');
+                setRefsMarcadasEliminar([]);
                 const maletas = await apiFichas.getMaletas();
                 updateState(prev => ({ ...prev, maletas }));
                 onNavigate('maletas');
@@ -82,9 +86,27 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                 alert('✅ Maleta limpiada');
                 setSeleccionadas([]);
                 setRefsNoExistentes([]);
+                setRefsMarcadasEliminar([]);
                 const maletas = await apiFichas.getMaletas();
                 updateState(prev => ({ ...prev, maletas }));
                 onNavigate('maletas');
+            } else alert('❌ ' + result.message);
+        } catch { alert('❌ Error de conexión'); }
+        finally { setIsLoading(false); }
+    };
+
+    const handleEliminarSeleccionadas = async () => {
+        if (!window.confirm(`¿Estás seguro de que deseas eliminar ${refsMarcadasEliminar.length} referencia(s)?`)) return;
+        setIsLoading(true);
+        try {
+            const nuevasSeleccionadas = seleccionadas.filter(ref => !refsMarcadasEliminar.includes(ref));
+            const result = await apiFichas.updateMaleta(id, maleta?.nombre, maleta?.correriaId, nuevasSeleccionadas);
+            if (result.success) {
+                alert('✅ Referencias eliminadas');
+                setSeleccionadas(nuevasSeleccionadas);
+                setRefsMarcadasEliminar([]);
+                const maletas = await apiFichas.getMaletas();
+                updateState(prev => ({ ...prev, maletas }));
             } else alert('❌ ' + result.message);
         } catch { alert('❌ Error de conexión'); }
         finally { setIsLoading(false); }
@@ -231,25 +253,39 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                         <p className={`text-3xl font-black transition-colors ${isDark ? 'text-violet-200' : 'text-purple-800'}`}>{seleccionadas.length}</p>
                         <p className={`text-xs font-bold mt-1 transition-colors ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>referencia{seleccionadas.length !== 1 ? 's' : ''} seleccionada{seleccionadas.length !== 1 ? 's' : ''}</p>
                     </div>
-                    {seleccionadas.length > 0 && <button onClick={handleLimpiar} disabled={isLoading} className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-white text-purple-600 hover:bg-purple-50'}`}>
-                        {isLoading ? 'LIMPIANDO...' : 'Limpiar'}
-                    </button>}
+                    <div className="flex gap-2">
+                        {(user?.role === 'soporte' || user?.role === 'admin') && refsMarcadasEliminar.length > 0 && (
+                            <button onClick={handleEliminarSeleccionadas} disabled={isLoading} className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 ${isDark ? 'bg-red-700/50 hover:bg-red-700 text-red-200' : 'bg-red-100 text-red-600 hover:bg-red-200'}`}>
+                                Eliminar Seleccionadas
+                            </button>
+                        )}
+                        {seleccionadas.length > 0 && <button onClick={handleLimpiar} disabled={isLoading} className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-200' : 'bg-white text-purple-600 hover:bg-purple-50'}`}>
+                            {isLoading ? 'LIMPIANDO...' : 'Limpiar'}
+                        </button>}
+                    </div>
                 </div>
                 {seleccionadas.length > 0 && (
                     <div className={`mt-4 pt-4 border-t-2 transition-colors ${isDark ? 'border-violet-700' : 'border-purple-300'}`}>
                         <p className={`text-xs font-black uppercase tracking-widest mb-2 transition-colors ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>Seleccionadas:</p>
                         <div className="flex flex-wrap gap-2">
-                            {seleccionadas.slice(0, 20).map(ref => (
-                                <span key={ref} className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors ${refsNoExistentes.includes(ref) ? isDark ? 'bg-orange-800/50 text-orange-300 border border-orange-600' : 'bg-orange-100 text-orange-700 border border-orange-300' : isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-white text-purple-700'}`}>
+                            {seleccionadas.sort((a, b) => {
+                                const numA = parseInt(a.replace(/\D/g, '')) || 0;
+                                const numB = parseInt(b.replace(/\D/g, '')) || 0;
+                                if (numA !== numB) return numA - numB;
+                                return a.localeCompare(b);
+                            }).map(ref => (
+                                <button
+                                    key={ref}
+                                    onClick={() => toggleMarcarEliminar(ref)}
+                                    className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors cursor-pointer ${refsMarcadasEliminar.includes(ref) ? isDark ? 'bg-red-800/70 text-red-200 border border-red-600' : 'bg-red-200 text-red-700 border border-red-400' : refsNoExistentes.includes(ref) ? isDark ? 'bg-orange-800/50 text-orange-300 border border-orange-600' : 'bg-orange-100 text-orange-700 border border-orange-300' : isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-white text-purple-700'}`}>
                                     {ref}
                                     {refsNoExistentes.includes(ref) && (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                                         </svg>
                                     )}
-                                </span>
+                                </button>
                             ))}
-                            {seleccionadas.length > 20 && <span className={`px-3 py-1 rounded-lg text-xs font-bold transition-colors ${isDark ? 'bg-violet-700/70 text-violet-200' : 'bg-purple-200 text-purple-700'}`}>+{seleccionadas.length - 20} más</span>}
                         </div>
                     </div>
                 )}

@@ -5,6 +5,7 @@ import apiFichas from '../services/apiFichas';
 import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 import { useDarkMode } from '../context/DarkModeContext';
 import { canCreate, canDelete } from '../utils/permissions';
+import * as XLSX from 'xlsx';
 
 interface Props {
     state: AppState; user: any;
@@ -54,6 +55,67 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
             } else alert('❌ ' + result.message);
         } catch { alert('❌ Error de conexión'); }
         finally { setIsLoading(false); }
+    };
+
+    const handleExportar = async (maleta: any) => {
+        try {
+            setIsLoading(true);
+            
+            // Obtener datos completos de la maleta con referencias
+            const maletaCompleta = await apiFichas.getMaleta(maleta.id);
+            console.log('Maleta completa:', maletaCompleta);
+            
+            const wb = XLSX.utils.book_new();
+            
+            // Preparar datos
+            const correria = (state.correrias || []).find(c => c.id === maletaCompleta.correriaId);
+            const correriaText = correria ? `${correria.name} ${correria.year}` : 'Sin correría asignada';
+            
+            const referencias = (maletaCompleta.referencias || [])
+                .map((r: any) => r.referencia)
+                .sort((a: string, b: string) => {
+                    const numA = parseInt(a.replace(/\D/g, '')) || 0;
+                    const numB = parseInt(b.replace(/\D/g, '')) || 0;
+                    if (numA !== numB) return numA - numB;
+                    return a.localeCompare(b);
+                });
+            
+            console.log('Referencias procesadas:', referencias);
+            
+            // Crear array de datos: columna A vacía, columna B con datos
+            const data: any[] = [
+                ['', maletaCompleta.nombre],
+                ['', correriaText],
+                ...referencias.map(ref => ['', ref])
+            ];
+            
+            console.log('Data array:', data);
+            
+            const ws = XLSX.utils.aoa_to_sheet(data);
+            
+            // Aplicar tamaño de fuente 12 a todas las celdas
+            const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+                    if (ws[cellAddress]) {
+                        ws[cellAddress].font = { size: 12 };
+                    }
+                }
+            }
+            
+            // Ancho de columna A (delgada) y B
+            ws['!cols'] = [{ wch: 2 }, { wch: 30 }];
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Maleta');
+            XLSX.writeFile(wb, `${maletaCompleta.nombre}.xlsx`);
+            alert('✅ Maleta exportada');
+        } catch (error) {
+            alert('❌ Error al exportar');
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -106,6 +168,8 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                                     <td className={`px-6 py-4 font-bold text-sm transition-colors ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{maleta.createdBy}</td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2">
+                                            <button className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
+                                            <button onClick={() => handleExportar(maleta)} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-green-700/50 text-green-200 hover:bg-green-700' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>Exportar</button>
                                             <button onClick={() => onNavigate('maletas-asignar', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-violet-700/50 text-violet-200 hover:bg-violet-700' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>Ver / Editar</button>
                                             {canDeleteMaleta && (
                                                 <button onClick={() => { setMaletaEliminar(maleta.id); setShowModalEliminar(true); }} className={`px-4 py-2 rounded-lg transition-colors font-bold text-sm ${isDark ? 'bg-pink-600/50 text-pink-200 hover:bg-pink-600' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>Eliminar</button>
