@@ -240,10 +240,11 @@ const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ order
   const anioSuggestions = useMemo(() => Array.from(new Set(correrias.map(c => c.year))).sort((a, b) => String(b).localeCompare(String(a))), [correrias]);
 
   const correriaSeleccionada = useMemo(() => {
-    if (!correriaNombre) return null;
+    // Requiere AMBOS: nombre de correría Y año
+    if (!correriaNombre || !anioFiltro) return null;
     return correrias.find(c => {
       const matchNombre = c.name.toLowerCase().includes(correriaNombre.toLowerCase());
-      const matchAnio = anioFiltro ? c.year === anioFiltro : true;
+      const matchAnio = c.year === anioFiltro;
       return matchNombre && matchAnio;
     }) || null;
   }, [correrias, correriaNombre, anioFiltro]);
@@ -509,7 +510,7 @@ const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ order
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 opacity-30">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h7.5M8.25 12h7.5m-7.5 5.25H12M3.75 3h16.5c.621 0 1.125.504 1.125 1.125v15.75c0 .621-.504 1.125-1.125 1.125H3.75A1.125 1.125 0 0 1 2.625 19.875V4.125C2.625 3.504 3.129 3 3.75 3Z" />
                     </svg>
-                    <span>Escribe al menos 2 letras en el campo Correría para comenzar</span>
+                    <span>Selecciona una correría y un año para ver los pedidos</span>
                   </div>
                 </td></tr>
               ) : loadingNotes ? (

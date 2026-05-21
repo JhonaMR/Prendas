@@ -115,6 +115,7 @@ useEffect(() => {
 
     let data = state.references
       .filter(ref => ref.correrias.includes(selectedCorreriaId)) // ← FILTRAR POR CORRERÍA
+      .sort((a, b) => Number(a.id) - Number(b.id)) // ← ORDENAR NUMÉRICAMENTE
       .map(ref => {
         const refOrders = state.orders.filter(o => o.correriaId === selectedCorreriaId);
         const totalSold = refOrders.reduce((acc, order) => {
@@ -895,7 +896,7 @@ const handleSaveProduction = async () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {state.references
                   .filter(ref => ref.correrias.includes(selectedCorreriaId))
-                  .sort((a, b) => a.id.localeCompare(b.id))
+                  .sort((a, b) => Number(a.id) - Number(b.id))
                   .map(ref => {
                     const isSelected = selectedRefsToDepurar.includes(ref.id);
                     return (
@@ -917,9 +918,17 @@ const handleSaveProduction = async () => {
             </div>
 
             <div className={`p-8 flex items-center justify-between transition-colors duration-300 ${isDark ? 'bg-[#5a4a75]/50 border-violet-700' : 'bg-slate-50 border-slate-100'} border-t`}>
-              <div className="flex items-center gap-2">
-                <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Seleccionadas:</span>
-                <span className={`px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-100 text-red-700'}`}>{selectedRefsToDepurar.length}</span>
+              <div className="flex items-center gap-6">
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Ref. existentes:</span>
+                  <span className={`px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-violet-100 text-violet-700'}`}>
+                    {state.references.filter(ref => ref.correrias.includes(selectedCorreriaId)).length - selectedRefsToDepurar.length} / {state.references.filter(ref => ref.correrias.includes(selectedCorreriaId)).length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Seleccionadas:</span>
+                  <span className={`px-3 py-1 rounded-full font-black text-xs transition-colors duration-300 ${isDark ? 'bg-red-900/30 text-red-300' : 'bg-red-100 text-red-700'}`}>{selectedRefsToDepurar.length}</span>
+                </div>
               </div>
               <div className="flex items-center gap-4">
                 <button 
