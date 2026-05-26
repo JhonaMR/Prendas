@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Servicio de lógica de negocio para Clients - POSTGRESQL
  */
 
@@ -137,12 +137,12 @@ async function updateClient(id, data) {
     }
     if (data.cod_of !== undefined || data.codOf !== undefined) {
       const codOfVal = data.cod_of !== undefined ? data.cod_of : (data.codOf !== undefined ? data.codOf : null);
-      updates.push('cod_of = ' + paramIndex++);
+      updates.push(`cod_of = $${paramIndex++}`);
       values.push(codOfVal);
     }
     if (data.cod_rm !== undefined || data.codRm !== undefined) {
       const codRmVal = data.cod_rm !== undefined ? data.cod_rm : (data.codRm !== undefined ? data.codRm : null);
-      updates.push('cod_rm = ' + paramIndex++);
+      updates.push(`cod_rm = $${paramIndex++}`);
       values.push(codRmVal);
     }
 

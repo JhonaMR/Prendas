@@ -36,15 +36,29 @@ const mapFicha = (f) => ({
     updatedAt: f.updated_at,
 });
 
+const mapFichaMetadata = (f) => ({
+    id: f.id,
+    referencia: f.referencia,
+    fechaEnvio: f.fecha_envio,
+    fechaEntrega: f.fecha_entrega,
+    nCorte: f.n_corte,
+    cantidad: f.cantidad,
+    fichaRealizadaPor: f.ficha_realizada_por,
+    createdBy: f.created_by,
+    createdAt: f.created_at,
+    updatedAt: f.updated_at,
+});
+
 // ── GET /api/fichas-confeccion ────────────────────────────────────────────────
 
 const getFichasConfeccion = async (req, res) => {
     try {
         const result = await query(`
-            SELECT * FROM fichas_confeccion
+            SELECT id, referencia, fecha_envio, fecha_entrega, n_corte, cantidad, ficha_realizada_por, created_by, created_at, updated_at
+            FROM fichas_confeccion
             ORDER BY created_at DESC
         `);
-        return res.json({ success: true, data: result.rows.map(mapFicha) });
+        return res.json({ success: true, data: result.rows.map(mapFichaMetadata) });
     } catch (error) {
         console.error('Error obteniendo fichas confeccion:', error);
         return res.status(500).json({ success: false, message: 'Error al obtener fichas' });

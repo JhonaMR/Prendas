@@ -314,6 +314,43 @@ async function transaction(callback) {
 }
 
 /**
+ * Intenta conectarse a la base de datos primaria sin destruir el pool actual.
+ * Si tiene éxito, reemplaza el pool actual por el de la base de datos primaria.
+ */
+async function checkAndRestorePrimaryConnection() {
+  try {
+    const config = configurationManager.getConfiguration();
+    logger.info(`🔍 Intentando verificar si la BD primaria en ${config.DB_HOST}:${config.DB_PORT} está de nuevo en línea...`);
+
+    const primaryPoolConfig = {
+      user: config.DB_USER,
+      password: config.DB_PASSWORD,
+      host: config.DB_HOST,
+      port: config.DB_PORT,
+      database: config.DB_NAME,
+      max: 2,
+      min: 0,
+      idleTimeoutMillis: 1000,
+      connectionTimeoutMillis: 2000,
+      ssl: config.DB_SSL ? { rejectUnauthorized: false } : false
+    };
+
+    const tempPool = new Pool(primaryPoolConfig);
+    const client = await tempPool.connect();
+    await client.query('SELECT 1');
+    client.release();
+
+    logger.info(`✅ BD primaria en ${config.DB_HOST}:${config.DB_PORT} está de nuevo en línea. Restaurando pool primario...`);
+    await tempPool.end();
+
+    // Reestablecer pool principal
+    await attemptReconnection();
+  } catch (error) {
+    logger.debug(`❌ La BD primaria sigue desconectada: ${error.message}. Continuando en fallback (localhost).`);
+  }
+}
+
+/**
  * Iniciar tarea de reconexión automática
  * Verifica la conectividad periódicamente y reconecta si es necesario
  */
@@ -332,6 +369,11 @@ function startAutomaticReconnection() {
         logger.warn('⚠️ Conexión perdida detectada. Intentando reconexión automática...');
         await attemptReconnection();
       } else {
+        // Si estamos usando fallback (localhost), verificar si la primaria ya revivió
+        if (connectionStatus.fallbackUsed) {
+          await checkAndRestorePrimaryConnection();
+        }
+
         // Hacer un health check silencioso
         try {
           const result = await pool.query('SELECT 1');

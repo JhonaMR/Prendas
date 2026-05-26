@@ -718,8 +718,10 @@ const deleteDispatch = async (req, res) => {
 const getOrders = async (req, res) => {
     try {
         const result = await query(`
-            SELECT * FROM orders
-            ORDER BY created_at DESC
+            SELECT o.*, n.contacto, n.novedad
+            FROM orders o
+            LEFT JOIN order_notes n ON o.id = n.order_id
+            ORDER BY o.created_at DESC
         `);
 
         const orders = result.rows;
@@ -748,7 +750,9 @@ const getOrders = async (req, res) => {
                 startDate: order.start_date || null,
                 endDate: order.end_date || null,
                 porcentajeOficial: order.porcentaje_oficial !== null && order.porcentaje_oficial !== undefined ? parseFloat(order.porcentaje_oficial) : null,
-                porcentajeRemision: order.porcentaje_remision !== null && order.porcentaje_remision !== undefined ? parseFloat(order.porcentaje_remision) : null
+                porcentajeRemision: order.porcentaje_remision !== null && order.porcentaje_remision !== undefined ? parseFloat(order.porcentaje_remision) : null,
+                contacto: order.contacto || null,
+                novedad: order.novedad || null
             };
         }));
 
@@ -853,7 +857,9 @@ const createOrder = async (req, res) => {
                 startDate: startDate || null,
                 endDate: endDate || null,
                 porcentajeOficial: porcentajeOficial || null,
-                porcentajeRemision: porcentajeRemision || null
+                porcentajeRemision: porcentajeRemision || null,
+                contacto: null,
+                novedad: null
             }
         });
 
@@ -1089,6 +1095,14 @@ const updateOrder = async (req, res) => {
             }
         });
 
+        // Obtener contacto y novedad si existen en order_notes
+        const notesResult = await query(
+            `SELECT contacto, novedad FROM order_notes WHERE order_id = $1`,
+            [id]
+        );
+        const contacto = notesResult.rows[0]?.contacto || null;
+        const novedad = notesResult.rows[0]?.novedad || null;
+
         return res.status(200).json({
             success: true,
             message: 'Pedido actualizado exitosamente',
@@ -1104,7 +1118,9 @@ const updateOrder = async (req, res) => {
                 endDate: endDate || null,
                 porcentajeOficial: porcentajeOficial || null,
                 porcentajeRemision: porcentajeRemision || null,
-                orderNumber: orderNumber || null
+                orderNumber: orderNumber || null,
+                contacto,
+                novedad
             }
         });
 

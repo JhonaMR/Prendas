@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useDarkMode } from "../context/DarkModeContext";
 import { Order, Client, Correria, Seller } from "../types";
 import { api } from "../services/api";
@@ -8,6 +8,7 @@ interface ClientesPorCorreriaViewProps {
   clients: Client[];
   correrias: Correria[];
   sellers: Seller[];
+  updateState?: (updater: (prev: any) => any) => void;
 }
 
 interface NoteState {
@@ -215,7 +216,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ value, onChange, 
   );
 };
 
-const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ orders, clients, correrias, sellers }) => {
+const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ orders, clients, correrias, sellers, updateState }) => {
   const { isDark } = useDarkMode();
   const [search, setSearch] = useState("");
   const [vendedorFiltro, setVendedorFiltro] = useState("Todos");
@@ -297,18 +298,24 @@ const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ order
     return { of: totalOf, rm: totalRm };
   }, [orders, correriaSeleccionada]);
 
-  // Cargar notas cuando cambia la correría
+  // Inicializar notesMap desde orders
   useEffect(() => {
-    if (!correriaSeleccionada || rows.length === 0) { setNotesMap({}); setDirtyMap({}); return; }
-    const orderIds = rows.map(r => r.order.id);
-    setLoadingNotes(true);
-    api.getOrderNotes(orderIds).then(data => {
-      const m: NotesMap = {};
-      data.forEach(n => { m[n.order_id] = { contacto: n.contacto || "", novedad: n.novedad || "" }; });
-      setNotesMap(m);
+    if (!correriaSeleccionada) {
+      setNotesMap({});
       setDirtyMap({});
-    }).catch(() => {}).finally(() => setLoadingNotes(false));
-  }, [correriaSeleccionada?.id, rows.length]);
+      return;
+    }
+    const m: NotesMap = {};
+    orders
+      .filter(o => o.correriaId === correriaSeleccionada.id)
+      .forEach(o => {
+        m[o.id] = {
+          contacto: o.contacto || "",
+          novedad: o.novedad || ""
+        };
+      });
+    setNotesMap(m);
+  }, [correriaSeleccionada?.id, orders]);
 
   // Aviso antes de salir si hay cambios sin guardar
   useEffect(() => {
@@ -341,6 +348,19 @@ const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ order
       }));
       const res = await api.batchUpsertOrderNotes(notes);
       if (res.success) {
+        // Actualizar el contexto global
+        const updatedOrders = orders.map(o => {
+          const dirty = dirtyMap[o.id];
+          if (dirty) {
+            return {
+              ...o,
+              contacto: dirty.contacto,
+              novedad: dirty.novedad
+            };
+          }
+          return o;
+        });
+
         // Merge dirty → notesMap
         setNotesMap(prev => {
           const next = { ...prev };
@@ -348,6 +368,13 @@ const ClientesPorCorreriaView: React.FC<ClientesPorCorreriaViewProps> = ({ order
           return next;
         });
         setDirtyMap({});
+
+        if (updateState) {
+          updateState(prev => ({
+            ...prev,
+            orders: updatedOrders
+          }));
+        }
       } else {
         alert("Error al guardar: " + res.message);
       }

@@ -136,6 +136,8 @@ export interface Order {
   endDate?: string | null;
   porcentajeOficial?: number | null;
   porcentajeRemision?: number | null;
+  contacto?: string | null;
+  novedad?: string | null;
 }
 
 export interface DeliveryDate {

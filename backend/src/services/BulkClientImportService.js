@@ -79,6 +79,27 @@ function validateAndTransformRecord(record, sellerMap, rowNumber) {
   // Transformar registro
   const sellerId = sellerMap.get(record.seller.toString().trim().toLowerCase());
   
+  // Mapear cod_of
+  let codOf = null;
+  if (record.cod_of !== undefined) codOf = record.cod_of;
+  else if (record.codof !== undefined) codOf = record.codof;
+  else if (record['cód. of'] !== undefined) codOf = record['cód. of'];
+  else if (record['cod. of'] !== undefined) codOf = record['cod. of'];
+
+  // Mapear cod_rm
+  let codRm = null;
+  if (record.cod_rm !== undefined) codRm = record.cod_rm;
+  else if (record.codrm !== undefined) codRm = record.codrm;
+  else if (record.cod_ml !== undefined) codRm = record.cod_ml;
+  else if (record.codml !== undefined) codRm = record.codml;
+  else if (record['cód. ml'] !== undefined) codRm = record['cód. ml'];
+  else if (record['cod. ml'] !== undefined) codRm = record['cod. ml'];
+  else if (record['cód. rm'] !== undefined) codRm = record['cód. rm'];
+  else if (record['cod. rm'] !== undefined) codRm = record['cod. rm'];
+
+  const cleanCodOf = (codOf !== null && String(codOf).trim() !== '') ? String(codOf).trim() : null;
+  const cleanCodRm = (codRm !== null && String(codRm).trim() !== '') ? String(codRm).trim() : null;
+
   return {
     valid: true,
     data: {
@@ -87,7 +108,9 @@ function validateAndTransformRecord(record, sellerMap, rowNumber) {
       nit: record.nit.toString().trim(),
       address: record.address.toString().trim(),
       city: record.city.toString().trim(),
-      sellerId: sellerId
+      sellerId: sellerId,
+      codOf: cleanCodOf,
+      codRm: cleanCodRm
     }
   };
 }
@@ -160,8 +183,8 @@ async function bulkImportClients(records) {
     await transaction(async (client) => {
       for (const record of validRecords) {
         await client.query(
-          `INSERT INTO clients (id, name, nit, address, city, seller_id, active)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+          `INSERT INTO clients (id, name, nit, address, city, seller_id, active, cod_of, cod_rm)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
           [
             record.id,
             record.name,
@@ -169,7 +192,9 @@ async function bulkImportClients(records) {
             record.address,
             record.city,
             record.sellerId,
-            true
+            true,
+            record.codOf,
+            record.codRm
           ]
         );
       }

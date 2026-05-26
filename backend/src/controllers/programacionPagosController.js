@@ -125,13 +125,19 @@ const getConteoPorMes = async (req, res) => {
     const { anio, mes } = req.query;
     if (!anio || !mes) return res.status(400).json({ success: false, message: 'anio y mes son requeridos' });
 
+    const yearNum = parseInt(anio);
+    const monthNum = parseInt(mes);
+    const startDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-01`;
+    const lastDay = new Date(yearNum, monthNum, 0).getDate();
+    const endDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
     const pool = getPool();
     const { rows } = await pool.query(
       `SELECT fecha::text, COUNT(*) as total
        FROM pagos_programados
-       WHERE EXTRACT(YEAR FROM fecha) = $1 AND EXTRACT(MONTH FROM fecha) = $2
+       WHERE fecha >= $1 AND fecha <= $2
        GROUP BY fecha`,
-      [parseInt(anio), parseInt(mes)]
+      [startDate, endDate]
     );
 
     const conteo = {};
@@ -153,15 +159,21 @@ const getTotalesPorMes = async (req, res) => {
     const { anio, mes } = req.query;
     if (!anio || !mes) return res.status(400).json({ success: false, message: 'anio y mes son requeridos' });
 
+    const yearNum = parseInt(anio);
+    const monthNum = parseInt(mes);
+    const startDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-01`;
+    const lastDay = new Date(yearNum, monthNum, 0).getDate();
+    const endDate = `${yearNum}-${String(monthNum).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
     const pool = getPool();
     
     // Obtener todos los pagos del mes con sus descuentos
     const { rows: pagos } = await pool.query(
       `SELECT id, fecha::text, bruto_of, bruto_ml
        FROM pagos_programados
-       WHERE EXTRACT(YEAR FROM fecha) = $1 AND EXTRACT(MONTH FROM fecha) = $2
+       WHERE fecha >= $1 AND fecha <= $2
        ORDER BY fecha`,
-      [parseInt(anio), parseInt(mes)]
+      [startDate, endDate]
     );
 
     if (!pagos.length) {

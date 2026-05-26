@@ -1146,7 +1146,7 @@ const App: React.FC = () => {
       case 'historicoReferencia':
         return <HistoricoReferenciaView user={user} onNavigate={handleTabChange} state={state} />;
       case 'clientesPorCorreria':
-        return <ClientesPorCorreriaView orders={state.orders} clients={state.clients} correrias={state.correrias} sellers={state.sellers} />;
+        return <ClientesPorCorreriaView orders={state.orders} clients={state.clients} correrias={state.correrias} sellers={state.sellers} updateState={updateState} />;
       case 'listaPrecios':
         return <GenerarListaPreciosView state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'controlTransporte':
