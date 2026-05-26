@@ -243,6 +243,112 @@ export const deleteFichaConfeccion = async (id: string): Promise<ApiResponse> =>
     }
 };
 
+// ===== FICHAS DE ESTAMPACION =====
+
+export const getFichasEstampacion = async (): Promise<any[]> => {
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-estampacion`, { headers: getHeaders() });
+        
+        if (!r.ok) {
+            console.warn(`API retornó status ${r.status}, intentando fallback a BD directa`);
+            return getFichasEstampacionDirecto();
+        }
+        
+        const d = await r.json();
+        
+        if (!d || typeof d !== 'object' || d.success === false) {
+            console.warn('API retornó respuesta inválida, intentando fallback a BD directa');
+            return getFichasEstampacionDirecto();
+        }
+        
+        return d.data || [];
+    } catch (error) {
+        console.error('Error en getFichasEstampacion:', error);
+        console.warn('Intentando fallback a BD directa');
+        return getFichasEstampacionDirecto();
+    }
+};
+
+const getFichasEstampacionDirecto = async (): Promise<any[]> => {
+    try {
+        const token = localStorage.getItem('auth_token');
+        const r = await fetch(`${getApiUrl()}/fichas-estampacion`, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token && { 'Authorization': `Bearer ${token}` })
+            }
+        });
+        
+        if (!r.ok) {
+            console.error('Fallback también falló con status:', r.status);
+            return [];
+        }
+        
+        const d = await r.json();
+        return d.data || [];
+    } catch (error) {
+        console.error('Error en fallback getFichasEstampacionDirecto:', error);
+        return [];
+    }
+};
+
+export const createFichaEstampacion = async (ficha: any): Promise<ApiResponse> => {
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-estampacion`, {
+            method: 'POST', headers: getHeaders(), body: JSON.stringify(ficha)
+        });
+        
+        if (!r.ok) {
+            console.error('Error al crear ficha estampacion:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en createFichaEstampacion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
+};
+
+export const updateFichaEstampacion = async (id: string, ficha: any): Promise<ApiResponse> => {
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-estampacion/${id}`, {
+            method: 'PUT', headers: getHeaders(), body: JSON.stringify(ficha)
+        });
+        
+        if (!r.ok) {
+            console.error('Error al actualizar ficha estampacion:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en updateFichaEstampacion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
+};
+
+export const deleteFichaEstampacion = async (id: string): Promise<ApiResponse> => {
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-estampacion/${id}`, {
+            method: 'DELETE', headers: getHeaders()
+        });
+        
+        if (!r.ok) {
+            console.error('Error al eliminar ficha estampacion:', r.status);
+            return { success: false, message: `Error ${r.status}` };
+        }
+        
+        const d = await r.json();
+        return d || { success: false, message: 'Respuesta vacía' };
+    } catch (error) {
+        console.error('Error en deleteFichaEstampacion:', error);
+        return { success: false, message: 'Error de conexión' };
+    }
+};
+
 // ===== FICHAS DE COSTO =====
 
 export const getFichasCosto = async (): Promise<FichaCosto[]> => {
@@ -362,6 +468,7 @@ const apiFichas = {
     crearCorte, updateCorte, deleteCorte,
     getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria, getReferenciasMaletaRecibidas, createReferenciaRecibida,
     getFichasConfeccion, createFichaConfeccion, updateFichaConfeccion, deleteFichaConfeccion,
+    getFichasEstampacion, createFichaEstampacion, updateFichaEstampacion, deleteFichaEstampacion,
 };
 
 export default apiFichas;

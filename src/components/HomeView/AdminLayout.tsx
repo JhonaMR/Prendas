@@ -79,6 +79,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'controlTransporte',     label: 'Control de Transporte',     icon: <Icons.Transporte />,        description: 'Control de transporte' },
     { id: 'liquidacionTransporte', label: 'Liquidación de Transporte', icon: <Icons.Transporte />,        description: 'Liquidación de transporte' },
     { id: 'historicoReferencia',   label: 'Histórico de Referencia',   icon: <Icons.History />,           description: 'Consultar historial de referencias' },
+    { id: 'fichas-estampacion',    label: 'Fichas de Estampación',     icon: <Icons.FichasCosto />,       description: 'Fichas técnicas de estampación' },
   ];
 
   const navGroups: NavGroup[] = [
@@ -155,6 +156,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
       items: [
         { id: 'corte',              label: 'Corte',                    icon: <Icons.Scissors />,    description: 'Módulo de corte' },
         { id: 'fichas-confeccion',  label: 'Fichas de Confección',     icon: <Icons.FichasCosto />, description: 'Fichas técnicas de confección' },
+        { id: 'fichas-estampacion', label: 'Fichas de Estampación',     icon: <Icons.FichasCosto />, description: 'Fichas técnicas de estampación' },
       ],
     },
     {

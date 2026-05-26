@@ -7,6 +7,7 @@ import { useDarkMode } from '../../context/DarkModeContext';
 import { AppState } from '../../types';
 import { FichaConfeccionData, FichaConfeccionRecord, FICHA_DEFAULT, FilaMedida } from './types';
 import { cargarYParsearDxf, DxfParseado, DxfPolilinea } from '../../components/modules/VisorMolde/dxfParser';
+import api from '../../services/api';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -295,6 +296,7 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
     const [showDropCorte, setShowDropCorte] = useState(false);
     const [zoomPreview, setZoomPreview] = useState(1);
     const [zoomMolde, setZoomMolde] = useState(1);
+    const [todosLosCortes, setTodosLosCortes] = useState<any[]>([]);
 
     const baseUrl = getBaseUrl();
 
@@ -330,6 +332,13 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
             .catch(() => setFichaCostoDetalle(null));
     }, [referenciaActiva]);
 
+    // Cargar todos los registros de corte al montar
+    useEffect(() => {
+        api.getCorteRegistros()
+            .then(res => setTodosLosCortes(res || []))
+            .catch(err => console.error('Error cargando registros de corte:', err));
+    }, []);
+
     // Cargar DXF
     useEffect(() => {
         if (!fichaCostoDetalle?.archivoPsd) { setDxfDatos(null); return; }
@@ -347,8 +356,8 @@ const FichaConfeccionEditor: React.FC<Props> = ({ user, state, onNavigate, ficha
         const c = x.concepto?.toUpperCase() || '';
         return c.includes('MANUALIDAD') || c.includes('PLACA') || c.includes('TERMINACION');
     });
-    // Cortes del detalle completo (array con numeroCorte, cantidadCortada, fichaCorte)
-    const opCorte = (fichaCostoDetalle?.cortes || []);
+    // Filtrar los registros de corte por referencia activa
+    const opCorte = todosLosCortes.filter((c: any) => c.referencia === referenciaActiva);
 
     const foto1 = fichaCostoDetalle?.foto1 || null;
     const foto2 = fichaCostoDetalle?.foto2 || null;
@@ -519,15 +528,14 @@ img{width:100%;height:auto;display:block}
                                 {showDropCorte && opCorte.length > 0 && (
                                     <div className={`${dropCls} top-full`}>
                                         {opCorte.map((c: any) => (
-                                            <button key={c.numeroCorte} className={dropItemCls}
+                                            <button key={c.id || c.numeroFicha} className={dropItemCls}
                                                 onClick={() => {
-                                                    set('nCorte', String(c.fichaCorte || c.numeroCorte));
+                                                    set('nCorte', String(c.numeroFicha));
                                                     set('cantidad', String(c.cantidadCortada));
                                                     setShowDropCorte(false);
                                                 }}>
-                                                <span className="font-black">Corte #{c.numeroCorte}</span>
+                                                <span className="font-black">Corte #{c.numeroFicha}</span>
                                                 <span className={`ml-2 ${d ? 'text-violet-400' : 'text-slate-500'}`}>{c.cantidadCortada} uds</span>
-                                                {c.fichaCorte && <span className={`ml-2 text-xs ${d ? 'text-violet-500' : 'text-slate-400'}`}>Ficha: {c.fichaCorte}</span>}
                                             </button>
                                         ))}
                                     </div>

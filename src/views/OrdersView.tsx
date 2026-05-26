@@ -12,13 +12,13 @@ interface OrdersViewProps {
 
 const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUnsavedChanges }) => {
   const { isDark } = useDarkMode();
-  
+
   const [selectedCorreriaId, setSelectedCorreriaId] = useState('');
   const [refFilter, setRefFilter] = useState('');
   const [hideZeros, setHideZeros] = useState(false);
   const [correriaSearch, setCorreriaSearch] = useState('');
   const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
-  
+
   // Estados para filtros de columnas
   const [columnFilters, setColumnFilters] = useState<{
     [key: string]: { type: 'none' | 'equals' | 'greater' | 'less' | 'asc' | 'desc' | 'contains'; value?: number | string }
@@ -45,31 +45,31 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
     }
     return Number(value) || 0;
   };
-// Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
-useEffect(() => {
-  const currentCorreriaData = state.productionTracking.filter(
-    pt => pt.correriaId === selectedCorreriaId
-  );
-  setInitialProductionData(currentCorreriaData);
-  hasUnsavedChanges.current = false;
-  if (onUnsavedChanges) {
-    onUnsavedChanges(false);
-  }
-}, [selectedCorreriaId]); // ← SOLO depende de selectedCorreriaId, NO de state.productionTracking
-
-// Actualizar datos iniciales cuando se cargan del backend (al inicio)
-useEffect(() => {
-  if (state.productionTracking.length > 0) {
+  // Cargar datos iniciales SOLO cuando cambia la correría (no cuando se edita)
+  useEffect(() => {
     const currentCorreriaData = state.productionTracking.filter(
       pt => pt.correriaId === selectedCorreriaId
     );
-    
-    // Solo actualizar si initialProductionData está vacío (primera carga)
-    if (initialProductionData.length === 0) {
-      setInitialProductionData(currentCorreriaData);
+    setInitialProductionData(currentCorreriaData);
+    hasUnsavedChanges.current = false;
+    if (onUnsavedChanges) {
+      onUnsavedChanges(false);
     }
-  }
-}, []); // Solo se ejecuta una vez al montar el componente
+  }, [selectedCorreriaId]); // ← SOLO depende de selectedCorreriaId, NO de state.productionTracking
+
+  // Actualizar datos iniciales cuando se cargan del backend (al inicio)
+  useEffect(() => {
+    if (state.productionTracking.length > 0) {
+      const currentCorreriaData = state.productionTracking.filter(
+        pt => pt.correriaId === selectedCorreriaId
+      );
+
+      // Solo actualizar si initialProductionData está vacío (primera carga)
+      if (initialProductionData.length === 0) {
+        setInitialProductionData(currentCorreriaData);
+      }
+    }
+  }, []); // Solo se ejecuta una vez al montar el componente
 
   // Advertir al usuario si intenta recargar la página con cambios sin guardar
   useEffect(() => {
@@ -102,7 +102,7 @@ useEffect(() => {
       const timer = setTimeout(() => {
         document.addEventListener('click', handleClickOutside);
       }, 0);
-      
+
       return () => {
         clearTimeout(timer);
         document.removeEventListener('click', handleClickOutside);
@@ -131,9 +131,9 @@ useEffect(() => {
 
         const received = state.receptions
           .filter(r => r.affectsInventory !== false)
-          .reduce((acc, r) => 
+          .reduce((acc, r) =>
             acc + r.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
-        const dispatched = state.dispatches.reduce((acc, d) => 
+        const dispatched = state.dispatches.reduce((acc, d) =>
           acc + d.items.filter(i => i.reference === ref.id).reduce((a, b) => a + b.quantity, 0), 0);
         const stock = received - dispatched;
 
@@ -276,19 +276,19 @@ useEffect(() => {
       } else {
         newList.push({ refId, correriaId: selectedCorreriaId, programmed: 0, cut: 0, inventory: 0, [field]: value });
       }
-      
+
       // Marcar que hay cambios sin guardar
       hasUnsavedChanges.current = true;
       if (onUnsavedChanges) {
         onUnsavedChanges(true);
       }
-      
+
       return { ...prev, productionTracking: newList };
     });
   };
 
   const handleToggleRefToDepurar = (refId: string) => {
-    setSelectedRefsToDepurar(prev => 
+    setSelectedRefsToDepurar(prev =>
       prev.includes(refId) ? prev.filter(id => id !== refId) : [...prev, refId]
     );
   };
@@ -329,81 +329,81 @@ useEffect(() => {
   };
 
   // Función para guardar los cambios
-const handleSaveProduction = async () => {
-  if (!isAdmin) {
-    alert('No tienes permisos para guardar cambios');
-    return;
-  }
-
-    // ===== LOGS DE DEBUG =====
-  console.log('🔍 DEBUGGING:');
-  console.log('1. initialProductionData:', initialProductionData);
-  
-  const currentCorreriaData = state.productionTracking.filter(
-    pt => pt.correriaId === selectedCorreriaId
-  );
-  console.log('2. currentCorreriaData:', currentCorreriaData);
-  // ===== FIN LOGS =====
-
-  setIsSaving(true);
-
-  try {
-    // Obtener solo los datos de la correría actual
-    const currentCorreriaData = state.productionTracking.filter(
-      pt => pt.correriaId === selectedCorreriaId
-    );
-
-    // Detectar qué cambió comparando con los datos iniciales
-    const changedData = currentCorreriaData.filter(current => {
-      const initial = initialProductionData.find(
-        init => init.refId === current.refId && init.correriaId === current.correriaId
-      );
-      
-      // Si no existía antes, es nuevo
-      if (!initial) return true;
-      
-      // Si cambió algún valor, incluirlo
-      return initial.programmed !== current.programmed ||
-             initial.cut !== current.cut ||
-             initial.inventory !== current.inventory ||
-             initial.novedades !== current.novedades;
-    });
-
-    // ===== LOG DE DEBUG =====
-    console.log('3. changedData:', changedData);
-    console.log('4. changedData.length:', changedData.length);
-    // ===== FIN LOG =====
-
-    // Si no hay cambios, no hacer nada
-    if (changedData.length === 0) {
-      alert('No hay cambios para guardar');
-      setIsSaving(false);
+  const handleSaveProduction = async () => {
+    if (!isAdmin) {
+      alert('No tienes permisos para guardar cambios');
       return;
     }
 
-    // Guardar en el backend
-    const result = await api.saveProductionBatch(changedData);
+    // ===== LOGS DE DEBUG =====
+    console.log('🔍 DEBUGGING:');
+    console.log('1. initialProductionData:', initialProductionData);
 
-    if (result.success) {
-      // Actualizar los datos iniciales con los nuevos valores
-      setInitialProductionData(currentCorreriaData);
-      hasUnsavedChanges.current = false;
-      if (onUnsavedChanges) {
-        onUnsavedChanges(false);
+    const currentCorreriaData = state.productionTracking.filter(
+      pt => pt.correriaId === selectedCorreriaId
+    );
+    console.log('2. currentCorreriaData:', currentCorreriaData);
+    // ===== FIN LOGS =====
+
+    setIsSaving(true);
+
+    try {
+      // Obtener solo los datos de la correría actual
+      const currentCorreriaData = state.productionTracking.filter(
+        pt => pt.correriaId === selectedCorreriaId
+      );
+
+      // Detectar qué cambió comparando con los datos iniciales
+      const changedData = currentCorreriaData.filter(current => {
+        const initial = initialProductionData.find(
+          init => init.refId === current.refId && init.correriaId === current.correriaId
+        );
+
+        // Si no existía antes, es nuevo
+        if (!initial) return true;
+
+        // Si cambió algún valor, incluirlo
+        return initial.programmed !== current.programmed ||
+          initial.cut !== current.cut ||
+          initial.inventory !== current.inventory ||
+          initial.novedades !== current.novedades;
+      });
+
+      // ===== LOG DE DEBUG =====
+      console.log('3. changedData:', changedData);
+      console.log('4. changedData.length:', changedData.length);
+      // ===== FIN LOG =====
+
+      // Si no hay cambios, no hacer nada
+      if (changedData.length === 0) {
+        alert('No hay cambios para guardar');
+        setIsSaving(false);
+        return;
       }
-      
-      alert(`✅ ${changedData.length} registro(s) guardado(s) exitosamente`);
-    } else {
-      alert(`❌ Error al guardar: ${result.message || 'Error desconocido'}`);
-    }
 
-  } catch (error) {
-    console.error('Error al guardar producción:', error);
-    alert('❌ Error de conexión al guardar');
-  } finally {
-    setIsSaving(false);
-  }
-};
+      // Guardar en el backend
+      const result = await api.saveProductionBatch(changedData);
+
+      if (result.success) {
+        // Actualizar los datos iniciales con los nuevos valores
+        setInitialProductionData(currentCorreriaData);
+        hasUnsavedChanges.current = false;
+        if (onUnsavedChanges) {
+          onUnsavedChanges(false);
+        }
+
+        alert(`✅ ${changedData.length} registro(s) guardado(s) exitosamente`);
+      } else {
+        alert(`❌ Error al guardar: ${result.message || 'Error desconocido'}`);
+      }
+
+    } catch (error) {
+      console.error('Error al guardar producción:', error);
+      alert('❌ Error de conexión al guardar');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Componente para el botón de filtro - Memoizado para evitar re-renders
   const FilterButton = React.memo(({ columnKey, color, isTextFilter = false }: { columnKey: string; color: string; isTextFilter?: boolean }) => {
@@ -414,11 +414,10 @@ const handleSaveProduction = async () => {
       <div className="relative" data-filter-menu>
         <button
           onClick={() => setActiveFilterMenu(activeFilterMenu === columnKey ? null : columnKey)}
-          className={`p-1.5 rounded-lg transition-all ${
-            isActive
+          className={`p-1.5 rounded-lg transition-all ${isActive
               ? `bg-${color}-200 text-${color}-700`
               : `bg-transparent text-slate-400 hover:bg-slate-100`
-          }`}
+            }`}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 00-1 1v2.586a1 1 0 00.293.707l6.414 6.414v7.586a1 1 0 001 1h2a1 1 0 001-1v-7.586l6.414-6.414A1 1 0 0021 7.586V5a1 1 0 00-1-1h-16z" />
@@ -541,7 +540,7 @@ const handleSaveProduction = async () => {
                     onChange={(e) => {
                       const value = e.target.value;
                       setTextFilterInputs(prev => ({ ...prev, [columnKey]: value }));
-                      
+
                       if (value.trim()) {
                         setColumnFilters(prev => ({ ...prev, [columnKey]: { type: 'contains', value } }));
                       } else {
@@ -565,7 +564,7 @@ const handleSaveProduction = async () => {
           <h2 className={`text-3xl font-black tracking-tighter leading-none transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Ventas y producción</h2>
           <p className={`font-bold text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>Campaña: {state.correrias.find(c => c.id === selectedCorreriaId)?.name}</p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           {isAdmin && selectedCorreriaId && (
             <button
@@ -579,68 +578,68 @@ const handleSaveProduction = async () => {
             </button>
           )}
           <div className={`flex flex-wrap gap-3 p-3 rounded-3xl shadow-sm items-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'} border`}>
-          <div className="flex flex-col">
-            <span className={`text-[8px] font-black uppercase ml-2 mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Referencia</span>
-            <input type="text" value={refFilter} onChange={e => setRefFilter(e.target.value)} placeholder="Ej: 10210" className={`px-3 py-1.5 rounded-xl text-xs font-bold w-28 border-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600 placeholder:text-violet-400' : 'bg-slate-50 text-slate-900 focus:ring-blue-100 placeholder:text-slate-300'}`} />
-          </div>
-          <div className={`flex items-center gap-2 h-10 mt-2 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l pl-3`}>
-             <input type="checkbox" checked={hideZeros} onChange={e => setHideZeros(e.target.checked)} id="hz" className={`rounded transition-colors duration-300 ${isDark ? 'text-violet-600 focus:ring-violet-500' : 'text-blue-600 focus:ring-blue-500'}`} />
-             <label htmlFor="hz" className={`text-[10px] font-black uppercase cursor-pointer transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Ocultar 0</label>
-          </div>
-            <div className={`flex flex-col pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
-            <span className={`text-[8px] font-black uppercase mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Campaña</span>
-            <CorreriaAutocomplete
-              value={selectedCorreriaId}
-              correrias={state.correrias}
-              onChange={setSelectedCorreriaId}
-              search={correriaSearch}
-              setSearch={setCorreriaSearch}
-              showDropdown={showCorreriaDropdown}
-              setShowDropdown={setShowCorreriaDropdown}
-            />
-          </div>
-          
-          {/* BOTÓN GUARDAR - Solo visible para admin */}
-          {isAdmin && (
-            <div className={`flex items-center gap-2 pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
-              <button 
-                onClick={handleSaveProduction}
-                disabled={isSaving}
-                className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
-              >
-                {isSaving ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Guardando...
-                  </>
-                ) : (
-                  <>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                    </svg>
-                    Guardar
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => {
-                  setColumnFilters({});
-                  setTextFilterInputs({});
-                  setNumericFilterInputs({});
-                }}
-                className={`px-4 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${isDark ? 'bg-[#5a4a75] text-violet-200 hover:bg-[#6a5a85]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Limpiar Filtros
-              </button>
+            <div className="flex flex-col">
+              <span className={`text-[8px] font-black uppercase ml-2 mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Referencia</span>
+              <input type="text" value={refFilter} onChange={e => setRefFilter(e.target.value)} placeholder="Ej: 10210" className={`px-3 py-1.5 rounded-xl text-xs font-bold w-28 border-none focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 focus:ring-violet-600 placeholder:text-violet-400' : 'bg-slate-50 text-slate-900 focus:ring-blue-100 placeholder:text-slate-300'}`} />
             </div>
-          )}
-        </div>
+            <div className={`flex items-center gap-2 h-10 mt-2 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l pl-3`}>
+              <input type="checkbox" checked={hideZeros} onChange={e => setHideZeros(e.target.checked)} id="hz" className={`rounded transition-colors duration-300 ${isDark ? 'text-violet-600 focus:ring-violet-500' : 'text-blue-600 focus:ring-blue-500'}`} />
+              <label htmlFor="hz" className={`text-[10px] font-black uppercase cursor-pointer transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Ocultar 0</label>
+            </div>
+            <div className={`flex flex-col pl-3 w-40 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
+              <span className={`text-[8px] font-black uppercase mb-1 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Campaña</span>
+              <CorreriaAutocomplete
+                value={selectedCorreriaId}
+                correrias={state.correrias}
+                onChange={setSelectedCorreriaId}
+                search={correriaSearch}
+                setSearch={setCorreriaSearch}
+                showDropdown={showCorreriaDropdown}
+                setShowDropdown={setShowCorreriaDropdown}
+              />
+            </div>
+
+            {/* BOTÓN GUARDAR - Solo visible para admin */}
+            {isAdmin && (
+              <div className={`flex items-center gap-2 pl-3 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'} border-l`}>
+                <button
+                  onClick={handleSaveProduction}
+                  disabled={isSaving}
+                  className="px-6 py-2.5 bg-gradient-to-r from-green-600 to-green-500 text-white font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-2"
+                >
+                  {isSaving ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                      </svg>
+                      Guardar
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setColumnFilters({});
+                    setTextFilterInputs({});
+                    setNumericFilterInputs({});
+                  }}
+                  className={`px-4 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${isDark ? 'bg-[#5a4a75] text-violet-200 hover:bg-[#6a5a85]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  Limpiar Filtros
+                </button>
+              </div>
+            )}
+          </div>
 
         </div>
       </div>
@@ -710,32 +709,32 @@ const handleSaveProduction = async () => {
               {reportData.map(row => {
                 const prod = state.productionTracking.find(p => p.refId === row.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
                 return (
-                <tr key={row.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
-                  <td className={`px-4 py-2 sticky left-0 z-10 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
-                    <p className={`font-black text-sm leading-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.id}</p>
-                    <p className={`text-[9px] font-bold uppercase truncate transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{row.description}</p>
-                  </td>
-                  <td className="px-2 py-2 text-center">
-                    <span className={`px-2 py-1 rounded-md font-black text-sm transition-colors duration-300 ${row.totalSold > 0 ? 'bg-violet-600 text-white shadow-sm' : isDark ? 'bg-[#5a4a75] text-violet-300' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
-                  </td>
-                  <td className="px-2 py-2 text-center">
-                    <input 
-                      type="text"
-                      defaultValue={prod.inventory || 0} 
-                      key={`inv-${row.id}-${prod.inventory}`}
-                      onFocus={(e) => e.target.select()}
-                      onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
-                      onBlur={e => {
-                        const result = parseExpression(e.target.value);
-                        e.target.value = String(result);
-                        updateProduction(row.id, 'inventory', result);
-                      }}
-                      readOnly={!isAdmin}
-                      className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-orange-700 focus:ring-orange-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
-                    />
-                  </td>
+                  <tr key={row.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
+                    <td className={`px-4 py-2 sticky left-0 z-10 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+                      <p className={`font-black text-sm leading-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.id}</p>
+                      <p className={`text-[9px] font-bold uppercase truncate transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{row.description}</p>
+                    </td>
                     <td className="px-2 py-2 text-center">
-                      <input 
+                      <span className={`px-2 py-1 rounded-md font-black text-sm transition-colors duration-300 ${row.totalSold > 0 ? 'bg-violet-600 text-white shadow-sm' : isDark ? 'bg-[#5a4a75] text-violet-300' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
+                    </td>
+                    <td className="px-2 py-2 text-center">
+                      <input
+                        type="text"
+                        defaultValue={prod.inventory || 0}
+                        key={`inv-${row.id}-${prod.inventory}`}
+                        onFocus={(e) => e.target.select()}
+                        onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur(); }}
+                        onBlur={e => {
+                          const result = parseExpression(e.target.value);
+                          e.target.value = String(result);
+                          updateProduction(row.id, 'inventory', result);
+                        }}
+                        readOnly={!isAdmin}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-orange-700 focus:ring-orange-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
+                      />
+                    </td>
+                    <td className="px-2 py-2 text-center">
+                      <input
                         type="text"
                         defaultValue={row.programmed}
                         key={`prog-${row.id}-${row.programmed}`}
@@ -751,7 +750,7 @@ const handleSaveProduction = async () => {
                       />
                     </td>
                     <td className="px-2 py-2 text-center">
-                      <input 
+                      <input
                         type="text"
                         defaultValue={row.cut}
                         key={`cut-${row.id}-${row.cut}`}
@@ -766,65 +765,64 @@ const handleSaveProduction = async () => {
                         className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-pink-700 focus:ring-pink-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
-                  <td className="px-2 py-2 text-center font-black text-sm">
-                    <span className={`px-2 py-1 rounded-md font-black ${
-                      row.pending < 0 
-                        ? 'bg-green-100 text-green-700' 
-                        : 'bg-red-100 text-red-700'
-                    }`}>
-                      {row.pending}
-                    </span>
-                  </td>
-                  <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.clientCount}</td>
-                  <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.stock}</td>
-                  
-                  {/* TELA 1 Column */}
-                  <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
-                    {row.cloth1 ? (
-                      <div className="flex items-center justify-between gap-1">
-                        <div className="flex flex-col flex-1 overflow-hidden">
-                          <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth1}</span>
-                          <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth1}</span>
-                        </div>
-                        <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-violet-900/40 border-violet-700' : 'bg-blue-50 border-blue-100'}`}>
-                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-blue-700'}`}>{row.totalCloth1.toFixed(1)}m</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
-                    )}
-                  </td>
+                    <td className="px-2 py-2 text-center font-black text-sm">
+                      <span className={`px-2 py-1 rounded-md font-black ${row.pending < 0
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-red-100 text-red-700'
+                        }`}>
+                        {row.pending}
+                      </span>
+                    </td>
+                    <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.clientCount}</td>
+                    <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.stock}</td>
 
-                  {/* TELA 2 Column */}
-                  <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
-                    {row.cloth2 ? (
-                      <div className="flex items-center justify-between gap-1">
-                        <div className="flex flex-col flex-1 overflow-hidden">
-                          <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth2}</span>
-                          <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth2}</span>
+                    {/* TELA 1 Column */}
+                    <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
+                      {row.cloth1 ? (
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="flex flex-col flex-1 overflow-hidden">
+                            <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth1}</span>
+                            <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth1}</span>
+                          </div>
+                          <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-violet-900/40 border-violet-700' : 'bg-blue-50 border-blue-100'}`}>
+                            <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-blue-700'}`}>{row.totalCloth1.toFixed(1)}m</span>
+                          </div>
                         </div>
-                        <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-pink-900/40 border-pink-700' : 'bg-pink-50 border-pink-100'}`}>
-                          <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-pink-700'}`}>{row.totalCloth2.toFixed(1)}m</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
-                    )}
-                  </td>
+                      ) : (
+                        <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
+                      )}
+                    </td>
 
-                  {/* NOVEDADES Column */}
-                  <td className="px-3 py-2 border-l border-amber-100">
-                    <input
-                      type="text"
-                      value={prod.novedades || ''}
-                      onChange={e => updateProduction(row.id, 'novedades', e.target.value)}
-                      onFocus={e => e.target.select()}
-                      readOnly={!isAdmin}
-                      placeholder={isAdmin ? 'Agregar nota...' : ''}
-                      className={`w-full px-2 py-1 bg-amber-50 border border-amber-200 rounded-lg font-bold text-amber-900 text-xs focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none placeholder:text-amber-300 ${!isAdmin ? 'cursor-default bg-slate-50 border-slate-200 text-slate-600' : ''}`}
-                    />
-                  </td>
-                </tr>
+                    {/* TELA 2 Column */}
+                    <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
+                      {row.cloth2 ? (
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="flex flex-col flex-1 overflow-hidden">
+                            <span className={`font-black truncate text-xs uppercase transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.cloth2}</span>
+                            <span className={`text-[9px] font-bold transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Prom: {row.avgCloth2}</span>
+                          </div>
+                          <div className={`px-2 py-1 rounded-lg border transition-colors duration-300 ${isDark ? 'bg-pink-900/40 border-pink-700' : 'bg-pink-50 border-pink-100'}`}>
+                            <span className={`font-black text-xs transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-pink-700'}`}>{row.totalCloth2.toFixed(1)}m</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className={`text-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>-</div>
+                      )}
+                    </td>
+
+                    {/* NOVEDADES Column */}
+                    <td className="px-3 py-2 border-l border-amber-100">
+                      <input
+                        type="text"
+                        value={prod.novedades || ''}
+                        onChange={e => updateProduction(row.id, 'novedades', e.target.value)}
+                        onFocus={e => e.target.select()}
+                        readOnly={!isAdmin}
+                        placeholder={isAdmin ? 'Agregar nota...' : ''}
+                        className={`w-full px-2 py-1 bg-amber-50 border border-amber-200 rounded-lg font-bold text-amber-900 text-xs focus:ring-2 focus:ring-amber-200 focus:border-amber-400 outline-none placeholder:text-amber-300 ${!isAdmin ? 'cursor-default bg-slate-50 border-slate-200 text-slate-600' : ''}`}
+                      />
+                    </td>
+                  </tr>
                 );
               })}
             </tbody>
@@ -850,11 +848,10 @@ const handleSaveProduction = async () => {
                     {reportData.reduce((sum, row) => sum + row.cut, 0)}
                   </td>
                   <td className="px-2 py-3 text-center font-black text-sm">
-                    <span className={`px-2 py-1 rounded-md font-black ${
-                      reportData.reduce((sum, row) => sum + row.pending, 0) < 0
+                    <span className={`px-2 py-1 rounded-md font-black ${reportData.reduce((sum, row) => sum + row.pending, 0) < 0
                         ? 'bg-green-100 text-green-700'
                         : 'bg-red-100 text-red-700'
-                    }`}>
+                      }`}>
                       {reportData.reduce((sum, row) => sum + row.pending, 0)}
                     </span>
                   </td>
@@ -882,7 +879,7 @@ const handleSaveProduction = async () => {
                 <h3 className={`text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Depurar Maleta</h3>
                 <p className={`font-bold text-xs uppercase tracking-widest mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Seleccione las referencias que desea eliminar de esta correría</p>
               </div>
-              <button 
+              <button
                 onClick={() => setShowDepurarModal(false)}
                 className={`p-3 rounded-2xl shadow-sm border transition-all hover:scale-110 transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-300 hover:text-violet-50 border-violet-700' : 'bg-white text-slate-400 hover:text-slate-800 border-slate-100'}`}
               >
@@ -903,11 +900,10 @@ const handleSaveProduction = async () => {
                       <button
                         key={ref.id}
                         onClick={() => handleToggleRefToDepurar(ref.id)}
-                        className={`p-4 rounded-2xl border-2 transition-all text-xs font-black uppercase tracking-tight text-center flex flex-col gap-1 ${
-                          isSelected 
-                            ? 'bg-red-50 border-red-200 text-red-600 shadow-inner' 
+                        className={`p-4 rounded-2xl border-2 transition-all text-xs font-black uppercase tracking-tight text-center flex flex-col gap-1 ${isSelected
+                            ? 'bg-red-50 border-red-200 text-red-600 shadow-inner'
                             : isDark ? 'bg-[#5a4a75] border-violet-700 text-violet-200 hover:border-violet-600 shadow-sm' : 'bg-white border-slate-100 text-slate-600 hover:border-slate-300 shadow-sm'
-                        }`}
+                          }`}
                       >
                         <span className="text-sm">{ref.id}</span>
                         <span className={`text-[8px] font-bold ${isSelected ? 'text-red-400' : 'text-slate-400'} truncate`}>{ref.description}</span>
@@ -931,13 +927,13 @@ const handleSaveProduction = async () => {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <button 
+                <button
                   onClick={() => setShowDepurarModal(false)}
                   className={`px-8 py-3 font-black text-xs uppercase tracking-widest transition-all transition-colors duration-300 ${isDark ? 'text-violet-300 hover:text-violet-50' : 'text-slate-500 hover:text-slate-800'}`}
                 >
                   Cancelar
                 </button>
-                <button 
+                <button
                   onClick={handleSaveDepurar}
                   disabled={selectedRefsToDepurar.length === 0}
                   className="px-10 py-3 bg-gradient-to-r from-red-600 to-red-500 text-white font-black rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-red-100 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale disabled:hover:scale-100"
@@ -998,9 +994,9 @@ const CorreriaAutocomplete: React.FC<{
         className="w-full px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg font-bold text-slate-800 focus:ring-2 focus:ring-blue-100 placeholder:text-slate-300 text-xs"
       />
       {showDropdown && search.length >= 2 && (
-        <div 
+        <div
           className="absolute top-full left-0 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-2xl max-h-48 overflow-y-auto"
-          style={{ 
+          style={{
             zIndex: 9999,
             minWidth: '250px'
           }}

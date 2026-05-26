@@ -399,6 +399,16 @@ router.post('/fichas-confeccion',     verifyToken, allowOperadorOrAdmin, fichasC
 router.put('/fichas-confeccion/:id',  verifyToken, allowOperadorOrAdmin, fichasConfeccionController.updateFichaConfeccion);
 router.delete('/fichas-confeccion/:id', verifyToken, allowAdminOnly, fichasConfeccionController.deleteFichaConfeccion);
 
+// ==================== FICHAS DE ESTAMPACION ====================
+
+const fichasEstampacionController = require('../controllers/fichasEstampacionController');
+
+router.get('/fichas-estampacion',      verifyToken, fichasEstampacionController.getFichasEstampacion);
+router.get('/fichas-estampacion/:id',  verifyToken, fichasEstampacionController.getFichaEstampacion);
+router.post('/fichas-estampacion',     verifyToken, allowOperadorOrAdmin, fichasEstampacionController.createFichaEstampacion);
+router.put('/fichas-estampacion/:id',  verifyToken, allowOperadorOrAdmin, fichasEstampacionController.updateFichaEstampacion);
+router.delete('/fichas-estampacion/:id', verifyToken, allowAdminOnly, fichasEstampacionController.deleteFichaEstampacion);
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');
