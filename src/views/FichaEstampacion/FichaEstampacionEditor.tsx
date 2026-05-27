@@ -21,11 +21,10 @@ function fmtPrecio(v: string | number): string {
 }
 
 function mkCls(dark: boolean) {
-    return `w-full px-3 py-2 border-2 rounded-xl font-bold text-sm outline-none transition-colors ${
-        dark
-            ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400'
-            : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-pink-400'
-    }`;
+    return `w-full px-3 py-2 border-2 rounded-xl font-bold text-sm outline-none transition-colors ${dark
+        ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:border-violet-400'
+        : 'bg-white border-slate-200 text-slate-700 placeholder-slate-300 focus:border-pink-400'
+        }`;
 }
 
 const Lbl: React.FC<{ children: React.ReactNode; dark: boolean }> = ({ children, dark }) => (
@@ -74,12 +73,12 @@ const FichaEstampacionPreview = React.forwardRef<HTMLDivElement, PreviewProps>((
     return (
         <div ref={ref} id="ficha-preview" className="bg-white text-black"
             style={{ width: '216mm', minHeight: '279mm', padding: '7mm', boxSizing: 'border-box', fontFamily: 'Arial,sans-serif', fontSize: '9px' }}>
-            
+
             {/* Título Principal */}
             <div className="border border-black text-center py-1 mb-px font-black text-[12px] uppercase tracking-wider">
                 FICHA TECNICA DE ESTAMPACIÓN
             </div>
-            
+
             {/* Fila 1: Referencia y Fechas */}
             <div className="grid grid-cols-2 border-b border-x border-black">
                 <div className="flex items-center gap-3 border-r border-black px-2 py-1">
@@ -96,7 +95,7 @@ const FichaEstampacionPreview = React.forwardRef<HTMLDivElement, PreviewProps>((
                     </div>
                 </div>
             </div>
-            
+
             {/* Fila 2: Línea, Marca, Muestra, Corte, Precios y Cantidad */}
             <div className="grid border-b border-x border-black" style={{ gridTemplateColumns: '1fr 1.2fr 0.8fr' }}>
                 <div className="border-r border-black">
@@ -128,19 +127,19 @@ const FichaEstampacionPreview = React.forwardRef<HTMLDivElement, PreviewProps>((
                     </div>
                 </div>
             </div>
-            
+
             {/* Fila 3: Realizada por */}
             <div className="grid grid-cols-3 border-b border-x border-black">
                 <span className={`${c} border-r border-black ${l}`}>FICHA REALIZADA POR :</span>
                 <span className={`${c} col-span-2 font-black text-[12px] text-center uppercase`}>{data.fichaRealizadaPor}</span>
             </div>
-            
+
             {/* Fila 4: Descripción */}
             <div className="grid grid-cols-3 border-b border-x border-black">
                 <span className={`${c} border-r border-black ${l}`}>DESCRIPCION:</span>
                 <span className={`${c} col-span-2 font-black text-[12px] text-center uppercase`}>{data.descripcion}</span>
             </div>
-            
+
             {/* Fila 5: Foto Prenda (Frente) y Pintas (Espalda / Estampados) */}
             {data.pintasActivo ? (
                 <div className="grid grid-cols-2 border-b border-x border-black" style={{ height: '78mm' }}>
@@ -194,7 +193,7 @@ const FichaEstampacionPreview = React.forwardRef<HTMLDivElement, PreviewProps>((
                     </div>
                 </div>
             )}
-            
+
             {/* Fila 6: Observaciones */}
             <div className="grid border-b border-x border-black" style={{ gridTemplateColumns: '1.2fr 4.8fr' }}>
                 <div className="flex items-center justify-center border-r border-black p-2 font-black uppercase text-[10px] tracking-wider text-center bg-slate-100">
@@ -208,13 +207,13 @@ const FichaEstampacionPreview = React.forwardRef<HTMLDivElement, PreviewProps>((
                     ))}
                 </div>
             </div>
-            
+
             {/* Fila 7: Responsable */}
             <div className="grid grid-cols-4 border-b border-x border-black">
                 <div className="flex items-center border-r border-black px-2 py-1 font-bold text-[8px] uppercase">RESPONSABLE:</div>
                 <div className="col-span-3 font-black text-[18px] text-center uppercase py-0.5 tracking-wider bg-slate-50">{data.responsable}</div>
             </div>
-            
+
             {/* Fila 8: Combinación de Colores */}
             <div className="border border-black mt-0.5">
                 <div className="text-center font-black py-0.5 uppercase tracking-wider bg-slate-100 text-[9px] border-b border-black">
@@ -262,13 +261,13 @@ const FichaEstampacionEditor: React.FC<Props> = ({ user, state, onNavigate, fich
     const [referenciaActiva, setReferenciaActiva] = useState(data.referencia);
     const [refSearch, setRefSearch] = useState(data.referencia);
     const [showRefDrop, setShowRefDrop] = useState(false);
-    
+
     const [todosLosCortes, setTodosLosCortes] = useState<any[]>([]);
     const [showDropCorte, setShowDropCorte] = useState(false);
-    
+
     const [showDropPrecios, setShowDropPrecios] = useState<number | null>(null);
     const [zoomPreview, setZoomPreview] = useState(1);
-    
+
     // Subida de archivos individuales de pintas
     const [uploadingPintas, setUploadingPintas] = useState<boolean[]>([false, false, false, false]);
     const fileInputRefs = [
@@ -285,7 +284,7 @@ const FichaEstampacionEditor: React.FC<Props> = ({ user, state, onNavigate, fich
         ? (state.fichasCosto || []).filter((fc: any) =>
             fc.referencia.toLowerCase().includes(refSearch.toLowerCase()) ||
             (fc.descripcion || '').toLowerCase().includes(refSearch.toLowerCase())
-          ).slice(0, 8)
+        ).slice(0, 8)
         : [];
 
     // Cargar todos los registros de corte al montar
@@ -344,10 +343,10 @@ const FichaEstampacionEditor: React.FC<Props> = ({ user, state, onNavigate, fich
     // Buscar mano de obra con palabras clave de estampado/aplique
     const opPrecios = (fichaCostoDetalle?.manoObra || []).filter((x: any) => {
         const c = (x.concepto || '').toUpperCase();
-        return c.includes('PERLA') || c.includes('APLIQUE') || c.includes('ESTAMPADO') || 
-               c.includes('ESTAMPACION') || c.includes('SUBLIMADO') || c.includes('PEGADA') ||
-               c.includes('OJAL') || c.includes('BOTON') || c.includes('BOTÓN') ||
-               c.includes('FUSION') || c.includes('FUSIÓN');
+        return c.includes('PERLA') || c.includes('APLIQUE') || c.includes('ESTAMPADO') ||
+            c.includes('ESTAMPACION') || c.includes('SUBLIMADO') || c.includes('PEGADA') ||
+            c.includes('OJAL') || c.includes('BOTON') || c.includes('BOTÓN') ||
+            c.includes('FUSION') || c.includes('FUSIÓN');
     });
 
     // ── Precios Dinámicos ────────────────────────────────────────────────────
@@ -404,7 +403,7 @@ const FichaEstampacionEditor: React.FC<Props> = ({ user, state, onNavigate, fich
             return { ...prev, pintas: pts };
         });
     };
-    
+
     const setPintaFromFicha = (i: number, num: 1 | 2 | 3) => {
         const path = [foto1, foto2, foto3][num - 1];
         if (!path) return;
@@ -465,7 +464,7 @@ const FichaEstampacionEditor: React.FC<Props> = ({ user, state, onNavigate, fich
     const handleImprimir = async () => {
         const el = document.getElementById('ficha-preview');
         if (!el) return;
-        
+
         try {
             const html2canvas = (await import('html2canvas')).default;
             const canvas = await html2canvas(el, {
@@ -516,14 +515,12 @@ img{width:100%;height:auto;display:block}
 
     const dropCls = `absolute z-50 w-full mt-1 rounded-xl border shadow-xl overflow-hidden ${d ? 'bg-[#3d2d52] border-violet-600' : 'bg-white border-slate-200'}`;
     const dropItemCls = `w-full text-left px-3 py-2 text-sm font-bold transition-colors ${d ? 'hover:bg-violet-700/50 text-violet-200' : 'hover:bg-slate-50 text-slate-700'}`;
-    
+
     // Dropdown exclusivo para precios con z-index más alto y scrollbar
-    const priceDropCls = `absolute z-[100] left-0 top-full w-[350px] max-h-48 overflow-y-auto mt-1 rounded-xl border shadow-xl ${
-        d ? 'bg-[#4a3a63] border-violet-600 text-violet-200' : 'bg-white border-slate-200 text-slate-700'
-    }`;
-    const priceDropItemCls = `w-full text-left px-3 py-2 text-xs font-bold transition-colors border-b last:border-b-0 ${
-        d ? 'hover:bg-violet-850/80 border-violet-800 text-violet-200' : 'hover:bg-slate-50 border-slate-100 text-slate-700'
-    }`;
+    const priceDropCls = `absolute z-[100] left-0 top-full w-[350px] max-h-48 overflow-y-auto mt-1 rounded-xl border shadow-xl ${d ? 'bg-[#4a3a63] border-violet-600 text-violet-200' : 'bg-white border-slate-200 text-slate-700'
+        }`;
+    const priceDropItemCls = `w-full text-left px-3 py-2 text-xs font-bold transition-colors border-b last:border-b-0 ${d ? 'hover:bg-violet-850/80 border-violet-800 text-violet-200' : 'hover:bg-slate-50 border-slate-100 text-slate-700'
+        }`;
 
     const btnDrop = `shrink-0 px-2 rounded-xl border-2 font-black text-xs transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-500 hover:bg-slate-100'}`;
 
@@ -617,9 +614,8 @@ img{width:100%;height:auto;display:block}
                         <div>
                             <Lbl dark={d}>Nº Corte / Cantidad (Registro de Corte)</Lbl>
                             <div className="relative flex gap-2">
-                                <div className={`flex-1 px-3 py-2 border-2 rounded-xl font-bold text-sm cursor-pointer transition-colors ${
-                                    d ? 'bg-[#3d2d52] border-violet-600 text-violet-100' : 'bg-white border-slate-200 text-slate-700'
-                                }`}
+                                <div className={`flex-1 px-3 py-2 border-2 rounded-xl font-bold text-sm cursor-pointer transition-colors ${d ? 'bg-[#3d2d52] border-violet-600 text-violet-100' : 'bg-white border-slate-200 text-slate-700'
+                                    }`}
                                     onClick={(e) => { e.stopPropagation(); setShowDropCorte(v => !v); }}>
                                     {data.nCorte
                                         ? `Corte #${data.nCorte} - ${data.cantidad} uds`
@@ -656,87 +652,87 @@ img{width:100%;height:auto;display:block}
                         </div>
                     </Sec>
 
-                            <Sec title="Precios (Mano de Obra Estampado)" dark={d}>
-                                <div className="space-y-3">
-                                    {data.precios.map((pr, i) => {
-                                        const filteredOptions = (fichaCostoDetalle?.manoObra || []).filter((x: any) => {
-                                            const conceptUpper = (x.concepto || '').toUpperCase();
-                                            return conceptUpper.includes('PERLA') || 
-                                                   conceptUpper.includes('APLIQUE') || 
-                                                   conceptUpper.includes('ESTAMPADO') || 
-                                                   conceptUpper.includes('ESTAMPACION') || 
-                                                   conceptUpper.includes('SUBLIMADO') || 
-                                                   conceptUpper.includes('PEGADA') ||
-                                                   conceptUpper.includes('OJAL') ||
-                                                   conceptUpper.includes('BOTON') ||
-                                                   conceptUpper.includes('BOTÓN') ||
-                                                   conceptUpper.includes('FUSION') ||
-                                                   conceptUpper.includes('FUSIÓN');
-                                        });
+                    <Sec title="Precios (Mano de Obra Estampado)" dark={d}>
+                        <div className="space-y-3">
+                            {data.precios.map((pr, i) => {
+                                const filteredOptions = (fichaCostoDetalle?.manoObra || []).filter((x: any) => {
+                                    const conceptUpper = (x.concepto || '').toUpperCase();
+                                    return conceptUpper.includes('PERLA') ||
+                                        conceptUpper.includes('APLIQUE') ||
+                                        conceptUpper.includes('ESTAMPADO') ||
+                                        conceptUpper.includes('ESTAMPACION') ||
+                                        conceptUpper.includes('SUBLIMADO') ||
+                                        conceptUpper.includes('PEGADA') ||
+                                        conceptUpper.includes('OJAL') ||
+                                        conceptUpper.includes('BOTON') ||
+                                        conceptUpper.includes('BOTÓN') ||
+                                        conceptUpper.includes('FUSION') ||
+                                        conceptUpper.includes('FUSIÓN');
+                                });
 
-                                        return (
-                                            <div key={i} className="flex gap-2 items-center">
-                                                <div className="relative flex-1 flex gap-1 items-center">
-                                                    <input type="text" value={pr.concepto} placeholder="Concepto (Ej: ESTAMPADO)"
-                                                        className={`${mkCls(d)} flex-1 min-w-0`}
-                                                        onChange={e => {
-                                                            updatePrecio(i, 'concepto', e.target.value);
-                                                            setShowDropPrecios(i);
-                                                        }}
-                                                        onClick={e => {
-                                                            e.stopPropagation();
-                                                            setShowDropPrecios(i);
-                                                        }}
-                                                        onFocus={e => {
-                                                            e.stopPropagation();
-                                                            setShowDropPrecios(i);
-                                                        }}
-                                                    />
-                                                    {filteredOptions.length > 0 && (
-                                                        <button type="button" 
-                                                            onClick={(e) => {
+                                return (
+                                    <div key={i} className="flex gap-2 items-center">
+                                        <div className="relative flex-1 flex gap-1 items-center">
+                                            <input type="text" value={pr.concepto} placeholder="Concepto (Ej: ESTAMPADO)"
+                                                className={`${mkCls(d)} flex-1 min-w-0`}
+                                                onChange={e => {
+                                                    updatePrecio(i, 'concepto', e.target.value);
+                                                    setShowDropPrecios(i);
+                                                }}
+                                                onClick={e => {
+                                                    e.stopPropagation();
+                                                    setShowDropPrecios(i);
+                                                }}
+                                                onFocus={e => {
+                                                    e.stopPropagation();
+                                                    setShowDropPrecios(i);
+                                                }}
+                                            />
+                                            {filteredOptions.length > 0 && (
+                                                <button type="button"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setShowDropPrecios(prev => prev === i ? null : i);
+                                                    }}
+                                                    className={btnDrop}>
+                                                    {showDropPrecios === i ? '▴' : '▾'}
+                                                </button>
+                                            )}
+                                            {showDropPrecios === i && filteredOptions.length > 0 && (
+                                                <div className={priceDropCls} onClick={e => e.stopPropagation()}>
+                                                    {filteredOptions.map((x: any) => (
+                                                        <button key={x.concepto} type="button" className={priceDropItemCls}
+                                                            onMouseDown={(e) => {
+                                                                e.preventDefault();
                                                                 e.stopPropagation();
-                                                                setShowDropPrecios(prev => prev === i ? null : i);
-                                                            }} 
-                                                            className={btnDrop}>
-                                                            {showDropPrecios === i ? '▴' : '▾'}
+                                                                updatePrecio(i, 'concepto', x.concepto);
+                                                                updatePrecio(i, 'valor', String(x.vlr_unit));
+                                                                setShowDropPrecios(null);
+                                                            }}>
+                                                            {x.concepto} - {fmtPrecio(x.vlr_unit)}
                                                         </button>
-                                                    )}
-                                                    {showDropPrecios === i && filteredOptions.length > 0 && (
-                                                        <div className={priceDropCls} onClick={e => e.stopPropagation()}>
-                                                            {filteredOptions.map((x: any) => (
-                                                                <button key={x.concepto} type="button" className={priceDropItemCls}
-                                                                    onMouseDown={(e) => {
-                                                                        e.preventDefault();
-                                                                        e.stopPropagation();
-                                                                        updatePrecio(i, 'concepto', x.concepto);
-                                                                        updatePrecio(i, 'valor', String(x.vlr_unit));
-                                                                        setShowDropPrecios(null);
-                                                                    }}>
-                                                                    {x.concepto} - {fmtPrecio(x.vlr_unit)}
-                                                                </button>
-                                                            ))}
-                                                        </div>
-                                                    )}
+                                                    ))}
                                                 </div>
-                                                <input type="text" value={pr.valor} placeholder="Valor ($)"
-                                                    className={`w-24 ${mkCls(d)}`}
-                                                    onChange={e => updatePrecio(i, 'valor', e.target.value)}
-                                                />
-                                                {data.precios.length > 1 && (
-                                                    <button onClick={() => removePrecioRow(i)} className="p-2 text-red-500 hover:text-red-700">
-                                                        ✕
-                                                    </button>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                    <button onClick={addPrecioRow}
-                                        className={`w-full py-1.5 border-2 border-dashed rounded-xl font-bold text-xs uppercase tracking-wider ${d ? 'border-violet-600 text-violet-400 hover:bg-violet-700/20' : 'border-slate-300 text-slate-500 hover:bg-slate-50'}`}>
-                                        + Agregar Proceso
-                                    </button>
-                                </div>
-                            </Sec>
+                                            )}
+                                        </div>
+                                        <input type="text" value={pr.valor} placeholder="Valor ($)"
+                                            className={`w-24 ${mkCls(d)}`}
+                                            onChange={e => updatePrecio(i, 'valor', e.target.value)}
+                                        />
+                                        {data.precios.length > 1 && (
+                                            <button onClick={() => removePrecioRow(i)} className="p-2 text-red-500 hover:text-red-700">
+                                                ✕
+                                            </button>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                            <button onClick={addPrecioRow}
+                                className={`w-full py-1.5 border-2 border-dashed rounded-xl font-bold text-xs uppercase tracking-wider ${d ? 'border-violet-600 text-violet-400 hover:bg-violet-700/20' : 'border-slate-300 text-slate-500 hover:bg-slate-50'}`}>
+                                + Agregar Proceso
+                            </button>
+                        </div>
+                    </Sec>
 
                     <Sec title="Foto Frente de la Prenda" dark={d}>
                         <div className="flex gap-2">
@@ -745,11 +741,10 @@ img{width:100%;height:auto;display:block}
                                 const activa = data.fotoSeleccionada === n;
                                 return (
                                     <button key={n} onClick={() => set('fotoSeleccionada', n)}
-                                        className={`flex-1 py-2 rounded-xl font-black text-xs uppercase tracking-wider border-2 transition-all ${
-                                            activa ? d ? 'bg-violet-700/50 border-violet-400 text-violet-200' : 'bg-violet-50 border-violet-500 text-violet-700'
-                                                : f ? d ? 'border-emerald-600 text-emerald-400' : 'border-emerald-400 text-emerald-600'
+                                        className={`flex-1 py-2 rounded-xl font-black text-xs uppercase tracking-wider border-2 transition-all ${activa ? d ? 'bg-violet-700/50 border-violet-400 text-violet-200' : 'bg-violet-50 border-violet-500 text-violet-700'
+                                            : f ? d ? 'border-emerald-600 text-emerald-400' : 'border-emerald-400 text-emerald-600'
                                                 : d ? 'border-slate-600 text-slate-600' : 'border-slate-300 text-slate-400'
-                                        }`}>
+                                            }`}>
                                         F{n} {f ? '●' : '○'}
                                     </button>
                                 );
@@ -763,11 +758,10 @@ img{width:100%;height:auto;display:block}
                         <div className="flex items-center justify-between pb-3 border-b border-dashed border-slate-200 dark:border-violet-700 mb-3">
                             <span className={`text-xs font-bold ${d ? 'text-violet-300' : 'text-slate-500'}`}>Activar Variantes / Pintas en la ficha</span>
                             <button onClick={() => set('pintasActivo', !data.pintasActivo)}
-                                className={`px-3 py-1.5 rounded-xl font-black text-xs uppercase border transition-colors ${
-                                    data.pintasActivo
-                                        ? d ? 'bg-emerald-700/50 border-emerald-500 text-emerald-300' : 'bg-emerald-50 border-emerald-400 text-emerald-700'
-                                        : d ? 'bg-slate-700/40 border-slate-600 text-slate-500' : 'bg-slate-100 border-slate-300 text-slate-400'
-                                }`}>
+                                className={`px-3 py-1.5 rounded-xl font-black text-xs uppercase border transition-colors ${data.pintasActivo
+                                    ? d ? 'bg-emerald-700/50 border-emerald-500 text-emerald-300' : 'bg-emerald-50 border-emerald-400 text-emerald-700'
+                                    : d ? 'bg-slate-700/40 border-slate-600 text-slate-500' : 'bg-slate-100 border-slate-300 text-slate-400'
+                                    }`}>
                                 {data.pintasActivo ? 'Sí' : 'No'}
                             </button>
                         </div>
@@ -797,7 +791,7 @@ img{width:100%;height:auto;display:block}
                                                 </div>
                                             </div>
                                             <TI dark={d} value={p.label} onChange={v => updatePintaLabel(i, v)} placeholder="Nombre Variante (Ej: FLORES ROSA)" />
-                                            
+
                                             <div className="flex gap-2 items-center">
                                                 {/* Preview de la pinta */}
                                                 <div className={`w-12 h-12 rounded-lg border overflow-hidden shrink-0 flex items-center justify-center ${d ? 'border-violet-600 bg-[#3d2d52]' : 'border-slate-200 bg-white'}`}>
@@ -825,19 +819,18 @@ img{width:100%;height:auto;display:block}
                                                         className={`px-2 py-1 rounded border text-[9px] font-bold uppercase cursor-pointer transition-colors ${d ? 'border-violet-600 text-violet-300 hover:bg-violet-800' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}>
                                                         📁 Subir
                                                     </label>
-                                                    
+
                                                     {/* Seleccionar de Ficha */}
                                                     {[1, 2, 3].map(num => {
                                                         const path = [foto1, foto2, foto3][num - 1];
                                                         if (!path) return null;
                                                         const esActiva = p.isFromFicha && p.fotoNum === num;
                                                         return (
-                                                            <button key={num} type="button" onClick={() => setPintaFromFicha(i, num as 1|2|3)}
-                                                                className={`px-1.5 py-1 rounded border text-[9px] font-bold ${
-                                                                    esActiva 
-                                                                        ? d ? 'bg-emerald-800 border-emerald-600 text-emerald-200' : 'bg-emerald-50 border-emerald-400 text-emerald-700'
-                                                                        : d ? 'border-violet-600 text-violet-400 hover:bg-violet-800' : 'border-slate-300 text-slate-400 hover:bg-slate-100'
-                                                                }`}>
+                                                            <button key={num} type="button" onClick={() => setPintaFromFicha(i, num as 1 | 2 | 3)}
+                                                                className={`px-1.5 py-1 rounded border text-[9px] font-bold ${esActiva
+                                                                    ? d ? 'bg-emerald-800 border-emerald-600 text-emerald-200' : 'bg-emerald-50 border-emerald-400 text-emerald-700'
+                                                                    : d ? 'border-violet-600 text-violet-400 hover:bg-violet-800' : 'border-slate-300 text-slate-400 hover:bg-slate-100'
+                                                                    }`}>
                                                                 F{num}
                                                             </button>
                                                         );

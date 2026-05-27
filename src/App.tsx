@@ -55,6 +55,8 @@ import LiquidacionTransporteView from './views/transporte/LiquidacionTransporteV
 import ClientesPorCorreriaView from './views/ClientesPorCorreriaView';
 import FichaConfeccionContainer from './views/FichaConfeccion/FichaConfeccionContainer';
 import FichaEstampacionContainer from './views/FichaEstampacion/FichaEstampacionContainer';
+import AsistenciaListView from './views/Asistencia/AsistenciaListView';
+import AsistenciaDetailView from './views/Asistencia/AsistenciaDetailView';
 import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
@@ -1239,6 +1241,10 @@ const App: React.FC = () => {
         return <MaletasAsignar state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'maletas-recibir':
         return <MaletasRecibir state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+      case 'asistencia':
+        return <AsistenciaListView user={user} onNavigate={handleTabChange} />;
+      case 'asistenciaDetalle':
+        return <AsistenciaDetailView empleadoId={(navigationOptions as any)?.empleadoId} onVolver={() => handleTabChange('asistencia')} user={user} />;
       default:
         return null;
     }
@@ -1464,6 +1470,9 @@ const App: React.FC = () => {
                   <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
                 )}
                 <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
+                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+                  <NavItem active={activeTab === 'asistencia'} onClick={() => handleTabChange('asistencia')} icon={<Icons.Asistencia />} label="Control de Asistencia" />
+                )}
                 {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
                   <NavItem active={activeTab === 'backups'} onClick={() => handleTabChange('backups')} icon={<Icons.Reports />} label="Backups" />
                 )}

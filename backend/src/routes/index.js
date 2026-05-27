@@ -409,6 +409,11 @@ router.post('/fichas-estampacion',     verifyToken, allowOperadorOrAdmin, fichas
 router.put('/fichas-estampacion/:id',  verifyToken, allowOperadorOrAdmin, fichasEstampacionController.updateFichaEstampacion);
 router.delete('/fichas-estampacion/:id', verifyToken, allowAdminOnly, fichasEstampacionController.deleteFichaEstampacion);
 
+// ==================== CONTROL DE ASISTENCIA ====================
+const asistenciaRoutes = require('./asistenciaRoutes');
+router.use('/asistencia', asistenciaRoutes);
+
+
 // ==================== CHAT ====================
 
 const chatController = require('../controllers/chatController');
