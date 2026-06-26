@@ -13,6 +13,7 @@ import FichaConfeccionEditor from './FichaConfeccionEditor';
 interface Props {
     user: any;
     state: AppState;
+    updateState: (updater: (prev: AppState) => AppState) => void;
     onNavigate: (tab: string, params?: any) => void;
     params?: any;
 }
@@ -95,16 +96,13 @@ function recordToDb(record: FichaConfeccionRecord, createdBy: string) {
     };
 }
 
-const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, params }) => {
-    const [fichas, setFichas] = useState<FichaConfeccionRecord[]>([]);
-    const [cargando, setCargando] = useState(true);
+const FichaConfeccionContainer: React.FC<Props> = ({ user, state, updateState, onNavigate, params }) => {
     const [vista, setVista] = useState<'historico' | 'editor'>('historico');
     const [fichaIdEditar, setFichaIdEditar] = useState<string | undefined>(undefined);
 
-    // Cargar fichas desde la BD al montar
-    useEffect(() => {
-        cargarFichas();
-    }, []);
+    const fichas = React.useMemo(() => {
+        return (state.fichasConfeccion || []).map(dbToRecord);
+    }, [state.fichasConfeccion]);
 
     // Navegar si llegan params
     useEffect(() => {
@@ -117,29 +115,10 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
         }
     }, [params]);
 
-    const cargarFichas = async () => {
-        setCargando(true);
-        try {
-            const data = await apiFichas.getFichasConfeccion();
-            if (Array.isArray(data)) {
-                setFichas(data.map(dbToRecord));
-            } else {
-                console.error('Datos inválidos recibidos:', data);
-                setFichas([]);
-            }
-        } catch (e) {
-            console.error('Error cargando fichas confeccion:', e);
-            setFichas([]);
-        } finally {
-            setCargando(false);
-        }
-    };
-
     const handleNavInterna = (tab: string, p?: any) => {
         if (tab === 'fichas-confeccion') {
             setVista('historico');
             setFichaIdEditar(undefined);
-            cargarFichas(); // refrescar al volver al histórico
         } else if (tab === 'ficha-confeccion-editor') {
             setFichaIdEditar(p?.fichaId);
             setVista('editor');
@@ -161,8 +140,9 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
             }
             
             if (resultado.success) {
-                // Recargar fichas después de guardar
-                await cargarFichas();
+                // Recargar fichas y actualizar estado global
+                const updatedData = await apiFichas.getFichasConfeccion();
+                updateState(prev => ({ ...prev, fichasConfeccion: updatedData }));
                 handleNavInterna('fichas-confeccion');
             } else {
                 console.error('Error guardando ficha:', resultado.message);
@@ -178,7 +158,10 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
         try {
             const resultado = await apiFichas.deleteFichaConfeccion(id);
             if (resultado.success) {
-                setFichas(prev => prev.filter(f => f.id !== id));
+                updateState(prev => ({
+                    ...prev,
+                    fichasConfeccion: prev.fichasConfeccion.filter((f: any) => f.id !== id)
+                }));
             } else {
                 console.error('Error eliminando ficha:', resultado.message);
                 alert(`Error al eliminar: ${resultado.message || 'Error desconocido'}`);
@@ -213,3 +196,4 @@ const FichaConfeccionContainer: React.FC<Props> = ({ user, state, onNavigate, pa
 };
 
 export default FichaConfeccionContainer;
+

@@ -39,6 +39,13 @@ const initialState: AppState & { loading: boolean; error: string | null } = {
   orders: [],
   productionTracking: [],
   deliveryDates: [],
+  disenadoras: [],
+  fichasDiseno: [],
+  fichasCosto: [],
+  maletas: [],
+  fichasConfeccion: [],
+  fichasEstampacion: [],
+  empleadosAsistencia: [],
   loading: false,
   error: null
 };

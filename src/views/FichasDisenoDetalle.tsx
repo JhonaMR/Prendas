@@ -57,6 +57,13 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const [provisiones, setProvisiones] = useState<ConceptoFicha[]>([]);
 
     useEffect(() => {
+        const container = document.getElementById('main-scroll-container');
+        if (container) {
+            container.scrollTop = 0;
+        }
+    }, []);
+
+    useEffect(() => {
         if (fichaExistente && !isNueva) {
             setDisenadoraId(fichaExistente.disenadoraId);
             setDescripcion(fichaExistente.descripcion || '');
@@ -83,16 +90,16 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
             if (e.key === 'Escape') {
                 if (hasUnsavedChanges) {
                     if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) {
-                        onNavigate('fichas-diseno');
+                        onNavigate('fichas-diseno', { restoreState: params?.returnState });
                     }
                 } else {
-                    onNavigate('fichas-diseno');
+                    onNavigate('fichas-diseno', { restoreState: params?.returnState });
                 }
             }
         };
         window.addEventListener('keydown', handler);
         return () => window.removeEventListener('keydown', handler);
-    }, [hasUnsavedChanges]);
+    }, [hasUnsavedChanges, onNavigate, params]);
 
     // Cargar valores base cuando se crea una nueva ficha
     useEffect(() => {
@@ -183,7 +190,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
         <div className={`space-y-6 pb-20 transition-colors ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-diseno'); } else onNavigate('fichas-diseno'); }}
+                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-diseno', { restoreState: params?.returnState }); } else onNavigate('fichas-diseno', { restoreState: params?.returnState }); }}
                         className={`p-3 rounded-xl transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     </button>

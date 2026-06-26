@@ -1,35 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useDarkMode } from '../../context/DarkModeContext';
-import { User, UserRole } from '../../types';
+import { User, UserRole, AppState } from '../../types';
 import { asistenciaService, AsistenciaEmpleado, WeeklyScheduleItem } from '../../services/asistenciaService';
 import { ImportAsistenciaModal } from './ImportAsistenciaModal';
 import { HorarioModal } from './HorarioModal';
 
 interface AsistenciaListViewProps {
   user: User;
+  state: AppState;
+  updateState: (updater: (prev: AppState) => AppState) => void;
   onNavigate: (tab: string, options?: any) => void;
 }
 
-const AsistenciaListView: React.FC<AsistenciaListViewProps> = ({ user, onNavigate }) => {
+const AsistenciaListView: React.FC<AsistenciaListViewProps> = ({ user, state, updateState, onNavigate }) => {
   const { isDark } = useDarkMode();
-  const [empleados, setEmpleados] = useState<AsistenciaEmpleado[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Modales
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [selectedEmpleadoForSchedule, setSelectedEmpleadoForSchedule] = useState<AsistenciaEmpleado | null>(null);
 
+  const empleados = state.empleadosAsistencia || [];
+
   const fetchEmpleados = async () => {
     setLoading(true);
     const data = await asistenciaService.getEmpleados();
-    setEmpleados(data);
+    updateState(prev => ({ ...prev, empleadosAsistencia: data }));
     setLoading(false);
   };
 
   useEffect(() => {
-    fetchEmpleados();
+    // Si no hay datos precargados, forzar carga inicial
+    if (empleados.length === 0) {
+      fetchEmpleados();
+    }
   }, []);
+
 
   const handleCrearEmpleadoManual = async () => {
     const nombre = prompt('Ingresa el nombre completo del nuevo empleado:');

@@ -62,6 +62,13 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const calcRent = (precio: number, costo: number) => costo === 0 ? 0 : (1 - (costo / precio)) * 100;
 
     useEffect(() => {
+        const container = document.getElementById('main-scroll-container');
+        if (container) {
+            container.scrollTop = 0;
+        }
+    }, []);
+
+    useEffect(() => {
         if (fichaExistente) {
             console.log('📋 Ficha cargada:', { referencia: fichaExistente.referencia, precioVenta: fichaExistente.precioVenta, rentabilidad: fichaExistente.rentabilidad, costoTotal: fichaExistente.costoTotal });
             setDescripcion(fichaExistente.descripcion || '');
@@ -141,16 +148,16 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             if (e.key === 'Escape') {
                 if (hasUnsavedChanges) {
                     if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) {
-                        onNavigate('fichas-costo');
+                        onNavigate('fichas-costo', { restoreState: params?.returnState });
                     }
                 } else {
-                    onNavigate('fichas-costo');
+                    onNavigate('fichas-costo', { restoreState: params?.returnState });
                 }
             }
         };
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [hasUnsavedChanges, onNavigate]);
+    }, [hasUnsavedChanges, onNavigate, params]);
 
     const totales = useMemo(() => {
         const calc = (items: ConceptoFicha[]) => Math.ceil(items.reduce((acc, i) => acc + (i.total || 0), 0));
@@ -193,7 +200,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         <div className={`space-y-6 pb-20 transition-colors ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-costo'); } else onNavigate('fichas-costo'); }} className={`p-3 rounded-xl transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>
+                    <button onClick={() => { if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) onNavigate('fichas-costo', { restoreState: params?.returnState }); } else onNavigate('fichas-costo', { restoreState: params?.returnState }); }} className={`p-3 rounded-xl transition-colors ${isDark ? 'bg-violet-700/50 hover:bg-violet-700 text-violet-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
                     </button>
                     <div>
@@ -262,13 +269,6 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="space-y-6">
                     <SubidaFotos referencia={referencia} foto1={foto1} foto2={foto2} foto3={foto3} archivoPsd={archivoPsd} onFoto1Change={mark(setFoto1)} onFoto2Change={mark(setFoto2)} onFoto3Change={mark(setFoto3)} onArchivoPsdChange={mark(setArchivoPsd)} readOnly={!canEdit} />
-                    <div className={`p-6 rounded-3xl border shadow-sm space-y-4 transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
-                        <div>
-                            <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Observaciones</label>
-                            <textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={10} className={`w-full px-4 py-3 border-2 rounded-xl font-bold resize-none transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-4 focus:ring-violet-400 focus:border-violet-500' : 'bg-slate-50 border-slate-200 text-slate-700 focus:ring-4 focus:ring-blue-100 focus:border-blue-500'}`} />
-                        </div>
-                    </div>
-
                     <div className={`p-6 rounded-3xl border-2 space-y-4 transition-colors ${isDark ? 'bg-gradient-to-br from-purple-900/40 to-purple-800/30 border-purple-700/50' : 'bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200'}`}>
                         <h3 className={`text-sm font-black uppercase tracking-widest text-center transition-colors ${isDark ? 'text-purple-300' : 'text-yellow-700'}`}>Rentabilidad vs Precio</h3>
                         <div className="grid grid-cols-2 gap-4">
@@ -280,6 +280,13 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             <div><label className={`text-[10px] font-black uppercase tracking-widest block mb-2 text-center transition-colors ${isDark ? 'text-purple-400' : 'text-yellow-600'}`}>Costo Total</label><div className={`px-4 py-3 rounded-xl text-center transition-colors ${isDark ? 'bg-[#3d2d52] border-2 border-purple-600' : 'bg-white'}`}><p className={`font-black text-2xl transition-colors ${isDark ? 'text-purple-300' : 'text-slate-800'}`}>$ {totales.total.toLocaleString()}</p></div></div>
                         </div>
                         <p className={`text-xs font-bold italic transition-colors ${isDark ? 'text-purple-400' : 'text-yellow-700'}`}>Los precios se ajustan automáticamente para terminar en 900</p>
+                    </div>
+
+                    <div className={`p-6 rounded-3xl border shadow-sm space-y-4 transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                        <div>
+                            <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Observaciones</label>
+                            <textarea value={observaciones} onChange={e => { setObservaciones(e.target.value); setHasUnsavedChanges(true); }} readOnly={!canEdit} rows={10} className={`w-full px-4 py-3 border-2 rounded-xl font-bold resize-none transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-4 focus:ring-violet-400 focus:border-violet-500' : 'bg-slate-50 border-slate-200 text-slate-700 focus:ring-4 focus:ring-blue-100 focus:border-blue-500'}`} />
+                        </div>
                     </div>
 
                     <div className={`p-6 rounded-3xl border-2 flex items-center justify-between transition-colors ${isDark ? 'bg-gradient-to-br from-purple-900/40 to-purple-800/30 border-purple-700/50' : 'bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200'}`}>

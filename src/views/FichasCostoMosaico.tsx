@@ -16,30 +16,93 @@ function getBaseUrl(): string {
     return `${window.location.protocol}//${window.location.hostname}:3000`;
 }
 
+const obtenerTelaPrincipalYPromedio = (materiaPrima: any[]) => {
+    if (!Array.isArray(materiaPrima) || materiaPrima.length === 0) {
+        return { nombre: '-', promedio: '-' };
+    }
+    const grouping: { [key: string]: { name: string; sum: number } } = {};
+    materiaPrima.forEach(item => {
+        const t = (item.tipo || '').toUpperCase();
+        if (t === 'TELA' || t === 'SESGO' || !item.tipo) {
+            const name = (item.concepto || '').trim();
+            if (!name) return;
+            const key = name.toUpperCase();
+            if (!grouping[key]) {
+                grouping[key] = { name, sum: 0 };
+            }
+            grouping[key].sum += Number(item.cant || 0);
+        }
+    });
+    const groups = Object.values(grouping);
+    if (groups.length === 0) {
+        return { nombre: '-', promedio: '-' };
+    }
+    groups.sort((a, b) => b.sum - a.sum);
+    const principal = groups[0];
+    const promedioFormateado = Number(principal.sum.toFixed(4)).toString().replace('.', ',');
+    return {
+        nombre: principal.name,
+        promedio: promedioFormateado
+    };
+};
+
 interface Props {
     state: AppState;
     user: any;
     updateState: (u: (p: AppState) => AppState) => void;
     onNavigate: (view: string, params?: any) => void;
+    params?: any;
 }
 
-const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
+const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const { isDark } = useDarkMode();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [disenadoraFilter, setDisenadoraFilter] = useState('');
-    const [disenadoraInput, setDisenadoraInput] = useState('');
+    const savedState = params?.restoreState;
+
+    const [searchTerm, setSearchTerm] = useState(savedState?.searchTerm ?? '');
+    const [disenadoraFilter, setDisenadoraFilter] = useState(savedState?.disenadoraFilter ?? '');
+    const [disenadoraInput, setDisenadoraInput] = useState(savedState?.disenadoraInput ?? '');
     const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
-    const [revisionFilter, setRevisionFilter] = useState<'rojo' | 'verde' | 'morado' | 'sin-estado' | null>(null);
+    const [revisionFilter, setRevisionFilter] = useState<'rojo' | 'verde' | 'morado' | 'sin-estado' | null>(savedState?.revisionFilter ?? null);
     const [showRevisionFilter, setShowRevisionFilter] = useState(false);
-    const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
-    const [correriaFilter, setCorreriaFilter] = useState('');
-    const [correriaInput, setCorreriaInput] = useState('');
+    const [yearFilter, setYearFilter] = useState(savedState?.yearFilter ?? new Date().getFullYear().toString());
+    const [correriaFilter, setCorreriaFilter] = useState(savedState?.correriaFilter ?? '');
+    const [correriaInput, setCorreriaInput] = useState(savedState?.correriaInput ?? '');
     const [showCorreriaSuggestions, setShowCorreriaSuggestions] = useState(false);
     const [showModalImportar, setShowModalImportar] = useState(false);
     const [referenciaImportar, setReferenciaImportar] = useState('');
     const [fichaEncontrada, setFichaEncontrada] = useState<any>(null);
     const [importando, setImportando] = useState(false);
-    const fichasPagination = usePagination(1, 48);
+    const fichasPagination = usePagination(savedState?.currentPage ?? 1, 48);
+
+
+
+    const handleVerDetalle = (referencia: string) => {
+        const container = document.getElementById('main-scroll-container');
+        const returnState = {
+            searchTerm,
+            disenadoraFilter,
+            disenadoraInput,
+            revisionFilter,
+            yearFilter,
+            correriaFilter,
+            correriaInput,
+            currentPage: fichasPagination.pagination.page,
+            scrollTop: container ? container.scrollTop : 0
+        };
+        onNavigate('fichas-costo-detalle', { referencia, returnState });
+    };
+
+    React.useEffect(() => {
+        if (savedState?.scrollTop) {
+            const timeoutId = setTimeout(() => {
+                const container = document.getElementById('main-scroll-container');
+                if (container) {
+                    container.scrollTop = savedState.scrollTop;
+                }
+            }, 80);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [savedState]);
 
     const isAdmin = user?.role === 'admin' || user?.role === 'soporte';
     const isGeneral = user?.role === 'general';
@@ -86,9 +149,20 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const totalPages = Math.ceil(fichas.length / pageSize) || 1;
     const pagedFichas = fichas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
+    const prevFilters = React.useRef({ searchTerm, disenadoraFilter, correriaFilter, pageSize });
+
     // Reset a página 1 cuando cambia el filtro o el tamaño de página
     React.useEffect(() => {
-        fichasPagination.goToPage(1);
+        const filtersChanged = 
+            prevFilters.current.searchTerm !== searchTerm ||
+            prevFilters.current.disenadoraFilter !== disenadoraFilter ||
+            prevFilters.current.correriaFilter !== correriaFilter ||
+            prevFilters.current.pageSize !== pageSize;
+
+        if (filtersChanged) {
+            fichasPagination.goToPage(1);
+            prevFilters.current = { searchTerm, disenadoraFilter, correriaFilter, pageSize };
+        }
     }, [searchTerm, disenadoraFilter, correriaFilter, pageSize]);
 
     const handleBuscar = () => {
@@ -285,50 +359,62 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             ) : (
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {pagedFichas.map(ficha => (
-                        <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-blue-500' : 'bg-white border-slate-200 hover:border-blue-300'}`} onClick={() => onNavigate('fichas-costo-detalle', { referencia: ficha.referencia })}>
-                            <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
-                                {ficha.foto1 ? (
-                                    <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                                ) : (
-                                    <div className="flex items-center justify-center h-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className={`w-12 h-12 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                    {pagedFichas.map(ficha => {
+                        const telaInfo = obtenerTelaPrincipalYPromedio(ficha.materiaPrima);
+                        return (
+                            <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-blue-500' : 'bg-white border-slate-200 hover:border-blue-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
+                                <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
+                                    {ficha.foto1 ? (
+                                        <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className={`w-12 h-12 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                                        </div>
+                                    )}
+                                    {(ficha.numCortes || 0) > 0 && <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-500 text-white rounded-lg text-[9px] font-black uppercase">{ficha.numCortes} Corte{ficha.numCortes !== 1 ? 's' : ''}</div>}
+                                    {(ficha.cortesResumen || []).length > 0 && (
+                                        <div className="absolute top-9 right-2 flex flex-col gap-1">
+                                            {(ficha.cortesResumen || []).map((c: any) => (
+                                                <div key={c.numeroCorte} className={`w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black shadow ${c.margenUtilidad >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                    {c.cantidadCortada}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {isAdmin && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-50 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                    {ficha.estadoRevision && (
+                                        <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full border-2 border-white shadow"
+                                            style={{ backgroundColor: ficha.estadoRevision === 'rojo' ? '#fca5a5' : ficha.estadoRevision === 'verde' ? '#86efac' : '#c4b5fd' }}
+                                        />
+                                    )}
+                                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-sky-500 text-white rounded-lg text-[9px] font-black uppercase shadow">
+                                        ${(ficha.precioVenta || 0).toLocaleString()}
                                     </div>
-                                )}
-                                {(ficha.numCortes || 0) > 0 && <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-500 text-white rounded-lg text-[9px] font-black uppercase">{ficha.numCortes} Corte{ficha.numCortes !== 1 ? 's' : ''}</div>}
-                                {(ficha.cortesResumen || []).length > 0 && (
-                                    <div className="absolute top-9 right-2 flex flex-col gap-1">
-                                        {(ficha.cortesResumen || []).map((c: any) => (
-                                            <div key={c.numeroCorte} className={`w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black shadow ${c.margenUtilidad >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                                {c.cantidadCortada}
-                                            </div>
-                                        ))}
+                                </div>
+                                <div className="p-3">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <p className={`font-black text-sm ${isDark ? 'text-blue-300' : 'text-blue-600'} transition-colors duration-300`}>{ficha.referencia}</p>
+                                        <span className={`font-bold text-[10px] truncate ml-1 max-w-[60%] text-right ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>{ficha.disenadoraNombre}</span>
                                     </div>
-                                )}
-                                {isAdmin && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-500 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
-                                {ficha.estadoRevision && (
-                                    <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full border-2 border-white shadow"
-                                        style={{ backgroundColor: ficha.estadoRevision === 'rojo' ? '#fca5a5' : ficha.estadoRevision === 'verde' ? '#86efac' : '#c4b5fd' }}
-                                    />
-                                )}
-                            </div>
-                            <div className="p-3">
-                                <div className="flex items-center justify-between mb-1">
-                                    <p className={`font-black text-sm ${isDark ? 'text-blue-300' : 'text-blue-600'} transition-colors duration-300`}>{ficha.referencia}</p>
-                                    <span className={`font-bold text-[10px] truncate ml-1 max-w-[60%] text-right ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>{ficha.disenadoraNombre}</span>
-                                </div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
-                                    <span className={`font-black text-[10px] ml-1 shrink-0 ${isDark ? 'text-blue-300' : 'text-blue-600'} transition-colors duration-300`}>R. {(ficha.rentabilidad || 0).toFixed(1)}%</span>
-                                </div>
-                                <div className="flex items-center text-[10px]">
-                                    <div className="flex-1 flex items-center gap-1"><span className={`font-bold ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Cant. cort:</span><span className={`font-black ${isDark ? 'text-violet-200' : 'text-slate-700'} transition-colors duration-300`}>{ficha.cantidadTotalCortada || 0}</span></div>
-                                    <div className={`w-px h-4 mx-2 ${isDark ? 'bg-violet-700' : 'bg-slate-200'} transition-colors duration-300`}></div>
-                                    <div className="flex items-center gap-1"><span className={`font-bold ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Precio</span><span className={`font-black ${isDark ? 'text-green-400' : 'text-green-600'} transition-colors duration-300`}>${(ficha.precioVenta || 0).toLocaleString()}</span></div>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
+                                        <span className={`font-black text-[10px] ml-1 shrink-0 ${isDark ? 'text-blue-300' : 'text-blue-600'} transition-colors duration-300`}>R. {(ficha.rentabilidad || 0).toFixed(1)}%</span>
+                                    </div>
+                                    <div className="flex items-center text-[10px]">
+                                        <div className="flex-1 flex items-center gap-1 min-w-0">
+                                            <span className={`font-bold ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300 shrink-0`}>Tela Pr:</span>
+                                            <span className={`font-black truncate ${isDark ? 'text-violet-200' : 'text-slate-700'} transition-colors duration-300`} title={telaInfo.nombre}>{telaInfo.nombre}</span>
+                                        </div>
+                                        <div className={`w-px h-4 mx-2 ${isDark ? 'bg-violet-700' : 'bg-slate-200'} transition-colors duration-300 shrink-0`}></div>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <span className={`font-bold ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>Prom:</span>
+                                            <span className={`font-black ${isDark ? 'text-green-400' : 'text-green-600'} transition-colors duration-300`}>{telaInfo.promedio}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
                 <div className="mt-6">
                   <PaginationComponent 

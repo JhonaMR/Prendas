@@ -254,7 +254,7 @@ const MaletasAsignar: React.FC<Props> = ({ state, user, updateState, onNavigate,
                         <p className={`text-xs font-bold mt-1 transition-colors ${isDark ? 'text-violet-400' : 'text-purple-600'}`}>referencia{seleccionadas.length !== 1 ? 's' : ''} seleccionada{seleccionadas.length !== 1 ? 's' : ''}</p>
                     </div>
                     <div className="flex gap-2">
-                        {(user?.role === 'soporte' || user?.role === 'admin') && refsMarcadasEliminar.length > 0 && (
+                        {(user?.role === 'soporte' || user?.role === 'admin' || user?.role === 'operador') && refsMarcadasEliminar.length > 0 && (
                             <button onClick={handleEliminarSeleccionadas} disabled={isLoading} className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors disabled:opacity-50 ${isDark ? 'bg-red-700/50 hover:bg-red-700 text-red-200' : 'bg-red-100 text-red-600 hover:bg-red-200'}`}>
                                 Eliminar Seleccionadas
                             </button>

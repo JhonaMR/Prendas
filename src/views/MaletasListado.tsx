@@ -25,7 +25,7 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
     const [isLoading, setIsLoading] = useState(false);
 
     const canCreateMaleta = canCreate(user);
-    const canDeleteMaleta = canDelete(user);
+    const canDeleteMaleta = canDelete(user) || user?.role === UserRole.OPERADOR;
 
     const handleCrear = async () => {
         if (!nombreMaleta.trim()) { alert('El nombre es obligatorio'); return; }

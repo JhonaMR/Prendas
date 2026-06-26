@@ -24,15 +24,18 @@ interface Props {
     user: any;
     updateState: (u: (p: AppState) => AppState) => void;
     onNavigate: (view: string, params?: any) => void;
+    params?: any;
 }
 
-const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
+const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const { isDark } = useDarkMode();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [disenadoraFilter, setDisenadoraFilter] = useState('');
-    const [disenadoraInput, setDisenadoraInput] = useState('');
+    const savedState = params?.restoreState;
+
+    const [searchTerm, setSearchTerm] = useState(savedState?.searchTerm ?? '');
+    const [disenadoraFilter, setDisenadoraFilter] = useState(savedState?.disenadoraFilter ?? '');
+    const [disenadoraInput, setDisenadoraInput] = useState(savedState?.disenadoraInput ?? '');
     const [showDisenadoraSuggestions, setShowDisenadoraSuggestions] = useState(false);
-    const [yearFilter, setYearFilter] = useState(new Date().getFullYear().toString());
+    const [yearFilter, setYearFilter] = useState(savedState?.yearFilter ?? new Date().getFullYear().toString());
     const [showModal, setShowModal] = useState(false);
     const [nuevaRef, setNuevaRef] = useState('');
     const [disenadoraId, setDisenadoraId] = useState('');
@@ -45,7 +48,34 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const [todasDisenadoras, setTodasDisenadoras] = useState<Disenadora[]>([]);
     const [loadingGestion, setLoadingGestion] = useState(false);
     const [togglingId, setTogglingId] = useState<string | null>(null);
-    const fichasPagination = usePagination(1, 48);
+    const fichasPagination = usePagination(savedState?.currentPage ?? 1, 48);
+
+
+
+    const handleVerDetalle = (referencia: string) => {
+        const container = document.getElementById('main-scroll-container');
+        const returnState = {
+            searchTerm,
+            disenadoraFilter,
+            disenadoraInput,
+            yearFilter,
+            currentPage: fichasPagination.pagination.page,
+            scrollTop: container ? container.scrollTop : 0
+        };
+        onNavigate('fichas-diseno-detalle', { referencia, returnState });
+    };
+
+    React.useEffect(() => {
+        if (savedState?.scrollTop) {
+            const timeoutId = setTimeout(() => {
+                const container = document.getElementById('main-scroll-container');
+                if (container) {
+                    container.scrollTop = savedState.scrollTop;
+                }
+            }, 80);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [savedState]);
 
     const isSoporte = user?.role === 'soporte';
 
@@ -115,8 +145,19 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const totalPages = Math.ceil(fichas.length / pageSize) || 1;
     const pagedFichas = fichas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
+    const prevFilters = React.useRef({ searchTerm, disenadoraFilter, pageSize });
+
+    // Reset a página 1 cuando cambia el filtro o el tamaño de página
     React.useEffect(() => {
-        fichasPagination.goToPage(1);
+        const filtersChanged = 
+            prevFilters.current.searchTerm !== searchTerm ||
+            prevFilters.current.disenadoraFilter !== disenadoraFilter ||
+            prevFilters.current.pageSize !== pageSize;
+
+        if (filtersChanged) {
+            fichasPagination.goToPage(1);
+            prevFilters.current = { searchTerm, disenadoraFilter, pageSize };
+        }
     }, [searchTerm, disenadoraFilter, pageSize]);
 
     const handleCrear = () => {
@@ -323,7 +364,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {pagedFichas.map(ficha => (
-                        <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => onNavigate('fichas-diseno-detalle', { referencia: ficha.referencia })}>
+                        <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
                             <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
                                 {ficha.foto1 ? (
                                     <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />

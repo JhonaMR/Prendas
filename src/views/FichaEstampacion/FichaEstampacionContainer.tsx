@@ -13,6 +13,7 @@ import FichaEstampacionEditor from './FichaEstampacionEditor';
 interface Props {
     user: any;
     state: AppState;
+    updateState: (updater: (prev: AppState) => AppState) => void;
     onNavigate: (tab: string, params?: any) => void;
     params?: any;
 }
@@ -79,16 +80,13 @@ function recordToDb(record: FichaEstampacionRecord, createdBy: string) {
     };
 }
 
-const FichaEstampacionContainer: React.FC<Props> = ({ user, state, onNavigate, params }) => {
-    const [fichas, setFichas] = useState<FichaEstampacionRecord[]>([]);
-    const [cargando, setCargando] = useState(true);
+const FichaEstampacionContainer: React.FC<Props> = ({ user, state, updateState, onNavigate, params }) => {
     const [vista, setVista] = useState<'historico' | 'editor'>('historico');
     const [fichaIdEditar, setFichaIdEditar] = useState<string | undefined>(undefined);
 
-    // Cargar fichas desde la BD al montar
-    useEffect(() => {
-        cargarFichas();
-    }, []);
+    const fichas = React.useMemo(() => {
+        return (state.fichasEstampacion || []).map(dbToRecord);
+    }, [state.fichasEstampacion]);
 
     // Navegar si llegan params
     useEffect(() => {
@@ -101,29 +99,10 @@ const FichaEstampacionContainer: React.FC<Props> = ({ user, state, onNavigate, p
         }
     }, [params]);
 
-    const cargarFichas = async () => {
-        setCargando(true);
-        try {
-            const data = await apiFichas.getFichasEstampacion();
-            if (Array.isArray(data)) {
-                setFichas(data.map(dbToRecord));
-            } else {
-                console.error('Datos inválidos recibidos:', data);
-                setFichas([]);
-            }
-        } catch (e) {
-            console.error('Error cargando fichas estampacion:', e);
-            setFichas([]);
-        } finally {
-            setCargando(false);
-        }
-    };
-
     const handleNavInterna = (tab: string, p?: any) => {
         if (tab === 'fichas-estampacion') {
             setVista('historico');
             setFichaIdEditar(undefined);
-            cargarFichas(); // refrescar al volver al histórico
         } else if (tab === 'ficha-estampacion-editor') {
             setFichaIdEditar(p?.fichaId);
             setVista('editor');
@@ -145,8 +124,9 @@ const FichaEstampacionContainer: React.FC<Props> = ({ user, state, onNavigate, p
             }
             
             if (resultado.success) {
-                // Recargar fichas después de guardar
-                await cargarFichas();
+                // Recargar y actualizar estado global
+                const updatedData = await apiFichas.getFichasEstampacion();
+                updateState(prev => ({ ...prev, fichasEstampacion: updatedData }));
                 handleNavInterna('fichas-estampacion');
             } else {
                 console.error('Error guardando ficha:', resultado.message);
@@ -162,7 +142,10 @@ const FichaEstampacionContainer: React.FC<Props> = ({ user, state, onNavigate, p
         try {
             const resultado = await apiFichas.deleteFichaEstampacion(id);
             if (resultado.success) {
-                setFichas(prev => prev.filter(f => f.id !== id));
+                updateState(prev => ({
+                    ...prev,
+                    fichasEstampacion: prev.fichasEstampacion.filter((f: any) => f.id !== id)
+                }));
             } else {
                 console.error('Error eliminando ficha:', resultado.message);
                 alert(`Error al eliminar: ${resultado.message || 'Error desconocido'}`);
@@ -192,7 +175,7 @@ const FichaEstampacionContainer: React.FC<Props> = ({ user, state, onNavigate, p
             onNavigate={handleNavInterna}
             fichas={fichas}
             onEliminar={handleEliminar}
-            cargando={cargando}
+            cargando={false}
         />
     );
 };

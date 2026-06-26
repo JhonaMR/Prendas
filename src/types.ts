@@ -173,4 +173,8 @@ export interface AppState {
   fichasDiseno: FichaDiseno[];
   fichasCosto: FichaCosto[];
   maletas: Maleta[];
+  fichasConfeccion: any[];
+  fichasEstampacion: any[];
+  empleadosAsistencia: any[];
 }
+

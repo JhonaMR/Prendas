@@ -50,36 +50,18 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
       setLoadingCalendario(true);
       setErrorCalendario(false);
 
-      // Reintenta hasta 3 veces con 800ms entre intentos
-      const MAX_INTENTOS = 3;
-      const DELAY_MS = 800;
-
-      for (let intento = 1; intento <= MAX_INTENTOS; intento++) {
+      try {
+        const data = await api.getTotalesPagosPorMes(anio, mes);
         if (cancelled) return;
-        try {
-          const data = await api.getTotalesPagosPorMes(anio, mes);
-          if (cancelled) return;
-          // Si devolvió datos reales, o es el último intento, aceptamos el resultado
-          if (Object.keys(data).length > 0 || intento === MAX_INTENTOS) {
-            setTotalesPagos(data);
-            setLoadingCalendario(false);
-            return;
-          }
-          // Respuesta vacía pero no es el último intento — esperar y reintentar
-          await new Promise(res => setTimeout(res, DELAY_MS));
-        } catch (e) {
-          console.error(`Error cargando totales de pagos (intento ${intento}):`, e);
-          if (intento < MAX_INTENTOS) {
-            await new Promise(res => setTimeout(res, DELAY_MS));
-          }
-        }
-      }
-
-      // Agotamos los intentos
-      if (!cancelled) {
-        setTotalesPagos({});
-        setErrorCalendario(true);
+        setTotalesPagos(data || {});
         setLoadingCalendario(false);
+      } catch (e) {
+        console.error('Error cargando totales de pagos:', e);
+        if (!cancelled) {
+          setTotalesPagos({});
+          setErrorCalendario(true);
+          setLoadingCalendario(false);
+        }
       }
     };
     cargarTotales();

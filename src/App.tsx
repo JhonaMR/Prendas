@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { AppState, User, UserRole } from './types';
 import { api } from './services/api';
+import apiFichas from './services/apiFichas';
+import { asistenciaService } from './services/asistenciaService';
 import { Icons } from './constants';
+
 import { ClockDisplay } from './components/shared/ClockDisplay';
 import { ChatProvider } from './context/ChatContext';
 import { ChatFloatingButton, ChatContactsModal, ChatWindow, NotificationContainer } from './components/Chat';
@@ -82,8 +85,12 @@ const App: React.FC = () => {
     fichasDiseno: [],
     fichasCosto: [],
     maletas: [],
-    salidasBodega: []
+    salidasBodega: [],
+    fichasConfeccion: [],
+    fichasEstampacion: [],
+    empleadosAsistencia: []
   });
+
 
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('home');
@@ -151,7 +158,10 @@ const App: React.FC = () => {
           fichasDisenoData,
           fichasCostoData,
           maletasData,
-          salidasBodegaData
+          salidasBodegaData,
+          fichasConfeccionData,
+          fichasEstampacionData,
+          empleadosAsistenciaData
         ] = await Promise.all([
           api.listUsers(),
           api.getReferences(),
@@ -214,7 +224,10 @@ const App: React.FC = () => {
               return [];
             }
           })(),
-          api.getSalidasBodega()
+          api.getSalidasBodega(),
+          apiFichas.getFichasConfeccion(),
+          apiFichas.getFichasEstampacion(),
+          asistenciaService.getEmpleados()
         ]);
 
         setState({
@@ -234,8 +247,12 @@ const App: React.FC = () => {
           fichasDiseno: fichasDisenoData,
           fichasCosto: fichasCostoData,
           maletas: maletasData,
-          salidasBodega: salidasBodegaData
+          salidasBodega: salidasBodegaData,
+          fichasConfeccion: fichasConfeccionData,
+          fichasEstampacion: fichasEstampacionData,
+          empleadosAsistencia: empleadosAsistenciaData
         });
+
 
         console.log('✅ Datos cargados del backend exitosamente');
         console.log('📊 Referencias:', referencesData.length);
@@ -281,9 +298,14 @@ const App: React.FC = () => {
       disenadoras: [],
       fichasDiseno: [],
       fichasCosto: [],
-      maletas: []
+      maletas: [],
+      salidasBodega: [],
+      fichasConfeccion: [],
+      fichasEstampacion: [],
+      empleadosAsistencia: []
     });
   };
+
 
   const updateState = (updater: (prev: AppState) => AppState) => {
     setState(prev => updater(prev));
@@ -1143,9 +1165,17 @@ const App: React.FC = () => {
       case 'corte':
         return <RegistroCorteView user={user} referencesMaster={state.references} />;
       case 'fichas-confeccion':
-        return <FichaConfeccionContainer user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
+        if (user?.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <FichaConfeccionContainer user={user} state={state} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-estampacion':
-        return <FichaEstampacionContainer user={user} state={state} onNavigate={handleTabChange} params={navigationOptions as any} />;
+        if (user?.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <FichaEstampacionContainer user={user} state={state} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'cuentasCobro':
         return <CuentasCobroView state={state} user={user} params={navigationOptions as any} onNavigate={handleTabChange} />;
       case 'historicoReferencia':
@@ -1226,11 +1256,11 @@ const App: React.FC = () => {
         }
         return <ControlTelasView user={user} />;
       case 'fichas-diseno':
-        return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+        return <FichasDisenoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-diseno-detalle':
         return <FichasDisenoDetalle state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-costo':
-        return <FichasCostoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+        return <FichasCostoMosaico state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-costo-detalle':
         return <FichasCostoDetalle state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'fichas-corte-detalle':
@@ -1242,8 +1272,16 @@ const App: React.FC = () => {
       case 'maletas-recibir':
         return <MaletasRecibir state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
       case 'asistencia':
-        return <AsistenciaListView user={user} onNavigate={handleTabChange} />;
+        if (user?.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
+        return <AsistenciaListView user={user} state={state} updateState={updateState} onNavigate={handleTabChange} />;
       case 'asistenciaDetalle':
+        if (user?.role !== UserRole.SOPORTE) {
+          setActiveTab('home');
+          return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
+        }
         return <AsistenciaDetailView empleadoId={(navigationOptions as any)?.empleadoId} onVolver={() => handleTabChange('asistencia')} user={user} />;
       default:
         return null;
@@ -1470,7 +1508,7 @@ const App: React.FC = () => {
                   <NavItem active={activeTab === 'masters'} onClick={() => handleTabChange('masters')} icon={<Icons.Masters />} label="Maestros" />
                 )}
                 <NavItem active={activeTab === 'reports'} onClick={() => handleTabChange('reports')} icon={<Icons.Reports />} label="Reportes" />
-                {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
+                {user.role === UserRole.SOPORTE && (
                   <NavItem active={activeTab === 'asistencia'} onClick={() => handleTabChange('asistencia')} icon={<Icons.Asistencia />} label="Control de Asistencia" />
                 )}
                 {(user.role === UserRole.ADMIN || user.role === UserRole.SOPORTE) && (
@@ -1501,7 +1539,7 @@ const App: React.FC = () => {
         isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'
       }`}>
         <DottedBackground />
-        <div className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative z-10">
+        <div id="main-scroll-container" className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative z-10">
           <div className="max-w-full mx-auto">
             {renderContent()}
           </div>

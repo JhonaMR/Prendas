@@ -12,7 +12,7 @@ interface Props {
 
 const MaletasRecibir: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
     const { isDark } = useDarkMode();
-    const canEdit = user?.role === 'admin' || user?.role === 'soporte';
+    const canEdit = user?.role === 'admin' || user?.role === 'soporte' || user?.role === 'operador';
     const canCreate = user?.role === 'admin' || user?.role === 'soporte' || user?.role === 'general' || user?.role === 'operador';
 
     const [maletaSeleccionada, setMaletaSeleccionada] = useState<any>(null);
