@@ -171,7 +171,7 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                                     <td className={`px-6 py-4 font-bold text-sm transition-colors ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{maleta.createdBy}</td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => onNavigate('maletas-recibir')} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
+                                            <button onClick={() => onNavigate('maletas-recibir', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
                                             <button onClick={() => handleExportar(maleta)} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-green-700/50 text-green-200 hover:bg-green-700' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>Exportar</button>
                                             <button onClick={() => onNavigate('maletas-asignar', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-violet-700/50 text-violet-200 hover:bg-violet-700' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>Ver / Editar</button>
                                             {canDeleteMaleta && (

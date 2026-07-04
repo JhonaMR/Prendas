@@ -8,9 +8,10 @@ interface Props {
     state: AppState; user: any;
     updateState: (u: (p: AppState) => AppState) => void;
     onNavigate: (view: string, params?: any) => void;
+    params?: any;
 }
 
-const MaletasRecibir: React.FC<Props> = ({ state, user, updateState, onNavigate }) => {
+const MaletasRecibir: React.FC<Props> = ({ state, user, updateState, onNavigate, params }) => {
     const { isDark } = useDarkMode();
     const canEdit = user?.role === 'admin' || user?.role === 'soporte' || user?.role === 'operador';
     const canCreate = user?.role === 'admin' || user?.role === 'soporte' || user?.role === 'general' || user?.role === 'operador';
@@ -32,6 +33,16 @@ const MaletasRecibir: React.FC<Props> = ({ state, user, updateState, onNavigate 
         try {
             const maletas = await apiFichas.getMaletas();
             const enviadas = maletas.filter((m: any) => m.estado === 'enviada' || !m.estado);
+            
+            const targetId = params?.id;
+            if (targetId) {
+                const encontrada = enviadas.find((m: any) => m.id === targetId);
+                if (encontrada) {
+                    await seleccionarMaleta(encontrada);
+                    return;
+                }
+            }
+
             if (enviadas.length > 0) {
                 await seleccionarMaleta(enviadas[0]);
             }

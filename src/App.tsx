@@ -1270,7 +1270,7 @@ const App: React.FC = () => {
       case 'maletas-asignar':
         return <MaletasAsignar state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'maletas-recibir':
-        return <MaletasRecibir state={state} user={user} updateState={updateState} onNavigate={handleTabChange} />;
+        return <MaletasRecibir state={state} user={user} updateState={updateState} onNavigate={handleTabChange} params={navigationOptions as any} />;
       case 'asistencia':
         if (user?.role !== UserRole.SOPORTE) {
           setActiveTab('home');
