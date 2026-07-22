@@ -1,0 +1,22 @@
+tunnel: 7e56c82b-4a60-43ae-ab93-15b5841d8b42
+credentials-file: C:\Users\Administrador.WIN-KNP345JO813\.cloudflared\7e56c82b-4a60-43ae-ab93-15b5841d8b42.json
+
+# Evita problemas de TLS con certificados locales auto-firmados
+originRequest:
+  noTLSVerify: true
+
+ingress:
+  # --- PLOW ---
+  - hostname: admin-plow.yersi.cc
+    service: https://localhost:5173
+  - hostname: api-admin-plow.yersi.cc
+    service: https://localhost:3000
+
+  # --- MELAS ---
+  - hostname: admin-melas.yersi.cc
+    service: https://localhost:5174
+  - hostname: api-admin-melas.yersi.cc
+    service: https://localhost:3001
+
+  # Regla de escape (obligatoria al final)
+  - service: http_status:404

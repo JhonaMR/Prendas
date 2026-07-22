@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { User } from '../../types';
 import { Icons } from '../../constants';
+import { useBrand } from '../../hooks/useBrand';
+
 
 interface NavButton {
   id: string;
@@ -88,6 +90,13 @@ const navGroups: NavGroup[] = [
 
 const OperadorLayout: React.FC<OperadorLayoutProps> = ({ user, onNavigate, onDirectNavigate }) => {
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
+  const brand = useBrand();
+
+  const handleOrderSystemClick = () => {
+    const url = brand.isMelas ? 'https://melas.yersi.cc/' : 'https://plow.yersi.cc/';
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
 
   const currentGroup = activeGroup ? navGroups.find(g => g.id === activeGroup) : null;
 
@@ -103,26 +112,36 @@ const OperadorLayout: React.FC<OperadorLayoutProps> = ({ user, onNavigate, onDir
     <div className="h-full w-full flex flex-col bg-transparent p-6 md:p-10">
 
       {/* Header */}
-      <div className="mb-8 flex items-center gap-4">
-        {currentGroup && (
-          <button
-            onClick={() => setActiveGroup(null)}
-            className="h-10 w-10 rounded-xl bg-white border-2 border-slate-200 hover:border-teal-400 flex items-center justify-center text-slate-500 hover:text-teal-600 transition-all flex-shrink-0"
-            aria-label="Volver"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-          </button>
-        )}
-        <div>
-          <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
-            {currentGroup ? currentGroup.label : `Bienvenido, ${user.name}`}
-          </h1>
-          <p className="text-slate-500 text-sm md:text-base">
-            {currentGroup ? 'Selecciona una opción' : 'Selecciona un grupo para continuar'}
-          </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {currentGroup && (
+            <button
+              onClick={() => setActiveGroup(null)}
+              className="h-10 w-10 rounded-xl bg-white border-2 border-slate-200 hover:border-teal-400 flex items-center justify-center text-slate-500 hover:text-teal-600 transition-all flex-shrink-0"
+              aria-label="Volver"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+          )}
+          <div>
+            <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-1">
+              {currentGroup ? currentGroup.label : `Bienvenido, ${user.name}`}
+            </h1>
+            <p className="text-slate-500 text-sm md:text-base">
+              {currentGroup ? 'Selecciona una opción' : 'Selecciona un grupo para continuar'}
+            </p>
+          </div>
         </div>
+
+        {/* Gray Button for Order Taking System */}
+        <button
+          onClick={handleOrderSystemClick}
+          className="px-4 py-2 rounded-xl text-sm font-semibold transition-colors bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-900 border border-zinc-200 self-start sm:self-auto"
+        >
+          Sistema Toma de pedidos
+        </button>
       </div>
 
       {/* Grid: grupos o ítems del grupo activo */}

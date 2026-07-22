@@ -7,6 +7,8 @@ import ChartsVisualization from './ChartsVisualization.tsx';
 import ViewOrderModal from './ViewOrderModal.tsx';
 import { useViewPreferences } from '../../hooks/useViewPreferences';
 import { useDarkMode } from '../../context/DarkModeContext';
+import { useBrand } from '../../hooks/useBrand';
+
 
 interface NavButton {
   id: string;
@@ -39,6 +41,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
   const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const { preferences, savePreferences, loading: preferencesLoading } = useViewPreferences();
   const { isDark } = useDarkMode();
+  const brand = useBrand();
+
+  const handleOrderSystemClick = () => {
+    const url = brand.isMelas ? 'https://melas.yersi.cc/' : 'https://plow.yersi.cc/';
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
 
   useEffect(() => {
     if (correriasError) {
@@ -212,31 +221,45 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     <div className="h-full w-full flex flex-col bg-transparent p-6 md:p-10">
 
       {/* Header */}
-      <div className="mb-8 flex items-center gap-4">
-        {currentGroup && (
-          <button
-            onClick={() => setActiveGroup(null)}
-            className={`h-10 w-10 rounded-xl border-2 flex items-center justify-center transition-all flex-shrink-0 ${isDark
-              ? 'bg-violet-900/40 border-violet-700 text-violet-500 hover:border-pink-600 hover:text-pink-400'
-              : 'bg-white border-slate-200 text-slate-500 hover:border-pink-400 hover:text-pink-600'
-              }`}
-            aria-label="Volver"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
-          </button>
-        )}
-        <div>
-          <h1 className={`text-3xl md:text-4xl font-black mb-1 ${isDark ? 'text-violet-50' : 'text-slate-900'
-            }`}>
-            {currentGroup ? currentGroup.label : `Bienvenido, ${user.name}`}
-          </h1>
-          <p className={`text-sm md:text-base ${isDark ? 'text-violet-200' : 'text-slate-500'
-            }`}>
-            {currentGroup ? 'Selecciona una opción' : 'Selecciona un grupo para continuar'}
-          </p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {currentGroup && (
+            <button
+              onClick={() => setActiveGroup(null)}
+              className={`h-10 w-10 rounded-xl border-2 flex items-center justify-center transition-all flex-shrink-0 ${isDark
+                ? 'bg-violet-900/40 border-violet-700 text-violet-500 hover:border-pink-600 hover:text-pink-400'
+                : 'bg-white border-slate-200 text-slate-500 hover:border-pink-400 hover:text-pink-600'
+                }`}
+              aria-label="Volver"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+          )}
+          <div>
+            <h1 className={`text-3xl md:text-4xl font-black mb-1 ${isDark ? 'text-violet-50' : 'text-slate-900'
+              }`}>
+              {currentGroup ? currentGroup.label : `Bienvenido, ${user.name}`}
+            </h1>
+            <p className={`text-sm md:text-base ${isDark ? 'text-violet-200' : 'text-slate-500'
+              }`}>
+              {currentGroup ? 'Selecciona una opción' : 'Selecciona un grupo para continuar'}
+            </p>
+          </div>
         </div>
+
+        {/* Gray Button for Order Taking System */}
+        <button
+          onClick={handleOrderSystemClick}
+          className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors self-start sm:self-auto ${
+            isDark
+              ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700'
+              : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200 hover:text-zinc-900 border border-zinc-200'
+          }`}
+        >
+          Sistema Toma de pedidos
+        </button>
       </div>
 
       {/* Grid: grupos o ítems del grupo activo */}
