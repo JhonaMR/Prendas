@@ -22,9 +22,10 @@ export function useBrand() {
     return window.BRAND_CONFIG;
   }
 
-  // Fallback: detectar por puerto
+  // Fallback: detectar por puerto u hostname
   const port = window.location.port;
-  const isMelas = port === '5174' || port === '3001';
+  const hostname = window.location.hostname;
+  const isMelas = port === '5174' || port === '3001' || hostname.includes('melas');
 
   return {
     name: isMelas ? 'Melas' : 'Plow',
