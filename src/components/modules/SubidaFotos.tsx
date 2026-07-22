@@ -62,7 +62,7 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({
     const getBaseUrl = (): string => {
         if (window.API_CONFIG?.getApiUrl) {
             const apiUrl = window.API_CONFIG.getApiUrl();
-            return apiUrl.replace('/api', '');
+            return apiUrl.replace(/\/api$/, '');
         }
         return `${window.location.protocol}//${window.location.hostname}:3000`;
     };

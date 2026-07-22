@@ -25,7 +25,7 @@ export const socketService = {
     if (window.API_CONFIG?.getApiUrl) {
       // Usar la misma URL que para la API, pero sin /api
       const apiUrl = window.API_CONFIG.getApiUrl();
-      url = apiUrl.replace('/api', '');
+      url = apiUrl.replace(/\/api$/, '');
     } else {
       // Fallback: construir URL manualmente basado en el puerto actual
       const protocol = window.location.protocol === 'https:' ? 'https' : 'http';

@@ -30,7 +30,7 @@ const FichasCostoMosaico: React.FC<FichasCosMosaicoProps> = ({ state, user, upda
     const apiUrl = import.meta.env.VITE_API_URL || 
                    (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl?.()) ||
                    'http://localhost:3000';
-    return apiUrl.replace('/api', '');
+    return apiUrl.replace(/\/api$/, '');
   };
   
   const baseUrl = getBaseUrl();

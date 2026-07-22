@@ -452,7 +452,7 @@ const ModalVerFotosCosto: React.FC<ModalVerFotosCostoProps> = ({ referencia, fot
     const [indice, setIndice] = useState(0);
 
     const getBaseUrl = (): string => {
-        if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace('/api', '');
+        if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace(/\/api$/, '');
         return `${window.location.protocol}//${window.location.hostname}:3000`;
     };
 
@@ -561,7 +561,7 @@ const ModalVisorMoldeCosto: React.FC<ModalVisorMoldeCostoProps> = ({ referencia,
     }
 
     const getBaseUrl = (): string => {
-        if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace('/api', '');
+        if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace(/\/api$/, '');
         return `${window.location.protocol}//${window.location.hostname}:3000`;
     };
 

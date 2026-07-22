@@ -15,7 +15,7 @@ import { useDarkMode } from '../context/DarkModeContext';
 declare global { interface Window { API_CONFIG?: { getApiUrl: () => string } } }
 
 function getBaseUrl(): string {
-    if (window.API_CONFIG?.getApiUrl) return window.API_CONFIG.getApiUrl().replace('/api', '');
+    if (window.API_CONFIG?.getApiUrl) return window.API_CONFIG.getApiUrl().replace(/\/api$/, '');
     return `${window.location.protocol}//${window.location.hostname}:3000`;
 }
 

@@ -80,7 +80,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const getBaseUrl = (): string => {
     if (window.API_CONFIG?.getApiUrl) {
       const apiUrl = window.API_CONFIG.getApiUrl();
-      return apiUrl.replace('/api', '');
+      return apiUrl.replace(/\/api$/, '');
     }
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;

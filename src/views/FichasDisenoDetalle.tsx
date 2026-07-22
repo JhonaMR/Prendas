@@ -348,7 +348,7 @@ const ModalVerFotos: React.FC<ModalVerFotosProps> = ({ referencia, foto1, foto2,
 
     const getBaseUrl = (): string => {
         if ((window as any).API_CONFIG?.getApiUrl) {
-            return (window as any).API_CONFIG.getApiUrl().replace('/api', '');
+            return (window as any).API_CONFIG.getApiUrl().replace(/\/api$/, '');
         }
         return `${window.location.protocol}//${window.location.hostname}:3000`;
     };
@@ -528,7 +528,7 @@ const ModalVisorPsd: React.FC<ModalVisorPsdProps> = ({ referencia, archivoPsd, i
                     <VisorMolde
                         archivoUrl={`${(() => {
                             if ((window as any).API_CONFIG?.getApiUrl) {
-                                return (window as any).API_CONFIG.getApiUrl().replace('/api', '');
+                                return (window as any).API_CONFIG.getApiUrl().replace(/\/api$/, '');
                             }
                             return `${window.location.protocol}//${window.location.hostname}:3000`;
                         })()}${archivoPsd}`}

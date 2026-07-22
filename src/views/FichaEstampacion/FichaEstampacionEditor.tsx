@@ -10,7 +10,7 @@ import api from '../../services/api';
 import apiFichas from '../../services/apiFichas';
 
 function getBaseUrl(): string {
-    if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace('/api', '');
+    if ((window as any).API_CONFIG?.getApiUrl) return (window as any).API_CONFIG.getApiUrl().replace(/\/api$/, '');
     return `${window.location.protocol}//${window.location.hostname}:3000`;
 }
 
