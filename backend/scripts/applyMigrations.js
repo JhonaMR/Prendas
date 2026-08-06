@@ -182,7 +182,10 @@ async function applyMigration(pool, migrationFile, dbName) {
     // Registrar migración
     const executionTime = Date.now() - startTime;
     await pool.query(
-      'INSERT INTO schema_migrations (migration_name, success, execution_time_ms) VALUES ($1, $2, $3)',
+      `INSERT INTO schema_migrations (migration_name, success, execution_time_ms, error_message)
+       VALUES ($1, $2, $3, NULL)
+       ON CONFLICT (migration_name)
+       DO UPDATE SET success = $2, execution_time_ms = $3, error_message = NULL`,
       [migrationFile, true, executionTime]
     );
 
@@ -197,7 +200,10 @@ async function applyMigration(pool, migrationFile, dbName) {
     // Registrar error
     try {
       await pool.query(
-        'INSERT INTO schema_migrations (migration_name, success, error_message) VALUES ($1, $2, $3)',
+        `INSERT INTO schema_migrations (migration_name, success, error_message, execution_time_ms)
+         VALUES ($1, $2, $3, NULL)
+         ON CONFLICT (migration_name)
+         DO UPDATE SET success = $2, error_message = $3, execution_time_ms = NULL`,
         [migrationFile, false, error.message]
       );
     } catch (e) {

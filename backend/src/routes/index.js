@@ -270,13 +270,16 @@ router.get('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.get
 router.post('/fichas-diseno', verifyToken, fichasDisenoController.createFichaDiseno);
 router.put('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.updateFichaDiseno);
 router.delete('/fichas-diseno/:referencia', verifyToken, fichasDisenoController.deleteFichaDiseno);
+router.post('/fichas-diseno/:referencia/duplicar', verifyToken, allowAdminOnly, fichasDisenoController.duplicarFichaDiseno);
 
 // Fichas de Costo - IMPORTANTE: rutas fijas ANTES de /:referencia
+router.get('/fichas-costo/validar/:referencia', verifyToken, fichasCostoController2.validarReferencia);
 router.post('/fichas-costo/importar', verifyToken, allowAdminOnly, fichasCostoController2.importarFichaDiseno);
 router.get('/fichas-costo', verifyToken, fichasCostoController1.getFichasCosto);
 router.get('/fichas-costo/:referencia', verifyToken, fichasCostoController1.getFichaCosto);
 router.post('/fichas-costo', verifyToken, fichasCostoController2.createFichaCosto);
 router.put('/fichas-costo/:referencia', verifyToken, fichasCostoController2.updateFichaCosto);
+router.post('/fichas-costo/:referencia/duplicar', verifyToken, allowAdminOnly, fichasCostoController2.duplicarFichaCosto);
 router.delete('/fichas-costo/:referencia', verifyToken, allowOperadorOrAdmin, fichasCostoController2.deleteFichaCosto);
 
 // Cortes

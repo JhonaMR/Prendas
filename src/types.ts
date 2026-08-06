@@ -74,6 +74,8 @@ export interface ProductionTracking {
   cut: number;
   inventory?: number;
   novedades?: string;
+  highlightRowColor?: string | null;
+  highlightCells?: { [columnKey: string]: string } | null;
 }
 
 export type ChargeType = 'Compra' | 'Cobro' | null;

@@ -30,7 +30,20 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
   const [isSaving, setIsSaving] = useState(false);
   const [showDepurarModal, setShowDepurarModal] = useState(false);
   const [selectedRefsToDepurar, setSelectedRefsToDepurar] = useState<string[]>([]);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+    refId: string;
+    columnKey?: string;
+  } | null>(null);
   const hasUnsavedChanges = useRef(false);
+
+  // Cerrar menú contextual al hacer click en cualquier lugar
+  useEffect(() => {
+    const handleCloseMenu = () => setContextMenu(null);
+    window.addEventListener('click', handleCloseMenu);
+    return () => window.removeEventListener('click', handleCloseMenu);
+  }, []);
 
   // Verificar si el usuario es admin
   const isAdmin = user?.role === UserRole.ADMIN || user?.role === UserRole.SOPORTE || user?.role === 'admin' || user?.role === 'soporte';
@@ -267,7 +280,7 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
     return data;
   }, [selectedCorreriaId, state.orders, state.references, state.receptions, state.dispatches, state.productionTracking, refFilter, hideZeros, columnFilters]);
 
-  const updateProduction = (refId: string, field: 'programmed' | 'cut' | 'inventory' | 'novedades', value: number | string) => {
+  const updateProduction = (refId: string, field: 'programmed' | 'cut' | 'inventory' | 'novedades' | 'highlightRowColor' | 'highlightCells', value: any) => {
     updateState(prev => {
       const existingIdx = prev.productionTracking.findIndex(p => p.refId === refId && p.correriaId === selectedCorreriaId);
       const newList = [...prev.productionTracking];
@@ -285,6 +298,63 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
 
       return { ...prev, productionTracking: newList };
     });
+  };
+
+  const handleContextMenu = (e: React.MouseEvent, refId: string, columnKey?: string) => {
+    if (!isAdmin) return;
+    e.preventDefault();
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      refId,
+      columnKey
+    });
+  };
+
+  const handleSetRowHighlight = (refId: string, color: string | null) => {
+    updateProduction(refId, 'highlightRowColor', color);
+    setContextMenu(null);
+  };
+
+  const handleSetCellHighlight = (refId: string, columnKey: string, color: string | null) => {
+    const existing = state.productionTracking.find(p => p.refId === refId && p.correriaId === selectedCorreriaId);
+    const currentCells = existing?.highlightCells || {};
+    const updatedCells = { ...currentCells };
+    if (color) {
+      updatedCells[columnKey] = color;
+    } else {
+      delete updatedCells[columnKey];
+    }
+    updateProduction(refId, 'highlightCells', updatedCells);
+    setContextMenu(null);
+  };
+
+  const getCellHighlightClass = (prod: any, columnKey: string) => {
+    const cellColor = prod?.highlightCells?.[columnKey];
+    if (cellColor === 'yellow') {
+      return isDark 
+        ? 'bg-yellow-500/45 text-yellow-50 border-yellow-500/60' 
+        : 'bg-yellow-200 text-yellow-950 border-yellow-300';
+    }
+    if (cellColor === 'red') {
+      return isDark 
+        ? 'bg-red-500/45 text-red-50 border-red-500/60' 
+        : 'bg-red-200 text-red-950 border-red-300';
+    }
+
+    const rowColor = prod?.highlightRowColor;
+    if (rowColor === 'yellow') {
+      return isDark 
+        ? 'bg-yellow-500/20 text-yellow-50 border-yellow-500/30' 
+        : 'bg-yellow-100 text-yellow-950 border-yellow-200';
+    }
+    if (rowColor === 'red') {
+      return isDark 
+        ? 'bg-red-500/20 text-red-50 border-red-500/30' 
+        : 'bg-red-100 text-red-950 border-red-200';
+    }
+
+    return '';
   };
 
   const handleToggleRefToDepurar = (refId: string) => {
@@ -366,7 +436,9 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
         return initial.programmed !== current.programmed ||
           initial.cut !== current.cut ||
           initial.inventory !== current.inventory ||
-          initial.novedades !== current.novedades;
+          initial.novedades !== current.novedades ||
+          initial.highlightRowColor !== current.highlightRowColor ||
+          JSON.stringify(initial.highlightCells) !== JSON.stringify(current.highlightCells);
       });
 
       // ===== LOG DE DEBUG =====
@@ -708,16 +780,30 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
             <tbody className={`transition-colors duration-300 ${isDark ? 'divide-[#5a4a75]' : 'divide-slate-50'} divide-y`}>
               {reportData.map(row => {
                 const prod = state.productionTracking.find(p => p.refId === row.id && p.correriaId === selectedCorreriaId) || { programmed: 0, cut: 0, inventory: 0 };
+                
+                const inventoryHighlight = getCellHighlightClass(prod, 'inventory');
+                const programmedHighlight = getCellHighlightClass(prod, 'programmed');
+                const cutHighlight = getCellHighlightClass(prod, 'cut');
+
                 return (
                   <tr key={row.id} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50/50'}`}>
-                    <td className={`px-4 py-2 sticky left-0 z-10 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+                    <td 
+                      className={`px-4 py-2 sticky left-0 z-10 transition-colors duration-300 ${getCellHighlightClass(prod, 'reference') || (isDark ? 'bg-[#4a3a63]' : 'bg-white')}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'reference')}
+                    >
                       <p className={`font-black text-sm leading-tight transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{row.id}</p>
                       <p className={`text-[9px] font-bold uppercase truncate transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>{row.description}</p>
                     </td>
-                    <td className="px-2 py-2 text-center">
+                    <td 
+                      className={`px-2 py-2 text-center transition-colors duration-300 ${getCellHighlightClass(prod, 'vendido')}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'vendido')}
+                    >
                       <span className={`px-2 py-1 rounded-md font-black text-sm transition-colors duration-300 ${row.totalSold > 0 ? 'bg-violet-600 text-white shadow-sm' : isDark ? 'bg-[#5a4a75] text-violet-300' : 'bg-slate-100 text-slate-400'}`}>{row.totalSold}</span>
                     </td>
-                    <td className="px-2 py-2 text-center">
+                    <td 
+                      className={`px-2 py-2 text-center transition-colors duration-300 ${inventoryHighlight}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'inventory')}
+                    >
                       <input
                         type="text"
                         defaultValue={prod.inventory || 0}
@@ -730,10 +816,17 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
                           updateProduction(row.id, 'inventory', result);
                         }}
                         readOnly={!isAdmin}
-                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-orange-700 focus:ring-orange-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${
+                          inventoryHighlight 
+                            ? (isDark ? 'bg-black/25 text-white border-transparent' : 'bg-white/80 text-orange-950 border-transparent')
+                            : (isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-orange-700 focus:ring-orange-100')
+                        } border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
-                    <td className="px-2 py-2 text-center">
+                    <td 
+                      className={`px-2 py-2 text-center transition-colors duration-300 ${programmedHighlight}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'programmed')}
+                    >
                       <input
                         type="text"
                         defaultValue={row.programmed}
@@ -746,10 +839,17 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
                           updateProduction(row.id, 'programmed', result);
                         }}
                         readOnly={!isAdmin}
-                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-indigo-700 focus:ring-indigo-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${
+                          programmedHighlight
+                            ? (isDark ? 'bg-black/25 text-white border-transparent' : 'bg-white/80 text-indigo-950 border-transparent')
+                            : (isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-indigo-700 focus:ring-indigo-100')
+                        } border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
-                    <td className="px-2 py-2 text-center">
+                    <td 
+                      className={`px-2 py-2 text-center transition-colors duration-300 ${cutHighlight}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'cut')}
+                    >
                       <input
                         type="text"
                         defaultValue={row.cut}
@@ -762,10 +862,17 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
                           updateProduction(row.id, 'cut', result);
                         }}
                         readOnly={!isAdmin}
-                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-pink-700 focus:ring-pink-100'} border ${!isAdmin ? 'cursor-default' : ''}`}
+                        className={`w-16 px-2 py-1 rounded-lg font-black text-center text-sm focus:ring-2 transition-colors duration-300 ${
+                          cutHighlight
+                            ? (isDark ? 'bg-black/25 text-white border-transparent' : 'bg-white/80 text-pink-950 border-transparent')
+                            : (isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-300 focus:ring-violet-600' : 'bg-slate-50 border-slate-200 text-pink-700 focus:ring-pink-100')
+                        } border ${!isAdmin ? 'cursor-default' : ''}`}
                       />
                     </td>
-                    <td className="px-2 py-2 text-center font-black text-sm">
+                    <td 
+                      className={`px-2 py-2 text-center font-black text-sm transition-colors duration-300 ${getCellHighlightClass(prod, 'pending')}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'pending')}
+                    >
                       <span className={`px-2 py-1 rounded-md font-black ${row.pending < 0
                           ? 'bg-green-100 text-green-700'
                           : 'bg-red-100 text-red-700'
@@ -773,8 +880,14 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
                         {row.pending}
                       </span>
                     </td>
-                    <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.clientCount}</td>
-                    <td className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-200 border-l border-violet-700' : 'text-slate-600 border-l border-slate-200'}`}>{row.stock}</td>
+                    <td 
+                      className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${getCellHighlightClass(prod, 'clientCount')} ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-200'}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'clientCount')}
+                    >{row.clientCount}</td>
+                    <td 
+                      className={`px-2 py-2 text-center font-bold text-sm transition-colors duration-300 ${getCellHighlightClass(prod, 'stock')} ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-200'}`}
+                      onContextMenu={e => handleContextMenu(e, row.id, 'stock')}
+                    >{row.stock}</td>
 
                     {/* TELA 1 Column */}
                     <td className={`px-3 py-2 transition-colors duration-300 ${isDark ? 'border-l border-violet-700' : 'border-l border-slate-100'}`}>
@@ -943,6 +1056,92 @@ const OrdersView: React.FC<OrdersViewProps> = ({ user, state, updateState, onUns
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {contextMenu && (
+        <div
+          className={`fixed z-[100] rounded-2xl border shadow-xl p-2 w-52 transition-all transition-colors duration-300 ${
+            isDark 
+              ? 'bg-[#4a3a63] border-violet-700 text-violet-100 shadow-violet-950/20' 
+              : 'bg-white border-slate-200 text-slate-700 shadow-slate-200/50'
+          }`}
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Opciones de Fila */}
+          <div>
+            <p className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 mb-1 ${
+              isDark ? 'text-violet-400' : 'text-slate-400'
+            }`}>Fila entera (Ref: {contextMenu.refId})</p>
+            <button
+              onClick={() => handleSetRowHighlight(contextMenu.refId, 'yellow')}
+              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left ${
+                isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-slate-50'
+              }`}
+            >
+              <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 border border-yellow-500/30"></span>
+              Resaltar Amarillo
+            </button>
+            <button
+              onClick={() => handleSetRowHighlight(contextMenu.refId, 'red')}
+              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left ${
+                isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-slate-50'
+              }`}
+            >
+              <span className="w-3.5 h-3.5 rounded-full bg-red-400 border border-red-500/30"></span>
+              Resaltar Rojo
+            </button>
+            <button
+              onClick={() => handleSetRowHighlight(contextMenu.refId, null)}
+              className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-red-500 ${
+                isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-red-50'
+              }`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6L18 18" />
+              </svg>
+              Quitar Resaltado
+            </button>
+          </div>
+
+          {/* Opciones de Celda */}
+          {contextMenu.columnKey && contextMenu.columnKey !== 'reference' && (
+            <div className={`mt-2 pt-2 border-t ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+              <p className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 mb-1 ${
+                isDark ? 'text-violet-400' : 'text-slate-400'
+              }`}>Solo esta casilla ({contextMenu.columnKey})</p>
+              <button
+                onClick={() => handleSetCellHighlight(contextMenu.refId, contextMenu.columnKey!, 'yellow')}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left ${
+                  isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-slate-50'
+                }`}
+              >
+                <span className="w-3.5 h-3.5 rounded-full bg-yellow-400 border border-yellow-500/30"></span>
+                Resaltar Amarillo
+              </button>
+              <button
+                onClick={() => handleSetCellHighlight(contextMenu.refId, contextMenu.columnKey!, 'red')}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left ${
+                  isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-slate-50'
+                }`}
+              >
+                <span className="w-3.5 h-3.5 rounded-full bg-red-400 border border-red-500/30"></span>
+                Resaltar Rojo
+              </button>
+              <button
+                onClick={() => handleSetCellHighlight(contextMenu.refId, contextMenu.columnKey!, null)}
+                className={`w-full flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-lg text-left text-red-500 ${
+                  isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-red-50'
+                }`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6L18 18" />
+                </svg>
+                Quitar Resaltado
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>

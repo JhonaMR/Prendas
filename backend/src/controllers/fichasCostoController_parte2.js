@@ -570,6 +570,184 @@ const deleteFichaCosto = async (req, res) => {
     }
 };
 
+const validarReferencia = async (req, res) => {
+    try {
+        const { referencia } = req.params;
+        if (!referencia) {
+            return res.status(400).json({ success: false, message: 'Referencia es requerida' });
+        }
+
+        const existeCosto = await query('SELECT id FROM fichas_costo WHERE referencia = $1', [referencia]);
+        if (existeCosto.rows.length > 0) {
+            return res.json({ success: true, exists: true, message: 'La referencia ya existe en Fichas de Costos' });
+        }
+
+        const existeDiseno = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [referencia]);
+        if (existeDiseno.rows.length > 0) {
+            return res.json({ success: true, exists: true, message: 'La referencia ya existe en Fichas de Diseño' });
+        }
+
+        return res.json({ success: true, exists: false, message: 'Referencia disponible' });
+    } catch (error) {
+        console.error('❌ Error validando referencia:', error);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor al validar referencia' });
+    }
+};
+
+const duplicarFichaCosto = async (req, res) => {
+    try {
+        const { referencia } = req.params; // La de origen
+        const { nuevaReferencia, disenadoraId, duplicarCortes } = req.body;
+        const createdBy = req.user.name;
+
+        if (!nuevaReferencia || !disenadoraId) {
+            return res.status(400).json({ success: false, message: 'Nueva referencia y diseñadora son obligatorias' });
+        }
+
+        // 1. Validar que la nueva referencia no exista
+        const existeCosto = await query('SELECT id FROM fichas_costo WHERE referencia = $1', [nuevaReferencia]);
+        const existeDiseno = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [nuevaReferencia]);
+        if (existeCosto.rows.length > 0 || existeDiseno.rows.length > 0) {
+            return res.status(400).json({ success: false, message: 'La nueva referencia ya existe en el sistema' });
+        }
+
+        // 2. Obtener ficha original de costo
+        const fichaCostoResult = await query('SELECT * FROM fichas_costo WHERE referencia = $1', [referencia]);
+        if (fichaCostoResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Ficha de costo original no encontrada' });
+        }
+        const sourceCosto = fichaCostoResult.rows[0];
+
+        // 3. Obtener diseño original (si existe)
+        let sourceDiseno = null;
+        if (sourceCosto.ficha_diseno_id) {
+            const fdResult = await query('SELECT * FROM fichas_diseno WHERE id = $1', [sourceCosto.ficha_diseno_id]);
+            if (fdResult.rows.length > 0) {
+                sourceDiseno = fdResult.rows[0];
+            }
+        }
+
+        let newFichaCostoId;
+        await transaction(async (client) => {
+            // A. Crear la ficha de diseño correspondiente
+            // Usamos datos de la ficha original de diseño si existe, sino de la ficha de costos
+            const desc = sourceDiseno?.descripcion || sourceCosto.descripcion || '';
+            const marca = sourceDiseno?.marca || sourceCosto.marca || '';
+            const novedad = sourceDiseno?.novedad || sourceCosto.novedad || '';
+            const m1 = sourceDiseno?.muestra_1 || sourceCosto.muestra_1 || '';
+            const m2 = sourceDiseno?.muestra_2 || sourceCosto.muestra_2 || '';
+            const obs = sourceDiseno?.observaciones || sourceCosto.observaciones || '';
+            
+            const matPrima = sourceDiseno?.materia_prima || sourceCosto.materia_prima || [];
+            const manObra = sourceDiseno?.mano_obra || sourceCosto.mano_obra || [];
+            const insDirectos = sourceDiseno?.insumos_directos || sourceCosto.insumos_directos || [];
+            const insIndirectos = sourceDiseno?.insumos_indirectos || sourceCosto.insumos_indirectos || [];
+            const provs = sourceDiseno?.provisiones || sourceCosto.provisiones || [];
+
+            const tMP = sourceDiseno?.total_materia_prima || sourceCosto.total_materia_prima || 0;
+            const tMO = sourceDiseno?.total_mano_obra || sourceCosto.total_mano_obra || 0;
+            const tID = sourceDiseno?.total_insumos_directos || sourceCosto.total_insumos_directos || 0;
+            const tII = sourceDiseno?.total_insumos_indirectos || sourceCosto.total_insumos_indirectos || 0;
+            const tPR = sourceDiseno?.total_provisiones || sourceCosto.total_provisiones || 0;
+            const costTotal = sourceDiseno?.costo_total || sourceCosto.costo_total || 0;
+
+            const newFichaDisenoResult = await client.query(`
+                INSERT INTO fichas_diseno (
+                    referencia, disenadora_id, descripcion, marca, novedad,
+                    muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
+                    materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
+                    total_materia_prima, total_mano_obra, total_insumos_directos,
+                    total_insumos_indirectos, total_provisiones, costo_total, importada, created_by
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, NULL, NULL, NULL, NULL,
+                    $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, true, $20
+                ) RETURNING id
+            `, [
+                nuevaReferencia, disenadoraId, desc, marca, novedad,
+                m1, m2, obs,
+                JSON.stringify(matPrima), JSON.stringify(manObra), JSON.stringify(insDirectos), JSON.stringify(insIndirectos), JSON.stringify(provs),
+                tMP, tMO, tID, tII, tPR, costTotal, createdBy
+            ]);
+            const newFichaDisenoId = newFichaDisenoResult.rows[0].id;
+
+            // B. Crear la ficha de costo correspondiente
+            const cantTotalCortada = duplicarCortes ? parseInt(sourceCosto.cantidad_total_cortada || 0) : 0;
+
+            const newFichaCostoResult = await client.query(`
+                INSERT INTO fichas_costo (
+                    referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
+                    foto_1, foto_2, foto_3, archivo_psd, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
+                    total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total,
+                    precio_venta, rentabilidad, margen_ganancia, costo_contabilizar,
+                    desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent,
+                    cantidad_total_cortada, created_by
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8,
+                    NULL, NULL, NULL, NULL, $9, $10, $11, $12, $13,
+                    $14, $15, $16, $17, $18, $19,
+                    $20, $21, $22, $23,
+                    $24, $25, $26, $27, $28, $29, $30, $31,
+                    $32, $33
+                ) RETURNING id
+            `, [
+                nuevaReferencia, newFichaDisenoId, desc, marca, novedad, m1, m2, obs,
+                JSON.stringify(sourceCosto.materia_prima || []), JSON.stringify(sourceCosto.mano_obra || []), JSON.stringify(sourceCosto.insumos_directos || []), JSON.stringify(sourceCosto.insumos_indirectos || []), JSON.stringify(sourceCosto.provisiones || []),
+                sourceCosto.total_materia_prima, sourceCosto.total_mano_obra, sourceCosto.total_insumos_directos, sourceCosto.total_insumos_indirectos, sourceCosto.total_provisiones, sourceCosto.costo_total,
+                sourceCosto.precio_venta, sourceCosto.rentabilidad, sourceCosto.margen_ganancia, sourceCosto.costo_contabilizar,
+                sourceCosto.desc_0_precio, sourceCosto.desc_0_rent, sourceCosto.desc_5_precio, sourceCosto.desc_5_rent, sourceCosto.desc_10_precio, sourceCosto.desc_10_rent, sourceCosto.desc_15_precio, sourceCosto.desc_15_rent,
+                cantTotalCortada, createdBy
+            ]);
+            newFichaCostoId = newFichaCostoResult.rows[0].id;
+
+            // C. Duplicar los cortes si corresponde
+            if (duplicarCortes) {
+                const originalCortes = await client.query('SELECT * FROM fichas_cortes WHERE ficha_costo_id = $1 ORDER BY numero_corte ASC', [sourceCosto.id]);
+                for (const corte of originalCortes.rows) {
+                    await client.query(`
+                        INSERT INTO fichas_cortes (
+                            ficha_costo_id, numero_corte, ficha_corte, fecha_corte, cantidad_cortada,
+                            materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
+                            total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_real,
+                            precio_venta, rentabilidad, costo_proyectado, diferencia, margen_utilidad, created_by
+                        ) VALUES (
+                            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                            $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22
+                        )
+                    `, [
+                        newFichaCostoId, corte.numero_corte, corte.ficha_corte, corte.fecha_corte, corte.cantidad_cortada,
+                        JSON.stringify(corte.materia_prima || []), JSON.stringify(corte.mano_obra || []), JSON.stringify(corte.insumos_directos || []), JSON.stringify(corte.insumos_indirectos || []), JSON.stringify(corte.provisiones || []),
+                        corte.total_materia_prima, corte.total_mano_obra, corte.total_insumos_directos, corte.total_insumos_indirectos, corte.total_provisiones, corte.costo_real,
+                        corte.precio_venta, corte.rentabilidad, corte.costo_proyectado, corte.diferencia, corte.margen_utilidad, createdBy
+                    ]);
+                }
+            }
+        });
+
+        // 4. Sincronizar product_references (fuera de la transacción)
+        try {
+            const disenadoraNombreResult = await query('SELECT nombre FROM disenadoras WHERE id = $1', [disenadoraId]);
+            const disenadoraNombre = disenadoraNombreResult.rows[0]?.nombre || '';
+            await sincronizarProductReference(nuevaReferencia, {
+                descripcion: sourceCosto.descripcion,
+                precioVenta: sourceCosto.precio_venta,
+                disenadoraNombre: disenadoraNombre,
+                materiaPrima: sourceCosto.materia_prima
+            });
+        } catch (syncError) {
+            console.error('⚠️ Error sincronizando product_references al duplicar:', syncError);
+        }
+
+        return res.json({
+            success: true,
+            message: 'Ficha de costo duplicada exitosamente',
+            data: { referencia: nuevaReferencia }
+        });
+    } catch (error) {
+        console.error('❌ Error duplicando ficha costo:', error);
+        return res.status(500).json({ success: false, message: 'Error interno al duplicar ficha de costo' });
+    }
+};
+
 module.exports = {
     importarFichaDiseno,
     createFichaCosto,
@@ -578,5 +756,7 @@ module.exports = {
     updateCorte,
     deleteCorte,
     deleteFichaCosto,
-    sincronizarProductReference
+    sincronizarProductReference,
+    validarReferencia,
+    duplicarFichaCosto
 };

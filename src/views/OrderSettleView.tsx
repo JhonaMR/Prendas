@@ -226,6 +226,13 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
     }
   };
 
+  const referencesNotInCorreria = tempItems.filter(item => {
+    if (!selectedCorreriaId) return false;
+    const ref = state.references.find(r => r.id === item.reference);
+    if (!ref) return false;
+    return !ref.correrias || !Array.isArray(ref.correrias) || !ref.correrias.includes(selectedCorreriaId);
+  });
+
   const totalUnits = tempItems.reduce((a, b) => a + b.quantity, 0);
 
   return (
@@ -415,6 +422,21 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
                             • {ref.reference} ({ref.reason})
                           </p>
                         ))}
+                      </div>
+                    </div>
+                  )}
+                  {selectedCorreriaId && referencesNotInCorreria.length > 0 && (
+                    <div className={`p-6 border-b transition-colors duration-300 ${isDark ? 'bg-sky-950/30 border-sky-800' : 'bg-sky-50 border-sky-200'}`}>
+                      <h4 className={`font-black text-sm mb-3 transition-colors duration-300 ${isDark ? 'text-sky-300' : 'text-sky-800'}`}>ℹ️ Referencias Fuera de Campaña</h4>
+                      <div className="space-y-2">
+                        {referencesNotInCorreria.map((item, idx) => {
+                          const ref = state.references.find(r => r.id === item.reference);
+                          return (
+                            <p key={idx} className={`text-[10px] font-bold transition-colors duration-300 ${isDark ? 'text-sky-300' : 'text-sky-700'}`}>
+                              • {item.reference} {ref?.description ? `(${ref.description})` : ''} - No está asignada a la correría seleccionada
+                            </p>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

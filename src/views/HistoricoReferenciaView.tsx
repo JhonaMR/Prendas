@@ -112,6 +112,18 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
     loadFichasCosto();
   }, []);
 
+  // Cerrar modal de correría con la tecla ESC
+  useEffect(() => {
+    if (!showCorreriaModal) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowCorreriaModal(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showCorreriaModal]);
+
   const loadFichasCosto = async () => {
     try {
       const response = await fetch(`${baseUrl}/api/fichas-costo`, {
@@ -230,7 +242,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
           cantidadPedida: item?.quantity || 0,
           cantidadDespachada: itemDespachado?.quantity || 0
         };
-      });
+      }).sort((a, b) => b.cantidadPedida - a.cantidadPedida);
       
       return {
         correria: correria?.name || correriaId,
@@ -385,7 +397,8 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                   <img 
                     src={`${baseUrl}${getReferencePhoto(selectedReference.id)}`} 
                     alt={selectedReference.id}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition-opacity"
+                    onClick={() => setModalFotos(true)}
                   />
                 ) : (
                   <div className={`flex flex-col items-center justify-center transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-gray-400'}`}>
@@ -869,8 +882,14 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
 
       {/* Modal de Detalle de Correría */}
       {showCorreriaModal && selectedCorreriaDetail && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className={`rounded-2xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+        <div 
+          onClick={() => setShowCorreriaModal(false)}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className={`rounded-2xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}
+          >
             <div className="flex items-center justify-between mb-6">
               <h3 className={`text-2xl font-bold transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-gray-700'}`}>
                 Detalle - {selectedCorreriaDetail.correria}

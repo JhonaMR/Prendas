@@ -420,6 +420,75 @@ const uploadPsd = (req, res) => {
     });
 };
 
+const duplicarFichaDiseno = async (req, res) => {
+    try {
+        const { referencia } = req.params; // La de origen
+        const { nuevaReferencia, disenadoraId } = req.body;
+        const createdBy = req.user.name;
+
+        if (!nuevaReferencia || !disenadoraId) {
+            return res.status(400).json({ success: false, message: 'Nueva referencia y diseñadora son obligatorias' });
+        }
+
+        // 1. Validar que la nueva referencia no exista en diseño ni costos
+        const existeDiseno = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [nuevaReferencia]);
+        const existeCosto = await query('SELECT id FROM fichas_costo WHERE referencia = $1', [nuevaReferencia]);
+        if (existeDiseno.rows.length > 0 || existeCosto.rows.length > 0) {
+            return res.status(400).json({ success: false, message: 'La nueva referencia ya existe en el sistema' });
+        }
+
+        // 2. Obtener ficha de diseño original
+        const fichaDisenoResult = await query('SELECT * FROM fichas_diseno WHERE referencia = $1', [referencia]);
+        if (fichaDisenoResult.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Ficha de diseño original no encontrada' });
+        }
+        const source = fichaDisenoResult.rows[0];
+
+        let newFichaId;
+        await transaction(async (client) => {
+            const result = await client.query(`
+                INSERT INTO fichas_diseno (
+                    referencia, disenadora_id, descripcion, marca, novedad,
+                    muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
+                    materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
+                    total_materia_prima, total_mano_obra, total_insumos_directos,
+                    total_insumos_indirectos, total_provisiones, costo_total, importada, created_by
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6, $7, $8, NULL, NULL, NULL, NULL,
+                    $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, false, $20
+                ) RETURNING id
+            `, [
+                nuevaReferencia, disenadoraId, source.descripcion || '', source.marca || '', source.novedad || '',
+                source.muestra_1 || '', source.muestra_2 || '', source.observaciones || '',
+                JSON.stringify(source.materia_prima || []), JSON.stringify(source.mano_obra || []), JSON.stringify(source.insumos_directos || []), JSON.stringify(source.insumos_indirectos || []), JSON.stringify(source.provisiones || []),
+                source.total_materia_prima || 0, source.total_mano_obra || 0, source.total_insumos_directos || 0,
+                source.total_insumos_indirectos || 0, source.total_provisiones || 0, source.costo_total || 0, createdBy
+            ]);
+            newFichaId = result.rows[0].id;
+        });
+
+        // 3. Sincronizar product_references
+        try {
+            await sincronizarProductReference(nuevaReferencia, {
+                descripcion: source.descripcion,
+                marca: source.marca,
+                materia_prima: source.materia_prima
+            });
+        } catch (syncError) {
+            console.error('⚠️ Error sincronizando product_references al duplicar diseño:', syncError);
+        }
+
+        return res.json({
+            success: true,
+            message: 'Ficha de diseño duplicada exitosamente',
+            data: { referencia: nuevaReferencia }
+        });
+    } catch (error) {
+        console.error('❌ Error duplicando ficha diseño:', error);
+        return res.status(500).json({ success: false, message: 'Error interno al duplicar ficha de diseño' });
+    }
+};
+
 module.exports = {
     getFichasDiseno,
     getFichaDiseno,
@@ -428,5 +497,6 @@ module.exports = {
     deleteFichaDiseno,
     uploadFoto,
     uploadPsd,
-    upload
+    upload,
+    duplicarFichaDiseno
 };

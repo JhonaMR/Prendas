@@ -4,6 +4,108 @@ import PaginationComponent from '../components/PaginationComponent';
 import usePagination from '../hooks/usePagination';
 import { useDarkMode } from '../context/DarkModeContext';
 
+const useOrderAllocations = (orders: any[] | undefined, dispatches: any[] | undefined, selectedCorreriaId: string) => {
+  return useMemo(() => {
+    const allocatedUnits: Record<string, number> = {};
+    const allocatedValues: Record<string, number> = {};
+    const allocatedItems: Record<string, Record<string, number>> = {};
+
+    if (!selectedCorreriaId) return { allocatedUnits, allocatedValues, allocatedItems };
+
+    const ordersByClient: Record<string, any[]> = {};
+    (orders || []).forEach(o => {
+      if (o.correriaId !== selectedCorreriaId) return;
+      if (!ordersByClient[o.clientId]) ordersByClient[o.clientId] = [];
+      ordersByClient[o.clientId].push(o);
+    });
+
+    Object.keys(ordersByClient).forEach(clientId => {
+      ordersByClient[clientId].sort((a, b) => {
+        if (a.orderNumber && b.orderNumber) return a.orderNumber - b.orderNumber;
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      });
+    });
+
+    const dispatchesByClient: Record<string, any[]> = {};
+    (dispatches || []).forEach(d => {
+      if (d.correriaId !== selectedCorreriaId) return;
+      if (!dispatchesByClient[d.clientId]) dispatchesByClient[d.clientId] = [];
+      dispatchesByClient[d.clientId].push(d);
+    });
+
+    Object.keys(ordersByClient).forEach(clientId => {
+      const clientOrders = ordersByClient[clientId];
+      const clientDispatches = dispatchesByClient[clientId] || [];
+
+      const pool: Record<string, number> = {};
+      const poolPrices: Record<string, number> = {};
+      clientDispatches.forEach(d => {
+        (d.items || []).forEach(item => {
+          pool[item.reference] = (pool[item.reference] || 0) + item.quantity;
+          if (item.salePrice !== undefined) {
+            poolPrices[item.reference] = item.salePrice;
+          }
+        });
+      });
+
+      const allocations: Record<string, Record<string, number>> = {};
+      clientOrders.forEach(order => {
+        allocations[order.id] = {};
+      });
+
+      clientOrders.forEach(order => {
+        (order.items || []).forEach(item => {
+          const ref = item.reference;
+          const ordered = item.quantity;
+          const available = pool[ref] || 0;
+          const allocated = Math.min(ordered, available);
+          allocations[order.id][ref] = allocated;
+          pool[ref] = available - allocated;
+        });
+      });
+
+      Object.keys(pool).forEach(ref => {
+        const surplus = pool[ref];
+        if (surplus <= 0) return;
+
+        let targetOrder = [...clientOrders].reverse().find(order => 
+          (order.items || []).some(item => item.reference === ref)
+        );
+
+        if (!targetOrder && clientOrders.length > 0) {
+          targetOrder = clientOrders[clientOrders.length - 1];
+        }
+
+        if (targetOrder) {
+          allocations[targetOrder.id][ref] = (allocations[targetOrder.id][ref] || 0) + surplus;
+          pool[ref] = 0;
+        }
+      });
+
+      clientOrders.forEach(order => {
+        let totalUnits = 0;
+        let totalValue = 0;
+        const orderAllocations = allocations[order.id] || {};
+
+        Object.keys(orderAllocations).forEach(ref => {
+          const qty = orderAllocations[ref];
+          totalUnits += qty;
+
+          const orderItem = (order.items || []).find(i => i.reference === ref);
+          const price = poolPrices[ref] ?? orderItem?.salePrice ?? 0;
+          totalValue += price * qty;
+        });
+
+        allocatedUnits[order.id] = totalUnits;
+        allocatedValues[order.id] = totalValue;
+        allocatedItems[order.id] = orderAllocations;
+      });
+    });
+
+    return { allocatedUnits, allocatedValues, allocatedItems };
+  }, [orders, dispatches, selectedCorreriaId]);
+};
+
 interface ReportsViewProps {
   user: User;
   state: AppState;
@@ -31,6 +133,9 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
   const prodConfReportPagination = usePagination(1, 20);
   const confReportPagination = usePagination(1, 20);
   const correriaTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const ordersAllocations = useOrderAllocations(state.orders, state.dispatches, selectedCorreriaForOrders);
+  const prodConfAllocations = useOrderAllocations(state.orders, state.dispatches, selectedCorreriaForProdConf);
   const correriaTimeoutRefProdConf = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -412,14 +517,10 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                   const client = (state.clients || []).find(c => c.id === order.clientId);
                   const totalUnitsOrdered = (order.items || []).reduce((acc, i) => acc + i.quantity, 0);
                   
-                  // Obtener despachos para este cliente en esta correría
-                  const dispatchesForOrder = (state.dispatches || []).filter(d => 
-                    d.clientId === order.clientId && d.correriaId === selectedCorreriaForOrders
-                  );
-                  const totalUnitsDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + i.quantity, 0), 0);
+                  const totalUnitsDispatched = ordersAllocations.allocatedUnits[order.id] || 0;
                   
                   const totalValueOrdered = order.totalValue || 0;
-                  const totalValueDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + (i.salePrice || 0) * i.quantity, 0), 0);
+                  const totalValueDispatched = ordersAllocations.allocatedValues[order.id] || 0;
                   
                   const percentageUnits = totalUnitsOrdered > 0 ? Math.round((totalUnitsDispatched / totalUnitsOrdered) * 100) : 0;
                   const percentageValue = totalValueOrdered > 0 ? Math.round((totalValueDispatched / totalValueOrdered) * 100) : 0;
@@ -514,10 +615,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                 const seller = (state.sellers || []).find(s => s.id === order.sellerId);
                 const totalUnitsOrdered = (order.items || []).reduce((acc, i) => acc + i.quantity, 0);
                 
-                const dispatchesForOrder = (state.dispatches || []).filter(d => 
-                  d.clientId === order.clientId && d.correriaId === selectedCorreriaForProdConf
-                );
-                const totalUnitsDispatched = dispatchesForOrder.reduce((acc, d) => acc + (d.items || []).reduce((a, i) => a + i.quantity, 0), 0);
+                const totalUnitsDispatched = prodConfAllocations.allocatedUnits[order.id] || 0;
                 
                 const percentageUnits = totalUnitsOrdered > 0 ? Math.round((totalUnitsDispatched / totalUnitsOrdered) * 100) : 0;
                 const isExpanded = expandedOrderId === order.id;
@@ -584,10 +682,7 @@ const ReportsView: React.FC<ReportsViewProps> = ({ user, state }) => {
                           </thead>
                           <tbody>
                             {(order.items || []).map((item, idx) => {
-                              const dispatchedQty = dispatchesForOrder.reduce((acc, d) => {
-                                const dispatchItem = (d.items || []).find(di => di.reference === item.reference);
-                                return acc + (dispatchItem?.quantity || 0);
-                              }, 0);
+                              const dispatchedQty = (prodConfAllocations.allocatedItems[order.id] || {})[item.reference] || 0;
 
                               return (
                                 <tr key={idx} className={`border-b last:border-0 transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-white'}`}>

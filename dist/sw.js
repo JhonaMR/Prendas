@@ -97,7 +97,7 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
     "revision": "1e72b6c64f81f87f0a03454a315248c2"
   }, {
     "url": "index.html",
-    "revision": "4b564a6f1a38ad2e802252979e7be9be"
+    "revision": "b6369ae09203b319c462c7d30b7bed12"
   }, {
     "url": "icono.ico",
     "revision": "a0b04d76fc0e0e88ccc9c46644b954f9"
@@ -106,7 +106,7 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
     "revision": "776cb9dc29cd793d10405b763f03585f"
   }, {
     "url": "config.js",
-    "revision": "41b99970bc1614f7fcefc148f9835ec5"
+    "revision": "071b3f1124792f0eec1481b65382340e"
   }, {
     "url": "logos/plow-512x512.png",
     "revision": "b83ab18f1efa09dd7ab6e3355e65a7cb"
@@ -123,19 +123,13 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
     "url": "assets/purify.es-C_uT9hQ1.js",
     "revision": null
   }, {
-    "url": "assets/jspdf.es.min-CoXtg6gT.js",
+    "url": "assets/index.es-vttc6fdo.js",
     "revision": null
   }, {
-    "url": "assets/index.es-BOXit4uc.js",
+    "url": "assets/index-DzX8oqEI.js",
     "revision": null
   }, {
-    "url": "assets/index-ue6QRF8s.css",
-    "revision": null
-  }, {
-    "url": "assets/index-D03hgTRb.js",
-    "revision": null
-  }, {
-    "url": "assets/html2canvas.esm-QH1iLAAe.js",
+    "url": "assets/index-11fZxFzx.css",
     "revision": null
   }], {});
   workbox.cleanupOutdatedCaches();
@@ -154,6 +148,12 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
       maxAgeSeconds: 31536000
     })]
   }), 'GET');
-  workbox.registerRoute(/\/api\/.*/i, new workbox.NetworkOnly(), 'GET');
+  workbox.registerRoute(/\/api\/.*/i, new workbox.NetworkFirst({
+    "cacheName": "api-cache",
+    plugins: [new workbox.ExpirationPlugin({
+      maxEntries: 50,
+      maxAgeSeconds: 300
+    })]
+  }), 'GET');
 
 }));

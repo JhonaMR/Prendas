@@ -384,6 +384,29 @@ export const updateFichaCosto = async (referencia: string, ficha: FichaFormData,
     return r.json();
 };
 
+export const validarReferencia = async (referencia: string): Promise<{ success: boolean; exists: boolean; message: string }> => {
+    const r = await fetch(`${getApiUrl()}/fichas-costo/validar/${referencia}`, { headers: getHeaders() });
+    return r.json();
+};
+
+export const duplicarFichaCosto = async (referenciaOriginal: string, nuevaReferencia: string, disenadoraId: string, duplicarCortes: boolean): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-costo/${referenciaOriginal}/duplicar`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ nuevaReferencia, disenadoraId, duplicarCortes })
+    });
+    return r.json();
+};
+
+export const duplicarFichaDiseno = async (referenciaOriginal: string, nuevaReferencia: string, disenadoraId: string): Promise<ApiResponse> => {
+    const r = await fetch(`${getApiUrl()}/fichas-diseno/${referenciaOriginal}/duplicar`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ nuevaReferencia, disenadoraId })
+    });
+    return r.json();
+};
+
 // ===== CORTES =====
 
 export const crearCorte = async (referencia: string, corte: CorteFormData, createdBy: string): Promise<ApiResponse> => {
@@ -469,6 +492,7 @@ const apiFichas = {
     getMaletas, getMaleta, createMaleta, updateMaleta, deleteMaleta, getReferenciasSinCorreria, getReferenciasMaletaRecibidas, createReferenciaRecibida,
     getFichasConfeccion, createFichaConfeccion, updateFichaConfeccion, deleteFichaConfeccion,
     getFichasEstampacion, createFichaEstampacion, updateFichaEstampacion, deleteFichaEstampacion,
+    validarReferencia, duplicarFichaCosto, duplicarFichaDiseno
 };
 
 export default apiFichas;

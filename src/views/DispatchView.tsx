@@ -188,17 +188,24 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
 
     try {
       // Enriquecer items con salePrice del pedido
-      const pedidoEspecifico = orders.find(o => 
+      const pedidosEspecificos = orders.filter(o => 
         o.clientId === clientId && 
         o.correriaId === correriaId
       );
 
-      console.log('🔍 Buscando pedido:', { clientId, correriaId });
-      console.log('📋 Pedido encontrado:', pedidoEspecifico);
+      console.log('🔍 Buscando pedidos:', { clientId, correriaId });
+      console.log('📋 Pedidos encontrados:', pedidosEspecificos);
       console.log('📦 Orders disponibles:', orders);
 
       const itemsConPrecio = items.map(item => {
-        const salePrice = pedidoEspecifico?.items.find(oi => oi.reference === item.reference)?.salePrice || 0;
+        let salePrice = 0;
+        for (const pedido of pedidosEspecificos) {
+          const foundItem = pedido.items?.find(oi => oi.reference === item.reference);
+          if (foundItem) {
+            salePrice = foundItem.salePrice;
+            break;
+          }
+        }
         console.log(`💰 Item ${item.reference}: salePrice=${salePrice}`);
         return {
           ...item,
@@ -274,9 +281,16 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
   if (isDispatching) {
     const totalCount = items.reduce((a, b) => a + b.quantity, 0);
     const totalRefs = new Set(items.map(i => i.reference)).size;
-    const clientOrder = orders.find((o: any) => o.clientId === clientId && o.correriaId === correriaId);
+    const clientOrders = orders.filter((o: any) => o.clientId === clientId && o.correriaId === correriaId);
     const totalValue = items.reduce((acc, item) => {
-      const salePrice = clientOrder?.items?.find((i: any) => i.reference === item.reference)?.salePrice ?? 0;
+      let salePrice = 0;
+      for (const order of clientOrders) {
+        const found = order.items?.find((i: any) => i.reference === item.reference);
+        if (found) {
+          salePrice = found.salePrice;
+          break;
+        }
+      }
       return acc + item.quantity * salePrice;
     }, 0);
 
@@ -397,9 +411,16 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
             <div className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/40' : 'divide-slate-100'}`}>
               {items.map((item) => {
                 const refData = referencesMaster.find(r => r.id === item.reference);
-                // Buscar la orden del cliente para esta correría
-                const clientOrder = orders.find((o: any) => o.clientId === clientId && o.correriaId === correriaId);
-                const orderItem = clientOrder?.items?.find((i: any) => i.reference === item.reference);
+                // Buscar en las órdenes del cliente para esta correría
+                const clientOrders = orders.filter((o: any) => o.clientId === clientId && o.correriaId === correriaId);
+                let orderItem = null;
+                for (const order of clientOrders) {
+                  const found = order.items?.find((i: any) => i.reference === item.reference);
+                  if (found) {
+                    orderItem = found;
+                    break;
+                  }
+                }
                 const salePrice: number | null = orderItem?.salePrice ?? null;
                 const notOrdered = clientId && correriaId && !orderItem;
                 return (

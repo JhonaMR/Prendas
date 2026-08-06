@@ -36,6 +36,14 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const [modalFotos, setModalFotos] = useState(false);
     const [modalMolde, setModalMolde] = useState(false);
 
+    const [showModalDuplicar, setShowModalDuplicar] = useState(false);
+    const [referenciaDuplicar, setReferenciaDuplicar] = useState('');
+    const [isValidated, setIsValidated] = useState(false);
+    const [errorValidacion, setErrorValidacion] = useState('');
+    const [selectedDesigner, setSelectedDesigner] = useState('');
+    const [duplicarCortes, setDuplicarCortes] = useState(false);
+    const [duplicando, setDuplicando] = useState(false);
+
     const [descripcion, setDescripcion] = useState('');
     const [marca, setMarca] = useState('');
     const [novedad, setNovedad] = useState('');
@@ -99,6 +107,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             }
             setCostoTotalGuardado(costoGuardado);
             setEstadoRevision(fichaExistente.estadoRevision || null);
+            setSelectedDesigner(fichaExistente.disenadoraId || '');
         }
     }, [fichaExistente?.referencia]);
 
@@ -193,6 +202,65 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         finally { setIsLoading(false); }
     };
 
+    const handleValidarReferencia = async () => {
+        if (!referenciaDuplicar.trim()) {
+            setErrorValidacion('Por favor ingrese una referencia');
+            return;
+        }
+        setErrorValidacion('');
+        try {
+            const res = await apiFichas.validarReferencia(referenciaDuplicar.trim().toUpperCase());
+            if (res.success) {
+                if (res.exists) {
+                    setErrorValidacion(res.message);
+                    setIsValidated(false);
+                } else {
+                    setIsValidated(true);
+                    setErrorValidacion('');
+                }
+            } else {
+                setErrorValidacion(res.message || 'Error al validar referencia');
+                setIsValidated(false);
+            }
+        } catch (err) {
+            setErrorValidacion('Error de conexión con el servidor');
+            setIsValidated(false);
+        }
+    };
+
+    const handleConfirmarDuplicar = async () => {
+        if (!isValidated) return;
+        if (!selectedDesigner) {
+            alert('Debe seleccionar una diseñadora');
+            return;
+        }
+        setDuplicando(true);
+        try {
+            const res = await apiFichas.duplicarFichaCosto(
+                referencia,
+                referenciaDuplicar.trim().toUpperCase(),
+                selectedDesigner,
+                duplicarCortes
+            );
+            if (res.success) {
+                alert('✅ Ficha de costo duplicada exitosamente');
+                const [fichasCosto, fichasDiseno] = await Promise.all([
+                    apiFichas.getFichasCosto(),
+                    apiFichas.getFichasDiseno()
+                ]);
+                updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
+                setShowModalDuplicar(false);
+                onNavigate('fichas-costo-detalle', { referencia: referenciaDuplicar.trim().toUpperCase() });
+            } else {
+                alert('❌ Error al duplicar: ' + res.message);
+            }
+        } catch (err) {
+            alert('❌ Error de conexión al duplicar la ficha');
+        } finally {
+            setDuplicando(false);
+        }
+    };
+
     const numCortes = fichaExistente?.cortes?.length || fichaExistente?.numCortes || 0;
     const mark = (setter: any) => (v: any) => { setter(v); setHasUnsavedChanges(true); };
 
@@ -211,6 +279,28 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="flex items-center gap-3">
                     {hasUnsavedChanges && <div className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${isDark ? 'bg-pink-600/30 text-pink-300' : 'bg-red-50 text-red-600'}`}><div className={`w-2 h-2 rounded-full animate-pulse transition-colors ${isDark ? 'bg-pink-500' : 'bg-red-500'}`}></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
                     <div className="flex gap-2">
+                        {isAdmin && (
+                            <>
+                                <button
+                                    onClick={() => {
+                                        setReferenciaDuplicar('');
+                                        setIsValidated(false);
+                                        setErrorValidacion('');
+                                        setSelectedDesigner(fichaExistente?.disenadoraId || '');
+                                        setDuplicarCortes(false);
+                                        setShowModalDuplicar(true);
+                                    }}
+                                    title="Duplicar esta ficha"
+                                    className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 font-black text-xs uppercase tracking-wider transition-all ${isDark ? 'border-violet-600 text-violet-300 hover:bg-violet-700/40' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H5.25m11.9-3.675A2.25 2.25 0 0 1 18 6.125v10.5A2.25 2.25 0 0 1 15.75 19H9a2.25 2.25 0 0 1-2.25-2.25V6.125A2.25 2.25 0 0 1 9 3.875h6.75Z" />
+                                    </svg>
+                                    <span>Duplicar</span>
+                                </button>
+                                <div className={`w-px h-8 self-center ${isDark ? 'bg-violet-700' : 'bg-slate-200'}`} />
+                            </>
+                        )}
                         {/* Botón Ver Fotos */}
                         <button
                             onClick={() => setModalFotos(true)}
@@ -407,6 +497,93 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         <div className="flex gap-3">
                             <button onClick={() => setShowModalCorte(false)} className={`flex-1 px-6 py-3 font-black rounded-xl transition-colors uppercase tracking-wide text-sm ${isDark ? 'bg-violet-900/40 text-violet-300 hover:bg-violet-900/60' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>Cancelar</button>
                             <button onClick={() => { setShowModalCorte(false); onNavigate('fichas-corte-detalle', { referencia, numeroCorte: numCortes + 1, nuevo: true }); }} className={`flex-1 px-6 py-3 text-white font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm ${isDark ? 'bg-gradient-to-r from-yellow-700 to-yellow-600 hover:from-yellow-800 hover:to-yellow-700' : 'bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-700 hover:to-yellow-600'}`}>Asentar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showModalDuplicar && (
+                <div className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isDark ? 'bg-slate-900/60' : 'bg-slate-900/40'}`}>
+                    <div className={`rounded-3xl shadow-2xl max-w-md w-full p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-white'}`}>
+                        <div className="text-center mb-6">
+                            <h3 className={`text-2xl font-black mb-2 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Duplicar Ficha de Costo</h3>
+                            <p className={`text-sm font-bold ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Copia los conceptos de costos y diseño a una nueva referencia sin fotos.</p>
+                        </div>
+                        <div className="space-y-4">
+                            <div>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Nueva Referencia</label>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        value={referenciaDuplicar} 
+                                        onChange={e => { 
+                                            setReferenciaDuplicar(e.target.value.toUpperCase()); 
+                                            setIsValidated(false);
+                                            setErrorValidacion('');
+                                        }} 
+                                        onKeyDown={e => e.key === 'Enter' && handleValidarReferencia()} 
+                                        placeholder="Ej: 14022" 
+                                        className={`flex-1 px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100'}`} 
+                                    />
+                                    <button 
+                                        onClick={handleValidarReferencia} 
+                                        className={`px-5 py-3 font-black rounded-xl transition-colors ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                    >
+                                        Validar
+                                    </button>
+                                </div>
+                                {errorValidacion && <p className="text-red-500 font-bold text-xs mt-2">{errorValidacion}</p>}
+                                {isValidated && <p className="text-green-500 font-bold text-xs mt-2">✓ Referencia disponible</p>}
+                            </div>
+
+                            {/* Campo Diseñadora */}
+                            <div>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Diseñadora</label>
+                                <select
+                                    value={selectedDesigner}
+                                    onChange={e => setSelectedDesigner(e.target.value)}
+                                    disabled={!isValidated}
+                                    className={`w-full px-4 py-3 border-2 rounded-xl font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100' : 'bg-white border-slate-200 text-slate-700'}`}
+                                >
+                                    <option value="">Seleccione una diseñadora...</option>
+                                    {(state.disenadoras || []).map(d => (
+                                        <option key={d.id} value={d.id}>{d.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Checkbox Duplicar Cortes */}
+                            <div className="flex items-center gap-3 py-2">
+                                <input
+                                    type="checkbox"
+                                    id="duplicarCortesCheckbox"
+                                    checked={duplicarCortes}
+                                    onChange={e => setDuplicarCortes(e.target.checked)}
+                                    disabled={!isValidated}
+                                    className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
+                                />
+                                <label 
+                                    htmlFor="duplicarCortesCheckbox" 
+                                    className={`text-sm font-bold select-none cursor-pointer disabled:opacity-50 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}
+                                >
+                                    Duplicar también los cortes de esta ficha
+                                </label>
+                            </div>
+                        </div>
+                        <div className="flex gap-3 mt-8">
+                            <button 
+                                onClick={() => setShowModalDuplicar(false)} 
+                                className={`flex-1 px-6 py-3 font-black rounded-xl transition-colors uppercase tracking-wide text-sm ${isDark ? 'bg-[#3d2d52] text-violet-200 hover:bg-[#5a4a75]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            >
+                                Cancelar
+                            </button>
+                            <button 
+                                onClick={handleConfirmarDuplicar} 
+                                disabled={!isValidated || duplicando || !selectedDesigner}
+                                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {duplicando ? 'Duplicando...' : 'Confirmar'}
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -882,7 +882,7 @@ const createOrder = async (req, res) => {
 const getProductionTracking = async (req, res) => {
     try {
         const result = await query(`
-            SELECT ref_id, correria_id, programmed, cut, inventory, novedades
+            SELECT ref_id, correria_id, programmed, cut, inventory, novedades, highlight_row_color, highlight_cells
             FROM production_tracking
         `);
 
@@ -894,7 +894,9 @@ const getProductionTracking = async (req, res) => {
             programmed: t.programmed,
             cut: t.cut,
             inventory: t.inventory || 0,
-            novedades: t.novedades || null
+            novedades: t.novedades || null,
+            highlightRowColor: t.highlight_row_color || null,
+            highlightCells: t.highlight_cells || null
         }));
 
         return res.json({
@@ -918,7 +920,7 @@ const getProductionTracking = async (req, res) => {
  */
 const updateProductionTracking = async (req, res) => {
     try {
-        const { refId, correriaId, programmed, cut, inventory, novedades } = req.body;
+        const { refId, correriaId, programmed, cut, inventory, novedades, highlightRowColor, highlightCells } = req.body;
 
         if (!refId || !correriaId || programmed === undefined || cut === undefined) {
             return res.status(400).json({
@@ -929,16 +931,16 @@ const updateProductionTracking = async (req, res) => {
 
         // UPSERT - Si existe actualiza, si no existe crea
         await query(
-            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6`,
-            [refId, correriaId, programmed, cut, inventory || 0, novedades || null]
+            `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades, highlight_row_color, highlight_cells)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6, highlight_row_color = $7, highlight_cells = $8`,
+            [refId, correriaId, programmed, cut, inventory || 0, novedades || null, highlightRowColor || null, highlightCells ? JSON.stringify(highlightCells) : null]
         );
 
         return res.json({
             success: true,
             message: 'Tracking actualizado exitosamente',
-            data: { refId, correriaId, programmed, cut, inventory: inventory || 0, novedades: novedades || null }
+            data: { refId, correriaId, programmed, cut, inventory: inventory || 0, novedades: novedades || null, highlightRowColor: highlightRowColor || null, highlightCells: highlightCells || null }
         });
 
     } catch (error) {
@@ -974,7 +976,7 @@ const saveProductionBatch = async (req, res) => {
         await transaction(async (client) => {
             // Guardar cada registro
             for (const item of trackingData) {
-                const { refId, correriaId, programmed, cut, inventory, novedades } = item;
+                const { refId, correriaId, programmed, cut, inventory, novedades, highlightRowColor, highlightCells } = item;
 
                 // Validar cada registro
                 if (!refId || !correriaId || programmed === undefined || cut === undefined) {
@@ -983,10 +985,10 @@ const saveProductionBatch = async (req, res) => {
 
                 // Ejecutar UPSERT
                 await client.query(
-                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades)
-                    VALUES ($1, $2, $3, $4, $5, $6)
-                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6`,
-                    [refId, correriaId, programmed, cut, inventory || 0, novedades || null]
+                    `INSERT INTO production_tracking (ref_id, correria_id, programmed, cut, inventory, novedades, highlight_row_color, highlight_cells)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                    ON CONFLICT (ref_id, correria_id) DO UPDATE SET programmed = $3, cut = $4, inventory = $5, novedades = $6, highlight_row_color = $7, highlight_cells = $8`,
+                    [refId, correriaId, programmed, cut, inventory || 0, novedades || null, highlightRowColor || null, highlightCells ? JSON.stringify(highlightCells) : null]
                 );
                 savedCount++;
             }

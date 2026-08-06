@@ -4,10 +4,10 @@
 -- ==================== UP ====================
 
 ALTER TABLE public.maletas
-ADD COLUMN estado character varying(50) DEFAULT 'enviada',
-ADD COLUMN recibido_por character varying(255),
-ADD COLUMN fecha_recepcion timestamp without time zone,
-ADD COLUMN num_referencias_recibidas integer DEFAULT 0;
+ADD COLUMN IF NOT EXISTS estado character varying(50) DEFAULT 'enviada',
+ADD COLUMN IF NOT EXISTS recibido_por character varying(255),
+ADD COLUMN IF NOT EXISTS fecha_recepcion timestamp without time zone,
+ADD COLUMN IF NOT EXISTS num_referencias_recibidas integer DEFAULT 0;
 
 -- Add comment to explain the estado column values
 COMMENT ON COLUMN public.maletas.estado IS 'Estado de la maleta: enviada, recibida';

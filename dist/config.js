@@ -9,6 +9,14 @@ window.API_CONFIG = {
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
     
+    // Si estamos accediendo vía dominios públicos del túnel de Cloudflare
+    if (hostname === 'admin-plow.yersi.cc') {
+      return 'https://api-admin-plow.yersi.cc/api';
+    }
+    if (hostname === 'admin-melas.yersi.cc') {
+      return 'https://api-admin-melas.yersi.cc/api';
+    }
+    
     // Si estamos accediendo por el nombre del equipo o IP de red, usar ese mismo hostname
     if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
       // Determinar el puerto del backend según el puerto del frontend
@@ -33,7 +41,15 @@ window.API_CONFIG = {
   },
 
   getBrand: function() {
+    const hostname = window.location.hostname;
     const port = window.location.port;
+    
+    if (hostname.includes('melas')) {
+      return 'melas';
+    }
+    if (hostname.includes('plow')) {
+      return 'plow';
+    }
     
     if (port === '5173' || port === '3000' || port === '') {
       return 'plow';

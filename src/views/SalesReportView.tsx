@@ -152,8 +152,19 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
       return acc + dispatch.items
         .filter(item => maletaRefIds.includes(item.reference))
         .reduce((sum, item) => {
-          // Usar el salePrice del despacho si existe, si no buscar en el pedido
-          const salePrice = item.salePrice || correriaOrders.find(o => o.clientId === dispatch.clientId)?.items.find(oi => oi.reference === item.reference)?.salePrice || 0;
+          // Usar el salePrice del despacho si existe, si no buscar en todos los pedidos del cliente en esta correría
+          let orderSalePrice = 0;
+          if (!item.salePrice) {
+            const clientOrders = correriaOrders.filter(o => o.clientId === dispatch.clientId);
+            for (const o of clientOrders) {
+              const oi = o.items.find(x => x.reference === item.reference);
+              if (oi) {
+                orderSalePrice = oi.salePrice;
+                break;
+              }
+            }
+          }
+          const salePrice = item.salePrice || orderSalePrice || 0;
           
           console.log(`📦 Despacho item ${item.reference}: item.salePrice=${item.salePrice}, final salePrice=${salePrice}, cantidad=${item.quantity}, subtotal=${item.quantity * salePrice}`);
           
@@ -256,8 +267,19 @@ const SalesReportView: React.FC<SalesReportViewProps> = ({ state, user }) => {
           return acc + dispatch.items
             .filter(item => maletaRefIds.includes(item.reference))
             .reduce((sum, dispatchItem) => {
-              // Usar el salePrice del despacho si existe, si no buscar en el pedido
-              const salePrice = dispatchItem.salePrice || correriaOrders.find(o => o.clientId === dispatch.clientId)?.items.find(oi => oi.reference === dispatchItem.reference)?.salePrice || 0;
+              // Usar el salePrice del despacho si existe, si no buscar en todos los pedidos del cliente en esta correría
+              let orderSalePrice = 0;
+              if (!dispatchItem.salePrice) {
+                const clientOrders = correriaOrders.filter(o => o.clientId === dispatch.clientId);
+                for (const o of clientOrders) {
+                  const oi = o.items.find(x => x.reference === dispatchItem.reference);
+                  if (oi) {
+                    orderSalePrice = oi.salePrice;
+                    break;
+                  }
+                }
+              }
+              const salePrice = dispatchItem.salePrice || orderSalePrice || 0;
               
               return sum + (dispatchItem.quantity * salePrice);
             }, 0);
