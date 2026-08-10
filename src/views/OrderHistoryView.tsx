@@ -387,7 +387,9 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             <tr className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
                               <th className={`px-6 py-4 font-black uppercase transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Referencia</th>
                               <th className={`px-6 py-4 font-black uppercase text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Cantidad</th>
-                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Precio Unit.</th>
+                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Precio Venta</th>
+                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Precio Lista</th>
+                              <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Diferencia</th>
                               <th className={`px-6 py-4 font-black uppercase text-right transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-400'}`}>Subtotal</th>
                             </tr>
                           </thead>
@@ -395,6 +397,20 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             {o.items.map((item, idx) => {
                               const ref = state.references.find(r => r.id === item.reference);
                               const displayPrice = item.salePrice !== undefined ? item.salePrice : ref?.price || 0;
+                              const precioLista = ref?.price || 0;
+                              const diferencia = displayPrice - precioLista;
+
+                              let difBg = 'bg-slate-100 text-slate-500'; // = 0
+                              if (diferencia > 0) difBg = 'bg-green-100 text-green-700';
+                              else if (diferencia < 0 && diferencia >= -1900) difBg = 'bg-yellow-100 text-yellow-700';
+                              else if (diferencia < -1900) difBg = 'bg-red-100 text-red-700';
+
+                              const diferenciaTexto = diferencia === 0 
+                                ? '—' 
+                                : diferencia > 0 
+                                  ? `+$${Math.round(diferencia).toLocaleString('es-CO')}` 
+                                  : `-$${Math.abs(Math.round(diferencia)).toLocaleString('es-CO')}`;
+
                               return (
                                 <tr key={idx} className={`transition-colors ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
                                   <td className="px-6 py-2">
@@ -402,6 +418,12 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                                   </td>
                                   <td className={`px-6 py-2 text-center font-black text-sm transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{item.quantity}</td>
                                   <td className={`px-6 py-2 text-right font-bold text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>${Math.round(displayPrice).toLocaleString('es-CO')}</td>
+                                  <td className={`px-6 py-2 text-right font-bold text-sm transition-colors duration-300 ${isDark ? 'text-green-300' : 'text-slate-500'}`}>${Math.round(precioLista).toLocaleString('es-CO')}</td>
+                                  <td className="px-6 py-2 text-right">
+                                    <span className={`inline-block px-2 py-1 rounded-lg font-black text-xs ${difBg}`}>
+                                      {diferenciaTexto}
+                                    </span>
+                                  </td>
                                   <td className={`px-6 py-2 text-right font-black text-sm transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${Math.round(displayPrice * item.quantity).toLocaleString('es-CO')}</td>
                                 </tr>
                               );
@@ -411,6 +433,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                             <tr className={`font-black transition-colors duration-300 ${isDark ? 'bg-[#5a4a75] text-violet-200' : 'bg-slate-50/80 text-slate-800'}`}>
                               <td className={`px-6 py-6 uppercase text-[9px] transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Totales Pedido</td>
                               <td className="px-6 py-6 text-center">{o.items.reduce((a, b) => a + b.quantity, 0)}</td>
+                              <td></td>
+                              <td></td>
                               <td></td>
                               <td className={`px-6 py-6 text-right text-lg transition-colors duration-300 ${isDark ? 'text-blue-300' : 'text-blue-600'}`}>${Math.round(o.totalValue).toLocaleString('es-CO')}</td>
                             </tr>
