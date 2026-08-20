@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { User, AppState } from '../types';
 import { ConceptoFicha } from '../types/typesFichas';
 import { useDarkMode } from '../context/DarkModeContext';
+import CuentasCobroView from './CuentasCobroView';
 
 const LS_PCT_OF = 'pago_lotes_pct_of';
 const LS_PCT_ML = 'pago_lotes_pct_ml';
@@ -28,12 +29,27 @@ interface LoteRow {
 
 interface Props { user: User; state: AppState; onNavigate: (tab: string, params?: any) => void; onBack: () => void; }
 
-const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) => {
+const PagoEstampadorasView: React.FC<Props> = ({ user, state, onNavigate, onBack }) => {
   const { isDark } = useDarkMode();
-  const [referenciaInput, setReferenciaInput] = useState('');
-  const [referencia, setReferencia] = useState('');
-  const [unidades, setUnidades] = useState<number | ''>(1);
-  const [lotes, setLotes] = useState<LoteRow[]>([]);
+
+  const restoreDraft = () => {
+    try {
+      const raw = sessionStorage.getItem('pago_estampadoras_draft');
+      if (raw) {
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  };
+
+  const draft = useMemo(() => restoreDraft(), []);
+
+  const [referenciaInput, setReferenciaInput] = useState(() => draft?.referenciaInput ?? '');
+  const [referencia, setReferencia] = useState(() => draft?.referencia ?? '');
+  const [unidades, setUnidades] = useState<number | ''>(() => draft?.unidades ?? 1);
+  const [lotes, setLotes] = useState<LoteRow[]>(() => draft?.lotes ?? []);
   const [fotoModal, setFotoModal] = useState<{ url: string; ref: string } | null>(null);
   const [configOpen, setConfigOpen] = useState(false);
   const [modalAsentar, setModalAsentar] = useState(false);
@@ -42,11 +58,49 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
   const [modalTransportes, setModalTransportes] = useState(false);
   const [transportesData, setTransportesData] = useState<any[]>([]);
   const [transportesLoading, setTransportesLoading] = useState(false);
-  const [transpValor, setTranspValor] = useState<number | ''>('');
-  const [transpCant, setTranspCant] = useState<number | ''>('');
+  const [transpValor, setTranspValor] = useState<number | ''>(() => draft?.transpValor ?? '');
+  const [transpCant, setTranspCant] = useState<number | ''>(() => draft?.transpCant ?? '');
   const [pctOF, setPctOF] = useState(() => getLS(LS_PCT_OF, 40));
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
+
+  const [showCuentaCobroModal, setShowCuentaCobroModal] = useState(false);
+  const [cuentaCobroParams, setCuentaCobroParams] = useState<any>(null);
+
+  // Guardar borrador en sessionStorage
+  useEffect(() => {
+    if (referencia || lotes.length > 0) {
+      const draftData = {
+        referenciaInput,
+        referencia,
+        unidades,
+        lotes,
+        transpValor,
+        transpCant
+      };
+      sessionStorage.setItem('pago_estampadoras_draft', JSON.stringify(draftData));
+    }
+  }, [referenciaInput, referencia, unidades, lotes, transpValor, transpCant]);
+
+  // Cerrar modal al presionar la tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowCuentaCobroModal(false);
+      }
+    };
+    if (showCuentaCobroModal) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showCuentaCobroModal]);
+
+  const handleBack = () => {
+    sessionStorage.removeItem('pago_estampadoras_draft');
+    onBack();
+  };
 
   // Cargar config desde BD al montar
   useEffect(() => {
@@ -218,7 +272,7 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
         </div>
         <div className="relative flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <button onClick={onBack} className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm">
+            <button onClick={handleBack} className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
               </svg>
@@ -517,10 +571,11 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
                     cantidadReal: l.unidades * (pctOF / 100),
                     cantidadVisual: Math.ceil(l.unidades * (pctOF / 100)),
                   }));
-                  onNavigate('cuentasCobro', {
+                  setCuentaCobroParams({
                     fecha: new Date().toISOString().slice(0, 10),
                     lineas,
                   });
+                  setShowCuentaCobroModal(true);
                 }}
                 disabled={lotes.length === 0}
                 className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors"
@@ -791,6 +846,30 @@ const PagoEstampadorasView: React.FC<Props> = ({ state, onNavigate, onBack }) =>
             <div className="flex gap-3 pt-2">
               <button onClick={saveConfig} disabled={pctOF + pctML !== 100} className={`flex-1 py-3 rounded-2xl font-black text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${isDark ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'bg-purple-500 hover:bg-purple-600 text-white'}`}>Guardar</button>
               <button onClick={() => setConfigOpen(false)} className={`flex-1 py-3 rounded-2xl font-black text-sm transition-colors ${isDark ? 'bg-violet-900/40 hover:bg-violet-900/60 text-violet-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCuentaCobroModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className={`relative w-full max-w-[95vw] xl:max-w-[1400px] h-[95vh] rounded-[32px] shadow-2xl overflow-hidden flex flex-col ${isDark ? 'bg-[#3d2d52] border border-violet-700' : 'bg-slate-50 border border-slate-200'}`}>
+            <button
+              onClick={() => setShowCuentaCobroModal(false)}
+              className="absolute top-6 right-6 z-[60] p-2.5 rounded-2xl bg-red-500 hover:bg-red-600 text-white shadow-md transition-colors"
+              title="Cerrar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex-1 min-h-0 flex flex-col">
+              <CuentasCobroView
+                state={state}
+                user={user}
+                params={cuentaCobroParams}
+                onNavigate={() => setShowCuentaCobroModal(false)}
+              />
             </div>
           </div>
         </div>

@@ -860,19 +860,29 @@ const ReceptionView: React.FC<ReceptionViewProps> = ({
                                         <button
                                           onClick={(e) => {
                                             e.stopPropagation();
-                                            const ref = Object.keys(itemsByRef)[0] || '';
-                                            const unidades = totalQty + (r.chargeUnits || 0) + (r.segundasUnits || 0);
+                                            const itemsList = Object.entries(itemsByRef).map(([ref, qty], idx) => ({
+                                              referencia: ref,
+                                              unidades: idx === 0 ? qty + (r.chargeUnits || 0) + (r.segundasUnits || 0) : qty
+                                            }));
+                                            if (itemsList.length === 0) {
+                                              itemsList.push({
+                                                referencia: '',
+                                                unidades: (r.chargeUnits || 0) + (r.segundasUnits || 0)
+                                              });
+                                            }
+                                            const firstItem = itemsList[0];
                                             onNavigate('calculoPagoLotes', {
                                               subView: 'confeccionistas',
                                               loteData: {
-                                                referencia: ref,
-                                                unidades,
+                                                referencia: firstItem.referencia,
+                                                unidades: firstItem.unidades,
                                                 cantidadCompra: r.chargeUnits || 0,
                                                 cobroSeleccionado: (r.chargeUnits || 0) > 0,
                                                 empaqueSeleccionado: r.isPacked === true,
                                                 batchCode: r.batchCode,
                                                 confeccionistaId: r.confeccionista || '',
                                                 arrivalDate: r.arrivalDate || '',
+                                                items: itemsList
                                               }
                                             });
                                           }}

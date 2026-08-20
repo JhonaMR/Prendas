@@ -374,11 +374,16 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                     {(ficha.numCortes || 0) > 0 && <div className="absolute top-2 right-2 px-2 py-1 bg-yellow-500 text-white rounded-lg text-[9px] font-black uppercase">{ficha.numCortes} Corte{ficha.numCortes !== 1 ? 's' : ''}</div>}
                                     {(ficha.cortesResumen || []).length > 0 && (
                                         <div className="absolute top-9 right-2 flex flex-col gap-1">
-                                            {(ficha.cortesResumen || []).map((c: any) => (
+                                            {(ficha.cortesResumen || []).slice(0, 4).map((c: any) => (
                                                 <div key={c.numeroCorte} className={`w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black shadow ${c.margenUtilidad >= 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                                     {c.cantidadCortada}
                                                 </div>
                                             ))}
+                                            {(ficha.cortesResumen || []).length >= 5 && (
+                                                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-black shadow ${isDark ? 'bg-violet-800 text-violet-200' : 'bg-slate-200 text-slate-700'}`}>
+                                                    +
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                     {isAdmin && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-50 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}

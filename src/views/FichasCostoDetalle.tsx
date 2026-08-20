@@ -3,7 +3,7 @@
 // Editor con precio, rentabilidad y cortes
 // ============================================
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { AppState } from '../types';
 import { ConceptoFicha } from '../types/typesFichas';
 import apiFichas from '../services/apiFichas';
@@ -34,6 +34,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [showModalCorte, setShowModalCorte] = useState(false);
     const [modalFotos, setModalFotos] = useState(false);
+    const [showDropdownCortes, setShowDropdownCortes] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const [modalMolde, setModalMolde] = useState(false);
 
     const [showModalDuplicar, setShowModalDuplicar] = useState(false);
@@ -74,6 +76,16 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         if (container) {
             container.scrollTop = 0;
         }
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowDropdownCortes(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     useEffect(() => {
@@ -341,9 +353,9 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                             </button>
                         )}
                         <button className={`px-4 py-2 text-white font-black rounded-xl uppercase text-xs transition-colors ${isDark ? 'bg-yellow-700 hover:bg-yellow-800' : 'bg-yellow-500 hover:bg-yellow-600'}`}>Costeo Inicial</button>
-                        {[1, 2, 3, 4, 5].map(num => (
+                        {[1, 2, 3, 4].map(num => (
                             <button key={num}
-                        onClick={() => {
+                                onClick={() => {
                                     const navegar = () => num <= numCortes ? onNavigate('fichas-corte-detalle', { referencia, numeroCorte: num }) : (num === numCortes + 1 ? setShowModalCorte(true) : null);
                                     if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) navegar(); } else navegar();
                                 }}
@@ -352,6 +364,59 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                                 Corte #{num}
                             </button>
                         ))}
+                        {numCortes >= 4 && (
+                            <div className="relative inline-block" ref={dropdownRef}>
+                                <button
+                                    onClick={() => setShowDropdownCortes(prev => !prev)}
+                                    className={`px-4 py-2 font-black rounded-xl uppercase text-xs transition-all flex items-center gap-1.5 ${
+                                        isDark 
+                                            ? 'bg-violet-700/50 text-violet-300 hover:bg-violet-700 border border-violet-600' 
+                                            : 'bg-slate-200 text-slate-700 hover:bg-slate-300'
+                                    }`}
+                                >
+                                    <span>Más Cortes</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3"><path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
+                                </button>
+                                {showDropdownCortes && (
+                                    <div className={`absolute right-0 mt-2 w-48 rounded-xl shadow-2xl border p-2 z-50 flex flex-col gap-1.5 ${
+                                        isDark 
+                                            ? 'bg-[#4a3a63] border-violet-600 text-violet-100 shadow-black/45' 
+                                            : 'bg-white border-slate-200 text-slate-700 shadow-slate-300/40'
+                                    }`}>
+                                        {Array.from({ length: numCortes - 4 }, (_, i) => i + 5).map(num => (
+                                            <button
+                                                key={num}
+                                                onClick={() => {
+                                                    setShowDropdownCortes(false);
+                                                    const navegar = () => onNavigate('fichas-corte-detalle', { referencia, numeroCorte: num });
+                                                    if (hasUnsavedChanges) { if (confirm('Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Se perderán los cambios.')) navegar(); } else navegar();
+                                                }}
+                                                className={`w-full text-center px-3 py-2 font-black text-xs rounded-lg uppercase transition-colors ${
+                                                    isDark 
+                                                        ? 'bg-blue-900/30 text-blue-200 hover:bg-blue-900/55' 
+                                                        : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                                }`}
+                                            >
+                                                Corte #{num}
+                                            </button>
+                                        ))}
+                                        <button
+                                            onClick={() => {
+                                                setShowDropdownCortes(false);
+                                                setShowModalCorte(true);
+                                            }}
+                                            className={`w-full text-center px-3 py-2 font-black text-xs rounded-lg uppercase transition-all flex items-center justify-center ${
+                                                isDark 
+                                                    ? 'bg-violet-800 text-violet-100 hover:bg-violet-750 border border-violet-650' 
+                                                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                                            }`}
+                                        >
+                                            <span>+ Asentar #{numCortes + 1}</span>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

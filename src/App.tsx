@@ -1539,7 +1539,7 @@ const App: React.FC = () => {
         isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'
       }`}>
         <DottedBackground />
-        <div id="main-scroll-container" className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative z-10">
+        <div id="main-scroll-container" className="h-full w-full overflow-y-auto custom-scrollbar p-6 md:p-10 relative">
           <div className="max-w-full mx-auto">
             {renderContent()}
           </div>

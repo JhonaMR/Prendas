@@ -6,6 +6,8 @@ import CorreriaAutocomplete from '../components/shared/CorreriaAutocomplete';
 import { useDarkMode } from '../context/DarkModeContext';
 import { canCreate, canDelete } from '../utils/permissions';
 import * as XLSX from 'xlsx';
+import usePagination from '../hooks/usePagination';
+import PaginationComponent from '../components/PaginationComponent';
 
 interface Props {
     state: AppState; user: any;
@@ -23,6 +25,15 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
     const [showCorreriaDropdown, setShowCorreriaDropdown] = useState(false);
     const [maletaEliminar, setMaletaEliminar] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+
+    const { pagination, goToPage, setLimit } = usePagination(1, 10);
+    const maletas = state.maletas || [];
+    const totalPages = Math.max(1, Math.ceil(maletas.length / pagination.limit));
+    const currentPage = Math.min(pagination.page, totalPages);
+    const pagedMaletas = maletas.slice(
+        (currentPage - 1) * pagination.limit,
+        currentPage * pagination.limit
+    );
 
     const canCreateMaleta = canCreate(user);
     const canDeleteMaleta = canDelete(user) || user?.role === UserRole.OPERADOR;
@@ -142,47 +153,59 @@ const MaletasListado: React.FC<Props> = ({ state, user, updateState, onNavigate 
                     {canCreateMaleta && <button onClick={() => setShowModalCrear(true)} className={`mt-6 px-6 py-3 font-black rounded-xl transition-colors ${isDark ? 'bg-violet-600 hover:bg-violet-700 text-white' : 'bg-purple-500 text-white hover:bg-purple-600'}`}>Crear Primera Maleta</button>}
                 </div>
             ) : (
-                <div className={`rounded-3xl border shadow-sm overflow-hidden transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
-                    <table className="w-full">
-                        <thead>
-                            <tr className={`border-b transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
-                                {['Nombre', 'Correría', '# Refs', 'Recib.', 'Creada por', 'Acciones'].map(h => (
-                                    <th key={h} className={`px-6 py-4 ${h === 'Acciones' ? 'text-right' : h === '# Refs' || h === 'Recib.' ? 'text-center' : 'text-left'}`}>
-                                        <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{h}</span>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className={`divide-y transition-colors ${isDark ? 'divide-violet-700' : 'divide-slate-50'}`}>
-                            {(state.maletas || []).map(maleta => (
-                                <tr key={maleta.id} className={`transition-colors ${isDark ? 'hover:bg-violet-700/30' : 'hover:bg-slate-50'}`}>
-                                    <td className={`px-6 py-4 font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{maleta.nombre}</td>
-                                    <td className="px-6 py-4">
-                                        {maleta.correriaNombre
-                                            ? <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-blue-50 text-blue-700'}`}><span className="font-bold text-sm">{maleta.correriaNombre}</span><span className="text-xs opacity-75">{maleta.correriaYear}</span></div>
-                                            : <span className={`italic text-sm transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Sin correría</span>}
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-purple-100 text-purple-700'}`}>{maleta.numReferencias}</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-yellow-700/50 text-yellow-200' : 'bg-yellow-100 text-yellow-700'}`}>{maleta.numReferenciasRecibidas || 0}</span>
-                                    </td>
-                                    <td className={`px-6 py-4 font-bold text-sm transition-colors ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{maleta.createdBy}</td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center justify-end gap-2">
-                                            <button onClick={() => onNavigate('maletas-recibir', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
-                                            <button onClick={() => handleExportar(maleta)} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-green-700/50 text-green-200 hover:bg-green-700' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>Exportar</button>
-                                            <button onClick={() => onNavigate('maletas-asignar', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-violet-700/50 text-violet-200 hover:bg-violet-700' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>Ver / Editar</button>
-                                            {canDeleteMaleta && (
-                                                <button onClick={() => { setMaletaEliminar(maleta.id); setShowModalEliminar(true); }} className={`px-4 py-2 rounded-lg transition-colors font-bold text-sm ${isDark ? 'bg-pink-600/50 text-pink-200 hover:bg-pink-600' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>Eliminar</button>
-                                            )}
-                                        </div>
-                                    </td>
+                <div className="space-y-4">
+                    <div className={`rounded-3xl border shadow-sm overflow-hidden transition-colors ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+                        <table className="w-full">
+                            <thead>
+                                <tr className={`border-b transition-colors ${isDark ? 'bg-[#3d2d52] border-violet-700' : 'bg-slate-50 border-slate-100'}`}>
+                                    {['Nombre', 'Correría', '# Refs', 'Recib.', 'Creada por', 'Acciones'].map(h => (
+                                        <th key={h} className={`px-6 py-4 ${h === 'Acciones' ? 'text-right' : h === '# Refs' || h === 'Recib.' ? 'text-center' : 'text-left'}`}>
+                                            <span className={`text-[10px] font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{h}</span>
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody className={`divide-y transition-colors ${isDark ? 'divide-violet-700' : 'divide-slate-50'}`}>
+                                {pagedMaletas.map(maleta => (
+                                    <tr key={maleta.id} className={`transition-colors ${isDark ? 'hover:bg-violet-700/30' : 'hover:bg-slate-50'}`}>
+                                        <td className={`px-6 py-4 font-black transition-colors ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{maleta.nombre}</td>
+                                        <td className="px-6 py-4">
+                                            {maleta.correriaNombre
+                                                ? <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-blue-50 text-blue-700'}`}><span className="font-bold text-sm">{maleta.correriaNombre}</span><span className="text-xs opacity-75">{maleta.correriaYear}</span></div>
+                                                : <span className={`italic text-sm transition-colors ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>Sin correría</span>}
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-violet-700/50 text-violet-200' : 'bg-purple-100 text-purple-700'}`}>{maleta.numReferencias}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-center">
+                                            <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full font-black transition-colors ${isDark ? 'bg-yellow-700/50 text-yellow-200' : 'bg-yellow-100 text-yellow-700'}`}>{maleta.numReferenciasRecibidas || 0}</span>
+                                        </td>
+                                        <td className={`px-6 py-4 font-bold text-sm transition-colors ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>{maleta.createdBy}</td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button onClick={() => onNavigate('maletas-recibir', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-yellow-700/50 text-yellow-200 hover:bg-yellow-700' : 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'}`}>Recibir</button>
+                                                <button onClick={() => handleExportar(maleta)} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-green-700/50 text-green-200 hover:bg-green-700' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}>Exportar</button>
+                                                <button onClick={() => onNavigate('maletas-asignar', { id: maleta.id })} className={`px-4 py-2 rounded-lg hover:transition-colors font-bold text-sm ${isDark ? 'bg-violet-700/50 text-violet-200 hover:bg-violet-700' : 'bg-blue-50 text-blue-600 hover:bg-blue-100'}`}>Ver / Editar</button>
+                                                {canDeleteMaleta && (
+                                                    <button onClick={() => { setMaletaEliminar(maleta.id); setShowModalEliminar(true); }} className={`px-4 py-2 rounded-lg transition-colors font-bold text-sm ${isDark ? 'bg-pink-600/50 text-pink-200 hover:bg-pink-600' : 'bg-red-50 text-red-600 hover:bg-red-100'}`}>Eliminar</button>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                    <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        pageSize={pagination.limit}
+                        onPageChange={goToPage}
+                        onPageSizeChange={(size) => {
+                            setLimit(size);
+                            goToPage(1);
+                        }}
+                    />
                 </div>
             )}
 

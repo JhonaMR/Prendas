@@ -114,7 +114,7 @@ const createDispatch = async (dispatchData, items) => {
                     dispatchData.remissionNo,
                     dispatchData.dispatchedBy,
                     dispatchData.checkedBy || '0',
-                    new Date().toISOString()
+                    new Date()
                 ]
             );
 

@@ -585,7 +585,7 @@ const createDispatch = async (req, res) => {
                 items,
                 dispatchedBy,
                 checkedBy,
-                createdAt: getBogotaDateTime()
+                createdAt: result.created_at
             }
         });
 
@@ -645,6 +645,10 @@ const updateDispatch = async (req, res) => {
             }
         });
 
+        // Obtener la fecha de creación original para mantener consistencia en el frontend
+        const dateResult = await query('SELECT created_at FROM dispatches WHERE id = $1', [id]);
+        const createdAt = dateResult.rows[0]?.created_at;
+
         return res.json({
             success: true,
             message: 'Despacho actualizado exitosamente',
@@ -656,7 +660,8 @@ const updateDispatch = async (req, res) => {
                 remissionNo,
                 items,
                 dispatchedBy,
-                checkedBy
+                checkedBy,
+                createdAt
             }
         });
 

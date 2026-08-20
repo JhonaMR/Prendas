@@ -24,7 +24,6 @@ export const DottedBackground: React.FC = () => {
         backgroundImage: `url('${svgDataUrl}')`,
         backgroundRepeat: 'repeat',
         pointerEvents: 'none',
-        zIndex: 1,
       }}
     />
   );

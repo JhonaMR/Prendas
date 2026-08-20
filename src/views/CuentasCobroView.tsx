@@ -230,9 +230,9 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
       });
 
       const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pageW = 210;
-      const pageH = 297;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
+      const pageW = 215.9;
+      const pageH = 279.4;
       const margin = 10;
       const usableW = pageW - margin * 2;
       const imgH = (canvas.height * usableW) / canvas.width;
@@ -266,7 +266,7 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
             <h1 className={`text-2xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Cuentas de Cobro</h1>
             <p className={`text-xs font-bold uppercase mt-0.5 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Formato oficial</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 pr-14">
             <button
               onClick={() => onNavigate?.('reception', { directToBatch: true })}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border border-violet-700 text-violet-200 hover:bg-[#5a4a75]' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'}`}
@@ -537,11 +537,11 @@ const CuentasCobroView: React.FC<CuentasCobroViewProps> = ({ state, params, onNa
 
           {/* Panel derecho: vista previa */}
           <div className="lg:sticky lg:top-6 self-start">
-            <div className={`rounded-2xl border shadow-sm p-5 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
+            <div className={`rounded-2xl border shadow-sm p-5 overflow-x-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
               <p className={`text-[10px] font-black text-center uppercase tracking-widest mb-4 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Vista previa</p>
 
               {/* Documento imprimible */}
-              <div ref={printRef} className="border-2 p-6 font-mono text-xs text-slate-900 space-y-3 bg-white" style={{ fontFamily: 'Arial, sans-serif', borderColor: empresa.textColor }}>
+              <div ref={printRef} className="border-2 p-6 font-mono text-xs text-slate-900 space-y-3 bg-white" style={{ fontFamily: 'Arial, sans-serif', borderColor: empresa.textColor, width: '600px', minWidth: '600px' }}>
 
                 {/* Header */}
                 <div className="text-center pb-3 mb-3" style={{ borderBottom: `2px solid ${empresa.textColor}`, background: empresa.bgColor, margin: '-24px -24px 0', padding: '16px 24px' }}>

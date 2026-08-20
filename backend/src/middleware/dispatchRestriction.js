@@ -4,10 +4,10 @@
  * Permite que usuarios general creen despachos, pero solo admin puede editar/eliminar
  */
 
-const { isAdmin, isGeneral } = require('../utils/permissions');
+const { isAdmin, isGeneral, isSoporte } = require('../utils/permissions');
 
 /**
- * Middleware para permitir crear despachos a admin y general
+ * Middleware para permitir crear despachos a admin, general y soporte
  */
 const allowDispatchCreate = (req, res, next) => {
     if (!req.user) {
@@ -17,7 +17,7 @@ const allowDispatchCreate = (req, res, next) => {
         });
     }
 
-    if (!isAdmin(req.user) && !isGeneral(req.user)) {
+    if (!isAdmin(req.user) && !isGeneral(req.user) && !isSoporte(req.user)) {
         return res.status(403).json({
             success: false,
             message: 'No tienes permiso para crear despachos'
@@ -28,7 +28,7 @@ const allowDispatchCreate = (req, res, next) => {
 };
 
 /**
- * Middleware para permitir editar/eliminar despachos solo a admin
+ * Middleware para permitir editar/eliminar despachos a admin y soporte
  */
 const allowDispatchEditDelete = (req, res, next) => {
     if (!req.user) {
@@ -38,10 +38,10 @@ const allowDispatchEditDelete = (req, res, next) => {
         });
     }
 
-    if (!isAdmin(req.user)) {
+    if (!isAdmin(req.user) && !isSoporte(req.user)) {
         return res.status(403).json({
             success: false,
-            message: 'Solo administradores pueden editar o eliminar despachos'
+            message: 'Solo administradores o soporte pueden editar o eliminar despachos'
         });
     }
 

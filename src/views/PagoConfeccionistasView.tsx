@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { User, AppState } from '../types';
 import { ConceptoFicha } from '../types/typesFichas';
 import { useDarkMode } from '../context/DarkModeContext';
+import CuentasCobroView from './CuentasCobroView';
 
 const LS_PCT_OF = 'pago_lotes_pct_of';
 const LS_PCT_ML = 'pago_lotes_pct_ml';
@@ -43,41 +44,160 @@ interface Props {
     batchCode: string;
     arrivalDate?: string;
     confeccionistaId?: string;
+    items?: { referencia: string; unidades: number }[];
   } | null;
 }
 
-const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, loteData }) => {
+const PagoConfeccionistasView: React.FC<Props> = ({ user, state, onNavigate, onBack, loteData }) => {
   const { isDark } = useDarkMode();
 
+  const restoreDraft = () => {
+    try {
+      const raw = sessionStorage.getItem('pago_confeccionistas_draft');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (loteData?.batchCode && parsed.remisionInput !== loteData.batchCode) {
+          return null;
+        }
+        return {
+          ...parsed,
+          lotes: (parsed.lotes || []).map((l: any) => ({
+            ...l,
+            selectedIndices: new Set(l.selectedIndices || [])
+          }))
+        };
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return null;
+  };
+
+  const draft = useMemo(() => restoreDraft(), [loteData]);
+
   // ── Estado de lotes ───────────────────────────────────────────────────
-  const [lotes, setLotes] = useState<LotePago[]>([{
-    id: Date.now(),
-    referencia: loteData?.referencia || '',
-    referenciaInput: loteData?.referencia || '',
-    unidades: loteData?.unidades ?? '',
-    selectedIndices: new Set<number>(),
-    conceptosExtra: [],
-  }]);
+  const [lotes, setLotes] = useState<LotePago[]>(() => {
+    if (draft) return draft.lotes;
+
+    const getInitialConceptos = (ref: string): ConceptoFicha[] => {
+      const ficha = (state.fichasCosto || []).find((f: any) => f.referencia === ref) ?? null;
+      if (!ficha) return [];
+      return (ficha.manoObra || []).filter((c: ConceptoFicha) => matchesKeyword(c.concepto));
+    };
+
+    if (loteData?.items && loteData.items.length > 0) {
+      return loteData.items.map((item, idx) => {
+        const conceptos = getInitialConceptos(item.referencia);
+        const allIndices = new Set(conceptos.map((_, i) => i));
+        // Si es el lote inicial con empaqueSeleccionado=false, des-seleccionar empaque
+        if (idx === 0 && loteData && !loteData.empaqueSeleccionado) {
+          conceptos.forEach((c, i) => {
+            if (c.concepto.toLowerCase().includes('empaque')) allIndices.delete(i);
+          });
+        }
+        return {
+          id: Date.now() + idx,
+          referencia: item.referencia,
+          referenciaInput: item.referencia,
+          unidades: item.unidades,
+          selectedIndices: allIndices,
+          conceptosExtra: [],
+        };
+      });
+    }
+    return [{
+      id: Date.now(),
+      referencia: loteData?.referencia || '',
+      referenciaInput: loteData?.referencia || '',
+      unidades: loteData?.unidades ?? '',
+      selectedIndices: new Set<number>(),
+      conceptosExtra: [],
+    }];
+  });
   const [loteActivoId, setLoteActivoId] = useState<number>(0); // índice del lote activo
 
   // ── Estado global (cobro, transporte, config, etc.) ───────────────────
-  const [cantidadCompra, setCantidadCompra] = useState<number | ''>(loteData?.cantidadCompra ?? 1);
+  const [cantidadCompra, setCantidadCompra] = useState<number | ''>(() => {
+    if (draft) return draft.cantidadCompra;
+    return loteData?.cantidadCompra ?? 1;
+  });
   const [configOpen, setConfigOpen] = useState(false);
-  const [cobroSeleccionado, setCobroSeleccionado] = useState(loteData?.cobroSeleccionado ?? false);
-  const [remisionInput, setRemisionInput] = useState(loteData?.batchCode || '');
-  const [arrivalDate, setArrivalDate] = useState<string>(loteData?.arrivalDate || '');
-  const [confeccionistaId, setConfeccionistaId] = useState<string>(loteData?.confeccionistaId || '');
+  const [cobroSeleccionado, setCobroSeleccionado] = useState(() => {
+    if (draft) return draft.cobroSeleccionado;
+    return loteData?.cobroSeleccionado ?? false;
+  });
+  const [remisionInput, setRemisionInput] = useState(() => {
+    if (draft) return draft.remisionInput;
+    return loteData?.batchCode || '';
+  });
+  const [arrivalDate, setArrivalDate] = useState<string>(() => {
+    if (draft) return draft.arrivalDate;
+    return loteData?.arrivalDate || '';
+  });
+  const [confeccionistaId, setConfeccionistaId] = useState<string>(() => {
+    if (draft) return draft.confeccionistaId;
+    return loteData?.confeccionistaId || '';
+  });
   const [modalAsentar, setModalAsentar] = useState(false);
   const [fechaLlegada, setFechaLlegada] = useState('');
   const [fechaSugerida, setFechaSugerida] = useState('');
   const [modalTransportes, setModalTransportes] = useState(false);
   const [transportesData, setTransportesData] = useState<any[]>([]);
   const [transportesLoading, setTransportesLoading] = useState(false);
-  const [transpValor, setTranspValor] = useState<number | ''>('');
-  const [transpCant, setTranspCant] = useState<number | ''>('');
+  const [transpValor, setTranspValor] = useState<number | ''>(() => {
+    if (draft) return draft.transpValor;
+    return '';
+  });
+  const [transpCant, setTranspCant] = useState<number | ''>(() => {
+    if (draft) return draft.transpCant;
+    return '';
+  });
   const [pctOF, setPctOF] = useState(() => getLS(LS_PCT_OF, 40));
   const [pctML, setPctML] = useState(() => getLS(LS_PCT_ML, 60));
   const [baseRte, setBaseRte] = useState(() => getLS(LS_BASE_RTE, 105000));
+
+  const [showCuentaCobroModal, setShowCuentaCobroModal] = useState(false);
+  const [cuentaCobroParams, setCuentaCobroParams] = useState<any>(null);
+
+  // Guardar borrador en sessionStorage
+  useEffect(() => {
+    if (confeccionistaId || remisionInput) {
+      const draftData = {
+        lotes: lotes.map(l => ({
+          ...l,
+          selectedIndices: Array.from(l.selectedIndices)
+        })),
+        cantidadCompra,
+        cobroSeleccionado,
+        remisionInput,
+        arrivalDate,
+        confeccionistaId,
+        transpValor,
+        transpCant
+      };
+      sessionStorage.setItem('pago_confeccionistas_draft', JSON.stringify(draftData));
+    }
+  }, [lotes, cantidadCompra, cobroSeleccionado, remisionInput, arrivalDate, confeccionistaId, transpValor, transpCant]);
+
+  // Cerrar modal al presionar la tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowCuentaCobroModal(false);
+      }
+    };
+    if (showCuentaCobroModal) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showCuentaCobroModal]);
+
+  const handleBack = () => {
+    sessionStorage.removeItem('pago_confeccionistas_draft');
+    onBack();
+  };
 
   // índice real del lote activo
   const loteActivoIdx = Math.min(loteActivoId, lotes.length - 1);
@@ -129,10 +249,27 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
     setLotes(prev => prev.map((l, i) => i === idx ? { ...l, referencia: ref, selectedIndices: allIndices } : l));
   };
 
-  // Inicializar selectedIndices del primer lote cuando carguen las fichas
+  // Inicializar selectedIndices de los lotes cuando carguen las fichas
   useEffect(() => {
-    if (lotes[0].referencia && lotes[0].selectedIndices.size === 0) {
-      updateLoteReferencia(0, lotes[0].referencia);
+    let changed = false;
+    const newLotes = lotes.map((l, idx) => {
+      if (l.referencia && l.selectedIndices.size === 0) {
+        const conceptos = getConceptosFiltrados(l.referencia);
+        if (conceptos.length > 0) {
+          const allIndices = new Set(conceptos.map((_, i) => i));
+          if (idx === 0 && loteData && !loteData.empaqueSeleccionado) {
+            conceptos.forEach((c, i) => {
+              if (c.concepto.toLowerCase().includes('empaque')) allIndices.delete(i);
+            });
+          }
+          changed = true;
+          return { ...l, selectedIndices: allIndices };
+        }
+      }
+      return l;
+    });
+    if (changed) {
+      setLotes(newLotes);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.fichasCosto]);
@@ -300,15 +437,45 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
     if (!remision) return;
     const lote = (state.receptions || []).find((r: any) => r.batchCode === remision);
     if (!lote) { alert(`No se encontró ninguna recepción con remisión "${remision}"`); return; }
-    const ref = lote.items?.[0]?.reference || '';
-    const totalQty = (lote.items || []).reduce((a: number, b: any) => a + b.quantity, 0);
-    const unidadesLote = totalQty + (lote.chargeUnits || 0) + (lote.segundasUnits || 0);
-    setLotes(prev => {
-      const updated = [...prev];
-      updated[0] = { ...updated[0], referenciaInput: ref, referencia: ref, unidades: unidadesLote };
-      return updated;
+
+    const itemsByRef = (lote.items || []).reduce((acc: any, curr: any) => {
+      if(!acc[curr.reference]) acc[curr.reference] = 0;
+      acc[curr.reference] += curr.quantity;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const loteItems = Object.entries(itemsByRef).map(([ref, qty], idx) => {
+      return {
+        referencia: ref,
+        unidades: idx === 0 ? qty + (lote.chargeUnits || 0) + (lote.segundasUnits || 0) : qty
+      };
     });
-    updateLoteReferencia(0, ref);
+
+    if (loteItems.length === 0) {
+      loteItems.push({
+        referencia: '',
+        unidades: (lote.chargeUnits || 0) + (lote.segundasUnits || 0)
+      });
+    }
+
+    setLotes(loteItems.map((item, idx) => {
+      const conceptos = getConceptosFiltrados(item.referencia);
+      const allIndices = new Set(conceptos.map((_, i) => i));
+      if (idx === 0 && lote.isPacked !== true) {
+        conceptos.forEach((c, i) => {
+          if (c.concepto.toLowerCase().includes('empaque')) allIndices.delete(i);
+        });
+      }
+      return {
+        id: Date.now() + idx,
+        referencia: item.referencia,
+        referenciaInput: item.referencia,
+        unidades: item.unidades,
+        selectedIndices: allIndices,
+        conceptosExtra: [],
+      };
+    }));
+
     setCantidadCompra(lote.chargeUnits || 0);
     setCobroSeleccionado((lote.chargeUnits || 0) > 0);
     if (lote.arrivalDate) setArrivalDate(lote.arrivalDate);
@@ -334,7 +501,7 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
         </div>
         <div className="relative flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <button onClick={onBack} className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm">
+            <button onClick={handleBack} className="p-2 rounded-xl bg-white/20 hover:bg-white/30 transition-colors backdrop-blur-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-white">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
               </svg>
@@ -716,12 +883,13 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
                       }));
                     return [...lineasFicha, ...lineasExtra];
                   });
-                  onNavigate('cuentasCobro', {
+                  setCuentaCobroParams({
                     confeccionistaId,
                     batchCode: remisionInput.trim() || (lotes[0]?.referencia || ''),
                     fecha: arrivalDate ? arrivalDate.slice(0, 10) : new Date().toISOString().slice(0, 10),
                     lineas,
                   });
+                  setShowCuentaCobroModal(true);
                 }}
                 className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm px-5 py-3 rounded-2xl shadow transition-colors"
               >
@@ -1096,6 +1264,30 @@ const PagoConfeccionistasView: React.FC<Props> = ({ state, onNavigate, onBack, l
               >
                 Cancelar
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCuentaCobroModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className={`relative w-full max-w-[95vw] xl:max-w-[1400px] h-[95vh] rounded-[32px] shadow-2xl overflow-hidden flex flex-col ${isDark ? 'bg-[#3d2d52] border border-violet-700' : 'bg-slate-50 border border-slate-200'}`}>
+            <button
+              onClick={() => setShowCuentaCobroModal(false)}
+              className="absolute top-6 right-6 z-[60] p-2.5 rounded-2xl bg-red-500 hover:bg-red-600 text-white shadow-md transition-colors"
+              title="Cerrar"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+            <div className="flex-1 min-h-0 flex flex-col">
+              <CuentasCobroView
+                state={state}
+                user={user}
+                params={cuentaCobroParams}
+                onNavigate={() => setShowCuentaCobroModal(false)}
+              />
             </div>
           </div>
         </div>
