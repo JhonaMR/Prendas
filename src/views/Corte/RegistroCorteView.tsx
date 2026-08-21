@@ -344,13 +344,15 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         ? [
             { key: 'numeroFicha', label: 'N° DE FICHA', w: 35, align: 'center' },
             { key: 'fechaCorte', label: 'FECHA CORTE', w: 35, align: 'center' },
-            { key: 'descripcion', label: 'DESCRIPCIÓN', w: contentWidth - 100, align: 'left' },
+            { key: 'referencia', label: 'REFERENCIA', w: 30, align: 'center' },
+            { key: 'descripcion', label: 'DESCRIPCIÓN', w: contentWidth - 130, align: 'left' },
             { key: 'cantidadCortada', label: 'CANT. CORTADA', w: 30, align: 'center' }
           ]
         : [
-            { key: 'numeroFicha', label: 'N° DE FICHA', w: contentWidth * 0.35, align: 'center' },
-            { key: 'fechaCorte', label: 'FECHA CORTE', w: contentWidth * 0.35, align: 'center' },
-            { key: 'cantidadCortada', label: 'CANT. CORTADA', w: contentWidth * 0.30, align: 'center' }
+            { key: 'numeroFicha', label: 'N° DE FICHA', w: contentWidth * 0.25, align: 'center' },
+            { key: 'fechaCorte', label: 'FECHA CORTE', w: contentWidth * 0.25, align: 'center' },
+            { key: 'referencia', label: 'REFERENCIA', w: contentWidth * 0.25, align: 'center' },
+            { key: 'cantidadCortada', label: 'CANT. CORTADA', w: contentWidth * 0.25, align: 'center' }
           ];
 
       drawPageHeaderAndColumns(doc, config, cols, margin, pageWidth);
@@ -382,6 +384,9 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
           } else if (col.key === 'fechaCorte') {
             val = row.fechaCorte ? row.fechaCorte.split('-').reverse().join('/') : '';
             doc.setFont(undefined, 'normal');
+          } else if (col.key === 'referencia') {
+            val = row.referencia || '';
+            doc.setFont(undefined, 'normal');
           } else if (col.key === 'descripcion') {
             val = row.descripcion || '';
             doc.setFont(undefined, 'normal');
@@ -411,6 +416,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
 
       // Totales
       const uniqueFichas = new Set(dataToExport.map(r => r.numeroFicha)).size;
+      const uniqueReferences = new Set(dataToExport.map(r => r.referencia).filter(Boolean)).size;
       const totalCantCortada = dataToExport.reduce((acc, r) => acc + (r.cantidadCortada || 0), 0);
       const totalsRowHeight = 8;
 
@@ -421,7 +427,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       }
 
       let currentX = margin;
-      cols.forEach((col, idx) => {
+      cols.forEach((col) => {
         doc.setFillColor(248, 250, 252); // background fill slate-50 (very light, high contrast)
         doc.setTextColor(15, 23, 42); // text color slate-900 (almost black)
         doc.setDrawColor(148, 163, 184); // border color slate-400
@@ -430,11 +436,13 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         doc.rect(currentX, y, col.w, totalsRowHeight, 'FD'); // Fill and Draw in one call
 
         let val = '';
-        if (idx === 0) {
+        if (col.key === 'numeroFicha') {
           val = `REGISTROS: ${dataToExport.length}`;
-        } else if (idx === 1) {
+        } else if (col.key === 'fechaCorte') {
           val = `ÚNICAS: ${uniqueFichas}`;
-        } else if (idx === cols.length - 1) {
+        } else if (col.key === 'referencia') {
+          val = `REFS: ${uniqueReferences}`;
+        } else if (col.key === 'cantidadCortada') {
           val = String(totalCantCortada);
         }
 
@@ -491,7 +499,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFF1F5F9' } }
       };
 
-      const numCols = config.incluirDescripcion ? 4 : 3;
+      const numCols = config.incluirDescripcion ? 5 : 4;
 
       const titleRow = worksheet.addRow(['REPORTE DE REGISTRO DE CORTE']);
       titleRow.height = 25;
@@ -508,8 +516,8 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       worksheet.addRow([]); // Espacio en blanco
 
       const headers = config.incluirDescripcion
-        ? ['N° DE FICHA', 'FECHA CORTE', 'DESCRIPCIÓN', 'CANT. CORTADA']
-        : ['N° DE FICHA', 'FECHA CORTE', 'CANT. CORTADA'];
+        ? ['N° DE FICHA', 'FECHA CORTE', 'REFERENCIA', 'DESCRIPCIÓN', 'CANT. CORTADA']
+        : ['N° DE FICHA', 'FECHA CORTE', 'REFERENCIA', 'CANT. CORTADA'];
 
       const headerRow = worksheet.addRow(headers);
       headerRow.height = 22;
@@ -525,11 +533,12 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       // Configurar anchos de columna
       worksheet.getColumn(1).width = 20;
       worksheet.getColumn(2).width = 20;
+      worksheet.getColumn(3).width = 20; // REFERENCIA
       if (config.incluirDescripcion) {
-        worksheet.getColumn(3).width = 45;
-        worksheet.getColumn(4).width = 20;
+        worksheet.getColumn(4).width = 45;
+        worksheet.getColumn(5).width = 20;
       } else {
-        worksheet.getColumn(3).width = 20;
+        worksheet.getColumn(4).width = 20;
       }
 
       const cellStyleCenter = {
@@ -551,15 +560,15 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         const fichaNum = Number(r.numeroFicha);
         const fichaValue = isNaN(fichaNum) ? r.numeroFicha : fichaNum;
         const rowData = config.incluirDescripcion
-          ? [fichaValue, formattedDate, r.descripcion || '', r.cantidadCortada]
-          : [fichaValue, formattedDate, r.cantidadCortada];
+          ? [fichaValue, formattedDate, r.referencia || '', r.descripcion || '', r.cantidadCortada]
+          : [fichaValue, formattedDate, r.referencia || '', r.cantidadCortada];
 
         const dataRow = worksheet.addRow(rowData);
         dataRow.height = 18;
         dataRow.eachCell((cell, colNum) => {
           if (colNum === 1) {
             cell.style = fichaCellStyle;
-          } else if (config.incluirDescripcion && colNum === 3) {
+          } else if (config.incluirDescripcion && colNum === 4) {
             cell.style = cellStyleLeft;
           } else {
             cell.style = cellStyleCenter;
@@ -569,11 +578,12 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
 
       // Totales
       const uniqueFichas = new Set(dataToExport.map(r => r.numeroFicha)).size;
+      const uniqueReferences = new Set(dataToExport.map(r => r.referencia).filter(Boolean)).size;
       const totalCantCortada = dataToExport.reduce((acc, r) => acc + (r.cantidadCortada || 0), 0);
 
       const totalsRowData = config.incluirDescripcion
-        ? [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, '', totalCantCortada]
-        : [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, totalCantCortada];
+        ? [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, `REFS: ${uniqueReferences}`, '', totalCantCortada]
+        : [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, `REFS: ${uniqueReferences}`, totalCantCortada];
 
       const totalRow = worksheet.addRow(totalsRowData);
       totalRow.height = 22;
