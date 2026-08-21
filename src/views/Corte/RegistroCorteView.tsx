@@ -556,24 +556,48 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
       };
 
       dataToExport.forEach(r => {
-        const formattedDate = r.fechaCorte ? r.fechaCorte.split('-').reverse().join('/') : '';
+        let dateValue: Date | null = null;
+        if (r.fechaCorte) {
+          const [year, month, day] = r.fechaCorte.split('-').map(Number);
+          dateValue = new Date(year, month - 1, day);
+        }
         const fichaNum = Number(r.numeroFicha);
         const fichaValue = isNaN(fichaNum) ? r.numeroFicha : fichaNum;
         const rowData = config.incluirDescripcion
-          ? [fichaValue, formattedDate, r.referencia || '', r.descripcion || '', r.cantidadCortada]
-          : [fichaValue, formattedDate, r.referencia || '', r.cantidadCortada];
+          ? [fichaValue, dateValue, r.referencia || '', r.descripcion || '', r.cantidadCortada]
+          : [fichaValue, dateValue, r.referencia || '', r.cantidadCortada];
 
         const dataRow = worksheet.addRow(rowData);
         dataRow.height = 18;
-        dataRow.eachCell((cell, colNum) => {
-          if (colNum === 1) {
-            cell.style = fichaCellStyle;
-          } else if (config.incluirDescripcion && colNum === 4) {
-            cell.style = cellStyleLeft;
-          } else {
-            cell.style = cellStyleCenter;
-          }
-        });
+
+        // Columna 1: N° DE FICHA
+        const cell1 = dataRow.getCell(1);
+        cell1.style = fichaCellStyle;
+
+        // Columna 2: FECHA CORTE
+        const cell2 = dataRow.getCell(2);
+        cell2.style = {
+          ...cellStyleCenter,
+          numFmt: 'dd/mm/yyyy'
+        };
+
+        // Columna 3: REFERENCIA
+        const cell3 = dataRow.getCell(3);
+        cell3.style = cellStyleCenter;
+
+        if (config.incluirDescripcion) {
+          // Columna 4: DESCRIPCIÓN
+          const cell4 = dataRow.getCell(4);
+          cell4.style = cellStyleLeft;
+
+          // Columna 5: CANT. CORTADA
+          const cell5 = dataRow.getCell(5);
+          cell5.style = cellStyleCenter;
+        } else {
+          // Columna 4: CANT. CORTADA
+          const cell4 = dataRow.getCell(4);
+          cell4.style = cellStyleCenter;
+        }
       });
 
       // Totales
