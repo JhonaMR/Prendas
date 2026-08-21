@@ -285,6 +285,8 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
                       <p className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-300' : ''}`}>
                         <span className={`transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-pink-500'}`}>Vendedor: {seller?.name}</span>
                         <span className={`transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>   —   </span>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-emerald-300' : 'text-emerald-600'}`}>Ciudad: {client?.city || '-'}</span>
+                        <span className={`transition-colors duration-300 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}>   —   </span>
                         <span className={`transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-violet-500'}`}>N° Pedido: {o.orderNumber ?? '-'}</span>
                       </p>
                     </div>

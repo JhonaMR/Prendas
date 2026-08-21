@@ -198,7 +198,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         return { desc0: { precio: precioVenta, rent: rentabilidad }, desc5: calc(5), desc10: calc(10), desc15: calc(15) };
     }, [precioVenta, rentabilidad, costoRef]);
 
-    const margenGanancia = useMemo(() => ajustarA900(precioVenta + (precioVenta * 0.30)), [precioVenta]);
+    const margenGanancia = useMemo(() => ajustarA900(precioVenta / 0.70), [precioVenta]);
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }

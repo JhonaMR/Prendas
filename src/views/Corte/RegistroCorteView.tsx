@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Trash2, Edit2, Plus, Search, Save, Upload } from 'lucide-react';
+import { Trash2, Edit2, Plus, Search, Save, Upload, Download } from 'lucide-react';
 import PaginationComponent from '../../components/PaginationComponent';
 import usePagination from '../../hooks/usePagination';
 import api from '../../services/api';
 import CorteImportModal, { ImportedCorteRow } from '../../components/CorteImportModal';
+import CorteExportModal, { ExportConfig } from '../../components/CorteExportModal';
 import { User, UserRole, Reference } from '../../types';
 import { useDarkMode } from '../../context/DarkModeContext';
 
@@ -34,6 +35,7 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false); // Nuevo estado para guardado
   const [showImportModal, setShowImportModal] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const cortesPagination = usePagination(1, 20);
 
   const isSoporte = user.role === UserRole.SOPORTE;
@@ -276,6 +278,347 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
     alert(`${rows.length} registros importados. Revisa y guarda cuando estés listo.`);
   };
 
+  const truncateText = (pdfDoc: any, text: string, maxW: number, fSize: number): string => {
+    pdfDoc.setFontSize(fSize);
+    if (pdfDoc.getTextWidth(text) <= maxW) return text;
+    let t = text;
+    while (t.length > 0 && pdfDoc.getTextWidth(t + '...') > maxW) {
+      t = t.slice(0, -1);
+    }
+    return t + '...';
+  };
+
+  const drawPageHeaderAndColumns = (pdfDoc: any, config: ExportConfig, cols: any[], margin: number, pageWidth: number) => {
+    pdfDoc.setFont('helvetica', 'bold');
+    pdfDoc.setFontSize(14);
+    pdfDoc.setTextColor(30, 41, 59);
+    pdfDoc.text('REPORTE DE REGISTRO DE CORTE', pageWidth / 2, margin + 4, { align: 'center' });
+    
+    pdfDoc.setFont('helvetica', 'normal');
+    pdfDoc.setFontSize(9);
+    pdfDoc.setTextColor(71, 85, 105);
+    const fDesdeFormatted = config.fechaDesde.split('-').reverse().join('/');
+    const fHastaFormatted = config.fechaHasta.split('-').reverse().join('/');
+    pdfDoc.text(`RANGO: ${fDesdeFormatted} - ${fHastaFormatted}`, pageWidth / 2, margin + 9, { align: 'center' });
+    
+    const headerY = margin + 14;
+    const headerHeight = 7;
+    pdfDoc.setFont('helvetica', 'bold');
+    pdfDoc.setFontSize(9);
+    pdfDoc.setDrawColor(148, 163, 184); // border color (slate-400)
+    pdfDoc.setLineWidth(0.3);
+    
+    let currentX = margin;
+    cols.forEach(col => {
+      pdfDoc.setFillColor(241, 245, 249); // background color (slate-100)
+      pdfDoc.rect(currentX, headerY, col.w, headerHeight, 'F');
+      pdfDoc.rect(currentX, headerY, col.w, headerHeight, 'S');
+      
+      const textY = headerY + headerHeight / 2 + (9 * 0.3528) / 2;
+      if (col.align === 'center') {
+        pdfDoc.text(col.label, currentX + col.w / 2, textY, { align: 'center' });
+      } else if (col.align === 'right') {
+        pdfDoc.text(col.label, currentX + col.w - 2, textY, { align: 'right' });
+      } else {
+        pdfDoc.text(col.label, currentX + 2, textY, { align: 'left' });
+      }
+      currentX += col.w;
+    });
+  };
+
+  const exportToPDF = async (config: ExportConfig, dataToExport: RegistroCorte[]) => {
+    try {
+      const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'letter'
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 10; // estrecha
+      const contentWidth = pageWidth - (margin * 2);
+
+      const cols = config.incluirDescripcion
+        ? [
+            { key: 'numeroFicha', label: 'N° DE FICHA', w: 35, align: 'center' },
+            { key: 'fechaCorte', label: 'FECHA CORTE', w: 35, align: 'center' },
+            { key: 'descripcion', label: 'DESCRIPCIÓN', w: contentWidth - 100, align: 'left' },
+            { key: 'cantidadCortada', label: 'CANT. CORTADA', w: 30, align: 'center' }
+          ]
+        : [
+            { key: 'numeroFicha', label: 'N° DE FICHA', w: contentWidth * 0.35, align: 'center' },
+            { key: 'fechaCorte', label: 'FECHA CORTE', w: contentWidth * 0.35, align: 'center' },
+            { key: 'cantidadCortada', label: 'CANT. CORTADA', w: contentWidth * 0.30, align: 'center' }
+          ];
+
+      drawPageHeaderAndColumns(doc, config, cols, margin, pageWidth);
+
+      let y = margin + 21;
+      const rowHeight = 6;
+      const fontSize = 8;
+
+      dataToExport.forEach(row => {
+        if (y + rowHeight > pageHeight - margin) {
+          doc.addPage();
+          drawPageHeaderAndColumns(doc, config, cols, margin, pageWidth);
+          y = margin + 21;
+        }
+
+        doc.setFontSize(fontSize);
+        doc.setTextColor(30, 41, 59); // Standard dark slate text
+        doc.setLineWidth(0.2);
+        doc.setDrawColor(226, 232, 240); // Standard light border (slate-200)
+
+        let currentX = margin;
+        cols.forEach(col => {
+          doc.rect(currentX, y, col.w, rowHeight, 'S');
+
+          let val = '';
+          if (col.key === 'numeroFicha') {
+            val = row.numeroFicha;
+            doc.setFont(undefined, 'bold'); // "número de ficha en negrita"
+          } else if (col.key === 'fechaCorte') {
+            val = row.fechaCorte ? row.fechaCorte.split('-').reverse().join('/') : '';
+            doc.setFont(undefined, 'normal');
+          } else if (col.key === 'descripcion') {
+            val = row.descripcion || '';
+            doc.setFont(undefined, 'normal');
+          } else if (col.key === 'cantidadCortada') {
+            val = String(row.cantidadCortada || 0);
+            doc.setFont(undefined, 'normal');
+          }
+
+          const pad = 2;
+          const maxTextW = col.w - (pad * 2);
+          const text = truncateText(doc, val, maxTextW, fontSize);
+
+          const textY = y + rowHeight / 2 + (fontSize * 0.3528) / 2;
+          if (col.align === 'center') {
+            doc.text(text, currentX + col.w / 2, textY, { align: 'center' });
+          } else if (col.align === 'right') {
+            doc.text(text, currentX + col.w - pad, textY, { align: 'right' });
+          } else {
+            doc.text(text, currentX + pad, textY, { align: 'left' });
+          }
+
+          currentX += col.w;
+        });
+
+        y += rowHeight;
+      });
+
+      // Totales
+      const uniqueFichas = new Set(dataToExport.map(r => r.numeroFicha)).size;
+      const totalCantCortada = dataToExport.reduce((acc, r) => acc + (r.cantidadCortada || 0), 0);
+      const totalsRowHeight = 8;
+
+      if (y + totalsRowHeight > pageHeight - margin) {
+        doc.addPage();
+        drawPageHeaderAndColumns(doc, config, cols, margin, pageWidth);
+        y = margin + 21;
+      }
+
+      let currentX = margin;
+      cols.forEach((col, idx) => {
+        doc.setFillColor(248, 250, 252); // background fill slate-50 (very light, high contrast)
+        doc.setTextColor(15, 23, 42); // text color slate-900 (almost black)
+        doc.setDrawColor(148, 163, 184); // border color slate-400
+        doc.setFont(undefined, 'bold');
+        doc.setFontSize(9);
+        doc.rect(currentX, y, col.w, totalsRowHeight, 'FD'); // Fill and Draw in one call
+
+        let val = '';
+        if (idx === 0) {
+          val = `REGISTROS: ${dataToExport.length}`;
+        } else if (idx === 1) {
+          val = `ÚNICAS: ${uniqueFichas}`;
+        } else if (idx === cols.length - 1) {
+          val = String(totalCantCortada);
+        }
+
+        const textY = y + totalsRowHeight / 2 + (9 * 0.3528) / 2;
+        if (col.align === 'center') {
+          doc.text(val, currentX + col.w / 2, textY, { align: 'center' });
+        } else if (col.align === 'right') {
+          doc.text(val, currentX + col.w - 2, textY, { align: 'right' });
+        } else {
+          doc.text(val, currentX + 2, textY, { align: 'left' });
+        }
+
+        currentX += col.w;
+      });
+
+      doc.save(`Reporte_Cortes_${config.fechaDesde}_${config.fechaHasta}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Ocurrió un error al generar el PDF.');
+    }
+  };
+
+  const exportToExcel = async (config: ExportConfig, dataToExport: RegistroCorte[]) => {
+    try {
+      const ExcelJS = await import('exceljs');
+      const Workbook = ExcelJS.Workbook;
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('CORTES');
+
+      worksheet.pageSetup = {
+        paperSize: 1 as any, // Letter
+        orientation: 'portrait' as any,
+        margins: {
+          left: 0.5, right: 0.5, top: 0.5, bottom: 0.5, header: 0.5, footer: 0.5
+        }
+      };
+
+      const thinBorder = {
+        top: { style: 'thin' as any, color: { argb: 'FFCBD5E1' } }, // slate-300
+        bottom: { style: 'thin' as any, color: { argb: 'FFCBD5E1' } },
+        left: { style: 'thin' as any, color: { argb: 'FFCBD5E1' } },
+        right: { style: 'thin' as any, color: { argb: 'FFCBD5E1' } }
+      };
+
+      const titleStyle = {
+        font: { bold: true, size: 14, color: { argb: 'FF1E293B' } },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFF1F5F9' } } // slate-100
+      };
+
+      const subtitleStyle = {
+        font: { size: 10, color: { argb: 'FF475569' } },
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFF1F5F9' } }
+      };
+
+      const numCols = config.incluirDescripcion ? 4 : 3;
+
+      const titleRow = worksheet.addRow(['REPORTE DE REGISTRO DE CORTE']);
+      titleRow.height = 25;
+      worksheet.mergeCells(titleRow.number, 1, titleRow.number, numCols);
+      titleRow.getCell(1).style = titleStyle;
+
+      const fDesdeFormatted = config.fechaDesde.split('-').reverse().join('/');
+      const fHastaFormatted = config.fechaHasta.split('-').reverse().join('/');
+      const subtitleRow = worksheet.addRow([`RANGO: ${fDesdeFormatted} - ${fHastaFormatted}`]);
+      subtitleRow.height = 20;
+      worksheet.mergeCells(subtitleRow.number, 1, subtitleRow.number, numCols);
+      subtitleRow.getCell(1).style = subtitleStyle;
+
+      worksheet.addRow([]); // Espacio en blanco
+
+      const headers = config.incluirDescripcion
+        ? ['N° DE FICHA', 'FECHA CORTE', 'DESCRIPCIÓN', 'CANT. CORTADA']
+        : ['N° DE FICHA', 'FECHA CORTE', 'CANT. CORTADA'];
+
+      const headerRow = worksheet.addRow(headers);
+      headerRow.height = 22;
+      headerRow.eachCell((cell) => {
+        cell.style = {
+          font: { bold: true, size: 10, color: { argb: 'FF1E293B' } },
+          alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+          border: thinBorder,
+          fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFE2E8F0' } } // slate-200
+        };
+      });
+
+      // Configurar anchos de columna
+      worksheet.getColumn(1).width = 20;
+      worksheet.getColumn(2).width = 20;
+      if (config.incluirDescripcion) {
+        worksheet.getColumn(3).width = 45;
+        worksheet.getColumn(4).width = 20;
+      } else {
+        worksheet.getColumn(3).width = 20;
+      }
+
+      const cellStyleCenter = {
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: thinBorder
+      };
+      const cellStyleLeft = {
+        alignment: { horizontal: 'left' as any, vertical: 'center' as any },
+        border: thinBorder
+      };
+      const fichaCellStyle = {
+        font: { bold: true }, // "número de ficha en negrita"
+        alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+        border: thinBorder
+      };
+
+      dataToExport.forEach(r => {
+        const formattedDate = r.fechaCorte ? r.fechaCorte.split('-').reverse().join('/') : '';
+        const fichaNum = Number(r.numeroFicha);
+        const fichaValue = isNaN(fichaNum) ? r.numeroFicha : fichaNum;
+        const rowData = config.incluirDescripcion
+          ? [fichaValue, formattedDate, r.descripcion || '', r.cantidadCortada]
+          : [fichaValue, formattedDate, r.cantidadCortada];
+
+        const dataRow = worksheet.addRow(rowData);
+        dataRow.height = 18;
+        dataRow.eachCell((cell, colNum) => {
+          if (colNum === 1) {
+            cell.style = fichaCellStyle;
+          } else if (config.incluirDescripcion && colNum === 3) {
+            cell.style = cellStyleLeft;
+          } else {
+            cell.style = cellStyleCenter;
+          }
+        });
+      });
+
+      // Totales
+      const uniqueFichas = new Set(dataToExport.map(r => r.numeroFicha)).size;
+      const totalCantCortada = dataToExport.reduce((acc, r) => acc + (r.cantidadCortada || 0), 0);
+
+      const totalsRowData = config.incluirDescripcion
+        ? [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, '', totalCantCortada]
+        : [`REGISTROS: ${dataToExport.length}`, `ÚNICAS: ${uniqueFichas}`, totalCantCortada];
+
+      const totalRow = worksheet.addRow(totalsRowData);
+      totalRow.height = 22;
+      totalRow.eachCell((cell) => {
+        cell.style = {
+          font: { bold: true, size: 10, color: { argb: 'FF1E293B' } },
+          alignment: { horizontal: 'center' as any, vertical: 'center' as any },
+          border: thinBorder,
+          fill: { type: 'pattern' as any, pattern: 'solid' as any, fgColor: { argb: 'FFE2E8F0' } }
+        };
+      });
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Reporte_Cortes_${config.fechaDesde}_${config.fechaHasta}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generating Excel:', error);
+      alert('Ocurrió un error al generar el Excel.');
+    }
+  };
+
+  const handleExport = (config: ExportConfig) => {
+    const dataToExport = registros.filter(r => r.fechaCorte >= config.fechaDesde && r.fechaCorte <= config.fechaHasta);
+
+    if (dataToExport.length === 0) {
+      alert('No se encontraron registros en el rango de fechas seleccionado.');
+      return;
+    }
+
+    if (config.format === 'pdf') {
+      exportToPDF(config, dataToExport);
+    } else {
+      exportToExcel(config, dataToExport);
+    }
+
+    setShowExportModal(false);
+  };
+
   const filteredRegistros = registros.filter(r =>
     r.referencia.toLowerCase().includes(searchReferencia.toLowerCase()) &&
     r.numeroFicha.toLowerCase().includes(searchNumeroFicha.toLowerCase())
@@ -354,6 +697,15 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
                 Importar
               </button>
             )}
+
+            {/* Botón Exportar */}
+            <button
+              onClick={() => setShowExportModal(true)}
+              className={`flex items-center gap-2 text-white px-3 py-1.5 rounded-lg font-medium text-sm transition shadow-md transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-600 hover:to-purple-500' : 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'}`}
+            >
+              <Download className="w-4 h-4" />
+              Exportar
+            </button>
 
             {/* Botón Agregar */}
             <button
@@ -495,6 +847,12 @@ const RegistroCorteView: React.FC<Props> = ({ user, referencesMaster }) => {
         isOpen={showImportModal}
         onClose={() => setShowImportModal(false)}
         onImport={handleImportFromExcel}
+      />
+
+      <CorteExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        onExport={handleExport}
       />
     </div>
   );

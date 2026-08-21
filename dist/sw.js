@@ -97,7 +97,7 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
     "revision": "1e72b6c64f81f87f0a03454a315248c2"
   }, {
     "url": "index.html",
-    "revision": "6ecac781d222d3b31811cce8e038c866"
+    "revision": "47237a6dbf84d677ec5ee85b58a9c995"
   }, {
     "url": "icono.ico",
     "revision": "a0b04d76fc0e0e88ccc9c46644b954f9"
@@ -123,13 +123,13 @@ define(['./workbox-f87553f6'], (function (workbox) { 'use strict';
     "url": "assets/purify.es-C_uT9hQ1.js",
     "revision": null
   }, {
-    "url": "assets/index.es-CaHrTEE7.js",
+    "url": "assets/index.es-BnkJXHjP.js",
     "revision": null
   }, {
-    "url": "assets/index-Dd65Y_VX.css",
+    "url": "assets/index-D7gnHBRy.js",
     "revision": null
   }, {
-    "url": "assets/index-CB_3vhC9.js",
+    "url": "assets/index-BkvSwRuJ.css",
     "revision": null
   }], {});
   workbox.cleanupOutdatedCaches();
