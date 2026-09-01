@@ -5,11 +5,9 @@
 
 -- ==================== UP ====================
 ALTER TABLE public.production_tracking
-ADD COLUMN highlight_row_color VARCHAR(20) DEFAULT NULL,
-ADD COLUMN highlight_cells JSONB DEFAULT '{}'::jsonb;
-
+ADD COLUMN IF NOT EXISTS highlight_row_color VARCHAR(20) DEFAULT NULL,
+ADD COLUMN IF NOT EXISTS highlight_cells JSONB DEFAULT '{}'::jsonb;
 
 -- ==================== DOWN ====================
 -- ALTER TABLE public.production_tracking DROP COLUMN highlight_row_color;
 -- ALTER TABLE public.production_tracking DROP COLUMN highlight_cells;
-

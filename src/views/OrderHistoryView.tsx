@@ -32,7 +32,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
   const [editingOrderId, setEditingOrderId] = useState<string | null>(null);
   const [editingOrder, setEditingOrder] = useState<Order | null>(null);
   const [focusedPriceIdx, setFocusedPriceIdx] = useState<number | null>(null);
-  const ordersPagination = usePagination(1, 50);
+  const ordersPagination = usePagination(1, 20);
 
   const isAdmin = currentUser?.role === UserRole.ADMIN || currentUser?.role === UserRole.SOPORTE;
   const brand = useBrand();
@@ -451,7 +451,7 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
             <div className="mt-6">
               <PaginationComponent
                 currentPage={ordersPagination.pagination.page}
-                totalPages={ordersPagination.pagination.totalPages}
+                totalPages={Math.ceil(filteredOrders.length / ordersPagination.pagination.limit) || 1}
                 pageSize={ordersPagination.pagination.limit}
                 onPageChange={ordersPagination.goToPage}
                 onPageSizeChange={ordersPagination.setLimit}

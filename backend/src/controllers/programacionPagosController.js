@@ -418,8 +418,53 @@ const bulkImportCuentas = async (req, res) => {
   }
 };
 
+/**
+ * GET /pagos-programados/search?qDetalle=...&qNombre=...
+ * Busca pagos por detalle inicial o nombre sin importar el día, devolviéndolos con sus descuentos
+ */
+const searchPagos = async (req, res) => {
+  try {
+    const { qDetalle = '', qNombre = '' } = req.query;
+    
+    const pool = getPool();
+
+    // Buscar pagos (filtrado básico por ILIKE en nombre y detalle)
+    // Se usa un límite de 100 para evitar saturar si buscan algo muy genérico
+    const { rows: pagos } = await pool.query(
+      `SELECT * FROM pagos_programados 
+       WHERE 
+         ($1::text = '' OR detalle_inicial ILIKE '%' || $1 || '%')
+         AND 
+         ($2::text = '' OR nombre ILIKE '%' || $2 || '%')
+       ORDER BY fecha DESC, id DESC
+       LIMIT 100`,
+      [qDetalle, qNombre]
+    );
+
+    if (!pagos.length) return res.json({ success: true, data: [] });
+
+    // Obtener descuentos de los pagos encontrados
+    const ids = pagos.map(p => p.id);
+    const { rows: descuentos } = await pool.query(
+      `SELECT * FROM descuentos_pago WHERE pago_id = ANY($1) ORDER BY pago_id, orden ASC`,
+      [ids]
+    );
+
+    const data = pagos.map(p => ({
+      ...p,
+      descuentosOF: descuentos.filter(d => d.pago_id === p.id && d.tipo === 'OF'),
+      descuentosML: descuentos.filter(d => d.pago_id === p.id && d.tipo === 'ML'),
+    }));
+
+    res.json({ success: true, data });
+  } catch (err) {
+    console.error('searchPagos error:', err);
+    res.status(500).json({ success: false, message: 'Error al buscar pagos' });
+  }
+};
+
 module.exports = {
   getCuentas, createCuenta, updateCuenta, deleteCuenta,
   getPagosPorFecha, getConteoPorMes, getTotalesPorMes, createPago, updatePago, deletePago, reordenarPagos,
-  bulkImportCuentas,
+  bulkImportCuentas, searchPagos,
 };

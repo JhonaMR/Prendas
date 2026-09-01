@@ -46,6 +46,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     const [duplicarCortes, setDuplicarCortes] = useState(false);
     const [duplicando, setDuplicando] = useState(false);
 
+    const [linea, setLinea] = useState('Elegir');
     const [descripcion, setDescripcion] = useState('');
     const [marca, setMarca] = useState('');
     const [novedad, setNovedad] = useState('');
@@ -91,6 +92,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     useEffect(() => {
         if (fichaExistente) {
             console.log('📋 Ficha cargada:', { referencia: fichaExistente.referencia, precioVenta: fichaExistente.precioVenta, rentabilidad: fichaExistente.rentabilidad, costoTotal: fichaExistente.costoTotal });
+            setLinea(fichaExistente.linea || 'Elegir');
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');
@@ -202,9 +204,10 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }
+        if (!linea || linea === 'Elegir') { alert('Debe seleccionar una Línea válida obligatoriamente'); return; }
         setIsLoading(true);
         try {
-            const result = await apiFichas.updateFichaCosto(referencia, { referencia, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, foto3: foto3 || null, archivoPsd: archivoPsd || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones }, precioVenta, rentabilidad, estadoRevision);
+            const result = await apiFichas.updateFichaCosto(referencia, { referencia, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, foto3: foto3 || null, archivoPsd: archivoPsd || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones }, precioVenta, rentabilidad, estadoRevision);
             if (result.success) {
                 setHasUnsavedChanges(false); alert('✅ Ficha guardada exitosamente');
                 const fichas = await apiFichas.getFichasCosto();
@@ -477,9 +480,31 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                     <div className={`p-6 rounded-3xl space-y-4 transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-slate-100 border border-slate-200'}`}>
                         <div className="flex items-center justify-between">
                             <h3 className={`text-sm font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Información Básica</h3>
-                            <div className="flex items-center gap-2">
-                                <span className={`text-xs font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Revisión:</span>
-                            <div className="relative">
+                            <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Línea:</span>
+                                    <select
+                                        value={linea}
+                                        onChange={e => { setLinea(e.target.value); setHasUnsavedChanges(true); }}
+                                        disabled={!canEdit}
+                                        className={`px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider outline-none transition-colors border-2 ${
+                                            isDark 
+                                                ? 'bg-[#3d2d52] border-violet-600 text-violet-200 focus:border-violet-400' 
+                                                : 'bg-white border-slate-200 text-slate-700 focus:border-pink-400'
+                                        }`}
+                                    >
+                                        <option value="Elegir">Elegir</option>
+                                        <option value="Dama">Dama</option>
+                                        <option value="Hombre">Hombre</option>
+                                        <option value="Niña">Niña</option>
+                                        <option value="Niño">Niño</option>
+                                        <option value="Plus">Plus</option>
+                                        <option value="Colegial">Colegial</option>
+                                    </select>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-xs font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Revisión:</span>
+                                <div className="relative">
                                 <button
                                     onClick={() => isAdmin && setShowRevisionPicker(v => !v)}
                                     className={`w-7 h-7 rounded-full border-2 border-white shadow transition-transform ${isAdmin ? 'hover:scale-110 cursor-pointer' : 'cursor-default'}`}
@@ -514,6 +539,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                                     </div>
                                 )}
                             </div>
+                                </div>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">

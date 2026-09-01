@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types';
 import CuentasBancariasView from './CuentasBancariasView';
+import BuscarPagosModal from '../components/pagos/BuscarPagosModal';
 import api from '../services/api';
 import { useDarkMode } from '../context/DarkModeContext';
 
@@ -39,6 +40,7 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
   const [mes, setMes] = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
   const [verCuentas, setVerCuentas] = useState(false);
+  const [verBuscador, setVerBuscador] = useState(false);
   const [totalesPagos, setTotalesPagos] = useState<Record<string, { totalOF: number; totalML: number; countOF: number; countML: number }>>({});
   const [loadingCalendario, setLoadingCalendario] = useState(false);
   const [errorCalendario, setErrorCalendario] = useState(false);
@@ -102,6 +104,8 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
 
   return (
     <div className={`h-full w-full flex flex-col p-4 md:p-8 overflow-auto pb-20 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-transparent'}`}>
+      {verBuscador && <BuscarPagosModal onClose={() => setVerBuscador(false)} />}
+      
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -130,6 +134,16 @@ const ProgramacionPagosView: React.FC<ProgramacionPagosViewProps> = ({ user, onN
               <option key={a} value={a}>{a}</option>
             ))}
           </select>
+
+          <button
+            onClick={() => setVerBuscador(true)}
+            className={`flex items-center gap-2 font-bold px-4 py-2 rounded-xl shadow-sm transition-all whitespace-nowrap border-2 transition-colors duration-300 ${isDark ? 'bg-violet-700 border-violet-600 text-white hover:bg-violet-600' : 'bg-violet-600 border-violet-600 text-white hover:bg-violet-700'}`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            Buscar Pago
+          </button>
 
           <button
             onClick={() => setVerCuentas(true)}

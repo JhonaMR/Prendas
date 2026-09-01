@@ -146,6 +146,7 @@ const mapFicha = (f) => ({
     referencia: f.referencia,
     disenadoraId: f.disenadora_id,
     disenadoraNombre: f.disenadora_nombre,
+    linea: f.linea,
     descripcion: f.descripcion,
     marca: f.marca,
     novedad: f.novedad,
@@ -220,13 +221,16 @@ const getFichaDiseno = async (req, res) => {
 const createFichaDiseno = async (req, res) => {
     try {
         const {
-            referencia, disenadoraId, descripcion, marca, novedad,
+            referencia, disenadoraId, linea, descripcion, marca, novedad,
             muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones, createdBy
         } = req.body;
 
         if (!referencia || !disenadoraId) {
             return res.status(400).json({ success: false, message: 'Referencia y diseñadora son obligatorios' });
+        }
+        if (!linea || linea === 'Elegir') {
+            return res.status(400).json({ success: false, message: 'Debe seleccionar una línea válida' });
         }
 
         const existe = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [referencia]);
@@ -247,18 +251,18 @@ const createFichaDiseno = async (req, res) => {
         await transaction(async (client) => {
             const result = await client.query(`
                 INSERT INTO fichas_diseno (
-                    referencia, disenadora_id, descripcion, marca, novedad,
+                    referencia, disenadora_id, linea, descripcion, marca, novedad,
                     muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_total, created_by
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-                    $13, $14, $15, $16, $17,
-                    $18, $19, $20, $21, $22, $23, $24
+                    $13, $14, $15, $16, $17, $18,
+                    $19, $20, $21, $22, $23, $24, $25
                 ) RETURNING id, referencia, costo_total
             `, [
-                referencia, disenadoraId, descripcion, marca, novedad,
+                referencia, disenadoraId, linea, descripcion, marca, novedad,
                 muestra1, muestra2, observaciones, foto1, foto2, foto3 || null, archivoPsd || null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
@@ -289,9 +293,13 @@ const updateFichaDiseno = async (req, res) => {
     try {
         const { referencia } = req.params;
         const {
-            descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
+            linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones
         } = req.body;
+
+        if (!linea || linea === 'Elegir') {
+            return res.status(400).json({ success: false, message: 'Debe seleccionar una línea válida' });
+        }
 
         const existe = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [referencia]);
         if (existe.rows.length === 0) {
@@ -310,15 +318,15 @@ const updateFichaDiseno = async (req, res) => {
         await transaction(async (client) => {
             await client.query(`
                 UPDATE fichas_diseno
-                SET descripcion=$1, marca=$2, novedad=$3, muestra_1=$4, muestra_2=$5,
-                    observaciones=$6, foto_1=$7, foto_2=$8, foto_3=$9, archivo_psd=$10,
-                    materia_prima=$11, mano_obra=$12, insumos_directos=$13,
-                    insumos_indirectos=$14, provisiones=$15,
-                    total_materia_prima=$16, total_mano_obra=$17, total_insumos_directos=$18,
-                    total_insumos_indirectos=$19, total_provisiones=$20, costo_total=$21
-                WHERE referencia=$22
+                SET linea=$1, descripcion=$2, marca=$3, novedad=$4, muestra_1=$5, muestra_2=$6,
+                    observaciones=$7, foto_1=$8, foto_2=$9, foto_3=$10, archivo_psd=$11,
+                    materia_prima=$12, mano_obra=$13, insumos_directos=$14,
+                    insumos_indirectos=$15, provisiones=$16,
+                    total_materia_prima=$17, total_mano_obra=$18, total_insumos_directos=$19,
+                    total_insumos_indirectos=$20, total_provisiones=$21, costo_total=$22
+                WHERE referencia=$23
             `, [
-                descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+                linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
                 foto3 !== undefined ? foto3 : null,
                 archivoPsd !== undefined ? archivoPsd : null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),

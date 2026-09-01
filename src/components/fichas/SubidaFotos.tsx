@@ -34,7 +34,7 @@ const SubidaFotos: React.FC<SubidaFotosProps> = ({
   // Obtener URL base de la API desde la variable de entorno o config
   const getBaseUrl = () => {
     const apiUrl = import.meta.env.VITE_API_URL || 
-                   (typeof window !== 'undefined' && window.API_CONFIG?.getApiUrl?.()) ||
+                   (typeof window !== 'undefined' && (window as any).API_CONFIG?.getApiUrl?.()) ||
                    'http://localhost:3000';
     return apiUrl.replace(/\/api$/, '');
   };

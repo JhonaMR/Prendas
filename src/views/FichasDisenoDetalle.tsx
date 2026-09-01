@@ -47,6 +47,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const [duplicando, setDuplicando] = useState(false);
 
     const [disenadoraId, setDisenadoraId] = useState(params?.disenadoraId || '');
+    const [linea, setLinea] = useState('Elegir');
     const [descripcion, setDescripcion] = useState('');
     const [marca, setMarca] = useState('');
     const [novedad, setNovedad] = useState('');
@@ -73,6 +74,7 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     useEffect(() => {
         if (fichaExistente && !isNueva) {
             setDisenadoraId(fichaExistente.disenadoraId);
+            setLinea(fichaExistente.linea || 'Elegir');
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');
@@ -175,8 +177,9 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para guardar fichas de diseño'); return; }
         if (!referencia || !disenadoraId) { alert('Referencia y diseñadora son obligatorios'); return; }
+        if (!linea || linea === 'Elegir') { alert('Debe seleccionar una Línea válida obligatoriamente'); return; }
         setIsLoading(true);
-        const fichaData = { referencia, disenadoraId, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones };
+        const fichaData = { referencia, disenadoraId, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones };
         try {
             const result = isNueva || !fichaExistente
                 ? await apiFichas.createFichaDiseno(fichaData, user.name)
@@ -349,7 +352,30 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 </div>
                 <div className="space-y-6 lg:col-span-2">
                     <div className={`p-6 rounded-3xl space-y-4 transition-colors ${isDark ? 'bg-[#4a3a63] border border-violet-700' : 'bg-slate-100'}`}>
-                        <h3 className={`text-sm font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Información Básica</h3>
+                        <div className="flex items-center justify-between">
+                            <h3 className={`text-sm font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>Información Básica</h3>
+                            <div className="flex items-center gap-2">
+                                <span className={`text-xs font-black uppercase tracking-widest transition-colors ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Línea:</span>
+                                <select
+                                    value={linea}
+                                    onChange={e => mark(setLinea)(e.target.value)}
+                                    disabled={!canEdit}
+                                    className={`px-3 py-1.5 rounded-xl font-bold text-xs uppercase tracking-wider outline-none transition-colors border-2 ${
+                                        isDark 
+                                            ? 'bg-[#3d2d52] border-violet-600 text-violet-200 focus:border-violet-400' 
+                                            : 'bg-white border-slate-200 text-slate-700 focus:border-pink-400'
+                                    }`}
+                                >
+                                    <option value="Elegir">Elegir</option>
+                                    <option value="Dama">Dama</option>
+                                    <option value="Hombre">Hombre</option>
+                                    <option value="Niña">Niña</option>
+                                    <option value="Niño">Niño</option>
+                                    <option value="Plus">Plus</option>
+                                    <option value="Colegial">Colegial</option>
+                                </select>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>Descripción</label>

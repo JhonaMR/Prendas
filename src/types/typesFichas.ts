@@ -26,6 +26,7 @@ export interface FichaDiseno {
     referencia: string;
     disenadoraId: string;
     disenadoraNombre?: string;
+    linea: string;
     descripcion: string;
     marca: string;
     novedad: string;
@@ -59,6 +60,7 @@ export interface FichaCosto {
     fichaDisenoId: string | null;
     disenadoraId?: string;
     disenadoraNombre?: string;
+    linea: string;
     descripcion: string;
     marca: string;
     novedad: string;
@@ -148,6 +150,7 @@ export interface ReferenciaEnMaleta {
 export interface FichaFormData {
     referencia: string;
     disenadoraId?: string;
+    linea?: string;
     descripcion: string;
     marca: string;
     novedad: string;

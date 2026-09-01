@@ -326,6 +326,7 @@ router.put('/cuentas-bancarias/:id', verifyToken, allowOperadorOrAdmin, programa
 router.delete('/cuentas-bancarias/:id', verifyToken, allowOperadorOrAdmin, programacionPagosController.deleteCuenta);
 
 // Pagos programados
+router.get('/pagos-programados/search', verifyToken, programacionPagosController.searchPagos);
 router.get('/pagos-programados/conteo', verifyToken, programacionPagosController.getConteoPorMes);
 router.get('/pagos-programados/totales', verifyToken, programacionPagosController.getTotalesPorMes);
 router.get('/pagos-programados', verifyToken, programacionPagosController.getPagosPorFecha);

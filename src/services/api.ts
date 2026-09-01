@@ -2111,6 +2111,26 @@ class ApiService {
     }
   }
 
+  async searchPagos(qDetalle: string, qNombre: string): Promise<any[]> {
+    try {
+      const queryParams = new URLSearchParams();
+      if (qDetalle) queryParams.append('qDetalle', qDetalle);
+      if (qNombre) queryParams.append('qNombre', qNombre);
+      
+      const response = await fetch(`${this.getApiUrl()}/pagos-programados/search?${queryParams.toString()}`, {
+        headers: this.getAuthHeaders()
+      });
+      
+      if (!response.ok) return [];
+      
+      const data = await response.json();
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Error en searchPagos:', error);
+      return [];
+    }
+  }
+
   async getConteoPagosPorMes(anio: number, mes: number): Promise<Record<string, number>> {
     try {
       const response = await fetch(`${this.getApiUrl()}/pagos-programados/conteo?anio=${anio}&mes=${mes + 1}`, {

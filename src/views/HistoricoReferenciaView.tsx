@@ -56,6 +56,7 @@ interface FichaCosto {
   costoTotal?: number;
   rentabilidad?: number;
   precioVenta?: number;
+  estadoRevision?: 'rojo' | 'verde' | 'morado' | 'sin-estado';
 }
 
 const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user, onNavigate, state }) => {
@@ -475,7 +476,21 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                           <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide transition-colors duration-300 ${isDark ? 'bg-violet-700 text-violet-100' : 'bg-blue-100 text-blue-800'}`}>
                             Referencia
                           </div>
-                          <h2 className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-gray-900'}`}>{selectedReference.id}</h2>
+                          <div className="flex items-center gap-2">
+                            {(() => {
+                              const ficha = fichasCosto.find(f => f.referencia === selectedReference.id);
+                              if (ficha?.estadoRevision) {
+                                return (
+                                  <div className="w-5 h-5 rounded-full border-2 border-white shadow"
+                                    style={{ backgroundColor: ficha.estadoRevision === 'rojo' ? '#fca5a5' : ficha.estadoRevision === 'verde' ? '#86efac' : ficha.estadoRevision === 'morado' ? '#c4b5fd' : '#e2e8f0' }}
+                                    title={`Revisión: ${ficha.estadoRevision}`}
+                                  />
+                                );
+                              }
+                              return null;
+                            })()}
+                            <h2 className={`text-3xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-gray-900'}`}>{selectedReference.id}</h2>
+                          </div>
                         </div>
                         <p className={`font-medium leading-tight transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-gray-600'}`}>{selectedReference.description}</p>
                       </div>

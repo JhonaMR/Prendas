@@ -124,7 +124,7 @@ const importarFichaDiseno = async (req, res) => {
             const result = await client.query(`
                 INSERT INTO fichas_costo (
                     referencia, ficha_diseno_id,
-                    descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
+                    linea, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
                     foto_1, foto_2, foto_3, archivo_psd,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
@@ -136,11 +136,11 @@ const importarFichaDiseno = async (req, res) => {
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
                     $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23,
-                    $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36
+                    $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37
                 ) RETURNING id, referencia, costo_total, precio_venta
             `, [
                 fd.referencia, fd.id,
-                fd.descripcion, fd.marca, fd.novedad, fd.muestra_1, fd.muestra_2, fd.observaciones,
+                fd.linea, fd.descripcion, fd.marca, fd.novedad, fd.muestra_1, fd.muestra_2, fd.observaciones,
                 fd.foto_1, fd.foto_2, fd.foto_3 || null, fd.archivo_psd || null,
                 JSON.stringify(fd.materia_prima || []), JSON.stringify(fd.mano_obra || []), JSON.stringify(fd.insumos_directos || []), JSON.stringify(fd.insumos_indirectos || []), JSON.stringify(fd.provisiones || []),
                 fd.total_materia_prima, fd.total_mano_obra, fd.total_insumos_directos,
@@ -288,7 +288,7 @@ const updateFichaCosto = async (req, res) => {
     try {
         const { referencia } = req.params;
         const {
-            descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
+            linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd,
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones,
             precioVenta, rentabilidad, estadoRevision
         } = req.body;
@@ -311,18 +311,18 @@ const updateFichaCosto = async (req, res) => {
         await transaction(async (client) => {
             await client.query(`
                 UPDATE fichas_costo
-                SET descripcion=$1, marca=$2, novedad=$3, muestra_1=$4, muestra_2=$5,
-                    observaciones=$6, foto_1=$7, foto_2=$8, foto_3=$9, archivo_psd=$10,
-                    materia_prima=$11, mano_obra=$12, insumos_directos=$13, insumos_indirectos=$14, provisiones=$15,
-                    total_materia_prima=$16, total_mano_obra=$17, total_insumos_directos=$18,
-                    total_insumos_indirectos=$19, total_provisiones=$20, costo_total=$21,
-                    precio_venta=$22, rentabilidad=$23, margen_ganancia=$24, costo_contabilizar=$25,
-                    desc_0_precio=$26, desc_0_rent=$27, desc_5_precio=$28, desc_5_rent=$29,
-                    desc_10_precio=$30, desc_10_rent=$31, desc_15_precio=$32, desc_15_rent=$33,
-                    estado_revision=$34
-                WHERE referencia=$35
+                SET linea=$1, descripcion=$2, marca=$3, novedad=$4, muestra_1=$5, muestra_2=$6,
+                    observaciones=$7, foto_1=$8, foto_2=$9, foto_3=$10, archivo_psd=$11,
+                    materia_prima=$12, mano_obra=$13, insumos_directos=$14, insumos_indirectos=$15, provisiones=$16,
+                    total_materia_prima=$17, total_mano_obra=$18, total_insumos_directos=$19,
+                    total_insumos_indirectos=$20, total_provisiones=$21, costo_total=$22,
+                    precio_venta=$23, rentabilidad=$24, margen_ganancia=$25, costo_contabilizar=$26,
+                    desc_0_precio=$27, desc_0_rent=$28, desc_5_precio=$29, desc_5_rent=$30,
+                    desc_10_precio=$31, desc_10_rent=$32, desc_15_precio=$33, desc_15_rent=$34,
+                    estado_revision=$35
+                WHERE referencia=$36
             `, [
-                descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+                linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
                 foto3 !== undefined ? foto3 : null,
                 archivoPsd !== undefined ? archivoPsd : null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),

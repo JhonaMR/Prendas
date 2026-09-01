@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { useDarkMode } from '../context/DarkModeContext';
+import PagoDetalleModal from '../components/pagos/PagoDetalleModal';
 
 // ── Tipos ──────────────────────────────────────────────────────────────────
 export interface Descuento {
@@ -705,94 +706,14 @@ const ProgramacionPagosDiaView: React.FC<Props> = ({ fecha, onVolver, cuentasReg
 
       {/* ── Modal Detalle ────────────────────────────────────────────────── */}
       {modal === 'detalle' && seleccionado && (
-        <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-colors duration-300 ${isDark ? 'bg-black/50' : 'bg-black/40'}`} onClick={cerrarModal}>
-          <div className={`rounded-3xl shadow-2xl w-full max-w-lg p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
-            {/* Encabezado */}
-            <div className="mb-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <h2 className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-violet-900'}`}>{seleccionado.nombre}</h2>
-                  <p className={`text-sm mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>{seleccionado.cedula} · {seleccionado.cuenta}</p>
-                  {seleccionado.fechaOriginal && (
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full mt-2 inline-block transition-colors duration-300 ${isDark ? 'bg-amber-900/30 text-amber-400' : 'bg-amber-100 text-amber-700'}`}>
-                      Traído del {labelFecha(seleccionado.fechaOriginal)}
-                    </span>
-                  )}
-                </div>
-                <button onClick={cerrarModal} className={`transition-colors duration-300 ml-4 flex-shrink-0 ${isDark ? 'text-violet-400 hover:text-violet-200' : 'text-slate-400 hover:text-slate-600'}`}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* OF */}
-            {seleccionado.brutOF > 0 && (
-              <div className={`rounded-2xl p-4 mb-3 transition-colors duration-300 ${isDark ? 'bg-violet-900/20' : 'bg-violet-50'}`}>
-                <p className={`font-bold text-sm mb-2 text-center transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-violet-700'}`}>Pago OF</p>
-                <div className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-600'}`}>
-                  <span>Valor Bruto</span><span className={`font-semibold transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-700'}`}>{fmt(seleccionado.brutOF)}</span>
-                </div>
-                {seleccionado.descuentosOF.map(d => (
-                  <div key={d.id} className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
-                    <span>{d.tipo === 'suma' ? '+' : '-'} {d.etiqueta || 'Descuento'}</span>
-                    <span className={`transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-400'}`}>
-                      {d.tipo === 'suma' ? '+' : '-'}{fmt(d.monto)}
-                    </span>
-                  </div>
-                ))}
-                <div className={`flex justify-between text-sm font-bold pt-2 mt-2 border-t transition-colors duration-300 ${isDark ? 'border-violet-700 text-emerald-400' : 'border-violet-200 text-emerald-700'}`}>
-                  <span>Neto OF</span><span>{fmt(neto(seleccionado.brutOF, seleccionado.descuentosOF))}</span>
-                </div>
-              </div>
-            )}
-
-            {/* ML */}
-            {seleccionado.brutML > 0 && (
-              <div className={`rounded-2xl p-4 mb-3 transition-colors duration-300 ${isDark ? 'bg-pink-900/20' : 'bg-pink-50'}`}>
-                <p className={`font-bold text-sm mb-2 text-center transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-pink-700'}`}>Pago ML</p>
-                <div className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-pink-300' : 'text-slate-600'}`}>
-                  <span>Valor Bruto</span><span className={`font-semibold transition-colors duration-300 ${isDark ? 'text-pink-200' : 'text-slate-700'}`}>{fmt(seleccionado.brutML)}</span>
-                </div>
-                {seleccionado.descuentosML.map(d => (
-                  <div key={d.id} className={`flex justify-between text-sm mb-1 transition-colors duration-300 ${isDark ? 'text-pink-400' : 'text-slate-500'}`}>
-                    <span>{d.tipo === 'suma' ? '+' : '-'} {d.etiqueta || 'Descuento'}</span>
-                    <span className={`transition-colors duration-300 ${d.tipo === 'suma' ? isDark ? 'text-green-400' : 'text-green-600' : isDark ? 'text-red-400' : 'text-red-400'}`}>
-                      {d.tipo === 'suma' ? '+' : '-'}{fmt(d.monto)}
-                    </span>
-                  </div>
-                ))}
-                <div className={`flex justify-between text-sm font-bold pt-2 mt-2 border-t transition-colors duration-300 ${isDark ? 'border-pink-700 text-emerald-400' : 'border-pink-200 text-emerald-700'}`}>
-                  <span>Neto ML</span><span>{fmt(neto(seleccionado.brutML, seleccionado.descuentosML))}</span>
-                </div>
-              </div>
-            )}
-
-            {/* Detalle */}
-            {seleccionado.detalleInicial && (
-              <div className={`rounded-2xl p-4 mb-5 transition-colors duration-300 ${isDark ? 'bg-slate-900/20' : 'bg-slate-50'}`}>
-                <p className={`text-xs font-semibold mb-1 transition-colors duration-300 ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>Detalle</p>
-                <p className={`text-sm transition-colors duration-300 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>{buildDetalle(seleccionado)}</p>
-              </div>
-            )}
-
-            <div className="flex gap-3">
-              <button onClick={() => { cerrarModal(); abrirEditar(seleccionado); }}
-                className={`flex-1 font-semibold py-2.5 rounded-xl transition-all transition-colors duration-300 border-2 ${isDark ? 'border-violet-600 text-violet-300 hover:bg-violet-900/40' : 'border-violet-200 text-violet-500 hover:bg-violet-50'}`}>
-                Editar
-              </button>
-              <button onClick={() => { setModal('mover'); }}
-                className={`flex-1 font-semibold py-2.5 rounded-xl transition-all transition-colors duration-300 border-2 ${isDark ? 'border-amber-600 text-amber-300 hover:bg-amber-900/40' : 'border-amber-200 text-amber-500 hover:bg-amber-50'}`}>
-                Mover
-              </button>
-              <button onClick={() => setModal('eliminar')}
-                className={`flex-1 font-semibold py-2.5 rounded-xl transition-all transition-colors duration-300 border-2 ${isDark ? 'border-red-600 text-red-300 hover:bg-red-900/40' : 'border-red-200 text-red-400 hover:bg-red-50'}`}>
-                Eliminar
-              </button>
-            </div>
-          </div>
-        </div>
+        <PagoDetalleModal
+          seleccionado={seleccionado}
+          fechaContexto={fecha}
+          onClose={cerrarModal}
+          onEdit={(p) => { cerrarModal(); abrirEditar(p); }}
+          onMove={(p) => setModal('mover')}
+          onDelete={(p) => setModal('eliminar')}
+        />
       )}
 
       {/* ── Modal Mover ──────────────────────────────────────────────────── */}
