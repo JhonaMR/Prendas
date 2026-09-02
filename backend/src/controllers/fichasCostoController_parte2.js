@@ -137,7 +137,7 @@ const importarFichaDiseno = async (req, res) => {
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
                     $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23,
                     $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $35, $36, $37
-                ) RETURNING id, referencia, costo_total, precio_venta
+                ) RETURNING id, referencia, linea, costo_total, precio_venta
             `, [
                 fd.referencia, fd.id,
                 fd.linea, fd.descripcion, fd.marca, fd.novedad, fd.muestra_1, fd.muestra_2, fd.observaciones,
@@ -183,6 +183,7 @@ const importarFichaDiseno = async (req, res) => {
             data: {
                 id: fichaData.id,
                 referencia: fichaData.referencia,
+                linea: fichaData.linea,
                 costoTotal: parseFloat(fichaData.costo_total),
                 precioVenta: parseFloat(fichaData.precio_venta)
             },
@@ -200,7 +201,7 @@ const importarFichaDiseno = async (req, res) => {
 const createFichaCosto = async (req, res) => {
     try {
         const {
-            referencia, descripcion, marca, novedad, muestra1, muestra2, observaciones,
+            referencia, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones,
             foto1, foto2, materiaPrima, manoObra, insumosDirectos, insumosIndirectos,
             provisiones, rentabilidad, createdBy
         } = req.body;
@@ -223,12 +224,13 @@ const createFichaCosto = async (req, res) => {
         };
         const totales = calcularTotales(secciones);
         const valores = calcularValoresFinancieros(totales.costo_total, null, rentabilidad || 35);
+        const lineaFinal = (linea && linea !== 'Elegir') ? linea : 'Dama';
 
         let fichaData;
         await transaction(async (client) => {
             const result = await client.query(`
                 INSERT INTO fichas_costo (
-                    referencia, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
+                    referencia, linea, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
                     foto_1, foto_2, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_total,
@@ -237,12 +239,12 @@ const createFichaCosto = async (req, res) => {
                     desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent,
                     created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9,
-                    $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
-                    $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33
-                ) RETURNING id, referencia, costo_total, precio_venta
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                    $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                    $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34
+                ) RETURNING id, referencia, linea, costo_total, precio_venta
             `, [
-                referencia, descripcion, marca, novedad, muestra1, muestra2, observaciones,
+                referencia, lineaFinal, descripcion, marca, novedad, muestra1, muestra2, observaciones,
                 foto1, foto2,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
                 JSON.stringify(secciones.insumos_directos), JSON.stringify(secciones.insumos_indirectos),
@@ -293,10 +295,18 @@ const updateFichaCosto = async (req, res) => {
             precioVenta, rentabilidad, estadoRevision
         } = req.body;
 
-        const existe = await query('SELECT id FROM fichas_costo WHERE referencia = $1', [referencia]);
+        const existe = await query(`
+            SELECT fc.id, fc.linea, fd.linea as disenadora_linea
+            FROM fichas_costo fc
+            LEFT JOIN fichas_diseno fd ON fc.ficha_diseno_id = fd.id
+            WHERE fc.referencia = $1
+        `, [referencia]);
+
         if (existe.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
         }
+
+        const lineaFinal = (linea && linea !== 'Elegir') ? linea : (existe.rows[0].linea || existe.rows[0].disenadora_linea || 'Dama');
 
         const secciones = {
             materia_prima: materiaPrima || [],
@@ -322,7 +332,7 @@ const updateFichaCosto = async (req, res) => {
                     estado_revision=$35
                 WHERE referencia=$36
             `, [
-                linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+                lineaFinal, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
                 foto3 !== undefined ? foto3 : null,
                 archivoPsd !== undefined ? archivoPsd : null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
@@ -651,19 +661,21 @@ const duplicarFichaCosto = async (req, res) => {
             const tPR = sourceDiseno?.total_provisiones || sourceCosto.total_provisiones || 0;
             const costTotal = sourceDiseno?.costo_total || sourceCosto.costo_total || 0;
 
+            const lineaVar = sourceDiseno?.linea || sourceCosto.linea || 'Dama';
+
             const newFichaDisenoResult = await client.query(`
                 INSERT INTO fichas_diseno (
-                    referencia, disenadora_id, descripcion, marca, novedad,
+                    referencia, disenadora_id, linea, descripcion, marca, novedad,
                     muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_total, importada, created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, NULL, NULL, NULL, NULL,
-                    $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, true, $20
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, NULL, NULL, NULL, NULL,
+                    $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, true, $21
                 ) RETURNING id
             `, [
-                nuevaReferencia, disenadoraId, desc, marca, novedad,
+                nuevaReferencia, disenadoraId, lineaVar, desc, marca, novedad,
                 m1, m2, obs,
                 JSON.stringify(matPrima), JSON.stringify(manObra), JSON.stringify(insDirectos), JSON.stringify(insIndirectos), JSON.stringify(provs),
                 tMP, tMO, tID, tII, tPR, costTotal, createdBy
@@ -675,22 +687,22 @@ const duplicarFichaCosto = async (req, res) => {
 
             const newFichaCostoResult = await client.query(`
                 INSERT INTO fichas_costo (
-                    referencia, ficha_diseno_id, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
+                    referencia, ficha_diseno_id, linea, descripcion, marca, novedad, muestra_1, muestra_2, observaciones,
                     foto_1, foto_2, foto_3, archivo_psd, materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos, total_insumos_indirectos, total_provisiones, costo_total,
                     precio_venta, rentabilidad, margen_ganancia, costo_contabilizar,
                     desc_0_precio, desc_0_rent, desc_5_precio, desc_5_rent, desc_10_precio, desc_10_rent, desc_15_precio, desc_15_rent,
                     cantidad_total_cortada, created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8,
-                    NULL, NULL, NULL, NULL, $9, $10, $11, $12, $13,
-                    $14, $15, $16, $17, $18, $19,
-                    $20, $21, $22, $23,
-                    $24, $25, $26, $27, $28, $29, $30, $31,
-                    $32, $33
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9,
+                    NULL, NULL, NULL, NULL, $10, $11, $12, $13, $14,
+                    $15, $16, $17, $18, $19, $20,
+                    $21, $22, $23, $24,
+                    $25, $26, $27, $28, $29, $30, $31, $32,
+                    $33, $34
                 ) RETURNING id
             `, [
-                nuevaReferencia, newFichaDisenoId, desc, marca, novedad, m1, m2, obs,
+                nuevaReferencia, newFichaDisenoId, lineaVar, desc, marca, novedad, m1, m2, obs,
                 JSON.stringify(sourceCosto.materia_prima || []), JSON.stringify(sourceCosto.mano_obra || []), JSON.stringify(sourceCosto.insumos_directos || []), JSON.stringify(sourceCosto.insumos_indirectos || []), JSON.stringify(sourceCosto.provisiones || []),
                 sourceCosto.total_materia_prima, sourceCosto.total_mano_obra, sourceCosto.total_insumos_directos, sourceCosto.total_insumos_indirectos, sourceCosto.total_provisiones, sourceCosto.costo_total,
                 sourceCosto.precio_venta, sourceCosto.rentabilidad, sourceCosto.margen_ganancia, sourceCosto.costo_contabilizar,

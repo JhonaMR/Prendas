@@ -92,7 +92,10 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     useEffect(() => {
         if (fichaExistente) {
             console.log('📋 Ficha cargada:', { referencia: fichaExistente.referencia, precioVenta: fichaExistente.precioVenta, rentabilidad: fichaExistente.rentabilidad, costoTotal: fichaExistente.costoTotal });
-            setLinea(fichaExistente.linea || 'Elegir');
+            const lineaFicha = fichaExistente.linea && fichaExistente.linea !== 'Elegir'
+                ? fichaExistente.linea
+                : ((state.fichasDiseno || []).find(fd => fd.referencia === referencia)?.linea || 'Elegir');
+            setLinea(lineaFicha);
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');
@@ -123,7 +126,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             setEstadoRevision(fichaExistente.estadoRevision || null);
             setSelectedDesigner(fichaExistente.disenadoraId || '');
         }
-    }, [fichaExistente?.referencia]);
+    }, [fichaExistente?.referencia, fichaExistente?.linea]);
 
     // Inicializar provisiones cuando se crea una nueva ficha (sin ficha existente)
     useEffect(() => {
@@ -164,7 +167,7 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                 { concepto: 'PROV. DSCTO CCIAL', um: 'UNIDAD', vlr_unit: calcDesctoComercial(), cant: 1, total: calcDesctoComercial() }
             ]);
         }
-    }, [fichaExistente?.referencia]);
+    }, [fichaExistente?.referencia, fichaExistente?.linea]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {

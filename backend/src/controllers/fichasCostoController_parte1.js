@@ -71,6 +71,7 @@ const getFichasCosto = async (req, res) => {
             SELECT
                 fc.*,
                 fd.disenadora_id,
+                fd.linea as disenadora_linea,
                 d.nombre as disenadora_nombre,
                 (SELECT COUNT(*) FROM fichas_cortes WHERE ficha_costo_id = fc.id) as num_cortes,
                 (SELECT json_agg(json_build_object('numeroCorte', numero_corte, 'cantidadCortada', cantidad_cortada, 'margenUtilidad', margen_utilidad) ORDER BY numero_corte ASC) FROM fichas_cortes WHERE ficha_costo_id = fc.id) as cortes_resumen
@@ -86,7 +87,7 @@ const getFichasCosto = async (req, res) => {
             fichaDisenoId: f.ficha_diseno_id,
             disenadoraId: f.disenadora_id,
             disenadoraNombre: f.disenadora_nombre,
-            linea: f.linea,
+            linea: f.linea || f.disenadora_linea || 'Elegir',
             descripcion: f.descripcion,
             marca: f.marca,
             novedad: f.novedad,
@@ -147,6 +148,7 @@ const getFichaCosto = async (req, res) => {
             SELECT
                 fc.*,
                 fd.disenadora_id,
+                fd.linea as disenadora_linea,
                 d.nombre as disenadora_nombre
             FROM fichas_costo fc
             LEFT JOIN fichas_diseno fd ON fc.ficha_diseno_id = fd.id
@@ -196,7 +198,7 @@ const getFichaCosto = async (req, res) => {
             fichaDisenoId: f.ficha_diseno_id,
             disenadoraId: f.disenadora_id,
             disenadoraNombre: f.disenadora_nombre,
-            linea: f.linea,
+            linea: f.linea || f.disenadora_linea || 'Elegir',
             descripcion: f.descripcion,
             marca: f.marca,
             novedad: f.novedad,

@@ -456,17 +456,17 @@ const duplicarFichaDiseno = async (req, res) => {
         await transaction(async (client) => {
             const result = await client.query(`
                 INSERT INTO fichas_diseno (
-                    referencia, disenadora_id, descripcion, marca, novedad,
+                    referencia, disenadora_id, linea, descripcion, marca, novedad,
                     muestra_1, muestra_2, observaciones, foto_1, foto_2, foto_3, archivo_psd,
                     materia_prima, mano_obra, insumos_directos, insumos_indirectos, provisiones,
                     total_materia_prima, total_mano_obra, total_insumos_directos,
                     total_insumos_indirectos, total_provisiones, costo_total, importada, created_by
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, NULL, NULL, NULL, NULL,
-                    $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, false, $20
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, NULL, NULL, NULL, NULL,
+                    $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, false, $20
                 ) RETURNING id
             `, [
-                nuevaReferencia, disenadoraId, source.descripcion || '', source.marca || '', source.novedad || '',
+                nuevaReferencia, disenadoraId, source.linea || 'Dama', source.descripcion || '', source.marca || '', source.novedad || '',
                 source.muestra_1 || '', source.muestra_2 || '', source.observaciones || '',
                 JSON.stringify(source.materia_prima || []), JSON.stringify(source.mano_obra || []), JSON.stringify(source.insumos_directos || []), JSON.stringify(source.insumos_indirectos || []), JSON.stringify(source.provisiones || []),
                 source.total_materia_prima || 0, source.total_mano_obra || 0, source.total_insumos_directos || 0,
