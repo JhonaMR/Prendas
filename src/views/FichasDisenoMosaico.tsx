@@ -363,10 +363,10 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
             ) : (
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {pagedFichas.map(ficha => {
+                    {pagedFichas.map((ficha: any) => {
                         const lineaCard = (ficha.linea && ficha.linea !== 'Elegir')
                             ? ficha.linea
-                            : ((state.fichasCosto || []).find(fc => fc.referencia === ficha.referencia)?.linea);
+                            : ((state.fichasCosto || []).find((fc: any) => fc.referencia === ficha.referencia)?.linea);
                         return (
                             <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
                                 <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
@@ -385,14 +385,15 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                                         </div>
                                     )}
                                 </div>
-                            <div className="p-3">
-                                <div className="flex items-center justify-between mb-2">
-                                    <p className={`font-black text-sm ${isDark ? 'text-pink-400' : 'text-pink-600'} transition-colors duration-300`}>{ficha.referencia}</p>
-                                    <span className={`font-bold text-[10px] truncate ml-1 max-w-[60%] text-right ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>{ficha.disenadoraNombre}</span>
+                                <div className="p-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <p className={`font-black text-sm ${isDark ? 'text-pink-400' : 'text-pink-600'} transition-colors duration-300`}>{ficha.referencia}</p>
+                                        <span className={`font-bold text-[10px] truncate ml-1 max-w-[60%] text-right ${isDark ? 'text-violet-400' : 'text-slate-400'} transition-colors duration-300`}>{ficha.disenadoraNombre}</span>
+                                    </div>
+                                    <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
                                 </div>
-                                <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
                             </div>
-                        </div>
+                        );
                     })}
                 </div>
                 <div className="mt-6">
