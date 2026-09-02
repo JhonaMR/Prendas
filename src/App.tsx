@@ -129,6 +129,8 @@ const App: React.FC = () => {
         localStorage.removeItem('auth_token');
       }
     }
+  }, []);
+
   useEffect(() => {
     if ('caches' in window) {
       caches.delete('api-cache').catch(() => {});
