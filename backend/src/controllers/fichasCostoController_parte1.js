@@ -67,6 +67,16 @@ const calcularValoresFinancieros = (costoTotal, precioVenta = null, rentabilidad
  */
 const getFichasCosto = async (req, res) => {
     try {
+        // Auto-reparar registros existentes en BD con linea NULL
+        query(`
+            UPDATE fichas_costo fc
+            SET linea = fd.linea
+            FROM fichas_diseno fd
+            WHERE fc.ficha_diseno_id = fd.id
+              AND (fc.linea IS NULL OR fc.linea = '' OR fc.linea = 'Elegir')
+              AND fd.linea IS NOT NULL AND fd.linea != '' AND fd.linea != 'Elegir'
+        `).catch(() => {});
+
         const result = await query(`
             SELECT
                 fc.*,

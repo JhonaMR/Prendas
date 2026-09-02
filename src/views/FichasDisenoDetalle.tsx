@@ -92,7 +92,19 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
             setProvisiones(fichaExistente.provisiones || []);
             setSelectedDesigner(fichaExistente.disenadoraId || '');
         }
-    }, [fichaExistente?.referencia]);
+    }, [fichaExistente?.referencia, fichaExistente?.linea]);
+
+    useEffect(() => {
+        if (!fichaExistente && !isNueva && referencia) {
+            setIsLoading(true);
+            apiFichas.getFichasDiseno()
+                .then(fichas => {
+                    updateState(prev => ({ ...prev, fichasDiseno: fichas }));
+                })
+                .catch(err => console.error('Error cargando fichas de diseño:', err))
+                .finally(() => setIsLoading(false));
+        }
+    }, [referencia, fichaExistente, isNueva]);
 
     // ESC → volver al mosaico
     useEffect(() => {
@@ -189,6 +201,9 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
                 alert('✅ Ficha guardada exitosamente');
                 const fichas = await apiFichas.getFichasDiseno();
                 updateState(prev => ({ ...prev, fichasDiseno: fichas }));
+                if (isNueva) {
+                    onNavigate('fichas-diseno-detalle', { referencia });
+                }
             } else alert('❌ Error al guardar: ' + result.message);
         } catch { alert('❌ Error de conexión'); }
         finally { setIsLoading(false); }

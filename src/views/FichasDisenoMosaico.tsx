@@ -133,7 +133,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
     const fichas = (state.fichasDiseno || []).filter(f => {
         const matchSearch = !searchTerm || (() => {
             const t = searchTerm.toLowerCase();
-            return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
+            return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t) || (f.linea || '').toLowerCase().includes(t);
         })();
         const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
         const matchYear = !yearFilter || (f.createdAt && new Date(f.createdAt).getFullYear().toString() === yearFilter);
@@ -375,6 +375,11 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                                 )}
                                 {ficha.importada && <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase">Importada</div>}
                                 {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-500 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                {ficha.linea && ficha.linea !== 'Elegir' && (
+                                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-purple-600/90 text-white rounded-lg text-[9px] font-black uppercase tracking-wider shadow backdrop-blur-xs">
+                                        {ficha.linea}
+                                    </div>
+                                )}
                             </div>
                             <div className="p-3">
                                 <div className="flex items-center justify-between mb-2">

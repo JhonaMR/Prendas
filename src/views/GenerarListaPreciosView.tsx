@@ -1,4 +1,4 @@
-﻿// ============================================
+// ============================================
 // VISTA: Generar Lista de Precios + Pedido Manual
 // ============================================
 
@@ -270,8 +270,9 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
             ws.getColumn(1).width = 20;
             ws.getColumn(2).width = 22;
             ws.getColumn(3).width = 40;
+            ws.getColumn(4).width = 20;
 
-            ws.mergeCells('A1:C1');
+            ws.mergeCells('A1:D1');
             const tituloCell = ws.getCell('A1');
             tituloCell.value = `Lista de Precios ${año}`;
             tituloCell.font = { bold: true, size: 14, color: { argb: 'FF1E293B' } };
@@ -280,7 +281,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
 
             const headerRow = ws.getRow(2);
             headerRow.height = 22;
-            ['REFERENCIA', 'PRECIO DE VENTA', 'DESCRIPCIÓN'].forEach((h, i) => {
+            ['REFERENCIA', 'PRECIO DE VENTA', 'DESCRIPCIÓN', 'LÍNEA'].forEach((h, i) => {
                 const cell = headerRow.getCell(i + 1);
                 cell.value = h;
                 cell.font = { bold: true, size: 11, color: { argb: 'FF475569' } };
@@ -300,7 +301,8 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
             sorted.forEach((f, idx) => {
                 const row = ws.getRow(3 + idx);
                 row.height = 18;
-                [f.referencia, f.precioVenta, f.descripcion || ''].forEach((v, i) => {
+                const lineaValor = (f.linea && f.linea !== 'Elegir') ? f.linea : '';
+                [f.referencia, f.precioVenta, f.descripcion || '', lineaValor].forEach((v, i) => {
                     const cell = row.getCell(i + 1);
                     cell.value = v;
                     cell.font = { size: 10, color: { argb: 'FF1E293B' } };

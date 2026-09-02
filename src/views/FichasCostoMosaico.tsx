@@ -132,7 +132,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const fichas = (state.fichasCosto || []).filter(f => {
         const matchSearch = !searchTerm || (() => {
             const t = searchTerm.toLowerCase();
-            return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t);
+            return f.referencia.toLowerCase().includes(t) || (f.descripcion || '').toLowerCase().includes(t) || (f.marca || '').toLowerCase().includes(t) || (f.linea || '').toLowerCase().includes(t);
         })();
         const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
         const matchYear = !yearFilter || (f.createdAt && new Date(f.createdAt).getFullYear().toString() === yearFilter);
@@ -392,8 +392,15 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                             style={{ backgroundColor: ficha.estadoRevision === 'rojo' ? '#fca5a5' : ficha.estadoRevision === 'verde' ? '#86efac' : '#c4b5fd' }}
                                         />
                                     )}
-                                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-sky-500 text-white rounded-lg text-[9px] font-black uppercase shadow">
-                                        ${(ficha.precioVenta || 0).toLocaleString()}
+                                    <div className="absolute bottom-2 left-2 flex flex-col gap-1 items-start">
+                                        {ficha.linea && ficha.linea !== 'Elegir' && (
+                                            <div className="px-2 py-0.5 bg-indigo-600/90 text-white rounded-md text-[8px] font-black uppercase tracking-wider shadow backdrop-blur-xs">
+                                                {ficha.linea}
+                                            </div>
+                                        )}
+                                        <div className="px-2 py-1 bg-sky-500 text-white rounded-lg text-[9px] font-black uppercase shadow">
+                                            ${(ficha.precioVenta || 0).toLocaleString()}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="p-3">

@@ -128,6 +128,18 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
         }
     }, [fichaExistente?.referencia, fichaExistente?.linea]);
 
+    useEffect(() => {
+        if (!fichaExistente && referencia) {
+            setIsLoading(true);
+            Promise.all([apiFichas.getFichasCosto(), apiFichas.getFichasDiseno()])
+                .then(([fichasCosto, fichasDiseno]) => {
+                    updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
+                })
+                .catch(err => console.error('Error cargando fichas:', err))
+                .finally(() => setIsLoading(false));
+        }
+    }, [referencia, fichaExistente]);
+
     // Inicializar provisiones cuando se crea una nueva ficha (sin ficha existente)
     useEffect(() => {
         if (!fichaExistente && provisiones.length === 0) {
