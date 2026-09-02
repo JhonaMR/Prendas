@@ -393,7 +393,7 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                                 <p className={`text-xs font-bold truncate ${isDark ? 'text-violet-200' : 'text-slate-600'} transition-colors duration-300`}>{ficha.descripcion || 'Sin descripción'}</p>
                             </div>
                         </div>
-                    ))}
+                    })}
                 </div>
                 <div className="mt-6">
                   <PaginationComponent 
