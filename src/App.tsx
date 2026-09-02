@@ -1508,6 +1508,7 @@ const App: React.FC = () => {
             {user.role !== UserRole.DISEÑADORA && (
               <div className={`my-2 border-t pt-2 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
                 <p className={`px-6 text-[10px] font-black uppercase tracking-widest mb-1.5 ${isDark ? 'text-violet-500' : 'text-slate-300'}`}>Producción</p>
+                <NavItem active={activeTab === 'corte'} onClick={() => handleTabChange('corte')} icon={<Icons.Scissors />} label="Corte" />
                 <NavItem active={activeTab === 'maletas'} onClick={() => handleTabChange('maletas')} icon={<Icons.Maletas />} label="Maletas" />
                 <NavItem active={activeTab === 'deliveryDates'} onClick={() => handleTabChange('deliveryDates')} icon={<Icons.DeliveryDates />} label="Fechas de Entrega" />
               </div>

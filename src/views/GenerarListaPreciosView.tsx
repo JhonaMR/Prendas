@@ -47,6 +47,18 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
     };
     const [generando, setGenerando] = useState(false);
 
+    // ── Modal Exportar Lista de Precios ──
+    const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+    const [exportYear, setExportYear] = useState<string>(new Date().getFullYear().toString());
+    const [exportCorreriaId, setExportCorreriaId] = useState<string>(''); // '' = Todas las fichas
+
+    const availableCorreriasForExport = useMemo(() => {
+        if (!exportYear || !exportYear.trim()) return [];
+        const yearStr = exportYear.trim();
+        const matching = (state.correrias || []).filter(c => String(c.year) === yearStr);
+        return matching.length > 0 ? matching : (state.correrias || []).filter(c => String(c.year).includes(yearStr));
+    }, [exportYear, state.correrias]);
+
     // ── Pedido manual ──
     const [clientSearch, setClientSearch] = useState('');
     const [showClientResults, setShowClientResults] = useState(false);
@@ -257,14 +269,31 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
 
     // ── Generar Excel lista de precios ──
     const handleGenerar = async () => {
-        const fichas = (state.fichasCosto || []).filter(f => f.precioVenta > 0);
+        let fichas = (state.fichasCosto || []).filter(f => f.precioVenta > 0);
+
+        if (exportCorreriaId) {
+            // Filtrar las referencias asociadas a la correría elegida
+            const matchingRefIds = new Set(
+                (state.references || [])
+                    .filter(ref => ref.correrias && ref.correrias.includes(exportCorreriaId))
+                    .map(ref => ref.id)
+            );
+            fichas = fichas.filter(f => matchingRefIds.has(f.referencia));
+        }
+
         if (fichas.length === 0) {
-            alert('No hay fichas de costo con precio de venta para generar la lista.');
+            alert('No hay fichas de costo con precio de venta para los criterios seleccionados.');
             return;
         }
+
         setGenerando(true);
         try {
-            const año = new Date().getFullYear();
+            const año = exportYear?.trim() || new Date().getFullYear().toString();
+            const correriaObj = state.correrias?.find(c => c.id === exportCorreriaId);
+            const tituloExcel = correriaObj
+                ? `Lista de Precios ${correriaObj.name} - ${año}`
+                : `Lista de Precios ${año}`;
+
             const wb = new ExcelJS.Workbook();
             const ws = wb.addWorksheet('Lista de Precios');
             ws.getColumn(1).width = 20;
@@ -274,7 +303,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
 
             ws.mergeCells('A1:D1');
             const tituloCell = ws.getCell('A1');
-            tituloCell.value = `Lista de Precios ${año}`;
+            tituloCell.value = tituloExcel;
             tituloCell.font = { bold: true, size: 14, color: { argb: 'FF1E293B' } };
             tituloCell.alignment = { horizontal: 'center', vertical: 'middle' };
             ws.getRow(1).height = 28;
@@ -322,9 +351,13 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `lista-precios-${año}.xlsx`;
+            const safeCorreriaName = correriaObj
+                ? correriaObj.name.toLowerCase().replace(/[^a-z0-9]/g, '-')
+                : 'todas';
+            a.download = `lista-precios-${safeCorreriaName}-${año}.xlsx`;
             a.click();
             URL.revokeObjectURL(url);
+            setIsExportModalOpen(false);
         } catch (e) {
             console.error(e);
             alert('Error al generar el archivo Excel.');
@@ -383,7 +416,7 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                         <p className={`font-bold text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{state.references?.length || 0} referencias</p>
                     </div>
                 </div>
-                <button onClick={handleGenerar} disabled={generando}
+                <button onClick={() => setIsExportModalOpen(true)} disabled={generando}
                     className={`px-6 py-4 font-black rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2 uppercase tracking-wider text-xs disabled:opacity-50 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-emerald-700 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-500' : 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white'}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -854,6 +887,104 @@ const GenerarListaPreciosView: React.FC<Props> = ({ state, user, onNavigate, upd
                     </div>
                 </div>
             </div>
+
+            {/* ── Modal Configuración Exportación Lista de Precios ── */}
+            {isExportModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                    <div className={`w-full max-w-md rounded-3xl p-6 shadow-2xl border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-500/30 text-white' : 'bg-white border-slate-200 text-slate-800'}`}>
+                        {/* Header Modal */}
+                        <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-200/20">
+                            <div className="flex items-center gap-3">
+                                <div className={`p-2.5 rounded-xl ${isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-600'}`}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black tracking-tight">Exportar Lista de Precios</h3>
+                                    <p className={`text-xs ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>Selecciona los criterios para el Excel</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsExportModalOpen(false)} className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-violet-600/50 text-violet-300' : 'hover:bg-slate-100 text-slate-400'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Formulario Modal */}
+                        <div className="space-y-5">
+                            {/* Campo Año */}
+                            <div>
+                                <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>
+                                    Año
+                                </label>
+                                <input
+                                    type="number"
+                                    value={exportYear}
+                                    onChange={(e) => {
+                                        setExportYear(e.target.value);
+                                        setExportCorreriaId('');
+                                    }}
+                                    placeholder="Ej. 2026"
+                                    className={`w-full px-4 py-3 rounded-xl font-bold text-sm outline-none transition-all border ${isDark ? 'bg-[#3b2c52] border-violet-500/40 text-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'}`}
+                                />
+                            </div>
+
+                            {/* Campo Lista Desplegable Correrías */}
+                            <div>
+                                <label className={`block text-xs font-bold uppercase tracking-wider mb-2 ${isDark ? 'text-violet-200' : 'text-slate-600'}`}>
+                                    Correría / Campaña
+                                </label>
+                                <select
+                                    value={exportCorreriaId}
+                                    onChange={(e) => setExportCorreriaId(e.target.value)}
+                                    disabled={!exportYear || !exportYear.trim()}
+                                    className={`w-full px-4 py-3 rounded-xl font-bold text-sm outline-none transition-all border cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#3b2c52] border-violet-500/40 text-white focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20' : 'bg-slate-50 border-slate-300 text-slate-800 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20'}`}
+                                >
+                                    <option value="" className={isDark ? 'bg-[#3b2c52] text-white' : 'bg-white text-slate-800'}>
+                                        Todas las fichas
+                                    </option>
+                                    {availableCorreriasForExport.map((c) => (
+                                        <option key={c.id} value={c.id} className={isDark ? 'bg-[#3b2c52] text-white' : 'bg-white text-slate-800'}>
+                                            {c.name} {c.year ? `(${c.year})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                                {!exportYear || !exportYear.trim() ? (
+                                    <p className="mt-1 text-[11px] font-semibold text-amber-500">
+                                        Digita un año para habilitar el listado de correrías.
+                                    </p>
+                                ) : availableCorreriasForExport.length === 0 ? (
+                                    <p className={`mt-1 text-[11px] font-medium ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
+                                        No se encontraron correrías para el año {exportYear}. Puedes descargar "Todas las fichas".
+                                    </p>
+                                ) : null}
+                            </div>
+                        </div>
+
+                        {/* Footer Modal */}
+                        <div className="flex items-center justify-end gap-3 mt-8 pt-4 border-t border-slate-200/20">
+                            <button
+                                onClick={() => setIsExportModalOpen(false)}
+                                className={`px-5 py-2.5 rounded-xl font-bold text-xs uppercase tracking-wider transition-colors ${isDark ? 'bg-violet-900/40 hover:bg-violet-800/50 text-violet-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleGenerar}
+                                disabled={generando}
+                                className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50 ${isDark ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white' : 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white'}`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                                {generando ? 'Generando...' : 'Descargar Excel'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

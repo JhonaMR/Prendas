@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { User, Reference, AppState, Correria, Order, Dispatch, BatchReception, DeliveryDate } from '../types';
 import { api } from '../services/api';
 import { useDarkMode } from '../context/DarkModeContext';
@@ -46,6 +46,14 @@ interface TransporteRecord {
   transportista: string;
 }
 
+interface SalidaBodegaRecord {
+  id: string;
+  fecha: string;
+  cantidad: number | string;
+  talla: string;
+  quienRecibe: string;
+}
+
 interface FichaCosto {
   referencia: string;
   foto1?: string | null;
@@ -67,6 +75,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const [showCorreriaModal, setShowCorreriaModal] = useState(false);
   const [selectedCorreriaDetail, setSelectedCorreriaDetail] = useState<CorreriaDetail | null>(null);
   const [showCortesModal, setShowCortesModal] = useState(false);
+  const [showDevolucionesModal, setShowDevolucionesModal] = useState(false);
   const [modalFotos, setModalFotos] = useState(false);
   const [modalMolde, setModalMolde] = useState(false);
   
@@ -74,6 +83,7 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
   const [corteRecords, setCorteRecords] = useState<CorteRecord[]>([]);
   const [procesoRecords, setProcesoRecords] = useState<ProcesoRecord[]>([]);
   const [transporteRecords, setTransporteRecords] = useState<TransporteRecord[]>([]);
+  const [salidasBodegaRecords, setSalidasBodegaRecords] = useState<SalidaBodegaRecord[]>([]);
   const [fichasCosto, setFichasCosto] = useState<FichaCosto[]>([]);
   const [cortesData, setCortesData] = useState<any[]>([]);
 
@@ -169,6 +179,22 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
         transportista: record.transportista || record.nombreTransportista || 'N/A'
       })));
 
+      // Cargar salidas de bodega
+      try {
+        const salidasResponse = await api.getSalidasBodega();
+        const salidasFiltered = (salidasResponse || []).filter((record: any) => record.referencia === referenceId);
+        setSalidasBodegaRecords(salidasFiltered.map((record: any) => ({
+          id: record.id,
+          fecha: record.fecha || '',
+          cantidad: record.cantidad || 0,
+          talla: record.talla || '-',
+          quienRecibe: record.quienRecibe || record.quien_recibe || 'N/A'
+        })));
+      } catch (error) {
+        console.error('Error cargando salidas de bodega:', error);
+        setSalidasBodegaRecords([]);
+      }
+
       // Cargar datos completos de la ficha de costo (incluyendo cortes)
       try {
         const response = await fetch(`${baseUrl}/api/fichas-costo/${referenceId}`, {
@@ -261,6 +287,41 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
       cantidadPorCorreria
     };
   };
+
+  // Obtener registros de devoluciones para la referencia seleccionada
+  const devolucionesReferencia = useMemo(() => {
+    if (!selectedReference) return [];
+    const list = state.returnReceptions || [];
+    const results: Array<{
+      id: string;
+      clientId: string;
+      clientName: string;
+      creditNoteNumber: string;
+      cantidad: number;
+      fecha: string;
+    }> = [];
+
+    list.forEach((reception: any) => {
+      const itemFound = (reception.items || []).find((it: any) => it.reference === selectedReference.id);
+      if (itemFound && itemFound.quantity > 0) {
+        const clientObj = (state.clients || []).find((c: any) => c.id === reception.clientId);
+        results.push({
+          id: reception.id,
+          clientId: reception.clientId,
+          clientName: clientObj?.name || reception.clientName || 'Cliente desconocido',
+          creditNoteNumber: reception.creditNoteNumber || reception.nc || 'N/A',
+          cantidad: itemFound.quantity,
+          fecha: reception.createdAt ? new Date(reception.createdAt).toLocaleDateString('es-CO') : (reception.fecha || 'N/A')
+        });
+      }
+    });
+
+    return results;
+  }, [selectedReference, state.returnReceptions, state.clients]);
+
+  const totalDevuelto = useMemo(() => {
+    return devolucionesReferencia.reduce((acc, curr) => acc + curr.cantidad, 0);
+  }, [devolucionesReferencia]);
 
   const handleCorreriaClick = (correria: CorreriaDetail) => {
     setSelectedCorreriaDetail(correria);
@@ -457,6 +518,33 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                 <div className={`text-center py-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-gray-500'}`}>
                   <p className="text-sm">Digite referencia para buscar información</p>
                 </div>
+              </div>
+            )}
+
+            {/* Cajón de Devoluciones (solo si la referencia está en alguna devolución) */}
+            {selectedReference && devolucionesReferencia.length > 0 && (
+              <div className={`rounded-2xl p-6 border shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-gray-200'}`}>
+                <h3 className={`font-bold text-lg mb-4 text-center transition-colors duration-300 ${isDark ? 'text-red-300' : 'text-red-700'}`}>
+                  Devoluciones
+                </h3>
+                <button
+                  onClick={() => setShowDevolucionesModal(true)}
+                  className={`w-full rounded-xl p-4 border transition-all hover:shadow-md text-left transition-colors duration-300 ${isDark ? 'bg-red-950/40 border-red-700/60 hover:border-red-600 hover:bg-red-900/40' : 'bg-red-50 border-red-200 hover:border-red-300'}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className={`text-xs font-black uppercase tracking-wider block mb-1 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                        Historial de Devoluciones
+                      </span>
+                      <span className={`text-sm font-semibold ${isDark ? 'text-violet-200' : 'text-gray-700'}`}>
+                        Cant <span className={`text-lg font-black ml-1 ${isDark ? 'text-red-400' : 'text-red-600'}`}>{totalDevuelto}</span>
+                      </span>
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${isDark ? 'text-red-400' : 'text-red-600'}`}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                  </div>
+                </button>
               </div>
             )}
           </div>
@@ -746,6 +834,54 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                       </div>
                     )}
                   </div>
+
+                  {/* Registros de Salidas de Bodega */}
+                  <div className={`rounded-2xl border shadow-sm overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-gray-200'}`}>
+                    {/* Título Banner */}
+                    <div className={`px-6 py-4 transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-purple-900 to-purple-800' : 'bg-gradient-to-r from-purple-200 to-purple-300'}`}>
+                      <h3 className={`font-bold text-lg text-center transition-colors duration-300 ${isDark ? 'text-purple-200' : 'text-purple-800'}`}>Salidas de Bodega (Registro de salidas de mercancía)</h3>
+                    </div>
+                    
+                    {selectedReference ? (
+                      loading ? (
+                        <div className="text-center py-8">
+                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
+                          <p className="text-sm text-gray-500 mt-2">Cargando...</p>
+                        </div>
+                      ) : salidasBodegaRecords.length > 0 ? (
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead className={`transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-purple-50'}`}>
+                              <tr>
+                                <th className={`px-6 py-3 text-left text-xs font-medium text-center uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-purple-300 border-violet-700' : 'text-purple-700 border-gray-200'}`}>Fecha</th>
+                                <th className={`px-6 py-3 text-left text-xs font-medium text-center uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-purple-300 border-violet-700' : 'text-purple-700 border-gray-200'}`}>Cantidad</th>
+                                <th className={`px-6 py-3 text-left text-xs font-medium text-center uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-purple-300 border-violet-700' : 'text-purple-700 border-gray-200'}`}>Talla</th>
+                                <th className={`px-6 py-3 text-left text-xs font-medium text-center uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-purple-300' : 'text-purple-700'}`}>Quien Recibe</th>
+                              </tr>
+                            </thead>
+                            <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700' : 'divide-gray-200 bg-white'}`}>
+                              {salidasBodegaRecords.map((record, index) => (
+                                <tr key={record.id || index} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#3d2d52]' : 'hover:bg-purple-50'}`}>
+                                  <td className={`px-6 py-4 whitespace-nowrap text-sm border-r transition-colors duration-300 ${isDark ? 'text-violet-300 border-violet-700' : 'text-gray-600 border-gray-100'}`}>{record.fecha}</td>
+                                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-semibold border-r transition-colors duration-300 ${isDark ? 'text-purple-300 border-violet-700' : 'text-purple-700 border-gray-100'}`}>{record.cantidad}</td>
+                                  <td className={`px-6 py-4 whitespace-nowrap text-sm border-r transition-colors duration-300 ${isDark ? 'text-violet-300 border-violet-700' : 'text-gray-600 border-gray-100'}`}>{record.talla || '-'}</td>
+                                  <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium transition-colors duration-300 ${isDark ? 'text-purple-300' : 'text-purple-700'}`}>{record.quienRecibe}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      ) : (
+                        <div className={`text-center py-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-gray-500'}`}>
+                          <p className="text-sm">Sin información en esta sección</p>
+                        </div>
+                      )
+                    ) : (
+                      <div className="text-center py-8 text-gray-500">
+                        <p className="text-sm">Digite referencia para buscar información</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </>
             ) : (
@@ -938,6 +1074,59 @@ const HistoricoReferenciaView: React.FC<HistoricoReferenciaViewProps> = ({ user,
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal Devoluciones ────────────────────────────────────────────── */}
+      {showDevolucionesModal && selectedReference && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowDevolucionesModal(false)}>
+          <div className={`rounded-2xl p-6 max-w-4xl w-full max-h-[80vh] overflow-y-auto transition-colors duration-300 shadow-2xl ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`} onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-red-200/30">
+              <div>
+                <h3 className={`text-2xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>
+                  Historial de Devoluciones — {selectedReference.id}
+                </h3>
+                <p className={`text-xs mt-1 transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
+                  Detalle de mercancía devuelta por clientes para esta referencia
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDevolucionesModal(false)}
+                className={`p-2 rounded-xl transition-colors duration-300 ${isDark ? 'hover:bg-[#3d2d52] text-violet-300' : 'hover:bg-slate-100 text-slate-500'}`}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-red-100/30">
+              <table className="w-full border-collapse">
+                <thead className={`transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-red-50'}`}>
+                  <tr>
+                    <th className={`px-6 py-3.5 text-left text-xs font-black uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-red-300 border-violet-700' : 'text-red-800 border-red-100'}`}>Cliente</th>
+                    <th className={`px-6 py-3.5 text-center text-xs font-black uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-red-300 border-violet-700' : 'text-red-800 border-red-100'}`}>Cantidad Devuelta</th>
+                    <th className={`px-6 py-3.5 text-center text-xs font-black uppercase tracking-wider border-r transition-colors duration-300 ${isDark ? 'text-red-300 border-violet-700' : 'text-red-800 border-red-100'}`}>Fecha</th>
+                    <th className={`px-6 py-3.5 text-center text-xs font-black uppercase tracking-wider transition-colors duration-300 ${isDark ? 'text-red-300' : 'text-red-800'}`}>Nota Crédito / Documento</th>
+                  </tr>
+                </thead>
+                <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50 bg-[#4a3a63]' : 'divide-slate-100 bg-white'}`}>
+                  {devolucionesReferencia.map((record, index) => (
+                    <tr key={record.id || index} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#3d2d52]' : 'hover:bg-red-50/40'}`}>
+                      <td className={`px-6 py-4 text-sm font-bold border-r transition-colors duration-300 ${isDark ? 'text-violet-100 border-violet-700/50' : 'text-slate-800 border-slate-100'}`}>{record.clientName}</td>
+                      <td className={`px-6 py-4 text-sm text-center font-black border-r transition-colors duration-300 ${isDark ? 'text-red-400 border-violet-700/50' : 'text-red-600 border-slate-100'}`}>{record.cantidad}</td>
+                      <td className={`px-6 py-4 text-sm text-center border-r transition-colors duration-300 ${isDark ? 'text-violet-300 border-violet-700/50' : 'text-slate-600 border-slate-100'}`}>{record.fecha}</td>
+                      <td className="px-6 py-4 text-sm text-center">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-extrabold uppercase tracking-wider ${isDark ? 'bg-red-900/50 text-red-300 border border-red-700' : 'bg-red-100 text-red-700 border border-red-200'}`}>
+                          NC: {record.creditNoteNumber}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

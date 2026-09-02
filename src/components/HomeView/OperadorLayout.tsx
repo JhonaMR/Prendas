@@ -40,6 +40,7 @@ const navGroups: NavGroup[] = [
     label: 'Producción',
     icon: <Icons.DeliveryDates />,
     items: [
+      { id: 'corte',             label: 'Corte',               icon: <Icons.Scissors />,          description: 'Módulo de corte' },
       { id: 'productoEnProceso', label: 'Producto en Proceso', icon: <Icons.ProductoEnProceso />, description: 'Control de lotes en confección' },
       { id: 'deliveryDates',     label: 'Fechas de Entrega',   icon: <Icons.DeliveryDates />,     description: 'Gestionar fechas' },
       { id: 'maletas',           label: 'Maletas',             icon: <Icons.Maletas />,           description: 'Gestionar maletas' },
