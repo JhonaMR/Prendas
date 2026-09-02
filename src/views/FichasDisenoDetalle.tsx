@@ -74,7 +74,9 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     useEffect(() => {
         if (fichaExistente && !isNueva) {
             setDisenadoraId(fichaExistente.disenadoraId);
-            setLinea(fichaExistente.linea || 'Elegir');
+            if (fichaExistente.linea && fichaExistente.linea !== 'Elegir') {
+                setLinea(fichaExistente.linea);
+            }
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');

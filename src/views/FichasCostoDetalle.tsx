@@ -92,10 +92,12 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
     useEffect(() => {
         if (fichaExistente) {
             console.log('📋 Ficha cargada:', { referencia: fichaExistente.referencia, precioVenta: fichaExistente.precioVenta, rentabilidad: fichaExistente.rentabilidad, costoTotal: fichaExistente.costoTotal });
-            const lineaFicha = fichaExistente.linea && fichaExistente.linea !== 'Elegir'
+            const lineaFicha = (fichaExistente.linea && fichaExistente.linea !== 'Elegir')
                 ? fichaExistente.linea
-                : ((state.fichasDiseno || []).find(fd => fd.referencia === referencia)?.linea || 'Elegir');
-            setLinea(lineaFicha);
+                : ((state.fichasDiseno || []).find(fd => fd.referencia === referencia)?.linea);
+            if (lineaFicha && lineaFicha !== 'Elegir') {
+                setLinea(lineaFicha);
+            }
             setDescripcion(fichaExistente.descripcion || '');
             setMarca(fichaExistente.marca || '');
             setNovedad(fichaExistente.novedad || '');

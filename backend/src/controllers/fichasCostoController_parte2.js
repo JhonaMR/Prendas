@@ -4,6 +4,15 @@
 // ============================================
 
 const { query, transaction } = require('../config/database');
+
+const getLineaValida = (...valores) => {
+    for (const v of valores) {
+        if (v && typeof v === 'string' && v.trim() !== '' && v.trim() !== 'Elegir' && v.trim() !== 'null' && v.trim() !== 'undefined') {
+            return v.trim();
+        }
+    }
+    return null;
+};
 const { calcularValoresFinancieros, calcularTotales } = require('./fichasCostoController_parte1');
 
 /**
@@ -118,6 +127,7 @@ const importarFichaDiseno = async (req, res) => {
         const fd = fichaDiseno.rows[0];
         // Al importar siempre calcular precio al 35% de rentabilidad, ignorando precio de diseño
         const valores = calcularValoresFinancieros(parseFloat(fd.costo_total), null, 35);
+        const lineaImportada = getLineaValida(fd.linea);
 
         let fichaData;
         await transaction(async (client) => {
@@ -224,7 +234,7 @@ const createFichaCosto = async (req, res) => {
         };
         const totales = calcularTotales(secciones);
         const valores = calcularValoresFinancieros(totales.costo_total, null, rentabilidad || 35);
-        const lineaFinal = (linea && linea !== 'Elegir') ? linea : 'Dama';
+        const lineaFinal = getLineaValida(linea);
 
         let fichaData;
         await transaction(async (client) => {
@@ -306,7 +316,7 @@ const updateFichaCosto = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
         }
 
-        const lineaFinal = (linea && linea !== 'Elegir') ? linea : (existe.rows[0].linea || existe.rows[0].disenadora_linea || 'Dama');
+        const lineaFinal = getLineaValida(linea, existe.rows[0].linea, existe.rows[0].disenadora_linea);
 
         const secciones = {
             materia_prima: materiaPrima || [],
@@ -661,7 +671,7 @@ const duplicarFichaCosto = async (req, res) => {
             const tPR = sourceDiseno?.total_provisiones || sourceCosto.total_provisiones || 0;
             const costTotal = sourceDiseno?.costo_total || sourceCosto.costo_total || 0;
 
-            const lineaVar = sourceDiseno?.linea || sourceCosto.linea || 'Dama';
+            const lineaVar = getLineaValida(sourceDiseno?.linea, sourceCosto?.linea);
 
             const newFichaDisenoResult = await client.query(`
                 INSERT INTO fichas_diseno (

@@ -5,7 +5,14 @@
 
 const { query } = require('../config/database');
 
-// ============ FUNCIONES AUXILIARES ============
+const getLineaValida = (...valores) => {
+    for (const v of valores) {
+        if (v && typeof v === 'string' && v.trim() !== '' && v.trim() !== 'Elegir' && v.trim() !== 'null' && v.trim() !== 'undefined') {
+            return v.trim();
+        }
+    }
+    return null;
+};
 
 const ajustarA900 = (valor) => {
     if (valor <= 0) return 0;
@@ -97,7 +104,7 @@ const getFichasCosto = async (req, res) => {
             fichaDisenoId: f.ficha_diseno_id,
             disenadoraId: f.disenadora_id,
             disenadoraNombre: f.disenadora_nombre,
-            linea: f.linea || f.disenadora_linea || 'Elegir',
+            linea: getLineaValida(f.linea, f.disenadora_linea) || 'Elegir',
             descripcion: f.descripcion,
             marca: f.marca,
             novedad: f.novedad,
@@ -208,7 +215,7 @@ const getFichaCosto = async (req, res) => {
             fichaDisenoId: f.ficha_diseno_id,
             disenadoraId: f.disenadora_id,
             disenadoraNombre: f.disenadora_nombre,
-            linea: f.linea || f.disenadora_linea || 'Elegir',
+            linea: getLineaValida(f.linea, f.disenadora_linea) || 'Elegir',
             descripcion: f.descripcion,
             marca: f.marca,
             novedad: f.novedad,

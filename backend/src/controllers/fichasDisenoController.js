@@ -4,6 +4,15 @@
 // ============================================
 
 const { query, transaction } = require('../config/database');
+
+const getLineaValida = (...valores) => {
+    for (const v of valores) {
+        if (v && typeof v === 'string' && v.trim() !== '' && v.trim() !== 'Elegir' && v.trim() !== 'null' && v.trim() !== 'undefined') {
+            return v.trim();
+        }
+    }
+    return null;
+};
 const multer = require('multer');
 const sharp = require('sharp');
 const path = require('path');
@@ -297,14 +306,12 @@ const updateFichaDiseno = async (req, res) => {
             materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones
         } = req.body;
 
-        if (!linea || linea === 'Elegir') {
-            return res.status(400).json({ success: false, message: 'Debe seleccionar una línea válida' });
-        }
-
-        const existe = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [referencia]);
+        const existe = await query('SELECT id, linea FROM fichas_diseno WHERE referencia = $1', [referencia]);
         if (existe.rows.length === 0) {
             return res.status(404).json({ success: false, message: 'Ficha no encontrada' });
         }
+
+        const lineaFinal = getLineaValida(linea, existe.rows[0].linea);
 
         const secciones = {
             materia_prima: materiaPrima || [],
@@ -326,7 +333,7 @@ const updateFichaDiseno = async (req, res) => {
                     total_insumos_indirectos=$20, total_provisiones=$21, costo_total=$22
                 WHERE referencia=$23
             `, [
-                linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
+                lineaFinal, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2,
                 foto3 !== undefined ? foto3 : null,
                 archivoPsd !== undefined ? archivoPsd : null,
                 JSON.stringify(secciones.materia_prima), JSON.stringify(secciones.mano_obra),
