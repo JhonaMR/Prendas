@@ -175,46 +175,13 @@ const App: React.FC = () => {
           api.getOrders(),
           api.getProductionTracking(),
           api.getDeliveryDates(),
-          // Fichas
+          apiFichas.getDisenadoras(),
+          apiFichas.getFichasDiseno(),
+          apiFichas.getFichasCosto(),
           (async () => {
             try {
-              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/disenadoras`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
-              });
-              const data = await response.json();
-              return data.data || [];
-            } catch (e) {
-              console.warn('⚠️ Error cargando diseñadoras:', e);
-              return [];
-            }
-          })(),
-          (async () => {
-            try {
-              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/fichas-diseno`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
-              });
-              const data = await response.json();
-              return data.data || [];
-            } catch (e) {
-              console.warn('⚠️ Error cargando fichas de diseño:', e);
-              return [];
-            }
-          })(),
-          (async () => {
-            try {
-              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/fichas-costo`, {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
-              });
-              const data = await response.json();
-              return data.data || [];
-            } catch (e) {
-              console.warn('⚠️ Error cargando fichas de costo:', e);
-              return [];
-            }
-          })(),
-          (async () => {
-            try {
-              const response = await fetch(`${window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:3000/api`}/maletas`, {
+              const baseUrl = window.API_CONFIG?.getApiUrl?.() || `${window.location.protocol}//${window.location.hostname}:${window.location.port === '5174' || window.location.port === '3001' ? '3001' : '3000'}/api`;
+              const response = await fetch(`${baseUrl}/maletas`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
               });
               const data = await response.json();

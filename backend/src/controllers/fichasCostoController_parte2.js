@@ -308,7 +308,7 @@ const updateFichaCosto = async (req, res) => {
         const existe = await query(`
             SELECT fc.id, fc.linea, fd.linea as disenadora_linea
             FROM fichas_costo fc
-            LEFT JOIN fichas_diseno fd ON fc.ficha_diseno_id = fd.id
+            LEFT JOIN fichas_diseno fd ON (fc.referencia = fd.referencia OR fc.ficha_diseno_id = fd.id)
             WHERE fc.referencia = $1
         `, [referencia]);
 
