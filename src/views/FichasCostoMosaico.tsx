@@ -361,6 +361,9 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                     {pagedFichas.map(ficha => {
                         const telaInfo = obtenerTelaPrincipalYPromedio(ficha.materiaPrima);
+                        const lineaCard = (ficha.linea && ficha.linea !== 'Elegir')
+                            ? ficha.linea
+                            : ((state.fichasDiseno || []).find(fd => fd.referencia === ficha.referencia)?.linea);
                         return (
                             <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-blue-500' : 'bg-white border-slate-200 hover:border-blue-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
                                 <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
@@ -393,9 +396,9 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                                         />
                                     )}
                                     <div className="absolute bottom-2 left-2 flex flex-col gap-1 items-start">
-                                        {ficha.linea && ficha.linea !== 'Elegir' && (
+                                        {lineaCard && lineaCard !== 'Elegir' && (
                                             <div className="px-2 py-0.5 bg-indigo-600/90 text-white rounded-md text-[8px] font-black uppercase tracking-wider shadow backdrop-blur-xs">
-                                                {ficha.linea}
+                                                {lineaCard}
                                             </div>
                                         )}
                                         <div className="px-2 py-1 bg-sky-500 text-white rounded-lg text-[9px] font-black uppercase shadow">

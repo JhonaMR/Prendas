@@ -227,8 +227,8 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
             const result = await apiFichas.updateFichaCosto(referencia, { referencia, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, foto3: foto3 || null, archivoPsd: archivoPsd || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones }, precioVenta, rentabilidad, estadoRevision);
             if (result.success) {
                 setHasUnsavedChanges(false); alert('✅ Ficha guardada exitosamente');
-                const fichas = await apiFichas.getFichasCosto();
-                updateState(prev => ({ ...prev, fichasCosto: fichas }));
+                const [fichasCosto, fichasDiseno] = await Promise.all([apiFichas.getFichasCosto(), apiFichas.getFichasDiseno()]);
+                updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
             } else alert('❌ Error al guardar: ' + result.message);
         } catch { alert('❌ Error de conexión'); }
         finally { setIsLoading(false); }

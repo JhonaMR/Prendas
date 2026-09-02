@@ -155,7 +155,7 @@ const mapFicha = (f) => ({
     referencia: f.referencia,
     disenadoraId: f.disenadora_id,
     disenadoraNombre: f.disenadora_nombre,
-    linea: f.linea,
+    linea: getLineaValida(f.linea),
     descripcion: f.descripcion,
     marca: f.marca,
     novedad: f.novedad,
