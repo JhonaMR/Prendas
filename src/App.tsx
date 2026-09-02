@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { AppState, User, UserRole } from './types';
 import { api } from './services/api';
 import apiFichas from './services/apiFichas';
@@ -273,6 +273,44 @@ const App: React.FC = () => {
 
     loadData();
   }, [user]);
+
+  // ========== MONITOR FORENSE DE LÍNEAS EN TIEMPO REAL ==========
+  const prevLineStatsRef = useRef<{ costoConLinea: number; disenoConLinea: number }>({ costoConLinea: -1, disenoConLinea: -1 });
+
+  useEffect(() => {
+    if (!state.fichasCosto.length && !state.fichasDiseno.length) return;
+
+    const esLineaValida = (v: any) => v && typeof v === 'string' && v.trim() !== '' && v.trim() !== 'Elegir' && v.trim() !== 'null' && v.trim() !== 'undefined';
+
+    const costoConLinea = (state.fichasCosto || []).filter(f => esLineaValida(f.linea)).length;
+    const disenoConLinea = (state.fichasDiseno || []).filter(f => esLineaValida(f.linea)).length;
+
+    const prevCosto = prevLineStatsRef.current.costoConLinea;
+    const prevDiseno = prevLineStatsRef.current.disenoConLinea;
+
+    // Reporte periódico en consola
+    console.log(`📊 [MONITOR LÍNEAS] Costo Total: ${state.fichasCosto.length} (Válidas: ${costoConLinea}) | Diseño Total: ${state.fichasDiseno.length} (Válidas: ${disenoConLinea})`);
+
+    // ALERTA DE PÉRDIDA MASIVA EN COSTOS
+    if (prevCosto > 5 && costoConLinea === 0) {
+      console.group('%c🚨 [ALERTA CRÍTICA: PÉRDIDA DE LÍNEAS EN COSTO] 🚨', 'color: white; background: red; font-size: 14px; font-weight: bold; padding: 4px;');
+      console.error(`📉 Fichas de COSTO con línea cayeron de ${prevCosto} ➡️ 0`);
+      console.log('📍 STACK TRACE DE ORIGEN DE LA LLAMADA:', new Error().stack);
+      console.log('📄 Muestra de fichas de costo actuales:', (state.fichasCosto || []).slice(0, 5).map(f => ({ ref: f.referencia, linea: f.linea })));
+      console.groupEnd();
+    }
+
+    // ALERTA DE PÉRDIDA MASIVA EN DISEÑO
+    if (prevDiseno > 5 && disenoConLinea === 0) {
+      console.group('%c🚨 [ALERTA CRÍTICA: PÉRDIDA DE LÍNEAS EN DISEÑO] 🚨', 'color: white; background: darkred; font-size: 14px; font-weight: bold; padding: 4px;');
+      console.error(`📉 Fichas de DISEÑO con línea cayeron de ${prevDiseno} ➡️ 0`);
+      console.log('📍 STACK TRACE DE ORIGEN DE LA LLAMADA:', new Error().stack);
+      console.log('📄 Muestra de fichas de diseño actuales:', (state.fichasDiseno || []).slice(0, 5).map(f => ({ ref: f.referencia, linea: f.linea })));
+      console.groupEnd();
+    }
+
+    prevLineStatsRef.current = { costoConLinea, disenoConLinea };
+  }, [state.fichasCosto, state.fichasDiseno]);
 
   // ========== FUNCIONES GENERALES ==========
 
