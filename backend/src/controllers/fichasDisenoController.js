@@ -238,9 +238,6 @@ const createFichaDiseno = async (req, res) => {
         if (!referencia || !disenadoraId) {
             return res.status(400).json({ success: false, message: 'Referencia y diseñadora son obligatorios' });
         }
-        if (!linea || linea === 'Elegir') {
-            return res.status(400).json({ success: false, message: 'Debe seleccionar una línea válida' });
-        }
 
         const existe = await query('SELECT id FROM fichas_diseno WHERE referencia = $1', [referencia]);
         if (existe.rows.length > 0) {

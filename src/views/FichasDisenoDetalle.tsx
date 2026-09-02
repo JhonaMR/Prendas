@@ -191,7 +191,6 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para guardar fichas de diseño'); return; }
         if (!referencia || !disenadoraId) { alert('Referencia y diseñadora son obligatorios'); return; }
-        if (!linea || linea === 'Elegir') { alert('Debe seleccionar una Línea válida obligatoriamente'); return; }
         setIsLoading(true);
         const fichaData = { referencia, disenadoraId, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2, foto3, archivoPsd, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones };
         try {

@@ -221,7 +221,6 @@ const FichasCostoDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
 
     const handleGuardar = async () => {
         if (!canEdit) { alert('No tienes permisos para editar fichas de costo'); return; }
-        if (!linea || linea === 'Elegir') { alert('Debe seleccionar una Línea válida obligatoriamente'); return; }
         setIsLoading(true);
         try {
             const result = await apiFichas.updateFichaCosto(referencia, { referencia, linea, descripcion, marca, novedad, muestra1, muestra2, observaciones, foto1, foto2: foto2 || null, foto3: foto3 || null, archivoPsd: archivoPsd || null, materiaPrima, manoObra, insumosDirectos, insumosIndirectos, provisiones }, precioVenta, rentabilidad, estadoRevision);
