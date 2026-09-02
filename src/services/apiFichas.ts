@@ -73,9 +73,15 @@ export const deleteDisenadora = async (id: string): Promise<ApiResponse> => {
 // ===== FICHAS DE DISEÑO =====
 
 export const getFichasDiseno = async (): Promise<FichaDiseno[]> => {
-    const r = await fetch(`${getApiUrl()}/fichas-diseno`, { headers: getHeaders() });
-    const d = await r.json();
-    return d.data || [];
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-diseno`, { headers: getHeaders() });
+        if (!r.ok) { console.error('❌ HTTP Error fetching fichas-diseno:', r.status); return []; }
+        const d = await r.json();
+        return (d.success && Array.isArray(d.data)) ? d.data : [];
+    } catch (e) {
+        console.error('❌ Error fetching fichas-diseno:', e);
+        return [];
+    }
 };
 
 export const getFichaDiseno = async (referencia: string): Promise<FichaDiseno | null> => {
@@ -352,9 +358,15 @@ export const deleteFichaEstampacion = async (id: string): Promise<ApiResponse> =
 // ===== FICHAS DE COSTO =====
 
 export const getFichasCosto = async (): Promise<FichaCosto[]> => {
-    const r = await fetch(`${getApiUrl()}/fichas-costo`, { headers: getHeaders() });
-    const d = await r.json();
-    return d.data || [];
+    try {
+        const r = await fetch(`${getApiUrl()}/fichas-costo`, { headers: getHeaders() });
+        if (!r.ok) { console.error('❌ HTTP Error fetching fichas-costo:', r.status); return []; }
+        const d = await r.json();
+        return (d.success && Array.isArray(d.data)) ? d.data : [];
+    } catch (e) {
+        console.error('❌ Error fetching fichas-costo:', e);
+        return [];
+    }
 };
 
 export const getFichaCosto = async (referencia: string): Promise<FichaCosto | null> => {

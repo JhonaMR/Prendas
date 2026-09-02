@@ -363,24 +363,28 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
             ) : (
                 <>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-                    {pagedFichas.map(ficha => (
-                        <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
-                            <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
-                                {ficha.foto1 ? (
-                                    <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
-                                ) : (
-                                    <div className="flex items-center justify-center h-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className={`w-12 h-12 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
-                                    </div>
-                                )}
-                                {ficha.importada && <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase">Importada</div>}
-                                {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-500 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
-                                {ficha.linea && ficha.linea !== 'Elegir' && (
-                                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-purple-600/90 text-white rounded-lg text-[9px] font-black uppercase tracking-wider shadow backdrop-blur-xs">
-                                        {ficha.linea}
-                                    </div>
-                                )}
-                            </div>
+                    {pagedFichas.map(ficha => {
+                        const lineaCard = (ficha.linea && ficha.linea !== 'Elegir')
+                            ? ficha.linea
+                            : ((state.fichasCosto || []).find(fc => fc.referencia === ficha.referencia)?.linea);
+                        return (
+                            <div key={ficha.id} className={`group rounded-2xl border hover:shadow-lg transition-all overflow-hidden text-left cursor-pointer ${isDark ? 'bg-[#4a3a63] border-violet-700 hover:border-pink-500' : 'bg-white border-slate-200 hover:border-pink-300'}`} onClick={() => handleVerDetalle(ficha.referencia)}>
+                                <div className={`aspect-square relative overflow-hidden ${isDark ? 'bg-[#3d2d52]' : 'bg-slate-100'}`}>
+                                    {ficha.foto1 ? (
+                                        <img src={`${baseUrl}${ficha.foto1}`} alt={ficha.referencia} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+                                    ) : (
+                                        <div className="flex items-center justify-center h-full">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" className={`w-12 h-12 ${isDark ? 'text-violet-600' : 'text-slate-300'}`}><path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" /></svg>
+                                        </div>
+                                    )}
+                                    {ficha.importada && <div className="absolute top-2 right-2 px-2 py-1 bg-blue-500 text-white rounded-lg text-[9px] font-black uppercase">Importada</div>}
+                                    {(user?.role === 'admin' || user?.role === 'soporte') && !ficha.importada && <div onClick={(e) => handleEliminar(ficha.referencia, e)} className={`absolute top-2 left-2 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer ${isDark ? 'bg-red-900/70 text-red-200 hover:bg-red-900' : 'bg-red-500 text-white hover:bg-red-600'}`}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg></div>}
+                                    {lineaCard && lineaCard !== 'Elegir' && (
+                                        <div className="absolute bottom-2 left-2 px-2 py-1 bg-purple-600/90 text-white rounded-lg text-[9px] font-black uppercase tracking-wider shadow backdrop-blur-xs">
+                                            {lineaCard}
+                                        </div>
+                                    )}
+                                </div>
                             <div className="p-3">
                                 <div className="flex items-center justify-between mb-2">
                                     <p className={`font-black text-sm ${isDark ? 'text-pink-400' : 'text-pink-600'} transition-colors duration-300`}>{ficha.referencia}</p>

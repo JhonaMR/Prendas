@@ -74,22 +74,6 @@ const calcularValoresFinancieros = (costoTotal, precioVenta = null, rentabilidad
  */
 const getFichasCosto = async (req, res) => {
     try {
-        // Limpiar cadenas 'Elegir' a NULL en BD y sincronizar líneas válidas
-        try {
-            await query(`UPDATE fichas_costo SET linea = NULL WHERE linea = 'Elegir' OR linea = ''`);
-            await query(`UPDATE fichas_diseno SET linea = NULL WHERE linea = 'Elegir' OR linea = ''`);
-            await query(`
-                UPDATE fichas_costo fc
-                SET linea = fd.linea
-                FROM fichas_diseno fd
-                WHERE fc.ficha_diseno_id = fd.id
-                  AND fc.linea IS NULL
-                  AND fd.linea IS NOT NULL AND fd.linea != '' AND fd.linea != 'Elegir'
-            `);
-        } catch (cleanErr) {
-            console.warn('⚠️ Warning cleaning lineas:', cleanErr);
-        }
-
         const result = await query(`
             SELECT
                 fc.*,

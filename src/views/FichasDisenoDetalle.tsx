@@ -201,8 +201,14 @@ const FichasDisenoDetalle: React.FC<Props> = ({ state, user, updateState, onNavi
             if (result.success) {
                 setHasUnsavedChanges(false);
                 alert('✅ Ficha guardada exitosamente');
-                const fichas = await apiFichas.getFichasDiseno();
-                updateState(prev => ({ ...prev, fichasDiseno: fichas }));
+                try {
+                    const [fichasCosto, fichasDiseno] = await Promise.all([apiFichas.getFichasCosto(), apiFichas.getFichasDiseno()]);
+                    updateState(prev => ({
+                        ...prev,
+                        ...(fichasCosto.length > 0 ? { fichasCosto } : {}),
+                        ...(fichasDiseno.length > 0 ? { fichasDiseno } : {})
+                    }));
+                } catch (e) { console.error('Error actualizando fichas:', e); }
                 if (isNueva) {
                     onNavigate('fichas-diseno-detalle', { referencia });
                 }
