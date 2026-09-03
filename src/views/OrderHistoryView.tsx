@@ -483,6 +483,18 @@ const OrderHistoryView: React.FC<OrderHistoryViewProps> = ({ state, currentUser,
             </div>
 
             <div className={`flex-1 overflow-y-auto p-8 space-y-6 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52]' : 'bg-white'}`}>
+              {/* Cliente Selector (2 filas) */}
+              <div className={`p-5 rounded-2xl border transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]/70 border-violet-700' : 'bg-slate-50 border-slate-200'}`}>
+                <h3 className={`text-xs font-black uppercase tracking-widest mb-3 transition-colors duration-300 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>
+                  🏪 Cliente del Pedido
+                </h3>
+                <EditClientSelector
+                  currentClientId={editingOrder.clientId}
+                  clients={state.clients}
+                  onSelectClient={(newClientId) => setEditingOrder({ ...editingOrder, clientId: newClientId })}
+                />
+              </div>
+
               {/* Items */}
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -849,6 +861,182 @@ const ClientAutocomplete: React.FC<{
           {filtered.length === 0 && search.length < 2 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Escribe al menos 2 letras...</p>}
         </div>
       )}
+    </div>
+  );
+};
+
+const EditClientSelector: React.FC<{
+  currentClientId: string;
+  clients: Client[];
+  onSelectClient: (clientId: string) => void;
+}> = ({ currentClientId, clients, onSelectClient }) => {
+  const { isDark } = useDarkMode();
+  const [searchCode, setSearchCode] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [activeDropdown, setActiveDropdown] = useState<'code' | 'name' | null>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
+
+  const selectedClient = clients.find(c => c.id === currentClientId);
+
+  const filteredByCode = searchCode.length >= 2
+    ? clients.filter(c => c.id.toLowerCase().includes(searchCode.toLowerCase())).slice(0, 4)
+    : [];
+
+  const filteredByName = searchName.length >= 2
+    ? clients.filter(c => c.name.toLowerCase().includes(searchName.toLowerCase())).slice(0, 4)
+    : [];
+
+  const handleBlur = () => {
+    timeoutRef.current = setTimeout(() => setActiveDropdown(null), 300);
+  };
+
+  const handleSelect = (id: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    onSelectClient(id);
+    setActiveDropdown(null);
+    setSearchCode('');
+    setSearchName('');
+  };
+
+  return (
+    <div className="space-y-3">
+      {/* Fila 1: Código y Nombre con autocompletar */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Cajón 1: Código de Cliente */}
+        <div className="relative">
+          <label className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>
+            Código de Cliente
+          </label>
+          <input
+            type="text"
+            value={activeDropdown === 'code' ? searchCode : (selectedClient?.id || currentClientId || '')}
+            onChange={e => setSearchCode(e.target.value)}
+            onFocus={() => { setActiveDropdown('code'); setSearchCode(''); }}
+            onBlur={handleBlur}
+            placeholder="Buscar por código..."
+            className={`w-full px-3 py-2.5 rounded-xl border-2 font-bold text-sm transition-all focus:ring-2 ${
+              isDark
+                ? 'bg-[#3d2d52] border-orange-600/60 text-violet-100 focus:ring-orange-600 focus:border-orange-500 placeholder:text-violet-400'
+                : 'bg-white border-orange-200 text-slate-800 focus:ring-orange-300 focus:border-orange-400 placeholder:text-slate-400'
+            }`}
+          />
+          {activeDropdown === 'code' && (
+            <div
+              className={`absolute top-full left-0 w-full mt-1 rounded-2xl shadow-2xl max-h-52 overflow-y-auto z-50 border transition-colors duration-300 ${
+                isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'
+              }`}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              {filteredByCode.map(c => (
+                <button
+                  key={c.id}
+                  onMouseDown={() => handleSelect(c.id)}
+                  className={`w-full px-4 py-3 text-left border-b transition-colors duration-200 last:border-0 ${
+                    isDark ? 'hover:bg-[#5a4a75] border-violet-700' : 'hover:bg-orange-50 border-slate-100'
+                  }`}
+                >
+                  <p className={`font-black text-xs ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>{c.id}</p>
+                  <p className={`text-sm font-bold truncate ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+                </button>
+              ))}
+              {filteredByCode.length === 0 && searchCode.length >= 2 && (
+                <p className={`px-4 py-3 font-bold italic text-xs ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
+                  No se encontraron coincidencias
+                </p>
+              )}
+              {searchCode.length < 2 && (
+                <p className={`px-4 py-3 font-bold italic text-xs ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
+                  Digita al menos 2 caracteres...
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Cajón 2: Nombre de Cliente */}
+        <div className="relative">
+          <label className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>
+            Nombre de Cliente
+          </label>
+          <input
+            type="text"
+            value={activeDropdown === 'name' ? searchName : (selectedClient?.name || '')}
+            onChange={e => setSearchName(e.target.value)}
+            onFocus={() => { setActiveDropdown('name'); setSearchName(''); }}
+            onBlur={handleBlur}
+            placeholder="Buscar por nombre..."
+            className={`w-full px-3 py-2.5 rounded-xl border-2 font-bold text-sm transition-all focus:ring-2 ${
+              isDark
+                ? 'bg-[#3d2d52] border-orange-600/60 text-violet-100 focus:ring-orange-600 focus:border-orange-500 placeholder:text-violet-400'
+                : 'bg-white border-orange-200 text-slate-800 focus:ring-orange-300 focus:border-orange-400 placeholder:text-slate-400'
+            }`}
+          />
+          {activeDropdown === 'name' && (
+            <div
+              className={`absolute top-full left-0 w-full mt-1 rounded-2xl shadow-2xl max-h-52 overflow-y-auto z-50 border transition-colors duration-300 ${
+                isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'
+              }`}
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              {filteredByName.map(c => (
+                <button
+                  key={c.id}
+                  onMouseDown={() => handleSelect(c.id)}
+                  className={`w-full px-4 py-3 text-left border-b transition-colors duration-200 last:border-0 ${
+                    isDark ? 'hover:bg-[#5a4a75] border-violet-700' : 'hover:bg-orange-50 border-slate-100'
+                  }`}
+                >
+                  <p className={`font-black text-sm ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
+                  <p className={`text-xs font-bold ${isDark ? 'text-orange-300' : 'text-orange-600'}`}>{c.id}</p>
+                </button>
+              ))}
+              {filteredByName.length === 0 && searchName.length >= 2 && (
+                <p className={`px-4 py-3 font-bold italic text-xs ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
+                  No se encontraron coincidencias
+                </p>
+              )}
+              {searchName.length < 2 && (
+                <p className={`px-4 py-3 font-bold italic text-xs ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>
+                  Digita al menos 2 caracteres...
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Fila 2: Dirección y Ciudad (Informativas) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Cajón 3: Dirección */}
+        <div>
+          <label className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
+            Dirección
+          </label>
+          <input
+            type="text"
+            readOnly
+            value={selectedClient?.address || 'Sin dirección'}
+            className={`w-full px-3 py-2.5 rounded-xl border font-medium text-sm transition-colors duration-300 cursor-not-allowed opacity-90 ${
+              isDark ? 'bg-[#3d2d52]/60 border-violet-700/80 text-violet-200' : 'bg-slate-100 border-slate-200 text-slate-600'
+            }`}
+          />
+        </div>
+
+        {/* Cajón 4: Ciudad */}
+        <div>
+          <label className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>
+            Ciudad
+          </label>
+          <input
+            type="text"
+            readOnly
+            value={selectedClient?.city || 'Sin ciudad'}
+            className={`w-full px-3 py-2.5 rounded-xl border font-medium text-sm transition-colors duration-300 cursor-not-allowed opacity-90 ${
+              isDark ? 'bg-[#3d2d52]/60 border-violet-700/80 text-violet-200' : 'bg-slate-100 border-slate-200 text-slate-600'
+            }`}
+          />
+        </div>
+      </div>
     </div>
   );
 };
