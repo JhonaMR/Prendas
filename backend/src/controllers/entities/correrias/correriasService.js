@@ -12,7 +12,7 @@ const { invalidateOnCreate, invalidateOnUpdate, invalidateOnDelete } = require('
  */
 async function getAllCorrerias() {
   try {
-    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin FROM correrias ORDER BY year DESC, id');
+    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin, numero_orden FROM correrias ORDER BY numero_orden ASC NULLS LAST, year DESC, id');
     logger.info('Retrieved all correrias', { count: result.rows.length });
     return result.rows;
   } catch (error) {
@@ -26,7 +26,7 @@ async function getAllCorrerias() {
  */
 async function getCorrieriaById(id) {
   try {
-    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin FROM correrias WHERE id = $1', [id]);
+    const result = await query('SELECT id, name, year, active, fecha_inicio, fecha_fin, numero_orden FROM correrias WHERE id = $1', [id]);
     if (result.rows.length === 0) throw new NotFoundError('Correria', id);
     logger.info('Retrieved correria', { id });
     return result.rows[0];
@@ -42,13 +42,14 @@ async function getCorrieriaById(id) {
  */
 async function createCorreria(data) {
   try {
-    await query('INSERT INTO correrias (id, name, year, active, fecha_inicio, fecha_fin) VALUES ($1, $2, $3, $4, $5, $6)', [
+    await query('INSERT INTO correrias (id, name, year, active, fecha_inicio, fecha_fin, numero_orden) VALUES ($1, $2, $3, $4, $5, $6, $7)', [
       data.id,
       data.name,
       data.year,
       1,
       data.fecha_inicio || null,
-      data.fecha_fin || null
+      data.fecha_fin || null,
+      data.numero_orden !== undefined ? data.numero_orden : null
     ]);
     
     // Invalidate cache after creation
@@ -89,6 +90,10 @@ async function updateCorreria(id, data) {
     if (data.fecha_fin !== undefined) {
       updates.push(`fecha_fin = $${paramIndex++}`);
       values.push(data.fecha_fin || null);
+    }
+    if (data.numero_orden !== undefined) {
+      updates.push(`numero_orden = $${paramIndex++}`);
+      values.push(data.numero_orden !== null ? data.numero_orden : null);
     }
 
     if (updates.length > 0) {

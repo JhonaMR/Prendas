@@ -31,6 +31,7 @@ export interface Correria {
   active?: number;
   fecha_inicio?: string | null;
   fecha_fin?: string | null;
+  numero_orden?: number | null;
 }
 
 export interface Client {

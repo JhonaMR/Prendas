@@ -317,8 +317,21 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                   onChange={(e) => { setClientSearch(e.target.value); setShowClientResults(true); if(!e.target.value) setClientId(''); }}
                   onFocus={() => setShowClientResults(true)}
                   placeholder="ID o Nombre de cliente..."
-                  className={`w-full px-6 py-4 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-600 border border-violet-600 focus:ring-4 focus:ring-violet-400' : 'bg-slate-50 text-slate-900 placeholder-slate-400 border-none focus:ring-4 focus:ring-blue-100'}`}
+                  className={`w-full px-6 py-4 pr-12 rounded-2xl font-bold transition-all transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] text-violet-100 placeholder-violet-600 border border-violet-600 focus:ring-4 focus:ring-violet-400' : 'bg-slate-50 text-slate-900 placeholder-slate-400 border-none focus:ring-4 focus:ring-blue-100'}`}
                 />
+                {clientSearch && (
+                  <button
+                    onClick={() => {
+                      setClientSearch('');
+                      setClientId('');
+                      setShowClientResults(false);
+                    }}
+                    className={`absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black transition-colors duration-300 ${isDark ? 'bg-violet-700/50 text-violet-300 hover:bg-violet-600 hover:text-violet-100' : 'bg-slate-200 text-slate-500 hover:bg-slate-300 hover:text-slate-700'}`}
+                    title="Limpiar búsqueda"
+                  >
+                    ✕
+                  </button>
+                )}
                 {showClientResults && clientSearch.length > 0 && (
                   <div className={`fixed rounded-2xl shadow-2xl border z-[9999] min-h-[280px] max-h-[350px] overflow-y-auto custom-scrollbar transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'}`} style={{
                     top: `${(document.activeElement as HTMLElement)?.getBoundingClientRect().bottom + 8}px`,
@@ -332,7 +345,7 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                         className={`w-full text-left px-6 py-4 transition-colors duration-300 border-b last:border-0 ${isDark ? 'hover:bg-[#5a4a75] border-violet-700/40 text-violet-100' : 'hover:bg-slate-50 border-slate-50 text-slate-800'}`}
                       >
                         <p className={`font-black text-base transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{c.name}</p>
-                        <p className={`text-xs font-bold transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>ID: {c.id} • {c.city}</p>
+                        <p className={`text-xs font-bold truncate transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>ID: {c.id} • {c.city} • {c.address}</p>
                       </button>
                     ))}
                     {filteredClients.length === 0 && <p className={`px-6 py-4 font-bold italic text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>No se encontraron clientes</p>}
@@ -648,12 +661,12 @@ const DispatchView: React.FC<DispatchViewProps> = ({ user, clients, dispatches, 
                                   const subtotal = price * qty;
                                   return (
                                     <tr key={ref} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/50' : 'hover:bg-slate-50'}`}>
-                                      <td className="px-4 py-3 sm:px-6 sm:py-4">
+                                      <td className="px-4 py-1.5 sm:px-6 sm:py-2">
                                           <p className={`font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-blue-600'}`}>{ref}  -  <span className={`font-bold uppercase text-[9px] sm:text-[10px] transition-colors duration-300 ${isDark ? 'text-violet-500' : 'text-slate-400'}`}>{masterRef?.description || 'Sin descripción'}</span></p>
                                       </td>
-                                      <td className={`px-4 py-3 sm:px-6 sm:py-4 text-center font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{qty}</td>
-                                      <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-bold text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>$ {Math.round(price).toLocaleString('es-CO')}</td>
-                                      <td className={`px-4 py-3 sm:px-6 sm:py-4 text-right font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>${subtotal.toLocaleString()}</td>
+                                      <td className={`px-4 py-1.5 sm:px-6 sm:py-2 text-center font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>{qty}</td>
+                                      <td className={`px-4 py-1.5 sm:px-6 sm:py-2 text-right font-bold text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>$ {Math.round(price).toLocaleString('es-CO')}</td>
+                                      <td className={`px-4 py-1.5 sm:px-6 sm:py-2 text-right font-black text-xs sm:text-sm transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>${subtotal.toLocaleString()}</td>
                                     </tr>
                                   );
                                 })}

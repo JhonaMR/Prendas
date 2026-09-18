@@ -52,6 +52,12 @@ function validateCreateCorreria(data) {
     }
   }
 
+  // Validar numero_orden si se proporciona
+  if (data.numero_orden !== undefined && data.numero_orden !== null) {
+    const numValidation = validateNumber(data.numero_orden, 'Numero Orden');
+    if (!numValidation.valid) errors.numero_orden = numValidation.error;
+  }
+
   if (Object.keys(errors).length > 0) {
     throw new ValidationError(errors);
   }
@@ -99,6 +105,12 @@ function validateUpdateCorreria(data) {
     if (fechaFin < fechaInicio) {
       errors.fecha_fin = 'Fecha fin must be after or equal to fecha inicio';
     }
+  }
+
+  // Validar numero_orden si se proporciona
+  if (data.numero_orden !== undefined && data.numero_orden !== null) {
+    const numValidation = validateNumber(data.numero_orden, 'Numero Orden');
+    if (!numValidation.valid) errors.numero_orden = numValidation.error;
   }
 
   if (Object.keys(errors).length > 0) {

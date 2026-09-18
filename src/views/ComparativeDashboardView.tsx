@@ -10,6 +10,8 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie
 } from 'recharts';
 import { useDarkMode } from '../context/DarkModeContext';
+import { VendorReportModal } from '../components/ComparativeDashboard/VendorReportModal';
+import { VendorReportResultsModal } from '../components/ComparativeDashboard/VendorReportResultsModal';
 
 const formatCur = (v: number) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(v);
 const formatCompactCur = (v: number) => `$${(v / 1000000).toFixed(0)}M`;
@@ -28,6 +30,10 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
   // ==================== NOVEDADES ====================
   const [novedadesByCorreria, setNovedadesByCorreria] = useState<Record<string, { id: number; contenido: string }[]>>({});
   const [showNovedadesModal, setShowNovedadesModal] = useState(false);
+  const [showVendorReportModal, setShowVendorReportModal] = useState(false);
+  const [showVendorReportResultsModal, setShowVendorReportResultsModal] = useState(false);
+  const [reportYear, setReportYear] = useState('');
+  const [reportVendorId, setReportVendorId] = useState('');
 
   useEffect(() => {
     setNovedadesByCorreria({});
@@ -56,7 +62,9 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
 
   // Compute the data similarly to how SalesReportView works
   const filteredCorrerias = useMemo(() => {
-    const yearCorrerias = state.correrias.filter(c => Number(c.year) === selectedYear);
+    const yearCorrerias = state.correrias
+      .filter(c => Number(c.year) === selectedYear)
+      .sort((a, b) => (a.numero_orden || 0) - (b.numero_orden || 0));
 
     return yearCorrerias.map(correria => {
       const maletaReferences = state.references.filter(r => r.correrias && r.correrias.includes(correria.id));
@@ -519,23 +527,33 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
                 </div>
               </div>
 
-              <div className={`flex items-center gap-2 p-1.5 rounded-2xl border transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600' : 'bg-slate-50 border-slate-200'}`}>
-                {[
-                  { id: 'units', label: 'Unidades' },
-                  { id: 'value', label: 'Valor' },
-                  { id: 'discounts', label: 'Descuentos' }
-                ].map((view) => (
-                  <button
-                    key={view.id}
-                    onClick={() => setVendorView(view.id as any)}
-                    className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${vendorView === view.id
-                      ? isDark ? 'bg-[#4a3a63] text-violet-100 shadow-sm border border-violet-600' : 'bg-white text-indigo-600 shadow-sm border border-slate-200'
-                      : isDark ? 'text-violet-400 hover:text-violet-300' : 'text-slate-400 hover:text-slate-600'
-                      }`}
-                  >
-                    {view.label}
-                  </button>
-                ))}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowVendorReportModal(true)}
+                  className={`flex items-center gap-2 px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all shadow-sm border ${
+                    isDark ? 'bg-[#4a3a63] text-violet-100 border-violet-600 hover:bg-[#5a4a75]' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  Ver informe
+                </button>
+                <div className={`flex items-center gap-2 p-1.5 rounded-2xl border transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600' : 'bg-slate-50 border-slate-200'}`}>
+                  {[
+                    { id: 'units', label: 'Unidades' },
+                    { id: 'value', label: 'Valor' },
+                    { id: 'discounts', label: 'Descuentos' }
+                  ].map((view) => (
+                    <button
+                      key={view.id}
+                      onClick={() => setVendorView(view.id as any)}
+                      className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${vendorView === view.id
+                        ? isDark ? 'bg-[#4a3a63] text-violet-100 shadow-sm border border-violet-600' : 'bg-white text-indigo-600 shadow-sm border border-slate-200'
+                        : isDark ? 'text-violet-400 hover:text-violet-300' : 'text-slate-400 hover:text-slate-600'
+                        }`}
+                    >
+                      {view.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -788,6 +806,26 @@ const ComparativeDashboardView: React.FC<ComparativeDashboardViewProps> = ({ sta
           </div>
         </div>
       )}
+
+      <VendorReportModal
+        isOpen={showVendorReportModal}
+        onClose={() => setShowVendorReportModal(false)}
+        onGenerate={(year, vendorId) => {
+          setReportYear(year);
+          setReportVendorId(vendorId);
+          setShowVendorReportModal(false);
+          setShowVendorReportResultsModal(true);
+        }}
+        sellers={state.sellers}
+      />
+
+      <VendorReportResultsModal
+        isOpen={showVendorReportResultsModal}
+        onClose={() => setShowVendorReportResultsModal(false)}
+        year={reportYear}
+        vendorId={reportVendorId}
+        state={state}
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-﻿
+
 import React, { useState, useRef, useMemo } from 'react';
 import { User, UserRole, Client, AppState, Reference, Seller, Correria, Confeccionista } from '../types';
 import { Icons } from '../constants';
@@ -169,6 +169,7 @@ const MastersView: React.FC<MastersViewProps> = ({
   // Estados para fechas de correrias
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
+  const [numeroOrden, setNumeroOrden] = useState('');
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -280,6 +281,7 @@ const MastersView: React.FC<MastersViewProps> = ({
     setShowSellerDropdown(false);
     setFechaInicio('');
     setFechaFin('');
+    setNumeroOrden('');
   };
 
   const handleChangePin = async () => {
@@ -674,7 +676,8 @@ const MastersView: React.FC<MastersViewProps> = ({
       name, 
       year,
       fecha_inicio: fechaInicio || null,
-      fecha_fin: fechaFin || null
+      fecha_fin: fechaFin || null,
+      numero_orden: numeroOrden ? Number(numeroOrden) : null
     };
     
     setIsLoading(true);
@@ -1370,9 +1373,10 @@ const MastersView: React.FC<MastersViewProps> = ({
            {isAdmin ? (
              <FormWrapper isDark={isDark} title={editingId ? 'Editar Correría' : 'Nueva Correría'}>
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                      <Input isDark={isDark} label="Nombre de Campaña" value={name} onChange={setName} />
                      <Input isDark={isDark} label="Año" value={year} onChange={setYear} type="number" />
+                     <Input isDark={isDark} label="Número Orden" value={numeroOrden} onChange={setNumeroOrden} type="number" />
                      <Input isDark={isDark} label="Fecha Inicio" value={fechaInicio} onChange={setFechaInicio} type="date" />
                      <Input isDark={isDark} label="Fecha Fin" value={fechaFin} onChange={setFechaFin} type="date" />
                   </div>
@@ -1395,23 +1399,24 @@ const MastersView: React.FC<MastersViewProps> = ({
              </div>
            )}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {state.correrias.sort((a,b)=>b.year.localeCompare(a.year)).map(c => (
+              {state.correrias.slice().sort((a,b) => (a.numero_orden ?? 9999) - (b.numero_orden ?? 9999) || b.year.localeCompare(a.year)).map(c => (
                 <div key={c.id} className={`p-6 rounded-3xl border flex flex-col gap-3 shadow-sm transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
                    <div className="grid grid-cols-2 gap-4 items-start">
                       <div>
                          <p className={`text-[10px] font-black uppercase tracking-widest transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-300'}`}>{c.year}</p>
                          <p className={`font-black transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-800'}`}>{c.name}</p>
                       </div>
-                      {(c.fecha_inicio || c.fecha_fin) && (
+                      {(c.fecha_inicio || c.fecha_fin || (c.numero_orden !== undefined && c.numero_orden !== null)) && (
                         <div className={`text-xs space-y-1 p-3 rounded-lg transition-colors duration-300 ${isDark ? 'bg-violet-900/30 text-violet-300' : 'bg-slate-50 text-slate-600'}`}>
                           {c.fecha_inicio && <p><span className="font-bold">Inicio:</span> {new Date(c.fecha_inicio).toLocaleDateString('es-ES')}</p>}
                           {c.fecha_fin && <p><span className="font-bold">Fin:</span> {new Date(c.fecha_fin).toLocaleDateString('es-ES')}</p>}
+                          {c.numero_orden !== undefined && c.numero_orden !== null && <p><span className="font-bold">Nº Orden:</span> {c.numero_orden}</p>}
                         </div>
                       )}
                    </div>
                    {isAdmin && (
                      <div className="flex gap-2 mt-auto">
-                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); setFechaInicio(c.fecha_inicio ? c.fecha_inicio.split('T')[0] : ''); setFechaFin(c.fecha_fin ? c.fecha_fin.split('T')[0] : ''); }} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-blue-400 hover:bg-blue-900/30' : 'text-blue-400 hover:bg-blue-50'}`}><Icons.Edit /></button>
+                      <button disabled={!canEdit(user)} onClick={() => { setEditingId(c.id); setName(c.name); setYear(c.year); setFechaInicio(c.fecha_inicio ? c.fecha_inicio.split('T')[0] : ''); setFechaFin(c.fecha_fin ? c.fecha_fin.split('T')[0] : ''); setNumeroOrden(c.numero_orden ? c.numero_orden.toString() : ''); }} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-blue-400 hover:bg-blue-900/30' : 'text-blue-400 hover:bg-blue-50'}`}><Icons.Edit /></button>
                       <button disabled={!canDelete(user)} onClick={() => handleDelete('correria', c.id)} className={`p-2 rounded-lg transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'text-red-400 hover:bg-red-900/30' : 'text-red-400 hover:bg-red-50'}`}><Icons.Delete /></button>
                      </div>
                    )}
