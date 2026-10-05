@@ -60,6 +60,7 @@ import FichaConfeccionContainer from './views/FichaConfeccion/FichaConfeccionCon
 import FichaEstampacionContainer from './views/FichaEstampacion/FichaEstampacionContainer';
 import AsistenciaListView from './views/Asistencia/AsistenciaListView';
 import AsistenciaDetailView from './views/Asistencia/AsistenciaDetailView';
+import EstadoProduccionView from './views/EstadoProduccionView';
 import { DottedBackground } from './components/DottedBackground';
 
 const App: React.FC = () => {
@@ -1294,6 +1295,8 @@ const App: React.FC = () => {
           return <HomeView user={user} onNavigate={handleTabChange} onDirectNavigate={handleDirectNavigation} state={state} correrias={state.correrias} correriasLoading={isLoading} correriasError={null} />;
         }
         return <AsistenciaDetailView empleadoId={(navigationOptions as any)?.empleadoId} onVolver={() => handleTabChange('asistencia')} user={user} />;
+      case 'estadoProduccion':
+        return <EstadoProduccionView state={state} />;
       default:
         return null;
     }

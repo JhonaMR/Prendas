@@ -242,14 +242,23 @@ const OrderSettleView: React.FC<OrderSettleViewProps> = ({ user, state, updateSt
           <h2 className={`text-3xl font-black tracking-tighter transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Asentar Ventas</h2>
           <p className={`font-medium transition-colors duration-300 ${isDark ? 'text-violet-300' : 'text-slate-400'}`}>Carga rápida de pedidos por cliente</p>
         </div>
-        {onAddClient && (
-          <button
-            onClick={() => setShowNuevoClienteModal(true)}
-            className={`px-6 py-3 rounded-2xl font-bold border text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700/40 text-violet-200 border-violet-600 hover:bg-violet-700/60' : 'bg-violet-50 text-violet-600 border-violet-200 hover:bg-violet-100'}`}
+        <div className="flex items-center gap-3">
+          {onAddClient && (
+            <button
+              onClick={() => setShowNuevoClienteModal(true)}
+              className={`px-6 py-3 rounded-2xl font-bold border text-sm transition-colors duration-300 ${isDark ? 'bg-violet-700/40 text-violet-200 border-violet-600 hover:bg-violet-700/60' : 'bg-violet-50 text-violet-600 border-violet-200 hover:bg-violet-100'}`}
+            >
+              Nuevo cliente
+            </button>
+          )}
+          <button 
+            onClick={handleSaveOrder}
+            disabled={tempItems.length === 0}
+            className={`px-6 py-3 text-white font-black text-sm rounded-2xl shadow-md hover:scale-[1.02] transition-all transition-colors duration-300 ${isDark ? 'bg-gradient-to-r from-violet-600 to-pink-600 disabled:opacity-50' : 'bg-gradient-to-r from-blue-600 to-pink-600 disabled:opacity-50'}`}
           >
-            Nuevo cliente
+            ASENTAR VENTA
           </button>
-        )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

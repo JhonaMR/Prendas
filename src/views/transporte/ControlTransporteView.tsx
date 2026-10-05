@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import RegistroTransportesView from './RegistroTransportesView';
 import TalleresView from './TalleresView';
 import api from '../../services/api';
@@ -20,14 +20,14 @@ interface RutaTransporte {
   id: string;
   fecha: string;
   transportistaId: string;
-  items?: { id: string }[];
+  items?: { id: string; taller?: string; detalle?: string; servicio?: string }[];
 }
 
 // ─── Constantes ──────────────────────────────────────────────────────────────
 
-const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const DIAS_SEMANA_HEADER = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-const DIAS_SEMANA_SELECTOR = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+const DIAS_SEMANA_HEADER = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const DIAS_SEMANA_SELECTOR = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
 const TIPOS_VEHICULO = [
   { value: 'moto', label: 'Moto' },
@@ -35,19 +35,25 @@ const TIPOS_VEHICULO = [
 ];
 
 const COLORES: Record<string, { bg: string; text: string; dot: string; label: string }> = {
-  red:    { bg: 'bg-red-200',    text: 'text-red-700',    dot: 'bg-red-400',    label: 'Rojo'    },
-  green:  { bg: 'bg-green-200',  text: 'text-green-700',  dot: 'bg-green-400',  label: 'Verde'   },
-  blue:   { bg: 'bg-blue-200',   text: 'text-blue-700',   dot: 'bg-blue-400',   label: 'Azul'    },
-  yellow: { bg: 'bg-yellow-200', text: 'text-yellow-700', dot: 'bg-yellow-400', label: 'Amarillo'},
-  purple: { bg: 'bg-purple-200', text: 'text-purple-700', dot: 'bg-purple-400', label: 'Morado'  },
+  red: { bg: 'bg-red-200', text: 'text-red-700', dot: 'bg-red-400', label: 'Rojo' },
+  green: { bg: 'bg-green-200', text: 'text-green-700', dot: 'bg-green-400', label: 'Verde' },
+  blue: { bg: 'bg-blue-200', text: 'text-blue-700', dot: 'bg-blue-400', label: 'Azul' },
+  yellow: { bg: 'bg-yellow-200', text: 'text-yellow-700', dot: 'bg-yellow-400', label: 'Amarillo' },
+  purple: { bg: 'bg-purple-200', text: 'text-purple-700', dot: 'bg-purple-400', label: 'Morado' },
   orange: { bg: 'bg-orange-200', text: 'text-orange-700', dot: 'bg-orange-400', label: 'Naranja' },
-  pink:   { bg: 'bg-pink-200',   text: 'text-pink-700',   dot: 'bg-pink-400',   label: 'Rosa'    },
+  pink: { bg: 'bg-pink-200', text: 'text-pink-700', dot: 'bg-pink-400', label: 'Rosa' },
+  cyan: { bg: 'bg-cyan-200', text: 'text-cyan-700', dot: 'bg-cyan-400', label: 'Celeste' },
+  indigo: { bg: 'bg-indigo-200', text: 'text-indigo-700', dot: 'bg-indigo-400', label: 'Índigo' },
+  lime: { bg: 'bg-lime-200', text: 'text-lime-700', dot: 'bg-lime-400', label: 'Lima' },
+  teal: { bg: 'bg-teal-200', text: 'text-teal-700', dot: 'bg-teal-400', label: 'Turquesa' },
+  emerald: { bg: 'bg-emerald-200', text: 'text-emerald-700', dot: 'bg-emerald-400', label: 'Esmeralda' },
+  fuchsia: { bg: 'bg-fuchsia-200', text: 'text-fuchsia-700', dot: 'bg-fuchsia-400', label: 'Fucsia' },
 };
 
 const COLOR_KEYS = Object.keys(COLORES);
 
 const TRANSPORTISTAS_DEFAULT: Transportista[] = [
-  { id: '1', nombre: 'Jose Luis',      celular: '', picoyplaca: '', colorKey: 'red',   tipoVehiculo: 'carro' },
+  { id: '1', nombre: 'Jose Luis', celular: '', picoyplaca: '', colorKey: 'red', tipoVehiculo: 'carro' },
   { id: '2', nombre: 'Gilberto Marin', celular: '', picoyplaca: '', colorKey: 'green', tipoVehiculo: 'moto' },
 ];
 
@@ -56,10 +62,10 @@ const TRANSPORTISTAS_DEFAULT: Transportista[] = [
 function getDiasEnMes(year: number, month: number) { return new Date(year, month + 1, 0).getDate(); }
 function getPrimerDiaSemana(year: number, month: number) { return new Date(year, month, 1).getDay(); }
 function toKey(year: number, month: number, day: number) {
-  return `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-const FORM_VACIO: Omit<Transportista,'id'> = { nombre:'', celular:'', picoyplaca:'', colorKey: 'red', tipoVehiculo: 'carro' };
+const FORM_VACIO: Omit<Transportista, 'id'> = { nombre: '', celular: '', picoyplaca: '', colorKey: 'red', tipoVehiculo: 'carro' };
 
 // ─── Selector de color ────────────────────────────────────────────────────────
 
@@ -101,7 +107,7 @@ const ColorSelector: React.FC<{ value: string; onChange: (k: string) => void; us
 const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   const { isDark } = useDarkMode();
   const hoy = new Date();
-  const [mes, setMes]   = useState(hoy.getMonth());
+  const [mes, setMes] = useState(hoy.getMonth());
   const [anio, setAnio] = useState(hoy.getFullYear());
 
   const [transportistas, setTransportistas] = useState<Transportista[]>([]);
@@ -148,10 +154,58 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
   };
 
   const [modalTransportistas, setModalTransportistas] = useState(false);
-  const [formNuevo, setFormNuevo] = useState<Omit<Transportista,'id'>>({ ...FORM_VACIO });
+  const [modalBuscar, setModalBuscar] = useState(false);
+  const [textoBusqueda, setTextoBusqueda] = useState('');
+  const [paginaBusqueda, setPaginaBusqueda] = useState(1);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setModalBuscar(false);
+        setTextoBusqueda('');
+      }
+    };
+    if (modalBuscar) window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [modalBuscar]);
+
+  const resultadosBusqueda = useMemo(() => {
+    if (!textoBusqueda.trim()) return [];
+    const lower = textoBusqueda.toLowerCase();
+    const resultados: { fecha: string; taller: string; detalle: string; servicio: string; transportista: string }[] = [];
+
+    rutas.forEach(r => {
+      if (!r.items) return;
+      const t = transportistas.find(x => x.id === r.transportistaId);
+      const nombreTransportista = t ? t.nombre : 'Desconocido';
+
+      r.items.forEach(item => {
+        if (item.detalle && item.detalle.toLowerCase().includes(lower)) {
+          resultados.push({
+            fecha: r.fecha,
+            taller: item.taller || '',
+            detalle: item.detalle || '',
+            servicio: item.servicio || '',
+            transportista: nombreTransportista,
+          });
+        }
+      });
+    });
+    return resultados;
+  }, [rutas, transportistas, textoBusqueda]);
+
+  useEffect(() => {
+    setPaginaBusqueda(1);
+  }, [textoBusqueda]);
+
+  const itemsPorPagina = 5;
+  const totalPaginas = Math.max(1, Math.ceil(resultadosBusqueda.length / itemsPorPagina));
+  const resultadosPaginados = resultadosBusqueda.slice((paginaBusqueda - 1) * itemsPorPagina, paginaBusqueda * itemsPorPagina);
+
+  const [formNuevo, setFormNuevo] = useState<Omit<Transportista, 'id'>>({ ...FORM_VACIO });
   const [agregando, setAgregando] = useState(false);
   const [editandoId, setEditandoId] = useState<string | null>(null);
-  const [formEditar, setFormEditar] = useState<Omit<Transportista,'id'>>({ ...FORM_VACIO });
+  const [formEditar, setFormEditar] = useState<Omit<Transportista, 'id'>>({ ...FORM_VACIO });
   const [confirmEliminarId, setConfirmEliminarId] = useState<string | null>(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState<string | null>(null);
   const [verTalleres, setVerTalleres] = useState(false);
@@ -258,6 +312,13 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
             </svg>
             Control de transportistas
           </button>
+          <button onClick={() => setModalBuscar(true)}
+            className={`flex items-center gap-2 border-2 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors duration-300 whitespace-nowrap ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-200 hover:border-violet-400 hover:text-violet-100' : 'bg-white border-slate-200 text-slate-600 hover:border-pink-400 hover:text-pink-600'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            Buscar Detalle
+          </button>
           <button onClick={() => setVerTalleres(true)}
             className={`flex items-center gap-2 border-2 font-semibold px-4 py-2 rounded-xl shadow-sm transition-colors duration-300 whitespace-nowrap ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-200 hover:border-violet-400 hover:text-violet-100' : 'bg-white border-slate-200 text-slate-600 hover:border-pink-400 hover:text-pink-600'}`}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
@@ -286,13 +347,12 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
             return (
               <div key={dia}
                 onClick={() => setFechaSeleccionada(toKey(anio, mes, dia))}
-                className={`relative border-b border-r p-2 flex flex-col items-start justify-between min-h-[110px] cursor-pointer transition-all duration-300 ${
-                  hoyFlag 
+                className={`relative border-b border-r p-2 flex flex-col items-start justify-between min-h-[110px] cursor-pointer transition-all duration-300 ${hoyFlag
                     ? isDark ? 'bg-[#5a4a75]' : 'bg-slate-700'
-                    : esFinDeSemana 
+                    : esFinDeSemana
                       ? isDark ? 'bg-[#3d2d52]' : 'bg-slate-50'
                       : isDark ? 'bg-[#4a3a63]' : 'bg-white'
-                } ${isDark ? 'border-violet-700 hover:brightness-110' : 'border-slate-100 hover:brightness-95'}`}>
+                  } ${isDark ? 'border-violet-700 hover:brightness-110' : 'border-slate-100 hover:brightness-95'}`}>
                 <span className={`text-sm md:text-base font-bold leading-none transition-colors duration-300 ${hoyFlag ? (isDark ? 'text-violet-50' : 'text-white') : (isDark ? 'text-violet-100' : 'text-slate-800')}`}>{dia}</span>
                 {tieneRutas && (
                   <div className="flex flex-col gap-1 w-full mt-1 items-end">
@@ -439,6 +499,98 @@ const ControlTransporteView: React.FC<{ user?: User }> = ({ user }) => {
                   </svg>
                   Agregar transportista
                 </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal Buscar Detalle */}
+      {modalBuscar && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+          <div className={`rounded-3xl shadow-2xl w-full max-w-6xl max-h-[90vh] flex flex-col overflow-hidden transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+            <div className={`flex items-center justify-between p-6 border-b transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-100'}`}>
+              <h2 className={`text-xl font-black transition-colors duration-300 ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>Buscar Detalle</h2>
+              <button onClick={() => { setModalBuscar(false); setTextoBusqueda(''); }}
+                className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-300 ${isDark ? 'bg-violet-700 hover:bg-violet-600' : 'bg-slate-100 hover:bg-slate-200'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" className={`w-4 h-4 transition-colors duration-300 ${isDark ? 'text-violet-200' : 'text-slate-500'}`}>
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-6">
+              <div className="relative">
+                <input type="text" placeholder="Escriba para buscar por detalle (ej. 13330)..." value={textoBusqueda}
+                  autoFocus
+                  onFocus={e => e.target.select()}
+                  onChange={e => setTextoBusqueda(e.target.value)}
+                  className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-base focus:outline-none transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:border-violet-400 placeholder-violet-500' : 'bg-white border-slate-200 text-slate-900 focus:border-pink-400 placeholder-slate-400'}`} />
+                {textoBusqueda && (
+                  <button
+                    onClick={() => setTextoBusqueda('')}
+                    className={`absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full transition-colors duration-300 ${isDark ? 'text-violet-400 hover:text-violet-200 hover:bg-violet-700' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'}`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 pb-6">
+              {resultadosBusqueda.length > 0 ? (
+                <div className={`rounded-xl border overflow-hidden transition-colors duration-300 ${isDark ? 'border-violet-700' : 'border-slate-200'}`}>
+                  <table className="w-full text-left text-sm">
+                    <thead className={`border-b transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-700 text-violet-300' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                      <tr>
+                        <th className="p-3 font-semibold w-24">Fecha</th>
+                        <th className="p-3 font-semibold">Taller</th>
+                        <th className="p-3 font-semibold">Detalle</th>
+                        <th className="p-3 font-semibold">Servicio</th>
+                        <th className="p-3 font-semibold">Transportista</th>
+                      </tr>
+                    </thead>
+                    <tbody className={`divide-y transition-colors duration-300 ${isDark ? 'divide-violet-700/50' : 'divide-slate-100'}`}>
+                      {resultadosPaginados.map((res, i) => (
+                        <tr key={i} className={`transition-colors duration-300 ${isDark ? 'hover:bg-[#5a4a75]/30' : 'hover:bg-slate-50'}`}>
+                          <td className={`p-3 whitespace-nowrap ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{res.fecha}</td>
+                          <td className={`p-3 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{res.taller}</td>
+                          <td className={`p-3 font-medium ${isDark ? 'text-violet-50' : 'text-slate-900'}`}>{res.detalle}</td>
+                          <td className={`p-3 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{res.servicio}</td>
+                          <td className={`p-3 ${isDark ? 'text-violet-100' : 'text-slate-800'}`}>{res.transportista}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : textoBusqueda.trim() !== '' ? (
+                <div className={`text-center py-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
+                  No se encontraron coincidencias.
+                </div>
+              ) : (
+                <div className={`text-center py-8 transition-colors duration-300 ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>
+                  Ingrese un texto para buscar.
+                </div>
+              )}
+            </div>
+
+            {resultadosBusqueda.length > 0 && (
+              <div className={`flex items-center justify-between p-6 border-t transition-colors duration-300 ${isDark ? 'border-violet-700 bg-[#3d2d52]' : 'border-slate-100 bg-slate-50'}`}>
+                <span className={`text-sm ${isDark ? 'text-violet-300' : 'text-slate-500'}`}>
+                  Mostrando {((paginaBusqueda - 1) * itemsPorPagina) + 1} a {Math.min(paginaBusqueda * itemsPorPagina, resultadosBusqueda.length)} de {resultadosBusqueda.length} resultados
+                </span>
+                <div className="flex gap-2">
+                  <button onClick={() => setPaginaBusqueda(p => Math.max(1, p - 1))} disabled={paginaBusqueda === 1}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#4a3a63] text-violet-200 hover:bg-[#5a4a75]' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                    Anterior
+                  </button>
+                  <button onClick={() => setPaginaBusqueda(p => Math.min(totalPaginas, p + 1))} disabled={paginaBusqueda === totalPaginas}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#4a3a63] text-violet-200 hover:bg-[#5a4a75]' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'}`}>
+                    Siguiente
+                  </button>
+                </div>
               </div>
             )}
           </div>

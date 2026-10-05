@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 
 interface TextAutocompleteProps {
   value: string;
@@ -87,7 +87,7 @@ const TextAutocomplete: React.FC<TextAutocompleteProps> = ({
         placeholder={placeholder}
         className={`w-full px-2 py-1 rounded-lg font-bold text-xs focus:ring-2 disabled:opacity-50 transition-colors duration-300 ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 placeholder-violet-600 focus:ring-violet-600' : 'bg-slate-50 border border-slate-200 text-slate-800 placeholder:text-slate-300 focus:ring-blue-100'} ${isDark ? 'border' : ''} ${className}`}
       />
-      {showDropdown && filtered.length > 0 && ReactDOM.createPortal(
+      {showDropdown && filtered.length > 0 && createPortal(
         <div
           className={`fixed rounded-lg shadow-2xl max-h-48 overflow-y-auto transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-200'} border`}
           style={{

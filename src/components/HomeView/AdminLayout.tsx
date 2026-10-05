@@ -89,6 +89,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
     { id: 'liquidacionTransporte', label: 'Liquidación de Transporte', icon: <Icons.Transporte />, description: 'Liquidación de transporte' },
     { id: 'historicoReferencia', label: 'Histórico de Referencia', icon: <Icons.History />, description: 'Consultar historial de referencias' },
     { id: 'fichas-estampacion', label: 'Fichas de Estampación', icon: <Icons.FichasCosto />, description: 'Fichas técnicas de estampación' },
+    { id: 'estadoProduccion', label: 'Estado de Producción', icon: <Icons.ProductoEnProceso />, description: 'Estado de producción' },
   ];
 
   const navGroups: NavGroup[] = [
@@ -112,6 +113,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ user, onNavigate, onDirectNav
         { id: 'comparativeDashboard', label: 'Dashboard Comparativo', icon: <Icons.Dashboard />, description: 'Análisis comparativo' },
         { id: 'dispatchControl', label: 'Control de Despachos', icon: <Icons.DispatchControl />, description: 'Control de despachos' },
         { id: 'reports', label: 'Reportes Generales', icon: <Icons.Reports />, description: 'Ver reportes' },
+        { id: 'estadoProduccion', label: 'Estado de Producción', icon: <Icons.ProductoEnProceso />, description: 'Estado de producción' },
       ],
     },
     {

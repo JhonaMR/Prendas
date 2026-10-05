@@ -138,7 +138,27 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
         const matchDisenadora = !disenadoraFilter || f.disenadoraNombre === disenadoraFilter;
         const matchYear = !yearFilter || (f.createdAt && new Date(f.createdAt).getFullYear().toString() === yearFilter);
         return matchSearch && matchDisenadora && matchYear;
-    }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
+    }).sort((a, b) => {
+        const refA = String(a.referencia || '').trim();
+        const refB = String(b.referencia || '').trim();
+        
+        // Identificamos si toda la cadena es exclusivamente un número matemático
+        const isNumA = !isNaN(Number(refA)) && refA !== '';
+        const isNumB = !isNaN(Number(refB)) && refB !== '';
+        
+        // Números puros primero que las letras o alfanuméricos
+        if (isNumA && !isNumB) return -1;
+        if (!isNumA && isNumB) return 1;
+        
+        if (isNumA && isNumB) {
+            // Ambos son números puros: Resta matemática directa para garantizar orden DESCENDENTE
+            // Si refB > refA, da positivo (B va antes). Si refA > refB, da negativo (A va antes).
+            return Number(refB) - Number(refA);
+        } else {
+            // Ambos son letras/alfanuméricos: Orden ASCENDENTE (A a Z)
+            return refA.localeCompare(refB, undefined, { numeric: true, sensitivity: 'base' });
+        }
+    });
 
     const pageSize = fichasPagination.pagination.limit;
     const currentPage = fichasPagination.pagination.page;
@@ -222,7 +242,10 @@ const FichasDisenoMosaico: React.FC<Props> = ({ state, user, updateState, onNavi
                 const fichasDiseno = await fetch(`${getBaseUrl()}/api/fichas-diseno`, {
                     headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
                 }).then(r => r.json()).then(d => d.data || []);
-                updateState(prev => ({ ...prev, fichasDiseno }));
+                updateState(prev => ({
+                    ...prev,
+                    ...(fichasDiseno.length > 0 ? { fichasDiseno } : {})
+                }));
             } else alert('❌ Error: ' + data.message);
         } catch { alert('❌ Error de conexión'); }
     };

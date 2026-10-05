@@ -68,6 +68,8 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
     const [correriaFilter, setCorreriaFilter] = useState(savedState?.correriaFilter ?? '');
     const [correriaInput, setCorreriaInput] = useState(savedState?.correriaInput ?? '');
     const [showCorreriaSuggestions, setShowCorreriaSuggestions] = useState(false);
+    const [lineaFilter, setLineaFilter] = useState(savedState?.lineaFilter ?? '');
+    const [showFiltersModal, setShowFiltersModal] = useState(false);
     const [showModalImportar, setShowModalImportar] = useState(false);
     const [referenciaImportar, setReferenciaImportar] = useState('');
     const [fichaEncontrada, setFichaEncontrada] = useState<any>(null);
@@ -86,11 +88,20 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             yearFilter,
             correriaFilter,
             correriaInput,
+            lineaFilter,
             currentPage: fichasPagination.pagination.page,
             scrollTop: container ? container.scrollTop : 0
         };
         onNavigate('fichas-costo-detalle', { referencia, returnState });
     };
+
+    React.useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setShowFiltersModal(false);
+        };
+        if (showFiltersModal) window.addEventListener('keydown', handleEscape);
+        return () => window.removeEventListener('keydown', handleEscape);
+    }, [showFiltersModal]);
 
     React.useEffect(() => {
         if (savedState?.scrollTop) {
@@ -129,6 +140,13 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
         ? correriasUnicas.filter(c => `${c.name} ${c.year}`.toLowerCase().includes(correriaInput.toLowerCase()))
         : [];
 
+    const lineasUnicas = React.useMemo(() => {
+        const lineas = (state.fichasCosto || [])
+            .map(f => (f.linea && f.linea !== 'Elegir') ? f.linea : ((state.fichasDiseno || []).find(fd => fd.referencia === f.referencia)?.linea))
+            .filter(v => v && v !== 'Elegir') as string[];
+        return [...new Set(lineas)].sort();
+    }, [state.fichasCosto, state.fichasDiseno]);
+
     const fichas = (state.fichasCosto || []).filter(f => {
         const matchSearch = !searchTerm || (() => {
             const t = searchTerm.toLowerCase();
@@ -141,15 +159,36 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             return ref?.correrias?.includes(correriaFilter);
         })();
         const matchRevision = !revisionFilter || (revisionFilter === 'sin-estado' ? !f.estadoRevision : f.estadoRevision === revisionFilter);
-        return matchSearch && matchDisenadora && matchYear && matchCorreria && matchRevision;
-    }).sort((a, b) => b.referencia.localeCompare(a.referencia, undefined, { numeric: true, sensitivity: 'base' }));
+        const matchLinea = !lineaFilter || ((f.linea && f.linea !== 'Elegir') ? f.linea : ((state.fichasDiseno || []).find(fd => fd.referencia === f.referencia)?.linea)) === lineaFilter;
+        return matchSearch && matchDisenadora && matchYear && matchCorreria && matchRevision && matchLinea;
+    }).sort((a, b) => {
+        const refA = String(a.referencia || '').trim();
+        const refB = String(b.referencia || '').trim();
+        
+        // Identificamos si toda la cadena es exclusivamente un número matemático
+        const isNumA = !isNaN(Number(refA)) && refA !== '';
+        const isNumB = !isNaN(Number(refB)) && refB !== '';
+        
+        // Números puros primero que las letras o alfanuméricos
+        if (isNumA && !isNumB) return -1;
+        if (!isNumA && isNumB) return 1;
+        
+        if (isNumA && isNumB) {
+            // Ambos son números puros: Resta matemática directa para garantizar orden DESCENDENTE
+            // Si refB > refA, da positivo (B va antes). Si refA > refB, da negativo (A va antes).
+            return Number(refB) - Number(refA);
+        } else {
+            // Ambos son letras/alfanuméricos: Orden ASCENDENTE (A a Z)
+            return refA.localeCompare(refB, undefined, { numeric: true, sensitivity: 'base' });
+        }
+    });
 
     const pageSize = fichasPagination.pagination.limit;
     const currentPage = fichasPagination.pagination.page;
     const totalPages = Math.ceil(fichas.length / pageSize) || 1;
     const pagedFichas = fichas.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-    const prevFilters = React.useRef({ searchTerm, disenadoraFilter, correriaFilter, pageSize });
+    const prevFilters = React.useRef({ searchTerm, disenadoraFilter, correriaFilter, lineaFilter, pageSize });
 
     // Reset a página 1 cuando cambia el filtro o el tamaño de página
     React.useEffect(() => {
@@ -157,13 +196,14 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             prevFilters.current.searchTerm !== searchTerm ||
             prevFilters.current.disenadoraFilter !== disenadoraFilter ||
             prevFilters.current.correriaFilter !== correriaFilter ||
+            prevFilters.current.lineaFilter !== lineaFilter ||
             prevFilters.current.pageSize !== pageSize;
 
         if (filtersChanged) {
             fichasPagination.goToPage(1);
-            prevFilters.current = { searchTerm, disenadoraFilter, correriaFilter, pageSize };
+            prevFilters.current = { searchTerm, disenadoraFilter, correriaFilter, lineaFilter, pageSize };
         }
-    }, [searchTerm, disenadoraFilter, correriaFilter, pageSize]);
+    }, [searchTerm, disenadoraFilter, correriaFilter, lineaFilter, pageSize]);
 
     const handleBuscar = () => {
         if (!referenciaImportar.trim()) { alert('Ingrese una referencia'); return; }
@@ -181,7 +221,11 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
             if (result.success) {
                 alert('✅ Ficha importada exitosamente');
                 const [fichasCosto, fichasDiseno] = await Promise.all([apiFichas.getFichasCosto(), apiFichas.getFichasDiseno()]);
-                updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
+                updateState(prev => ({
+                    ...prev,
+                    ...(fichasCosto.length > 0 ? { fichasCosto } : {}),
+                    ...(fichasDiseno.length > 0 ? { fichasDiseno } : {})
+                }));
                 setShowModalImportar(false); setReferenciaImportar(''); setFichaEncontrada(null);
                 onNavigate('fichas-costo-detalle', { referencia: referenciaImportar });
             } else alert('❌ Error al importar: ' + result.message);
@@ -204,7 +248,11 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                     apiFichas.getFichasCosto(),
                     apiFichas.getFichasDiseno()
                 ]);
-                updateState(prev => ({ ...prev, fichasCosto, fichasDiseno }));
+                updateState(prev => ({
+                    ...prev,
+                    ...(fichasCosto.length > 0 ? { fichasCosto } : {}),
+                    ...(fichasDiseno.length > 0 ? { fichasDiseno } : {})
+                }));
             } else alert('❌ Error: ' + data.message);
         } catch { alert('❌ Error de conexión'); }
     };
@@ -219,7 +267,7 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                 <div className="flex flex-wrap gap-3 items-center">
                     {/* Limpiar filtros */}
                     <button
-                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); setRevisionFilter(null); }}
+                        onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); setDisenadoraFilter(''); setDisenadoraInput(''); setSearchTerm(''); setYearFilter(''); setRevisionFilter(null); setLineaFilter(''); }}
                         title="Limpiar filtros"
                         className={`p-4 rounded-2xl transition-colors border ${isDark ? 'bg-red-900/30 hover:bg-red-900/50 text-red-300 hover:text-red-200 border-red-700' : 'bg-red-50 hover:bg-red-100 text-red-500 hover:text-red-700 border-red-200'}`}
                     >
@@ -269,74 +317,19 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                             </div>
                         )}
                     </div>
-                    {/* Filtro año */}
-                    <input
-                        type="number"
-                        value={yearFilter}
-                        onChange={e => setYearFilter(e.target.value)}
-                        placeholder="Año..."
-                        min="2000"
-                        max="2099"
-                        className={`w-28 px-4 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-violet-500/30' : 'bg-white border-slate-200 text-slate-900 focus:ring-blue-100'} border`}
-                    />
-                    {/* Filtro correría */}
-                    <div className="relative min-w-[100px]">
-                        <input
-                            type="text"
-                            value={correriaInput}
-                            onChange={e => { setCorreriaInput(e.target.value); setCorreriaFilter(''); setShowCorreriaSuggestions(true); }}
-                            onFocus={() => setShowCorreriaSuggestions(true)}
-                            onBlur={() => setTimeout(() => setShowCorreriaSuggestions(false), 150)}
-                            placeholder="Filtrar correría..."
-                            className={`w-full px-6 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm border ${isDark ? correriaFilter ? 'border-blue-600 text-blue-200 bg-[#3d2d52] focus:ring-blue-500/30' : 'border-violet-600 text-violet-100 bg-[#3d2d52] focus:ring-violet-500/30' : correriaFilter ? 'border-blue-400 text-blue-700 bg-white focus:ring-blue-100' : 'border-slate-200 text-slate-900 bg-white focus:ring-blue-100'}`}
-                        />
-                        {correriaFilter && (
-                            <button
-                                onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); }}
-                                className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg leading-none transition-colors ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-400 hover:text-blue-600'}`}
-                            >×</button>
+                    {/* Botón Filtros Modal */}
+                    <button
+                        onClick={() => setShowFiltersModal(true)}
+                        className={`px-5 py-4 font-black rounded-2xl border shadow-sm transition-all flex items-center gap-2 uppercase tracking-wider text-sm ${isDark ? 'bg-[#4a3a63] border-violet-600 text-violet-100 hover:bg-violet-700' : 'bg-white border-slate-200 text-slate-800 hover:bg-slate-50'}`}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                        </svg>
+                        Filtrar
+                        {(yearFilter !== new Date().getFullYear().toString() || correriaFilter || disenadoraFilter || lineaFilter) && (
+                            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow" />
                         )}
-                        {showCorreriaSuggestions && correriassugeridas.length > 0 && (
-                            <div className={`absolute top-full mt-2 left-0 w-full rounded-2xl shadow-2xl border z-50 max-h-60 overflow-y-auto ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
-                                {correriassugeridas.map(c => (
-                                    <button
-                                        key={c.id}
-                                        onMouseDown={() => { setCorreriaFilter(c.id); setCorreriaInput(`${c.name} ${c.year}`); setShowCorreriaSuggestions(false); }}
-                                        className={`w-full text-left px-5 py-3 font-bold text-sm border-b last:border-0 transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-200 border-violet-700' : 'hover:bg-blue-50 text-slate-700 border-slate-50'}`}
-                                    ><span className={isDark ? 'text-violet-100' : 'text-slate-800'}>{c.name}</span> <span className={isDark ? 'text-violet-400' : 'text-slate-400'}>{c.year}</span></button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                    {/* Filtro diseñadora */}
-                    <div className="relative min-w-[100px]">
-                        <input
-                            type="text"
-                            value={disenadoraInput}
-                            onChange={e => { setDisenadoraInput(e.target.value); setDisenadoraFilter(''); setShowDisenadoraSuggestions(true); }}
-                            onFocus={() => setShowDisenadoraSuggestions(true)}
-                            onBlur={() => setTimeout(() => setShowDisenadoraSuggestions(false), 150)}
-                            placeholder="Filtrar diseñadora..."
-                            className={`w-full px-6 py-4 rounded-2xl focus:ring-4 transition-all font-bold shadow-sm border ${isDark ? disenadoraFilter ? 'border-purple-600 text-purple-200 bg-[#3d2d52] focus:ring-purple-500/30' : 'border-violet-600 text-violet-100 bg-[#3d2d52] focus:ring-violet-500/30' : disenadoraFilter ? 'border-purple-400 text-purple-700 bg-white focus:ring-purple-100' : 'border-slate-200 text-slate-900 bg-white focus:ring-purple-100'}`}
-                        />
-                        {disenadoraFilter && (
-                            <button
-                                onClick={() => { setDisenadoraFilter(''); setDisenadoraInput(''); }}
-                                className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg leading-none transition-colors ${isDark ? 'text-purple-400 hover:text-purple-300' : 'text-purple-400 hover:text-purple-600'}`}
-                            >×</button>
-                        )}
-                        {showDisenadoraSuggestions && disenadorasSugeridas.length > 0 && (
-                            <div className={`absolute top-full mt-2 left-0 w-full rounded-2xl shadow-2xl border z-50 max-h-60 overflow-y-auto ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
-                                {disenadorasSugeridas.map(d => (
-                                    <button
-                                        key={d}
-                                        onMouseDown={() => { setDisenadoraFilter(d); setDisenadoraInput(d); setShowDisenadoraSuggestions(false); }}
-                                        className={`w-full text-left px-5 py-3 font-bold text-sm border-b last:border-0 transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-200 border-violet-700' : 'hover:bg-purple-50 text-slate-700 border-slate-50'}`}
-                                    >{d}</button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    </button>
                     {/* Buscador referencia */}
                     <div className="relative flex-1 min-w-[100px]">
                         <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Buscar referencia, descripción..."
@@ -441,6 +434,110 @@ const FichasCostoMosaico: React.FC<Props> = ({ state, user, updateState, onNavig
                   />
                 </div>
                 </>
+            )}
+
+            {showFiltersModal && (
+                <div 
+                    className={`fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4 ${isDark ? 'bg-slate-900/60' : 'bg-slate-900/40'}`}
+                    onMouseDown={(e) => { if (e.target === e.currentTarget) setShowFiltersModal(false); }}
+                >
+                    <div className={`rounded-3xl shadow-2xl max-w-md w-full p-8 transition-colors duration-300 ${isDark ? 'bg-[#4a3a63]' : 'bg-white'}`}>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className={`text-2xl font-black ${isDark ? 'text-violet-50' : 'text-slate-800'}`}>Filtros Avanzados</h3>
+                            <button onClick={() => setShowFiltersModal(false)} className={`p-2 rounded-xl transition-colors ${isDark ? 'hover:bg-violet-800 text-violet-300' : 'hover:bg-slate-100 text-slate-500'}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="space-y-4">
+                            {/* Línea */}
+                            <div>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Línea</label>
+                                <select
+                                    value={lineaFilter}
+                                    onChange={e => setLineaFilter(e.target.value)}
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all cursor-pointer ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`}
+                                >
+                                    <option value="">Todas las líneas</option>
+                                    {lineasUnicas.map(l => (
+                                        <option key={l} value={l}>{l}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            {/* Año */}
+                            <div>
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Año</label>
+                                <input
+                                    type="number"
+                                    value={yearFilter}
+                                    onChange={e => setYearFilter(e.target.value)}
+                                    placeholder="Todos"
+                                    min="2000"
+                                    max="2099"
+                                    className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30 focus:border-blue-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`}
+                                />
+                            </div>
+                            {/* Correría */}
+                            <div className="relative">
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Correría</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={correriaInput}
+                                        onChange={e => { setCorreriaInput(e.target.value); setCorreriaFilter(''); setShowCorreriaSuggestions(true); }}
+                                        onFocus={() => setShowCorreriaSuggestions(true)}
+                                        onBlur={() => setTimeout(() => setShowCorreriaSuggestions(false), 150)}
+                                        placeholder="Buscar correría..."
+                                        className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? correriaFilter ? 'bg-[#3d2d52] border-blue-500 text-blue-200 focus:ring-blue-500/30' : 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-blue-500/30' : correriaFilter ? 'bg-white border-blue-400 text-blue-700 focus:ring-blue-100' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-blue-100 focus:border-blue-500'}`}
+                                    />
+                                    {correriaFilter && (
+                                        <button onClick={() => { setCorreriaFilter(''); setCorreriaInput(''); }} className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg transition-colors ${isDark ? 'text-blue-400 hover:text-blue-300' : 'text-blue-400 hover:text-blue-600'}`}>×</button>
+                                    )}
+                                </div>
+                                {showCorreriaSuggestions && correriassugeridas.length > 0 && (
+                                    <div className={`absolute top-full mt-2 left-0 w-full rounded-2xl shadow-2xl border z-50 max-h-48 overflow-y-auto ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
+                                        {correriassugeridas.map(c => (
+                                            <button key={c.id} onMouseDown={() => { setCorreriaFilter(c.id); setCorreriaInput(`${c.name} ${c.year}`); setShowCorreriaSuggestions(false); }} className={`w-full text-left px-5 py-3 font-bold text-sm border-b last:border-0 transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-200 border-violet-700' : 'hover:bg-blue-50 text-slate-700 border-slate-50'}`}>
+                                                <span className={isDark ? 'text-violet-100' : 'text-slate-800'}>{c.name}</span> <span className={isDark ? 'text-violet-400' : 'text-slate-400'}>{c.year}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                            {/* Diseñadora */}
+                            <div className="relative">
+                                <label className={`text-[10px] font-black uppercase tracking-widest block mb-2 ${isDark ? 'text-violet-400' : 'text-slate-400'}`}>Diseñadora</label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={disenadoraInput}
+                                        onChange={e => { setDisenadoraInput(e.target.value); setDisenadoraFilter(''); setShowDisenadoraSuggestions(true); }}
+                                        onFocus={() => setShowDisenadoraSuggestions(true)}
+                                        onBlur={() => setTimeout(() => setShowDisenadoraSuggestions(false), 150)}
+                                        placeholder="Buscar diseñadora..."
+                                        className={`w-full px-4 py-3 rounded-xl font-bold focus:ring-4 border-2 transition-all ${isDark ? disenadoraFilter ? 'bg-[#3d2d52] border-purple-500 text-purple-200 focus:ring-purple-500/30' : 'bg-[#3d2d52] border-violet-600 text-violet-100 focus:ring-purple-500/30' : disenadoraFilter ? 'bg-white border-purple-400 text-purple-700 focus:ring-purple-100' : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-purple-100 focus:border-purple-500'}`}
+                                    />
+                                    {disenadoraFilter && (
+                                        <button onClick={() => { setDisenadoraFilter(''); setDisenadoraInput(''); }} className={`absolute right-4 top-1/2 -translate-y-1/2 font-black text-lg transition-colors ${isDark ? 'text-purple-400 hover:text-purple-300' : 'text-purple-400 hover:text-purple-600'}`}>×</button>
+                                    )}
+                                </div>
+                                {showDisenadoraSuggestions && disenadorasSugeridas.length > 0 && (
+                                    <div className={`absolute top-full mt-2 left-0 w-full rounded-2xl shadow-2xl border z-50 max-h-48 overflow-y-auto ${isDark ? 'bg-[#4a3a63] border-violet-600' : 'bg-white border-slate-200'}`}>
+                                        {disenadorasSugeridas.map(d => (
+                                            <button key={d} onMouseDown={() => { setDisenadoraFilter(d); setDisenadoraInput(d); setShowDisenadoraSuggestions(false); }} className={`w-full text-left px-5 py-3 font-bold text-sm border-b last:border-0 transition-colors ${isDark ? 'hover:bg-violet-700/50 text-violet-200 border-violet-700' : 'hover:bg-purple-50 text-slate-700 border-slate-50'}`}>
+                                                {d}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <div className="mt-8">
+                            <button onClick={() => setShowFiltersModal(false)} className={`w-full px-6 py-4 font-black rounded-xl hover:shadow-lg transition-all uppercase tracking-wide text-sm ${isDark ? 'bg-violet-600 text-white hover:bg-violet-500' : 'bg-slate-800 text-white hover:bg-slate-700'}`}>
+                                Ver Resultados ({fichas.length})
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             {showModalImportar && (

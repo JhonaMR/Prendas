@@ -160,13 +160,21 @@ const FichasCorteDetalle: React.FC<Props> = ({ state, user, updateState, onNavig
                         <p className={`font-bold text-xs mt-1 transition-colors ${isDark ? 'text-violet-400' : 'text-slate-500'}`}>{isNuevo ? 'Nuevo corte' : 'Editando corte existente'}</p>
                     </div>
                 </div>
-                {hasUnsaved && <div className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${isDark ? 'bg-pink-600/30 text-pink-300' : 'bg-red-50 text-red-600'}`}><div className={`w-2 h-2 rounded-full animate-pulse transition-colors ${isDark ? 'bg-pink-500' : 'bg-red-500'}`}></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
-                {canEdit && !isNuevo && (
-                    <button onClick={handleEliminar} disabled={isLoading}
-                        className={`px-5 py-2 font-black rounded-xl border transition-colors text-sm uppercase tracking-wide ${isDark ? 'bg-red-900/40 text-red-400 border-red-700/50 hover:bg-red-900/60' : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'}`}>
-                        Eliminar Corte
-                    </button>
-                )}
+                <div className="flex items-center gap-3">
+                    {hasUnsaved && <div className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-colors ${isDark ? 'bg-pink-600/30 text-pink-300' : 'bg-red-50 text-red-600'}`}><div className={`w-2 h-2 rounded-full animate-pulse transition-colors ${isDark ? 'bg-pink-500' : 'bg-red-500'}`}></div><span className="font-bold text-sm">Cambios sin guardar</span></div>}
+                    {canEdit && (
+                        <button onClick={handleGuardar} disabled={isLoading}
+                            className={`px-5 py-2 text-white font-black rounded-xl uppercase text-sm tracking-wide shadow-md hover:scale-[1.02] transition-all ${isDark ? 'bg-gradient-to-r from-purple-700 to-purple-600 disabled:opacity-50' : 'bg-gradient-to-r from-purple-600 to-purple-500 disabled:opacity-50'}`}>
+                            {isLoading ? 'GUARDANDO...' : `GUARDAR CORTE #${numeroCorte}`}
+                        </button>
+                    )}
+                    {canEdit && !isNuevo && (
+                        <button onClick={handleEliminar} disabled={isLoading}
+                            className={`px-5 py-2 font-black rounded-xl border transition-colors text-sm uppercase tracking-wide ${isDark ? 'bg-red-900/40 text-red-400 border-red-700/50 hover:bg-red-900/60' : 'bg-red-50 text-red-600 border-red-200 hover:bg-red-100'}`}>
+                            Eliminar Corte
+                        </button>
+                    )}
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
