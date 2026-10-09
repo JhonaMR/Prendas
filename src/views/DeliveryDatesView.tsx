@@ -7,6 +7,7 @@ import usePagination from '../hooks/usePagination';
 import DeliveryDatesImportModal from '../components/DeliveryDatesImportModal';
 import TextAutocomplete from '../components/TextAutocomplete';
 import { useDarkMode } from '../context/DarkModeContext';
+import DeliveryDatesExportModal from '../components/DeliveryDatesExportModal';
 
 interface DeliveryDatesViewProps {
   state: AppState;
@@ -33,6 +34,7 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [filterHighPriority, setFilterHighPriority] = useState(false);
   const [isUndPendientesOpen, setIsUndPendientesOpen] = useState(false);
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const deliveryDatesPagination = usePagination(1, 50);
   
   const hasUnsavedChanges = useRef(false);
@@ -429,6 +431,16 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           className={`px-5 py-2.5 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all transition-colors duration-300 ${isDark ? 'bg-indigo-700 hover:bg-indigo-600 text-white' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}`}
         >
           Ver UND pendientes
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsExportModalOpen(true)}
+          className={`px-5 py-2.5 flex items-center gap-2 font-black rounded-xl text-xs uppercase tracking-wider hover:shadow-lg hover:scale-105 transition-all transition-colors duration-300 ${isDark ? 'bg-violet-800 hover:bg-violet-700 text-white border border-violet-600' : 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200'}`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          Exportar
         </button>
 
         <div className={`flex flex-wrap gap-3 p-3 rounded-3xl border shadow-sm items-center transition-colors duration-300 ${isDark ? 'bg-[#4a3a63] border-violet-700' : 'bg-white border-slate-100'}`}>
@@ -835,6 +847,16 @@ const DeliveryDatesView: React.FC<DeliveryDatesViewProps> = ({ state, updateStat
           onClose={() => setIsUndPendientesOpen(false)}
         />
       )}
+
+      <DeliveryDatesExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => setIsExportModalOpen(false)}
+        deliveryDates={state.deliveryDates}
+        confeccionistasSuggestions={confeccionistasSuggestions}
+        referenciasSuggestions={referenciasSuggestions}
+        procesosSuggestions={procesosSuggestions}
+        isDark={isDark}
+      />
     </div>
   );
 };
@@ -939,6 +961,7 @@ const UndPendientesModal: React.FC<{
           </table>
         </div>
       </div>
+
     </div>
   );
 };
